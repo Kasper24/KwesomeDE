@@ -323,7 +323,8 @@ local function apps()
         libreoffice_writer = { command = "libreoffice", class = "libreoffice-writer", icon = theme.word_icon },
         libreoffice_impress = { command = "libreoffice", class = "libreoffice-impress", icon = theme.powerpoint_icon },
         libreoffice_calc = { command = "libreoffice", class = "libreoffice-calc", icon = theme.excel_icon },
-        xfce4_settings_manager = { command = "xfce4-settings-manager", class = "Xfce4-settings-manager", icon = theme.gear_icon }
+        screenshot = { command = "", class = "Screenshot", icon = theme.camera_retro_icon },
+        record = { command = "", class = "Record", icon = theme.video_icon }
     }
 end
 
