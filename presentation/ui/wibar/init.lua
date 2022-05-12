@@ -575,7 +575,7 @@ local function time()
         format = "%d %b %H:%M",
         align = "center",
         valign = "center",
-        font = beautiful.font_name .. 12,
+        font = beautiful.font_name .. 14,
     }
 
     clock.markup = helpers.ui.colorize_text(clock.text, accent_color)
