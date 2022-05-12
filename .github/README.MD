@@ -370,20 +370,14 @@ Thanks from the bottom of my heart! ‎ :heartpulse:
 ## :bulb: ‎ <samp>Acknowledgements</samp>
 
 - **Special thanks to**
-
-   + *Contributors*
-      - [`rxyhn`](https://github.com/rxyhn) *there's nothing wrong with thanking yourself right?*
-      - [`ner0z`](https://github.com/ner0z)
-      - [`paulhersch`](https://github.com/paulhersch)
-      - [`ChocolateBread799`](https://github.com/ChocolateBread799)
-      - [`janleigh`](https://github.com/janleigh)
-      - [`rototrash`](https://github.com/rototrash)
-
-   + *And for them, ofc.*
-      - [`elenapan`](https://github.com/elenapan)
-      - [`manilarome`](https://github.com/manilarome)
-      - [`JavaCafe01`](https://github.com/JavaCafe01)
-
+    - [`awesome-widgets`](https://github.com/streetturtle/awesome-wm-widgets)
+    - [`JavaCafe01`](https://github.com/JavaCafe01)
+    - [`andOrlando`](https://github.com/andOrlando/awesome-widgets)
+    - [`actionless`](https://github.com/actionless)
+    - [`Aire-One`](https://github.com/Aire-One)
+    - [`elenapan`](https://github.com/elenapan)
+    - [`manilarome`](https://github.com/manilarome)
+    - [`Mofiqul`](https://github.com/Mofiqul)
 <br>
 
 <p align="center"><img src="https://raw.githubusercontent.com/catppuccin/catppuccin/dev/assets/footers/gray0_ctp_on_line.svg?sanitize=true" /></p>
