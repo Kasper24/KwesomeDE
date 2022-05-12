@@ -17,42 +17,63 @@ local playerctl = { }
 
 local accent_color = beautiful.random_accent_color()
 
-function playerctl.art(halign, valign, size, daemon)
+function playerctl.art(halign, valign, size, default_icon_size, daemon)
     local playerctl_daemon = daemon or general_playerctl_daemon
 
-    local widget = wibox.widget
+    local icon = wibox.widget
     {
         widget = wibox.widget.imagebox,
-        forced_width = size or dpi(200),
-        forced_height = size or dpi(200),
         halign = halign or "left",
         valign = valign or "top",
         clip_shape = helpers.ui.rrect(beautiful.border_radius),
         image = icon_theme:get_icon_path("spotify")
     }
 
+    local default_icon = twidget
+    {
+        halign = halign or "left",
+        valign = valign or "center",
+        color = beautiful.random_accent_color(),
+        size = default_icon_size or 150,
+        font = beautiful.spotify_icon.font,
+        text = beautiful.spotify_icon.icon,
+    }
+
+    local stack = wibox.widget
+    {
+        layout = wibox.layout.stack,
+        forced_width = size or dpi(200),
+        forced_height = size or dpi(200),
+        top_only = true,
+        icon,
+        default_icon,
+    }
+
     playerctl_daemon:connect_signal("metadata", function(self, title, artist, album_path, album, new, player_name)
         if album_path ~= "" then
-            widget.image = album_path
+            icon.image = album_path
+            stack:raise_widget(icon)
         else
+            -- I use vivaldi, which reports itself as chromium, but I want it to show the vivaldi icon!
             if player_name == "chromium" then
                 player_name = "vivaldi"
             end
 
-            local icon = icon_theme:get_icon_path(player_name)
-            if icon ~= "" then
-                widget.image = icon
+            local image = icon_theme:get_icon_path(player_name)
+            if image ~= "" then
+                icon.image = image
+                stack:raise_widget(icon)
             else
-                widget.image = icon_theme:get_icon_path("spotify")
+                stack:raise_widget(default_icon)
             end
         end
     end)
 
     playerctl_daemon:connect_signal("no_players", function(self)
-        widget.image =  icon_theme:get_icon_path("spotify")
+        stack:raise_widget(default_icon)
     end)
 
-    return widget
+    return stack
 end
 
 function playerctl.title_artist(daemon)

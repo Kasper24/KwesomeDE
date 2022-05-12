@@ -11,7 +11,7 @@ local function new()
     {
         layout = wibox.layout.fixed.horizontal,
         spacing = dpi(15),
-        widgets.playerctl.art("left", "center", dpi(200)),
+        widgets.playerctl.art("left", "center", dpi(200), 150),
         {
             widget = wibox.container.margin,
             margins = { top = dpi(25) },
