@@ -201,7 +201,8 @@ local function task_list_menu(client)
     {
         widgets.menu.button
         {
-            image = icon_theme:get_client_icon_path(client),
+            icon = client.font_icon,
+            -- image = icon_theme:get_client_icon_path(client),
             text = client.class,
             on_press = function() client:jump_to() end
         },
@@ -229,15 +230,27 @@ local function task_list_menu(client)
 end
 
 local function client_task(task_list, client, screen)
+    client.font_icon = beautiful.window_icon
+    for _, app in pairs(beautiful.apps) do
+        if app.class == client.class then
+            client.font_icon = app.icon
+            break
+        end
+    end
+
     local task_list_menu = task_list_menu(client)
 
-    local button = widgets.button.image.state
+    -- Font icon
+    local button = widgets.button.text.state
     {
-        forced_width = dpi(50),
-        forced_height = dpi(50),
+        on_by_default = capi.client.focus == client,
+        forced_width = dpi(65),
+        forced_height = dpi(65),
         margins = dpi(5),
-        image_valign = "top",
-        image = icon_theme:get_client_icon_path(client),
+        valign = "center",
+        size = 20,
+        font = client.font_icon.font,
+        text = client.font_icon.icon,
         on_hover = function(self)
             -- task_preview:show(client, {wibox = awful.screen.focused().top_wibar, widget = self, offset = { y = 100}})
         end,
@@ -270,9 +283,49 @@ local function client_task(task_list, client, screen)
             }
         end
     }
-    if capi.client.focus == client then
-        button:turn_on()
-    end
+
+    -- Real client icon (make this an option to choose from?)
+    -- commented out for now
+    -- local button = widgets.button.image.state
+    -- {
+    --     on_by_default = capi.client.focus == client,
+    --     forced_width = dpi(50),
+    --     forced_height = dpi(50),
+    --     margins = dpi(5),
+    --     image_valign = "top",
+    --     image = icon_theme:get_client_icon_path(client),
+    --     on_hover = function(self)
+    --         -- task_preview:show(client, {wibox = awful.screen.focused().top_wibar, widget = self, offset = { y = 100}})
+    --     end,
+    --     on_leave = function()
+    --         -- task_preview:hide()
+    --     end,
+    --     on_release = function()
+    --         if client.minimized == false then
+    --             if capi.client.focus == client then
+    --                 client.minimized = true
+    --             else
+    --                 capi.client.focus = client
+    --                 client:raise()
+    --             end
+    --         else
+    --             client.minimized = false
+    --         end
+    --         if client:tags() and client:tags()[1] then
+    --             client:tags()[1]:view_only()
+    --         else
+    --             client:tags({awful.screen.focused().selected_tag})
+    --         end
+    --     end,
+    --     on_secondary_press = function(self)
+    --         task_preview:hide()
+    --         task_list_menu:toggle{
+    --             wibox = awful.screen.focused().top_wibar,
+    --             widget = self,
+    --             offset = { y = 100 },
+    --         }
+    --     end
+    -- }
 
     local indicator = wibox.widget
     {
