@@ -14,10 +14,10 @@ local function new()
         widgets.playerctl.art("left", "center", dpi(200)),
         {
             widget = wibox.container.margin,
-            margins = { top = dpi(15) },
+            margins = { top = dpi(25) },
             {
                 layout = wibox.layout.fixed.vertical,
-                spacing = dpi(30),
+                spacing = dpi(15),
                 {
                     layout = wibox.layout.fixed.vertical,
                     spacing = dpi(10),
@@ -26,9 +26,8 @@ local function new()
                 },
                 {
                     layout = wibox.layout.fixed.vertical,
-                    spacing = dpi(1),
                     {
-                        layout = wibox.layout.fixed.horizontal,
+                        layout = wibox.layout.flex.horizontal,
                         spacing = dpi(15),
                         widgets.playerctl.shuffle(dpi(40), dpi(40)),
                         widgets.playerctl.previous(dpi(40), dpi(40)),
