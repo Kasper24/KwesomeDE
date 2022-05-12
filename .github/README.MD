@@ -71,7 +71,6 @@ Here are some details about my setup:
 - **Music Player** [ncmpcpp](https://github.com/ncmpcpp/ncmpcpp)
 
 AwesomeWM Modules:
-
 - **[bling](https://github.com/blingcorp/bling)**
    + Adds new layouts, modules, and widgets that try to primarily focus on window management
 - **[layout-machi](https://github.com/xinhaoyuan/layout-machi)**
@@ -94,6 +93,25 @@ AwesomeWM Modules:
 **For other distros**, build instructions are [here](https://github.com/awesomeWM/awesome/#building-and-installation).
 
 > Install necessary dependencies
+
+| Dependency                              | Why/Where is it needed?                                   |
+|-----------------------------------------|-----------------------------------------------------------|
+| awesome-git                             | (explains itself)                                         |
+| networkmanager                          | Network notifcations, applet/wibar widget                 |
+| blueman                                 | Bluetooth notifcations, applet/wibar widget               |
+| pactl                                   | Audio notifcations, applet/wibar widget                   |
+| pipewire+pipewire-pulse/pulsaudio       | Used by pactl                                             |
+| lm_sensors                              | CPU Temperature                                           |
+| inotify-tools                           | Daemons that monitor filesystem events                    |
+| redshift                                | Blue light toggle                                         |
+| maim                                    | Screenshot widget                                         |
+| ffmpeg                                  | Record widget                                             |
+| xdotool                                 | Menu commands use this to input text into terminal        |
+| upower                                  | Battery notifications/widgets                             |
+| picom                                   | Compositor widget/notifcations                            |
+| brightnessctl                           | Brightness daemon and widget                              |
+| playerctl                               | Media daemon and controls                                 |
+| fortune-mod                             | Fortune daemon (right now that daemon is unused)          |
 
 **Arch Linux (and other Arch-based distributions)**
 
