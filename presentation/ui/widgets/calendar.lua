@@ -52,6 +52,7 @@ local function date_widget(date, month, year, is_current, is_another_month)
 		normal_shape = gshape.circle,
 		halign = "center",
 		size = 14,
+		on_normal_bg = beautiful.random_accent_color(),
 		text_normal_bg = text_color,
 		text = date,
 		on_press = function(self)
