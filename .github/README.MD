@@ -31,10 +31,12 @@
     <td><img src="assets/5.png" </td>
     <td><img src="assets/6.png" </td>
   </tr>
+    <tr>
+    <td><img src="assets/7.png" </td>
+    <td><img src="assets/8.png" </td>
+    <td><img src="assets/9.png" </td>
+  </tr>
  </table>
-
-
-<img alt="Rice Preview" align="right" width="400px" src="assets/4.png"/>
 
 ## Thanks for dropping by!
 
@@ -46,8 +48,6 @@ Although it takes time and effort to configure it, but I'm very satisfied with t
 
 <!-- INFORMATION -->
 ## :snowflake: ‎ <samp>Information</samp>
-
-<img alt="Rice Preview" align="right" width="400px" src="assets/4.png"/>
 
 Here are some details about my setup:
 
