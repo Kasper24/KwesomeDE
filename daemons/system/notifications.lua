@@ -6,7 +6,6 @@ local gstring = require("gears.string")
 local wibox = require("wibox")
 local naughty = require("naughty")
 local settings = require("services.settings")
-local icon_theme = require("services.icon_theme")
 local helpers = require("helpers")
 local ipairs = ipairs
 local table  = table

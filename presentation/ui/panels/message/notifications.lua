@@ -4,7 +4,6 @@ local wibox = require("wibox")
 local widgets = require("presentation.ui.widgets")
 local beautiful = require("beautiful")
 local notifications_daemon = require("daemons.system.notifications")
-local icon_theme = require("services.icon_theme")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local collectgarbage = collectgarbage
