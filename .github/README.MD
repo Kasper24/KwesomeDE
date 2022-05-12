@@ -149,21 +149,13 @@ And run this command for your system to detect the newly installed fonts.
 > Clone this repository
 
    ```sh
-   git clone https://github.com/rxyhn/dotfiles.git
-   cd dotfiles
+   git clone https://github.com/Kasper24/KwesomeDE --recurse-submodules
    ```
 
 > Copy config and binaries files
 
    ```sh
-   cp -r config/* ~/.config/
-   cp -r bin/* ~/.local/bin/
-   ```
-
-> You have to add `TODO_PATH` in your env variable
-
-   ```sh
-   export TODO_PATH="path/to/todo"
+   cp -r KwesomeDE/* ~/.config/awesome
    ```
 
 > Finally, now you can login with AwesomeWM
