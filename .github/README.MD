@@ -4,17 +4,16 @@
 </p>
 
 <p align="center">
-  <b>🎀 Kasome 🎀</b>
+  <b>🎀 KwesomeDE 🎀</b>
 </p>
 
 <p align="center">
 <a href="#wrench--setup"><img width="150px" style="padding: 0 10px;" src="assets/setup.png"></a>
-<a href="https://github.com/rxyhn/dotfiles/wiki"><img width="150px" style="padding: 0 10px;" src="assets/wiki.png"></a>
+<a href="https://github.com/Kasper24/KwesomeDE/wiki"><img width="150px" style="padding: 0 10px;" src="assets/wiki.png"></a>
 <a href="#ocean--gallery"><img width="150px" style="padding: 0 10px;" src="assets/gallery.png"></a>
 <a href="#money_with_wings--tip-jar"><img width="150px" style="padding: 0 10px;" src="assets/tipjar.png"></a>
 </p>
 
-<br>
 
 <table>
   <tr>
@@ -35,30 +34,20 @@
  </table>
 
 
-## Hi there! 🖤
-<a href="https://awesomewm.org/"><img alt="AwesomeWM Logo" height="150" align = "left" src="https://awesomewm.org/doc/api/images/AUTOGEN_wibox_logo_logo_and_name.svg"></a>
+<img alt="Rice Preview" align="right" width="400px" src="assets/4.png"/>
 
-<b>  Beautiful & Aesthetic AwesomeWM Configuration Files!  </b>
+## Thanks for dropping by!
 
-Welcome to my AwesomeWM configuration files!
+<b> Welcome to my AwesomeWM configuration files, aka KwesomeDE.</b>
 
-This is my personal collection of configuration files.
-
-You might be here for looking my AwesomeWM configuration files? or looking for **Linux Rice** reference?
-
-feel free to steal anything from here but don't forget to give me **credits** :)
-
+The [setup section](#setup) will guide you through the installation process.
 AwesomeWM is the most powerful and highly configurable, next generation framework window manager for X,
 Although it takes time and effort to configure it, but I'm very satisfied with the result.
 
-This is a beautiful user interface isn't it?
-
-These dotfiles are made with love, for sure.
-
 <!-- INFORMATION -->
-## :snowflake: ‎ <samp>Information</samp> <img alt="" align="right" src="https://badges.pufler.dev/visits/rxyhn/dotfiles?style=for-the-badge&color=6791C9&logoColor=white&labelColor=0A1419"/>
+## :snowflake: ‎ <samp>Information</samp>
 
-<img alt="Rice Preview" align="right" width="400px" src="assets/night.png"/>
+<img alt="Rice Preview" align="right" width="400px" src="assets/4.png"/>
 
 Here are some details about my setup:
 
@@ -77,26 +66,28 @@ AwesomeWM Modules:
    + Manual layout for Awesome with an interactive editor
 
 <br>
+
 <!-- SETUP -->
 ## :wrench: ‎ <samp>Setup</samp>
 </table>
 
-### :computer: ‎ <samp>Install Dependencies<samp>
+### :computer: ‎ <samp>Install AwesomeWM<samp>
 
 > First of all you should install the [git version of AwesomeWM](https://github.com/awesomeWM/awesome/).
 
 **Arch users** can use the [awesome-git AUR package](https://aur.archlinux.org/packages/awesome-git/).
    ```sh
-   paru -S awesome-git
+   yay/paru -S awesome-git
    ```
 
 **For other distros**, build instructions are [here](https://github.com/awesomeWM/awesome/#building-and-installation).
+
+### :computer: ‎ <samp>Install Dependencies<samp>
 
 > Install necessary dependencies
 
 | Dependency                              | Why/Where is it needed?                                   |
 |-----------------------------------------|-----------------------------------------------------------|
-| awesome-git                             | (explains itself)                                         |
 | networkmanager                          | Network notifcations, applet/wibar widget                 |
 | blueman                                 | Bluetooth notifcations, applet/wibar widget               |
 | pactl                                   | Audio notifcations, applet/wibar widget                   |
@@ -107,6 +98,7 @@ AwesomeWM Modules:
 | maim                                    | Screenshot widget                                         |
 | ffmpeg                                  | Record widget                                             |
 | xdotool                                 | Menu commands use this to input text into terminal        |
+| xclip                                   | Copy screenshot into clipboard/paste text into prompt     |
 | upower                                  | Battery notifications/widgets                             |
 | picom                                   | Compositor widget/notifcations                            |
 | brightnessctl                           | Brightness daemon and widget                              |
@@ -114,27 +106,24 @@ AwesomeWM Modules:
 | fortune-mod                             | Fortune daemon (right now that daemon is unused)          |
 
 **Arch Linux (and other Arch-based distributions)**
-
-   Assuming your **AUR Helper** is [paru](https://github.com/Morganamilo/paru).
-
    ```sh
-   paru -Sy picom-git alacritty todo-bin papirus-icon-theme acpi acpid \
-   acpi_call wireless_tools jq inotify-tools polkit-gnome xdotool xclip \
-   brightnessctl alsa-utils alsa-tools pulseaudio pulseaudio-alsa scrot \
-   redshift mpd mpc mpdris2 ncmpcpp playerctl rofi ffmpeg bluez-utils gpick --needed
+      pacman -Sy kitty networkmanager blueman pipewire pipewire-pulse lm_sensors inotify-tools
+      redshift maim ffmpeg xdotool xclip upower brightnessctl playerctl fortune-mod --needed
+   ```
+   Assuming your **AUR Helper** is [yay](https://github.com/Jguer/yay) or [paru](https://github.com/Morganamilo/paru).
+   ```sh
+      yay/pru -Sy picom-animations-git --needed
    ```
 
-### :bookmark_tabs: ‎ <samp>Install Needed Fonts<samp>
+### :bookmark_tabs: ‎ <samp>Install Fonts<samp>
 
 > You will need to install a few fonts (mainly icon fonts) in order for text and icons to be rendered properly.
 
 Necessary fonts:
-   + **Iosevka**              - [here](https://github.com/be5invis/Iosevka)
-   + **Icomoon**              - [here](https://www.dropbox.com/s/hrkub2yo9iapljz/icomoon.zip?dl=0)
-   + **Material Icons**       - [here](https://github.com/google/material-design-icons)
-   + **FiraCode Nerd Font**   - [here](https://github.com/ryanoasis/nerd-fonts)
-
-Also you can find the required icon fonts inside the `misc/fonts` folder of this repository.
+   + **Font Awesome 6 Pro**              - PAID
+   + **Nerd Font Mono**              - [here](https://github.com/ryanoasis/nerd-fonts)
+   + **Iosevka**       - [here](https://github.com/be5invis/Iosevka)
+   + **Oswald**   - [here](https://fonts.google.com/specimen/Oswald)
 
 Once you download them and unpack them, place them into `~/.fonts` or `~/.local/share/fonts`
 
@@ -310,43 +299,6 @@ also with <kbd>alt, shift, and ctrl</kbd>
 
 </details>
 
-<details>
-<summary><strong>VSCode</strong></summary>
-
-<div align="left">
-    <img src="https://user-images.githubusercontent.com/93292023/167767089-87dafa0c-159a-4d1b-bfc2-12ef5de12b7c.png" alt="Preview" width="500px">
-</div>
-
-### :milky_way: ‎ <samp>Aesthetic VSCode</samp>
-
-Setup:
-
-1. Install required extension
-    - [Customize UI](https://marketplace.visualstudio.com/items?itemName=iocave.customize-ui)
-    - [Carbon Product Icons](https://marketplace.visualstudio.com/items?itemName=antfu.icons-carbon)
-
-    note: You can use any themes, but some of the colors will be overwritten by mine
-2. copy config file
-    ```sh
-    cp misc/vscode/User/settings.json ~/.config/Code/User
-
-    ```
-
-</details>
-
-<!-- HISTORY -->
-## :japan: ‎ <samp>History</samp>
-
-This started since when im feel bored, idk why i do this things, i love it but ahhh nvm,
-but basically im doing this just for fun and also to satisfy myself ofc,
-and also look for a lot of [stargazers](https://github.com/rxyhn/dotfiles/stargazers) for sure.
-so if you `like` or are `using` these dotfiles you should give this **repo** a `star` right now!
-so i'll be more enthusiastic to make other beautiful and aesthetics things!
-
-Thank you! <3
-
-[![Stargazers over time](https://starchart.cc/rxyhn/dotfiles.svg)](https://starchart.cc/rxyhn/dotfiles)
-
 <!-- TIP JAR -->
 ## :money_with_wings: ‎ <samp>TIP JAR</samp>
 
@@ -371,6 +323,12 @@ Thanks from the bottom of my heart! ‎ :heartpulse:
     - [`manilarome`](https://github.com/manilarome)
     - [`Mofiqul`](https://github.com/Mofiqul)
 <br>
+
+<!-- Repo history -->
+## :japan: ‎ <samp>Repo history</samp>
+Thank you! <3
+
+[![Repo history](https://starchart.cc/Kasper24/KwesomeDE.svg)](https://starchart.cc/Kasper24/KwesomeDE)
 
 <p align="center"><img src="https://raw.githubusercontent.com/catppuccin/catppuccin/dev/assets/footers/gray0_ctp_on_line.svg?sanitize=true" /></p>
 <p align="center"><a href="https://github.com/rxyhn/AwesomeWM-Dotfiles/blob/main/.github/LICENSE"><img src="https://img.shields.io/static/v1.svg?style=flat-square&label=License&message=GPL-3.0&logoColor=eceff4&logo=github&colorA=061115&colorB=67AFC1"/></a></p>
