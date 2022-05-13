@@ -79,8 +79,8 @@ function animation:start(args)
     self:emit_signal("started")
 end
 
-function animation:set(target)
-    self:start(target)
+function animation:set(args)
+    self:start(args)
     self:emit_signal("set")
 end
 
