@@ -13,7 +13,7 @@ local bluetooth_icons =
 
 bluetooth_daemon:connect_signal("state", function(self, state)
     if helpers.misc.should_show_notification() == true then
-        local text = state == true and "Connected" or "Disconnected"
+        local text = state == true and "Enabled" or "Disabled"
         local icons = state == true and bluetooth_icons
         or
         {
