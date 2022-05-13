@@ -31,7 +31,7 @@ end
 
 local function effect(widget, text_bg)
     if text_bg ~= nil then
-		widget:set_color(text_bg)
+		widget.text_animation:set(helpers.color.hex2rgb(text_bg))
     end
 end
 
@@ -47,11 +47,21 @@ local function button(args, type)
     gtable.crush(widget, text_button, true)
 	widget._private.text = text_widget
 
+	widget.text_animation = animation:new
+	{
+		pos = helpers.color.hex2rgb(args.text_normal_bg),
+		easing = animation.easing.linear,
+		duration = 0.2,
+		update = function(self, pos)
+			text_widget:set_color(helpers.color.rgb2hex(pos))
+		end
+	}
+
 	widget.size_animation = animation:new
 	{
 		pos = args.size,
 		easing = animation.easing.linear,
-		duration = 0.125,
+		duration = 0.2,
 		update = function(self, pos)
 			text_widget:set_size(pos)
 		end

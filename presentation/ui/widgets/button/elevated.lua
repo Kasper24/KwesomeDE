@@ -9,18 +9,22 @@ local string = string
 local elevated_button = { mt = {} }
 
 local function effect(widget, bg, shape, border_width, border_color)
+	local animation_targets = {}
+
     if bg ~= nil then
-		widget:get_children_by_id("background_role")[1].bg = bg
+		animation_targets.color = helpers.color.hex2rgb(bg)
     end
     if shape ~= nil then
         widget:get_children_by_id("background_role")[1].shape = shape
     end
     if border_width ~= nil then
-		widget.animation_border_width:set(border_width)
+		animation_targets.border_width = border_width
     end
     if border_color ~= nil then
-		widget:get_children_by_id("background_role")[1].border_color = border_color
+		animation_targets.border_color = helpers.color.hex2rgb(border_color)
     end
+
+	widget.animation:set(animation_targets)
 end
 
 local function button(args)
@@ -44,13 +48,26 @@ local function button(args)
 		helpers.ui.add_hover_cursor(widget, beautiful.hover_cursor)
 	end
 
-	widget.animation_border_width = animation:new
+	widget.animation = animation:new
 	{
-		pos = args.normal_border_width,
+		pos =
+		{
+			color = helpers.color.hex2rgb(args.normal_bg),
+			border_width = args.normal_border_width,
+			border_color =  helpers.color.hex2rgb(args.normal_border_color)
+		},
 		easing = animation.easing.linear,
-		duration = 0.125,
+		duration = 0.2,
 		update = function(self, pos)
-			widget:get_children_by_id("background_role")[1].border_width = pos
+			if pos.color then
+				widget:get_children_by_id("background_role")[1].bg = helpers.color.rgb2hex(pos.color)
+			end
+			if pos.border_width then
+				widget:get_children_by_id("background_role")[1].border_width = pos.border_width
+			end
+			if pos.border_color then
+				widget:get_children_by_id("background_role")[1].border_color = helpers.color.rgb2hex(pos.border_color)
+			end
 		end
 	}
 

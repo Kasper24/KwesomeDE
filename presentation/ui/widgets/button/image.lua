@@ -44,7 +44,7 @@ local function button(args, type)
 	{
 		pos = 50,
 		easing = animation.easing.linear,
-		duration = 0.125,
+		duration = 0.2,
 		update = function(self, pos)
 			image_widget.forced_width = pos
 			image_widget.forced_height = pos
