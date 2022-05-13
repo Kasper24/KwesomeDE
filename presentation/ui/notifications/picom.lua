@@ -20,9 +20,8 @@ local icons =
     "tuxpaint"
 }
 
-local show = false
 picom_daemon:connect_signal("state", function(self, state)
-    if helpers.misc.is_restart() == false or show == true then
+    if helpers.misc.should_show_notification() == true then
         local text = state == true and "Enabled" or "Disabled"
 
         naughty.notification
@@ -34,5 +33,4 @@ picom_daemon:connect_signal("state", function(self, state)
             text = text
         }
     end
-    show = true
 end)
