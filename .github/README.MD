@@ -96,9 +96,11 @@ AwesomeWM Modules:
 | inotify-tools                           | Daemons that monitor filesystem events                    |
 | redshift                                | Blue light toggle                                         |
 | maim                                    | Screenshot widget                                         |
+| flameshot                               | Screenshot widget                                         |
 | ffmpeg                                  | Record widget                                             |
 | xdotool                                 | Menu commands use this to input text into terminal        |
 | xclip                                   | Copy screenshot into clipboard/paste text into prompt     |
+| farge                                   | Color picker keybind                                      |
 | upower                                  | Battery notifications/widgets                             |
 | picom                                   | Compositor widget/notifcations                            |
 | brightnessctl                           | Brightness daemon and widget                              |
@@ -108,11 +110,11 @@ AwesomeWM Modules:
 **Arch Linux (and other Arch-based distributions)**
    ```sh
       pacman -Sy kitty networkmanager blueman pipewire pipewire-pulse lm_sensors inotify-tools
-      redshift maim ffmpeg xdotool xclip upower brightnessctl playerctl fortune-mod --needed
+      redshift maim ffmpeg xdotool xclip upower brightnessctl playerctl fortune-mod flameshot --needed
    ```
    Assuming your **AUR Helper** is [yay](https://github.com/Jguer/yay) or [paru](https://github.com/Morganamilo/paru).
    ```sh
-      yay/pru -Sy picom-animations-git --needed
+      yay/pru -Sy picom-animations-git farge-git --needed
    ```
 
 ### :bookmark_tabs: ‎ <samp>Install Fonts<samp>
