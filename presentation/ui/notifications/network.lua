@@ -43,10 +43,27 @@ local icons =
 --     show = true
 -- end)
 
-network_manager_daemon:connect_signal("wireless_state", function(self, state, ssid)
+-- network_manager_daemon:connect_signal("wireless_state", function(self, state, ssid)
+--     if helpers.misc.should_show_notification() == true then
+--         local title = state == true and "Connection Established" or "Connection Disconnected"
+--         local text = state == true and "You are now connected to " .. ssid or "Wi-Fi network has been disconnected"
+--         local category = state == true and "network.connected" or "network.disconnected"
+
+--         naughty.notification
+--         {
+--             app_icon = icons,
+--             app_name = "Network Manager",
+--             icon = icons,
+--             title = title,
+--             text = text,
+--             category = category
+--         }
+--     end
+-- end)
+
+network_manager_daemon:connect_signal("wireless_state", function(self, state)
     if helpers.misc.should_show_notification() == true then
-        local title = state == true and "Connection Established" or "Connection Disconnected"
-        local text = state == true and "You are now connected to " .. ssid or "Wi-Fi network has been disconnected"
+        local text = state == true and "Connected" or "Disconnected"
         local category = state == true and "network.connected" or "network.disconnected"
 
         naughty.notification
@@ -54,7 +71,7 @@ network_manager_daemon:connect_signal("wireless_state", function(self, state, ss
             app_icon = icons,
             app_name = "Network Manager",
             icon = icons,
-            title = title,
+            title = "Wi-Fi",
             text = text,
             category = category
         }

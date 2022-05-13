@@ -162,9 +162,9 @@ local function wifi(action_panel)
         end
     )
 
-    network_manager_daemon:connect_signal("wireless_state", function(self, state, ssid)
+    network_manager_daemon:connect_signal("wireless_state", function(self, state)
         if state == true then
-            widget:turn_on(ssid)
+            widget:turn_on("Wi-Fi")
         else
             widget:turn_off("Wi-Fi")
         end

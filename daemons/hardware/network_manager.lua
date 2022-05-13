@@ -87,58 +87,57 @@ local function generate_uuid()
     return uuid
 end
 
-local function create_profile(access_point, password, auto_connect)
-    local profile = NM.SimpleConnection.new()
+local function create_profile(self, access_point, password, auto_connect)
+    local s_con = lgi.GLib.Variant("a{sv}",
+    {
+        ["uuid"] = lgi.GLib.Variant("s", generate_uuid()),
+        ["id"] =  lgi.GLib.Variant("s", access_point.ssid),
+        ["type"] = lgi.GLib.Variant("s", "802-11-wireless"),
+        ["autoconnect"] = lgi.GLib.Variant("b", auto_connect),
+    })
 
-    local s_con = NM.SettingConnection.new()
-    s_con[NM.SETTING_CONNECTION_ID] = access_point.ssid
-    s_con[NM.SETTING_CONNECTION_UUID] = generate_uuid()
-    s_con[NM.SETTING_CONNECTION_TYPE] = "802-11-wireless"
-    s_con[NM.SETTING_CONNECTION_AUTOCONNECT] = auto_connect
-    profile:add_setting(s_con)
+    local s_wifi = lgi.GLib.Variant("a{sv}",
+    {
+        ["ssid"] = lgi.GLib.Variant("s", access_point.ssid),
+        ["mode"] = lgi.GLib.Variant("s", "infrastructure"),
+        ["mac-address"] = lgi.GLib.Variant("s", self._private.wifi_device_proxy.device_proxy.HwAddress)
+    })
 
-    local s_wifi = NM.SettingWireless.new()
-    s_wifi[NM.SETTING_WIRELESS_SSID] = access_point.raw_ssid()
-    s_wifi[NM.SETTING_WIRELESS_MODE] = "infrastructure"
-    s_wifi[NM.SETTING_WIRELESS_MAC_ADDRESS] = access_point.device:get_permanent_hw_address()
-    profile:add_setting(s_wifi)
+    local s_ip4 = lgi.GLib.Variant("a{sv}",
+    {
+        ["method"] = lgi.GLib.Variant("s", "auto")
+    })
 
-    local s_ip4 = NM.SettingIP4Config.new()
-    s_ip4[NM.SETTING_IP_CONFIG_METHOD] = "auto"
-    profile:add_setting(s_ip4)
+    local s_ip6 = lgi.GLib.Variant("a{sv}",
+    {
+        ["method"] = lgi.GLib.Variant("s", "ignore"),
+    })
 
-    local s_ip6 = NM.SettingIP6Config.new()
-    s_ip6[NM.SETTING_IP_CONFIG_METHOD] = "auto"
-    profile:add_setting(s_ip6)
+    -- local s_wifi_sec = {}
 
-    if access_point.security ~= "" then
-        local s_wifi_sec = NM.SettingWirelessSecurity.new()
+    -- if access_point.security ~= "" then
+    --     if access_point.security == "WPA" then
+    --         s_wifi_sec["key-mgmt"] = "wpa-psk"
+    --         s_wifi_sec["auth-alg"] = "open"
+    --         s_wifi_sec["psk"] = helpers.string.trim(password)
+    --     else
+    --         s_wifi_sec["key-mgmt"] = "None"
+    --         s_wifi_sec["wep-key-type"] = NM.WepKeyType.PASSPHRASE
+    --         -- s_wifi_sec:set_wep_key(0, helpers.string.trim(password))
+    --     end
+    -- end
 
-        if access_point.security == "WEP" then
-            s_wifi_sec[NM.SETTING_WIRELESS_SECURITY_KEY_MGMT] = "wpa-psk"
-            s_wifi_sec[NM.SETTING_WIRELESS_SECURITY_WEP_KEY_TYPE] = "open"
-            s_wifi_sec[NM.SETTING_WIRELESS_SECURITY_WEP_KEY_TYPE] = NM.WepKeyType.PASSPHRASE
-            s_wifi_sec:set_wep_key(0, helpers.string.trim(password))
-        else
-            s_wifi_sec[NM.SETTING_WIRELESS_SECURITY_KEY_MGMT] = "wpa-psk"
-            s_wifi_sec[NM.SETTING_WIRELESS_SECURITY_AUTH_ALG] = "open"
-            s_wifi_sec[NM.SETTING_WIRELESS_SECURITY_PSK] = helpers.string.trim(password)
-        end
-
-        profile:add_setting(s_wifi_sec)
-    end
-
-    return profile
+    return lgi.GLib.Variant("a{sa{sv}}",
+    {
+        ["connection"] = s_con,
+        ["802-11-wireless"] = s_wifi,
+        ["ipv4"] = s_ip4,
+        ["ipv6"] = s_ip6,
+        -- ["802-11-wireless-security"] = s_wifi_sec,
+    })
 end
 
 local function on_wifi_device_state_changed(self, new_state, old_state, reason)
-    print(new_state)
-    print(old_state)
-    print(reason)
-    print("-----------------------------------------------------")
-
-    print(helpers.inspect.inspect(self))
-
     -- if (new_state == DeviceState.UNAVAILABLE or new_state == DeviceState.FAILED
     --     or new_state == DeviceState.DEACTIVATING) and reason ~= DeviceStateReason.NEW_ACTIVATION
     -- then
@@ -155,21 +154,19 @@ local function on_wifi_device_state_changed(self, new_state, old_state, reason)
 end
 
 local function get_wifi_device(self)
-    if self._private.wifi_device_proxy ~= nil then
-        -- self._private.wifi_device_proxy:disconnect_signal("StateChanged", on_wifi_device_state_changed)
-    end
+    self._private.wifi_device_proxy = {}
 
     local devices = self._private.client_proxy:GetDevices()
     for _, device_path in ipairs(devices) do
-        local device_proxy = dbus_proxy.Proxy:new {
+        self._private.wifi_device_proxy.device_proxy = dbus_proxy.Proxy:new {
             bus = dbus_proxy.Bus.SYSTEM,
             name = "org.freedesktop.NetworkManager",
             interface = "org.freedesktop.NetworkManager.Device",
             path = device_path
         }
 
-        if device_proxy.DeviceType == DeviceType.WIFI then
-            self._private.wifi_device_proxy = dbus_proxy.Proxy:new {
+        if self._private.wifi_device_proxy.device_proxy.DeviceType == DeviceType.WIFI then
+            self._private.wifi_device_proxy.wifi_proxy = dbus_proxy.Proxy:new {
                 bus = dbus_proxy.Bus.SYSTEM,
                 name = "org.freedesktop.NetworkManager",
                 interface = "org.freedesktop.NetworkManager.Device.Wireless",
@@ -177,14 +174,14 @@ local function get_wifi_device(self)
             }
             self._private.wifi_device_proxy_path = device_path
 
-            device_proxy:connect_signal("StateChanged", on_wifi_device_state_changed)
+            self._private.wifi_device_proxy.device_proxy:connect_signal("StateChanged", on_wifi_device_state_changed)
         end
     end
 end
 
 function network_manager:connect_to_access_point(access_point, password, auto_connect)
+    local my_context = {call_id = "my-id"}
     if #access_point.connection_profiles > 0 then
-        local my_context = {call_id = "my-id"}
         self._private.client_proxy:ActivateConnectionAsync(function(proxy, context, success, failure)
             if failure ~= nil then
                 print("Failed to activate connection: ", failure)
@@ -200,10 +197,21 @@ function network_manager:connect_to_access_point(access_point, password, auto_co
 
         end, my_context, "/", self._private.wifi_device_proxy_path, access_point.path)
     else
-        -- self._private.client:add_and_activate_connection_async(create_profile(access_point, password, auto_connect), access_point.device,
-        -- access_point.path, nil, function(device, result, data)
-        --     device:add_and_activate_connection_finish(result)
-        -- end)
+        local profile = create_profile(self, access_point, password, auto_connect)
+        self._private.client_proxy:AddAndActivateConnectionAsync(function(proxy, context, success, failure)
+            if failure ~= nil then
+                print("Failed to add activate connection: ", failure)
+                print("Failed to add Sactivate connection error code: ", failure.code)
+                context.failure = failure
+                self:emit_signal("access_point::connection::failed", failure, failure_code)
+                return
+            end
+
+
+            context.success = success
+            self:emit_signal("access_point::connection::success")
+
+        end, my_context, profile, self._private.wifi_device_proxy_path, access_point.path)
     end
 end
 
@@ -213,16 +221,18 @@ function network_manager:scan_access_points()
     self._private.access_points = {}
 
     local my_context = {call_id = "my-id"}
-    self._private.wifi_device_proxy:RequestScanAsync(function(proxy, context, success, failure)
+    self._private.wifi_device_proxy.wifi_proxy:RequestScanAsync(function(proxy, context, success, failure)
         if failure ~= nil then
             print("Wifi rescan error: ", failure)
             print("Wifi rescan failed error code: ", failure.code)
             context.failure = failure
+            self:emit_signal("wireless::rescan::failed")
             return
         end
         context.success = success
+        self:emit_signal("wireless::rescan::success")
 
-        local access_points = self._private.wifi_device_proxy:GetAccessPoints()
+        local access_points = self._private.wifi_device_proxy.wifi_proxy:GetAccessPoints()
         for _, access_point_path in ipairs(access_points) do
             local access_point_proxy = dbus_proxy.Proxy:new {
                 bus = dbus_proxy.Bus.SYSTEM,
@@ -244,6 +254,9 @@ function network_manager:scan_access_points()
                     interface = "org.freedesktop.NetworkManager.Settings.Connection",
                     path = connection_path
                 }
+
+                print(helpers.inspect.inspect(connection_proxy:GetSettings()))
+                print("------------------------------------------------------------")
 
                 if string.find(connection_proxy.Filename, ssid) then
                     table.insert(connection_profiles, connection_proxy)
@@ -271,12 +284,12 @@ function network_manager:toggle_wireless_state()
         self:set_network_state(true)
     end
 
-    self._private.client_proxy:Set("org.freedesktop.NetworkManager", "Powered", lgi.GLib.Variant("b", enable))
-    self._private.client_proxy.Powered = {signature = "b", value = enable}
+    self._private.client_proxy:Set("org.freedesktop.NetworkManager", "WirelessEnabled", lgi.GLib.Variant("b", enable))
+    self._private.client_proxy.WirelessEnabled = {signature = "b", value = enable}
 end
 
 function network_manager:set_network_state(state)
-    self._private.client_proxy.Enable(state)
+    self._private.client_proxy:Enable(state)
 end
 
 function network_manager:open_settings()
@@ -297,6 +310,13 @@ local function new()
         path = "/org/freedesktop/NetworkManager"
     }
 
+    ret._private.client_properties_proxy = dbus_proxy.Proxy:new {
+        bus = dbus_proxy.Bus.SYSTEM,
+        name = "org.freedesktop.NetworkManager",
+        interface = "org.freedesktop.DBus.Properties",
+        path = "/org/freedesktop/NetworkManager"
+    }
+
     ret._private.settings_proxy = dbus_proxy.Proxy:new {
         bus = dbus_proxy.Bus.SYSTEM,
         name = "org.freedesktop.NetworkManager",
@@ -304,8 +324,23 @@ local function new()
         path = "/org/freedesktop/NetworkManager/Settings"
     }
 
+    ret._private.client_properties_proxy:connect_signal("PropertiesChanged", function(self, interface, data)
+        if data.WirelessEnabled ~= nil and ret._private.WirelessEnabled ~= data.WirelessEnabled then
+            ret._private.WirelessEnabled = data.WirelessEnabled
+            ret:emit_signal("wireless_state", data.WirelessEnabled)
+
+            if data.WirelessEnabled == true then
+                ret:scan_access_points()
+            end
+        end
+    end)
+
     get_wifi_device(ret)
     ret:scan_access_points()
+
+    gtimer.delayed_call(function()
+        ret:emit_signal("wireless_state", ret._private.client_proxy.WirelessEnabled )
+    end)
 
     return ret
 end
