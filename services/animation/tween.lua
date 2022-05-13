@@ -329,6 +329,23 @@ tween.easing =
 }
 
 -- Private interface
+local function copyTables(destination, keysTable, valuesTable)
+    valuesTable = valuesTable or keysTable
+    local mt = getmetatable(keysTable)
+    if mt and getmetatable(destination) == nil then
+        setmetatable(destination, mt)
+    end
+
+    for k,v in pairs(keysTable) do
+        if type(v) == 'table' then
+        destination[k] = copyTables({}, v, valuesTable[k])
+        else
+        destination[k] = valuesTable[k]
+        end
+    end
+    return destination
+end
+
 local function checkSubjectAndTargetRecursively(subject, target, path)
     path = path or {}
     local targetType, newPath
@@ -346,8 +363,8 @@ local function checkSubjectAndTargetRecursively(subject, target, path)
 end
 
 local function checkNewParams(initial, duration, subject, target, easing)
-    assert(type(initial) == 'number' and duration > 0, "duration must be a positive number. Was " .. tostring(duration))
-    assert(type(duration) == 'number' and duration > 0, "duration must be a positive number. Was " .. tostring(duration))
+    -- assert(type(initial) == 'number' and duration > 0, "duration must be a positive number. Was " .. tostring(duration))
+    -- assert(type(duration) == 'number' and duration > 0, "duration must be a positive number. Was " .. tostring(duration))
     assert(type(easing)=='function', "easing must be a function. Was " .. tostring(easing))
 
     if subject and target then
@@ -356,23 +373,6 @@ local function checkNewParams(initial, duration, subject, target, easing)
         assert(type(target)== 'table', "target must be a table. Was " .. tostring(target))
         checkSubjectAndTargetRecursively(subject, target)
     end
-end
-
-local function copyTables(destination, keysTable, valuesTable)
-    valuesTable = valuesTable or keysTable
-    local mt = getmetatable(keysTable)
-    if mt and getmetatable(destination) == nil then
-        setmetatable(destination, mt)
-    end
-
-    for k,v in pairs(keysTable) do
-        if type(v) == 'table' then
-        destination[k] = copyTables({}, v, valuesTable[k])
-        else
-        destination[k] = valuesTable[k]
-        end
-    end
-    return destination
 end
 
 local function getEasingFunction(easing)
@@ -399,9 +399,24 @@ local function performEasingOnSubject(subject, target, initial, clock, duration,
     end
 end
 
-local function performEasing(initial, target, clock, duration, easing)
-    local t, b, c, d = clock, initial, target - initial, duration
-    return easing(t,b,c,d)
+local function performEasing(table, initial, target, clock, duration, easing)
+    if type(target) == "table" then
+        local t,b,c,d
+        for k, v in pairs(target) do
+            if type(v) == 'table' then
+                table[k] = {}
+                performEasing(table[k], initial[k], v, clock, duration, easing)
+            else
+                t,b,c,d = clock, initial[k], v - initial[k], duration
+                table[k] = easing(t,b,c,d)
+            end
+        end
+
+        return table
+    else
+        local t, b, c, d = clock, initial, target - initial, duration
+        return easing(t,b,c,d)
+    end
 end
 
 -- Public interface
@@ -431,7 +446,8 @@ function Tween:set(clock)
         if self.subject then
             performEasingOnSubject(self.subject, self.target, self.initial, self.clock, self.duration, self.easing)
         else
-            return performEasing(self.initial, self.target, self.clock, self.duration, self.easing)
+            local pos = {}
+            return performEasing(pos, self.initial, self.target, self.clock, self.duration, self.easing)
         end
     end
 
