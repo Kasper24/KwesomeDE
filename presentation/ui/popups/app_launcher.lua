@@ -7,6 +7,11 @@ local dpi = beautiful.xresources.apply_dpi
 local instance = nil
 
 local function new()
+    local app_spacing = dpi(25)
+    local app_height = dpi(75)
+    local space_per_app = app_spacing + app_height
+    local apps_per_row = screen.primary.geometry.height / space_per_app
+
     return bling.widget.app_launcher
     {
         placement = function(widget)
@@ -32,11 +37,12 @@ local function new()
         prompt_cursor_color = beautiful.colors.on_background,
         app_default_icon = beautiful.profile_icon,
         app_width = dpi(400),
-        app_height = dpi(75),
+        app_height = app_height,
         app_name_halign = "left",
         apps_spacing = dpi(15),
-        apps_per_row =  9,
+        apps_per_row =  apps_per_row,
         apps_per_column = 1,
+        app_spacing = app_spacing,
         app_selected_color = beautiful.random_accent_color(),
         app_normal_color = beautiful.colors.background,
         app_shape = helpers.ui.rrect(beautiful.bor1der_radius),
