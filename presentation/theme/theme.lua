@@ -94,7 +94,6 @@ local function icons()
     local font_awesome_6_brands_font_name = "Font Awesome 6 Brands "
     local nerd_font_name = "Nerd Font Mono "
 
-    theme.profile_icon = helpers.filesystem.get_awesome_config_dir("presentation") .. "assets/profile.png"
     theme.window_icon = { icon = "", font = font_awesome_6_solid_font_name }
     theme.file_manager_icon = { icon = "", font = font_awesome_6_solid_font_name }
     theme.terminal_icon = { icon = "", font = font_awesome_6_solid_font_name }
@@ -240,7 +239,9 @@ local function icons()
     theme.circle_check_icon = { icon = "", font = font_awesome_6_solid_font_name }
     theme.chevron_up_icon = { icon = "", font = font_awesome_6_solid_font_name }
     theme.chevron_down_icon = { icon = "", font = font_awesome_6_solid_font_name }
-    theme.laptop_code = { icon = "", font = font_awesome_6_solid_font_name }
+    theme.laptop_code_icon = { icon = "", font = font_awesome_6_solid_font_name }
+    theme.location_dot_icon = { icon = "", font = font_awesome_6_solid_font_name}
+    theme.server_icon = { icon = "", font = font_awesome_6_solid_font_name }
 
     theme.sun_icon = { icon = "", font = font_awesome_6_solid_font_name }
     theme.cloud_sun_icon = { icon = "", font = font_awesome_6_solid_font_name}
@@ -260,15 +261,33 @@ local function icons()
     theme.cloud_bolt_moon_icon = { icon = "", font = font_awesome_6_solid_font_name }
 end
 
+local function assets()
+    local assets_folder = helpers.filesystem.get_awesome_config_dir("presentation/assets")
+
+    theme.profile_icon = assets_folder .. "profile.png"
+    theme.overview_pictures =
+    {
+        assets_folder .. "1.png",
+        assets_folder .. "2.png",
+        assets_folder .. "3.png",
+        assets_folder .. "4.png",
+        assets_folder .. "5.png",
+        assets_folder .. "6.png",
+        assets_folder .. "7.png",
+        assets_folder .. "8.png",
+        assets_folder .. "9.png"
+    }
+end
+
 local function apps()
     theme.apps =
     {
-        kitty = { command = "kitty", class = "kitty", icon = theme.laptop_code },
-        alacritty = { command = "alacritty", class = "Alacritty", icon = theme.laptop_code },
-        termite = { command = "termite", class = "Termite", icon = theme.laptop_code },
-        urxvt = { command = "urxvt", class = "URxvt", icon = theme.laptop_code },
-        st = { command = "st", class = "st", icon = theme.laptop_code },
-        st_256color = { command = "st-256color", class = "st-256color", icon = theme.laptop_code },
+        kitty = { command = "kitty", class = "kitty", icon = theme.laptop_code_icon },
+        alacritty = { command = "alacritty", class = "Alacritty", icon = theme.laptop_code_icon },
+        termite = { command = "termite", class = "Termite", icon = theme.laptop_code_icon },
+        urxvt = { command = "urxvt", class = "URxvt", icon = theme.laptop_code_icon },
+        st = { command = "st", class = "st", icon = theme.laptop_code_icon },
+        st_256color = { command = "st-256color", class = "st-256color", icon = theme.laptop_code_icon },
         htop = { command = "kitty --class htop htop", class = "htop", icon = theme.system_monitor_icon },
         nm_connection_editor = { command = "nm-connection-editor", class = "Nm-connection-editor", icon = theme.router_icon },
         network_manager_dmenu = { command = "networkmanager_dmenu", class = "Rofi", icon = theme.router_icon },
@@ -502,6 +521,7 @@ end
 
 colors()
 icons()
+assets()
 apps()
 defaults()
 opacity()

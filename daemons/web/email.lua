@@ -12,6 +12,7 @@ local instance = nil
 
 local PATH = helpers.filesystem.get_cache_dir("email")
 local DATA_PATH = PATH .. "data.json"
+local NET_RC_PATH = "/home/" .. os.getenv("USER") .. "/.netrc"
 
 local UPDATE_INTERVAL = 60 * 60 * 1 -- 1 hour
 
@@ -19,9 +20,44 @@ function email:open(email)
     awful.spawn("xdg-open " .. email.link._attr.href, false)
 end
 
+function email:update_net_rc(machine, login, password)
+    helpers.filesystem.save_file
+    (
+        NET_RC_PATH,
+        string.format("machine %s\nlogin %s\npassword %s", machine, login, password)
+    )
+end
+
+function email:get_machine()
+    return self._private.machine
+end
+
+function email:get_login()
+    return self._private.login
+end
+
+function email:get_password()
+    return self._private.password
+end
+
 local function new()
     local ret = gobject{}
     gtable.crush(ret, email, true)
+
+    ret._private = {}
+
+    local content = helpers.filesystem.read_file_block(NET_RC_PATH)
+    if content ~= nil then
+        for line in content:gmatch("[^\r\n]+") do
+            if line:match("machine") then
+                ret._private.machine = line:match("machine (.*)")
+            elseif line:match("login") then
+                ret._private.login = line:match("login (.*)")
+            elseif line:match("password") then
+                ret._private.password = line:match("password (.*)")
+            end
+        end
+    end
 
     gtimer { timeout = UPDATE_INTERVAL, autostart = true, call_now = true, callback = function()
         local old_data = nil
