@@ -155,7 +155,7 @@ local function wifi(action_panel)
         beautiful.wifi_high_icon,
         "Wi-Fi",
         function()
-            network_manager_daemon:toggle_wireless()
+            network_manager_daemon:toggle_wireless_state()
         end,
         function()
             wifi_popup:toggle(action_panel.widget)
