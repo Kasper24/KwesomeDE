@@ -82,6 +82,9 @@ naughty.connect_signal("added", function(n)
 
     if n._private.app_font_icon == nil then
         n.app_font_icon = beautiful.get_font_icon_for_app_name(n.app_name)
+        if n.app_font_icon == nil then
+            n.app_font_icon = beautiful.window_icon
+        end
     else
         n.app_font_icon = n._private.app_font_icon
     end
@@ -101,7 +104,8 @@ naughty.connect_signal("added", function(n)
         n.app_icon = icon_theme:get_icon_path("application-default-icon")
     end
 
-    if n.icon == "" or n.icon == nil then
+    if (n.icon == "" or n.icon == nil) and n.font_icon == nil then
+        n.font_icon = beautiful.message_icon
         n.icon = icon_theme:get_icon_path("preferences-desktop-notification-bell")
     end
 end)
