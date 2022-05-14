@@ -27,8 +27,10 @@ local function save_notification(self, notification)
 
     table.insert(self.notifications, {
         uuid = notification.uuid,
+        app_font_icon = notification.app_font_icon,
         app_icon = app_icon_path,
         app_name = notification.app_name,
+        font_icon = notification.font_icon,
         icon = icon_path,
         title = gstring.xml_unescape(notification.title),
         message = gstring.xml_unescape(notification.message),

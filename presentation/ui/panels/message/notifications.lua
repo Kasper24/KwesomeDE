@@ -16,16 +16,29 @@ local notifications = { mt = {} }
 local accent_color = beautiful.random_accent_color()
 
 local function notification_widget(notification, on_removed)
-    local image = wibox.widget
-    {
-        widget = wibox.widget.imagebox,
-        forced_width = dpi(40),
-        forced_height = dpi(40),
-        halign = "left",
-        valign = "top",
-        clip_shape = helpers.ui.rrect(beautiful.border_radius),
-        image = notification.icon,
-    }
+    local icon = nil
+    if notification.font_icon == nil then
+        icon = wibox.widget
+        {
+            widget = wibox.widget.imagebox,
+            forced_width = dpi(40),
+            forced_height = dpi(40),
+            halign = "left",
+            valign = "top",
+            clip_shape = helpers.ui.rrect(beautiful.border_radius),
+            image = notification.icon,
+        }
+    else
+        icon = widgets.text
+        {
+            halign = "left",
+            valign = "top",
+            size = 30,
+            color = beautiful.random_accent_color(),
+            font = notification.font_icon.font,
+            text = notification.font_icon.icon
+        }
+    end
 
     local title = wibox.widget
     {
@@ -120,7 +133,7 @@ local function notification_widget(notification, on_removed)
         margins = dpi(10),
         {
             layout = wibox.layout.align.horizontal,
-            image,
+            icon,
             {
                 widget = wibox.container.margin,
                 margins = { left = dpi(15) },
@@ -145,24 +158,34 @@ local function notification_widget(notification, on_removed)
 end
 
 local function notification_group(notification)
-    local widget = nil
-
-    local icon = wibox.widget
-    {
-        widget = wibox.widget.imagebox,
-        forced_width = dpi(40),
-        forced_height = dpi(40),
-        halign = "left",
-        valign = "top",
-        clip_shape = helpers.ui.rrect(beautiful.border_radius),
-        image = notification.app_icon,
-    }
+    local icon = nil
+    if notification.app_font_icon == nil then
+        icon = wibox.widget
+        {
+            widget = wibox.widget.imagebox,
+            forced_width = dpi(40),
+            forced_height = dpi(40),
+            halign = "left",
+            valign = "top",
+            clip_shape = helpers.ui.rrect(beautiful.border_radius),
+            image = notification.app_icon,
+        }
+    else
+        icon = widgets.text
+        {
+            size = 30,
+            color = beautiful.random_accent_color(),
+            font = notification.app_font_icon.font,
+            text = notification.app_font_icon.icon
+        }
+    end
 
     local title = widgets.text
     {
         text = notification.app_name:gsub("^%l", string.upper)
     }
 
+    local widget = nil
     local button = widgets.button.elevated.state
     {
         halign = "left",
