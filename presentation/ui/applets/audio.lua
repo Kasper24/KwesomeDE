@@ -56,20 +56,32 @@ local function application_widget(args)
     args.on_removed_cb = args.on_removed_cb or nil
     args.accent_color = args.accent_color or nil
 
-    local icon = wibox.widget
-    {
-        widget = wibox.widget.imagebox,
-        halign = "center",
-        valign = "center",
-        forced_height = dpi(25),
-        forced_width = dpi(25),
-        image = icon_theme:choose_icon
+    local icon = nil
+    local font_icon = beautiful.get_font_icon_for_app_name(args.application.name)
+    if font_icon == nil then
+        icon = wibox.widget
         {
-            args.application.name,
-            "gnome-audio",
-            "org.pulseaudio.pavucontrol"
+            widget = wibox.widget.imagebox,
+            halign = "center",
+            valign = "center",
+            forced_height = dpi(25),
+            forced_width = dpi(25),
+            image = icon_theme:choose_icon
+            {
+                args.application.name,
+                "gnome-audio",
+                "org.pulseaudio.pavucontrol"
+            }
         }
-    }
+    else
+        icon = widgets.text
+        {
+            size = 15,
+            color = args.accent_color,
+            font = font_icon.font,
+            text = font_icon.icon
+        }
+    end
 
     local name = widgets.text
     {
