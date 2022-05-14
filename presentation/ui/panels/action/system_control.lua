@@ -170,62 +170,9 @@ local function wifi(action_panel)
         end
     end)
 
-    -- local network_tooltip = awful.tooltip
-    -- {
-    --     objects = {widget},
-    --     mode = "outside",
-    --     preferred_alignments = { "middle" },
-    --     margin_leftright = dpi(15),
-    --     margin_topbottom = dpi(15),
-    --     gaps = dpi(15),
-    --     shape = helpers.ui.rrect(beautiful.border_radius),
-    --     bg = beautiful.colors.background,
-    --     fg = beautiful.colors.on_background,
-    --     font = beautiful.font_name .. 15,
-    --     text = "Loading..."
-    -- }
-
-    -- network_daemon:connect_signal("wired::disconnected", function(self)
-    --     widget:turn_off("Disconnected")
-    --     network_tooltip:set_markup("Network is currently disconnected")
-    -- end)
-    -- network_daemon:connect_signal("wired::connected", function(self, interface, healthy)
-    --     if healthy then
-    --         widget:turn_on(interface)
-    --         network_tooltip:set_markup("Ethernet Interface: <b>" .. interface .. "</b>")
-    --     else
-    --         widget:turn_on("No Internet")
-    --         network_tooltip:set_markup
-    --         (
-    --             "<b>Connected but no internet!</b>" ..
-    --             "\nEthernet Interface: <b>" .. interface .. "</b>"
-    --         )
-    --     end
-
-    --     widget:turn_on("Connected")
-    -- end)
-
-    -- network_daemon:connect_signal("wireless::disconnected", function(self)
-    --     widget:turn_off("Wi-Fi")
-    --     network_tooltip:set_markup("Network is currently disconnected")
-    -- end)
-    -- network_daemon:connect_signal("wireless::connected", function(self, essid, interface, strength, strength_level, bitrate, healthy)
-    --     local message = "Connected to: <b>" .. (essid or "Loading...*") ..
-    --     "</b>\nWireless Interface: <b>" .. interface ..
-    --     "</b>\nWiFi-Strength: <b>" .. tostring(strength) .. "%" ..
-    --     "</b>\nBit rate: <b>" .. tostring(bitrate) .. "</b>"
-
-    --     if healthy then
-    --         network_tooltip:set_markup(message)
-    --         widget:turn_on(essid)
-    --     else
-    --         network_tooltip:set_markup("<b>Connected but no internet!</b>\n" .. message)
-    --         widget:turn_on("No Internet")
-    --     end
-    -- end)
-    -- network_daemon:connect_signal("wireless::connecting", function(self)
-    --     widget:turn_on("Connecting")
-    -- end)
+    network_manager_daemon:connect_signal("active_access_point", function(self, ssid, strength)
+        widget:turn_on(ssid)
+    end)
 
     return widget
 end

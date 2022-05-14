@@ -7,7 +7,7 @@ local message_panel = require("presentation.ui.panels.message")
 local app_launcher = require("presentation.ui.popups.app_launcher")
 local task_preview = require("presentation.ui.popups.task_preview")
 local beautiful = require("beautiful")
-local network_daemon = require("daemons.hardware.network")
+local network_manager_daemon = require("daemons.hardware.network_manager")
 local bluetooth_daemon = require("daemons.hardware.bluetooth")
 local pactl_daemon = require("daemons.hardware.pactl")
 local upower_daemon = require("daemons.hardware.upower")
@@ -491,33 +491,29 @@ local function network()
         text = beautiful.wifi_off_icon.icon,
     }
 
-    network_daemon:connect_signal("wired::disconnected", function(self)
-        widget:set_text(beautiful.wired_off_icon.icon)
-    end)
-
-    network_daemon:connect_signal("wireless::disconnected", function(self)
-        widget:set_text(beautiful.wifi_off_icon.icon)
-    end)
-
-    network_daemon:connect_signal("wired::connected", function(self, interface, healthy)
-        if healthy then
-            widget:set_text(beautiful.wired_icon.icon)
+    network_manager_daemon:connect_signal("network_state", function(self, state)
+        if state then
+            widget:set_text(beautiful.wifi_low_icon.icon)
         else
-            widget:set_text(beautiful.wired_off_icon.icon)
+            widget:set_text(beautiful.wifi_off_icon.icon)
         end
     end)
 
-    network_daemon:connect_signal("wireless::connected", function(self, essid, interface, strength, strength_level, bitrate, healthy)
-        if healthy then
-            if strength_level == 1 then
-                widget:set_text(beautiful.wifi_low_icon.icon)
-            elseif strength_level == 2 then
-                widget:set_text(beautiful.wifi_medium_icon.icon)
-            elseif strength_level == 3 or strength_level == 4 then
-                widget:set_text(beautiful.wifi_high_icon.icon)
-            end
+    network_manager_daemon:connect_signal("wireless_state", function(self, state)
+        if state then
+            widget:set_text(beautiful.wifi_low_icon.icon)
         else
             widget:set_text(beautiful.wifi_off_icon.icon)
+        end
+    end)
+
+    network_manager_daemon:connect_signal("active_access_point", function(self, ssid, strength)
+        if strength < 33 then
+            widget:set_text(beautiful.wifi_low_icon.icon)
+        elseif strength >= 33 then
+            widget:set_text(beautiful.wifi_medium_icon.icon)
+        elseif strength >= 66 then
+            widget:set_text(beautiful.wifi_high_icon.icon)
         end
     end)
 

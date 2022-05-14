@@ -278,7 +278,7 @@ local function new()
 
     local accent_color = beautiful.random_accent_color()
 
-    network_manager_daemon:connect_signal("wireless::rescan::success", function(self, access_points)
+    network_manager_daemon:connect_signal("scan_access_points::success", function(self, access_points)
         layout:reset()
         for _, access_point in pairs(access_points) do
             layout:add(access_point_widget(access_point, accent_color))
