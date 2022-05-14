@@ -54,22 +54,18 @@ function playerctl.art(halign, valign, size, default_icon_size, daemon)
             icon.image = album_path
             stack:raise_widget(icon)
         else
-            -- I use vivaldi, which reports itself as chromium, but I want it to show the vivaldi icon!
-            if player_name == "chromium" then
-                player_name = "vivaldi"
-            end
-
-            local image = icon_theme:get_icon_path(player_name)
-            if image ~= "" then
-                icon.image = image
-                stack:raise_widget(icon)
+            local app_font_icon = beautiful.get_font_icon_for_app_name(player_name)
+            if app_font_icon ~= nil then
+                default_icon:set_text(app_font_icon.icon)
             else
-                stack:raise_widget(default_icon)
+                default_icon:set_text(beautiful.video_icon.icon)
             end
+            stack:raise_widget(default_icon)
         end
     end)
 
     playerctl_daemon:connect_signal("no_players", function(self)
+        default_icon:set_text(beautiful.video_icon.icon)
         stack:raise_widget(default_icon)
     end)
 

@@ -242,6 +242,12 @@ local function icons()
     theme.laptop_code_icon = { icon = "", font = font_awesome_6_solid_font_name }
     theme.location_dot_icon = { icon = "", font = font_awesome_6_solid_font_name}
     theme.server_icon = { icon = "", font = font_awesome_6_solid_font_name }
+    theme.toggle_on_icon = { icon = "", font = font_awesome_6_solid_font_name }
+    theme.toggle_off_icon = { icon = "", font = font_awesome_6_solid_font_name }
+    theme.usb_icon = { icon = "", font = font_awesome_6_solid_font_name }
+    theme.usb_drive_icon = { icon = "", font = font_awesome_6_solid_font_name }
+    theme.signal_stream_icon = { icon = "", font = font_awesome_6_solid_font_name }
+    theme.car_battery_icon =  { icon = "", font = font_awesome_6_solid_font_name }
 
     theme.sun_icon = { icon = "", font = font_awesome_6_solid_font_name }
     theme.cloud_sun_icon = { icon = "", font = font_awesome_6_solid_font_name}
@@ -290,9 +296,9 @@ local function apps()
         st_256color = { command = "st-256color", class = "st-256color", icon = theme.laptop_code_icon },
         htop = { command = "kitty --class htop htop", class = "htop", icon = theme.system_monitor_icon },
         nm_connection_editor = { command = "nm-connection-editor", class = "Nm-connection-editor", icon = theme.router_icon },
-        network_manager_dmenu = { command = "networkmanager_dmenu", class = "Rofi", icon = theme.router_icon },
+        network_manager_dmenu = { name = "network", command = "networkmanager_dmenu", class = "Rofi", icon = theme.router_icon },
         pavucontrol = { command = "pavucontrol", class = "Pavucontrol", icon = theme.speaker_icon },
-        blueman_manager = { command = "blueman-manager", class = "Blueman-manager", icon = theme.bluetooth_icon },
+        blueman_manager = { name = "bluetooth", command = "blueman-manager", class = "Blueman-manager", icon = theme.bluetooth_icon },
         file_roller = { command = "file-roller", class = "File-roller", icon = theme.archeive_icon },
         lxappearance = { command = "Lxappearance", class = "lxappearance", icon = theme.palette_icon },
         nvidia_settings = { command = "nvidia-settings", class = "Nvidia-settings", icon = theme.nvidia_icon },
@@ -303,7 +309,7 @@ local function apps()
         flameshot_gui = { command = "flameshot gui -p ~/Pictures", class = "flameshot", icon = theme.camera_retro_icon },
         flameshot = { command = "flameshot full -c -p ~/Pictures", class = "flameshot", icon = theme.camera_retro_icon },
         gnome_calculator = { command = "gnome-calculator", class = "Gnome-calculator", icon = theme.calculator_icon },
-        gnome_system_monitor = { command = "gnome-system-monitor", class = "Gnome-system-monitor", icon = theme.system_monitor_icon },
+        gnome_system_monitor = { name = "system-monitor", command = "gnome-system-monitor", class = "Gnome-system-monitor", icon = theme.system_monitor_icon },
         notepadqq = { command = "notepadqq", class = "Notepadqq", icon = theme.note_icon },
         ranger = { command = "kitty --class ranger ranger", class = "ranger", icon = theme.file_manager_icon },
         nemo = { command = "nemo", class = "Nemo", icon = theme.file_manager_icon },
@@ -345,6 +351,20 @@ local function apps()
         screenshot = { command = "", class = "Screenshot", icon = theme.camera_retro_icon },
         record = { command = "", class = "Record", icon = theme.video_icon }
     }
+
+    function theme.get_font_icon_for_app_name(name)
+        for key, value in pairs(theme.apps) do
+            key = key:lower()
+            name = name:lower()
+            local _name = (value.name or ""):lower()
+            local class = (value.class or ""):lower()
+            local command = (value.command or ""):lower()
+
+            if key:match(name) or _name:match(name) or class:match(name) or command:match(name) then
+                return value.icon
+            end
+        end
+    end
 end
 
 local function defaults()

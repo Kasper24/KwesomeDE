@@ -1,4 +1,5 @@
 local awful = require("awful")
+local beautiful = require("beautiful")
 local naughty = require("naughty")
 local udev_daemon = require("daemons.hardware.udev")
 
@@ -42,8 +43,10 @@ local disk_icons =
 udev_daemon:connect_signal("usb::added", function(self, device)
     naughty.notification
     {
+        app_font_icon = beautiful.usb_icon,
         app_icon = usb_icons,
         app_name = "USB",
+        font_icon = beautiful.circle_plus_icon,
         icon = usb_icons,
         title = device.vendor .. " " .. device.name,
         message = "Connected",
@@ -54,8 +57,10 @@ end)
 udev_daemon:connect_signal("usb::removed", function(self, device)
     naughty.notification
     {
+        app_font_icon = beautiful.usb_icon,
         app_icon = usb_icons,
         app_name = "USB",
+        font_icon = beautiful.circle_minus_icon,
         icon = usb_icons,
         title = device.vendor .. " " .. device.name,
         message = "Disconnected",
@@ -71,8 +76,10 @@ udev_daemon:connect_signal("block::added", function(self, device)
 
     naughty.notification
     {
+        app_font_icon = beautiful.usb_drive_icon,
         app_icon = disk_icons,
         app_name = "Storage",
+        font_icon = beautiful.circle_plus_icon,
         icon = disk_icons,
         title = device.name,
         message = device.partition .. ": mounted on " .. device.mount_point,
@@ -84,8 +91,10 @@ end)
 udev_daemon:connect_signal("block::removed", function(self, device)
     naughty.notification
     {
+        app_font_icon = beautiful.usb_drive_icon,
         app_icon = disk_icons,
         app_name = "Storage",
+        font_icon = beautiful.circle_minus_icon,
         icon = disk_icons,
         title = device.name,
         message = device.partition .. ": removed from " .. device.mount_point,

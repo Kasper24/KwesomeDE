@@ -160,18 +160,11 @@ end
 
 local function on_wifi_device_state_changed(self, proxy, new_state, old_state, reason)
     if new_state == DeviceState.ACTIVATED then
-        local wifi_device_proxy = dbus_proxy.Proxy:new {
-            bus = dbus_proxy.Bus.SYSTEM,
-            name = "org.freedesktop.NetworkManager",
-            interface = "org.freedesktop.NetworkManager.Device.Wireless",
-            path = proxy.object_path
-        }
-
         local active_access_point_proxy = dbus_proxy.Proxy:new {
             bus = dbus_proxy.Bus.SYSTEM,
             name = "org.freedesktop.NetworkManager",
             interface = "org.freedesktop.NetworkManager.AccessPoint",
-            path = wifi_device_proxy.ActiveAccessPoint
+            path = self._private.wifi_proxy.ActiveAccessPoint
         }
 
         local ssid = NM.utils_ssid_to_utf8(active_access_point_proxy.Ssid)
@@ -320,6 +313,22 @@ function network:connect_to_access_point(access_point, password, auto_connect)
             self:emit_signal("activate_access_point::success", access_point.ssid)
 
         end, {call_id = "my-id"}, connections[1].object_path, access_point.device_proxy_path, access_point.path)
+    end
+end
+
+function network:is_access_point_active(access_point)
+    return access_point.path == self._private.wifi_proxy.ActiveAccessPoint
+end
+
+function network:disconnect_from_access_point()
+    self._private.client_proxy:DeactivateConnection(self._private.device_proxy.ActiveConnection)
+end
+
+function network:toggle_access_point(access_point, password, auto_connect)
+    if self:is_access_point_active(access_point) then
+        self:disconnect_from_access_point()
+    else
+        self:connect_to_access_point(access_point, password, auto_connect)
     end
 end
 

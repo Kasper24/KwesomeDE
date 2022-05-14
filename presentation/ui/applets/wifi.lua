@@ -142,16 +142,32 @@ local function access_point_widget(access_point, accent_color)
         end
     }
 
-    local connect = widgets.button.text.normal
+    local connect_or_disconnect = widgets.button.text.normal
     {
         normal_bg = beautiful.colors.surface,
         text_normal_bg = beautiful.colors.on_surface,
         size = 12,
         text = "Connect",
         on_press = function()
-            network_daemon:connect_to_access_point(access_point, prompt:get_text(), auto_connect_checkbox.checked)
+            network_daemon:toggle_access_point(access_point, prompt:get_text(), auto_connect_checkbox.checked)
         end
     }
+
+    network_daemon:connect_signal("access_point::connected", function(self, ssid, strength)
+        if network_daemon:is_access_point_active(access_point) == true or ssid == access_point.ssid then
+            connect_or_disconnect:set_text("Disconnect")
+        else
+            connect_or_disconnect:set_text("Connect")
+        end
+    end)
+
+    -- network_daemon:connect_signal("access_point::disconnected", function(self, ssid, strength)
+    --     if network_daemon:is_access_point_active(access_point) == true then
+    --         connect_or_disconnect:set_text("Disconnect")
+    --     else
+    --         connect_or_disconnect:set_text("Connect")
+    --     end
+    -- end)
 
     widget = widgets.button.elevated.state
     {
@@ -187,7 +203,7 @@ local function access_point_widget(access_point, accent_color)
             {
                 layout = wibox.layout.flex.horizontal,
                 spacing = dpi(15),
-                connect,
+                connect_or_disconnect,
                 cancel
             }
         }

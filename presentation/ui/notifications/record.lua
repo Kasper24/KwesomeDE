@@ -1,4 +1,5 @@
 local awful = require("awful")
+local beautiful = require("beautiful")
 local naughty = require("naughty")
 local record_daemon = require("daemons.system.record")
 
@@ -59,8 +60,10 @@ record_daemon:connect_signal("started", function()
 
     naughty.notification
     {
+        app_font_icon = beautiful.video_icon,
         app_icon = icons,
         app_name = "Recorder",
+        font_icon = beautiful.toggle_on_icon,
         icon = icons,
         title = "Video Recording",
         message = "Started",
@@ -82,8 +85,10 @@ record_daemon:connect_signal("ended", function(self, folder, file_name)
 
     naughty.notification
     {
+        app_font_icon = beautiful.video_icon,
         app_icon = icons,
         app_name = "Recorder",
+        font_icon = beautiful.toggle_off_icon,
         icon = icons,
         title = "Video Recording",
         message = "Video saved to " .. folder .. file_name,
@@ -94,8 +99,10 @@ end)
 record_daemon:connect_signal("error::create_directory", function()
     naughty.notification
     {
+        app_font_icon = beautiful.video_icon,
         app_icon = icons,
         app_name = "Recorder",
+        font_icon = beautiful.circle_exclamation_icon,
         icon = error_icons,
         title = "Error",
         message = "Failed to create directory",

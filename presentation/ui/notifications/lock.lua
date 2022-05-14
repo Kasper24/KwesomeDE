@@ -1,3 +1,4 @@
+local beautiful = require("beautiful")
 local naughty = require("naughty")
 local system_daemon = require("daemons.system.system")
 
@@ -16,8 +17,10 @@ local icons =
 system_daemon:connect_signal("wrong_password", function(self)
     naughty.notification
     {
+        app_font_icon = beautiful.lock_icon,
         app_icon = icons,
         app_name = "Security",
+        font_icon = beautiful.circle_exclamation_icon,
         icon = icons,
         title = "WARNING",
         text = "You have entered a wrong password!",

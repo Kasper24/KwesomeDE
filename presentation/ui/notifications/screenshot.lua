@@ -1,4 +1,5 @@
 local awful = require("awful")
+local beautiful = require("beautiful")
 local naughty = require("naughty")
 local screenshot_daemon = require("daemons.system.screenshot")
 
@@ -58,8 +59,10 @@ screenshot_daemon:connect_signal("ended", function(self, screenshot_method, scre
 
     naughty.notification
     {
+        app_font_icon = beautiful.camera_retro_icon,
         app_icon = icons,
         app_name = "Screenshot",
+        font_icon = beautiful.camera_retro_icon,
         icon = screenshot_directory .. file_name,
         title = "Screenshot taken",
         message = "Screenshot saved to " .. screenshot_directory .. file_name,
@@ -70,8 +73,10 @@ end)
 screenshot_daemon:connect_signal("error::create_file", function(self, error)
     naughty.notification
     {
+        app_font_icon = beautiful.camera_retro_icon,
         app_icon = icons,
         app_name = "Screenshot",
+        font_icon = beautiful.circle_exclamation_icon,
         icon = error_icons,
         title = "Error",
         message = error,
@@ -82,8 +87,10 @@ end)
 screenshot_daemon:connect_signal("error::create_directory", function()
     naughty.notification
     {
+        app_font_icon = beautiful.camera_retro_icon,
         app_icon = icons,
         app_name = "Screenshot",
+        font_icon = beautiful.circle_exclamation_icon,
         icon = error_icons,
         title = "error",
         message = "Failed to create directory",

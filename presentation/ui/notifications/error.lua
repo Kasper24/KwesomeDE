@@ -1,3 +1,4 @@
+local beautiful = require("beautiful")
 local naughty = require("naughty")
 
 local icons =
@@ -26,10 +27,12 @@ local icons =
 naughty.connect_signal("request::display_error", function(message, startup)
     naughty.notification
     {
+        app_font_icon = beautiful.gear_icon,
         app_icon = icons,
         app_name = "Awesome",
+        font_icon = beautiful.circle_exclamation_icon,
         icon = icons,
-        title = "Error" .. (startup and " during startup!" or "!"),
+        title = "Error" .. (startup and " during startup" or ""),
         message = message,
         urgency = "critical"
     }

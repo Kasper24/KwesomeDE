@@ -80,6 +80,13 @@ naughty.connect_signal("added", function(n)
         n.title = n.app_name
     end
 
+    if n._private.app_font_icon == nil then
+        n.app_font_icon = beautiful.get_font_icon_for_app_name(n.app_name)
+    else
+        n.app_font_icon = n._private.app_font_icon
+    end
+    n.font_icon = n._private.font_icon
+
     if type(n._private.app_icon) == "table" then
         n.app_icon = icon_theme:choose_icon(n._private.app_icon)
     else
@@ -104,20 +111,31 @@ naughty.connect_signal("request::display", function(n)
         return
     end
 
-    local app_icon = wibox.widget
-    {
-        widget = wibox.container.constraint,
-        strategy = "max",
-        height = dpi(20),
-        width = dpi(20),
+    local app_icon = nil
+    if n.app_font_icon == nil then
+        app_icon = wibox.widget
         {
-            widget = wibox.widget.imagebox,
-            halign = "center",
-            valign = "center",
-            clip_shape = helpers.ui.rrect(beautiful.border_radius),
-            image = n.app_icon
+            widget = wibox.container.constraint,
+            strategy = "max",
+            height = dpi(20),
+            width = dpi(20),
+            {
+                widget = wibox.widget.imagebox,
+                halign = "center",
+                valign = "center",
+                clip_shape = helpers.ui.rrect(beautiful.border_radius),
+                image = n.app_icon
+            }
         }
-    }
+    else
+        app_icon = widgets.text
+        {
+            size = 20,
+            color = beautiful.random_accent_color(),
+            font = n.app_font_icon.font,
+            text = n.app_font_icon.icon
+        }
+    end
 
     local app_name = widgets.text
     {
@@ -158,18 +176,29 @@ naughty.connect_signal("request::display", function(n)
         dismiss
     }
 
-    local icon = wibox.widget
-    {
-        widget = wibox.container.constraint,
-        strategy = "max",
-        height = dpi(40),
-        width = dpi(40),
+    local icon = nil
+    if n.font_icon == nil then
+        icon = wibox.widget
         {
-            widget = wibox.widget.imagebox,
-            clip_shape = helpers.ui.rrect(beautiful.border_radius),
-            image = n.icon
+            widget = wibox.container.constraint,
+            strategy = "max",
+            height = dpi(40),
+            width = dpi(40),
+            {
+                widget = wibox.widget.imagebox,
+                clip_shape = helpers.ui.rrect(beautiful.border_radius),
+                image = n.icon
+            }
         }
-    }
+    else
+        icon = widgets.text
+        {
+            size = 30,
+            color = beautiful.random_accent_color(),
+            font = n.font_icon.font,
+            text = n.font_icon.icon
+        }
+    end
 
     local title = wibox.widget
     {

@@ -1,3 +1,4 @@
+local beautiful = require("beautiful")
 local naughty = require("naughty")
 local email_daemon = require("daemons.web.email")
 local type = type
@@ -35,8 +36,10 @@ email_daemon:connect_signal("new_email", function(self, email)
 
     naughty.notification
     {
+        app_font_icon = beautiful.envelope_icon,
         app_icon = icons,
         app_name = "Email",
+        font_icon = beautiful.envelope_icon,
         icon = icons,
         title = title,
         text = text,
