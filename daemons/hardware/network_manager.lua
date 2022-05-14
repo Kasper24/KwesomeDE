@@ -117,7 +117,7 @@ local function create_profile(self, access_point, password, auto_connect)
         if access_point.security:match("WPA") ~= nil then
             s_wsec["key-mgmt"] = lgi.GLib.Variant("s", "wpa-psk")
             s_wsec["auth-alg"] = lgi.GLib.Variant("s", "open")
-            s_wsec["psk"] = lgi.GLib.Variant("s", "irena63717171")
+            s_wsec["psk"] = lgi.GLib.Variant("s", helpers.string.trim(password))
         else
             s_wsec["key-mgmt"] = lgi.GLib.Variant("s", "None")
             s_wsec["wep-key-type"] = lgi.GLib.Variant("s", NM.WepKeyType.PASSPHRASE)
@@ -133,27 +133,6 @@ local function create_profile(self, access_point, password, auto_connect)
         ["802-11-wireless"] = s_wifi,
         ["802-11-wireless-security"] = s_wsec
     }
-
-    -- self._private.settings_proxy:AddConnectionAsync(function(proxy, context, success, failure)
-    --     if failure ~= nil then
-    --         print("Failed to add connection: ", failure)
-    --         print("Failed to add connection error code: ", failure.code)
-    --         context.failure = failure
-
-    --         local connection_proxy = dbus_proxy.Proxy:new {
-    --             bus = dbus_proxy.Bus.SYSTEM,
-    --             name = "org.freedesktop.NetworkManager",
-    --             interface = "org.freedesktop.NetworkManager.Settings.Connection",
-    --             path = profile
-    --         }
-    --         connection_proxy:Delete()
-
-    --         return
-    --     end
-
-    --     context.success = success
-
-    -- end, my_context, profile)
 end
 
 local function on_wifi_device_state_changed(self, new_state, old_state, reason)
@@ -172,70 +151,42 @@ local function on_wifi_device_state_changed(self, new_state, old_state, reason)
     -- end
 end
 
-function network_manager:connect_to_access_point(access_point, password, auto_connect)
-    local my_context = {call_id = "my-id"}
+local function activate_access_point(self, connection_path, access_point)
+    self._private.client_proxy:ActivateConnectionAsync(function(proxy, context, success, failure)
+        if failure ~= nil then
+            print("Failed to activate connection: ", failure)
+            print("Failed to activate connection error code: ", failure.code)
+            self:emit_signal("connection::failed", failure, failure.code)
+            return
+        end
 
+        self:emit_signal("connection::success")
+
+    end, {call_id = "my-id"}, connection_path, access_point.device_proxy_path, access_point.path)
+end
+
+function network_manager:connect_to_access_point(access_point, password, auto_connect)
+    -- No connection profiles, need to create one
     if #access_point.connection_profiles == 0 then
         local profile = create_profile(self, access_point, password, auto_connect)
-
-        local my_context = {call_id = "my-id"}
+        -- AddAndActivateConnectionAsync doesn't actually verify that the profile is valid
+        -- The NetworkManager libary has methods to verify manually, but they are not exposed to DBus
+        -- so instead I'm using the 2 seperate methods
         self._private.settings_proxy:AddConnectionAsync(function(proxy, context, success, failure)
             if failure ~= nil then
                 print("Failed to add connection: ", failure)
                 print("Failed to add connection error code: ", failure.code)
-                context.failure = failure
-
-                local connection_proxy = dbus_proxy.Proxy:new {
-                    bus = dbus_proxy.Bus.SYSTEM,
-                    name = "org.freedesktop.NetworkManager",
-                    interface = "org.freedesktop.NetworkManager.Settings.Connection",
-                    path = profile
-                }
-                connection_proxy:Delete()
-
+                self:emit_signal("add_connection::failed")
                 return
             end
 
-            context.success = success
-
-        end, my_context, profile)
-
-        -- self._private.client_proxy:AddAndActivateConnectionAsync(function(proxy, context, success, failure)
-        --     if failure ~= nil then
-        --         print("Failed to activate connection: ", failure)
-        --         print("Failed to activate connection error code: ", failure.code)
-        --         context.failure = failure
-
-        --         local connection_proxy = dbus_proxy.Proxy:new {
-        --             bus = dbus_proxy.Bus.SYSTEM,
-        --             name = "org.freedesktop.NetworkManager",
-        --             interface = "org.freedesktop.NetworkManager.Settings>.Connection",
-        --             path = profile
-        --         }
-        --         connection_proxy:Delete()
-
-        --         self:emit_signal("access_point::connection::failed", failure, failure.code)
-        --         return
-        --     end
-
-        --     context.success = success
-        --     self:emit_signal("access_point::connection::success")
-
-        -- end, my_context, profile, access_point.device_proxy_path, access_point.path)
+            self:emit_signal("add_connection::success")
+            activate_access_point(self, success, access_point)
+        end, {call_id = "my-id"}, profile)
     else
-        self._private.client_proxy:ActivateConnectionAsync(function(proxy, context, success, failure)
-            if failure ~= nil then
-                print("Failed to activate connection: ", failure)
-                print("Failed to activate connection error code: ", failure.code)
-                context.failure = failure
-                self:emit_signal("access_point::connection::failed", failure, failure.code)
-                return
-            end
-
-            context.success = success
-            self:emit_signal("access_point::connection::success")
-
-        end, my_context, "/", access_point.device_proxy_path, access_point.path)
+        local profile = create_profile(self, access_point, password, auto_connect)
+        access_point.connection_profiles[1]:Update(profile)
+        activate_access_point(self, access_point.connection_profiles[1].object_path, access_point)
     end
 end
 
