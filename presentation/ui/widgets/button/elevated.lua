@@ -150,6 +150,14 @@ function elevated_button.state(args)
 		end
 	end
 
+	function widget:toggle()
+		if widget._private.state == true then
+			widget:turn_off()
+		else
+			widget:turn_on()
+		end
+	end
+
 	widget:connect_signal("mouse::enter", function(self, find_widgets_result)
 		if args.hover_effect == false then
 			return

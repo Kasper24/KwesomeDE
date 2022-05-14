@@ -9,43 +9,32 @@ local settings = { mt = {} }
 local accent_color = beautiful.random_accent_color()
 
 local function show_cursor()
-    local checkbox = wibox.widget
+    local checkbox = widgets.checkbox
     {
-        widget = wibox.widget.checkbox,
-        checked = screenshot_daemon:get_show_cursor(),
-        forced_width = dpi(25),
-        forced_height = dpi(25),
-        paddings = dpi(3),
-        shape = gshape.circle,
-        color = accent_color
+        on_by_default = screenshot_daemon:get_show_cursor(),
+        text_normal_bg = accent_color,
+        on_turn_on = function()
+            screenshot_daemon:set_show_cursor(true)
+        end,
+        on_turn_off = function()
+            screenshot_daemon:set_show_cursor(false)
+        end
     }
 
     local text = widgets.text
     {
-        valign = "top",
+        valign = "center",
         size = 15,
-        text = "Show Cursor"
+        text = "Show Cursor: "
     }
 
-    local button = widgets.button.elevated.normal
+    return wibox.widget
     {
-        margins = dpi(0),
-        -- paddings = dpi(0),
-        halign = "left",
-        on_release = function()
-            checkbox.checked = not checkbox.checked
-            screenshot_daemon:set_show_cursor(checkbox.checked)
-        end,
-        child =
-        {
-            layout = wibox.layout.fixed.horizontal,
-            spacing = dpi(15),
-            checkbox,
-            text
-        }
+        layout = wibox.layout.fixed.horizontal,
+        spacing = dpi(5),
+        text,
+        checkbox,
     }
-
-    return button
 end
 
 local function delay()

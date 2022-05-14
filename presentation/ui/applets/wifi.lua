@@ -63,26 +63,15 @@ local function access_point_widget(access_point, accent_color)
         paddings = dpi(15),
     }
 
-    local toggle_password_checkbox = wibox.widget
+    local toggle_password_button = widgets.checkbox
     {
-        widget = wibox.widget.checkbox,
-        checked = true,
-        forced_width = dpi(15),
-        forced_height = dpi(15),
-        paddings = dpi(3),
-        shape = gshape.circle,
-        color = accent_color
-    }
-
-    local toggle_password_button = widgets.button.elevated.normal
-    {
-        -- forced_width = dpi(50),
-        halign = "left",
-        on_release = function()
-            prompt:toggle_obscure()
-            toggle_password_checkbox.checked = not toggle_password_checkbox.checked
+        on_by_default = true,
+        on_turn_on = function()
+            prompt:set_obscure(true)
         end,
-        child = toggle_password_checkbox
+        on_turn_off = function()
+            prompt:set_obscure(false)
+        end
     }
 
     local name = widgets.text
@@ -95,38 +84,18 @@ local function access_point_widget(access_point, accent_color)
         color = beautiful.colors.on_surface,
     }
 
-    local auto_connect_checkbox = wibox.widget
-    {
-        widget = wibox.widget.checkbox,
-        checked = true,
-        forced_width = dpi(15),
-        forced_height = dpi(15),
-        paddings = dpi(3),
-        shape = gshape.circle,
-        color = accent_color
-    }
-
     local auto_connect_text = widgets.text
     {
-        valign = "top",
+        valign = "center",
         size = 12,
         color = beautiful.colors.on_surface,
-        text =  "Connect automatically"
+        text =  "Auto Connect: "
     }
 
-    local auto_connect_button = widgets.button.elevated.normal
+    local auto_connect_checkbox = widgets.checkbox
     {
-        halign = "left",
-        on_release = function()
-            auto_connect_checkbox.checked = not auto_connect_checkbox.checked
-        end,
-        child =
-        {
-            layout = wibox.layout.fixed.horizontal,
-            spacing = dpi(15),
-            auto_connect_checkbox,
-            auto_connect_text
-        }
+        valign = "center",
+        on_by_default = true
     }
 
     local cancel = widgets.button.text.normal
@@ -149,7 +118,7 @@ local function access_point_widget(access_point, accent_color)
         size = 12,
         text = "Connect",
         on_press = function()
-            network_daemon:toggle_access_point(access_point, prompt:get_text(), auto_connect_checkbox.checked)
+            network_daemon:toggle_access_point(access_point, prompt:get_text(), auto_connect_checkbox:get_value())
         end
     }
 
@@ -199,7 +168,12 @@ local function access_point_widget(access_point, accent_color)
                 prompt.widget,
                 toggle_password_button
             },
-            auto_connect_button,
+            {
+                layout = wibox.layout.fixed.horizontal,
+                spacing = dpi(5),
+                auto_connect_text,
+                auto_connect_checkbox,
+            },
             {
                 layout = wibox.layout.flex.horizontal,
                 spacing = dpi(15),

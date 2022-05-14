@@ -129,25 +129,15 @@ local function widget(self)
         end
     }
 
-    local toggle_password_checkbox = wibox.widget
+    local toggle_password_button = widgets.checkbox
     {
-        widget = wibox.widget.checkbox,
-        checked = true,
-        forced_width = dpi(15),
-        forced_height = dpi(15),
-        paddings = dpi(3),
-        shape = gshape.circle,
-        color = beautiful.random_accent_color()
-    }
-
-    local toggle_password_button = widgets.button.elevated.normal
-    {
-        halign = "left",
-        on_release = function()
-            self._private.prompt:toggle_obscure()
-            toggle_password_checkbox.checked = not toggle_password_checkbox.checked
+        on_by_default = true,
+        on_turn_on = function()
+            self._private.prompt:set_obscure(true)
         end,
-        child = toggle_password_checkbox
+        on_turn_off = function()
+            self._private.prompt:set_obscure(false)
+        end
     }
 
     local unlock_button = widgets.button.text.normal
@@ -158,7 +148,6 @@ local function widget(self)
             system_daemon:unlock(self._private.prompt:get_text())
         end,
     }
-
 
     local accent_color = beautiful.random_accent_color()
 

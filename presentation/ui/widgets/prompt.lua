@@ -135,7 +135,11 @@ local function paste(self)
 end
 
 function prompt:toggle_obscure()
-    self.obscure = not self.obscure
+    self:set_obscure(not self.obscure)
+end
+
+function prompt:set_obscure(value)
+    self.obscure = value
     update_markup(self, true)
 end
 

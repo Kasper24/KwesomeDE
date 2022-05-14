@@ -3,6 +3,7 @@ return
     battery_icon = require(... .. ".battery_icon"),
     button = require(... .. ".button"),
     calendar = require(... .. ".calendar"),
+    checkbox = require(... .. ".checkbox"),
     container = require(... .. ".container"),
     dropdown = require(... .. ".dropdown"),
     graph = require(... .. ".graph"),
