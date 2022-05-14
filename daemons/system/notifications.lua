@@ -69,7 +69,7 @@ local function read_notifications(self)
             return
         end
 
-        self.notifications = helpers.json.decode(content)
+        self.notifications = data
         if #self.notifications > 0 then
             for i, notification in ipairs(self.notifications) do
                 self:emit_signal("new", notification)
