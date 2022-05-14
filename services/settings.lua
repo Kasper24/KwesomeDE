@@ -35,7 +35,7 @@ end
 
 function settings:set_value(key, value)
     local old_value = self.json_settings[key]
-    if (old_value ~= nil and old_value ~= value) or (old_value == nil) then
+    if (old_value ~= nil and old_value ~= value) or (old_value == nil) or type(value) == "table" then
         if old_value ~= nil then
             print("Setting: " .. key .. " to: " .. tostring(value) .. " from:" .. tostring(old_value))
         else

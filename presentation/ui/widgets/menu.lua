@@ -284,6 +284,12 @@ function menu.button(args)
         }
     end
 
+    local text_widget = twidget
+    {
+        size = args.text_size,
+        text = args.text,
+    }
+
     return welevated.normal
     {
         forced_height = dpi(35),
@@ -294,7 +300,7 @@ function menu.button(args)
         press_bg = "#FFFFFF44",
         on_release = function(self)
             self.menu:hide(true)
-            args.on_press()
+            args.on_press(self, text_widget)
         end,
         on_hover = function(self)
             self.menu:hide_children_menus()
@@ -304,11 +310,7 @@ function menu.button(args)
             layout = wibox.layout.fixed.horizontal,
             spacing = dpi(15),
             icon,
-            twidget
-            {
-                size = args.text_size,
-                text = args.text,
-            },
+            text_widget
         }
     }
 end

@@ -10,6 +10,7 @@ local network_daemon = require("daemons.hardware.network")
 local bluetooth_daemon = require("daemons.hardware.bluetooth")
 local pactl_daemon = require("daemons.hardware.pactl")
 local upower_daemon = require("daemons.hardware.upower")
+local favorites_daemon = require("daemons.system.favorites")
 local animation = require("services.animation")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
@@ -159,6 +160,8 @@ end
 -- =============================================================================
 --  Task list
 -- =============================================================================
+local favorites = {}
+
 local function client_checkbox_button(client, property, text, checkbox_color)
     local button = widgets.menu.checkbox_button
     {
@@ -203,6 +206,15 @@ local function task_list_menu(client)
             text = client.class,
             on_press = function() client:jump_to() end
         },
+        widgets.menu.button
+        {
+            text = favorites_daemon:is_favorite(client.class) and "Remove from Favorites" or "Favorite",
+            on_press = function(self, text_widget)
+                favorites_daemon:toggle_favorite(client)
+                local text = favorites_daemon:is_favorite(client.class) and "Remove from Favorites" or "Favorite"
+                text_widget:set_text(text)
+            end
+        },
         widgets.menu.sub_menu_button
         {
             text = "Maximize",
@@ -236,7 +248,45 @@ local function find_icon_for_client(client)
     end
 end
 
-local function client_task(task_list, client)
+local function favorite(layout, client, class)
+    favorites[class] = true
+
+    local button = widgets.button.text.state
+    {
+        forced_width = dpi(65),
+        forced_height = dpi(65),
+        margins = dpi(5),
+        valign = "center",
+        size = 20,
+        font = client.font_icon.font,
+        text = client.font_icon.icon,
+        on_release = function()
+            awful.spawn(client.command, false)
+        end,
+        on_secondary_press = function(self)
+            -- task_list_menu:toggle{
+            --     wibox = awful.screen.focused().top_wibar,
+            --     widget = self,
+            --     offset = { y = 100 },
+            -- }
+        end
+    }
+
+    favorites_daemon:connect_signal(class .. "::removed", function()
+        layout:remove_widgets(button)
+    end)
+
+    capi.client.connect_signal("manage", function (c)
+        if c.class == class then
+            layout:remove_widgets(button)
+            favorites[class] = nil
+        end
+    end)
+
+    return button
+end
+
+local function client_task(favorites_layout, task_list, client)
     find_icon_for_client(client)
     local task_list_menu = task_list_menu(client)
 
@@ -333,6 +383,17 @@ local function client_task(task_list, client)
 
     client:connect_signal("unmanage", function()
         task_list:remove_widgets(widget)
+
+        for _, c in ipairs(capi.client.get()) do
+            if c.class == client.class then
+                return
+            end
+        end
+
+        local client_favorite = favorites_daemon:is_favorite(client.class)
+        if client_favorite ~= nil and favorites[client.class] == nil then
+            favorites_layout:add(favorite(favorites_layout, client_favorite, client.class))
+        end
     end)
 
     if awful.client.getmaster() == client then
@@ -346,6 +407,12 @@ local function client_task(task_list, client)
 end
 
 local function task_list(s)
+    local favorites = wibox.widget
+    {
+        layout = wibox.layout.flex.horizontal,
+        spacing = dpi(15),
+    }
+
     local task_list = wibox.widget
     {
         layout = wibox.layout.fixed.horizontal,
@@ -362,7 +429,7 @@ local function task_list(s)
     end
 
     for _, c in ipairs(capi.client.get()) do
-        client_task(task_list.children[c.first_tag.index], c)
+        client_task(favorites, task_list.children[c.first_tag.index], c)
     end
 
     capi.client.connect_signal("tagged", function(c, t)
@@ -372,10 +439,24 @@ local function task_list(s)
             c.current_task_widget = nil
         end
 
-        client_task(task_list.children[t.index], c)
+        if favorites_daemon:is_favorite(c.class) then
+            favorites:remove(c.favorite_widget)
+        end
+
+        client_task(favorites, task_list.children[t.index], c)
     end)
 
-    return task_list
+    for class, client in pairs(favorites_daemon:get_favorites()) do
+        favorites:add(favorite(favorites, client, class))
+    end
+
+    return wibox.widget
+    {
+        layout = wibox.layout.fixed.horizontal,
+        spacing = dpi(20),
+        favorites,
+        task_list,
+    }
 end
 
 -- =============================================================================
