@@ -45,47 +45,45 @@ local function access_point_widget(access_point, accent_color)
                 access_point.strength > 33 and beautiful.wifi_medium_icon.icon or beautiful.wifi_low_icon.icon
     }
 
-    local lock_icon = nil
-    local prompt = {}
-    local toggle_password_button =  nil
+    local lock_icon = widgets.text
+    {
+        font = beautiful.lock_icon.font,
+        size = 20,
+        text =  beautiful.lock_icon.icon
+    }
 
-    if access_point.can_activate == false then
-        lock_icon = widgets.text
-        {
-            font = beautiful.lock_icon.font,
-            size = 20,
-            text =  beautiful.lock_icon.icon
-        }
-        prompt = widgets.prompt
-        {
-            forced_width = dpi(450),
-            obscure = true,
-            icon_font = beautiful.lock_icon.font,
-            icon = beautiful.lock_icon.icon,
-            forced_height = dpi(50),
-            paddings = dpi(15),
-        }
-        local toggle_password_checkbox = wibox.widget
-        {
-            widget = wibox.widget.checkbox,
-            checked = true,
-            forced_width = dpi(15),
-            forced_height = dpi(15),
-            paddings = dpi(3),
-            shape = gshape.circle,
-            color = accent_color
-        }
-        toggle_password_button = widgets.button.elevated.normal
-        {
-            -- forced_width = dpi(50),
-            halign = "left",
-            on_release = function()
-                prompt:toggle_obscure()
-                toggle_password_checkbox.checked = not toggle_password_checkbox.checked
-            end,
-            child = toggle_password_checkbox
-        }
-    end
+    local prompt = widgets.prompt
+    {
+        forced_width = dpi(450),
+        obscure = true,
+        text = access_point.password,
+        icon_font = beautiful.lock_icon.font,
+        icon = beautiful.lock_icon.icon,
+        forced_height = dpi(50),
+        paddings = dpi(15),
+    }
+
+    local toggle_password_checkbox = wibox.widget
+    {
+        widget = wibox.widget.checkbox,
+        checked = true,
+        forced_width = dpi(15),
+        forced_height = dpi(15),
+        paddings = dpi(3),
+        shape = gshape.circle,
+        color = accent_color
+    }
+
+    local toggle_password_button = widgets.button.elevated.normal
+    {
+        -- forced_width = dpi(50),
+        halign = "left",
+        on_release = function()
+            prompt:toggle_obscure()
+            toggle_password_checkbox.checked = not toggle_password_checkbox.checked
+        end,
+        child = toggle_password_checkbox
+    }
 
     local name = widgets.text
     {
@@ -154,11 +152,7 @@ local function access_point_widget(access_point, accent_color)
         size = 12,
         text = "Connect",
         on_press = function()
-            if access_point.can_activate == false then
-                network_manager_daemon:connect_to_access_point(access_point, prompt.textbox.text, auto_connect_checkbox.checked)
-            else
-                network_manager_daemon:connect_to_access_point(access_point, "", auto_connect_checkbox.checked)
-            end
+            network_manager_daemon:connect_to_access_point(access_point, prompt:get_text(), auto_connect_checkbox.checked)
         end
     }
 
@@ -170,12 +164,8 @@ local function access_point_widget(access_point, accent_color)
         forced_height = dpi(60),
         on_press = function(self)
             if self._private.state == false then
-                if access_point.can_activate == false then
-                    prompt:start()
-                    self.forced_height = dpi(230)
-                else
-                    self.forced_height = dpi(170)
-                end
+                prompt:start()
+                self.forced_height = dpi(230)
                 self:turn_on()
             end
         end,
@@ -288,7 +278,7 @@ local function new()
 
     local accent_color = beautiful.random_accent_color()
 
-    network_manager_daemon:connect_signal("access_points", function(self, access_points)
+    network_manager_daemon:connect_signal("wireless::rescan::success", function(self, access_points)
         layout:reset()
         for _, access_point in pairs(access_points) do
             layout:add(access_point_widget(access_point, accent_color))

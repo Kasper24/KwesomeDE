@@ -87,7 +87,7 @@ local function generate_uuid()
     return uuid
 end
 
-local function create_profile(self, access_point, password, auto_connect)
+local function create_profile(access_point, password, auto_connect)
     local s_con =
     {
         ["uuid"] = lgi.GLib.Variant("s", generate_uuid()),
@@ -168,7 +168,7 @@ end
 function network_manager:connect_to_access_point(access_point, password, auto_connect)
     -- No connection profiles, need to create one
     if #access_point.connection_profiles == 0 then
-        local profile = create_profile(self, access_point, password, auto_connect)
+        local profile = create_profile(access_point, password, auto_connect)
         -- AddAndActivateConnectionAsync doesn't actually verify that the profile is valid
         -- The NetworkManager libary has methods to verify manually, but they are not exposed to DBus
         -- so instead I'm using the 2 seperate methods
@@ -184,7 +184,7 @@ function network_manager:connect_to_access_point(access_point, password, auto_co
             activate_access_point(self, success, access_point)
         end, {call_id = "my-id"}, profile)
     else
-        local profile = create_profile(self, access_point, password, auto_connect)
+        local profile = create_profile(access_point, password, auto_connect)
         access_point.connection_profiles[1]:Update(profile)
         activate_access_point(self, access_point.connection_profiles[1].object_path, access_point)
     end
@@ -233,9 +233,8 @@ function network_manager:scan_access_points()
                 if access_point_proxy.Ssid == nil then return end
 
                     local ssid = NM.utils_ssid_to_utf8(access_point_proxy.Ssid)
-
                     local security = flags_to_security(access_point_proxy.Flags, access_point_proxy.WpaFlags, access_point_proxy.RsnFlags)
-
+                    local password = ""
                     local connection_profiles = {}
 
                     local connections = self._private.settings_proxy:ListConnections()
@@ -249,6 +248,9 @@ function network_manager:scan_access_points()
 
                         if string.find(connection_proxy.Filename, ssid) then
                             table.insert(connection_profiles, connection_proxy)
+
+                            local secrets = connection_proxy:GetSecrets("802-11-wireless-security")
+                            password = secrets["802-11-wireless-security"].psk
                         end
                     end
 
@@ -260,6 +262,7 @@ function network_manager:scan_access_points()
                         path = access_point_path,
                         device_hw_address = device_proxy.HwAddress,
                         device_proxy_path = device_path,
+                        password = password,
                         can_activate = #connection_profiles > 0 or security == "",
                         connection_profiles = connection_profiles,
                     })
