@@ -83,11 +83,6 @@ local DeviceState =
     -- the requested network and is cleaning up the connection request
 }
 
-local DeviceStateReason =
-{
-    NEW_ACTIVATION = 60 -- New connection activation was enqueued
-}
-
 local function flags_to_security(flags, wpa_flags, rsn_flags)
     local str = ""
     if flags == 1 and wpa_flags == 0 and rsn_flags == 0 then
@@ -163,8 +158,8 @@ local function create_profile(access_point, password, auto_connect)
     }
 end
 
-local function on_wifi_device_state_changed(self, proxy, interface, data)
-    if data.State and data.State == DeviceState.ACTIVATED then
+local function on_wifi_device_state_changed(self, proxy, new_state, old_state, reason)
+    if new_state == DeviceState.ACTIVATED then
         local wifi_device_proxy = dbus_proxy.Proxy:new {
             bus = dbus_proxy.Bus.SYSTEM,
             name = "org.freedesktop.NetworkManager",
@@ -180,35 +175,8 @@ local function on_wifi_device_state_changed(self, proxy, interface, data)
         }
 
         local ssid = NM.utils_ssid_to_utf8(active_access_point_proxy.Ssid)
-        self:emit_signal("active_access_point", ssid, active_access_point_proxy.Strength)
+        self:emit_signal("access_point::connected", ssid, active_access_point_proxy.Strength)
     end
-
-    -- if data.ActiveAccessPoint ~= nil and data.ActiveAccessPoint ~= "/" then
-    --     local active_access_point_proxy = dbus_proxy.Proxy:new {
-    --         bus = dbus_proxy.Bus.SYSTEM,
-    --         name = "org.freedesktop.NetworkManager",
-    --         interface = "org.freedesktop.NetworkManager.AccessPoint",
-    --         path = data.ActiveAccessPoint
-    --     }
-
-    --     local ssid = NM.utils_ssid_to_utf8(active_access_point_proxy.Ssid)
-
-    --     self:emit_signal("active_access_point", ssid, active_access_point_proxy.Strength)
-    -- end
-
-    -- if (new_state == DeviceState.UNAVAILABLE or new_state == DeviceState.FAILED
-    --     or new_state == DeviceState.DEACTIVATING) and reason ~= DeviceStateReason.NEW_ACTIVATION
-    -- then
-    --     -- self:emit_signal("wireless_state", false)
-    -- elseif new_state == DeviceState.DISCONNECTED and reason ~= DeviceState.NEW_ACTIVATION then
-    --     -- gtimer { timeout = 5, autostart = true, call_now = false, single_shot = true, callback = function()
-    --         -- self:scan_access_points()
-    --     -- end }
-    -- elseif new_state == DeviceState.ACTIVATED then
-    --     -- local active_access_point = self._private.wifi_device_proxy.ActiveAccessPoint
-    --     -- self:scan_access_points()
-    --     -- self:emit_signal("wireless_state", true, active_access_point.Ssid)
-    -- end
 end
 
 local function get_access_point_connections(self, ssid)
@@ -257,8 +225,8 @@ local function get_wifi_proxy(self)
                 path = device_path
             }
 
-            wifi_properties_proxy:connect_signal("PropertiesChanged", function(proxy, interface, data)
-                on_wifi_device_state_changed(self, proxy, interface, data)
+            self._private.device_proxy:connect_signal("StateChanged", function(proxy, new_state, old_state, reason)
+                on_wifi_device_state_changed(self, proxy, new_state, old_state, reason)
             end)
         end
     end
@@ -311,6 +279,10 @@ function network:scan_access_points()
                 })
             end
         end
+
+        table.sort(self._private.access_points, function(a, b)
+            return a.strength > b.strength
+        end)
 
         self:emit_signal("scan_access_points::success", self._private.access_points)
     end, {call_id = "my-id"}, {})
@@ -403,7 +375,9 @@ local function new()
             ret:emit_signal("wireless_state", data.WirelessEnabled)
 
             if data.WirelessEnabled == true then
-                ret:scan_access_points()
+                gtimer { timeout = 5, autostart = true, call_now = false, single_shot = true, callback = function()
+                    ret:scan_access_points()
+                end }
             end
         end
     end)
@@ -424,7 +398,7 @@ local function new()
         ret:emit_signal("wireless_state", ret._private.client_proxy.WirelessEnabled )
 
         local active_access_point = ret._private.wifi_proxy.ActiveAccessPoint
-        if active_access_point ~= "/" then
+        if ret._private.device_proxy.State == DeviceState.ACTIVATED and active_access_point ~= "/" then
             local active_access_point_proxy = dbus_proxy.Proxy:new {
                 bus = dbus_proxy.Bus.SYSTEM,
                 name = "org.freedesktop.NetworkManager",
@@ -433,7 +407,9 @@ local function new()
             }
 
             local ssid = NM.utils_ssid_to_utf8(active_access_point_proxy.Ssid)
-            ret:emit_signal("active_access_point", ssid, active_access_point_proxy.Strength)
+            ret:emit_signal("access_point::connected", ssid, active_access_point_proxy.Strength)
+        else
+            ret:emit_signal("access_point::disconnected")
         end
     end)
 

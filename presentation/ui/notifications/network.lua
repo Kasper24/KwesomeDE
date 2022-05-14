@@ -30,7 +30,7 @@ network_daemon:connect_signal("wireless_state", function(self, state)
     end
 end)
 
-network_daemon:connect_signal("active_access_point", function(self, ssid, strength)
+network_daemon:connect_signal("access_point::connected", function(self, ssid, strength)
     if helpers.misc.should_show_notification() == true then
         naughty.notification
         {

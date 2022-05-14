@@ -507,7 +507,7 @@ local function network()
         end
     end)
 
-    network_daemon:connect_signal("active_access_point", function(self, ssid, strength)
+    network_daemon:connect_signal("access_point::connected", function(self, ssid, strength)
         if strength < 33 then
             widget:set_text(beautiful.wifi_low_icon.icon)
         elseif strength >= 33 then

@@ -170,7 +170,7 @@ local function wifi(action_panel)
         end
     end)
 
-    network_daemon:connect_signal("active_access_point", function(self, ssid, strength)
+    network_daemon:connect_signal("access_point::connected", function(self, ssid, strength)
         widget:turn_on(ssid)
     end)
 
