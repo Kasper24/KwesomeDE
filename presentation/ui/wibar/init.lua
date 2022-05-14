@@ -248,7 +248,7 @@ local function client_task(task_list, client, screen)
         forced_height = dpi(65),
         margins = dpi(5),
         valign = "center",
-        size = 20,
+        size = client.font_icon.size or 20,
         font = client.font_icon.font,
         text = client.font_icon.icon,
         on_hover = function(self)
