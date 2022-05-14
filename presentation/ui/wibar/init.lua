@@ -208,10 +208,10 @@ local function task_list_menu(client)
         },
         widgets.menu.button
         {
-            text = favorites_daemon:is_favorite(client.class) and "Remove from Favorites" or "Favorite",
+            text = favorites_daemon:is_favorite(client.class) and "Unpin from taskbar" or "Pin to taskbar",
             on_press = function(self, text_widget)
                 favorites_daemon:toggle_favorite(client)
-                local text = favorites_daemon:is_favorite(client.class) and "Remove from Favorites" or "Favorite"
+                local text = favorites_daemon:is_favorite(client.class) and "Unpin from taskbar" or "Pin to taskbar"
                 text_widget:set_text(text)
             end
         },
@@ -251,6 +251,23 @@ end
 local function favorite(layout, client, class)
     favorites[class] = true
 
+    local menu = widgets.menu
+    {
+        widgets.menu.button
+        {
+            icon = client.font_icon,
+            text = class,
+            on_press = function() awful.spawn(client.command, false) end
+        },
+        widgets.menu.button
+        {
+            text = "Unpin from taskbar",
+            on_press = function()
+                favorites_daemon:remove_favorite({class = class})
+            end
+        },
+    }
+
     local button = widgets.button.text.state
     {
         forced_width = dpi(65),
@@ -264,11 +281,11 @@ local function favorite(layout, client, class)
             awful.spawn(client.command, false)
         end,
         on_secondary_press = function(self)
-            -- task_list_menu:toggle{
-            --     wibox = awful.screen.focused().top_wibar,
-            --     widget = self,
-            --     offset = { y = 100 },
-            -- }
+            menu:toggle{
+                wibox = awful.screen.focused().top_wibar,
+                widget = self,
+                offset = { y = 100 },
+            }
         end
     }
 
