@@ -58,14 +58,14 @@ function playerctl.art(halign, valign, size, default_icon_size, daemon)
             if app_font_icon ~= nil then
                 default_icon:set_text(app_font_icon.icon)
             else
-                default_icon:set_text(beautiful.video_icon.icon)
+                default_icon:set_text(beautiful.spotify_icon.icon)
             end
             stack:raise_widget(default_icon)
         end
     end)
 
     playerctl_daemon:connect_signal("no_players", function(self)
-        default_icon:set_text(beautiful.video_icon.icon)
+        default_icon:set_text(beautiful.spotify_icon.icon)
         stack:raise_widget(default_icon)
     end)
 
