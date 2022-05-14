@@ -5,13 +5,11 @@ local action_panel = require("presentation.ui.panels.action")
 local info_panel = require("presentation.ui.panels.info")
 local message_panel = require("presentation.ui.panels.message")
 local app_launcher = require("presentation.ui.popups.app_launcher")
-local task_preview = require("presentation.ui.popups.task_preview")
 local beautiful = require("beautiful")
 local network_daemon = require("daemons.hardware.network")
 local bluetooth_daemon = require("daemons.hardware.bluetooth")
 local pactl_daemon = require("daemons.hardware.pactl")
 local upower_daemon = require("daemons.hardware.upower")
-local icon_theme = require("services.icon_theme")
 local animation = require("services.animation")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
@@ -202,7 +200,6 @@ local function task_list_menu(client)
         widgets.menu.button
         {
             icon = client.font_icon,
-            -- image = icon_theme:get_client_icon_path(client),
             text = client.class,
             on_press = function() client:jump_to() end
         },
@@ -229,18 +226,20 @@ local function task_list_menu(client)
     }
 end
 
-local function client_task(task_list, client, screen)
+local function find_icon_for_client(client)
     client.font_icon = beautiful.window_icon
     for _, app in pairs(beautiful.apps) do
         if app.class == client.class then
             client.font_icon = app.icon
-            break
+            return
         end
     end
+end
 
+local function client_task(task_list, client)
+    find_icon_for_client(client)
     local task_list_menu = task_list_menu(client)
 
-    -- Font icon
     local button = widgets.button.text.state
     {
         on_by_default = capi.client.focus == client,
@@ -251,12 +250,6 @@ local function client_task(task_list, client, screen)
         size = client.font_icon.size or 20,
         font = client.font_icon.font,
         text = client.font_icon.icon,
-        on_hover = function(self)
-            -- task_preview:show(client, {wibox = awful.screen.focused().top_wibar, widget = self, offset = { y = 100}})
-        end,
-        on_leave = function()
-            -- task_preview:hide()
-        end,
         on_release = function()
             if client.minimized == false then
                 if capi.client.focus == client then
@@ -275,7 +268,6 @@ local function client_task(task_list, client, screen)
             end
         end,
         on_secondary_press = function(self)
-            task_preview:hide()
             task_list_menu:toggle{
                 wibox = awful.screen.focused().top_wibar,
                 widget = self,
@@ -283,49 +275,6 @@ local function client_task(task_list, client, screen)
             }
         end
     }
-
-    -- Real client icon (make this an option to choose from?)
-    -- commented out for now
-    -- local button = widgets.button.image.state
-    -- {
-    --     on_by_default = capi.client.focus == client,
-    --     forced_width = dpi(50),
-    --     forced_height = dpi(50),
-    --     margins = dpi(5),
-    --     image_valign = "top",
-    --     image = icon_theme:get_client_icon_path(client),
-    --     on_hover = function(self)
-    --         -- task_preview:show(client, {wibox = awful.screen.focused().top_wibar, widget = self, offset = { y = 100}})
-    --     end,
-    --     on_leave = function()
-    --         -- task_preview:hide()
-    --     end,
-    --     on_release = function()
-    --         if client.minimized == false then
-    --             if capi.client.focus == client then
-    --                 client.minimized = true
-    --             else
-    --                 capi.client.focus = client
-    --                 client:raise()
-    --             end
-    --         else
-    --             client.minimized = false
-    --         end
-    --         if client:tags() and client:tags()[1] then
-    --             client:tags()[1]:view_only()
-    --         else
-    --             client:tags({awful.screen.focused().selected_tag})
-    --         end
-    --     end,
-    --     on_secondary_press = function(self)
-    --         task_preview:hide()
-    --         task_list_menu:toggle{
-    --             wibox = awful.screen.focused().top_wibar,
-    --             widget = self,
-    --             offset = { y = 100 },
-    --         }
-    --     end
-    -- }
 
     local indicator = wibox.widget
     {
@@ -357,10 +306,11 @@ local function client_task(task_list, client, screen)
         indicator
     }
 
-    client.remove_from_tasklist = function() task_list:remove_widgets(widget) end
-
     client:connect_signal("property::class", function()
-        button:set_image(icon_theme:get_client_icon_path(client))
+        find_icon_for_client(client)
+        button:set_size(client.font_icon.size)
+        button:set_font(client.font_icon.font)
+        button:set_text(client.font_icon.text)
     end)
 
     client:connect_signal("focus", function()
@@ -412,7 +362,7 @@ local function task_list(s)
     end
 
     for _, c in ipairs(capi.client.get()) do
-        client_task(task_list.children[c.first_tag.index], c, s)
+        client_task(task_list.children[c.first_tag.index], c)
     end
 
     capi.client.connect_signal("tagged", function(c, t)
@@ -422,7 +372,7 @@ local function task_list(s)
             c.current_task_widget = nil
         end
 
-        client_task(task_list.children[t.index], c, s)
+        client_task(task_list.children[t.index], c)
     end)
 
     return task_list
@@ -684,13 +634,6 @@ end
 --  Wibar
 -- =============================================================================
 capi.screen.connect_signal("request::desktop_decoration", function(s)
-    if s.top_wibar then
-        s.top_wibar.visible = false
-    end
-    if s.left_wibar then
-        s.left_wibar.visible = false
-    end
-
     -- Using popup instead of the wibar widget because it has some edge case bugs with detecting mouse input correctly
     s.top_wibar = awful.popup
     {
@@ -699,15 +642,6 @@ capi.screen.connect_signal("request::desktop_decoration", function(s)
         maximum_height = dpi(65),
         minimum_width = s.geometry.width,
         maximum_width = s.geometry.width,
-        buttons =
-        {
-            awful.button({ }, 1, function ()
-                capi.awesome.emit_signal("lmb::pressed")
-            end),
-            awful.button({ }, 3, function ()
-                capi.awesome.emit_signal("rmb::pressed")
-            end)
-        },
         widget =
         {
             layout = wibox.layout.align.horizontal,
@@ -742,15 +676,6 @@ capi.screen.connect_signal("request::desktop_decoration", function(s)
         maximum_width = dpi(65),
         minimum_height = s.geometry.height,
         maximum_height = s.geometry.height,
-        buttons =
-        {
-            awful.button({ }, 1, function ()
-                capi.awesome.emit_signal("lmb::pressed")
-            end),
-            awful.button({ }, 3, function ()
-                capi.awesome.emit_signal("rmb::pressed")
-            end)
-        },
         widget =
         {
             widget = wibox.container.margin,
