@@ -70,7 +70,6 @@ network_daemon:connect_signal("scan_access_points::success", function(self)
             icon = icons,
             title = "Access point rescan",
             text = "Completed",
-            category = "network.error"
         }
     end
 end)
@@ -101,7 +100,6 @@ network_daemon:connect_signal("add_connection::success", function(self, ssid)
         icon = icons,
         title = "Connection " .. ssid .. " added",
         text = "Success",
-        category = "network.error"
     }
 end)
 
@@ -129,7 +127,6 @@ network_daemon:connect_signal("activate_access_point::success", function(self, s
         icon = icons,
         title = "Activated " .. ssid,
         text = "Success",
-        category = "network.error"
     }
 end)
 
