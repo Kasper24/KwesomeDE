@@ -278,6 +278,7 @@ local function favorite(layout, client, class)
         font = client.font_icon.font,
         text = client.font_icon.icon,
         on_release = function()
+            menu:hide()
             awful.spawn(client.command, false)
         end,
         on_secondary_press = function(self)
@@ -305,7 +306,7 @@ end
 
 local function client_task(favorites_layout, task_list, client)
     find_icon_for_client(client)
-    local task_list_menu = task_list_menu(client)
+    local menu = task_list_menu(client)
 
     local button = widgets.button.text.state
     {
@@ -318,6 +319,8 @@ local function client_task(favorites_layout, task_list, client)
         font = client.font_icon.font,
         text = client.font_icon.icon,
         on_release = function()
+            menu:hide()
+
             if client.minimized == false then
                 if capi.client.focus == client then
                     client.minimized = true
@@ -335,7 +338,7 @@ local function client_task(favorites_layout, task_list, client)
             end
         end,
         on_secondary_press = function(self)
-            task_list_menu:toggle{
+            menu:toggle{
                 wibox = awful.screen.focused().top_wibar,
                 widget = self,
                 offset = { y = 100 },
