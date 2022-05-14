@@ -45,8 +45,8 @@ function playerctl.art(halign, valign, size, default_icon_size, daemon)
         forced_width = size or dpi(200),
         forced_height = size or dpi(200),
         top_only = true,
-        icon,
         default_icon,
+        icon
     }
 
     playerctl_daemon:connect_signal("metadata", function(self, title, artist, album_path, album, new, player_name)
