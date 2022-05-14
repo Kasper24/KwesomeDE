@@ -136,10 +136,7 @@ local function access_point_widget(access_point, accent_color)
         size = 12,
         text = "Cancel",
         on_press = function()
-            if access_point.can_activate == false then
-                prompt:stop()
-            end
-
+            prompt:stop()
             widget:turn_off()
             widget.forced_height = dpi(60)
         end
