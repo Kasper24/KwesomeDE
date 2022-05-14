@@ -11,7 +11,7 @@ local string = string
 local table = table
 local math = math
 
-local network_manager = { }
+local network = { }
 local instance = nil
 
 local NMState =
@@ -239,7 +239,7 @@ local function get_wifi_proxy(self)
     end
 end
 
-function network_manager:scan_access_points()
+function network:scan_access_points()
     self._private.access_points = {}
 
     self._private.wifi_proxy:RequestScanAsync(function(proxy, context, success, failure)
@@ -302,7 +302,7 @@ function network_manager:scan_access_points()
     end, {call_id = "my-id"}, {})
 end
 
-function network_manager:connect_to_access_point(access_point, password, auto_connect)
+function network:connect_to_access_point(access_point, password, auto_connect)
     -- No connection profiles, need to create one
     if #access_point.connection_profiles == 0 then
         local profile = create_profile(access_point, password, auto_connect)
@@ -327,7 +327,7 @@ function network_manager:connect_to_access_point(access_point, password, auto_co
     end
 end
 
-function network_manager:toggle_wireless_state()
+function network:toggle_wireless_state()
     local enable = not self._private.client_proxy.WirelessEnabled
     if enable == true then
         self:set_network_state(true)
@@ -337,17 +337,17 @@ function network_manager:toggle_wireless_state()
     self._private.client_proxy.WirelessEnabled = {signature = "b", value = enable}
 end
 
-function network_manager:set_network_state(state)
+function network:set_network_state(state)
     self._private.client_proxy:Enable(state)
 end
 
-function network_manager:open_settings()
+function network:open_settings()
     awful.spawn("nm-connection-editor", false)
 end
 
 local function new()
     local ret = gobject{}
-    gtable.crush(ret, network_manager, true)
+    gtable.crush(ret, network, true)
 
     ret._private = {}
     ret._private.access_points = {}

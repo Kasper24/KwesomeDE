@@ -7,7 +7,7 @@ local message_panel = require("presentation.ui.panels.message")
 local app_launcher = require("presentation.ui.popups.app_launcher")
 local task_preview = require("presentation.ui.popups.task_preview")
 local beautiful = require("beautiful")
-local network_manager_daemon = require("daemons.hardware.network_manager")
+local network_daemon = require("daemons.hardware.network")
 local bluetooth_daemon = require("daemons.hardware.bluetooth")
 local pactl_daemon = require("daemons.hardware.pactl")
 local upower_daemon = require("daemons.hardware.upower")
@@ -491,7 +491,7 @@ local function network()
         text = beautiful.wifi_off_icon.icon,
     }
 
-    network_manager_daemon:connect_signal("network_state", function(self, state)
+    network_daemon:connect_signal("network_state", function(self, state)
         if state then
             widget:set_text(beautiful.wifi_low_icon.icon)
         else
@@ -499,7 +499,7 @@ local function network()
         end
     end)
 
-    network_manager_daemon:connect_signal("wireless_state", function(self, state)
+    network_daemon:connect_signal("wireless_state", function(self, state)
         if state then
             widget:set_text(beautiful.wifi_low_icon.icon)
         else
@@ -507,7 +507,7 @@ local function network()
         end
     end)
 
-    network_manager_daemon:connect_signal("active_access_point", function(self, ssid, strength)
+    network_daemon:connect_signal("active_access_point", function(self, ssid, strength)
         if strength < 33 then
             widget:set_text(beautiful.wifi_low_icon.icon)
         elseif strength >= 33 then

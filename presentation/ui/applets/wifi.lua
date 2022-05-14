@@ -5,7 +5,7 @@ local gshape = require("gears.shape")
 local wibox = require("wibox")
 local widgets = require("presentation.ui.widgets")
 local beautiful = require("beautiful")
-local network_manager_daemon = require("daemons.hardware.network_manager")
+local network_daemon = require("daemons.hardware.network")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local pairs = pairs
@@ -152,7 +152,7 @@ local function access_point_widget(access_point, accent_color)
         size = 12,
         text = "Connect",
         on_press = function()
-            network_manager_daemon:connect_to_access_point(access_point, prompt:get_text(), auto_connect_checkbox.checked)
+            network_daemon:connect_to_access_point(access_point, prompt:get_text(), auto_connect_checkbox.checked)
         end
     }
 
@@ -220,7 +220,7 @@ local function new()
         font = beautiful.arrow_rotate_right_icon.font,
         text = beautiful.arrow_rotate_right_icon.icon,
         on_press = function()
-            network_manager_daemon:scan_access_points()
+            network_daemon:scan_access_points()
         end
     }
 
@@ -231,7 +231,7 @@ local function new()
         font = beautiful.gear_icon.font,
         text = beautiful.gear_icon.icon,
         on_press = function()
-            network_manager_daemon:open_settings()
+            network_daemon:open_settings()
         end
     }
 
@@ -278,7 +278,7 @@ local function new()
 
     local accent_color = beautiful.random_accent_color()
 
-    network_manager_daemon:connect_signal("scan_access_points::success", function(self, access_points)
+    network_daemon:connect_signal("scan_access_points::success", function(self, access_points)
         layout:reset()
         for _, access_point in pairs(access_points) do
             layout:add(access_point_widget(access_point, accent_color))
@@ -286,7 +286,7 @@ local function new()
         stack:raise_widget(layout)
     end)
 
-    network_manager_daemon:connect_signal("wireless_state", function(self, state)
+    network_daemon:connect_signal("wireless_state", function(self, state)
         if state == false then
             stack:raise_widget(no_wifi)
         end

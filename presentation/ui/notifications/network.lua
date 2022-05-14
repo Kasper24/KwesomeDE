@@ -1,5 +1,5 @@
 local naughty = require("naughty")
-local network_manager_daemon = require("daemons.hardware.network_manager")
+local network_daemon = require("daemons.hardware.network")
 local helpers = require("helpers")
 
 local icons =
@@ -13,7 +13,7 @@ local icons =
     "cs-network"
 }
 
-network_manager_daemon:connect_signal("wireless_state", function(self, state)
+network_daemon:connect_signal("wireless_state", function(self, state)
     if helpers.misc.should_show_notification() == true then
         local text = state == true and "Enabled" or "Disabled"
         local category = state == true and "network.connected" or "network.disconnected"
@@ -30,7 +30,7 @@ network_manager_daemon:connect_signal("wireless_state", function(self, state)
     end
 end)
 
-network_manager_daemon:connect_signal("active_access_point", function(self, ssid, strength)
+network_daemon:connect_signal("active_access_point", function(self, ssid, strength)
     if helpers.misc.should_show_notification() == true then
         naughty.notification
         {
@@ -44,7 +44,7 @@ network_manager_daemon:connect_signal("active_access_point", function(self, ssid
     end
 end)
 
-network_manager_daemon:connect_signal("scan_access_points::success", function(self)
+network_daemon:connect_signal("scan_access_points::success", function(self)
     if helpers.misc.should_show_notification() == true then
         naughty.notification
         {
@@ -58,7 +58,7 @@ network_manager_daemon:connect_signal("scan_access_points::success", function(se
     end
 end)
 
-network_manager_daemon:connect_signal("scan_access_points::failed", function(self, error, error_code)
+network_daemon:connect_signal("scan_access_points::failed", function(self, error, error_code)
     if helpers.misc.should_show_notification() == true then
         naughty.notification
         {
@@ -72,7 +72,7 @@ network_manager_daemon:connect_signal("scan_access_points::failed", function(sel
     end
 end)
 
-network_manager_daemon:connect_signal("add_connection::success", function(self, ssid)
+network_daemon:connect_signal("add_connection::success", function(self, ssid)
     naughty.notification
     {
         app_icon = icons,
@@ -84,7 +84,7 @@ network_manager_daemon:connect_signal("add_connection::success", function(self, 
     }
 end)
 
-network_manager_daemon:connect_signal("add_connection::failed", function(self, error, error_code)
+network_daemon:connect_signal("add_connection::failed", function(self, error, error_code)
     naughty.notification
     {
         app_icon = icons,
@@ -96,7 +96,7 @@ network_manager_daemon:connect_signal("add_connection::failed", function(self, e
     }
 end)
 
-network_manager_daemon:connect_signal("activate_access_point::success", function(self, ssid)
+network_daemon:connect_signal("activate_access_point::success", function(self, ssid)
     naughty.notification
     {
         app_icon = icons,
@@ -108,7 +108,7 @@ network_manager_daemon:connect_signal("activate_access_point::success", function
     }
 end)
 
-network_manager_daemon:connect_signal("activate_access_point::failed", function(self, error, error_code)
+network_daemon:connect_signal("activate_access_point::failed", function(self, error, error_code)
     naughty.notification
     {
         app_icon = icons,

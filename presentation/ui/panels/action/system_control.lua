@@ -6,7 +6,7 @@ local wifi_popup = require("presentation.ui.applets.wifi")
 local bluetooth_popup = require("presentation.ui.applets.bluetooth")
 local beautiful = require("beautiful")
 local radio_daemon = require("daemons.hardware.radio")
-local network_manager_daemon = require("daemons.hardware.network_manager")
+local network_daemon = require("daemons.hardware.network")
 local bluetooth_daemon = require("daemons.hardware.bluetooth")
 local picom_daemon = require("daemons.system.picom")
 local redshift_daemon = require("daemons.system.redshift")
@@ -155,14 +155,14 @@ local function wifi(action_panel)
         beautiful.wifi_high_icon,
         "Wi-Fi",
         function()
-            network_manager_daemon:toggle_wireless_state()
+            network_daemon:toggle_wireless_state()
         end,
         function()
             wifi_popup:toggle(action_panel.widget)
         end
     )
 
-    network_manager_daemon:connect_signal("wireless_state", function(self, state)
+    network_daemon:connect_signal("wireless_state", function(self, state)
         if state == true then
             widget:turn_on("Wi-Fi")
         else
@@ -170,7 +170,7 @@ local function wifi(action_panel)
         end
     end)
 
-    network_manager_daemon:connect_signal("active_access_point", function(self, ssid, strength)
+    network_daemon:connect_signal("active_access_point", function(self, ssid, strength)
         widget:turn_on(ssid)
     end)
 

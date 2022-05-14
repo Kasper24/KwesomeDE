@@ -3,7 +3,7 @@ local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local bluetooth_daemon = require("daemons.hardware.bluetooth")
-local network_manager_daemon = require("daemons.hardware.network_manager")
+local network_daemon = require("daemons.hardware.network")
 local settings = require("services.settings")
 
 local radio = { }
@@ -48,7 +48,7 @@ local function new()
         end
     end)
 
-    network_manager_daemon:connect_signal("wireless_state", function(self, state)
+    network_daemon:connect_signal("wireless_state", function(self, state)
         if state == true and ret._private.airplane_state == true then
             ret:turn_off()
         end
