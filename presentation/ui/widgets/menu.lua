@@ -349,7 +349,7 @@ function menu.checkbox_button(args)
     local checkbox = twidget
     {
         size = 13,
-        color = beautiful.random_accent_color(),
+        color = args.checkbox_color,
         font = beautiful.toggle_on_icon.font,
         text = args.on_by_default == true and beautiful.toggle_on_icon.icon
                 or beautiful.toggle_off_icon.icon,
