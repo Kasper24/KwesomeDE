@@ -164,7 +164,7 @@ local function access_point_widget(access_point, accent_color)
             },
             {
                 layout = wibox.layout.fixed.horizontal,
-                spacing = dpi(15),
+                spacing = dpi(5),
                 prompt.widget,
                 toggle_password_button
             },

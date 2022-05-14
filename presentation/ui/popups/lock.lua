@@ -213,8 +213,16 @@ local function widget(self)
                 {
                     layout = wibox.layout.fixed.horizontal,
                     spacing = dpi(5),
-                    self._private.prompt.widget,
-                    toggle_password_button
+                    {
+                        layout = wibox.layout.stack,
+                        self._private.prompt.widget,
+                        {
+                            widget = wibox.container.place,
+                            halign = "right",
+                            valign = "center",
+                            toggle_password_button
+                        }
+                    }
                 },
                 unlock_button
             }
