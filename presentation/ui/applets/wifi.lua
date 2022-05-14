@@ -170,7 +170,6 @@ local function access_point_widget(access_point, accent_color)
             },
             {
                 layout = wibox.layout.fixed.horizontal,
-                spacing = dpi(5),
                 auto_connect_text,
                 auto_connect_checkbox,
             },
