@@ -25,7 +25,7 @@ network_daemon:connect_signal("wireless_state", function(self, state)
             app_font_icon = beautiful.router_icon,
             app_icon = icons,
             app_name = "Network Manager",
-            font_icon == font_icon,
+            font_icon = font_icon,
             icon = icons,
             title = "Wi-Fi",
             text = text,
