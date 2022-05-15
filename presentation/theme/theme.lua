@@ -349,7 +349,8 @@ local function apps()
         libreoffice_impress = { command = "libreoffice", class = "libreoffice-impress", icon = theme.powerpoint_icon },
         libreoffice_calc = { command = "libreoffice", class = "libreoffice-calc", icon = theme.excel_icon },
         screenshot = { command = "", class = "Screenshot", icon = theme.camera_retro_icon },
-        record = { command = "", class = "Record", icon = theme.video_icon }
+        record = { command = "", class = "Record", icon = theme.video_icon },
+        theme = { command = "", class = "Theme", icon = theme.spraycan_icon }
     }
 
     function theme.get_font_icon_for_app_name(name)

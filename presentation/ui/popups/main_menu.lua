@@ -372,7 +372,7 @@ local function layout_sub_menu()
 end
 
 local function widget()
-    local menu = widgets.menu
+    return widgets.menu
     {
         widgets.menu.button
         {
@@ -444,6 +444,19 @@ local function widget()
             on_press = function() record_popup:toggle() end
         },
         widgets.menu.separator(),
+        widgets.menu.button
+        {
+            icon = beautiful.gear_icon,
+            text = "Settings Manager",
+            on_press = function() awful.spawn(beautiful.apps.xfce4_settings_manager.command, false) end
+        },
+        widgets.menu.button
+        {
+            icon = beautiful.spraycan_icon,
+            text = "Theme Manager",
+            on_press = function() theme_popup:toggle() end
+        },
+        widgets.menu.separator(),
         widgets.menu.sub_menu_button
         {
             icon = beautiful.tag_icon,
@@ -472,32 +485,11 @@ local function widget()
         widgets.menu.separator(),
         widgets.menu.button
         {
-            icon = beautiful.gear_icon,
-            text = "Settings Manager",
-            on_press = function() awful.spawn(beautiful.apps.xfce4_settings_manager.command, false) end
-        },
-        widgets.menu.button
-        {
-            icon = beautiful.speaker_icon,
-            text = "Audio Settings",
-            on_press = function() awful.spawn(beautiful.apps.pavucontrol.command, false) end
-        },
-        widgets.menu.button
-        {
-            icon = beautiful.spraycan_icon,
-            text = "Theme Manager",
-            on_press = function() theme_popup:toggle() end
-        },
-        widgets.menu.separator(),
-        widgets.menu.button
-        {
             icon = beautiful.exit_icon,
             text = "Exit",
             on_press = function() power_popup:show() end
         }
     }
-
-    return menu
 end
 
 if not instance then
