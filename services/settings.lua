@@ -54,12 +54,6 @@ function settings:get_value(key)
     return nil
 end
 
-function settings:is_settings_readable(callback)
-    hfilesystem.is_file_readable(DATA_PATH, function(result)
-        callback(result)
-    end)
-end
-
 local function new()
     local ret = gobject{}
     gtable.crush(ret, settings, true)

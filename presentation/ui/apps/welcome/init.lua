@@ -152,6 +152,7 @@ For more information visit the following links.]],
         size = 13,
         text = "Finish",
         on_press = function()
+            settings:set_value("welcome.show", false)
             on_next_pressed()
         end,
     }
@@ -1145,11 +1146,9 @@ local function new()
         }
     end)
 
-    settings:is_settings_readable(function(result)
-        if result == false then
-            ret:show()
-        end
-    end)
+    if settings:get_value("welcome.show") ~= false then
+        ret:show()
+    end
 
     return ret
 end
