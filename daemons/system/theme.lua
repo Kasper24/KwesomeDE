@@ -1,309 +1,37 @@
+local Gio = require("lgi").Gio
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
+local gcolor = require("gears.color")
+local gtimer = require("gears.timer")
 local gfilesystem = require("gears.filesystem")
 local wibox = require("wibox")
+local beautiful = require("beautiful")
 local settings = require("services.settings")
+local inotify = require("services.inotify")
 local helpers = require("helpers")
 local string = string
-local pairs = pairs
 local table = table
 local capi = { screen = screen, client = client }
 
 local theme = { }
 local instance = nil
 
-
-local function generate_colorscheme_from_wallpaper(self, wallpaper)
-    awful.spawn.easy_async_with_shell("magick " .. wallpaper .. "" .. " -resize 25% -colors 16 -unique-colors txt:-", function(stdout)
-        local colors = {}
-        for line in stdout:gmatch("[^\r\n]+") do
-            local hex = line:match("#(.*) s")
-            if hex ~= nil then
-                hex = "#" .. string.sub (hex, 1, 6)
-                table.insert(colors, hex)
-            end
-        end
-
-        if string.sub(colors[1], 2, 2) ~= "0" then
-            colors[1] = helpers.color.darken(colors[1], 24)
-        end
-        colors[9] = helpers.color.nice_lighten(colors[1], 13)
-        colors[9] = helpers.color.saturate_color(colors[9], 0.5)
-
-        colors[8] = helpers.color.blend(colors[16], "#EEEEEE")
-        colors[16] = helpers.color.nice_lighten(colors[8], 15)
-
-        colors[2] = helpers.color.alter_brightness(colors[10], -0.2, 0.2)
-        colors[3] = helpers.color.alter_brightness(colors[11], -0.2, 0.2)
-        colors[4] = helpers.color.alter_brightness(colors[12], -0.2, 0.2)
-        colors[5] = helpers.color.alter_brightness(colors[13], -0.2, 0.2)
-        colors[6] = helpers.color.alter_brightness(colors[14], -0.2, 0.2)
-        colors[7] = helpers.color.alter_brightness(colors[15], -0.2, 0.2)
-
-        self:emit_signal("new_colorscheme", colors)
-    end)
-end
-
-function theme:select_wallpaper(wallpaper_path)
-    self._private.current_wallpaper = wallpaper_path
-end
-
-function theme:set_wallpaper(set_wallpaper, set_colorscheme)
-    if set_wallpaper then
-        settings:set_value("current_wallpaper", self._private.current_wallpaper)
-        for s in capi.screen do
-            capi.screen.emit_signal("request::wallpaper", s)
-        end
-    end
-    if set_colorscheme == true then
-        awful.spawn("wpg -ns " .. self._private.current_wallpaper, false)
-    end
-end
-
-function theme:add_colorscheme()
-    awful.spawn.easy_async("yad --file --multiple", function(stdout)
-        for line in stdout:gmatch("[^\r\n]+") do
-            generate_colorscheme_from_wallpaper(self, line)
-        end
-    end)
-end
-
-function theme:select_colorscheme(colorscheme_path)
-    self._private.current_colorscheme_path = colorscheme_path
-    settings:set_value("current_colorscheme", self._private.current_colorscheme_path)
-
-    helpers.filesystem.read_file(colorscheme_path, function(content)
-        self._private.current_colorscheme = helpers.json.decode(content)
-        awful.spawn.easy_async_with_shell("magick " .. self._private.current_colorscheme.wallpaper .. "" .. " -resize 25% -colors 16 -unique-colors txt:-", function(stdout)
-            local colors = {}
-            for line in stdout:gmatch("[^\r\n]+") do
-                local hex = line:match("#(.*) s")
-                if hex ~= nil then
-                    hex = "#" .. string.sub (hex, 1, 6)
-                    table.insert(colors, hex)
-                end
-            end
-
-            if string.sub(colors[1], 2, 2) ~= "0" then
-                colors[1] = helpers.color.darken(colors[1], 24)
-            end
-            colors[9] = helpers.color.nice_lighten(colors[1], 13)
-            colors[9] = helpers.color.saturate_color(colors[9], 0.5)
-
-            colors[8] = helpers.color.blend(colors[16], "#EEEEEE")
-            colors[16] = helpers.color.nice_lighten(colors[8], 15)
-
-            colors[2] = helpers.color.alter_brightness(colors[10], -0.2, 0.2)
-            colors[3] = helpers.color.alter_brightness(colors[11], -0.2, 0.2)
-            colors[4] = helpers.color.alter_brightness(colors[12], -0.2, 0.2)
-            colors[5] = helpers.color.alter_brightness(colors[13], -0.2, 0.2)
-            colors[6] = helpers.color.alter_brightness(colors[14], -0.2, 0.2)
-            colors[7] = helpers.color.alter_brightness(colors[15], -0.2, 0.2)
-
-            self:emit_signal("current_colorscheme", self._private.current_colorscheme_path, colors)
-        end)
-    end)
-end
-
-function theme:auto_adjust_colorscheme()
-    awful.spawn.easy_async("wpg -A " .. self._private.current_colorscheme.wallpaper, function(stdout)
-        helpers.filesystem.read_file(self._private.current_colorscheme_path, function(content)
-            self._private.current_colorscheme = helpers.json.decode(content)
-            self:emit_signal("current_colorscheme", self._private.current_colorscheme_path, self._private.current_colorscheme)
-        end)
-    end)
-end
-
-function theme:shuffle_colorscheme()
-    awful.spawn.easy_async("wpg -z " .. self._private.current_colorscheme.wallpaper, function(stdout)
-        helpers.filesystem.read_file(self._private.current_colorscheme_path, function(content)
-            self._private.current_colorscheme = helpers.json.decode(content)
-            self:emit_signal("current_colorscheme", self._private.current_colorscheme_path, self._private.current_colorscheme)
-        end)
-    end)
-end
-
-function theme:reset_colorscheme()
-    awful.spawn.easy_async("wpg -R " .. self._private.current_colorscheme.wallpaper, function(stdout)
-        helpers.filesystem.read_file(self._private.current_colorscheme_path, function(content)
-            self._private.current_colorscheme = helpers.json.decode(content)
-            self:emit_signal("current_colorscheme", self._private.current_colorscheme_path, self._private.current_colorscheme)
-        end)
-    end)
-end
-
-function theme:save_colorscheme()
-    helpers.filesystem.save_file(
-        self._private.current_colorscheme_path,
-        helpers.json.encode(self._private.current_colorscheme, { indent = true })
-    )
-end
-
-function theme:set_colorscheme(set_wallpaper, set_colorscheme)
-    if set_wallpaper then
-        settings:set_value("current_wallpaper", self._private.current_colorscheme.wallpaper)
-        for s in capi.screen do
-            capi.screen.emit_signal("request::wallpaper", s)
-        end
-    end
-    if set_colorscheme then
-        self:save_colorscheme()
-        awful.spawn("wpg -ns " .. self._private.current_colorscheme.wallpaper, false)
-    end
-end
-
-function theme:select_pywal_colorscheme(colorscheme_name)
-    self._private.current_pywal_colorscheme_name = colorscheme_name
-end
-
-function theme:set_pywal_colorscheme()
-    awful.spawn("wpg --theme " .. self._private.current_pywal_colorscheme_name, false)
-end
-
-function theme:edit_color(index)
-    local color = self._private.current_colorscheme["colors"]["color" .. index - 1]
-    local cmd = string.format([[yad --title='Pick A Color'  --width=500 --height=500 --color --init-color=%s
-        --mode=hex --button=Cancel:1 --button=Select:0]], color)
-
-    awful.spawn.easy_async(cmd, function(stdout, stderr)
-        stdout = stdout:gsub("%s+", "")
-        if stdout ~= "" and stdout ~= nil then
-            self._private.current_colorscheme["colors"]["color" .. index - 1] = stdout
-            self:emit_signal("current_colorscheme", self._private.current_colorscheme_path, self._private.current_colorscheme)
-        end
-    end)
-end
-
-function theme:get_wallpaper()
-    return settings:get_value("current_wallpaper")
-end
-
-function theme:get_wallpapers()
-    return self._private.wallpapers
-end
-
-function theme:get_colorschemes()
-    return self._private.colorschemes
-end
-
-function theme:get_pywal_colorschemes(type)
-    return self._private["pywal_colorscheme_" .. type]
-end
-
-local function set_wallpaper_for_screen(self, screen)
-    awful.wallpaper
-    {
-        screen = screen,
-        widget =
-        {
-            widget = wibox.widget.imagebox,
-            resize = true,
-            horizontal_fit_policy = "fit",
-            vertical_fit_policy = "fit",
-            image = self._private.wallpaper
-        }
-    }
-end
-
-local function get_wallpapers(self)
-    helpers.filesystem.scan("/home/kasper/Pictures/Wallpapers", function(result)
-        self._private.wallpapers = {}
-        -- local wpgtk_cmd = ""
-        -- local low_res_cmd = ""
-
-        for i, wallpaper_path in pairs(result) do
-        --     local wallpaper_name = string.sub(
-        --         wallpaper_path,
-        --         helpers.string.find_last(wallpaper_path, "/") + 1, #wallpaper_path
-        --     )
-        --     local sample_path = gfilesystem.get_xdg_config_home() ..  "wpg/samples/" .. wallpaper_name .. "_wal_sample.png"
-        --     if gfilesystem.file_readable(sample_path) == nil then
-        --         sample_path = nil
-        --     end
-
-        --     local low_res_path = gfilesystem.get_cache_dir() .. "wallpapers_thumbnails/"
-        --     if not gfilesystem.dir_readable(low_res_path) then
-        --         gfilesystem.make_directories(low_res_path)
-        --     end
-
-        --     local low_res_wallpaper_path = low_res_path .. wallpaper_name
-        --     if gfilesystem.file_readable(low_res_wallpaper_path) == nil then
-        --         low_res_cmd = low_res_cmd .. string.format("convert -resize 320x320 -quality 25 %s %s &&", wallpaper_path, low_res_wallpaper_path)
-        --     end
-
-        --     local wpgtk_path = gfilesystem.get_xdg_config_home() .. "wpg/wallpapers/"
-        --     local wpgtk_wallpaper_path = wpgtk_path .. wallpaper_name
-        --     if gfilesystem.file_readable(wpgtk_wallpaper_path) == nil then
-        --         wpgtk_cmd = wpgtk_cmd .. "wpg -a " .. wallpaper_path .. " &&"
-        --     end
-
-            table.insert(self._private.wallpapers, {
-                name = wallpaper_path,
-                wallpaper_path = wallpaper_path,
-        --         low_res_wallpaper_path = low_res_wallpaper_path,
-        --         sample_path = sample_path
-            })
-        --     if i == #result then
-        --         self:emit_signal("wallpapers", self._private.wallpapers)
-        --     end
-        end
-
-        -- awful.spawn.with_shell(wpgtk_cmd, false)
-        -- awful.spawn.with_shell(low_res_cmd, false)
-        self:emit_signal("wallpapers_updated", self._private.wallpapers)
-    end, true)
-end
-
-local function get_colorschemes(self)
-    helpers.filesystem.scan("/home/kasper/.config/wpg/schemes", function(result)
-        self._private.colorschemes = {}
-        for i, colorscheme_path in pairs(result) do
-            helpers.filesystem.read_file(colorscheme_path, function(content)
-                local colorscheme = helpers.json.decode(content)
-                local low_res_path = gfilesystem.get_cache_dir() .. "wallpapers_thumbnails/"
-                local wallpaper_name = string.sub(colorscheme.wallpaper,
-                    helpers.string.find_last(colorscheme.wallpaper, "/") + 1, #colorscheme.wallpaper)
-
-                table.insert(self._private.colorschemes, {
-                    name = colorscheme_path,
-                    colorscheme = colorscheme,
-                    colorscheme_path = colorscheme_path,
-                    wallpaper_name = wallpaper_name,
-                    low_res_wallpaper_path = low_res_path .. wallpaper_name
-                })
-
-                if i == #result then
-                    self:emit_signal("colorschemes", self._private.colorschemes)
-                end
-            end)
-        end
-    end, true)
-end
-
-local function get_pywal_colorschemes(self, type)
-    helpers.filesystem.scan(string.format("/usr/lib/python3.9/site-packages/pywal/colorschemes/%s", type), function(result)
-        self._private["pywal_colorscheme_" .. type] = {}
-        for i, colorscheme_path in pairs(result or {}) do
-            helpers.filesystem.read_file(colorscheme_path, function(content)
-                local colorscheme_name = string.sub(colorscheme_path,
-                    helpers.string.find_last(colorscheme_path, "/") + 1, #colorscheme_path)
-                colorscheme_name = string.gsub(colorscheme_name, ".json", "")
-
-                local colorscheme = helpers.json.decode(content)
-                table.insert(self._private["pywal_colorscheme_" .. type], {
-                    name = colorscheme_name,
-                    colorscheme = colorscheme,
-                    colorscheme_path = colorscheme_path,
-                })
-
-                if i == #result then
-                    self:emit_signal(string.format("pywal_%s_colorschemes", type), self._private["pywal_colorscheme_" .. type])
-                end
-            end)
-        end
-    end, true)
-end
+local pictures_mimetypes =
+{
+    ["application/pdf"] = "lximage", -- AI
+    ["image/x-ms-bmp"] = "lximage", -- BMP
+    ["application/postscript"] = "lximage", -- EPS
+    ["image/gif"] = "lximage", -- GIF
+    ["application/vnd.microsoft.icon"] = "lximage", -- ICo
+    ["image/jpeg"] = "lximage", -- JPEG
+    ["image/jp2"] = "lximage", -- JPEG 2000
+    ["image/png"] = "lximage", -- PNG
+    ["image/vnd.adobe.photoshop"] = "lximage", -- PSD
+    ["image/svg+xml"] = "lximage", -- SVG
+    ["image/tiff"] = "lximage", -- TIFF
+    ["image/webp"] = "lximage", -- webp
+}
 
 local function update()
     local home = gfilesystem.get_xdg_config_home()
@@ -323,58 +51,383 @@ local function update()
     awful.spawn("pywalfox update", false)
 end
 
+local function generate_colorscheme_from_wallpaper(self, wallpaper)
+    local color_count = 16
+
+    local function imagemagick()
+        local colors = {}
+        local cmd = string.format("magick %s -resize 25%% -colors %d -unique-colors txt:-", wallpaper.path, color_count)
+        awful.spawn.easy_async_with_shell(cmd, function(stdout)
+            for line in stdout:gmatch("[^\r\n]+") do
+                local hex = line:match("#(.*) s")
+                if hex ~= nil then
+                    hex = "#" .. string.sub (hex, 1, 6)
+                    table.insert(colors, hex)
+                end
+            end
+
+            if #colors < 16 then
+                if color_count < 37 then
+                    print("Imagemagick couldn't generate a palette.")
+                    print("Trying a larger palette size " .. color_count)
+                    color_count = color_count + 1
+                    imagemagick()
+                    return
+                else
+                    print("Imagemagick couldn't generate a suitable palette.")
+                    self:emit_signal("colorscheme::error")
+                    return
+                end
+            end
+
+            if string.sub(colors[1], 2, 2) ~= "0" then
+                colors[1] = helpers.color.darken(colors[1], 24)
+            end
+            colors[9] = helpers.color.nice_lighten(colors[1], 13)
+            colors[9] = helpers.color.saturate_color(colors[9], 0.5)
+
+            colors[8] = helpers.color.blend(colors[16], "#EEEEEE")
+            colors[16] = helpers.color.nice_lighten(colors[8], 15)
+
+            colors[2] = helpers.color.alter_brightness(colors[10], -0.2, 0.2)
+            colors[3] = helpers.color.alter_brightness(colors[11], -0.2, 0.2)
+            colors[4] = helpers.color.alter_brightness(colors[12], -0.2, 0.2)
+            colors[5] = helpers.color.alter_brightness(colors[13], -0.2, 0.2)
+            colors[6] = helpers.color.alter_brightness(colors[14], -0.2, 0.2)
+            colors[7] = helpers.color.alter_brightness(colors[15], -0.2, 0.2)
+
+            self._private.colors = colors
+            self:emit_signal("colorscheme::generated", colors)
+            self:emit_signal("wallpaper::selected", wallpaper)
+        end)
+    end
+
+    imagemagick()
+end
+
+local function image_wallpaper(self, screen)
+    awful.wallpaper
+    {
+        screen = screen,
+        widget =
+        {
+            widget = wibox.widget.imagebox,
+            resize = true,
+            horizontal_fit_policy = "fit",
+            vertical_fit_policy = "fit",
+            image = self._private.wallpaper
+        }
+    }
+end
+
+local function color_wallpaper(screen)
+    awful.wallpaper
+    {
+        screen = screen,
+        widget =
+        {
+            widget = wibox.container.background,
+            bg = self._private.color
+        }
+    }
+end
+
+local function sun_wallpaper(screen)
+    awful.wallpaper
+    {
+        screen = screen,
+        widget = wibox.widget
+        {
+            fit = function(_, width, height)
+                return width, height
+            end,
+            draw = function(_, _, cr, width, height)
+                cr:set_source(gcolor {
+                    type  = 'linear',
+                    from  = { 0, 0      },
+                    to    = { 0, height },
+                    stops = {
+                        { 0   , beautiful.colors.background },
+                        { 0.75, beautiful.colors.surface },
+                        { 1   , beautiful.colors.background }
+                    }
+                })
+                cr:paint()
+                -- Clip the first 33% of the screen
+                cr:rectangle(0,0, width, height/3)
+
+                -- Clip-out some increasingly large sections of add the sun "bars"
+                for i=0, 6 do
+                    cr:rectangle(0, height*.28 + i*(height*.055 + i/2), width, height*.055)
+                end
+                cr:clip()
+
+             -- Draw the sun
+                cr:set_source(gcolor {
+                    type  = 'linear' ,
+                    from  = { 0, 0      },
+                    to    = { 0, height },
+                    stops = {
+                        { 0, beautiful.random_accent_color() },
+                        { 1, beautiful.random_accent_color() }
+                    }
+                })
+                cr:arc(width/2, height/2, height*.35, 0, math.pi*2)
+                cr:fill()
+
+                -- Draw the grid
+                local lines = width/8
+                cr:reset_clip()
+                cr:set_line_width(0.5)
+                cr:set_source(gcolor(beautiful.random_accent_color()))
+
+                for i=1, lines do
+                    cr:move_to((-width) + i* math.sin(i * (math.pi/(lines*2)))*30, height)
+                    cr:line_to(width/4 + i*((width/2)/lines), height*0.75 + 2)
+                    cr:stroke()
+                end
+
+                for i=1, 5 do
+                    cr:move_to(0, height*0.75 + i*10 + i*2)
+                    cr:line_to(width, height*0.75 + i*10 + i*2)
+                    cr:stroke()
+                end
+            end
+        }
+    }
+end
+
+local function binary_wallpaper(screen)
+    local function binary()
+        local ret = {}
+        for _= 1, 15 do
+            for _= 1, 57 do
+                table.insert(ret, math.random() > 0.5 and 1 or 0)
+            end
+            table.insert(ret, "\n")
+        end
+
+        return table.concat(ret)
+    end
+
+    awful.wallpaper
+    {
+        screen = screen,
+        bg = beautiful.colors.background,
+        fg = beautiful.random_accent_color(),
+        widget = wibox.widget
+        {
+            widget = wibox.layout.stack,
+            {
+                widget = wibox.container.background,
+                fg = beautiful.random_accent_color(),
+                {
+                    widget = wibox.widget.textbox,
+                    align  = "center",
+                    valign = "center",
+                    markup = "<tt><b>[SYSTEM FAILURE]</b></tt>",
+                },
+            },
+            {
+                widget = wibox.widget.textbox,
+                wrap = "word",
+                text = binary(),
+            },
+        },
+    }
+end
+
+local function scan_for_wallpapers(self)
+    if #self._private.wallpapers_paths == 0 then
+        self:emit_signal("wallpapers::empty")
+        return
+    end
+
+    self._private.images = {}
+
+    local emit_signal_timer = gtimer
+    {
+        timeout = 1,
+        autostart = false,
+        single_shot = true,
+        callback = function()
+            table.sort(self._private.images, function(a, b)
+                return a.path < b.path
+            end)
+            self:emit_signal("wallpapers", self._private.images)
+        end
+    }
+
+    for index, path in ipairs(self._private.wallpapers_paths) do
+        helpers.filesystem.scan(path, function(result)
+            for _index, wallpaper_path in pairs(result) do
+                local found = false
+                for _, image in ipairs(self._private.images) do
+                    if image.path == wallpaper_path then
+                        found = true
+                    end
+                end
+
+                local mimetype = Gio.content_type_guess(wallpaper_path)
+                if found == false and pictures_mimetypes[mimetype] ~= nil then
+                    table.insert(self._private.images,
+                    {
+                        name = string.sub(wallpaper_path,
+                                helpers.string.find_last(wallpaper_path, "/") + 1, #wallpaper_path),
+                        path = wallpaper_path,
+                    })
+                end
+
+                if index == #self._private.wallpapers_paths and _index == #result then
+                    emit_signal_timer:again()
+                end
+            end
+        end, true)
+    end
+end
+
+local function watch_wallpaper_changes(self)
+    for _, wallpaper_watcher in ipairs(self._private.wallpapers_watchers) do
+        wallpaper_watcher:stop()
+    end
+
+    for _, path in ipairs(self._private.wallpapers_paths) do
+        local wallpaper_watcher = inotify:watch(path,
+        {
+            inotify.Events.create,
+            inotify.Events.delete,
+            inotify.Events.moved_from,
+            inotify.Events.moved_to,
+        })
+
+        wallpaper_watcher:connect_signal("event", function(_, event, path, file)
+            scan_for_wallpapers(self)
+        end)
+
+        table.insert(self._private.wallpapers_watchers, wallpaper_watcher)
+    end
+end
+
+function theme:set_wallpaper(type)
+    if type == "image" then
+        self._private.wallpaper = self._private.selected_wallpaper
+        settings:set_value("theme.wallpaper", self._private.wallpaper.path)
+    elseif type == "tiled" then
+    elseif type == "color" then
+        self._private.color = self._private.selected_color
+        settings:set_value("theme.color", self._private.color)
+    elseif type == "digital_sun" then
+    elseif type == "binary" then
+    end
+
+    self._private.type = type
+    settings:set_value("theme.wallpaper_type", type)
+
+    for s in capi.screen do
+        capi.screen.emit_signal("request::wallpaper", s)
+    end
+end
+
+function theme:select_wallpaper(wallpaper)
+    self._private.selected_wallpaper = wallpaper.path
+    generate_colorscheme_from_wallpaper(self, wallpaper)
+end
+
+function theme:edit_color(index)
+    local color = self._private.colors[index]
+    local cmd = string.format([[yad --title='Pick A Color'  --width=500 --height=500 --color --init-color=%s
+        --mode=hex --button=Cancel:1 --button=Select:0]], color)
+
+    awful.spawn.easy_async(cmd, function(stdout, stderr)
+        stdout = stdout:gsub("%s+", "")
+        if stdout ~= "" and stdout ~= nil then
+            self._private.colors[index] = stdout
+            self:emit_signal("color::" .. index .. "::updated", stdout)
+        end
+    end)
+end
+
+function theme:add_wallpapers_path()
+    awful.spawn.easy_async("yad --file --directory", function(stdout)
+        for line in stdout:gmatch("[^\r\n]+") do
+            if line ~= "" then
+                table.insert(self._private.wallpapers_paths, line)
+                settings:set_value("theme.wallpapers_paths", self._private.wallpapers_paths)
+                self:emit_signal("wallpapers_paths::added", line)
+                -----------
+                watch_wallpaper_changes(self)
+                scan_for_wallpapers(self)
+            end
+        end
+    end)
+end
+
+function theme:remove_wallpapers_path(path)
+    for index, value in ipairs(self._private.wallpapers_paths) do
+        if value == path then
+            table.remove(self._private.wallpapers_paths, index)
+        end
+    end
+
+    settings:set_value("theme.wallpapers_paths", self._private.wallpapers_paths)
+    self:emit_signal("wallpapers_paths::" .. path .. "::removed")
+    -------------
+    watch_wallpaper_changes(self)
+    scan_for_wallpapers(self)
+end
+
+function theme:get_wallpaper()
+    return self._private.wallpaper
+end
+
+function theme:get_wallpapers()
+    return self._private.images or {}
+end
+
+function theme:get_wallpapers_paths()
+    return self._private.wallpapers_paths
+end
+
 local function new()
     local ret = gobject{}
     gtable.crush(ret, theme, true)
 
     ret._private = {}
-    ret._private.wallpaper = ret:get_wallpaper() or helpers.filesystem.get_awesome_config_dir("presentation/assets") .. "wallpaper.png"
+    local default_wallpapers_paths = helpers.filesystem.get_awesome_config_dir("presentation/assets/wallpapers")
+    local saved_wallpapers_paths = settings:get_value("theme.wallpapers_paths")
+    if #{saved_wallpapers_paths or {}} == 0 or saved_wallpapers_paths == nil then
+        ret._private.wallpapers_paths = { default_wallpapers_paths }
+    else
+        ret._private.wallpapers_paths = settings:get_value("theme.wallpapers_paths")
+    end
 
-    get_wallpapers(ret)
+    ret._private.wallpaper_type = settings:get_value("theme.wallpaper_type") or "wallpaper"
+    ret._private.wallpaper = settings:get_value("theme.wallpaper") or
+                            "/home/kasper/.config/wpg/.current"
+    ret._private.color = settings:get_value("theme.color") or "#000000"
 
-    -- awful.spawn.easy_async_with_shell(string.format([[ ps x | grep "inotifywait -e modify %s" | grep -v grep | awk '{print $1}' | xargs kill ]], "/home/kasper/.Xresources"), function()
-    --     awful.spawn.with_line_callback(string.format([[ bash -c "while (inotifywait -e modify %s -qq) do echo; done" ]], "/home/kasper/Pictures/Wallpapers"), {stdout = function(line)
-    --         -- get_wallpapers(ret)
-    --     end})
-    -- end)
+    scan_for_wallpapers(ret)
 
-    -- local current_wallpaper = settings:get_value("current_wallpaper")
-    -- if current_wallpaper ~= nil then
-    --     ret:select_wallpaper(current_wallpaper)
-    -- end
-
-    -- local current_colorscheme = settings:get_value("current_colorscheme")
-    -- if current_colorscheme ~= nil then
-    --     ret:select_colorscheme(current_colorscheme)
-    -- end
-
-    -- get_wallpapers(ret)
-    -- get_colorschemes(ret)
-    -- get_pywal_colorschemes(ret, "dark")
-    -- get_pywal_colorschemes(ret, "light")
-
-    -- awful.spawn.easy_async_with_shell(string.format([[ ps x | grep "inotifywait -e modify %s" | grep -v grep | awk '{print $1}' | xargs kill ]], "/home/kasper/.Xresources"), function()
-    --     awful.spawn.with_line_callback(string.format([[ bash -c "while (inotifywait -e modify %s -qq) do echo; done" ]], "/home/kasper/Pictures/Wallpapers"), {stdout = function(line)
-    --         get_wallpapers(ret)
-    --     end})
-
-    --     awful.spawn.with_line_callback(string.format([[ bash -c "while (inotifywait -e modify %s -qq) do echo; done" ]], "/home/kasper/.config/wpg/schemes"), {stdout = function(line)
-    --         get_colorschemes(ret)
-    --     end})
-
-    --     awful.spawn.with_line_callback(string.format([[ bash -c "while (inotifywait -e modify %s -qq) do echo; done" ]], "/home/kasper/.Xresources"), {stdout = function(line)
-    --         update()
-    --         require("gears.timer") { timeout = 1, autostart = true, call_now = false, callback = function()
-    --             awesome.restart()
-    --         end }
-    --     end})
-    -- end)
-
-
+    ret._private.wallpapers_watchers = {}
+    watch_wallpaper_changes(ret)
 
     capi.screen.connect_signal("request::wallpaper", function(s)
-        set_wallpaper_for_screen(ret, s)
+        if ret._private.wallpaper_type == "image" then
+            image_wallpaper(ret, s)
+        elseif ret._private.wallpaper_type == "tiled" then
+            sun_wallpaper(s)
+        elseif ret._private.wallpaper_type == "color" then
+            color_wallpaper(s)
+        elseif ret._private.wallpaper_type == "digital_sun" then
+            sun_wallpaper(s)
+        elseif ret._private.wallpaper_type == "binary" then
+            binary_wallpaper(s)
+        end
     end)
+
+    for s in capi.screen do
+        capi.screen.emit_signal("request::wallpaper", s)
+    end
 
     return ret
 end

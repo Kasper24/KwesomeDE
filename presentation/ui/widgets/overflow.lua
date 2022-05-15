@@ -324,7 +324,7 @@ end
 -- @see position
 function overflow:set_position(pos)
     local current = self._private.position
-    local interval = self._private.used_in_dir - self._private.avail_in_dir
+    local interval = (self._private.used_in_dir or 0) - (self._private.avail_in_dir or 0)
     if current == pos
         -- the content takes less space than what is available, i.e. everything
         -- is already visible

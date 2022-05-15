@@ -308,27 +308,6 @@ local function commands_sub_menu()
     }
 end
 
-local function settings_sub_menu()
-    return widgets.menu
-    {
-        widgets.menu.button
-        {
-            text = "Settings Manager",
-            on_press = function() awful.spawn(beautiful.apps.xfce4_settings_manager.command, false) end
-        },
-        widgets.menu.button
-        {
-            text = "Audio Settings",
-            on_press = function() awful.spawn(beautiful.apps.pavucontrol.command, false) end
-        },
-        widgets.menu.button
-        {
-            text = "Theme Manager",
-            on_press = function() theme_popup:toggle() end
-        }
-    }
-end
-
 local function tag_sub_menu()
     local menu = widgets.menu{}
 
@@ -480,12 +459,6 @@ local function widget()
         widgets.menu.separator(),
         widgets.menu.sub_menu_button
         {
-            icon = beautiful.gear_icon,
-            text = "Preferences",
-            sub_menu = settings_sub_menu()
-        },
-        widgets.menu.sub_menu_button
-        {
             icon = beautiful.folder_open_icon,
             text = "Recent Places",
             sub_menu = recent_places_sub_menu()
@@ -496,6 +469,26 @@ local function widget()
             text = "Commands",
             sub_menu = commands_sub_menu()
         },
+        widgets.menu.separator(),
+        widgets.menu.button
+        {
+            icon = beautiful.gear_icon,
+            text = "Settings Manager",
+            on_press = function() awful.spawn(beautiful.apps.xfce4_settings_manager.command, false) end
+        },
+        widgets.menu.button
+        {
+            icon = beautiful.speaker_icon,
+            text = "Audio Settings",
+            on_press = function() awful.spawn(beautiful.apps.pavucontrol.command, false) end
+        },
+        widgets.menu.button
+        {
+            icon = beautiful.spraycan_icon,
+            text = "Theme Manager",
+            on_press = function() theme_popup:toggle() end
+        },
+        widgets.menu.separator(),
         widgets.menu.button
         {
             icon = beautiful.exit_icon,

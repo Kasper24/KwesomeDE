@@ -40,7 +40,7 @@ function inotify:watch(path, events)
         command = command .. " -e " .. events
     end
 
-    awful.spawn.with_line_callback(command, {stdout = function(line)
+    local pid = awful.spawn.with_line_callback(command, {stdout = function(line)
         -- There are 2 possible print formats:
         ---- 1: When watching a directory and there's a new event on a file
         ---- path_to_directory/ event file
@@ -59,6 +59,10 @@ function inotify:watch(path, events)
             ret:emit_signal("event", event:lower(), path .. "/")
         end
     end})
+
+    function ret:stop()
+        awful.spawn("sudo kill -9 " .. pid)
+    end
 
     return ret
 end

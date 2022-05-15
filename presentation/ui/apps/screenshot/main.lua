@@ -41,6 +41,8 @@ local function button(icon, text, on_release, on_by_default)
 end
 
 local function new(self, layout)
+    local accent_color = beautiful.random_accent_color()
+
     local selection_button = nil
     local screen_button = nil
     local window_button = nil
@@ -110,8 +112,9 @@ local function new(self, layout)
     {
         forced_width = dpi(50),
         forced_height = dpi(50),
-        font = beautiful.gear_icon.font,
         size = 15,
+        text_normal_bg = accent_color,
+        font = beautiful.gear_icon.font,
         text = beautiful.gear_icon.icon,
         on_release = function()
             layout:raise(2)
@@ -122,6 +125,7 @@ local function new(self, layout)
     {
         forced_width = dpi(50),
         forced_height = dpi(50),
+        text_normal_bg = accent_color,
         font = beautiful.xmark_icon.font,
         text = beautiful.xmark_icon.icon,
         on_release = function()
