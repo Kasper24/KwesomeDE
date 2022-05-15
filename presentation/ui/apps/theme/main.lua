@@ -144,8 +144,8 @@ local function image_tab()
     local wallpapers_layout = wibox.widget
     {
         layout = widgets.overflow.vertical,
-        forced_height = dpi(270),
-        spacing = dpi(10),
+        forced_height = dpi(250),
+        spacing = dpi(3),
         scrollbar_widget =
         {
             widget = wibox.widget.separator,
@@ -154,6 +154,30 @@ local function image_tab()
         },
         scrollbar_width = dpi(3),
         scroll_speed = 10,
+    }
+
+    local reset_colorscheme = widgets.button.text.normal
+    {
+        animate_size = false,
+        normal_bg = beautiful.colors.surface,
+        text_normal_bg = beautiful.colors.on_surface,
+        size = 15,
+        text = "Reset Colorscheme",
+        on_press = function()
+            theme_daemon:reset_colorscheme()
+        end
+    }
+
+    local save_colorscheme = widgets.button.text.normal
+    {
+        animate_size = false,
+        normal_bg = beautiful.colors.surface,
+        text_normal_bg = beautiful.colors.on_surface,
+        size = 15,
+        text = "Save Colorscheme",
+        on_press = function()
+            theme_daemon:save_colorscheme()
+        end
     }
 
     local set_wallpaper = widgets.button.text.normal
@@ -198,8 +222,15 @@ local function image_tab()
         spacing = dpi(15),
         wallpaper_image,
         colors,
+        -- widgets.spacer.vertical(25),
         wallpapers_layout,
-        widgets.spacer.vertical(15),
+        -- widgets.spacer.vertical(25),
+        {
+            layout = wibox.layout.flex.horizontal,
+            spacing = dpi(10),
+            reset_colorscheme,
+            save_colorscheme,
+        },
         {
             layout = wibox.layout.flex.horizontal,
             spacing = dpi(10),
@@ -225,13 +256,13 @@ local function image_tab()
         wallpapers_layout:reset()
 
         if wallpapers ~= nil then
-            theme_daemon:select_wallpaper(wallpapers[1])
-
             for _, wallpaper in ipairs(wallpapers) do
                 wallpapers_layout:add(wallpaper_widget(wallpaper))
             end
-            stack:raise_widget(widget)
+
+            theme_daemon:select_wallpaper(wallpapers[1])
             wallpapers_layout:set_position(0)
+            stack:raise_widget(widget)
         end
     end)
 

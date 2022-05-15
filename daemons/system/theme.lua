@@ -17,6 +17,8 @@ local capi = { screen = screen, client = client }
 local theme = { }
 local instance = nil
 
+local DATA_PATH = helpers.filesystem.get_cache_dir("colorschemes") .. "data.json"
+
 local pictures_mimetypes =
 {
     ["application/pdf"] = "lximage", -- AI
@@ -51,7 +53,13 @@ local function update()
     awful.spawn("pywalfox update", false)
 end
 
-local function generate_colorscheme_from_wallpaper(self, wallpaper)
+local function generate_colorscheme_from_wallpaper(self, wallpaper, reset)
+    if self._private.colors[wallpaper.path] ~= nil and reset ~= true then
+        self:emit_signal("colorscheme::generated", self._private.colors[wallpaper.path])
+        self:emit_signal("wallpaper::selected", wallpaper)
+        return
+    end
+
     local color_count = 16
 
     local function imagemagick()
@@ -96,9 +104,14 @@ local function generate_colorscheme_from_wallpaper(self, wallpaper)
             colors[6] = helpers.color.alter_brightness(colors[14], -0.2, 0.2)
             colors[7] = helpers.color.alter_brightness(colors[15], -0.2, 0.2)
 
-            self._private.colors = colors
             self:emit_signal("colorscheme::generated", colors)
             self:emit_signal("wallpaper::selected", wallpaper)
+
+            self._private.colors[wallpaper.path] = colors
+            helpers.filesystem.save_file(
+                DATA_PATH,
+                helpers.json.encode(self._private.colors, { indent = true })
+            )
         end)
     end
 
@@ -310,7 +323,8 @@ end
 
 function theme:set_wallpaper(type)
     if type == "image" then
-        self._private.wallpaper = self._private.selected_wallpaper
+        self:save_colorscheme()
+        self._private.wallpaper = self._private.selected_wallpaper.path
         settings:set_value("theme.wallpaper", self._private.wallpaper.path)
     elseif type == "tiled" then
     elseif type == "color" then
@@ -329,19 +343,30 @@ function theme:set_wallpaper(type)
 end
 
 function theme:select_wallpaper(wallpaper)
-    self._private.selected_wallpaper = wallpaper.path
+    self._private.selected_wallpaper = wallpaper
     generate_colorscheme_from_wallpaper(self, wallpaper)
 end
 
+function theme:save_colorscheme()
+    helpers.filesystem.save_file(
+        DATA_PATH,
+        helpers.json.encode(self._private.colors, { indent = true })
+    )
+end
+
+function theme:reset_colorscheme()
+    generate_colorscheme_from_wallpaper(self, self._private.selected_wallpaper, true)
+end
+
 function theme:edit_color(index)
-    local color = self._private.colors[index]
+    local color = self._private.colors[self._private.selected_wallpaper.path][index]
     local cmd = string.format([[yad --title='Pick A Color'  --width=500 --height=500 --color --init-color=%s
         --mode=hex --button=Cancel:1 --button=Select:0]], color)
 
     awful.spawn.easy_async(cmd, function(stdout, stderr)
         stdout = stdout:gsub("%s+", "")
         if stdout ~= "" and stdout ~= nil then
-            self._private.colors[index] = stdout
+            self._private.colors[self._private.selected_wallpaper.path][index] = stdout
             self:emit_signal("color::" .. index .. "::updated", stdout)
         end
     end)
@@ -393,6 +418,22 @@ local function new()
     gtable.crush(ret, theme, true)
 
     ret._private = {}
+    ret._private.wallpapers_watchers = {}
+    ret._private.colors = {}
+
+    helpers.filesystem.read_file(DATA_PATH, function(content)
+        if content == nil then
+            return
+        end
+
+        local data = helpers.json.decode(content)
+        if data == nil then
+            return
+        end
+
+        ret._private.colors = data
+    end)
+
     local default_wallpapers_paths = helpers.filesystem.get_awesome_config_dir("presentation/assets/wallpapers")
     local saved_wallpapers_paths = settings:get_value("theme.wallpapers_paths")
     if #{saved_wallpapers_paths or {}} == 0 or saved_wallpapers_paths == nil then
@@ -407,8 +448,6 @@ local function new()
     ret._private.color = settings:get_value("theme.color") or "#000000"
 
     scan_for_wallpapers(ret)
-
-    ret._private.wallpapers_watchers = {}
     watch_wallpaper_changes(ret)
 
     capi.screen.connect_signal("request::wallpaper", function(s)
