@@ -1,7 +1,6 @@
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
-local gshape = require("gears.shape")
 local wibox = require("wibox")
 local widgets = require("presentation.ui.widgets")
 local beautiful = require("beautiful")
@@ -9,6 +8,7 @@ local network_daemon = require("daemons.hardware.network")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local pairs = pairs
+local capi = { awesome = awesome }
 
 local wifi = { }
 local instance = nil
@@ -143,11 +143,7 @@ local function access_point_widget(layout, access_point, accent_color)
     network_daemon:connect_signal(access_point.hw_address .. "::state", function(self, new_state, old_state)
         name:set_text(access_point.ssid .. " - " .. network_daemon.device_state_to_string(new_state))
 
-        if new_state == network_daemon.DeviceState.ACTIVATED then
-            layout:remove_widgets(widget)
-            layout:insert(1, widget)
-            connect_or_disconnect:set_text("Disconnect")
-        else
+        if new_state ~= network_daemon.DeviceState.ACTIVATED then
             connect_or_disconnect:set_text("Connect")
         end
 
@@ -155,8 +151,16 @@ local function access_point_widget(layout, access_point, accent_color)
             spinning_circle:start()
             connect_or_disconnect_stack:raise_widget(spinning_circle)
         elseif new_state == network_daemon.DeviceState.ACTIVATED then
+            layout:remove_widgets(widget)
+            layout:insert(1, widget)
+            connect_or_disconnect:set_text("Disconnect")
+
             spinning_circle:abort()
             connect_or_disconnect_stack:raise_widget(connect_or_disconnect)
+
+            prompt:stop()
+            widget:turn_off()
+            widget.forced_height = dpi(60)
         end
     end)
 
@@ -173,6 +177,7 @@ local function access_point_widget(layout, access_point, accent_color)
         forced_height = dpi(65),
         on_press = function(self)
             if self._private.state == false then
+                capi.awesome.emit_signal("access_point_widget::expanded", widget)
                 prompt:start()
                 self.forced_height = dpi(250)
                 self:turn_on()
@@ -208,6 +213,14 @@ local function access_point_widget(layout, access_point, accent_color)
             }
         }
     }
+
+    capi.awesome.connect_signal("access_point_widget::expanded", function(toggled_on_widget)
+        if toggled_on_widget ~= widget then
+            prompt:stop()
+            widget:turn_off()
+            widget.forced_height = dpi(60)
+        end
+    end)
 
     return widget
 end

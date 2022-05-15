@@ -9,6 +9,7 @@ local bluetooth_daemon = require("daemons.hardware.bluetooth")
 local helpers = require("helpers")
 local icon_theme = require("services.icon_theme")
 local dpi = beautiful.xresources.apply_dpi
+local capi = { awesome = awesome }
 
 local bluetooth = { }
 local instance = nil
@@ -117,6 +118,7 @@ local function device_widget(device, path, layout, accent_color)
         on_press_bg = string.sub(beautiful.colors.background, 1, 7) .. "00",
         on_press = function(self)
             if self._private.state == false then
+                capi.awesome.emit_signal("bluetooth_device_widget::expanded", widget)
                 self.forced_height = dpi(130)
                 self:turn_on()
             end
@@ -150,6 +152,14 @@ local function device_widget(device, path, layout, accent_color)
         connect_or_disconnect.text = device.Connected and "Disconnect" or "Connect"
         trust_or_untrust.text = device.Trusted and "Untrust" or "Trust"
         pair_or_unpair.text = device.Paired and "Unpair" or "Pair"
+    end)
+
+
+    capi.awesome.connect_signal("bluetooth_device_widget::expanded", function(toggled_on_widget)
+        if toggled_on_widget ~= widget then
+            widget:turn_off()
+            widget.forced_height = dpi(60)
+        end
     end)
 
     return widget
