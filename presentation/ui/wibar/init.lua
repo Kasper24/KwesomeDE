@@ -378,9 +378,8 @@ local function client_task(favorites_layout, task_list, client)
 
     client:connect_signal("property::class", function()
         find_icon_for_client(client)
-        button:set_size(client.font_icon.size)
         button:set_font(client.font_icon.font)
-        button:set_text(client.font_icon.text)
+        button:set_text(client.font_icon.icon)
     end)
 
     client:connect_signal("focus", function()
