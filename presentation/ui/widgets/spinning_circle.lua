@@ -7,6 +7,10 @@ local setmetatable = setmetatable
 
 local spinning_circle = { mt = {} }
 
+function spinning_circle:start()
+    self._private.anim:start()
+end
+
 function spinning_circle:abort()
     self._private.anim:stop()
 end
@@ -16,6 +20,7 @@ local function new(args)
 
     args.forced_width = args.forced_width or nil
     args.forced_height = args.forced_height or nil
+    args.thickness = args.thickness or dpi(30)
 
     local widget = wibox.widget
     {
@@ -25,7 +30,7 @@ local function new(args)
         max_value = 100,
         min_value = 0,
         value = 30,
-        thickness = dpi(30),
+        thickness = args.thickness,
         rounded_edge = true,
         bg = beautiful.colors.surface,
         colors =

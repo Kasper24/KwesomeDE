@@ -14,7 +14,7 @@ local math = math
 local network = { }
 local instance = nil
 
-local NMState =
+network.NMState =
 {
     UNKNOWN = 0, -- Networking state is unknown. This indicates a daemon error that
     -- makes it unable to reasonably assess the state. In such event the applications
@@ -42,13 +42,13 @@ local NMState =
     -- indicate full network connectivity.
 }
 
-local DeviceType =
+network.DeviceType =
 {
     ETHERNET = 1,
     WIFI = 2
 }
 
-local DeviceState =
+network.DeviceState =
 {
     UNKNOWN = 0, -- the device's state is unknown
     UNMANAGED = 10, -- the device is recognized, but not managed by NetworkManager
@@ -82,6 +82,27 @@ local DeviceState =
     FAILED = 120 -- the device failed to connect to
     -- the requested network and is cleaning up the connection request
 }
+
+function network.device_state_to_string(state)
+    local device_state_to_string =
+    {
+        [0] = "Unknown",
+        [10] = "Unmanaged",
+        [20] = "Unavailable",
+        [30] = "Disconnected",
+        [40] = "Prepare",
+        [50] = "Config",
+        [60] = "Need Auth",
+        [70] = "IP Config",
+        [80] = "IP Check",
+        [90] = "Secondaries",
+        [100] = "Activated",
+        [110] = "Deactivated",
+        [120] = "Failed"
+    }
+
+    return device_state_to_string[state]
+end
 
 local function flags_to_security(flags, wpa_flags, rsn_flags)
     local str = ""
@@ -159,14 +180,15 @@ local function create_profile(access_point, password, auto_connect)
 end
 
 local function on_wifi_device_state_changed(self, proxy, new_state, old_state, reason)
-    if new_state == DeviceState.ACTIVATED then
-        local active_access_point_proxy = dbus_proxy.Proxy:new {
-            bus = dbus_proxy.Bus.SYSTEM,
-            name = "org.freedesktop.NetworkManager",
-            interface = "org.freedesktop.NetworkManager.AccessPoint",
-            path = self._private.wifi_proxy.ActiveAccessPoint
-        }
+    local active_access_point_proxy = dbus_proxy.Proxy:new {
+        bus = dbus_proxy.Bus.SYSTEM,
+        name = "org.freedesktop.NetworkManager",
+        interface = "org.freedesktop.NetworkManager.AccessPoint",
+        path = self._private.wifi_proxy.ActiveAccessPoint
+    }
 
+    self:emit_signal(tostring(active_access_point_proxy.HwAddress) .. "::state", new_state, old_state)
+    if new_state == network.DeviceState.ACTIVATED then
         local ssid = NM.utils_ssid_to_utf8(active_access_point_proxy.Ssid)
         self:emit_signal("access_point::connected", ssid, active_access_point_proxy.Strength)
     end
@@ -202,19 +224,12 @@ local function get_wifi_proxy(self)
             path = device_path
         }
 
-        if device_proxy.DeviceType == DeviceType.WIFI then
+        if device_proxy.DeviceType == network.DeviceType.WIFI then
             self._private.device_proxy = device_proxy
             self._private.wifi_proxy = dbus_proxy.Proxy:new {
                 bus = dbus_proxy.Bus.SYSTEM,
                 name = "org.freedesktop.NetworkManager",
                 interface = "org.freedesktop.NetworkManager.Device.Wireless",
-                path = device_path
-            }
-
-            local wifi_properties_proxy = dbus_proxy.Proxy:new {
-                bus = dbus_proxy.Bus.SYSTEM,
-                name = "org.freedesktop.NetworkManager",
-                interface = "org.freedesktop.DBus.Properties",
                 path = device_path
             }
 
@@ -245,6 +260,13 @@ function network:scan_access_points()
                 path = access_point_path
             }
 
+            -- for _, access_point in ipairs(self._private.access_points) do
+            --     if access_point.hw_address == access_point_proxy.HwAddress then
+            --         print("duplicates")
+            --         return
+            --     end
+            -- end
+
             if access_point_proxy.Ssid ~= nil then
                 local ssid = NM.utils_ssid_to_utf8(access_point_proxy.Ssid)
                 local security = flags_to_security(access_point_proxy.Flags, access_point_proxy.WpaFlags, access_point_proxy.RsnFlags)
@@ -267,6 +289,7 @@ function network:scan_access_points()
                     password = password,
                     strength = access_point_proxy.Strength,
                     path = access_point_path,
+                    hw_address = access_point_proxy.HwAddress,
                     device_interface = self._private.device_proxy.Interface,
                     device_proxy_path = self._private.device_proxy.object_path,
                 })
@@ -391,15 +414,6 @@ local function new()
         end
     end)
 
-    ret._private.client_proxy:connect_signal("StateChanged", function(self, state)
-        if state == NMState.CONNECTED_GLOBAL then
-            ret:emit_signal("network_state", true)
-        else
-            ret:emit_signal("network_state", false)
-        end
-    end)
-
-
     get_wifi_proxy(ret)
     ret:scan_access_points()
 
@@ -407,7 +421,7 @@ local function new()
         ret:emit_signal("wireless_state", ret._private.client_proxy.WirelessEnabled )
 
         local active_access_point = ret._private.wifi_proxy.ActiveAccessPoint
-        if ret._private.device_proxy.State == DeviceState.ACTIVATED and active_access_point ~= "/" then
+        if ret._private.device_proxy.State == network.DeviceState.ACTIVATED and active_access_point ~= "/" then
             local active_access_point_proxy = dbus_proxy.Proxy:new {
                 bus = dbus_proxy.Bus.SYSTEM,
                 name = "org.freedesktop.NetworkManager",
@@ -417,8 +431,6 @@ local function new()
 
             local ssid = NM.utils_ssid_to_utf8(active_access_point_proxy.Ssid)
             ret:emit_signal("access_point::connected", ssid, active_access_point_proxy.Strength)
-        else
-            ret:emit_signal("access_point::disconnected")
         end
     end)
 

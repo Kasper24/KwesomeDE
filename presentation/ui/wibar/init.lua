@@ -542,17 +542,9 @@ local function network()
         text = beautiful.wifi_off_icon.icon,
     }
 
-    network_daemon:connect_signal("network_state", function(self, state)
-        if state then
-            widget:set_text(beautiful.wifi_low_icon.icon)
-        else
-            widget:set_text(beautiful.wifi_off_icon.icon)
-        end
-    end)
-
     network_daemon:connect_signal("wireless_state", function(self, state)
         if state then
-            widget:set_text(beautiful.wifi_low_icon.icon)
+            widget:set_text(beautiful.router_icon.icon)
         else
             widget:set_text(beautiful.wifi_off_icon.icon)
         end

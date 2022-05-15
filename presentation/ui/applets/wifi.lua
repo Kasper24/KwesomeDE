@@ -33,7 +33,7 @@ function wifi:toggle(next_to)
     end
 end
 
-local function access_point_widget(access_point, accent_color)
+local function access_point_widget(layout, access_point, accent_color)
     local widget = nil
 
     local wifi_icon = widgets.text
@@ -80,7 +80,9 @@ local function access_point_widget(access_point, accent_color)
         height = dpi(30),
         halign = "left",
         size = 12,
-        text = access_point.ssid,
+        text =  network_daemon:is_access_point_active(access_point)
+                and access_point.ssid .. " - Activated"
+                or access_point.ssid,
         color = beautiful.colors.on_surface,
     }
 
@@ -116,38 +118,63 @@ local function access_point_widget(access_point, accent_color)
         normal_bg = beautiful.colors.surface,
         text_normal_bg = beautiful.colors.on_surface,
         size = 12,
-        text = "Connect",
+        text = network_daemon:is_access_point_active(access_point) == true and "Disconnect" or "Connect",
         on_press = function()
             network_daemon:toggle_access_point(access_point, prompt:get_text(), auto_connect_checkbox:get_value())
         end
     }
 
-    network_daemon:connect_signal("access_point::connected", function(self, ssid, strength)
-        if network_daemon:is_access_point_active(access_point) == true or ssid == access_point.ssid then
+    local spinning_circle = widgets.spinning_circle
+    {
+        forced_width = dpi(25),
+        forced_height = dpi(25),
+        thickness = dpi(10)
+    }
+    spinning_circle:abort()
+
+    local connect_or_disconnect_stack = wibox.widget
+    {
+        widget = wibox.layout.stack,
+        top_only = true,
+        connect_or_disconnect,
+        spinning_circle
+    }
+
+    network_daemon:connect_signal(access_point.hw_address .. "::state", function(self, new_state, old_state)
+        name:set_text(access_point.ssid .. " - " .. network_daemon.device_state_to_string(new_state))
+
+        if new_state == network_daemon.DeviceState.ACTIVATED then
+            layout:remove_widgets(widget)
+            layout:insert(1, widget)
             connect_or_disconnect:set_text("Disconnect")
         else
             connect_or_disconnect:set_text("Connect")
         end
+
+        if new_state == network_daemon.DeviceState.PREPARE then
+            spinning_circle:start()
+            connect_or_disconnect_stack:raise_widget(spinning_circle)
+        elseif new_state == network_daemon.DeviceState.ACTIVATED then
+            spinning_circle:abort()
+            connect_or_disconnect_stack:raise_widget(connect_or_disconnect)
+        end
     end)
 
-    -- network_daemon:connect_signal("access_point::disconnected", function(self, ssid, strength)
-    --     if network_daemon:is_access_point_active(access_point) == true then
-    --         connect_or_disconnect:set_text("Disconnect")
-    --     else
-    --         connect_or_disconnect:set_text("Connect")
-    --     end
-    -- end)
+    network_daemon:connect_signal("access_point::connected", function(self, ssid, strength)
+        spinning_circle:abort()
+        connect_or_disconnect_stack:raise_widget(connect_or_disconnect)
+    end)
 
     widget = widgets.button.elevated.state
     {
         on_normal_bg = string.sub(beautiful.colors.background, 1, 7) .. "00",
         on_hover_bg = string.sub(beautiful.colors.background, 1, 7) .. "00",
         on_press_bg = string.sub(beautiful.colors.background, 1, 7) .. "00",
-        forced_height = dpi(60),
+        forced_height = dpi(65),
         on_press = function(self)
             if self._private.state == false then
                 prompt:start()
-                self.forced_height = dpi(230)
+                self.forced_height = dpi(250)
                 self:turn_on()
             end
         end,
@@ -176,7 +203,7 @@ local function access_point_widget(access_point, accent_color)
             {
                 layout = wibox.layout.flex.horizontal,
                 spacing = dpi(15),
-                connect_or_disconnect,
+                connect_or_disconnect_stack,
                 cancel
             }
         }
@@ -267,7 +294,11 @@ local function new()
     network_daemon:connect_signal("scan_access_points::success", function(self, access_points)
         layout:reset()
         for _, access_point in pairs(access_points) do
-            layout:add(access_point_widget(access_point, accent_color))
+            if network_daemon:is_access_point_active(access_point) then
+                layout:insert(1, access_point_widget(layout, access_point, accent_color))
+            else
+                layout:add(access_point_widget(layout, access_point, accent_color))
+            end
         end
         stack:raise_widget(layout)
     end)
