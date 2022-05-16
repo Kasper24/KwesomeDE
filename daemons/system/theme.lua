@@ -53,16 +53,14 @@ local function update()
     awful.spawn("pywalfox update", false)
 end
 
-local function run_scripts_after_template_generation()
-    gtimer
-    {
-        timeout = 2,
-        autostart = false,
-        single_shot = true,
-        callback = function()
-            capi.awesome.restart()
-        end
-    }
+local function run_scripts_after_template_generation(self)
+    if self._private.command_after_generation ~= nil then
+        awful.spawn.with_shell(self._private.command_after_generation, false)
+    end
+
+    gtimer { timeout = 2,autostart = true,single_shot = true, callback = function()
+        capi.awesome.restart()
+    end }
 end
 
 local function generate_templates(self)
@@ -91,7 +89,7 @@ local function generate_templates(self)
             end
             helpers.filesystem.save_file(new_name, new_content, function()
                 if index == #self._private.templates then
-                    run_scripts_after_template_generation()
+                    run_scripts_after_template_generation(self)
                 end
             end)
         end)
@@ -474,6 +472,11 @@ function theme:remove_template(template)
     end
 end
 
+function theme:set_command_after_generation(text)
+    self._private.command_after_generation = text
+    settings:set_value("theme.command_after_generation", self._private.command_after_generation)
+end
+
 function theme:get_colorscheme()
     return self._private.colorscheme
 end
@@ -492,6 +495,10 @@ end
 
 function theme:get_templates()
     return self._private.templates
+end
+
+function theme:get_command_after_generation()
+    return self._private.command_after_generation
 end
 
 local function new()
@@ -546,6 +553,7 @@ local function new()
         "#FFD044",
         "#FFFFC5"
     }
+    ret._private.command_after_generation = settings:get_value("theme.command_after_generation") or nil
 
     ret._private.color = settings:get_value("theme.color") or "#000000"
 

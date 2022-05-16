@@ -174,6 +174,23 @@ local function templates_widget()
     }
 end
 
+local function command_after_generation_widget()
+    local prompt = widgets.prompt
+    {
+        -- forced_width = dpi(250),
+        -- forced_height = dpi(50),
+        reset_on_stop = false,
+        prompt = "Run after generation: ",
+        text = theme_daemon:get_command_after_generation(),
+        text_color = beautiful.colors.on_background,
+        changed_callback = function(text)
+            theme_daemon:set_command_after_generation(text)
+        end
+    }
+
+    return prompt.widget
+end
+
 local function new(layout)
     local back_button = widgets.button.text.normal
     {
@@ -210,7 +227,8 @@ local function new(layout)
                 layout = wibox.layout.fixed.vertical,
                 spacing = dpi(15),
                 wallpapers_paths_widget(),
-                templates_widget()
+                templates_widget(),
+                command_after_generation_widget()
             }
         }
     }
