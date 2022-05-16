@@ -370,7 +370,7 @@ function theme:set_wallpaper(type)
     if type == "image" then
         self:save_colorscheme()
         self._private.wallpaper = self._private.selected_wallpaper.path
-        settings:set_value("theme.wallpaper", self._private.wallpaper.path)
+        settings:set_value("theme.wallpaper", self._private.wallpaper)
     elseif type == "tiled" then
     elseif type == "color" then
         self._private.color = self._private.selected_color
