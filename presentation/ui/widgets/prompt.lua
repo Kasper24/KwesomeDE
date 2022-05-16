@@ -60,7 +60,7 @@ local function update_markup(self, show_cursor)
     local text_color = gcolor.ensure_pango_color(self.text_color)
     local cursor_color = gcolor.ensure_pango_color(self.cursor_color)
 
-    local text = gstring.xml_escape(tostring(self.text)) or ""
+    local text = tostring(self.text) or ""
     if self.obscure == true then
         text = text:gsub(".", "*")
     end
@@ -84,38 +84,67 @@ local function update_markup(self, show_cursor)
             text_end = gstring.xml_escape(text:sub(self._private.cur_pos + 1 + offset))
         end
 
-        self.textbox:set_markup(string.format(
-            '<span font_desc="%s" foreground="%s">%s  </span>' ..
-            '<span foreground="%s">%s</span>' ..
-            '<span foreground="%s">%s</span>' ..
-            '<span background="%s">%s</span>' ..
-            '<span foreground="%s">%s%s</span>',
-            self.icon_font,
-            icon_color,
-            self.icon,
-            prompt_color,
-            self.prompt,
-            text_color,
-            text_start,
-            cursor_color,
-            char,
-            text_color,
-            text_end,
-            spacer
-        ))
+        if self.icon ~= nil then
+            self.textbox:set_markup(string.format(
+                '<span font_desc="%s" foreground="%s">%s  </span>' ..
+                '<span foreground="%s">%s</span>' ..
+                '<span foreground="%s">%s</span>' ..
+                '<span background="%s">%s</span>' ..
+                '<span foreground="%s">%s%s</span>',
+                self.icon_font,
+                icon_color,
+                self.icon,
+                prompt_color,
+                self.prompt,
+                text_color,
+                text_start,
+                cursor_color,
+                char,
+                text_color,
+                text_end,
+                spacer
+            ))
+        else
+            self.textbox:set_markup(string.format(
+                '<span foreground="%s">%s</span>' ..
+                '<span foreground="%s">%s</span>' ..
+                '<span background="%s">%s</span>' ..
+                '<span foreground="%s">%s%s</span>',
+                prompt_color,
+                self.prompt,
+                text_color,
+                text_start,
+                cursor_color,
+                char,
+                text_color,
+                text_end,
+                spacer
+            ))
+        end
     else
-        self.textbox:set_markup(string.format(
-            '<span font_desc="%s" foreground="%s">%s  </span>' ..
-            '<span foreground="%s">%s</span>' ..
-            '<span foreground="%s">%s</span>',
-            self.icon_font,
-            icon_color,
-            self.icon,
-            prompt_color,
-            self.prompt,
-            text_color,
-            text
-        ))
+        if self.icon  ~= nil then
+            self.textbox:set_markup(string.format(
+                '<span font_desc="%s" foreground="%s">%s  </span>' ..
+                '<span foreground="%s">%s</span>' ..
+                '<span foreground="%s">%s</span>',
+                self.icon_font,
+                icon_color,
+                self.icon,
+                prompt_color,
+                self.prompt,
+                text_color,
+                gstring.xml_escape(text)
+            ))
+        else
+            self.textbox:set_markup(string.format(
+                '<span foreground="%s">%s</span>' ..
+                '<span foreground="%s">%s</span>',
+                prompt_color,
+                self.prompt,
+                text_color,
+                gstring.xml_escape(text)
+            ))
+        end
     end
 end
 
@@ -346,7 +375,7 @@ local function new(args)
     args = args or {}
 
     args.icon_font = args.icon_font or beautiful.font
-    args.icon = args.icon or ""
+    args.icon = args.icon or nil
     args.font = args.font or beautiful.prompt_font or beautiful.font
     args.prompt = args.prompt or ""
     args.text = args.text or ""
