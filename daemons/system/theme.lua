@@ -108,6 +108,7 @@ local function generate_colorscheme_from_wallpaper(self, wallpaper, reset)
     local function imagemagick()
         local colors = {}
         local cmd = string.format("magick %s -resize 25%% -colors %d -unique-colors txt:-", wallpaper.path, color_count)
+        print(cmd)
         awful.spawn.easy_async_with_shell(cmd, function(stdout)
             for line in stdout:gmatch("[^\r\n]+") do
                 local hex = line:match("#(.*) s")
@@ -131,21 +132,67 @@ local function generate_colorscheme_from_wallpaper(self, wallpaper, reset)
                 end
             end
 
+            colors[2] = colors[9]
+            colors[3] = colors[10]
+            colors[4] = colors[11]
+            colors[5] = colors[12]
+            colors[6] = colors[13]
+            colors[7] = colors[14]
+            colors[8] = colors[15]
+            colors[9] = colors[16]
+
+            colors[10] = colors[2]
+            colors[11] = colors[3]
+            colors[12] = colors[4]
+            colors[13] = colors[5]
+            colors[14] = colors[6]
+            colors[15] = colors[7]
+
             if string.sub(colors[1], 2, 2) ~= "0" then
-                colors[1] = helpers.color.darken(colors[1], 24)
+                colors[1] = helpers.color.pywal_darken(colors[1], 0.4)
             end
-            colors[9] = helpers.color.nice_lighten(colors[1], 13)
-            colors[9] = helpers.color.saturate_color(colors[9], 0.5)
+            colors[8] = helpers.color.pywal_blend(colors[8], "#EEEEEE")
+            colors[9] = helpers.color.pywal_darken(colors[8], 0.3)
+            colors[16] = colors[8]
 
-            colors[8] = helpers.color.blend(colors[16], "#EEEEEE")
-            colors[16] = helpers.color.nice_lighten(colors[8], 15)
+            for index = 10, 16 do
+                local hsl_color = helpers.color.hex2hsl(colors[index - 8])
+                -- colors[index] = helpers.color.alter_brightness(colors[8], 60)
+                colors[index] =  helpers.color.saturate_color(colors[index - 8], 0.5)
+            end
 
-            colors[2] = helpers.color.alter_brightness(colors[10], -0.2, 0.2)
-            colors[3] = helpers.color.alter_brightness(colors[11], -0.2, 0.2)
-            colors[4] = helpers.color.alter_brightness(colors[12], -0.2, 0.2)
-            colors[5] = helpers.color.alter_brightness(colors[13], -0.2, 0.2)
-            colors[6] = helpers.color.alter_brightness(colors[14], -0.2, 0.2)
-            colors[7] = helpers.color.alter_brightness(colors[15], -0.2, 0.2)
+            colors[9] = helpers.color.alter_brightness(colors[1], 1 * 25)
+            -- colors[16] = helpers.color.alter_brightness(colors[8], 1 * 60)
+
+            -- colors[9] = helpers.color.pywal_lighten(colors[1], 1)
+            -- colors[9] = helpers.color.saturate_color(colors[1], 0.7)
+
+            -- for index = 10, 16 do
+            --     -- colors[index] = helpers.color.pywal_darken(colors[index], 0.6)
+            --     colors[index] = helpers.color.saturate_color(colors[index], 0.7)
+            -- end
+
+            -- for index, color in ipairs(colors) do
+            --     if index >= 9 then
+            --         local hsl_color = helpers.color.hex2hsl(colors[index - 8])
+            --         color =  helpers.color.alter_brightness(colors[index - 8], 1 * hsl_color.l * 0.3, 0.1)
+            --     else
+            --         break
+            --     end
+            -- end
+
+            -- colors[9] = helpers.color.nice_lighten(colors[1], 13)
+            -- colors[9] = helpers.color.saturate_color(colors[9], 0.5)
+
+            -- colors[8] = helpers.color.blend(colors[16], "#EEEEEE")
+            -- colors[16] = helpers.color.nice_lighten(colors[8], 15)
+
+            -- colors[2] = helpers.color.alter_brightness(colors[10], -0.2, 0.2)
+            -- colors[3] = helpers.color.alter_brightness(colors[11], -0.2, 0.2)
+            -- colors[4] = helpers.color.alter_brightness(colors[12], -0.2, 0.2)
+            -- colors[5] = helpers.color.alter_brightness(colors[13], -0.2, 0.2)
+            -- colors[6] = helpers.color.alter_brightness(colors[14], -0.2, 0.2)
+            -- colors[7] = helpers.color.alter_brightness(colors[15], -0.2, 0.2)
 
             self:emit_signal("colorscheme::generated", colors)
             self:emit_signal("wallpaper::selected", wallpaper)
