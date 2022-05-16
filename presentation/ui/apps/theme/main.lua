@@ -200,7 +200,7 @@ local function image_tab()
         size = 15,
         text = "Set Colorscheme",
         on_press = function()
-            theme_daemon:set_wallpaper(false, true)
+            theme_daemon:set_colorscheme()
         end
     }
 
@@ -212,7 +212,8 @@ local function image_tab()
         size = 15,
         text = "Set Both",
         on_press = function()
-            theme_daemon:set_wallpaper(true, true)
+            theme_daemon:set_wallpaper("image")
+            theme_daemon:set_colorscheme()
         end
     }
 

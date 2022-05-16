@@ -12,7 +12,7 @@ local inotify = require("services.inotify")
 local helpers = require("helpers")
 local string = string
 local table = table
-local capi = { screen = screen, client = client }
+local capi = { awesome = awesome, screen = screen, client = client }
 
 local theme = { }
 local instance = nil
@@ -51,6 +51,51 @@ local function update()
     awful.spawn("telegram-palette-gen --wal", false)
     awful.spawn("spicetify update", false)
     awful.spawn("pywalfox update", false)
+end
+
+local function run_scripts_after_template_generation()
+    gtimer
+    {
+        timeout = 2,
+        autostart = false,
+        single_shot = true,
+        callback = function()
+            capi.awesome.restart()
+        end
+    }
+end
+
+local function generate_templates(self)
+    for index, template in ipairs(self._private.templates) do
+        helpers.filesystem.read_file(template, function(content)
+            local lines = {}
+            for line in content:gmatch("[^\r\n$]+") do
+                for index = 0, 15 do
+                    if line:match("{{") then
+                        line = line:gsub("{{", "{")
+                    elseif line:match("}}") then
+                        line = line:gsub("}}", "}")
+                    elseif line:match("{color" .. index .. "}") then
+                        local color = self._private.colors[self._private.selected_wallpaper.path][index + 1]
+                        line = line:gsub("{color" .. index .. "}", color)
+                    end
+                end
+
+                table.insert(lines, line)
+            end
+
+            local new_name = template:gsub(".base", "") .. ""
+            local new_content = ""
+            for _, line in ipairs(lines) do
+                new_content = new_content .. line .. "\n"
+            end
+            helpers.filesystem.save_file(new_name, new_content, function()
+                if index == #self._private.templates then
+                    run_scripts_after_template_generation()
+                end
+            end)
+        end)
+    end
 end
 
 local function generate_colorscheme_from_wallpaper(self, wallpaper, reset)
@@ -342,6 +387,12 @@ function theme:set_wallpaper(type)
     end
 end
 
+function theme:set_colorscheme()
+    self._private.colorscheme = self._private.colors[self._private.selected_wallpaper.path]
+    settings:set_value("theme.colorscheme", self._private.colorscheme)
+    generate_templates(self)
+end
+
 function theme:select_wallpaper(wallpaper)
     self._private.selected_wallpaper = wallpaper
     generate_colorscheme_from_wallpaper(self, wallpaper)
@@ -391,14 +442,40 @@ function theme:remove_wallpapers_path(path)
     for index, value in ipairs(self._private.wallpapers_paths) do
         if value == path then
             table.remove(self._private.wallpapers_paths, index)
+            settings:set_value("theme.wallpapers_paths", self._private.wallpapers_paths)
+            self:emit_signal("wallpapers_paths::" .. path .. "::removed")
+            watch_wallpaper_changes(self)
+            scan_for_wallpapers(self)
+            break
         end
     end
+end
 
-    settings:set_value("theme.wallpapers_paths", self._private.wallpapers_paths)
-    self:emit_signal("wallpapers_paths::" .. path .. "::removed")
-    -------------
-    watch_wallpaper_changes(self)
-    scan_for_wallpapers(self)
+function theme:add_template()
+    awful.spawn.easy_async("yad --file --mime-filter text/plain", function(stdout)
+        for line in stdout:gmatch("[^\r\n]+") do
+            if line ~= "" then
+                table.insert(self._private.templates, line)
+                settings:set_value("theme.templates", self._private.templates)
+                self:emit_signal("templates::added", line)
+            end
+        end
+    end)
+end
+
+function theme:remove_template(template)
+    for index, value in ipairs(self._private.templates) do
+        if value == template then
+            table.remove(self._private.templates, index)
+            settings:set_value("theme.templates", self._private.templates)
+            self:emit_signal("templates::" .. template .. "::removed")
+            break
+        end
+    end
+end
+
+function theme:get_colorscheme()
+    return self._private.colorscheme
 end
 
 function theme:get_wallpaper()
@@ -411,6 +488,10 @@ end
 
 function theme:get_wallpapers_paths()
     return self._private.wallpapers_paths
+end
+
+function theme:get_templates()
+    return self._private.templates
 end
 
 local function new()
@@ -442,9 +523,30 @@ local function new()
         ret._private.wallpapers_paths = settings:get_value("theme.wallpapers_paths")
     end
 
+    ret._private.templates = settings:get_value("theme.templates") or {}
     ret._private.wallpaper_type = settings:get_value("theme.wallpaper_type") or "wallpaper"
     ret._private.wallpaper = settings:get_value("theme.wallpaper") or
                             "/home/kasper/.config/wpg/.current"
+    ret._private.colorscheme = settings:get_value("theme.colorscheme") or
+    {
+        "#110104",
+        "#DF712D",
+        "#B88836",
+        "#FEB449",
+        "#FCA33E",
+        "#F98B35",
+        "#DE9E43",
+        "#F6E09C",
+        "#43010D",
+        "#FF8E28",
+        "#FEB436",
+        "#FFED49",
+        "#FFD53C",
+        "#FFB231",
+        "#FFD044",
+        "#FFFFC5"
+    }
+
     ret._private.color = settings:get_value("theme.color") or "#000000"
 
     scan_for_wallpapers(ret)

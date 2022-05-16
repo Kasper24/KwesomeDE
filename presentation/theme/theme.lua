@@ -1,5 +1,6 @@
 local gcolor = require("gears.color")
 local beautiful = require("beautiful")
+local theme_daemon = require("daemons.system.theme")
 local settings = require("services.settings")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
@@ -8,80 +9,54 @@ local math = math
 local theme = {}
 
 local function colors()
-    local xrdb = beautiful.xresources.get_current_theme()
-
-    local colors_path = helpers.filesystem.get_xdg_cache_home("wal/colors.json")
-    local content = helpers.filesystem.read_file_block(colors_path)
-    if content ~= nil then
-        local data = helpers.json.decode(content)
-        if data ~= nil then
-            xrdb = data.colors
-        end
-    end
-
-    local xcolor0 = (xrdb.color0 or "#15191f") .. "C8" -- Black
-    local xcolor1 = xrdb.color1 or "#f865a5" -- Red
-    local xcolor2 = xrdb.color2 or "#29edbe" -- Green
-    local xcolor3 = xrdb.color3 or "#ffc457" -- Yellow
-    local xcolor4 = xrdb.color4 or "#33aeff" -- Blue
-    local xcolor5 = xrdb.color5 or "#af54ff" -- Magenta
-    local xcolor6 = xrdb.color6 or "#2be3fc" -- Cyan
-    local xcolor7 = xrdb.color7 or "#b3b7bd" -- White
-    local xcolor8 = xrdb.color8 or "#29313d" -- Grey
-    local xcolor9 = xrdb.color9 or "#ff6cd3" -- Bright Red
-    local xcolor10 = xrdb.color10 or "#23ffff" -- Bright Green
-    local xcolor11 = xrdb.color11 or "#ffff5a" --  Bright Yellow
-    local xcolor12 = xrdb.color12 or "#2ee6ff" -- Bright Blue
-    local xcolor13 = xrdb.color13 or "#e457ff" -- Bright Magenta
-    local xcolor14 = xrdb.color14 or "#24ffff" -- Bright cyan
-    local xcolor15 = xrdb.color15 or "#edf2fa" -- White
+    local colors = theme_daemon:get_colorscheme()
 
     theme.colors =
     {
-        red = xcolor1,
-        bright_red = xcolor9,
+        red = colors[2],
+        bright_red = colors[10],
 
-        green = xcolor2,
-        bright_green = xcolor10,
+        green = colors[3],
+        bright_green = colors[11],
 
-        yellow = xcolor3,
-        bright_yellow = xcolor11,
+        yellow = colors[4],
+        bright_yellow = colors[12],
 
-        blue = xcolor4,
-        bright_blue = xcolor12,
+        blue = colors[5],
+        bright_blue = colors[13],
 
-        magenta = xcolor5,
-        bright_magenta = xcolor13,
+        magenta = colors[6],
+        bright_magenta = colors[14],
 
-        cyan = xcolor6,
-        bright_cyan = xcolor14,
+        cyan = colors[7],
+        bright_cyan = colors[15],
 
-        background = xcolor0,
-        surface = xcolor8,
-        error = xcolor1,
+        background = colors[1],
+        surface = colors[9],
+        error = colors[1],
         transparent = "#00000000",
 
-        on_background = xcolor7,
-        on_surface = xcolor7,
-        on_error = xcolor0,
-        on_accent = xcolor0,
+        on_background = colors[8],
+        on_surface = colors[8],
+        on_error = colors[1],
+        on_accent = colors[1],
     }
 
     function theme.random_accent_color()
         local accents =
         {
-            xcolor1,
-            xcolor2,
-            -- xcolor3,
-            xcolor4,
-            xcolor5,
-            xcolor6,
-            xcolor9,
-            xcolor10,
-            -- xcolor11,
-            xcolor12,
-            xcolor13,
-            xcolor14
+            colors[2],
+            colors[3],
+            -- colors[4],
+            colors[5],
+            colors[6],
+            colors[7],
+            colors[10],
+            colors[11],
+            -- colors[12],
+            colors[13],
+            colors[14],
+            colors[15]
         }
 
         local i = math.random(1, #accents)

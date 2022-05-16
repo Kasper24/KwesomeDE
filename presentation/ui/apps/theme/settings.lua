@@ -28,7 +28,7 @@ local function wallpaper_path_widget(layout, path)
         end
     }
 
-    local path_widget = wibox.widget
+    local widget = wibox.widget
     {
         layout = wibox.layout.align.horizontal,
         title,
@@ -37,10 +37,10 @@ local function wallpaper_path_widget(layout, path)
     }
 
     theme_daemon:connect_signal("wallpapers_paths::" .. path .. "::removed", function()
-        layout:remove_widgets(path_widget)
+        layout:remove_widgets(widget)
     end)
 
-    return path_widget
+    return widget
 end
 
 local function wallpapers_paths_widget()
@@ -91,6 +91,89 @@ local function wallpapers_paths_widget()
     }
 end
 
+local function template_widget(layout, template)
+    local title = widgets.text
+    {
+        halign = "left",
+        size = 12,
+        text = template
+    }
+
+    local remove_button = widgets.button.text.normal
+    {
+        forced_width = dpi(40),
+        forced_height = dpi(40),
+        animate_size = false,
+        font = beautiful.xmark_icon.font,
+        text = beautiful.xmark_icon.icon,
+        on_press = function()
+            theme_daemon:remove_template(template)
+        end
+    }
+
+    local widget = wibox.widget
+    {
+        layout = wibox.layout.align.horizontal,
+        title,
+        nil,
+        remove_button
+    }
+
+    theme_daemon:connect_signal("templates::" .. template .. "::removed", function()
+        layout:remove_widgets(widget)
+    end)
+
+    return widget
+end
+
+local function templates_widget()
+    local title = widgets.text
+    {
+        size = 15,
+        text = "Templates:"
+    }
+
+    local layout = wibox.widget
+    {
+        layout = widgets.overflow.vertical,
+        forced_height = dpi(100),
+        spacing = dpi(15),
+        scrollbar_widget =
+        {
+            widget = wibox.widget.separator,
+            shape = helpers.ui.rrect(beautiful.border_radius),
+        },
+        scrollbar_width = dpi(3),
+        scroll_speed = 10,
+    }
+
+    local add = widgets.button.text.normal
+    {
+        animate_size = false,
+        text = "Add",
+        on_press = function()
+            theme_daemon:add_template()
+        end
+    }
+
+    for _, template in ipairs(theme_daemon:get_templates()) do
+        layout:add(template_widget(layout, template))
+    end
+
+    theme_daemon:connect_signal("templates::added", function(self, template)
+        layout:add(template_widget(layout, template))
+    end)
+
+    return wibox.widget
+    {
+        layout = wibox.layout.fixed.vertical,
+        spacing = dpi(15),
+        title,
+        layout,
+        add
+    }
+end
+
 local function new(layout)
     local back_button = widgets.button.text.normal
     {
@@ -127,9 +210,7 @@ local function new(layout)
                 layout = wibox.layout.fixed.vertical,
                 spacing = dpi(15),
                 wallpapers_paths_widget(),
-                -- show_cursor(),
-                -- delay(),
-                -- folder()
+                templates_widget()
             }
         }
     }
