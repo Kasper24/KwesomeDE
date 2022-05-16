@@ -94,7 +94,7 @@ function _color.rgb2hsl(color)
 	if max == min then
 		s = 0
 		h = color.h or color[4] or 0
-		return
+        return { h = color[4] or color.a or 0, s = 0, l = l }
 	end
 
 	-- Get saturation
