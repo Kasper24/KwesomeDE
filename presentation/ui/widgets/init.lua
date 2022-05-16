@@ -11,7 +11,6 @@ return
     overflow = require(... .. ".overflow"),
     playerctl = require(... .. ".playerctl"),
     prompt = require(... .. ".prompt"),
-    rofi_grid = require(... .. ".rofi_grid"),
     screen_mask = require(... .. ".screen_mask"),
     slider = require(... .. ".slider"),
     spacer = require(... .. ".spacer"),
