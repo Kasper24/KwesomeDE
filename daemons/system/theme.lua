@@ -126,7 +126,7 @@ local function generate_colorscheme_from_wallpaper(self, wallpaper, reset)
                     return
                 else
                     print("Imagemagick couldn't generate a suitable palette.")
-                    self:emit_signal("colorscheme::error")
+                    self:emit_signal("colorscheme::failed_to_generate", wallpaper.path)
                     return
                 end
             end
@@ -425,6 +425,13 @@ function theme:add_wallpapers_path()
     awful.spawn.easy_async("yad --file --directory", function(stdout)
         for line in stdout:gmatch("[^\r\n]+") do
             if line ~= "" then
+                for _, wallpapers_path in ipairs(self._private.wallpapers_paths) do
+                    if wallpapers_path == line then
+                        self:emit_signal("wallpapers_paths::already_exists", line)
+                        return
+                    end
+                end
+
                 table.insert(self._private.wallpapers_paths, line)
                 settings:set_value("theme.wallpapers_paths", self._private.wallpapers_paths)
                 self:emit_signal("wallpapers_paths::added", line)
@@ -453,6 +460,18 @@ function theme:add_template()
     awful.spawn.easy_async("yad --file --mime-filter text/plain", function(stdout)
         for line in stdout:gmatch("[^\r\n]+") do
             if line ~= "" then
+                for _, template in ipairs(self._private.templates) do
+                    if template == line then
+                        self:emit_signal("templates::already_exists", line)
+                        return
+                    end
+                end
+
+                if line:match(".base") == nil then
+                    self:emit_signal("templates::not_base", line)
+                    return
+                end
+
                 table.insert(self._private.templates, line)
                 settings:set_value("theme.templates", self._private.templates)
                 self:emit_signal("templates::added", line)

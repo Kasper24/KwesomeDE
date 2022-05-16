@@ -53,12 +53,12 @@ local function templates_widget()
     local layout = wibox.widget
     {
         layout = widgets.overflow.vertical,
-        forced_height = dpi(100),
         spacing = dpi(15),
         scrollbar_widget =
         {
             widget = wibox.widget.separator,
             shape = helpers.ui.rrect(beautiful.border_radius),
+            color = beautiful.colors.on_background
         },
         scrollbar_width = dpi(3),
         scroll_speed = 10,
@@ -89,7 +89,7 @@ local function templates_widget()
         {
             widget = wibox.container.constraint,
             strategy = "max",
-            height = dpi(200),
+            height = dpi(400),
             layout
         },
         add
@@ -146,6 +146,7 @@ local function wallpapers_paths_widget()
         {
             widget = wibox.widget.separator,
             shape = helpers.ui.rrect(beautiful.border_radius),
+            color = beautiful.colors.on_background
         },
         scrollbar_width = dpi(3),
         scroll_speed = 10,
@@ -176,7 +177,7 @@ local function wallpapers_paths_widget()
         {
             widget = wibox.container.constraint,
             strategy = "max",
-            height = dpi(200),
+            height = dpi(400),
             layout
         },
         add
