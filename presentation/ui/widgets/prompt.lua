@@ -60,7 +60,7 @@ local function update_markup(self, show_cursor)
     local text_color = gcolor.ensure_pango_color(self.text_color)
     local cursor_color = gcolor.ensure_pango_color(self.cursor_color)
 
-    local text = tostring(self.text) or ""
+    local text = gstring.xml_escape(tostring(self.text)) or ""
     if self.obscure == true then
         text = text:gsub(".", "*")
     end
