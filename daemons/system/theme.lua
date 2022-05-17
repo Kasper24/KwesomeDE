@@ -103,6 +103,8 @@ local function generate_colorscheme_from_wallpaper(self, wallpaper, reset)
         return
     end
 
+    self:emit_signal("colorscheme::generating")
+
     local color_count = 16
 
     local function imagemagick()

@@ -141,6 +141,21 @@ local function image_tab()
         }
     }
 
+    local spinning_circle = wibox.widget
+    {
+        widget = wibox.container.place,
+        halign = "center",
+        valign = "center",
+        widgets.spinning_circle
+        {
+            forced_width = dpi(250),
+            forced_height = dpi(250),
+            thickness = dpi(30)
+        }
+    }
+
+    spinning_circle.children[1]:abort()
+
     local wallpapers_layout = wibox.widget
     {
         layout = widgets.overflow.vertical,
@@ -223,9 +238,7 @@ local function image_tab()
         spacing = dpi(15),
         wallpaper_image,
         colors,
-        -- widgets.spacer.vertical(25),
         wallpapers_layout,
-        -- widgets.spacer.vertical(25),
         {
             layout = wibox.layout.flex.horizontal,
             spacing = dpi(10),
@@ -246,11 +259,20 @@ local function image_tab()
         layout = wibox.layout.stack,
         top_only = true,
         empty_wallpapers,
+        spinning_circle,
         widget
     }
 
+
+    theme_daemon:connect_signal("colorscheme::generating", function(self)
+        spinning_circle.children[1]:start()
+        stack:raise_widget(spinning_circle)
+    end)
+
     theme_daemon:connect_signal("wallpaper::selected", function(self, wallpaper)
         wallpaper_image.image = wallpaper.path
+        spinning_circle.children[1]:abort()
+        stack:raise_widget(widget)
     end)
 
     theme_daemon:connect_signal("wallpapers", function(self, wallpapers)
