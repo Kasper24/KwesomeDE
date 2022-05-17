@@ -31,7 +31,7 @@ end
 
 local function effect(widget, text_bg)
     if text_bg ~= nil then
-		widget.text_animation:set(helpers.color.hex2rgb(text_bg))
+		widget.text_animation:set(helpers.color.hex_to_rgb(text_bg))
     end
 end
 
@@ -49,11 +49,11 @@ local function button(args, type)
 
 	widget.text_animation = animation:new
 	{
-		pos = helpers.color.hex2rgb(args.text_normal_bg),
+		pos = helpers.color.hex_to_rgb(args.text_normal_bg),
 		easing = animation.easing.linear,
 		duration = 0.2,
 		update = function(self, pos)
-			text_widget:set_color(helpers.color.rgb2hex(pos))
+			text_widget:set_color(helpers.color.rgb_to_hex(pos))
 		end
 	}
 
@@ -74,12 +74,12 @@ function text_button.state(args)
     args = args or {}
 
 	args.text_normal_bg = args.text_normal_bg or beautiful.random_accent_color()
-	args.text_hover_bg = args.text_hover_bg or helpers.color.generate_color(args.text_normal_bg, 2, 2, 2)
-	args.text_press_bg = args.text_press_bg or helpers.color.generate_color(args.text_normal_bg, 2, 2, 2)
+	args.text_hover_bg = args.text_hover_bg or helpers.color.button_color(args.text_normal_bg, 0.1)
+	args.text_press_bg = args.text_press_bg or helpers.color.button_color(args.text_normal_bg, 0.1)
 
 	args.text_on_normal_bg = args.text_on_normal_bg or args.text_normal_bg
-	args.text_on_hover_bg = args.text_on_hover_bg or helpers.color.generate_color(args.text_on_normal_bg, 2, 2, 2)
-	args.text_on_press_bg = args.text_on_press_bg or helpers.color.generate_color(args.text_on_normal_bg, 2, 2, 2)
+	args.text_on_hover_bg = args.text_on_hover_bg or helpers.color.button_color(args.text_on_normal_bg, 0.1)
+	args.text_on_press_bg = args.text_on_press_bg or helpers.color.button_color(args.text_on_normal_bg, 0.1)
 
 	args.animate_size = args.animate_size == nil and true or args.animate_size
 
@@ -139,8 +139,8 @@ function text_button.normal(args)
 	args = args or {}
 
 	args.text_normal_bg = args.text_normal_bg or beautiful.random_accent_color()
-	args.text_hover_bg = args.text_hover_bg or helpers.color.generate_color(args.text_normal_bg, 2, 2, 2)
-	args.text_press_bg = args.text_press_bg or helpers.color.generate_color(args.text_normal_bg, 2, 2, 2)
+	args.text_hover_bg = args.text_hover_bg or helpers.color.button_color(args.text_normal_bg, 2, 2, 2)
+	args.text_press_bg = args.text_press_bg or helpers.color.button_color(args.text_normal_bg, 2, 2, 2)
 
 	args.animate_size = args.animate_size == nil and true or args.animate_size
 

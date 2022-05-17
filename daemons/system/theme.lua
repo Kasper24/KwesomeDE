@@ -96,7 +96,7 @@ local function generate_templates(self)
     end
 end
 
-local function generate_colorscheme_from_wallpaper(self, wallpaper, reset)
+local function button_colorscheme_from_wallpaper(self, wallpaper, reset)
     if self._private.colors[wallpaper.path] ~= nil and reset ~= true then
         self:emit_signal("colorscheme::generated", self._private.colors[wallpaper.path])
         self:emit_signal("wallpaper::selected", wallpaper)
@@ -110,7 +110,6 @@ local function generate_colorscheme_from_wallpaper(self, wallpaper, reset)
     local function imagemagick()
         local colors = {}
         local cmd = string.format("magick %s -resize 25%% -colors %d -unique-colors txt:-", wallpaper.path, color_count)
-        print(cmd)
         awful.spawn.easy_async_with_shell(cmd, function(stdout)
             for line in stdout:gmatch("[^\r\n]+") do
                 local hex = line:match("#(.*) s")
@@ -158,43 +157,13 @@ local function generate_colorscheme_from_wallpaper(self, wallpaper, reset)
             colors[16] = colors[8]
 
             for index = 10, 16 do
-                local hsl_color = helpers.color.hex2hsl(colors[index - 8])
-                -- colors[index] = helpers.color.alter_brightness(colors[8], 60)
-                colors[index] =  helpers.color.saturate_color(colors[index - 8], 0.5)
+                local color_libary = require("modules.color")
+                local color = color_libary.color { hex = colors[index - 8] }
+                colors[index] = helpers.color.pywal_alter_brightness(colors[index - 8], color.l * 0.2, 0.4)
             end
 
-            colors[9] = helpers.color.alter_brightness(colors[1], 1 * 25)
-            -- colors[16] = helpers.color.alter_brightness(colors[8], 1 * 60)
-
-            -- colors[9] = helpers.color.pywal_lighten(colors[1], 1)
-            -- colors[9] = helpers.color.saturate_color(colors[1], 0.7)
-
-            -- for index = 10, 16 do
-            --     -- colors[index] = helpers.color.pywal_darken(colors[index], 0.6)
-            --     colors[index] = helpers.color.saturate_color(colors[index], 0.7)
-            -- end
-
-            -- for index, color in ipairs(colors) do
-            --     if index >= 9 then
-            --         local hsl_color = helpers.color.hex2hsl(colors[index - 8])
-            --         color =  helpers.color.alter_brightness(colors[index - 8], 1 * hsl_color.l * 0.3, 0.1)
-            --     else
-            --         break
-            --     end
-            -- end
-
-            -- colors[9] = helpers.color.nice_lighten(colors[1], 13)
-            -- colors[9] = helpers.color.saturate_color(colors[9], 0.5)
-
-            -- colors[8] = helpers.color.blend(colors[16], "#EEEEEE")
-            -- colors[16] = helpers.color.nice_lighten(colors[8], 15)
-
-            -- colors[2] = helpers.color.alter_brightness(colors[10], -0.2, 0.2)
-            -- colors[3] = helpers.color.alter_brightness(colors[11], -0.2, 0.2)
-            -- colors[4] = helpers.color.alter_brightness(colors[12], -0.2, 0.2)
-            -- colors[5] = helpers.color.alter_brightness(colors[13], -0.2, 0.2)
-            -- colors[6] = helpers.color.alter_brightness(colors[14], -0.2, 0.2)
-            -- colors[7] = helpers.color.alter_brightness(colors[15], -0.2, 0.2)
+            colors[9] = helpers.color.pywal_alter_brightness(colors[1], 0.098039216)
+            colors[16] = helpers.color.pywal_alter_brightness(colors[8], 0.24)
 
             self:emit_signal("colorscheme::generated", colors)
             self:emit_signal("wallpaper::selected", wallpaper)
@@ -442,7 +411,7 @@ end
 
 function theme:select_wallpaper(wallpaper)
     self._private.selected_wallpaper = wallpaper
-    generate_colorscheme_from_wallpaper(self, wallpaper)
+    button_colorscheme_from_wallpaper(self, wallpaper)
 end
 
 function theme:save_colorscheme()
@@ -453,7 +422,7 @@ function theme:save_colorscheme()
 end
 
 function theme:reset_colorscheme()
-    generate_colorscheme_from_wallpaper(self, self._private.selected_wallpaper, true)
+    button_colorscheme_from_wallpaper(self, self._private.selected_wallpaper, true)
 end
 
 function theme:edit_color(index)

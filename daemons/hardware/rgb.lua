@@ -71,8 +71,8 @@ END
 
 function rgb:sync_colors_script(new_colors)
     if new_colors == true then
-        self._private.color_1 = helpers.color.hex2hsv(beautiful.random_accent_color())
-        self._private.color_2 = helpers.color.hex2hsv(beautiful.random_accent_color())
+        self._private.color_1 = helpers.color.hex_to_hsv(beautiful.random_accent_color())
+        self._private.color_2 = helpers.color.hex_to_hsv(beautiful.random_accent_color())
     end
 
     local _script = script
@@ -88,8 +88,8 @@ local function new()
     gtable.crush(ret, rgb, true)
     ret._private = {}
 
-    ret._private.color_1 = helpers.color.hex2hsv(beautiful.random_accent_color())
-    ret._private.color_2 = helpers.color.hex2hsv(beautiful.random_accent_color())
+    ret._private.color_1 = helpers.color.hex_to_hsv(beautiful.random_accent_color())
+    ret._private.color_2 = helpers.color.hex_to_hsv(beautiful.random_accent_color())
 
     return ret
 end

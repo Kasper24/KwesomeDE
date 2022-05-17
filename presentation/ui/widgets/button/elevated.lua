@@ -12,7 +12,7 @@ local function effect(widget, bg, shape, border_width, border_color)
 	local animation_targets = {}
 
     if bg ~= nil then
-		animation_targets.color = helpers.color.hex2rgb(bg)
+		animation_targets.color = helpers.color.hex_to_rgb(bg)
     end
     if shape ~= nil then
         widget:get_children_by_id("background_role")[1].shape = shape
@@ -21,7 +21,7 @@ local function effect(widget, bg, shape, border_width, border_color)
 		animation_targets.border_width = border_width
     end
     if border_color ~= nil then
-		animation_targets.border_color = helpers.color.hex2rgb(border_color)
+		animation_targets.border_color = helpers.color.hex_to_rgb(border_color)
     end
 
 	widget.animation:set(animation_targets)
@@ -52,21 +52,21 @@ local function button(args)
 	{
 		pos =
 		{
-			color = helpers.color.hex2rgb(args.normal_bg),
+			color = helpers.color.hex_to_rgb(args.normal_bg),
 			border_width = args.normal_border_width,
-			border_color =  helpers.color.hex2rgb(args.normal_border_color)
+			border_color =  helpers.color.hex_to_rgb(args.normal_border_color)
 		},
 		easing = animation.easing.linear,
 		duration = 0.2,
 		update = function(self, pos)
 			if pos.color then
-				widget:get_children_by_id("background_role")[1].bg = helpers.color.rgb2hex(pos.color)
+				widget:get_children_by_id("background_role")[1].bg = helpers.color.rgb_to_hex(pos.color)
 			end
 			if pos.border_width then
 				widget:get_children_by_id("background_role")[1].border_width = pos.border_width
 			end
 			if pos.border_color then
-				widget:get_children_by_id("background_role")[1].border_color = helpers.color.rgb2hex(pos.border_color)
+				widget:get_children_by_id("background_role")[1].border_color = helpers.color.rgb_to_hex(pos.border_color)
 			end
 		end
 	}
@@ -78,12 +78,12 @@ function elevated_button.state(args)
 	args = args or {}
 
 	args.normal_bg = args.normal_bg or string.sub(beautiful.colors.background, 1, 7) .. "00"
-	args.hover_bg = args.hover_bg or helpers.color.generate_color(args.normal_bg, 2.5, 1.5, 0.8)
-	args.press_bg = args.press_bg or helpers.color.generate_color(args.normal_bg, 3.5, 2, 0.5)
+	args.hover_bg = args.hover_bg or helpers.color.button_color(args.normal_bg, 0.1)
+	args.press_bg = args.press_bg or helpers.color.button_color(args.normal_bg, 0.2)
 
 	args.on_normal_bg = args.on_normal_bg or args.press_bg
-	args.on_hover_bg = args.on_hover_bg or helpers.color.generate_color(args.on_normal_bg, 2.5, 1.5, 0.8)
-	args.on_press_bg = args.on_press_bg or helpers.color.generate_color(args.on_normal_bg, 3.5, 2, 0.5)
+	args.on_hover_bg = args.on_hover_bg or helpers.color.button_color(args.on_normal_bg, 0.1)
+	args.on_press_bg = args.on_press_bg or helpers.color.button_color(args.on_normal_bg, 0.2)
 
 	args.normal_shape = args.normal_shape or helpers.ui.rrect(beautiful.border_radius)
 	args.hover_shape = args.hover_shape or nil
@@ -273,8 +273,8 @@ function elevated_button.normal(args)
 	args = args or {}
 
 	args.normal_bg = args.normal_bg or string.sub(beautiful.colors.background, 1, 7) .. "00"
-	args.hover_bg = args.hover_bg or helpers.color.generate_color(args.normal_bg, 2.5, 1.5, 0.8)
-	args.press_bg = args.press_bg or helpers.color.generate_color(args.normal_bg, 3.5, 2, 0.5)
+	args.hover_bg = args.hover_bg or helpers.color.button_color(args.normal_bg, 0.1)
+	args.press_bg = args.press_bg or helpers.color.button_color(args.normal_bg, 0.2)
 
 	args.normal_shape = args.normal_shape or helpers.ui.rrect(beautiful.border_radius)
 	args.hover_shape = args.hover_shape or nil
