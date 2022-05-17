@@ -241,7 +241,7 @@ local function new(args)
         step_width = dpi(18),
         step_hook = curvaceous,
         background_color = beautiful.colors.transparent,
-        color = helpers.color.darken(graph_accent_color, 50),
+        color = helpers.color.darken(graph_accent_color, 0.5),
         opacity = 1
     }
 

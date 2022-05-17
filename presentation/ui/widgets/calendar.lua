@@ -33,7 +33,7 @@ local function date_widget(date, month, year, is_current, is_another_month)
 	if is_current == true then
 		text_color = beautiful.colors.on_accent
 	elseif is_another_month == true then
-		text_color = helpers.color.darken(beautiful.colors.on_background, 100)
+		text_color = helpers.color.darken(beautiful.colors.on_background, 0.5)
 	end
 
 	local ical = require("helpers.ical")

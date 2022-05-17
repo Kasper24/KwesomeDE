@@ -161,7 +161,7 @@ local function tabs_titlebar(c)
                 forced_height = dpi(1),
                 shape = helpers.ui.rrect(beautiful.border_radius),
                 orientation = "horizontal",
-                color = helpers.color.lighten(beautiful.colors.surface, 50)
+                color = helpers.color.lighten(beautiful.colors.surface, 0.2)
             },
             current_playlist,
             local_files,
