@@ -159,7 +159,7 @@ local function button_colorscheme_from_wallpaper(self, wallpaper, reset)
             for index = 10, 16 do
                 local color_libary = require("modules.color")
                 local color = color_libary.color { hex = colors[index - 8] }
-                colors[index] = helpers.color.pywal_alter_brightness(colors[index - 8], color.l * 0.2, 0.4)
+                colors[index] = helpers.color.pywal_alter_brightness(colors[index - 8], color.l * 0.2, 0.6)
             end
 
             colors[9] = helpers.color.pywal_alter_brightness(colors[1], 0.098039216)
