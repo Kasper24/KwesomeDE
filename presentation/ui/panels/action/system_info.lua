@@ -19,7 +19,7 @@ local ipairs = ipairs
 
 local system_info = { mt = {} }
 
-local function arc_widget(icon, on_release)
+local function arc_widget(icon, on_release, on_scroll_up, on_scroll_down)
     local icon_widget = nil
     if on_release ~= nil then
         icon_widget = widgets.button.text.normal
@@ -31,7 +31,13 @@ local function arc_widget(icon, on_release)
             text = icon.icon,
             on_release = function()
                 on_release()
-            end
+            end,
+            on_scroll_up = function()
+                on_scroll_up()
+            end,
+            on_scroll_down = function()
+                on_scroll_down()
+            end,
         }
     else
         icon_widget = widgets.text
@@ -176,6 +182,12 @@ end
 local function audio(action_panel)
     local arc = arc_widget(beautiful.volume_off_icon, function()
         audio_popup:toggle(action_panel.widget)
+    end,
+    function()
+        pactl_daemon:sink_volume_up(nil, 5)
+    end,
+    function()
+        pactl_daemon:sink_volume_down(nil, 5)
     end)
 
     pactl_daemon:connect_signal("default_sinks_updated", function(self, device)
