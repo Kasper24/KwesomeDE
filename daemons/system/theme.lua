@@ -9,6 +9,7 @@ local wibox = require("wibox")
 local beautiful = require("beautiful")
 local settings = require("services.settings")
 local inotify = require("services.inotify")
+local color_libary = require("modules.color")
 local helpers = require("helpers")
 local string = string
 local table = table
@@ -63,21 +64,65 @@ local function run_scripts_after_template_generation(self)
     end }
 end
 
+local function replace_template_colors(self, line)
+    for index = 0, 15 do
+        local color = self._private.colors[self._private.selected_wallpaper.path][index + 1]
+        color = color_libary.color { hex = color }
+
+        if line:match("{color" .. index .. ".rgba}") then
+            local string = string.format("%s, %s, %s, %s", color.r, color.g, color.b, color.a)
+            return line:gsub("{color" .. index .. ".rgba}", string)
+        elseif line:match("{color" .. index .. ".rgb}") then
+            local string = string.format("%s, %s, %s", color.r, color.g, color.b)
+            return line:gsub("{color" .. index .. ".rgb}", string)
+        elseif line:match("{color" .. index .. ".octal}") then
+            local string = string.format("%s, %s, %s, %s", color.r, color.g, color.b, color.a)
+            return line:gsub("{color" .. index .. "%.octal}", string)
+        elseif line:match("{color" .. index .. ".xrgba}") then
+            local string = string.format("%s/%s/%s/%s", color.r, color.g, color.b, color.a)
+            return line:gsub("{color" .. index .. ".xrgba}", string)
+        elseif line:match("{color" .. index .. ".strip}") then
+            local string = color.hex:gsub("#", "")
+            return line:gsub("{color" .. index .. ".strip}", string)
+        elseif line:match("{color" .. index .. ".red}") then
+            return line:gsub("{color" .. index .. ".red}", color.r)
+        elseif line:match("{color" .. index .. ".green}") then
+            return line:gsub("{color" .. index .. ".green}", color.g)
+        elseif line:match("{color" .. index .. ".blue}") then
+            return line:gsub("{color" .. index .. ".blue}", color.b)
+        elseif line:match("{color" .. index .. "}") then
+            return line:gsub("{color" .. index .. "}", color.hex)
+        end
+    end
+end
+
 local function generate_templates(self)
     for index, template in ipairs(self._private.templates) do
         helpers.filesystem.read_file(template, function(content)
             local lines = {}
             for line in content:gmatch("[^\r\n$]+") do
-                for index = 0, 15 do
-                    if line:match("{{") then
-                        line = line:gsub("{{", "{")
-                    elseif line:match("}}") then
-                        line = line:gsub("}}", "}")
-                    elseif line:match("{color" .. index .. "}") then
-                        local color = self._private.colors[self._private.selected_wallpaper.path][index + 1]
-                        line = line:gsub("{color" .. index .. "}", color)
-                    end
+
+                local color = replace_template_colors(self, line)
+                if color ~= nil then
+                    line = color
                 end
+
+                if line:match("{{") then
+                    line = line:gsub("{{", "{")
+                elseif line:match("}}") then
+                    line = line:gsub("}}", "}")
+                end
+
+                -- if line:match("{background}") then
+                --     local color = self._private.colors[self._private.selected_wallpaper.path][1]
+                --     line = line:gsub("{color" .. index .. "}", color)
+                -- elseif line:match("{foreground}") then
+                --     local color = self._private.colors[self._private.selected_wallpaper.path][16]
+                --     line = line:gsub("{color" .. index .. "}", color)
+                -- elseif line:match("{cursor}") then
+                --     local color = self._private.colors[self._private.selected_wallpaper.path][16]
+                --     line = line:gsub("{color" .. index .. "}", color)
+                -- end
 
                 table.insert(lines, line)
             end
@@ -157,7 +202,6 @@ local function button_colorscheme_from_wallpaper(self, wallpaper, reset)
             colors[16] = colors[8]
 
             for index = 10, 16 do
-                local color_libary = require("modules.color")
                 local color = color_libary.color { hex = colors[index - 8] }
                 colors[index] = helpers.color.pywal_alter_brightness(colors[index - 8], color.l * 0.2, 0.6)
             end
