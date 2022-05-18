@@ -20,7 +20,72 @@ local instance = nil
 
 local DATA_PATH = helpers.filesystem.get_cache_dir("colorschemes") .. "data.json"
 
-local pictures_mimetypes =
+local DEFAULT_TEMPLATES_PATH = helpers.filesystem.get_awesome_config_dir("presentation/assets/templates")
+local DEFAULT_TEMPLATES_GENERATED_PATH =  helpers.filesystem.get_xdg_cache_home("wal")
+local DEFAULT_TEMPLATES =
+{
+    DEFAULT_TEMPLATES_PATH .. "colors",
+    DEFAULT_TEMPLATES_PATH .. "colors-kitty.conf",
+    DEFAULT_TEMPLATES_PATH .. "colors-konsole.colorscheme",
+    DEFAULT_TEMPLATES_PATH .. "colors-nqq.css",
+    DEFAULT_TEMPLATES_PATH .. "colors-oomox",
+    DEFAULT_TEMPLATES_PATH .. "colors-putty.reg",
+    DEFAULT_TEMPLATES_PATH .. "colors-rofi-dark.rasi",
+    DEFAULT_TEMPLATES_PATH .. "colors-rofi-light.rasi",
+    DEFAULT_TEMPLATES_PATH .. "colors-speedcrunch.json",
+    DEFAULT_TEMPLATES_PATH .. "colors-sway",
+    DEFAULT_TEMPLATES_PATH .. "colors-themer.js",
+    DEFAULT_TEMPLATES_PATH .. "colors-tilix.json",
+    DEFAULT_TEMPLATES_PATH .. "colors-tty.sh",
+    DEFAULT_TEMPLATES_PATH .. "colors-vscode.json",
+    DEFAULT_TEMPLATES_PATH .. "colors-wal-dmenu.h",
+    DEFAULT_TEMPLATES_PATH .. "colors-wal-dwm.h",
+    DEFAULT_TEMPLATES_PATH .. "colors-wal-st.h",
+    DEFAULT_TEMPLATES_PATH .. "colors-wal-tabbed.h",
+    DEFAULT_TEMPLATES_PATH .. "colors-wal.vim",
+    DEFAULT_TEMPLATES_PATH .. "colors-waybar.css",
+    DEFAULT_TEMPLATES_PATH .. "colors.css",
+    DEFAULT_TEMPLATES_PATH .. "colors.hs",
+    DEFAULT_TEMPLATES_PATH .. "colors.json",
+    DEFAULT_TEMPLATES_PATH .. "colors.scss",
+    DEFAULT_TEMPLATES_PATH .. "colors.sh",
+    DEFAULT_TEMPLATES_PATH .. "colors.styl",
+    DEFAULT_TEMPLATES_PATH .. "colors.Xresources",
+    DEFAULT_TEMPLATES_PATH .. "colors.yml"
+}
+local DEFAULT_TEMPLATES_NAMES =
+{
+    "colors",
+    "colors-kitty.conf",
+    "colors-konsole.colorscheme",
+    "colors-nqq.css",
+    "colors-oomox",
+    "colors-putty.reg",
+    "colors-rofi-dark.rasi",
+    "colors-rofi-light.rasi",
+    "colors-speedcrunch.json",
+    "colors-sway",
+    "colors-themer.js",
+    "colors-tilix.json",
+    "colors-tty.sh",
+    "colors-vscode.json",
+    "colors-wal-dmenu.h",
+    "colors-wal-dwm.h",
+    "colors-wal-st.h",
+    "colors-wal-tabbed.h",
+    "colors-wal.vim",
+    "colors-waybar.css",
+    "colors.css",
+    "colors.hs",
+    "colors.json",
+    "colors.scss",
+    "colors.sh",
+    "colors.styl",
+    "colors.Xresources",
+    "colors.yml"
+}
+
+local PICTURES_MIMETYPES =
 {
     ["application/pdf"] = "lximage", -- AI
     ["image/x-ms-bmp"] = "lximage", -- BMP
@@ -36,24 +101,6 @@ local pictures_mimetypes =
     ["image/webp"] = "lximage", -- webp
 }
 
-local function update()
-    local home = gfilesystem.get_xdg_config_home()
-
-    -- Set lightdm glorious wallpaper
-    awful.spawn("sudo cp " .. home .. "/wpg/.current /usr/share/backgrounds/gnome/wpgtk.jpg", false)
-
-    -- Set refind wallpaper
-    awful.spawn("sudo convert " .. home .. "/wpg/.current /boot/efi/EFI/refind/themes/rEFInd-sunset/background.png", false)
-
-    -- Update applications themes
-    -- Better discord doesn't like if the theme file is a link, so have to copy it each time
-    --awful.spawn("cp " .. home .. "/wpg/templates/discord.theme.css " ..  .."/BetterDiscord/themes/wpgtk_discord.theme.css", false)
-    awful.spawn("discocss", false)
-    awful.spawn("telegram-palette-gen --wal", false)
-    awful.spawn("spicetify update", false)
-    awful.spawn("pywalfox update", false)
-end
-
 local function run_scripts_after_template_generation(self)
     if self._private.command_after_generation ~= nil then
         awful.spawn.with_shell(self._private.command_after_generation, false)
@@ -64,76 +111,86 @@ local function run_scripts_after_template_generation(self)
     end }
 end
 
-local function replace_template_colors(self, line)
-    for index = 0, 15 do
-        local color = self._private.colors[self._private.selected_wallpaper.path][index + 1]
-        color = color_libary.color { hex = color }
+local function replace_template_colors(color, color_name, line)
+    color = color_libary.color { hex = color }
 
-        if line:match("{color" .. index .. ".rgba}") then
-            local string = string.format("%s, %s, %s, %s", color.r, color.g, color.b, color.a)
-            return line:gsub("{color" .. index .. ".rgba}", string)
-        elseif line:match("{color" .. index .. ".rgb}") then
-            local string = string.format("%s, %s, %s", color.r, color.g, color.b)
-            return line:gsub("{color" .. index .. ".rgb}", string)
-        elseif line:match("{color" .. index .. ".octal}") then
-            local string = string.format("%s, %s, %s, %s", color.r, color.g, color.b, color.a)
-            return line:gsub("{color" .. index .. "%.octal}", string)
-        elseif line:match("{color" .. index .. ".xrgba}") then
-            local string = string.format("%s/%s/%s/%s", color.r, color.g, color.b, color.a)
-            return line:gsub("{color" .. index .. ".xrgba}", string)
-        elseif line:match("{color" .. index .. ".strip}") then
-            local string = color.hex:gsub("#", "")
-            return line:gsub("{color" .. index .. ".strip}", string)
-        elseif line:match("{color" .. index .. ".red}") then
-            return line:gsub("{color" .. index .. ".red}", color.r)
-        elseif line:match("{color" .. index .. ".green}") then
-            return line:gsub("{color" .. index .. ".green}", color.g)
-        elseif line:match("{color" .. index .. ".blue}") then
-            return line:gsub("{color" .. index .. ".blue}", color.b)
-        elseif line:match("{color" .. index .. "}") then
-            return line:gsub("{color" .. index .. "}", color.hex)
-        end
+    if line:match("{" .. color_name .. ".rgba}") then
+        local string = string.format("%s, %s, %s, %s", color.r, color.g, color.b, color.a)
+        return line:gsub("{" .. color_name .. ".rgba}", string)
+    elseif line:match("{" .. color_name .. ".rgb}") then
+        local string = string.format("%s, %s, %s", color.r, color.g, color.b)
+        return line:gsub("{" .. color_name .. ".rgb}", string)
+    elseif line:match("{" .. color_name .. ".octal}") then
+        local string = string.format("%s, %s, %s, %s", color.r, color.g, color.b, color.a)
+        return line:gsub("{" .. color_name .. "%.octal}", string)
+    elseif line:match("{" .. color_name .. ".xrgba}") then
+        local string = string.format("%s/%s/%s/%s", color.r, color.g, color.b, color.a)
+        return line:gsub("{" .. color_name .. ".xrgba}", string)
+    elseif line:match("{" .. color_name .. ".strip}") then
+        local string = color.hex:gsub("#", "")
+        return line:gsub("{" .. color_name .. ".strip}", string)
+    elseif line:match("{" .. color_name .. ".red}") then
+        return line:gsub("{" .. color_name .. ".red}", color.r)
+    elseif line:match("{" .. color_name .. ".green}") then
+        return line:gsub("{" .. color_name .. ".green}", color.g)
+    elseif line:match("{" .. color_name .. ".blue}") then
+        return line:gsub("{" .. color_name .. ".blue}", color.b)
+    elseif line:match("{" .. color_name .. "}") then
+        return line:gsub("{" .. color_name .. "}", color.hex)
     end
 end
 
-local function generate_templates(self)
-    for index, template in ipairs(self._private.templates) do
+local function generate_templates(self, templates, is_default)
+    for index, template in ipairs(templates) do
         helpers.filesystem.read_file(template, function(content)
             local lines = {}
             for line in content:gmatch("[^\r\n$]+") do
-
-                local color = replace_template_colors(self, line)
-                if color ~= nil then
-                    line = color
-                end
-
                 if line:match("{{") then
                     line = line:gsub("{{", "{")
                 elseif line:match("}}") then
                     line = line:gsub("}}", "}")
                 end
 
-                -- if line:match("{background}") then
-                --     local color = self._private.colors[self._private.selected_wallpaper.path][1]
-                --     line = line:gsub("{color" .. index .. "}", color)
-                -- elseif line:match("{foreground}") then
-                --     local color = self._private.colors[self._private.selected_wallpaper.path][16]
-                --     line = line:gsub("{color" .. index .. "}", color)
-                -- elseif line:match("{cursor}") then
-                --     local color = self._private.colors[self._private.selected_wallpaper.path][16]
-                --     line = line:gsub("{color" .. index .. "}", color)
-                -- end
+                local colors = self._private.colors[self._private.selected_wallpaper.path]
+
+                for index = 0, 15 do
+                    local color = replace_template_colors(colors[index + 1], "color" .. index, line)
+                    if color ~= nil then
+                        line = color
+                    end
+                end
+
+                local background = replace_template_colors(colors[1], "background", line)
+                if background ~= nil then
+                    line = background
+                end
+
+                local foreground = replace_template_colors(colors[16], "foreground", line)
+                if foreground ~= nil then
+                    line = foreground
+                end
+
+                local cursor = replace_template_colors(colors[16], "cursor", line)
+                if cursor ~= nil then
+                    line = cursor
+                end
 
                 table.insert(lines, line)
             end
 
-            local new_name = template:gsub(".base", "") .. ""
+            local new_name = ""
+            if is_default == true then
+                new_name = DEFAULT_TEMPLATES_GENERATED_PATH .. DEFAULT_TEMPLATES_NAMES[index]
+            else
+                new_name = template:gsub(".base", "") .. ""
+            end
+
             local new_content = ""
             for _, line in ipairs(lines) do
                 new_content = new_content .. line .. "\n"
             end
             helpers.filesystem.save_file(new_name, new_content, function()
-                if index == #self._private.templates then
+                if index == #templates then
                     run_scripts_after_template_generation(self)
                 end
             end)
@@ -387,7 +444,7 @@ local function scan_for_wallpapers(self)
                 end
 
                 local mimetype = Gio.content_type_guess(wallpaper_path)
-                if found == false and pictures_mimetypes[mimetype] ~= nil then
+                if found == false and PICTURES_MIMETYPES[mimetype] ~= nil then
                     table.insert(self._private.images,
                     {
                         name = string.sub(wallpaper_path,
@@ -450,7 +507,8 @@ end
 function theme:set_colorscheme()
     self._private.colorscheme = self._private.colors[self._private.selected_wallpaper.path]
     settings:set_value("theme.colorscheme", self._private.colorscheme)
-    generate_templates(self)
+    generate_templates(self, self._private.templates, false)
+    generate_templates(self, DEFAULT_TEMPLATES, true)
 end
 
 function theme:select_wallpaper(wallpaper)

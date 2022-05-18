@@ -420,7 +420,7 @@ end
 
 function _filesystem.get_xdg_cache_home(sub_folder)
     return (os.getenv("XDG_CACHE_HOME") or os.getenv("HOME") .. "/.cache")
-    .. "/" .. sub_folder
+    .. "/" .. sub_folder .. "/"
 end
 
 return _filesystem
