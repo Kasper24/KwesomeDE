@@ -219,7 +219,7 @@ local function icons()
     theme.server_icon = { icon = "", font = font_awesome_6_solid_font_name }
     theme.toggle_on_icon = { icon = "", font = font_awesome_6_solid_font_name }
     theme.toggle_off_icon = { icon = "", font = font_awesome_6_solid_font_name }
-    theme.usb_icon = { icon = "", font = font_awesome_6_solid_font_name }
+    theme.usb_icon = { icon = "", font = font_awesome_6_brands_font_name }
     theme.usb_drive_icon = { icon = "", font = font_awesome_6_solid_font_name }
     theme.signal_stream_icon = { icon = "", font = font_awesome_6_solid_font_name }
     theme.car_battery_icon =  { icon = "", font = font_awesome_6_solid_font_name }
