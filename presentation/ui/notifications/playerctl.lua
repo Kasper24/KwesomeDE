@@ -11,7 +11,7 @@ playerctl_daemon:connect_signal("metadata", function(self, title, artist, album_
     local app_font_icon = beautiful.get_font_icon_for_app_name(player_name)
     local text = (artist ~= "") and artist or (album ~= "") and album or player_name:gsub("^%l", string.upper)
     local icon = album_path ~= "" and album_path or {"youtube"}
-    local font_icon = album_path == "" and app_font_icon or nil
+    local font_icon = album_path == "" and beautiful.youtube_icon or nil
     local app_name = album_path ~= "" and nil or player_name
 
     local previous = naughty.action { name = "Previous" }
