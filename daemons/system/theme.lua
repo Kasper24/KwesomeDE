@@ -151,7 +151,7 @@ local function generate_templates(self, templates, is_default)
                     line = line:gsub("}}", "}")
                 end
 
-                local colors = self._private.colors[self._private.selected_wallpaper.path]
+                local colors = self._private.colors[self._private.selected_wallpaper]
 
                 for index = 0, 15 do
                     local color = replace_template_colors(colors[index + 1], "color" .. index, line)
@@ -199,8 +199,8 @@ local function generate_templates(self, templates, is_default)
 end
 
 local function button_colorscheme_from_wallpaper(self, wallpaper, reset)
-    if self._private.colors[wallpaper.path] ~= nil and reset ~= true then
-        self:emit_signal("colorscheme::generated", self._private.colors[wallpaper.path])
+    if self._private.colors[wallpaper] ~= nil and reset ~= true then
+        self:emit_signal("colorscheme::generated", self._private.colors[wallpaper])
         self:emit_signal("wallpaper::selected", wallpaper)
         return
     end
@@ -211,7 +211,7 @@ local function button_colorscheme_from_wallpaper(self, wallpaper, reset)
 
     local function imagemagick()
         local colors = {}
-        local cmd = string.format("magick %s -resize 25%% -colors %d -unique-colors txt:-", wallpaper.path, color_count)
+        local cmd = string.format("magick %s -resize 25%% -colors %d -unique-colors txt:-", wallpaper, color_count)
         awful.spawn.easy_async_with_shell(cmd, function(stdout)
             for line in stdout:gmatch("[^\r\n]+") do
                 local hex = line:match("#(.*) s")
@@ -230,7 +230,7 @@ local function button_colorscheme_from_wallpaper(self, wallpaper, reset)
                     return
                 else
                     print("Imagemagick couldn't generate a suitable palette.")
-                    self:emit_signal("colorscheme::failed_to_generate", wallpaper.path)
+                    self:emit_signal("colorscheme::failed_to_generate", wallpaper)
                     return
                 end
             end
@@ -269,7 +269,7 @@ local function button_colorscheme_from_wallpaper(self, wallpaper, reset)
             self:emit_signal("colorscheme::generated", colors)
             self:emit_signal("wallpaper::selected", wallpaper)
 
-            self._private.colors[wallpaper.path] = colors
+            self._private.colors[wallpaper] = colors
             helpers.filesystem.save_file(
                 DATA_PATH,
                 helpers.json.encode(self._private.colors, { indent = true })
@@ -427,7 +427,7 @@ local function scan_for_wallpapers(self)
         single_shot = true,
         callback = function()
             table.sort(self._private.images, function(a, b)
-                return a.path < b.path
+                return a < b
             end)
             self:emit_signal("wallpapers", self._private.images)
         end
@@ -438,19 +438,14 @@ local function scan_for_wallpapers(self)
             for _index, wallpaper_path in pairs(result) do
                 local found = false
                 for _, image in ipairs(self._private.images) do
-                    if image.path == wallpaper_path then
+                    if image == wallpaper_path then
                         found = true
                     end
                 end
 
                 local mimetype = Gio.content_type_guess(wallpaper_path)
                 if found == false and PICTURES_MIMETYPES[mimetype] ~= nil then
-                    table.insert(self._private.images,
-                    {
-                        name = string.sub(wallpaper_path,
-                                helpers.string.find_last(wallpaper_path, "/") + 1, #wallpaper_path),
-                        path = wallpaper_path,
-                    })
+                    table.insert(self._private.images, wallpaper_path)
                 end
 
                 if index == #self._private.wallpapers_paths and _index == #result then
@@ -486,7 +481,7 @@ end
 function theme:set_wallpaper(type)
     if type == "image" then
         self:save_colorscheme()
-        self._private.wallpaper = self._private.selected_wallpaper.path
+        self._private.wallpaper = self._private.selected_wallpaper
         settings:set_value("theme.wallpaper", self._private.wallpaper)
     elseif type == "tiled" then
     elseif type == "color" then
@@ -505,7 +500,7 @@ function theme:set_wallpaper(type)
 end
 
 function theme:set_colorscheme()
-    self._private.colorscheme = self._private.colors[self._private.selected_wallpaper.path]
+    self._private.colorscheme = self._private.colors[self._private.selected_wallpaper]
     settings:set_value("theme.colorscheme", self._private.colorscheme)
     generate_templates(self, self._private.templates, false)
     generate_templates(self, DEFAULT_TEMPLATES, true)
@@ -528,14 +523,14 @@ function theme:reset_colorscheme()
 end
 
 function theme:edit_color(index)
-    local color = self._private.colors[self._private.selected_wallpaper.path][index]
+    local color = self._private.colors[self._private.selected_wallpaper][index]
     local cmd = string.format([[yad --title='Pick A Color'  --width=500 --height=500 --color --init-color=%s
         --mode=hex --button=Cancel:1 --button=Select:0]], color)
 
     awful.spawn.easy_async(cmd, function(stdout, stderr)
         stdout = stdout:gsub("%s+", "")
         if stdout ~= "" and stdout ~= nil then
-            self._private.colors[self._private.selected_wallpaper.path][index] = stdout
+            self._private.colors[self._private.selected_wallpaper][index] = stdout
             self:emit_signal("color::" .. index .. "::updated", stdout)
         end
     end)

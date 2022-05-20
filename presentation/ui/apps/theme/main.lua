@@ -15,14 +15,14 @@ local function wallpaper_widget(wallpaper)
         halign = "left",
         text_normal_bg = beautiful.colors.on_background,
         size = 12,
-        text = wallpaper.path,
+        text = wallpaper,
         on_press = function()
             theme_daemon:select_wallpaper(wallpaper)
         end
     }
 
     theme_daemon:connect_signal("wallpaper::selected", function(self, new_wallpaper)
-        if wallpaper.path == new_wallpaper.path then
+        if wallpaper == new_wallpaper then
             button:turn_on()
         else
             button:turn_off()
@@ -290,7 +290,7 @@ local function image_tab()
     end)
 
     theme_daemon:connect_signal("wallpaper::selected", function(self, wallpaper)
-        wallpaper_image.image = wallpaper.path
+        wallpaper_image.image = wallpaper
         spinning_circle.children[1]:abort()
         stack:raise_widget(widget)
     end)
