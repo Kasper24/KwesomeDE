@@ -173,7 +173,7 @@ end
 function _color.pywal_saturate_color(color, amount)
     color = color_libary.color{ hex = color }
 
-    color.s = clip(color.s + amount, 0, 1)
+    color.s = clip(amount, 0, 1)
 
     return color.hex
 end
