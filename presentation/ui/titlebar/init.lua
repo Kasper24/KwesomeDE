@@ -64,9 +64,9 @@ capi.client.connect_signal("request::titlebars", function(c)
     {
         position = "top",
         size = dpi(35),
-        bg_normal = string.sub(beautiful.colors.background, 1, 7),
-        bg_focus = string.sub(beautiful.colors.background, 1, 7),
-        bg_urgent = string.sub(beautiful.colors.background, 1, 7),
+        bg_normal = beautiful.colors.background,
+        bg_focus = beautiful.colors.background,
+        bg_urgent = beautiful.colors.background,
         fg_normal = beautiful.colors.on_background,
         fg_focus = beautiful.colors.on_background,
         fg_urgent = beautiful.colors.on_background,

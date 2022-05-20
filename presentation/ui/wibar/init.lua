@@ -676,7 +676,6 @@ local function time()
 
     local widget = widgets.button.elevated.state
     {
-        normal_bg = string.sub(beautiful.colors.background, 1, 7) .. "00",
         margins = dpi(5),
         on_release = function()
             info_panel:toggle()

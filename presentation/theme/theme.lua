@@ -4,6 +4,7 @@ local theme_daemon = require("daemons.system.theme")
 local settings = require("services.settings")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
+local string = string
 local math = math
 
 local theme = {}
@@ -34,6 +35,7 @@ local function colors()
         background = colors[1],
         surface = colors[9],
         error = colors[1],
+        background_transparent = string.sub(colors[1], 1, 7) .. "00",
         transparent = "#00000000",
 
         on_background = colors[8],

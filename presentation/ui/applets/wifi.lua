@@ -171,9 +171,9 @@ local function access_point_widget(layout, access_point, accent_color)
 
     widget = widgets.button.elevated.state
     {
-        on_normal_bg = string.sub(beautiful.colors.background, 1, 7) .. "00",
-        on_hover_bg = string.sub(beautiful.colors.background, 1, 7) .. "00",
-        on_press_bg = string.sub(beautiful.colors.background, 1, 7) .. "00",
+        on_normal_bg = beautiful.colors.background_transparent,
+        on_hover_bg = beautiful.colors.background_transparent,
+        on_press_bg = beautiful.colors.background_transparent,
         forced_height = dpi(65),
         on_press = function(self)
             if self._private.state == false then

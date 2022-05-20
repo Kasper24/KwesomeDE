@@ -131,7 +131,7 @@ local function tabs_titlebar(c)
     {
         position = "left",
         size = dpi(230),
-        bg = string.sub(beautiful.colors.background, 1, 7)
+        bg = beautiful.colors.background
     }) : setup
     {
         widget = wibox.container.margin,
@@ -185,7 +185,7 @@ local function media_controls_titlebar(c)
     {
         position = "bottom",
         size = dpi(100),
-        bg = string.sub(beautiful.colors.background, 1, 7)
+        bg = beautiful.colors.background
     }) : setup
     {
         layout = wibox.layout.align.horizontal,

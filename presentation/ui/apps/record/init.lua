@@ -407,7 +407,7 @@ local function new()
                 {
                     position = "top",
                     size = dpi(520),
-                    bg = string.sub(beautiful.colors.background, 1, 7)
+                    bg = beautiful.colors.background
                 }) : setup
                 {
                     widget = main(ret)
