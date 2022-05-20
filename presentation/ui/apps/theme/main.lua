@@ -159,7 +159,7 @@ local function image_tab()
     local wallpapers_layout = wibox.widget
     {
         layout = widgets.overflow.vertical,
-        -- forced_height = dpi(250),
+        forced_height = dpi(250),
         spacing = dpi(3),
         scrollbar_widget =
         {
