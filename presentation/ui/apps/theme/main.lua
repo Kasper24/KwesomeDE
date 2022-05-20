@@ -159,7 +159,7 @@ local function image_tab()
     local wallpapers_layout = wibox.widget
     {
         layout = widgets.overflow.vertical,
-        forced_height = dpi(250),
+        -- forced_height = dpi(250),
         spacing = dpi(3),
         scrollbar_widget =
         {
@@ -169,6 +169,18 @@ local function image_tab()
         },
         scrollbar_width = dpi(3),
         scroll_speed = 10,
+    }
+
+    local light_dark = widgets.button.text.normal
+    {
+        animate_size = false,
+        normal_bg = beautiful.colors.surface,
+        text_normal_bg = beautiful.colors.on_surface,
+        size = 15,
+        text = "Light",
+        on_press = function()
+            theme_daemon:toggle_dark_light()
+        end
     }
 
     local reset_colorscheme = widgets.button.text.normal
@@ -242,6 +254,7 @@ local function image_tab()
         {
             layout = wibox.layout.flex.horizontal,
             spacing = dpi(10),
+            light_dark,
             reset_colorscheme,
             save_colorscheme,
         },
@@ -263,6 +276,13 @@ local function image_tab()
         widget
     }
 
+    theme_daemon:connect_signal("colorscheme::generated", function(self, colors)
+        if helpers.color.is_dark(colors[1]) then
+            light_dark:set_text("Light")
+        else
+            light_dark:set_text("Dark")
+        end
+    end)
 
     theme_daemon:connect_signal("colorscheme::generating", function(self)
         spinning_circle.children[1]:start()
