@@ -310,7 +310,7 @@ local function applications()
             shape = helpers.ui.rrect(beautiful.border_radius),
         },
         scrollbar_width = dpi(10),
-        scroll_speed = 10,
+        step = 50,
     }
 
     local source_outputs_header = widgets.text
@@ -332,7 +332,7 @@ local function applications()
             shape = helpers.ui.rrect(beautiful.border_radius),
         },
         scrollbar_width = dpi(10),
-        scroll_speed = 10,
+        step = 50,
     }
 
     pactl_daemon:connect_signal("sink_inputs::added", function(self, sink_input)
@@ -415,7 +415,7 @@ local function devices()
             shape = helpers.ui.rrect(beautiful.border_radius),
         },
         scrollbar_width = dpi(10),
-        scroll_speed = 10,
+        step = 50,
     }
 
     local sources_header = widgets.text
@@ -437,7 +437,7 @@ local function devices()
             shape = helpers.ui.rrect(beautiful.border_radius),
         },
         scrollbar_width = dpi(10),
-        scroll_speed = 10,
+        step = 50,
     }
 
     pactl_daemon:connect_signal("sinks::added", function(self, sink)

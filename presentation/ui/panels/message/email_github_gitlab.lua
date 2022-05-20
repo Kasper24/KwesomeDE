@@ -106,7 +106,7 @@ local function widget()
             shape = helpers.ui.rrect(beautiful.border_radius),
         },
         scrollbar_width = dpi(10),
-        scroll_speed = 10
+        step = 50
     }
 
     return spinning_circle, missing_credentials_text, error_icon, scrollbox

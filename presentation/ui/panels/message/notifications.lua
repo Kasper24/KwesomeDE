@@ -68,7 +68,7 @@ local function notification_widget(notification, on_removed)
                 shape = helpers.ui.rrect(beautiful.border_radius),
             },
             scrollbar_width = dpi(10),
-            scroll_speed = 10,
+            step = 50,
             {
                 widget = wibox.widget.textbox,
                 text = gstring.xml_unescape(notification.message)
@@ -290,7 +290,7 @@ local function new()
             shape = helpers.ui.rrect(beautiful.border_radius),
         },
         scrollbar_width = dpi(10),
-        scroll_speed = 10,
+        step = 50,
     }
 
     local spinning_circle = wibox.widget

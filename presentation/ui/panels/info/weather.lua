@@ -317,7 +317,7 @@ local function new(args)
                 shape = helpers.ui.rrect(beautiful.border_radius),
             },
             scrollbar_width = dpi(10),
-            scroll_speed = 10,
+            step = 50,
             {
                 widget = wibox.container.margin,
                 margins = { bottom = dpi(15) },

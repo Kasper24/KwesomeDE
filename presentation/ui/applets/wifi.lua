@@ -272,7 +272,7 @@ local function new()
             shape = helpers.ui.rrect(beautiful.border_radius),
         },
         scrollbar_width = dpi(10),
-        scroll_speed = 10,
+        step = 50,
     }
 
     local no_wifi = widgets.text

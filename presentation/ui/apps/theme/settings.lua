@@ -61,7 +61,7 @@ local function templates_widget()
             color = beautiful.colors.on_background
         },
         scrollbar_width = dpi(3),
-        scroll_speed = 10,
+        step = 50,
     }
 
     local add = widgets.button.text.normal
@@ -149,7 +149,7 @@ local function wallpapers_paths_widget()
             color = beautiful.colors.on_background
         },
         scrollbar_width = dpi(3),
-        scroll_speed = 10,
+        step = 50,
     }
 
     local add = widgets.button.text.normal

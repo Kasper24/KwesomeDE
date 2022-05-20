@@ -62,7 +62,7 @@ local function new()
             shape = helpers.ui.rrect(beautiful.border_radius),
         },
         scrollbar_width = dpi(10),
-        scroll_speed = 10,
+        step = 50,
     }
 
     local accent_color = beautiful.random_accent_color()

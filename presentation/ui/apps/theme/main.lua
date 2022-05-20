@@ -168,7 +168,7 @@ local function image_tab()
             color = beautiful.colors.on_background
         },
         scrollbar_width = dpi(3),
-        scroll_speed = 10,
+        step = 50,
     }
 
     local light_dark = widgets.button.text.normal
