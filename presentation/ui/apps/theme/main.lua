@@ -303,8 +303,8 @@ local function image_tab()
                 wallpapers_layout:add(wallpaper_widget(wallpaper))
             end
 
-            theme_daemon:select_wallpaper(wallpapers[1])
             wallpapers_layout:set_position(0)
+            theme_daemon:select_wallpaper(theme_daemon:get_wallpaper())
             stack:raise_widget(widget)
         end
     end)
