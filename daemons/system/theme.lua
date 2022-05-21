@@ -708,12 +708,9 @@ local function new()
         ret._private.colors = data
     end)
 
-    local default_wallpapers_paths = helpers.filesystem.get_awesome_config_dir("presentation/assets/wallpapers")
-    local saved_wallpapers_paths = settings:get_value("theme.wallpapers_paths")
-    if #{saved_wallpapers_paths or {}} == 0 or saved_wallpapers_paths == nil then
-        ret._private.wallpapers_paths = { default_wallpapers_paths }
-    else
-        ret._private.wallpapers_paths = settings:get_value("theme.wallpapers_paths")
+    ret._private.wallpapers_paths = settings:get_value("theme.wallpapers_paths") or {}
+    if #ret._private.wallpapers_paths == 0 then
+        ret._private.wallpapers_paths = { helpers.filesystem.get_awesome_config_dir("presentation/assets/wallpapers") }
     end
 
     ret._private.templates = settings:get_value("theme.templates") or {}
