@@ -269,21 +269,13 @@ local function generate_colorscheme(self, wallpaper, reset, light)
                 end
             end
 
-            colors[2] = colors[9]
-            colors[3] = colors[10]
-            colors[4] = colors[11]
-            colors[5] = colors[12]
-            colors[6] = colors[13]
-            colors[7] = colors[14]
-            colors[8] = colors[15]
-            colors[9] = colors[16]
+            for index = 2, 9 do
+                colors[index] = colors[index + 7]
+            end
 
-            colors[10] = colors[2]
-            colors[11] = colors[3]
-            colors[12] = colors[4]
-            colors[13] = colors[5]
-            colors[14] = colors[6]
-            colors[15] = colors[7]
+            for index = 10, 15 do
+                colors[index] = colors[index - 8]
+            end
 
             if light == true then
                 for _, color in ipairs(colors) do
@@ -305,13 +297,13 @@ local function generate_colorscheme(self, wallpaper, reset, light)
                 colors[16] = colors[8]
             end
 
-            for index = 10, 16 do
-                local color = color_libary.color { hex = colors[index - 8] }
-                colors[index] = helpers.color.pywal_alter_brightness(colors[index - 8], color.l * 0.2, 0.6)
-            end
+            -- for index = 10, 16 do
+            --     local color = color_libary.color { hex = colors[index - 8] }
+            --     colors[index] = helpers.color.pywal_alter_brightness(colors[index - 8], color.l * 0.2, 0.6)
+            -- end
 
-            colors[9] = helpers.color.pywal_alter_brightness(colors[1], 0.098039216)
-            colors[16] = helpers.color.pywal_alter_brightness(colors[8], 0.24)
+            -- colors[9] = helpers.color.pywal_alter_brightness(colors[1], 0.098039216)
+            -- colors[16] = helpers.color.pywal_alter_brightness(colors[8], 0.24)
 
             self:emit_signal("colorscheme::generated", colors)
             self:emit_signal("wallpaper::selected", wallpaper)
