@@ -101,6 +101,39 @@ local PICTURES_MIMETYPES =
     ["image/webp"] = "lximage", -- webp
 }
 
+local function generate_sequences(colors)
+    local function set_special(index, color, alpha)
+        if (index == 11 or index == 708) and alpha ~= 100 then
+            return string.format("\27]%s;[%s]%s\27\\", index, alpha, color)
+        end
+
+        return string.format("\27]%s;%s\27\\", index, color)
+    end
+
+    local function set_color(index, color)
+        return string.format("\27]4;%s;%s\27\\", index, color)
+    end
+
+    local sequences = {}
+
+    for index, color in ipairs(colors) do
+        table.insert(sequences, set_color(index - 1, color))
+    end
+
+    table.insert(sequences, set_special(10, colors[16]))
+    table.insert(sequences, set_special(11, colors[1], 0))
+    table.insert(sequences, set_special(12, colors[16]))
+    table.insert(sequences, set_special(13, colors[16]))
+    table.insert(sequences, set_special(17, colors[16]))
+    table.insert(sequences, set_special(19, colors[1]))
+    table.insert(sequences, set_color(232, colors[1]))
+    table.insert(sequences, set_color(256, colors[16]))
+    table.insert(sequences, set_color(257, colors[1]))
+    table.insert(sequences, set_special(708, colors[1], 0))
+
+    helpers.filesystem.save_file(DEFAULT_TEMPLATES_GENERATED_PATH .. "sequences", table.concat(sequences))
+end
+
 local function run_scripts_after_template_generation(self)
     if self._private.command_after_generation ~= nil then
         awful.spawn.with_shell(self._private.command_after_generation, false)
@@ -198,7 +231,7 @@ local function generate_templates(self, templates, is_default)
     end
 end
 
-local function button_colorscheme_from_wallpaper(self, wallpaper, reset)
+local function generate_colorscheme(self, wallpaper, reset, light)
     if self._private.colors[wallpaper] ~= nil and reset ~= true then
         self:emit_signal("colorscheme::generated", self._private.colors[wallpaper])
         self:emit_signal("wallpaper::selected", wallpaper)
@@ -251,12 +284,25 @@ local function button_colorscheme_from_wallpaper(self, wallpaper, reset)
             colors[14] = colors[6]
             colors[15] = colors[7]
 
-            if string.sub(colors[1], 2, 2) ~= "0" then
-                colors[1] = helpers.color.pywal_darken(colors[1], 0.4)
+            if light == true then
+                for _, color in ipairs(colors) do
+                    color = helpers.color.pywal_saturate_color(color, 0.5)
+                end
+
+                colors[1] = helpers.color.pywal_lighten(colors[16], 0.85)
+                colors[8] = colors[1]
+                colors[9] = helpers.color.pywal_darken(colors[16], 0.4)
+                colors[16] = colors[1]
+
+                -- colors[8], colors[1] = colors[1], colors[8]
+            else
+                if string.sub(colors[1], 2, 2) ~= "0" then
+                    colors[1] = helpers.color.pywal_darken(colors[1], 0.4)
+                end
+                colors[8] = helpers.color.pywal_blend(colors[8], "#EEEEEE")
+                colors[9] = helpers.color.pywal_darken(colors[8], 0.3)
+                colors[16] = colors[8]
             end
-            colors[8] = helpers.color.pywal_blend(colors[8], "#EEEEEE")
-            colors[9] = helpers.color.pywal_darken(colors[8], 0.3)
-            colors[16] = colors[8]
 
             for index = 10, 16 do
                 local color = color_libary.color { hex = colors[index - 8] }
@@ -504,11 +550,12 @@ function theme:set_colorscheme()
     settings:set_value("theme.colorscheme", self._private.colorscheme)
     generate_templates(self, self._private.templates, false)
     generate_templates(self, DEFAULT_TEMPLATES, true)
+    generate_sequences(self._private.colorscheme)
 end
 
 function theme:select_wallpaper(wallpaper)
     self._private.selected_wallpaper = wallpaper
-    button_colorscheme_from_wallpaper(self, wallpaper)
+    generate_colorscheme(self, wallpaper)
 end
 
 function theme:save_colorscheme()
@@ -519,7 +566,15 @@ function theme:save_colorscheme()
 end
 
 function theme:reset_colorscheme()
-    button_colorscheme_from_wallpaper(self, self._private.selected_wallpaper, true)
+    local bg = self._private.colors[self._private.selected_wallpaper][1]
+    local light = not helpers.color.is_dark(bg)
+    generate_colorscheme(self, self._private.selected_wallpaper, true, light)
+end
+
+function theme:toggle_dark_light()
+    local bg = self._private.colors[self._private.selected_wallpaper][1]
+    local light = helpers.color.is_dark(bg)
+    generate_colorscheme(self, self._private.selected_wallpaper, true, light)
 end
 
 function theme:edit_color(index)
