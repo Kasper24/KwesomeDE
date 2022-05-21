@@ -79,9 +79,9 @@ local function color_button(index)
     theme_daemon:connect_signal("color::" .. index .. "::updated", function(self, color)
         local color = color
         if helpers.color.is_dark(color) then
-            color_text:set_color(beautiful.colors.on_background)
+            color_text:set_color("#FFFFFF")
         else
-            color_text:set_color(beautiful.colors.on_accent)
+            color_text:set_color("#000000")
         end
         color_text:set_text(color)
         background.bg = color
@@ -90,9 +90,9 @@ local function color_button(index)
     theme_daemon:connect_signal("colorscheme::generated", function(self, colors)
         local color = colors[index]
         if helpers.color.is_dark(color) then
-            color_text:set_color(beautiful.colors.on_background)
+            color_text:set_color("#FFFFFF")
         else
-            color_text:set_color(beautiful.colors.on_accent)
+            color_text:set_color("#000000")
         end
         color_text:set_text(color)
         background.bg = color
