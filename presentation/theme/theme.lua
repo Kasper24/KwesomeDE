@@ -40,7 +40,7 @@ local function colors()
         on_background = colors[8],
         on_surface = colors[8],
         on_error = colors[1],
-        on_accent = colors[1],
+        on_accent = helpers.color.is_dark(colors[1]) and colors[1] or colors[8],
     }
 
     function theme.random_accent_color()
