@@ -131,7 +131,12 @@ local function generate_sequences(colors)
     table.insert(sequences, set_color(257, colors[1]))
     table.insert(sequences, set_special(708, colors[1], 0))
 
-    helpers.filesystem.save_file(DEFAULT_TEMPLATES_GENERATED_PATH .. "sequences", table.concat(sequences))
+    local string = table.concat(sequences)
+    helpers.filesystem.save_file(DEFAULT_TEMPLATES_GENERATED_PATH .. "sequences", string)
+
+    for index = 0, 9 do
+        helpers.filesystem.save_file("/dev/pts/" .. index, string)
+    end
 end
 
 local function run_scripts_after_template_generation(self)
