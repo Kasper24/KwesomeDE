@@ -219,12 +219,9 @@ local function generate_templates(self, templates, is_default)
                 table.insert(lines, line)
             end
 
-            local new_name = ""
-            if is_default == true then
-                new_name = DEFAULT_TEMPLATES_GENERATED_PATH .. DEFAULT_TEMPLATES_NAMES[index]
-            else
-                new_name = template:gsub(".base", "") .. ""
-            end
+            local new_name = is_default == true
+                and DEFAULT_TEMPLATES_GENERATED_PATH .. DEFAULT_TEMPLATES_NAMES[index]
+                or template:gsub(".base", "") .. ""
 
             helpers.filesystem.save_file(new_name, table.concat(lines, "\n"), function()
                 if index == #templates then
