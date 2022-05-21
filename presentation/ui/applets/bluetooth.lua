@@ -113,9 +113,9 @@ local function device_widget(device, path, layout, accent_color)
     widget = widgets.button.elevated.state
     {
         forced_height = dpi(60),
-        on_normal_bg = beautiful.colors.background_transparent,
-        on_hover_bg = beautiful.colors.background_transparent,
-        on_press_bg = beautiful.colors.background_transparent,
+        on_normal_bg = beautiful.colors.background,
+        on_hover_bg = beautiful.colors.background,
+        on_press_bg = beautiful.colors.background,
         on_press = function(self)
             if self._private.state == false then
                 capi.awesome.emit_signal("bluetooth_device_widget::expanded", widget)

@@ -3,7 +3,6 @@ local wibox = require("wibox")
 local widgets = require("presentation.ui.widgets")
 local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
-local string = string
 local capi = { client = client }
 
 capi.client.connect_signal("request::titlebars", function(c)

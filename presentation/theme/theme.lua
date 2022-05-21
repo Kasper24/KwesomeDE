@@ -34,7 +34,6 @@ local function colors()
 
         background = colors[1],
         surface = colors[9],
-        background_transparent = string.sub(colors[1], 1, 7) .. "00",
         error = colors[2],
         transparent = "#00000000",
 
