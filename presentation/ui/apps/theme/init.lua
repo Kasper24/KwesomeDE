@@ -3,9 +3,8 @@ local gobject = require("gears.object")
 local gtable = require("gears.table")
 local ruled = require("ruled")
 local wibox = require("wibox")
-local widgets = require("presentation.ui.widgets")
 local beautiful = require("beautiful")
-local theme_daemon = require("daemons.system.theme")
+local settings = require("services.settings")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 
@@ -113,6 +112,10 @@ local function new()
             end
         }
     end)
+
+    if settings:get_value("welcome.show") ~= false then
+        ret:show()
+    end
 
     return ret
 end
