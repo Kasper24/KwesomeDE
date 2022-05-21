@@ -278,16 +278,17 @@ local function generate_colorscheme(self, wallpaper, reset, light)
             end
 
             if light == true then
+                local color1 = colors[1]
+                local color8 = colors[8]
+
                 for _, color in ipairs(colors) do
                     color = helpers.color.pywal_saturate_color(color, 0.5)
                 end
 
-                colors[1] = helpers.color.pywal_lighten(colors[16], 0.85)
-                colors[8] = colors[1]
-                colors[9] = helpers.color.pywal_darken(colors[16], 0.4)
-                colors[16] = colors[1]
-
-                -- colors[8], colors[1] = colors[1], colors[8]
+                colors[1] = helpers.color.pywal_lighten(colors[16], 0.5)
+                colors[8] = color1
+                colors[9] = helpers.color.pywal_darken(colors[16], 0.3)
+                colors[16] = colors[8]
             else
                 if string.sub(colors[1], 2, 2) ~= "0" then
                     colors[1] = helpers.color.pywal_darken(colors[1], 0.4)
@@ -297,13 +298,16 @@ local function generate_colorscheme(self, wallpaper, reset, light)
                 colors[16] = colors[8]
             end
 
-            -- for index = 10, 16 do
-            --     local color = color_libary.color { hex = colors[index - 8] }
-            --     colors[index] = helpers.color.pywal_alter_brightness(colors[index - 8], color.l * 0.2, 0.6)
-            -- end
+            local added_sat = light == true and 0.8 or 0.6
+            local sign =  light == true and -1 or 1
 
-            -- colors[9] = helpers.color.pywal_alter_brightness(colors[1], 0.098039216)
-            -- colors[16] = helpers.color.pywal_alter_brightness(colors[8], 0.24)
+            for index = 10, 16 do
+                local color = color_libary.color { hex = colors[index - 8] }
+                colors[index] = helpers.color.pywal_alter_brightness(colors[index - 8], sign * color.l * 0.2, added_sat)
+            end
+
+            colors[9] = helpers.color.pywal_alter_brightness(colors[1], sign * 0.098039216)
+            colors[16] = helpers.color.pywal_alter_brightness(colors[8], sign * 0.24)
 
             self:emit_signal("colorscheme::generated", colors)
             self:emit_signal("wallpaper::selected", wallpaper)
