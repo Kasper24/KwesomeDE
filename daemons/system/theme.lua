@@ -212,6 +212,10 @@ local function generate_templates(self, templates, is_default)
                     line = cursor
                 end
 
+                if line:match("{wallpaper}") then
+                    line = line:gsub("{wallpaper}", self._private.wallpaper)
+                end
+
                 table.insert(lines, line)
             end
 
