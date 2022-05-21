@@ -439,7 +439,7 @@ local function github()
         size = 15,
         on_normal_bg = accent_color,
         text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = beautiful.colors.background,
+        text_on_normal_bg = beautiful.colors.on_accent,
         text = "Activity",
         animate_size = false,
         on_release = function()
@@ -454,7 +454,7 @@ local function github()
         size = 15,
         on_normal_bg = accent_color,
         text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = beautiful.colors.background,
+        text_on_normal_bg = beautiful.colors.on_accent,
         text = "PR",
         animate_size = false,
         on_release = function()
@@ -664,7 +664,7 @@ local function new()
         size = 15,
         on_normal_bg = accent_color,
         text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = beautiful.colors.background,
+        text_on_normal_bg = beautiful.colors.on_accent,
         text = "Email",
         animate_size = false,
         on_release = function()
@@ -680,7 +680,7 @@ local function new()
         size = 15,
         on_normal_bg = accent_color,
         text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = beautiful.colors.background,
+        text_on_normal_bg = beautiful.colors.on_accent,
         text = "Github",
         animate_size = false,
         on_release = function()
@@ -696,7 +696,7 @@ local function new()
         size = 15,
         on_normal_bg = accent_color,
         text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = beautiful.colors.background,
+        text_on_normal_bg = beautiful.colors.on_accent,
         text = "Gitlab",
         animate_size = false,
         on_release = function()

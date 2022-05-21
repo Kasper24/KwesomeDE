@@ -391,7 +391,7 @@ local function new(self, layout)
         size = 15,
         on_normal_bg = accent_color,
         text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = beautiful.colors.background,
+        text_on_normal_bg = beautiful.colors.on_accent,
         text = "Image",
         animate_size = false,
         on_release = function()
@@ -409,7 +409,7 @@ local function new(self, layout)
         size = 15,
         on_normal_bg = accent_color,
         text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = beautiful.colors.background,
+        text_on_normal_bg = beautiful.colors.on_accent,
         text = "Tiled",
         animate_size = false,
         on_release = function()
@@ -427,7 +427,7 @@ local function new(self, layout)
         size = 15,
         on_normal_bg = accent_color,
         text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = beautiful.colors.background,
+        text_on_normal_bg = beautiful.colors.on_accent,
         text = "Color",
         animate_size = false,
         on_release = function()
@@ -445,7 +445,7 @@ local function new(self, layout)
         size = 15,
         on_normal_bg = accent_color,
         text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = beautiful.colors.background,
+        text_on_normal_bg = beautiful.colors.on_accent,
         text = "Digital Sun",
         animate_size = false,
         on_release = function()
@@ -463,7 +463,7 @@ local function new(self, layout)
         size = 15,
         on_normal_bg = accent_color,
         text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = beautiful.colors.background,
+        text_on_normal_bg = beautiful.colors.on_accent,
         text = "Binary",
         animate_size = false,
         on_release = function()

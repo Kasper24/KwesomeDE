@@ -29,7 +29,7 @@ local function arrow_button(icon, text, on_icon_release, on_arrow_release)
         normal_shape = helpers.ui.prrect(beautiful.border_radius, true, false, false, true),
         normal_bg = beautiful.colors.surface,
         on_normal_bg = accent_color,
-        text_on_normal_bg = beautiful.colors.background,
+        text_on_normal_bg = beautiful.colors.on_accent,
         font = icon.font,
         text = icon.icon,
         on_release = on_icon_release
@@ -42,7 +42,7 @@ local function arrow_button(icon, text, on_icon_release, on_arrow_release)
         normal_shape = helpers.ui.prrect(beautiful.border_radius, false, true, true, false),
         normal_bg = beautiful.colors.surface,
         on_normal_bg = accent_color,
-        text_on_normal_bg = beautiful.colors.background,
+        text_on_normal_bg = beautiful.colors.on_accent,
         font = beautiful.chevron_right_icon.font,
         text = beautiful.chevron_right_icon.icon,
         on_release = on_arrow_release
@@ -90,7 +90,7 @@ local function button(icon, text, on_release)
         forced_height = dpi(90),
         normal_bg = beautiful.colors.surface,
         on_normal_bg = beautiful.random_accent_color(),
-        text_on_normal_bg = beautiful.colors.background,
+        text_on_normal_bg = beautiful.colors.on_accent,
         font = icon.font,
         text = icon.icon,
         on_release = on_release

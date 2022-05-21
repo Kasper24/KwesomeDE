@@ -526,7 +526,7 @@ local function widget()
         size = 15,
         on_normal_bg = accent_color,
         text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = beautiful.colors.background,
+        text_on_normal_bg = beautiful.colors.on_accent,
         text = "Devices",
         animate_size = false,
         on_release = function()
@@ -541,7 +541,7 @@ local function widget()
         size = 15,
         on_normal_bg = accent_color,
         text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = beautiful.colors.background,
+        text_on_normal_bg = beautiful.colors.on_accent,
         text = "Applications",
         animate_size = false,
         on_release = function()
