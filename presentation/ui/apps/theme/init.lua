@@ -55,6 +55,7 @@ end
 function theme:hide()
     self._private.client:kill()
     self._private.visible = false
+    self:emit_signal("visible", false)
 end
 
 function theme:toggle()
@@ -82,6 +83,8 @@ local function new()
             rule = { name = "no-one-gonna-match-this4" },
             properties = { floating = true, width = 800, height = 1, placement = awful.placement.centered },
             callback = function(c)
+                ret:emit_signal("visible", true)
+
                 ret._private.client = c
 
                 c:connect_signal("unmanage", function()

@@ -1,3 +1,4 @@
+local gtimer = require("gears.timer")
 local wibox = require("wibox")
 local widgets = require("presentation.ui.widgets")
 local beautiful = require("beautiful")
@@ -11,6 +12,7 @@ local main = { mt = {} }
 local function wallpaper_widget(wallpaper)
     local button = widgets.button.text.state
     {
+        forced_height = dpi(40),
         animate_size = false,
         halign = "left",
         text_normal_bg = beautiful.colors.on_background,
@@ -99,7 +101,7 @@ local function color_button(index)
     return color_button
 end
 
-local function image_tab()
+local function image_tab(self)
     local wallpaper_image = wibox.widget
     {
         widget = wibox.widget.imagebox,
@@ -168,7 +170,7 @@ local function image_tab()
             color = beautiful.colors.on_background
         },
         scrollbar_width = dpi(3),
-        step = 50,
+        step = 43,
     }
 
     local light_dark = widgets.button.text.normal
@@ -295,15 +297,19 @@ local function image_tab()
         stack:raise_widget(widget)
     end)
 
+    local selected_wallpaper_index = 0
     theme_daemon:connect_signal("wallpapers", function(self, wallpapers)
         wallpapers_layout:reset()
 
         if wallpapers ~= nil then
-            for _, wallpaper in ipairs(wallpapers) do
+            for index, wallpaper in ipairs(wallpapers) do
                 wallpapers_layout:add(wallpaper_widget(wallpaper))
+
+                if wallpaper == theme_daemon:get_wallpaper() then
+                    selected_wallpaper_index = index
+                end
             end
 
-            wallpapers_layout:set_position(0)
             theme_daemon:select_wallpaper(theme_daemon:get_wallpaper())
             stack:raise_widget(widget)
         end
@@ -312,6 +318,14 @@ local function image_tab()
     theme_daemon:connect_signal("wallpapers::empty", function()
         stack:raise_widget(empty_wallpapers)
         wallpapers_layout:reset()
+    end)
+
+    self:connect_signal("visible", function(self, visiblity)
+        if visiblity == true then
+            gtimer { timeout = 0.1, single_shot = true, autostart = true, call_now = false, callback = function()
+                wallpapers_layout:scroll(selected_wallpaper_index)
+            end}
+        end
     end)
 
     for i = 1, 16 do
@@ -331,7 +345,7 @@ local function new(self, layout)
     local _binary_button = {}
 
     local _stack = {}
-    local _image_tab = image_tab()
+    local _image_tab = image_tab(self)
     local _tiled_tab = {}
     local _color_tab = {}
     local _digital_sun_tab = {}
