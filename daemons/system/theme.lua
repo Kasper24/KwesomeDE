@@ -226,11 +226,7 @@ local function generate_templates(self, templates, is_default)
                 new_name = template:gsub(".base", "") .. ""
             end
 
-            local new_content = ""
-            for _, line in ipairs(lines) do
-                new_content = new_content .. line .. "\n"
-            end
-            helpers.filesystem.save_file(new_name, new_content, function()
+            helpers.filesystem.save_file(new_name, table.concat(lines, "\n"), function()
                 if index == #templates then
                     run_scripts_after_template_generation(self)
                 end
