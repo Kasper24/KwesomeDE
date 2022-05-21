@@ -161,13 +161,19 @@ end
 --  Task list
 -- =============================================================================
 local favorites = {}
+local checkbox_color = beautiful.random_accent_color()
 
-local function client_checkbox_button(client, property, text, checkbox_color)
+local function client_checkbox_button(client, property, text, on_press)
     local button = widgets.menu.checkbox_button
     {
         checkbox_color = checkbox_color,
         text = text,
-        on_press = function() client[property] = not client[property] end
+        on_press = function()
+            client[property] = not client[property]
+            if on_press ~= nil then
+                on_press()
+            end
+        end
     }
 
     client:connect_signal("property::" .. property, function()
@@ -182,20 +188,18 @@ local function client_checkbox_button(client, property, text, checkbox_color)
 end
 
 local function task_list_menu(client)
-    local checkbox_color = beautiful.random_accent_color()
-
     local maximize_menu = widgets.menu
     {
-        client_checkbox_button(client, "maximized", "Maximize", checkbox_color),
-        client_checkbox_button(client, "maximized_horizontal", "Maximize Horizontally", checkbox_color),
-        client_checkbox_button(client, "maximized_vertical", "Maximize Vertically", checkbox_color),
+        client_checkbox_button(client, "maximized", "Maximize"),
+        client_checkbox_button(client, "maximized_horizontal", "Maximize Horizontally"),
+        client_checkbox_button(client, "maximized_vertical", "Maximize Vertically")
     }
 
     local layer_menu = widgets.menu
     {
-        client_checkbox_button(client, "above", "Above", checkbox_color),
-        client_checkbox_button(client, "below", "Below", checkbox_color),
-        client_checkbox_button(client, "ontop", "On Top", checkbox_color),
+        client_checkbox_button(client, "above", "Above"),
+        client_checkbox_button(client, "below", "Below"),
+        client_checkbox_button(client, "ontop", "On Top")
     }
 
     return widgets.menu
@@ -220,11 +224,16 @@ local function task_list_menu(client)
             text = "Maximize",
             sub_menu = maximize_menu
         },
-        client_checkbox_button(client, "minimized", "Minimize", checkbox_color),
-        client_checkbox_button(client, "fullscreen", "Fullscreen", checkbox_color),
-        client_checkbox_button(client, "sticky", "Sticky", checkbox_color),
-        client_checkbox_button(client, "hidden", "Hidden", checkbox_color),
-        client_checkbox_button(client, "floating", "Floating", checkbox_color),
+        client_checkbox_button(client, "minimized", "Minimize"),
+        client_checkbox_button(client, "fullscreen", "Fullscreen"),
+        client_checkbox_button(client, "titlebar", "Titlebar", function()
+            if client.custom_titlebar ~= false then
+                awful.titlebar.toggle(client)
+            end
+        end),
+        client_checkbox_button(client, "sticky", "Sticky"),
+        client_checkbox_button(client, "hidden", "Hidden"),
+        client_checkbox_button(client, "floating", "Floating"),
         widgets.menu.sub_menu_button
         {
             text = "Layer",
