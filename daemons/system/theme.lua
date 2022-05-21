@@ -298,16 +298,16 @@ local function generate_colorscheme(self, wallpaper, reset, light)
                 colors[16] = colors[8]
             end
 
-            local added_sat = light == true and 0.8 or 0.6
+            local added_sat = light == true and 0.5 or 0.3
             local sign =  light == true and -1 or 1
 
-            for index = 10, 16 do
+            for index = 10, 15 do
                 local color = color_libary.color { hex = colors[index - 8] }
-                colors[index] = helpers.color.pywal_alter_brightness(colors[index - 8], sign * color.l * 0.2, added_sat)
+                colors[index] = helpers.color.pywal_alter_brightness(colors[index - 8], sign * color.l * 0.3, added_sat)
             end
 
             colors[9] = helpers.color.pywal_alter_brightness(colors[1], sign * 0.098039216)
-            colors[16] = helpers.color.pywal_alter_brightness(colors[8], sign * 0.24)
+            colors[16] = helpers.color.pywal_alter_brightness(colors[8], sign * 0.098039216)
 
             self:emit_signal("colorscheme::generated", colors)
             self:emit_signal("wallpaper::selected", wallpaper)
