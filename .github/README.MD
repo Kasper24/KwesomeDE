@@ -106,11 +106,12 @@ AwesomeWM Modules:
 | brightnessctl                           | Brightness daemon and widget                              |
 | playerctl                               | Media daemon and controls                                 |
 | fortune-mod                             | Fortune daemon (right now that daemon is unused)          |
+| xfce4-settings                          | Used in the main menu                                     |
 
 **Arch Linux (and other Arch-based distributions)**
    ```sh
       pacman -Sy kitty networkmanager blueman pipewire pipewire-pulse lm_sensors inotify-tools
-      redshift maim ffmpeg xdotool xclip upower brightnessctl playerctl fortune-mod flameshot --needed
+      redshift maim ffmpeg xdotool xclip upower brightnessctl playerctl fortune-mod flameshot xfce4-settings --needed
    ```
    Assuming your **AUR Helper** is [yay](https://github.com/Jguer/yay) or [paru](https://github.com/Morganamilo/paru).
    ```sh

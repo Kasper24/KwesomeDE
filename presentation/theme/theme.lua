@@ -326,7 +326,8 @@ local function apps()
         libreoffice_calc = { command = "libreoffice", class = "libreoffice-calc", icon = theme.excel_icon },
         screenshot = { command = "", class = "Screenshot", icon = theme.camera_retro_icon },
         record = { command = "", class = "Record", icon = theme.video_icon },
-        theme = { command = "", class = "Theme", icon = theme.spraycan_icon }
+        theme = { command = "", class = "Theme", icon = theme.spraycan_icon },
+        xfce4_settings_manager = { command = "xfce4-settings-manager", class = "Xfce4-settings-manager", icon = theme.gear_icon}
     }
 
     function theme.get_font_icon_for_app_name(name)
