@@ -215,11 +215,6 @@ function menu.sub_menu_button(args)
         margins = dpi(5),
         halign = "left",
         normal_shape = helpers.ui.rrect(0),
-        hover_bg = "#FFFFFF22",
-        press_bg = "#FFFFFF44",
-        on_normal_bg = "#FFFFFF22",
-        on_hover_bg = "#FFFFFF22",
-        on_press_bg = "#FFFFFF22",
         on_hover = function(self)
             local coords = helpers.ui.get_widget_geometry(self.menu, self)
             coords.x = coords.x + self.menu.x + self.menu.width
@@ -296,8 +291,6 @@ function menu.button(args)
         margins = dpi(5),
         halign = "left",
         normal_shape = helpers.ui.rrect(0),
-        hover_bg = "#FFFFFF22",
-        press_bg = "#FFFFFF44",
         on_release = function(self)
             self.menu:hide(true)
             args.on_press(self, text_widget)
@@ -361,8 +354,6 @@ function menu.checkbox_button(args)
         margins = dpi(5),
         halign = "left",
         normal_shape = helpers.ui.rrect(0),
-        hover_bg = "#FFFFFF22",
-        press_bg = "#FFFFFF44",
         on_release = function(self)
             self.menu:hide(true)
             args.on_press()
