@@ -55,25 +55,51 @@ Here are some details about my setup:
 - **WM:** [awesome](https://github.com/awesomeWM/awesome)
 - **Terminal:** [kitty](https://github.com/alacritty/alacritty)
 - **Shell:** [zsh](https://www.zsh.org/)
-- **Editor:** [VSCode](https://github.com/neovim/neovim) / [vscode](https://github.com/microsoft/vscode)
+- **Editor:** [vscode](https://github.com/microsoft/vscode)
 - **Compositor:** [picom-dccsillag](https://github.com/dccsillag/picom/tree/implement-window-animations)
 - **Music Player** [ncmpcpp](https://github.com/ncmpcpp/ncmpcpp)
+
+Main Features:
+- **Wi-Fi Applet**
+- **Bluetooth Applet**
+- **Audio Applet**
+- **CPU Applet**
+- **RAM Applet**
+- **Disk Applet**
+- **Introduction/Setup tool**
+- **Screenshot tool**
+- **Recorder tool**
+- **Theme Manager**
+- **Desktop Icons**
+- **Control Panel**
+- **Message Panel**
+- **Info Panel**
+- **Main Menu**
+- **Client Menu**
+- **App Launcher**
+- **Lock Screen**
+- **Power/Exit Screen**
+- **Window Switcher**
+- **Notifications for various system events**
+- **Titlebars**
+- **Ncmpcpp Custom UI**
+- **Many more!**
 
 AwesomeWM Modules:
 - **[bling](https://github.com/blingcorp/bling)**
    + Adds new layouts, modules, and widgets that try to primarily focus on window management
 - **[layout-machi](https://github.com/xinhaoyuan/layout-machi)**
    + Manual layout for Awesome with an interactive editor
-
-<br>
+- **[color](https://github.com/andOrlando/color)**
+   + Contains a bunch of useful function for conversion as well as well as a very nice api for just colors in general.
 
 <!-- SETUP -->
 ## :wrench: ‎ <samp>Setup</samp>
-</table>
 
-### :computer: ‎ <samp>Install AwesomeWM<samp>
+<details>
+<summary><b>1. Install AwesomeWM</b></summary>
 
-> First of all you should install the [git version of AwesomeWM](https://github.com/awesomeWM/awesome/).
+Install the [git version of AwesomeWM](https://github.com/awesomeWM/awesome/).
 
 **Arch users** can use the [awesome-git AUR package](https://aur.archlinux.org/packages/awesome-git/).
    ```sh
@@ -81,10 +107,10 @@ AwesomeWM Modules:
    ```
 
 **For other distros**, build instructions are [here](https://github.com/awesomeWM/awesome/#building-and-installation).
+</details>
 
-### :computer: ‎ <samp>Install Dependencies<samp>
-
-> Install necessary dependencies
+<details>
+<summary><b>2. Install Dependencies</b></summary>
 
 | Dependency                              | Why/Where is it needed?                                   |
 |-----------------------------------------|-----------------------------------------------------------|
@@ -107,6 +133,7 @@ AwesomeWM Modules:
 | playerctl                               | Media daemon and controls                                 |
 | fortune-mod                             | Fortune daemon (right now that daemon is unused)          |
 | xfce4-settings                          | Used in the main menu                                     |
+| imagemagick                             | Used to generate colors from wallpapers                   |
 
 **Arch Linux (and other Arch-based distributions)**
    ```sh
@@ -115,14 +142,13 @@ AwesomeWM Modules:
    ```
    Assuming your **AUR Helper** is [yay](https://github.com/Jguer/yay) or [paru](https://github.com/Morganamilo/paru).
    ```sh
-      yay/pru -Sy picom-animations-git farge-git --needed
+      yay/paru -Sy picom-animations-git farge-git --needed
    ```
+</details>
 
-### :bookmark_tabs: ‎ <samp>Install Fonts<samp>
+<details>
+<summary><b>3. Install Fonts</b></summary>
 
-> You will need to install a few fonts (mainly icon fonts) in order for text and icons to be rendered properly.
-
-Necessary fonts:
    + **Font Awesome 6 Pro**              - PAID
    + **Nerd Font Mono**              - [here](https://github.com/ryanoasis/nerd-fonts)
    + **Iosevka**       - [here](https://github.com/be5invis/Iosevka)
@@ -135,9 +161,11 @@ And run this command for your system to detect the newly installed fonts.
    ```sh
    fc-cache -v
    ```
+</details>
 
-### :art: ‎ <samp>Install my AwesomeWM configuration files<samp>
 
+<details>
+<summary><b>4. Install KwesomeDE</b></summary>
 > Clone this repository
 
    ```sh
@@ -155,168 +183,80 @@ And run this command for your system to detect the newly installed fonts.
    Congratulations, at this point you have installed this aesthetic dotfiles! :tada:
 
    Log out from your current desktop session and log in into AwesomeWM
+</details>
 
 <!-- GALLERY -->
 ## :ocean: ‎ <samp>Gallery</samp>
 
-<b>These are the features included in my AwesomeWM setups!</b>
+| <b>Action Panel </b> |
+| --- |
+| <img src="assets/action_panel.gif" width="500px" alt="action panel preview"> |
 
-   + Minimalist `wibar` design
-      - <details open>
-         <summary>Preview</summary>
+| <b>Message Panel </b> |
+| --- |
+| <img src="assets/message_panel.gif" width="500px" alt="message panel preview"> |
 
-         *Simple, Minimalist and Modern Bar Design!*
+| <b>Info Panel </b> |
+| --- |
+| <img src="assets/info_panel.gif" width="500px" alt="info panel preview"> |
 
-         - App launcher
-         - Web search
-         - Taglist
-         - Battery indicator
-         - Clock
-         - Layoutbox
+| <b>Wi-Fi Applet</b> |
+| --- |
+| <img src="assets/wifi_applet.gif" width="500px" alt="wifi applet preview"> |
 
-         <div align="left">
-         <img src="assets/wibar.gif" width="500px" alt="dashboard preview">
-         </div>
-         </details>
-   + Aesthetic `Dashboard` ngl.
-      - <details open>
-         <summary>Preview</summary>
+| <b>Bluetooth Applet</b> |
+| --- |
+| <img src="assets/bluetooth_applet.gif" width="500px" alt="bluetooth applet preview"> |
 
-         *Aesthetic dashboard with neat grid layout, it's so beautiful!*
+| <b>Audio Applet</b> |
+| --- |
+| <img src="assets/audio_applet.gif" width="500px" alt="audio applet preview"> |
 
-         - Time & date
-         - Pfp display
-         - ToDo reminder
-         - Hardware stats
-         - Weather widget
-         - Music player
-         - Notifs center
+| <b>CPU Applet</b> |
+| --- |
+| <img src="assets/cpu_applet.gif" width="500px" alt="cpu applet preview"> |
 
-         <div align="left">
-         <img src="assets/dashboard.gif" width="500px" alt="dashboard preview">
-         </div>
-         </details>
-   + Very useful `Control Center` ikr.
-      - <details open>
+| <b>Theme Manager</b> |
+| --- |
+| <img src="assets/theme_manager.gif" width="500px" alt="theme manager preview"> |
 
-          *This control center has many features!*
+| <b>Screenshot Tool</b> |
+| --- |
+| <img src="assets/screenshot.gif" width="500px" alt="screenshot preview"> |
 
-         - Exit screen
-         - Volume & brightness control
-         - DnD, Blue light & Airplane mode
-         - Floating layout mode
-         - Theme switcher
-         - Wifi, Bluetooth and Microphone toggle
-         - built in screenrec and screensht widgets
-         - Hardware Monitor
+| <b>Recorder Tool</b> |
+| --- |
+| <img src="assets/recorder.gif" width="500px" alt="recorder preview"> |
 
-         <summary>Preview</summary>
-         <div align="left">
-         <img src="assets/control-center.gif" width="500px" alt="control center preview">
-         </div>
-         </details>
-   + Custom mouse-friendly `ncmpcpp` UI with album art ofc.
-      - <details open>
-         <summary>Preview</summary>
+| <b>Power Screen</b> |
+| --- |
+| <img src="assets/power_screen.gif" width="500px" alt="power screen preview"> |
 
-         *This is so aesthetic isn't it?*
+| <b>Lock Screen</b> |
+| --- |
+| <img src="assets/lock_screen.gif" width="500px" alt="lock screen preview"> |
 
-         <div align="left">
-         <img src="assets/ncmpcpp.gif" width="500px" alt="ncmpcpp preview">
-         </div>
-         </details>
-   + `Word Clock Lockscreen` with PAM Integration!
-      - <details open>
+| <b>Main Menu</b> |
+| --- |
+| <img src="assets/main_menu.gif" width="500px" alt="main menu preview"> |
 
-         *A beautiful word clock is on the lockscreen!*
+| <b>Client Menu</b> |
+| --- |
+| <img src="assets/client_menu.gif" width="500px" alt="client menu preview"> |
 
-         <summary>Preview</summary>
-         <div align="left">
-         <img src="assets/lockscreen.gif" width="500px" alt="word clock lockscreen preview">
-         </div>
-         </details>
+| <b>Notification</b> |
+| --- |
+| <img src="assets/notification.gif" width="500px" alt="notification preview"> |
 
-<!-- MISCELLANEOUS -->
-## :four_leaf_clover: ‎ <samp>Miscellaneous</samp>
-
-<details>
-<summary><strong>Configure stuff</strong></summary>
-
-> The relevant files are inside your `~/.config/awesome` directory.
-
-+ User preferences and default applications
-
-   In `rc.lua` there is a *Default Applications* section where user preferences and default applications are defined.
-   You should change those to your liking.
-
-Note: For the weather widgets to work, you will also need to create an account on [openweathermap](https://openweathermap.org), get your key, look for your city ID, and set `openweathermap_key` and `openweathermap_city_id` accordingly.
-
-</details>
-
-<details>
-<summary><strong>Keybinds</strong></summary>
-
-I use <kbd>super</kbd> AKA Windows key as my main modifier.
-also with <kbd>alt, shift, and ctrl</kbd>
-
-**Keyboard**
-
-| Keybind                                 | Action                                                    |
-|-----------------------------------------|-----------------------------------------------------------|
-| <kbd>super + enter</kbd>                | Spawn terminal                                            |
-| <kbd>super + grave</kbd>                | Spawn music client                                        |
-| <kbd>super + d</kbd>                    | Spawn application launcher                                |
-| <kbd>super + shift + w</kbd>            | Spawn web browser                                         |
-| <kbd>super + shift + x</kbd>            | Spawn color picker                                        |
-| <kbd>super + shift + f</kbd>            | Spawn file manager                                        |
-| <kbd>super + shift + d</kbd>            | Toggle central panel                                      |
-| <kbd>super + shift + t</kbd>            | Toggle system tray                                        |
-| <kbd>super + q</kbd>                    | Close client                                              |
-| <kbd>super + x</kbd>                    | Exit screen                                               |
-| <kbd>super + ctrl + l</kbd>             | Lock screen                                               |
-| <kbd>super + [1-0]</kbd>                | View tag AKA change workspace (for you i3/bsp folks)      |
-| <kbd>super + shift + [1-0]</kbd>        | Move focused client to tag                                |
-| <kbd>super + space</kbd>                | Select next layout                                        |
-| <kbd>super + s</kbd>                    | Set tiling layout                                         |
-| <kbd>super + shift + s</kbd>            | Set floating layout                                       |
-| <kbd>super + c</kbd>                    | Center floating client                                    |
-| <kbd>super + [arrow keys]</kbd>         | Change focus by direction                                 |
-| <kbd>super + f</kbd>                    | Toggle fullscreen                                         |
-| <kbd>super + m</kbd>                    | Toggle maximize                                           |
-| <kbd>super + n</kbd>                    | Minimize                                                  |
-| <kbd>ctrl + super + n</kbd>             | Restore minimized                                         |
-| <kbd>alt + tab</kbd>                    | Window switcher                                           |
-
-<br>
-
-**Mouse on the desktop**
-
-| Mousebind          | Action                                     |
-|--------------------|--------------------------------------------|
-| `left click`       | Dismiss all notifications                  |
-| `right click`      | Main menu                                  |
-| `middle click`     | Toggle central panel                       |
-| `scroll up/down`   | Cycle through tags                         |
-
-*For more information check `awesome/configuration/keys.lua`*
-
-</details>
-
-<!-- TIP JAR -->
-## :money_with_wings: ‎ <samp>TIP JAR</samp>
-
-If you enjoyed it and would like to show your appreciation, you may want to tip me here.
-
-It is never required but always appreciated.
-
-Thanks from the bottom of my heart! ‎ :heartpulse:
-
-[![](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/rxyhn)
+| <b>ncmpcpp</b> |
+| --- |
+| <img src="assets/ncmpcpp.gif" width="500px" alt="ncmpcpp preview"> |
 
 <!-- ACKNOWLEDGEMENTS -->
 ## :bulb: ‎ <samp>Acknowledgements</samp>
 
 - **Special thanks to**
+    - [`rxyhn`](https://github.com/rxyhn/dotfiles)
     - [`awesome-widgets`](https://github.com/streetturtle/awesome-wm-widgets)
     - [`JavaCafe01`](https://github.com/JavaCafe01)
     - [`andOrlando`](https://github.com/andOrlando/awesome-widgets)
@@ -326,12 +266,3 @@ Thanks from the bottom of my heart! ‎ :heartpulse:
     - [`manilarome`](https://github.com/manilarome)
     - [`Mofiqul`](https://github.com/Mofiqul)
 <br>
-
-<!-- Repo history -->
-## :japan: ‎ <samp>Repo history</samp>
-Thank you! <3
-
-[![Repo history](https://starchart.cc/Kasper24/KwesomeDE.svg)](https://starchart.cc/Kasper24/KwesomeDE)
-
-<p align="center"><img src="https://raw.githubusercontent.com/catppuccin/catppuccin/dev/assets/footers/gray0_ctp_on_line.svg?sanitize=true" /></p>
-<p align="center"><a href="https://github.com/rxyhn/AwesomeWM-Dotfiles/blob/main/.github/LICENSE"><img src="https://img.shields.io/static/v1.svg?style=flat-square&label=License&message=GPL-3.0&logoColor=eceff4&logo=github&colorA=061115&colorB=67AFC1"/></a></p>

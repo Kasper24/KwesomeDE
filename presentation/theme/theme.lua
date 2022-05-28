@@ -46,15 +46,15 @@ local function colors()
     function theme.random_accent_color()
         local accents =
         {
-            colors[2],
-            colors[3],
+            -- colors[2],
+            -- colors[3],
             -- colors[4],
-            colors[5],
-            colors[6],
-            colors[7],
+            -- colors[5],
+            -- colors[6],
+            -- colors[7],
             colors[10],
             colors[11],
-            -- colors[12],
+            colors[12],
             colors[13],
             colors[14],
             colors[15]
