@@ -327,8 +327,6 @@ naughty.connect_signal("request::display", function(n)
     -- Don't destroy the notification on click
     widget.buttons = {}
 
-    local slider_value = 0
-
     local anim = animation:new
     {
         duration = n.timeout,
@@ -336,8 +334,7 @@ naughty.connect_signal("request::display", function(n)
         easing = animation.easing.linear,
         reset_on_stop = false,
         update = function(self, pos)
-            slider_value = pos
-            timeout_arc.value = slider_value
+            timeout_arc.value = pos
         end
     }
 
