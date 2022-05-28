@@ -30,13 +30,19 @@ local function arc_widget(icon, on_release, on_scroll_up, on_scroll_down)
             font = icon.font,
             text = icon.icon,
             on_release = function()
-                on_release()
+                if on_release ~= nil then
+                    on_release()
+                end
             end,
             on_scroll_up = function()
-                on_scroll_up()
+                if on_scroll_up ~= nil then
+                    on_scroll_up()
+                end
             end,
             on_scroll_down = function()
-                on_scroll_down()
+                if on_scroll_down ~= nil then
+                    on_scroll_down()
+                end
             end,
         }
     else
