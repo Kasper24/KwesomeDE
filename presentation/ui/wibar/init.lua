@@ -772,7 +772,7 @@ capi.screen.connect_signal("request::desktop_decoration", function(s)
     {
         screen = s,
         type = "dock",
-        y = 65,
+        y = dpi(65),
         maximum_width = dpi(65),
         minimum_height = s.geometry.height,
         maximum_height = s.geometry.height,
