@@ -62,7 +62,6 @@ screenshot_daemon:connect_signal("ended", function(self, screenshot_method, scre
         app_font_icon = beautiful.camera_retro_icon,
         app_icon = icons,
         app_name = "Screenshot",
-        font_icon = beautiful.camera_retro_icon,
         icon = screenshot_directory .. file_name,
         title = "Screenshot taken",
         message = "Screenshot saved to " .. screenshot_directory .. file_name,
