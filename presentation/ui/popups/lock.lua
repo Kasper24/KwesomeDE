@@ -64,12 +64,6 @@ local function widget(self)
         image = theme_daemon:get_wallpaper()
     }
 
-    local blur = wibox.widget
-    {
-        widget = wibox.container.background,
-        bg = beautiful.colors.background ,
-    }
-
     local picture = wibox.widget
     {
         widget = wibox.widget.imagebox,
@@ -153,6 +147,7 @@ local function widget(self)
 
     local shutdown_button = widgets.button.text.normal
     {
+        normal_bg = beautiful.colors.transparent,
         text_normal_bg = accent_color,
         size = 30,
         font = beautiful.poweroff_icon.font,
@@ -164,6 +159,7 @@ local function widget(self)
 
     local restart_button = widgets.button.text.normal
     {
+        normal_bg = beautiful.colors.transparent,
         text_normal_bg = accent_color,
         size = 30,
         font = beautiful.reboot_icon.font,
@@ -175,6 +171,7 @@ local function widget(self)
 
     local suspend_button = widgets.button.text.normal
     {
+        normal_bg = beautiful.colors.transparent,
         text_normal_bg = accent_color,
         size = 30,
         font = beautiful.suspend_icon.font,
@@ -186,6 +183,7 @@ local function widget(self)
 
     local exit_button = widgets.button.text.normal
     {
+        normal_bg = beautiful.colors.transparent,
         text_normal_bg = accent_color,
         size = 30,
         font = beautiful.exit_icon.font,
@@ -199,7 +197,6 @@ local function widget(self)
     {
         widget = wibox.layout.stack,
         background,
-        blur,
         {
             widget = wibox.container.place,
             halign = "center",
