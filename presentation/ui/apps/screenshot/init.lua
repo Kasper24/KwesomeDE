@@ -93,6 +93,10 @@ local function new()
                 c.custom_titlebar = false
                 c.can_tile = false
 
+                -- Settings placement in properties doesn't work
+                c.x = (c.screen.geometry.width / 2) - (550 / 2)
+                c.y = (c.screen.geometry.height / 2) - (280 / 2)
+
                 awful.titlebar(c,
                 {
                     position = "top",
