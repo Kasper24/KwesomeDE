@@ -134,11 +134,13 @@ Install the [git version of AwesomeWM](https://github.com/awesomeWM/awesome/).
 | fortune-mod                             | Fortune daemon (right now that daemon is unused)          |
 | xfce4-settings                          | Used in the main menu                                     |
 | imagemagick                             | Used to generate colors from wallpapers                   |
+| yad                                     | Used to pick a folder                                     |
 
 **Arch Linux (and other Arch-based distributions)**
    ```sh
       pacman -Sy kitty networkmanager blueman pipewire pipewire-pulse lm_sensors inotify-tools
-      redshift maim ffmpeg xdotool xclip upower brightnessctl playerctl fortune-mod flameshot xfce4-settings --needed
+      redshift maim ffmpeg xdotool xclip upower brightnessctl playerctl fortune-mod flameshot
+      xfce4-settings imagemagick yad --needed
    ```
    Assuming your **AUR Helper** is [yay](https://github.com/Jguer/yay) or [paru](https://github.com/Morganamilo/paru).
    ```sh
