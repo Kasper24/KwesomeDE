@@ -10,7 +10,7 @@ local function new()
     local app_spacing = dpi(25)
     local app_height = dpi(75)
     local space_per_app = app_spacing + app_height
-    local apps_per_row = screen.primary.geometry.height / space_per_app
+    local apps_per_row = screen.primary.geometry.height / dpi(space_per_app)
 
     return bling.widget.app_launcher
     {

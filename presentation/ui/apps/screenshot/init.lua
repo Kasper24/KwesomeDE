@@ -80,7 +80,7 @@ local function new()
         ruled.client.append_rule
         {
             rule = { name = "no-one-gonna-match-this1" },
-            properties = { floating = true, width = 550, height = 1, placement = awful.placement.centered },
+            properties = { floating = true, width = dpi(550), height = 1, placement = awful.placement.centered },
             callback = function(c)
                 ret._private.client = c
 
@@ -94,8 +94,8 @@ local function new()
                 c.can_tile = false
 
                 -- Settings placement in properties doesn't work
-                c.x = (c.screen.geometry.width / 2) - (550 / 2)
-                c.y = (c.screen.geometry.height / 2) - (280 / 2)
+                c.x = (c.screen.geometry.width / 2) - (dpi(550) / 2)
+                c.y = (c.screen.geometry.height / 2) - (dpi(280) / 2)
 
                 awful.titlebar(c,
                 {
