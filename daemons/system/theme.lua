@@ -716,25 +716,10 @@ local function new()
     ret._private.templates = settings:get_value("theme.templates") or {}
     ret._private.wallpaper_type = settings:get_value("theme.wallpaper_type") or "wallpaper"
     ret._private.wallpaper = settings:get_value("theme.wallpaper") or
-                            "/home/kasper/.config/wpg/.current"
+                    helpers.filesystem.get_awesome_config_dir("presentation/assets/wallpapers/wp8148939-minimalist-landscape-wallpapers.jpg")
     ret._private.colorscheme = settings:get_value("theme.colorscheme") or
     {
-        "#110104",
-        "#DF712D",
-        "#B88836",
-        "#FEB449",
-        "#FCA33E",
-        "#F98B35",
-        "#DE9E43",
-        "#F6E09C",
-        "#43010D",
-        "#FF8E28",
-        "#FEB436",
-        "#FFED49",
-        "#FFD53C",
-        "#FFB231",
-        "#FFD044",
-        "#FFFFC5"
+        "#110104","#DF712D","#B88836","#F98B35","#FCA33E","#DE9E43","#FEB449","#f7e09d","#40040f","#ff9b5d","#f0b146","#ffbd8a","#ffcf99","#ffc879","#ffdcaa","#fbefcb"
     }
     ret._private.command_after_generation = settings:get_value("theme.command_after_generation") or nil
 
