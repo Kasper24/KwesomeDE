@@ -25,6 +25,7 @@ local function start()
     local widget = widgets.button.text.state
     {
         forced_width = dpi(60),
+        forced_height = dpi(60),
         margins = dpi(5),
         font = beautiful.bars_staggered_icon.font,
         size = 25,
