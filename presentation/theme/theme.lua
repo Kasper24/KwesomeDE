@@ -2,6 +2,7 @@ local gcolor = require("gears.color")
 local beautiful = require("beautiful")
 local theme_daemon = require("daemons.system.theme")
 local settings = require("services.settings")
+local color_libary = require("modules.color")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local string = string
@@ -44,21 +45,28 @@ local function colors()
     }
 
     function theme.random_accent_color()
-        local accents =
-        {
-            -- colors[2],
-            -- colors[3],
-            -- colors[4],
-            -- colors[5],
-            -- colors[6],
-            -- colors[7],
-            colors[10],
-            colors[11],
-            colors[12],
-            colors[13],
-            colors[14],
-            colors[15]
-        }
+        local color_1 = color_libary.color { hex = theme.colors.bright_red }
+        local color_2 = color_libary.color { hex = theme.colors.bright_green }
+
+        local accents = {}
+
+        if math.abs(color_1.h - color_2.h) < 50 then
+            accents =
+            {
+                colors[10],
+                colors[11],
+                colors[12],
+                colors[13],
+                colors[14],
+                colors[15]
+            }
+        else
+            accents =
+            {
+                colors[13],
+                colors[14]
+            }
+        end
 
         local i = math.random(1, #accents)
         return accents[i]
