@@ -714,9 +714,9 @@ local function new()
     end
 
     ret._private.templates = settings:get_value("theme.templates") or {}
-    ret._private.wallpaper_type = settings:get_value("theme.wallpaper_type") or "wallpaper"
+    ret._private.wallpaper_type = settings:get_value("theme.wallpaper_type") or "image"
     ret._private.wallpaper = settings:get_value("theme.wallpaper") or
-                    helpers.filesystem.get_awesome_config_dir("presentation/assets/wallpapers/wp8148939-minimalist-landscape-wallpapers.jpg")
+                    helpers.filesystem.get_awesome_config_dir("presentation/assets/wallpapers") .. "wp8148939-minimalist-landscape-wallpapers.jpg"
     ret._private.colorscheme = settings:get_value("theme.colorscheme") or
     {
         "#110104","#DF712D","#B88836","#F98B35","#FCA33E","#DE9E43","#FEB449","#f7e09d","#40040f","#ff9b5d","#f0b146","#ffbd8a","#ffcf99","#ffc879","#ffdcaa","#fbefcb"
