@@ -700,7 +700,7 @@ local function email_page(on_next_pressed, on_previous_pressed)
     {
         halign = "center",
         size = 13,
-        text = "Please fill your GitHub username in order for the GitHub panel info to show.",
+        text = "Please fill your email info in order for the email panel info to show.",
     }
 
     local machine_prompt = widgets.prompt
