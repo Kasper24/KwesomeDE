@@ -265,7 +265,8 @@ local function new(args)
 
     local daily_forecast_widget = wibox.widget
     {
-        layout = wibox.layout.flex.horizontal
+        layout = wibox.layout.flex.horizontal,
+        spacing = dpi(15),
     }
 
     local spinning_circle = wibox.widget
@@ -416,6 +417,7 @@ local function new(args)
                 },
                 {
                     layout = wibox.layout.fixed.vertical,
+                    spacing = dpi(8),
                     widgets.text
                     {
                         halign = "center",
@@ -426,15 +428,11 @@ local function new(args)
                     },
                     {
                         widget = widgets.text,
-                        height = dpi(50),
                         halign = "center",
                         valign = "top",
                         size = 12,
                         text = day.weather[1].description
-                    }
-                },
-                {
-                    layout = wibox.layout.fixed.vertical,
+                    },
                     {
                         widget = widgets.text,
                         halign = "center",
