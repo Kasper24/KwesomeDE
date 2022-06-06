@@ -185,6 +185,148 @@ And run this command for your system to detect the newly installed fonts.
    Log out from your current desktop session and log in into AwesomeWM
 </details>
 
+<!-- Keybinds -->
+## ⌨️ ‎ <samp>Keybinds</samp>
+
+<details>
+<summary><b>Awesome</b></summary>
+
+| Keybind | Action |
+| ------- | ------ |
+| <kbd>super + r </kbd> | Reload awesome |
+| <kbd>super + q</kbd> | Quit awesome |
+</details>
+
+<details>
+<summary><b>Screen</b></summary>
+
+| Keybind | Action |
+| ------- | ------ |
+| <kbd>super + ctrl + j </kbd> | Focus the next screen |
+| <kbd>super + ctrl + k</kbd> | Focus the previous screen |
+</details>
+
+<details>
+<summary><b>Client</b></summary>
+
+| Keybind | Action |
+| ------- | ------ |
+| <kbd>super + c</kbd> | Close client |
+| <kbd>super + t</kbd> | Toggle titlebar |
+| <kbd>super + space</kbd> | Toggle floating |
+| <kbd>super + f</kbd> | Toggle fullscreen |
+| <kbd>super + m</kbd> | Toggle maximize client |
+| <kbd>super + ctrl + m</kbd> | Toggle maximize client vertically |
+| <kbd>super + shift + m</kbd> | Toggle maximize client horizontally |
+| <kbd>super + n</kbd> | Minimize client |
+| <kbd>super + shift + n</kbd> | Restore minimized clients |
+| <kbd>super + shift + b</kbd> | Make tiny float and keep on top |
+| <kbd>super + shift + c</kbd> | Move and resize to center |
+| <kbd>super + c</kbd> | Center a client |
+
+| <kbd>super + shift + up</kbd> | Move up |
+| <kbd>super + shift + down</kbd> | Move down |
+| <kbd>super + shift + left</kbd> | Move left |
+| <kbd>super + shift + right</kbd> | Move right |
+| <kbd>super + ctrl + up</kbd> | Resize up |
+| <kbd>super + ctrl + down</kbd> | Resize down |
+| <kbd>super + ctrl + left</kbd> | Resize left |
+| <kbd>super + ctrl + right</kbd> | Resize right |
+| <kbd>super + up</kbd> | Focus up |
+| <kbd>super + down</kbd> | Focus down |
+| <kbd>super + left</kbd> | Focus left |
+| <kbd>super + right</kbd> | Focus right |
+| <kbd>super + j</kbd> | Focus next |
+| <kbd>super + k</kbd> | Focus previous |
+| <kbd>super + shift + k</kbd> | Swap with next |
+| <kbd>super + shift + j</kbd> | Swap with previous |
+| <kbd>super + shift + return</kbd> | Swap focused client with master |
+| <kbd>super + tab</kbd> | Go back in history |
+| <kbd>super + shift + u</kbd> | Jump to urgent |
+
+| <kbd>alt + a</kbd> | pick client to add to tab group |
+| <kbd>alt + s</kbd> | iterate through tabbing group |
+| <kbd>alt + d</kbd> | remove focused client from tabbing group |
+
+</details>
+
+<details>
+<summary><b>Layout</b></summary>
+
+| Keybind | Action |
+| ------- | ------ |
+| <kbd>super + shift + =</kbd> | increase paddings |
+| <kbd>super + shift + -</kbd> | decrease paddings |
+| <kbd>super + =</kbd> | increase gaps |
+| <kbd>super + -</kbd> | decrease gaps |
+| <kbd>super + ctrl + h</kbd> | increase number of columns |
+| <kbd>super + ctrl + l</kbd> | decrease number of columns |
+| <kbd>super + shift + h</kbd> | increase number of master clients |
+| <kbd>super + shift + l</kbd> | decrease number of master clients |
+| <kbd>super + h</kbd> | increase master width |
+| <kbd>super + l</kbd> | decrease master width |
+| <kbd>super + .</kbd> | Edit the current layout if it is a machi layout |
+| <kbd>super + /</kbd> | Switch between windows for a machi layout |
+</details>
+
+<details>
+<summary><b>Tags</b></summary>
+
+| Keybind | Action |
+| ------- | ------ |
+| <kbd>super + [1-9]</kbd> | View tag |
+| <kbd>super + [1-9]</kbd> | Toggle tag |
+| <kbd>super + shift + [1-9]</kbd> | Move focused client to tag |
+| <kbd>super + ctrl + [1-9]</kbd> | Move focused client and switch to tag |
+| <kbd>super + s</kbd> | View none |
+</details>
+
+<details>
+<summary><b>Media</b></summary>
+
+| Keybind | Action |
+| ------- | ------ |
+| <kbd>XF86AudioPlay</kbd> | Toggle media |
+| <kbd>XF86AudioPrev</kbd> | Previous media |
+| <kbd>XF86AudioNext</kbd> | Next media |
+| <kbd>XF86AudioMute</kbd> | Mute volume |
+| <kbd>XF86MonBrightnessUp</kbd> | Increase brightness |
+| <kbd>XF86MonBrightnessDown</kbd> | Decrease brightness |
+| <kbd>print</kbd> | Screenshot widget |
+| <kbd>super + p</kbd> | Color picker |
+</details>
+
+<details>
+<summary><b>UI</b></summary>
+
+| Keybind | Action |
+| ------- | ------ |
+| <kbd>super + d</kbd> | Toggle app launcher |
+| <kbd>super + escape</kbd> | Toggle exit screen |
+| <kbd>alt + tab</kbd> | Window switcher |
+| <kbd>super + F1</kbd> | Toggle hotkeys |
+</details>
+
+## ⌨️ ‎ <samp>Mousebinds</samp>
+
+<details>
+<summary><b>Desktop</b></summary>
+
+| Mousebind | Action |
+| --------- | ------ |
+| `right click` | Toggle main menu |
+</details>
+
+<details>
+<summary><b>Client</b></summary>
+
+| Mousebind | Action |
+| --------- | ------ |
+| `left click` | Focus a client |
+| super + `left click` | Make a client floating and move it |
+| super + `right click` | Make a client floating and resize it |
+</details>
+
 <!-- GALLERY -->
 ## :ocean: ‎ <samp>Gallery</samp>
 

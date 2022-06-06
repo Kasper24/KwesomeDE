@@ -108,7 +108,7 @@ function apps:new(id, key, command, class, args)
         {
             modifiers = args.scratchpad_modifiers,
             key = key,
-            group = "scratchpad",
+            group = "apps",
             description = "toggle " .. id .. " scratchpad ",
             on_press = function()
                 self:scratchpad_toggle(id, args.new_animation_on_toggle)
@@ -122,7 +122,7 @@ function apps:new(id, key, command, class, args)
         {
             modifiers = args.launch_modifiers,
             key = key,
-            group = "launcher",
+            group = "apps",
             description = "launch " .. id,
             on_press = function()
                 if args.run_or_raise == true then
