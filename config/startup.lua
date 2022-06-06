@@ -39,4 +39,4 @@ end
 
 setup_system_tools()
 configure_xserver()
--- persistent_daemon:enable()
+persistent_daemon:enable()
