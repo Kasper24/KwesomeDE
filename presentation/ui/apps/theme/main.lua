@@ -335,6 +335,87 @@ local function image_tab(self)
     return stack
 end
 
+local function digital_sun_tab()
+    local gcolor = require("gears.color")
+
+    local set = widgets.button.text.normal
+    {
+        animate_size = false,
+        normal_bg = beautiful.colors.surface,
+        text_normal_bg = beautiful.colors.on_surface,
+        size = 15,
+        text = "Set",
+        on_press = function()
+            theme_daemon:set_wallpaper("digital_sun")
+        end
+    }
+
+    return wibox.widget
+    {
+        layout = wibox.layout.fixed.vertical,
+        wibox.widget {
+            forced_width = dpi(20),
+            forced_height = dpi(250),
+            fit = function(_, width, height)
+                return width, height
+            end,
+            draw = function(_, _, cr, width, height)
+                cr:set_source(gcolor {
+                    type  = 'linear',
+                    from  = { 0, 0      },
+                    to    = { 0, height },
+                    stops = {
+                        { 0   , beautiful.colors.background },
+                        { 0.75, beautiful.colors.surface },
+                        { 1   , beautiful.colors.background }
+                    }
+                })
+                cr:paint()
+                -- Clip the first 33% of the screen
+                cr:rectangle(0,0, width, height/3)
+
+                -- Clip-out some increasingly large sections of add the sun "bars"
+                for i=0, 6 do
+                    cr:rectangle(0, height*.28 + i*(height*.055 + i/2), width, height*.055)
+                end
+                cr:clip()
+
+             -- Draw the sun
+                cr:set_source(gcolor {
+                    type  = 'linear' ,
+                    from  = { 0, 0      },
+                    to    = { 0, height },
+                    stops = {
+                        { 0, beautiful.random_accent_color() },
+                        { 1, beautiful.random_accent_color() }
+                    }
+                })
+                cr:arc(width/2, height/2, height*.35, 0, math.pi*2)
+                cr:fill()
+
+                -- Draw the grid
+                local lines = width/8
+                cr:reset_clip()
+                cr:set_line_width(0.5)
+                cr:set_source(gcolor(beautiful.random_accent_color()))
+
+                for i=1, lines do
+                    cr:move_to((-width) + i* math.sin(i * (math.pi/(lines*2)))*30, height)
+                    cr:line_to(width/4 + i*((width/2)/lines), height*0.75 + 2)
+                    cr:stroke()
+                end
+
+                for i=1, 5 do
+                    cr:move_to(0, height*0.75 + i*10 + i*2)
+                    cr:line_to(width, height*0.75 + i*10 + i*2)
+                    cr:stroke()
+                end
+            end
+        },
+        set,
+    }
+end
+
 local function new(self, layout)
     local accent_color = beautiful.random_accent_color()
 
@@ -348,7 +429,7 @@ local function new(self, layout)
     local _image_tab = image_tab(self)
     local _tiled_tab = {}
     local _color_tab = {}
-    local _digital_sun_tab = {}
+    local _digital_sun_tab = digital_sun_tab()
     local _binary_tab = {}
 
     local title = widgets.text
@@ -454,7 +535,8 @@ local function new(self, layout)
             _color_button:turn_off()
             _digital_sun_button:turn_on()
             _binary_button:turn_off()
-            _stack:raise_widget(_image_tab)
+            _stack:raise_widget(_digital_sun_tab)
+            print("sun")
         end
     }
 
@@ -483,7 +565,7 @@ local function new(self, layout)
         _image_tab,
         _image_tab,
         _image_tab,
-        _image_tab,
+        _digital_sun_tab,
         _image_tab
     }
 

@@ -7,14 +7,6 @@
   <b>🎀 KwesomeDE 🎀</b>
 </p>
 
-<p align="center">
-<a href="#wrench--setup"><img width="150px" style="padding: 0 10px;" src="assets/setup.png"></a>
-<a href="https://github.com/Kasper24/KwesomeDE/wiki"><img width="150px" style="padding: 0 10px;" src="assets/wiki.png"></a>
-<a href="#ocean--gallery"><img width="150px" style="padding: 0 10px;" src="assets/gallery.png"></a>
-<a href="#money_with_wings--tip-jar"><img width="150px" style="padding: 0 10px;" src="assets/tipjar.png"></a>
-</p>
-
-
 <table>
   <tr>
     <td></td>
@@ -223,7 +215,6 @@ And run this command for your system to detect the newly installed fonts.
 | <kbd>super + shift + b</kbd> | Make tiny float and keep on top |
 | <kbd>super + shift + c</kbd> | Move and resize to center |
 | <kbd>super + c</kbd> | Center a client |
-
 | <kbd>super + shift + up</kbd> | Move up |
 | <kbd>super + shift + down</kbd> | Move down |
 | <kbd>super + shift + left</kbd> | Move left |
@@ -243,10 +234,9 @@ And run this command for your system to detect the newly installed fonts.
 | <kbd>super + shift + return</kbd> | Swap focused client with master |
 | <kbd>super + tab</kbd> | Go back in history |
 | <kbd>super + shift + u</kbd> | Jump to urgent |
-
-| <kbd>alt + a</kbd> | pick client to add to tab group |
-| <kbd>alt + s</kbd> | iterate through tabbing group |
-| <kbd>alt + d</kbd> | remove focused client from tabbing group |
+| <kbd>alt + a</kbd> | Pick client to add to tab group |
+| <kbd>alt + s</kbd> | Iterate through tabbing group |
+| <kbd>alt + d</kbd> | Remove focused client from tabbing group |
 
 </details>
 
@@ -255,16 +245,16 @@ And run this command for your system to detect the newly installed fonts.
 
 | Keybind | Action |
 | ------- | ------ |
-| <kbd>super + shift + =</kbd> | increase paddings |
-| <kbd>super + shift + -</kbd> | decrease paddings |
-| <kbd>super + =</kbd> | increase gaps |
-| <kbd>super + -</kbd> | decrease gaps |
-| <kbd>super + ctrl + h</kbd> | increase number of columns |
-| <kbd>super + ctrl + l</kbd> | decrease number of columns |
-| <kbd>super + shift + h</kbd> | increase number of master clients |
-| <kbd>super + shift + l</kbd> | decrease number of master clients |
-| <kbd>super + h</kbd> | increase master width |
-| <kbd>super + l</kbd> | decrease master width |
+| <kbd>super + shift + =</kbd> | Increase paddings |
+| <kbd>super + shift + -</kbd> | Decrease paddings |
+| <kbd>super + =</kbd> | Increase gaps |
+| <kbd>super + -</kbd> | Decrease gaps |
+| <kbd>super + ctrl + h</kbd> | Increase number of columns |
+| <kbd>super + ctrl + l</kbd> | Decrease number of columns |
+| <kbd>super + shift + h</kbd> | Increase number of master clients |
+| <kbd>super + shift + l</kbd> | Decrease number of master clients |
+| <kbd>super + h</kbd> | Increase master width |
+| <kbd>super + l</kbd> | Decrease master width |
 | <kbd>super + .</kbd> | Edit the current layout if it is a machi layout |
 | <kbd>super + /</kbd> | Switch between windows for a machi layout |
 </details>
@@ -307,7 +297,7 @@ And run this command for your system to detect the newly installed fonts.
 | <kbd>super + F1</kbd> | Toggle hotkeys |
 </details>
 
-## ⌨️ ‎ <samp>Mousebinds</samp>
+## 🖱️ ‎ <samp>Mousebinds</samp>
 
 <details>
 <summary><b>Desktop</b></summary>
@@ -330,69 +320,85 @@ And run this command for your system to detect the newly installed fonts.
 <!-- GALLERY -->
 ## :ocean: ‎ <samp>Gallery</samp>
 
-| <b>Action Panel </b> |
-| --- |
-| <img src="assets/action_panel.gif" width="500px" alt="action panel preview"> |
+<details>
+<summary><b>Action Panel</b></summary>
+<img src="assets/action_panel.gif" width="500px" alt="action panel preview">
+</details>
 
-| <b>Message Panel </b> |
-| --- |
-| <img src="assets/message_panel.gif" width="500px" alt="message panel preview"> |
+<details>
+<summary><b>Message Panel</b></summary>
+<img src="assets/message_panel.gif" width="500px" alt="message panel preview">
+</details>
 
-| <b>Info Panel </b> |
-| --- |
-| <img src="assets/info_panel.gif" width="500px" alt="info panel preview"> |
+<details>
+<summary><b>Info Panel</b></summary>
+<img src="assets/info_panel.gif" width="500px" alt="info panel preview">
+</details>
 
-| <b>Wi-Fi Applet</b> |
-| --- |
-| <img src="assets/wifi_applet.gif" width="500px" alt="wifi applet preview"> |
+<details>
+<summary><b>Wi-Fi Applet</b></summary>
+<img src="assets/wifi_applet.gif" width="500px" alt="wifi applet preview">
+</details>
 
-| <b>Bluetooth Applet</b> |
-| --- |
-| <img src="assets/bluetooth_applet.gif" width="500px" alt="bluetooth applet preview"> |
+<details>
+<summary><b>Bluetooth Applet</b></summary>
+<img src="assets/bluetooth_applet.gif" width="500px" alt="bluetooth applet preview">
+</details>
 
-| <b>Audio Applet</b> |
-| --- |
-| <img src="assets/audio_applet.gif" width="500px" alt="audio applet preview"> |
+<details>
+<summary><b>Audio Applet</b></summary>
+<img src="assets/audio_applet.gif" width="500px" alt="audio applet preview">
+</details>
 
-| <b>CPU Applet</b> |
-| --- |
-| <img src="assets/cpu_applet.gif" width="500px" alt="cpu applet preview"> |
+<details>
+<summary><b>CPU Applet</b></summary>
+<img src="assets/cpu_applet.gif" width="500px" alt="cpu applet preview">
+</details>
 
-| <b>Theme Manager</b> |
-| --- |
-| <img src="assets/theme_manager.gif" width="500px" alt="theme manager preview"> |
+<details>
+<summary><b>Theme Manager</b></summary>
+<img src="assets/theme_manager.gif" width="500px" alt="theme manager preview">
+</details>
 
-| <b>Screenshot Tool</b> |
-| --- |
-| <img src="assets/screenshot.gif" width="500px" alt="screenshot preview"> |
+<details>
+<summary><b>Screenshot Tool</b></summary>
+<img src="assets/screenshot.gif" width="500px" alt="screenshot preview">
+</details>
 
-| <b>Recorder Tool</b> |
-| --- |
-| <img src="assets/recorder.gif" width="500px" alt="recorder preview"> |
+<details>
+<summary><b>Recorder Tool</b></summary>
+<img src="assets/recorder.gif" width="500px" alt="recorder preview">
+</details>
 
-| <b>Power Screen</b> |
-| --- |
-| <img src="assets/power_screen.gif" width="500px" alt="power screen preview"> |
+<details>
+<summary><b>Power Screen</b></summary>
+<img src="assets/power_screen.gif" width="500px" alt="power screen preview">
+</details>
 
-| <b>Lock Screen</b> |
-| --- |
-| <img src="assets/lock_screen.gif" width="500px" alt="lock screen preview"> |
+<details>
+<summary><b>Lock Screen</b></summary>
+<img src="assets/lock_screen.gif" width="500px" alt="lock screen preview">
+</details>
 
-| <b>Main Menu</b> |
-| --- |
-| <img src="assets/main_menu.gif" width="500px" alt="main menu preview"> |
+<details>
+<summary><b>Main Menu</b></summary>
+<img src="assets/main_menu.gif" width="500px" alt="main menu preview">
+</details>
 
-| <b>Client Menu</b> |
-| --- |
-| <img src="assets/client_menu.gif" width="500px" alt="client menu preview"> |
+<details>
+<summary><b>Client Menu</b></summary>
+<img src="assets/client_menu.gif" width="500px" alt="client menu preview">
+</details>
 
-| <b>Notification</b> |
-| --- |
-| <img src="assets/notification.gif" width="500px" alt="notification preview"> |
+<details>
+<summary><b>Notification</b></summary>
+<img src="assets/notification.gif" width="500px" alt="notification preview">
+</details>
 
-| <b>ncmpcpp</b> |
-| --- |
-| <img src="assets/ncmpcpp.gif" width="500px" alt="ncmpcpp preview"> |
+<details>
+<summary><b>ncmpcpp</b></summary>
+<img src="assets/ncmpcpp.gif" width="500px" alt="ncmpcpp preview">
+</details>
 
 <!-- ACKNOWLEDGEMENTS -->
 ## :bulb: ‎ <samp>Acknowledgements</samp>
