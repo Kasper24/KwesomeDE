@@ -52,12 +52,13 @@ local function github_events(self)
             end
 
             for index, event in ipairs(data) do
+                local path_to_avatar = avatars_path .. event.actor.id
+
                 if old_data ~= nil and old_data[event.id] == nil then
-                    self:emit_signal("new_event", event)
+                    self:emit_signal("new_event", event, path_to_avatar)
                 end
 
                 local is_downloading = false
-                local path_to_avatar = avatars_path .. event.actor.id
                 helpers.filesystem.is_file_readable(path_to_avatar, function(result)
                     if result == false then
                         is_downloading = true
