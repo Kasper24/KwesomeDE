@@ -1,3 +1,8 @@
+-------------------------------------------
+-- @author https://github.com/Kasper24
+-- @copyright 2021-2022 Kasper24
+-------------------------------------------
+
 local beautiful = require("beautiful")
 local naughty = require("naughty")
 local github_daemon = require("daemons.web.github")

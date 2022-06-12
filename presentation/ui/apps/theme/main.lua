@@ -1,3 +1,8 @@
+-------------------------------------------
+-- @author https://github.com/Kasper24
+-- @copyright 2021-2022 Kasper24
+-------------------------------------------
+
 local gtimer = require("gears.timer")
 local wibox = require("wibox")
 local widgets = require("presentation.ui.widgets")

@@ -1,3 +1,8 @@
+-------------------------------------------
+-- @author https://github.com/Kasper24
+-- @copyright 2021-2022 Kasper24
+-------------------------------------------
+
 local gcolor = require("gears.color")
 local beautiful = require("beautiful")
 local theme_daemon = require("daemons.system.theme")
@@ -5,7 +10,6 @@ local settings = require("services.settings")
 local color_libary = require("modules.color")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
-local string = string
 local math = math
 
 local theme = {}

@@ -1,3 +1,8 @@
+-------------------------------------------
+-- @author https://github.com/Kasper24
+-- @copyright 2021-2022 Kasper24
+-------------------------------------------
+
 local gtable = require("gears.table")
 local twidget = require("presentation.ui.widgets.text")
 local ewidget = require("presentation.ui.widgets.button.elevated")

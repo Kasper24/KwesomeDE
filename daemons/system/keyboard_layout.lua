@@ -1,6 +1,7 @@
--- Provides:
--- update
---      layout (string)
+-------------------------------------------
+-- @author https://github.com/Kasper24
+-- @copyright 2021-2022 Kasper24
+-------------------------------------------
 
 local awful = require("awful")
 local gobject = require("gears.object")

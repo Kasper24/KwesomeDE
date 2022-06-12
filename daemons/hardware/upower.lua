@@ -1,3 +1,8 @@
+-------------------------------------------
+-- @author https://github.com/Kasper24
+-- @copyright 2021-2022 Kasper24
+-------------------------------------------
+
 local UPower = require('lgi').require('UPowerGlib')
 local gobject = require("gears.object")
 local gtable = require("gears.table")

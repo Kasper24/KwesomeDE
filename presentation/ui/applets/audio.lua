@@ -1,3 +1,8 @@
+-------------------------------------------
+-- @author https://github.com/Kasper24
+-- @copyright 2021-2022 Kasper24
+-------------------------------------------
+
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
@@ -9,7 +14,6 @@ local pactl_daemon = require("daemons.hardware.pactl")
 local helpers = require("helpers")
 local icon_theme = require("services.icon_theme")
 local dpi = beautiful.xresources.apply_dpi
-local pairs = pairs
 
 local audio = { }
 local instance = nil

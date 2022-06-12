@@ -1,8 +1,12 @@
+-------------------------------------------
+-- @author https://github.com/Kasper24
+-- @copyright 2021-2022 Kasper24
+-------------------------------------------
+
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local settings = require("services.settings")
-local helpers = require("helpers")
 local string = string
 
 local favorites = { }

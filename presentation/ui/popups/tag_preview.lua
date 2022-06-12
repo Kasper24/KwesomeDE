@@ -1,3 +1,8 @@
+-------------------------------------------
+-- @author https://github.com/Kasper24
+-- @copyright 2021-2022 Kasper24
+-------------------------------------------
+
 local awful = require("awful")
 local bling = require("modules.bling")
 local capi = { awesome = awesome, mouse = mouse, client = client }

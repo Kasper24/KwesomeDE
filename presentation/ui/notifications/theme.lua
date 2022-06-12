@@ -1,7 +1,11 @@
+-------------------------------------------
+-- @author https://github.com/Kasper24
+-- @copyright 2021-2022 Kasper24
+-------------------------------------------
+
 local beautiful = require("beautiful")
 local naughty = require("naughty")
 local theme_daemon = require("daemons.system.theme")
-local helpers = require("helpers")
 
 theme_daemon:connect_signal("templates::already_exists", function(self, template)
     naughty.notification

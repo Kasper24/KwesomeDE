@@ -1,4 +1,8 @@
-local gshape = require("gears.shape")
+-------------------------------------------
+-- @author https://github.com/Kasper24
+-- @copyright 2021-2022 Kasper24
+-------------------------------------------
+
 local wibox = require("wibox")
 local widgets = require("presentation.ui.widgets")
 local beautiful = require("beautiful")

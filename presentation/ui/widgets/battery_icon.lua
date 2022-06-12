@@ -1,3 +1,8 @@
+-------------------------------------------
+-- @author https://github.com/Kasper24
+-- @copyright 2021-2022 Kasper24
+-------------------------------------------
+
 local twidget = require("presentation.ui.widgets.text")
 local beautiful = require("beautiful")
 local upower_daemon = require("daemons.hardware.upower")

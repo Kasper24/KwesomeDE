@@ -1,10 +1,13 @@
+-------------------------------------------
+-- @author https://github.com/Kasper24
+-- @copyright 2021-2022 Kasper24
+-------------------------------------------
+
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
-local gshape = require("gears.shape")
 local wibox = require("wibox")
 local widgets = require("presentation.ui.widgets")
-local power_popup = require("presentation.ui.popups.power")
 local beautiful = require("beautiful")
 local theme_daemon = require("daemons.system.theme")
 local system_daemon = require("daemons.system.system")

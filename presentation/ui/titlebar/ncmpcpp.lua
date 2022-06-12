@@ -1,3 +1,8 @@
+-------------------------------------------
+-- @author https://github.com/Kasper24
+-- @copyright 2021-2022 Kasper24
+-------------------------------------------
+
 local awful = require("awful")
 local wibox = require("wibox")
 local widgets = require("presentation.ui.widgets")
@@ -6,7 +11,6 @@ local beautiful = require("beautiful")
 local bling = require("modules.bling")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
-local string = string
 
 local function tabs_titlebar(c)
     local current_playlist = nil

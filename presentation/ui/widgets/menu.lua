@@ -1,11 +1,14 @@
+-------------------------------------------
+-- @author https://github.com/Kasper24
+-- @copyright 2021-2022 Kasper24
+-------------------------------------------
+
 local awful = require("awful")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
-local gshape = require("gears.shape")
 local wibox = require("wibox")
 local welevated = require("presentation.ui.widgets.button.elevated")
 local twidget = require("presentation.ui.widgets.text")
-local wcheckbox = require("presentation.ui.widgets.checkbox")
 local beautiful = require("beautiful")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi

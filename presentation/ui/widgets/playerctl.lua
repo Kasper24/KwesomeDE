@@ -1,3 +1,8 @@
+-------------------------------------------
+-- @author https://github.com/Kasper24
+-- @copyright 2021-2022 Kasper24
+-------------------------------------------
+
 local gshape = require("gears.shape")
 local wibox = require("wibox")
 local twidget = require("presentation.ui.widgets.text")

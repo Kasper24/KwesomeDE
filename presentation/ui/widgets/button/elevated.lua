@@ -1,10 +1,14 @@
+-------------------------------------------
+-- @author https://github.com/Kasper24
+-- @copyright 2021-2022 Kasper24
+-------------------------------------------
+
 local wcontainer = require("presentation.ui.widgets.container")
 local beautiful = require("beautiful")
 local animation = require("services.animation")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
-local string = string
 
 local elevated_button = { mt = {} }
 

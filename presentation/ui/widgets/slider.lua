@@ -1,3 +1,8 @@
+-------------------------------------------
+-- @author https://github.com/Kasper24
+-- @copyright 2021-2022 Kasper24
+-------------------------------------------
+
 -- Modified version emitting button::release as it's getting blocked by the mousegrabber
 
 ---------------------------------------------------------------------------

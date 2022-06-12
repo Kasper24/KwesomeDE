@@ -1,3 +1,8 @@
+-------------------------------------------
+-- @author https://github.com/Kasper24
+-- @copyright 2021-2022 Kasper24
+-------------------------------------------
+
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local inotify = require("services.inotify")

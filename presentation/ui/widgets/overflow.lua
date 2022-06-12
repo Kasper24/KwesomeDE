@@ -1,3 +1,8 @@
+-------------------------------------------
+-- @author https://github.com/Kasper24
+-- @copyright 2021-2022 Kasper24
+-------------------------------------------
+
 ---------------------------------------------------------------------------
 -- A layout that allows its children to take more space than what's available
 -- in the surrounding container. If the content does exceed the available
