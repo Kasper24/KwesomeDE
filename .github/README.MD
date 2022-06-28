@@ -45,7 +45,7 @@ Here are some details about my setup:
 
 - **OS:** [Arch Linux](https://archlinux.org)
 - **WM:** [awesome](https://github.com/awesomeWM/awesome)
-- **Terminal:** [kitty](https://github.com/alacritty/alacritty)
+- **Terminal:** [kitty](https://github.com/kovidgoyal/kitty)
 - **Shell:** [zsh](https://www.zsh.org/)
 - **Editor:** [vscode](https://github.com/microsoft/vscode)
 - **Compositor:** [picom-dccsillag](https://github.com/dccsillag/picom/tree/implement-window-animations)
