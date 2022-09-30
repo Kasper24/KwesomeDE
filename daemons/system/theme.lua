@@ -189,7 +189,8 @@ local function generate_templates(self, templates, is_default)
             for line in content:gmatch("[^\r\n$]+") do
                 if line:match("{{") then
                     line = line:gsub("{{", "{")
-                elseif line:match("}}") then
+                end
+                if line:match("}}") then
                     line = line:gsub("}}", "}")
                 end
 
