@@ -7,6 +7,7 @@ local awful = require("awful")
 local gtimer = require("gears.timer")
 local beautiful = require("beautiful")
 local persistent_daemon = require("daemons.system.persistent")
+local udev_daemon = require("daemons.hardware.udev")
 local helpers = require("helpers")
 
 local function setup_system_tools()
@@ -18,12 +19,9 @@ local function setup_system_tools()
    helpers.run.run_once_grep(beautiful.apps.openrgb.command)
 end
 
-local function configure_xserver()
-   awful.spawn("xrandr --output DP-2 --gamma 0.8", false)
-   awful.spawn("xset s off", false)
-   awful.spawn("xset -dpms", false)
-   awful.spawn("xset s noblank", false)
+local function configure_keyboard()
    awful.spawn("xset r rate 200 30", false)
+
    gtimer.delayed_call(function()
       awful.spawn("setxkbmap -layout us,il -variant , -option grp:alt_shift_toggle", false)
    end)
@@ -40,6 +38,18 @@ local function configure_xserver()
          };\
          #' | xkbcomp -w 0 - "$DISPLAY"
    ]])
+end
+
+local function configure_xserver()
+   awful.spawn("xrandr --output DP-2 --gamma 0.8", false)
+   awful.spawn("xset s off", false)
+   awful.spawn("xset -dpms", false)
+   awful.spawn("xset s noblank", false)
+
+   configure_keyboard()
+   udev_daemon:connect_signal("usb::added", function(self, device)
+      configure_keyboard()
+   end)
 end
 
 setup_system_tools()
