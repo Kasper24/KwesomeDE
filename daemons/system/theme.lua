@@ -186,43 +186,45 @@ local function generate_templates(self, templates, is_default)
     for index, template in ipairs(templates) do
         helpers.filesystem.read_file(template, function(content)
             local lines = {}
-            for line in content:gmatch("[^\r\n$]+") do
-                if line:match("{{") then
-                    line = line:gsub("{{", "{")
-                end
-                if line:match("}}") then
-                    line = line:gsub("}}", "}")
-                end
-
-                local colors = self._private.colors[self._private.selected_wallpaper]
-
-                for index = 0, 15 do
-                    local color = replace_template_colors(colors[index + 1], "color" .. index, line)
-                    if color ~= nil then
-                        line = color
+            if content ~= nil then
+                for line in content:gmatch("[^\r\n$]+") do
+                    if line:match("{{") then
+                        line = line:gsub("{{", "{")
                     end
-                end
+                    if line:match("}}") then
+                        line = line:gsub("}}", "}")
+                    end
 
-                local background = replace_template_colors(colors[1], "background", line)
-                if background ~= nil then
-                    line = background
-                end
+                    local colors = self._private.colors[self._private.selected_wallpaper]
 
-                local foreground = replace_template_colors(colors[16], "foreground", line)
-                if foreground ~= nil then
-                    line = foreground
-                end
+                    for index = 0, 15 do
+                        local color = replace_template_colors(colors[index + 1], "color" .. index, line)
+                        if color ~= nil then
+                            line = color
+                        end
+                    end
 
-                local cursor = replace_template_colors(colors[16], "cursor", line)
-                if cursor ~= nil then
-                    line = cursor
-                end
+                    local background = replace_template_colors(colors[1], "background", line)
+                    if background ~= nil then
+                        line = background
+                    end
 
-                if line:match("{wallpaper}") then
-                    line = line:gsub("{wallpaper}", self._private.wallpaper)
-                end
+                    local foreground = replace_template_colors(colors[16], "foreground", line)
+                    if foreground ~= nil then
+                        line = foreground
+                    end
 
-                table.insert(lines, line)
+                    local cursor = replace_template_colors(colors[16], "cursor", line)
+                    if cursor ~= nil then
+                        line = cursor
+                    end
+
+                    if line:match("{wallpaper}") then
+                        line = line:gsub("{wallpaper}", self._private.wallpaper)
+                    end
+
+                    table.insert(lines, line)
+                end
             end
 
             local new_name = is_default == true
@@ -532,7 +534,8 @@ function theme:set_wallpaper(type)
         self:save_colorscheme()
         self._private.wallpaper = self._private.selected_wallpaper
         settings:set_value("theme.wallpaper", self._private.wallpaper)
-        awful.spawn.with_shell("sudo ln -s " .. self._private.wallpaper .. " ~/.config/wpg/.current")
+        print("sudo ln -sf " .. self._private.wallpaper .. " ~/.config/wpg/.current")
+        awful.spawn.with_shell("sudo ln -sf " .. self._private.wallpaper .. " ~/.config/wpg/.current")
     elseif type == "tiled" then
     elseif type == "color" then
         self._private.color = self._private.selected_color
