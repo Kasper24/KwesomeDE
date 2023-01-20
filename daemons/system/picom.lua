@@ -7,7 +7,6 @@ local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
-local settings = require("services.settings")
 local helpers = require("helpers")
 local tonumber = tonumber
 local string = string
@@ -24,7 +23,7 @@ function picom:turn_on(save)
     function()
         awful.spawn("picom --experimental-backends --config " .. CONFIG_PATH, false)
         if save == true then
-            settings:set_value("picom", true)
+            helpers.settings:set_value("picom", true)
         end
     end)
 end
@@ -33,7 +32,7 @@ function picom:turn_off(save)
     helpers.run.check_if_running("picom --experimental-backends", function()
         awful.spawn("pkill -f 'picom --experimental-backends'", false)
         if save == true then
-            settings:set_value("picom", false)
+            helpers.settings:set_value("picom", false)
         end
     end, nil)
 end
@@ -107,14 +106,14 @@ local function new()
             get_settings(ret)
 
             -- Try to turn picom back on if it crashed from incorrect setting
-            if settings:get_value("picom") == true then
+            if helpers.settings:get_value("picom") == true then
                 ret:turn_on()
             end
         end)
 
-        if settings:get_value("picom") == true then
+        if helpers.settings:get_value("picom") == true then
             ret:turn_on()
-        elseif settings:get_value("picom") == false then
+        elseif helpers.settings:get_value("picom") == false then
             ret:turn_off()
         end
 

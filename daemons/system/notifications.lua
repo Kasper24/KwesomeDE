@@ -10,7 +10,6 @@ local gtimer = require("gears.timer")
 local gstring = require("gears.string")
 local wibox = require("wibox")
 local naughty = require("naughty")
-local settings = require("services.settings")
 local helpers = require("helpers")
 local ipairs = ipairs
 local table  = table
@@ -121,7 +120,7 @@ end
 function notifications:turn_on()
     if self.suspended ~= true then
         self.suspended = true
-        settings:set_value("naughty_suspended", true)
+        helpers.settings:set_value("naughty_suspended", true)
         self:emit_signal("state", true)
     end
 end
@@ -129,7 +128,7 @@ end
 function notifications:turn_off(save)
     if self.suspended ~= false then
         self.suspended = false
-        settings:set_value("naughty_suspended", false)
+        helpers.settings:set_value("naughty_suspended", false)
         self:emit_signal("state", false)
     end
 end
@@ -177,9 +176,9 @@ local function new()
     }
 
     gtimer.delayed_call(function()
-        if settings:get_value("naughty_suspended") == true then
+        if helpers.settings:get_value("naughty_suspended") == true then
             ret:turn_on()
-        elseif settings:get_value("naughty_suspended") == false then
+        elseif helpers.settings:get_value("naughty_suspended") == false then
             ret:turn_off()
         end
 

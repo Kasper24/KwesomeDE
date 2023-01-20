@@ -6,7 +6,6 @@
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
-local settings = require("services.settings")
 local helpers = require("helpers")
 local string = string
 
@@ -20,7 +19,7 @@ local UPDATE_INTERVAL = 60 * 60 * 12 -- 12 hours
 
 function weather:set_api_key(api_key)
     self._private.api_key = api_key
-    settings:set_value("weather.api_key", self._private.api_key)
+    helpers.settings:set_value("weather.api_key", self._private.api_key)
 end
 
 function weather:get_api_key()
@@ -29,7 +28,7 @@ end
 
 function weather:set_unit(unit)
     self._private.unit = unit
-    settings:set_value("weather.unit", self._private.unit)
+    helpers.settings:set_value("weather.unit", self._private.unit)
 end
 
 function weather:get_unit()
@@ -38,7 +37,7 @@ end
 
 function weather:set_coordinate_x(coordinate_x)
     self._private.coordinate_x = coordinate_x
-    settings:set_value("weather.coordinate_x", self._private.coordinate_x)
+    helpers.settings:set_value("weather.coordinate_x", self._private.coordinate_x)
 end
 
 function weather:get_coordinate_x()
@@ -47,7 +46,7 @@ end
 
 function weather:set_coordinate_y(coordinate_y)
     self._private.coordinate_y = coordinate_y
-    settings:set_value("weather.coordinate_y", self._private.coordinate_y)
+    helpers.settings:set_value("weather.coordinate_y", self._private.coordinate_y)
 end
 
 function weather:get_coordinate_y()
@@ -89,10 +88,10 @@ local function new()
     ret._private = {}
 
     -- "metric" for Celcius, "imperial" for Fahrenheit
-    ret._private.unit = settings:get_value("weather.unit") or "metric"
-    ret._private.api_key = settings:get_value("weather.api_key")
-    ret._private.coordinate_x = settings:get_value("weather.coordinate_x")
-    ret._private.coordinate_y = settings:get_value("weather.coordinate_y")
+    ret._private.unit = helpers.settings:get_value("weather.unit") or "metric"
+    ret._private.api_key = helpers.settings:get_value("weather.api_key")
+    ret._private.coordinate_x = helpers.settings:get_value("weather.coordinate_x")
+    ret._private.coordinate_y = helpers.settings:get_value("weather.coordinate_y")
 
     if ret._private.api_key ~= nil and ret._private.coordinate_x ~= nil and ret._private.coordinate_y ~= nil then
         ret:refresh()

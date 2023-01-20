@@ -7,7 +7,6 @@ local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
-local settings = require("services.settings")
 local helpers = require("helpers")
 local string = string
 
@@ -22,7 +21,7 @@ local UPDATE_INTERVAL = 60 * 60 * 12 -- 12 hours
 
 function corona:set_country(country)
     self._private.country = country
-    settings:set_value("corona.country", self._private.country)
+    helpers.settings:set_value("corona.country", self._private.country)
 end
 
 function corona:get_country()
@@ -59,7 +58,7 @@ local function new()
     gtable.crush(ret, corona, true)
 
     ret._private = {}
-    ret._private.country = settings:get_value("corona.country")
+    ret._private.country = helpers.settings:get_value("corona.country")
 
     if ret._private.country ~= nil then
         ret:refresh()

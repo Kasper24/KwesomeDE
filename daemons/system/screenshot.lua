@@ -7,7 +7,6 @@ local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
-local settings = require("services.settings")
 local helpers = require("helpers")
 local os = os
 
@@ -16,7 +15,7 @@ local instance = nil
 
 function screenshot:set_show_cursor(state)
     self._private.show_cursor = state
-    settings:set_value("screenshot.show_cursor", state)
+    helpers.settings:set_value("screenshot.show_cursor", state)
 end
 
 function screenshot:get_show_cursor()
@@ -29,14 +28,14 @@ end
 
 function screenshot:increase_delay()
     self._private.delay = self._private.delay + 1
-    settings:set_value("screenshot.delay", self._private.delay)
+    helpers.settings:set_value("screenshot.delay", self._private.delay)
     return self:get_delay()
 end
 
 function screenshot:decrease_delay()
     if self._private.delay > 0 then
         self._private.delay = self._private.delay - 1
-        settings:set_value("screenshot.delay", self._private.delay)
+        helpers.settings:set_value("screenshot.delay", self._private.delay)
     end
     return self:get_delay()
 end
@@ -50,7 +49,7 @@ function screenshot:set_folder()
         for line in stdout:gmatch("[^\r\n]+") do
             if line ~= "" then
                 self._private.folder = line
-                settings:set_value("screenshot.folder", line)
+                helpers.settings:set_value("screenshot.folder", line)
                 self:emit_signal("folder::updated", line)
             end
         end
@@ -111,9 +110,9 @@ local function new()
 
     ret._private = {}
     ret._private.screenshot_method = "selection"
-    ret._private.delay = settings:get_value("screenshot.delay") or 0
-    ret._private.show_cursor = settings:get_value("screenshot.show_cursor") or false
-    ret._private.folder = settings:get_value("screenshot.folder") or
+    ret._private.delay = helpers.settings:get_value("screenshot.delay") or 0
+    ret._private.show_cursor = helpers.settings:get_value("screenshot.show_cursor") or false
+    ret._private.folder = helpers.settings:get_value("screenshot.folder") or
                                     "/home/" .. os.getenv("USER") .. "/Pictures/Screenshots/"
 
     return ret

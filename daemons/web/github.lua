@@ -6,7 +6,6 @@
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
-local settings = require("services.settings")
 local helpers = require("helpers")
 local string = string
 local ipairs = ipairs
@@ -19,7 +18,7 @@ local PATH = helpers.filesystem.get_cache_dir("github")
 
 function github:set_username(username)
     self._private.username = username
-    settings:set_value("github.username", self._private.username)
+    helpers.settings:set_value("github.username", self._private.username)
 end
 
 function github:get_username()
@@ -170,7 +169,7 @@ local function new()
     gtable.crush(ret, github, true)
 
     ret._private = {}
-    ret._private.username = settings:get_value("github.username")
+    ret._private.username = helpers.settings:get_value("github.username")
 
     if ret._private.username ~= nil then
         ret:refresh()

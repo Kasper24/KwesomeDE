@@ -8,7 +8,6 @@ local gtimer = require("gears.timer")
 local ruled = require("ruled")
 local beautiful = require("beautiful")
 local picom_daemon = require("daemons.system.picom")
-local settings = require("services.settings")
 local helpers = require("helpers")
 local capi = { awesome = awesome, client = client }
 
@@ -342,7 +341,7 @@ ruled.client.connect_signal("request::rules", function()
             c:connect_signal("unmanage", function()
                 helpers.animation:set_instant(false)
 
-                if settings:get_value("picom") ~= false then
+                if helpers.settings:get_value("picom") ~= false then
                     picom_daemon:turn_on(false)
                 end
             end)

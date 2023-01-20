@@ -8,7 +8,6 @@ local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local notification_daemon = require("daemons.system.notifications")
-local settings = require("services.settings")
 local helpers = require("helpers")
 local ipairs = ipairs
 local type = type
@@ -24,7 +23,7 @@ package.cpath = package.cpath .. ';' .. LUA_PAM_PATH
 
 function system:set_password(password)
     self._private.password = password
-    settings:set_value("system.password", self._private.password)
+    helpers.settings:set_value("system.password", self._private.password)
 end
 
 function system:get_password()
@@ -88,7 +87,7 @@ local function new()
     gtable.crush(ret, system, true)
 
     ret._private = {}
-    ret._private.password = settings:get_value("system.password")
+    ret._private.password = helpers.settings:get_value("system.password")
 
     if package.loaded["liblua_pam"] then
         ret._private.is_pam_installed = true

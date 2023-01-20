@@ -6,7 +6,6 @@
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
-local settings = require("services.settings")
 local helpers = require("helpers")
 local string = string
 local ipairs = ipairs
@@ -23,7 +22,7 @@ local UPDATE_INTERVAL = 60 * 60 * 1 -- 1 hour
 
 function gitlab:set_host(host)
     self._private.host = host
-    settings:set_value("gitlab.host", self._private.host)
+    helpers.settings:set_value("gitlab.host", self._private.host)
 end
 
 function gitlab:get_host()
@@ -32,7 +31,7 @@ end
 
 function gitlab:set_access_token(access_token)
     self._private.access_token = access_token
-    settings:set_value("gitlab.access_token", self._private.access_token)
+    helpers.settings:set_value("gitlab.access_token", self._private.access_token)
 end
 
 function gitlab:get_access_token()
@@ -98,8 +97,8 @@ local function new()
     gtable.crush(ret, gitlab, true)
 
     ret._private = {}
-    ret._private.access_token = settings:get_value("gitlab.access_token")
-    ret._private.host = settings:get_value("gitlab.host") or "https://gitlab.com"
+    ret._private.access_token = helpers.settings:get_value("gitlab.access_token")
+    ret._private.host = helpers.settings:get_value("gitlab.host") or "https://gitlab.com"
 
 
     if ret._private.access_token ~= nil then

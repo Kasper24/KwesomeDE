@@ -9,7 +9,6 @@ local gtable = require("gears.table")
 local ruled = require("ruled")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
-local settings = require("services.settings")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 
@@ -122,7 +121,7 @@ local function new()
         }
     end)
 
-    if settings:get_value("welcome.show") ~= false then
+    if helpers.settings:get_value("welcome.show") ~= false then
         ret:show()
     end
 

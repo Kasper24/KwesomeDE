@@ -16,7 +16,6 @@ local email_daemon = require("daemons.web.email")
 local github_daemon = require("daemons.web.github")
 local gitlab_daemon = require("daemons.web.gitlab")
 local weather_daemon = require("daemons.web.weather")
-local settings = require("services.settings")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 
@@ -1155,7 +1154,7 @@ local function new()
         }
     end)
 
-    if settings:get_value("welcome.show") ~= false then
+    if helpers.settings:get_value("welcome.show") ~= false then
         ret:show()
     end
 

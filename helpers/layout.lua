@@ -1,5 +1,5 @@
 local awful = require("awful")
-local settings = require("services.settings")
+local hsettings = require("helpers.settings")
 local tonumber = tonumber
 
 local _layout = {}
@@ -8,7 +8,7 @@ function _layout.resize_gaps(amt)
     local t = awful.screen.focused().selected_tag
     t.gap = t.gap + tonumber(amt)
     awful.layout.arrange(awful.screen.focused())
-    settings:set_value("useless_gap", t.gap)
+    hsettings:set_value("useless_gap", t.gap)
 end
 
 function _layout.resize_padding(amt)

@@ -6,7 +6,7 @@
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
-local settings = require("services.settings")
+local helpers = require("helpers")
 local string = string
 
 local favorites = { }
@@ -16,14 +16,14 @@ function favorites:add_favorite(client)
     self._private.favorites[client.class] = {}
     awful.spawn.easy_async(string.format("ps -p %d -o args=", client.pid), function(stdout)
         self._private.favorites[client.class] = { font_icon = client.font_icon, command = stdout }
-        settings:set_value("favorites", self._private.favorites)
+        helpers.settings:set_value("favorites", self._private.favorites)
     end)
 end
 
 function favorites:remove_favorite(client)
     self._private.favorites[client.class] = nil
     self:emit_signal(client.class .. "::removed")
-    settings:set_value("favorites", self._private.favorites)
+    helpers.settings:set_value("favorites", self._private.favorites)
 end
 
 function favorites:toggle_favorite(client)
@@ -47,7 +47,7 @@ local function new()
     gtable.crush(ret, favorites, true)
 
     ret._private = {}
-    ret._private.favorites = settings:get_value("favorites") or {}
+    ret._private.favorites = helpers.settings:get_value("favorites") or {}
 
     return ret
 end

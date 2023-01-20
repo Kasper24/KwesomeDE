@@ -6,7 +6,6 @@
 local gcolor = require("gears.color")
 local beautiful = require("beautiful")
 local theme_daemon = require("daemons.system.theme")
-local settings = require("services.settings")
 local color_libary = require("modules.color")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
@@ -359,7 +358,7 @@ end
 
 local function defaults()
     theme.hover_cursor = "hand2"
-    theme.useless_gap = settings:get_value("useless_gap") or 0
+    theme.useless_gap = helpers.settings:get_value("useless_gap") or 0
     theme.font_name = "Iosevka "
     theme.font = theme.font_name .. 12
     theme.secondary_font_name = "Oswald Medium "

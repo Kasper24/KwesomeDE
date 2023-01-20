@@ -16,6 +16,7 @@ return
     layout = require(... .. ".layout"),
     misc = require(... .. ".misc"),
     run = require(... .. ".run"),
+    settings = require(... .. ".settings"),
     string = require(... .. ".string"),
     table = require(... .. ".table"),
     ui = require(... .. ".ui")
