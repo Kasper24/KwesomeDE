@@ -153,25 +153,25 @@ function menu.menu(widgets, width)
     }
 	gtable.crush(widget, menu, true)
 
-    awful.mouse.append_client_mousebinding(awful.button({"Any"}, 1, function (c)
+    awful.mouse.append_client_mousebinding(awful.button(helpers.input.all_mods(), 1, function (c)
         if widget.can_hide == true then
             widget:hide(true)
         end
     end))
 
-    awful.mouse.append_client_mousebinding(awful.button({"Any"}, 3, function (c)
+    awful.mouse.append_client_mousebinding(awful.button(helpers.input.all_mods(), 3, function (c)
         if widget.can_hide == true then
             widget:hide(true)
         end
     end))
 
-    awful.mouse.append_global_mousebinding(awful.button({"Any"}, 1, function (c)
+    awful.mouse.append_global_mousebinding(awful.button(helpers.input.all_mods(), 1, function (c)
         if widget.can_hide == true then
             widget:hide(true)
         end
     end))
 
-    awful.mouse.append_global_mousebinding(awful.button({"Any"}, 3, function (c)
+    awful.mouse.append_global_mousebinding(awful.button(helpers.input.all_mods(), 3, function (c)
         if widget.can_hide == true then
             widget:hide(true)
         end

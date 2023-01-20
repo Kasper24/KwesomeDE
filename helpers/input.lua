@@ -36,4 +36,8 @@ function _input.fake_escape()
     capi.root.fake_input("key_release", "Escape")
 end
 
+function _input.all_mods()
+    return {"Mod1", "Mod2", "Mod3", "Mod4", "Mod5", "Shift", "Lock", "Control" }
+end
+
 return _input

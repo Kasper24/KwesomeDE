@@ -12,12 +12,14 @@ local gtimer = require("gears.timer")
 local wibox = require("wibox")
 local ebutton = require("presentation.ui.widgets.button.elevated")
 local beautiful = require("beautiful")
+local helpers = require("helpers")
 local tostring = tostring
 local ipairs = ipairs
 local string = string
 local capi = { awesome = awesome, tag = tag }
 
 local prompt  = { mt = {} }
+
 
 local function is_word_char(c)
     if string.find(c, "[{[(,.:;_-+=@/ ]") then
@@ -417,25 +419,25 @@ local function new(args)
 
     update_markup(ret, false)
 
-    awful.mouse.append_client_mousebinding(awful.button({"Any"}, 1, function ()
+    awful.mouse.append_client_mousebinding(awful.button(helpers.input.all_mods(), 1, function ()
         if args.always_on == false and ret.can_stop == true then
             ret:stop()
         end
     end))
 
-    awful.mouse.append_client_mousebinding(awful.button({"Any"}, 3, function ()
+    awful.mouse.append_client_mousebinding(awful.button(helpers.input.all_mods(), 3, function ()
         if args.always_on == false and ret.can_stop == true then
             ret:stop()
         end
     end))
 
-    awful.mouse.append_global_mousebinding(awful.button({"Any"}, 1, function ()
+    awful.mouse.append_global_mousebinding(awful.button(helpers.input.all_mods(), 1, function ()
         if args.always_on == false and ret.can_stop == true then
             ret:stop()
         end
     end))
 
-    awful.mouse.append_global_mousebinding(awful.button({"Any"}, 3, function ()
+    awful.mouse.append_global_mousebinding(awful.button(helpers.input.all_mods(), 3, function ()
         if args.always_on == false and ret.can_stop == true then
             ret:stop()
         end
