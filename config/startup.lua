@@ -15,7 +15,7 @@ local function setup_system_tools()
    helpers.run.run_once_grep("parcellite")
    helpers.run.run_once_grep("kdeconnect-indicator")
    helpers.run.run_once_grep("mopidy")
-   helpers.run.run_once_grep(beautiful.apps.openrgb.command)
+   helpers.run.run_once_grep("openrgb")
 end
 
 local function configure_keyboard()
