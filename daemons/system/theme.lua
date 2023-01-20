@@ -344,7 +344,7 @@ local function image_wallpaper(self, screen)
     }
 end
 
-local function color_wallpaper(screen)
+local function color_wallpaper(self, screen)
     awful.wallpaper
     {
         screen = screen,
@@ -742,7 +742,7 @@ local function new()
         elseif ret._private.wallpaper_type == "tiled" then
             sun_wallpaper(s)
         elseif ret._private.wallpaper_type == "color" then
-            color_wallpaper(s)
+            color_wallpaper(ret, s)
         elseif ret._private.wallpaper_type == "digital_sun" then
             sun_wallpaper(s)
         elseif ret._private.wallpaper_type == "binary" then
