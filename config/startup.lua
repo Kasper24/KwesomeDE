@@ -7,7 +7,6 @@ local awful = require("awful")
 local gtimer = require("gears.timer")
 local beautiful = require("beautiful")
 local persistent_daemon = require("daemons.system.persistent")
-local udev_daemon = require("daemons.hardware.udev")
 local helpers = require("helpers")
 
 local function setup_system_tools()
@@ -46,10 +45,9 @@ local function configure_xserver()
    awful.spawn("xset -dpms", false)
    awful.spawn("xset s noblank", false)
 
-   configure_keyboard()
-   udev_daemon:connect_signal("usb::added", function(self, device)
+   gtimer { timeout = 60, autostart = true, single_shot = false, call_now = true, callback = function()
       configure_keyboard()
-   end)
+  end}
 end
 
 setup_system_tools()
