@@ -46,10 +46,6 @@ function text:set_height(height)
 	self.forced_height = height
 end
 
-function text:set_halign(halign)
-	self.align = halign
-end
-
 function text:set_font(font)
 	self._private.font = font
     self._private.layout:set_font_description(beautiful.get_font(font))
