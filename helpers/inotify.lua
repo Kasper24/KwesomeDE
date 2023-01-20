@@ -6,7 +6,7 @@
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
-local helpers = require("helpers")
+local hstring = require("helpers.string")
 local string = string
 local ipairs = ipairs
 local type = type
@@ -55,12 +55,12 @@ function inotify:watch(path, events)
         -- 1:
         local event = line:match(path .. "/ (.-) ")
         if event ~= nil then
-            event = helpers.string.trim(event)
+            event = hstring.trim(event)
             local file =  line:match(path .. "/ " .. event .. " (.*)")
             ret:emit_signal("event", event:lower(), path .. "/" .. file, file)
         -- 2:
         else
-            event = helpers.string.trim(line:match(path .. " (.* )"))
+            event = hstring.trim(line:match(path .. " (.* )"))
             ret:emit_signal("event", event:lower(), path .. "/")
         end
     end})

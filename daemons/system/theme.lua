@@ -12,7 +12,6 @@ local gtimer = require("gears.timer")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
 local settings = require("services.settings")
-local inotify = require("services.inotify")
 local color_libary = require("modules.color")
 local helpers = require("helpers")
 local string = string
@@ -513,12 +512,12 @@ local function watch_wallpaper_changes(self)
     end
 
     for _, path in ipairs(self._private.wallpapers_paths) do
-        local wallpaper_watcher = inotify:watch(path,
+        local wallpaper_watcher = helpers.inotify:watch(path,
         {
-            inotify.Events.create,
-            inotify.Events.delete,
-            inotify.Events.moved_from,
-            inotify.Events.moved_to,
+            helpers.inotify.Events.create,
+            helpers.inotify.Events.delete,
+            helpers.inotify.Events.moved_from,
+            helpers.inotify.Events.moved_to,
         })
 
         wallpaper_watcher:connect_signal("event", function(_, event, path, file)

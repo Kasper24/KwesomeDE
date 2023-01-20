@@ -5,7 +5,6 @@
 
 local gobject = require("gears.object")
 local gtable = require("gears.table")
-local inotify = require("services.inotify")
 local helpers = require("helpers")
 local string = string
 local table = table
@@ -50,9 +49,9 @@ local function new()
 
     get_places(ret)
 
-    local watcher = inotify:watch(path,
+    local watcher = helpers.inotify:watch(path,
     {
-        inotify.Events.modify
+        helpers.inotify.Events.modify
     })
 
     watcher:connect_signal("event", function(_, __, __)

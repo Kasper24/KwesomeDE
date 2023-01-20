@@ -7,6 +7,7 @@ return
     global_menu = require(... .. ".global_menu"),
     ical = require(... .. ".ical"),
     icon_theme = require(... .. ".icon_theme"),
+    inotify = require(... .. ".inotify"),
     input = require(... .. ".input"),
     inspect = require(... .. ".inspect"),
     json = require(... .. ".json"),

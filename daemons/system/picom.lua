@@ -7,7 +7,6 @@ local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
-local inotify = require("services.inotify")
 local settings = require("services.settings")
 local helpers = require("helpers")
 local tonumber = tonumber
@@ -99,9 +98,9 @@ local function new()
     gtimer.delayed_call(function()
         get_settings(ret)
 
-        local watcher = inotify:watch(CONFIG_PATH,
+        local watcher = helpers.inotify:watch(CONFIG_PATH,
         {
-            inotify.Events.modify
+            helpers.inotify.Events.modify
         })
 
         watcher:connect_signal("event", function(_, __, __)

@@ -6,7 +6,7 @@
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
-local inotify = require("services.inotify")
+local helpers = require("helpers")
 local tonumber = tonumber
 
 local brightness = { }
@@ -35,9 +35,9 @@ local function new()
 
     get_brightness(ret)
 
-    local watcher = inotify:watch("/sys/class/backlight/?**/brightness",
+    local watcher = helpers.inotify:watch("/sys/class/backlight/?**/brightness",
     {
-        inotify.Events.modify
+        helpers.inotify.Events.modify
     })
 
     watcher:connect_signal("event", function(_, __, __)

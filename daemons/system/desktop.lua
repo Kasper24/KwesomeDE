@@ -8,7 +8,6 @@ local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local helpers = require("helpers")
-local inotify = require("services.inotify")
 local ipairs = ipairs
 local pairs = pairs
 local os = os
@@ -109,22 +108,22 @@ local function on_desktop_icon_removed(self, path)
 end
 
 local function watch_desktop_directory(self)
-    local watcher = inotify:watch(DESKTOP_PATH,
+    local watcher = helpers.inotify:watch(DESKTOP_PATH,
     {
-        inotify.Events.create,
-        inotify.Events.delete,
-        inotify.Events.moved_from,
-        inotify.Events.moved_to,
+        helpers.inotify.Events.create,
+        helpers.inotify.Events.delete,
+        helpers.inotify.Events.moved_from,
+        helpers.inotify.Events.moved_to,
     })
 
     watcher:connect_signal("event", function(_, event, path, file)
-        if  event == inotify.Events.create or event == inotify.Events.moved_to then
+        if  event == helpers.inotify.Events.create or event == helpers.inotify.Events.moved_to then
             local mimetype = Gio.content_type_guess(path)
             on_desktop_icon_added(self, get_position_for_new_desktop_file(), path, file, mimetype)
-        elseif event == inotify.Events.create .. ",isdir" or event == inotify.Events.moved_to .. ",isdir" then
+        elseif event == helpers.inotify.Events.create .. ",isdir" or event == helpers.inotify.Events.moved_to .. ",isdir" then
             on_desktop_icon_added(self, get_position_for_new_desktop_file(), path, file, "folder")
-        elseif  event == inotify.Events.delete or event == inotify.Events.moved_from  or
-                event == inotify.Events.delete ..",isdir" or event == inotify.Events.moved_from ..",isdir"
+        elseif  event == helpers.inotify.Events.delete or event == helpers.inotify.Events.moved_from  or
+                event == helpers.inotify.Events.delete ..",isdir" or event == helpers.inotify.Events.moved_from ..",isdir"
         then
             on_desktop_icon_removed(self, path)
         end
