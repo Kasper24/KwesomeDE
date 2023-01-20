@@ -33,6 +33,8 @@ local _DEFAULT_TIMEOUT = -1
 
 local variant = require("services.dbus_proxy._variant")
 
+local gdebug = require("gears.debug")
+
 --[[-- A proxy object
 
 Proxy objects act as intermediares between your lua code and DBus.  All the
@@ -401,12 +403,17 @@ local function generate_fields(proxy)
   local xml_data_str, err = introspect(proxy)
 
   if not xml_data_str then
-    error(
-      string.format(
-        "Failed to introspect object '%s'\nerror: %s\ncode: %s",
-        proxy.name, err or "<unknown>", err.code or "<unknown>"
-      )
-    )
+    gdebug.print_warning(string.format(
+      "Failed to introspect object '%s'\nerror: %s\ncode: %s",
+      proxy.name, err or "<unknown>", err.code or "<unknown>"
+    ))
+    -- error(
+    --   string.format(
+    --     "Failed to introspect object '%s'\nerror: %s\ncode: %s",
+    --     proxy.name, err or "<unknown>", err.code or "<unknown>"
+    --   )
+    -- )
+    return
   end
 
   local node = DBusNodeInfo.new_for_xml(xml_data_str)
