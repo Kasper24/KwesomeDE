@@ -18,6 +18,8 @@ local name_lookup =
     ["jetbrains-studio"] = "android-studio"
 }
 
+local ICON_SIZE = 48
+
 local function get_icon_by_pid_command(self, client, apps)
     local pid = client.pid
     if pid ~= nil then
@@ -84,7 +86,7 @@ function icon_theme:get_client_icon_path(client)
 end
 
 function icon_theme:choose_icon(icons_names)
-    local icon_info = self.gtk_theme:choose_icon(icons_names, self.icon_size, 0);
+    local icon_info = self.gtk_theme:choose_icon(icons_names, ICON_SIZE, 0);
     if icon_info then
         local icon_path = icon_info:get_filename()
         if icon_path then
@@ -100,7 +102,7 @@ function icon_theme:get_gicon_path(gicon)
         return ""
     end
 
-    local icon_info = self.gtk_theme:lookup_by_gicon(gicon, self.icon_size, 0);
+    local icon_info = self.gtk_theme:lookup_by_gicon(gicon, ICON_SIZE, 0);
     if icon_info then
         local icon_path = icon_info:get_filename()
         if icon_path then
@@ -112,7 +114,7 @@ function icon_theme:get_gicon_path(gicon)
 end
 
 function icon_theme:get_icon_path(icon_name)
-    local icon_info = self.gtk_theme:lookup_icon(icon_name, self.icon_size, 0)
+    local icon_info = self.gtk_theme:lookup_icon(icon_name, ICON_SIZE, 0)
     if icon_info then
         local icon_path = icon_info:get_filename()
         if icon_path then
@@ -123,19 +125,11 @@ function icon_theme:get_icon_path(icon_name)
     return ""
 end
 
-local function new(theme_name, icon_size)
+local function new()
     local ret = gobject{}
     gtable.crush(ret, icon_theme, true)
 
-    ret.name = theme_name or nil
-    ret.icon_size = icon_size or 48
-
-    if theme_name then
-        ret.gtk_theme = Gtk.IconTheme.new()
-        Gtk.IconTheme.set_custom_theme(ret.gtk_theme, theme_name);
-    else
-        ret.gtk_theme = Gtk.IconTheme.get_default()
-    end
+    ret.gtk_theme = Gtk.IconTheme.get_default()
 
     return ret
 end
