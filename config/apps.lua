@@ -8,7 +8,6 @@ local gobject = require("gears.object")
 local gtable = require("gears.table")
 local beautiful = require("beautiful")
 local bling = require("modules.bling")
-local animation = require("services.animation")
 local helpers = require("helpers")
 local math = math
 local keys = { mod = "Mod4", ctrl = "Control", shift = "Shift", alt = "Mod1" }
@@ -82,15 +81,15 @@ function apps:new(id, key, command, class, args)
         dont_focus_before_close  = true,
         rubato =
         {
-            x = animation:new
+            x = helpers.animation:new
             {
-                easing = animation.easing.inBounce,
+                easing = helpers.animation.easing.inBounce,
                 pos = args.x,
                 duration = 1.5,
             },
-            y = animation:new
+            y = helpers.animation:new
             {
-                easing = animation.easing.inBounce,
+                easing = helpers.animation.easing.inBounce,
                 pos = args.y,
                 duration = 1.5,
             }
@@ -98,13 +97,13 @@ function apps:new(id, key, command, class, args)
     }
 
     self.scratchpads[id]:connect_signal("turn_on", function()
-        self.scratchpads[id].rubato.x.easing = animation.easing.inBounce
-        self.scratchpads[id].rubato.y.easing = animation.easing.inBounce
+        self.scratchpads[id].rubato.x.easing = helpers.animation.easing.inBounce
+        self.scratchpads[id].rubato.y.easing = helpers.animation.easing.inBounce
     end)
 
     self.scratchpads[id]:connect_signal("turn_off", function()
-        self.scratchpads[id].rubato.x.easing = animation.easing.outBounce
-        self.scratchpads[id].rubato.y.easing = animation.easing.outBounce
+        self.scratchpads[id].rubato.x.easing = helpers.animation.easing.outBounce
+        self.scratchpads[id].rubato.y.easing = helpers.animation.easing.outBounce
     end)
 
     awful.keyboard.append_global_keybindings

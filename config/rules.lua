@@ -9,7 +9,7 @@ local ruled = require("ruled")
 local beautiful = require("beautiful")
 local picom_daemon = require("daemons.system.picom")
 local settings = require("services.settings")
-local animation = require("services.animation")
+local helpers = require("helpers")
 local capi = { awesome = awesome, client = client }
 
 require("awful.autofocus")
@@ -337,10 +337,10 @@ ruled.client.connect_signal("request::rules", function()
         callback = function (c)
             -- Kill picom when a game starts
             -- Respawn picom when the game is closed
-            animation:set_instant(true)
+            helpers.animation:set_instant(true)
             picom_daemon:turn_off(false)
             c:connect_signal("unmanage", function()
-                animation:set_instant(false)
+                helpers.animation:set_instant(false)
 
                 if settings:get_value("picom") ~= false then
                     picom_daemon:turn_on(false)

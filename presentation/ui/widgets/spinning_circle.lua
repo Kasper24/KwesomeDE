@@ -6,7 +6,7 @@
 local gtable = require("gears.table")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
-local animation = require("services.animation")
+local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 
@@ -50,11 +50,11 @@ local function new(args)
     }
     gtable.crush(widget, spinning_circle, true)
 
-    widget._private.anim = animation:new
+    widget._private.anim = helpers.animation:new
     {
         target = 100,
         duration = 10,
-        easing = animation.easing.linear,
+        easing = helpers.animation.easing.linear,
         loop = true,
         update = function(self, pos)
             widget.start_angle = pos

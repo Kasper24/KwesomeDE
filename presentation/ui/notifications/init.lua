@@ -10,7 +10,6 @@ local widgets = require("presentation.ui.widgets")
 local beautiful = require("beautiful")
 local naughty = require("naughty")
 local notifications_daemon = require("daemons.system.notifications")
-local animation = require("services.animation")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local ipairs = ipairs
@@ -331,11 +330,11 @@ naughty.connect_signal("request::display", function(n)
     -- Don't destroy the notification on click
     widget.buttons = {}
 
-    local anim = animation:new
+    local anim = helpers.animation:new
     {
         duration = n.timeout,
         target = 100,
-        easing = animation.easing.linear,
+        easing = helpers.animation.easing.linear,
         reset_on_stop = false,
         update = function(self, pos)
             timeout_arc.value = pos

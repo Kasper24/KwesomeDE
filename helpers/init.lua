@@ -1,5 +1,6 @@
 return
 {
+    animation = require(... .. ".animation"),
     dbus_proxy = require(... .. ".dbus_proxy"),
     bezier = require(... .. ".bezier"),
     client = require(... .. ".client"),

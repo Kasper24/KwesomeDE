@@ -5,7 +5,6 @@
 
 local wcontainer = require("presentation.ui.widgets.container")
 local beautiful = require("beautiful")
-local animation = require("services.animation")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
@@ -52,7 +51,7 @@ local function button(args)
 		helpers.ui.add_hover_cursor(widget, beautiful.hover_cursor)
 	end
 
-	widget.animation = animation:new
+	widget.animation = helpers.animation:new
 	{
 		pos =
 		{
@@ -60,7 +59,7 @@ local function button(args)
 			border_width = args.normal_border_width,
 			border_color =  helpers.color.hex_to_rgb(args.normal_border_color)
 		},
-		easing = animation.easing.linear,
+		easing = helpers.animation.easing.linear,
 		duration = 0.2,
 		update = function(self, pos)
 			if pos.color then

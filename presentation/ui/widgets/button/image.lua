@@ -6,7 +6,7 @@
 local gtable = require("gears.table")
 local wibox = require("wibox")
 local ewidget = require("presentation.ui.widgets.button.elevated")
-local animation = require("services.animation")
+local helpers = require("helpers")
 local setmetatable = setmetatable
 
 local image_button = { mt = {} }
@@ -45,10 +45,10 @@ local function button(args, type)
     gtable.crush(widget, image_button, true)
 	widget._private.image = image_widget
 
-	widget.size_animation = animation:new
+	widget.size_animation = helpers.animation:new
 	{
 		pos = 50,
-		easing = animation.easing.linear,
+		easing = helpers.animation.easing.linear,
 		duration = 0.2,
 		update = function(self, pos)
 			image_widget.forced_width = pos

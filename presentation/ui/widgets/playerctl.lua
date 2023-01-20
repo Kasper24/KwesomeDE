@@ -11,7 +11,6 @@ local ebutton = require("presentation.ui.widgets.button.elevated")
 local wslider = require("presentation.ui.widgets.slider")
 local beautiful = require("beautiful")
 local general_playerctl_daemon = require("daemons.system.playerctl")
-local animation = require("services.animation")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
@@ -293,10 +292,10 @@ function playerctl.play(daemon)
         child = widget
     }
 
-    local play_pause_animation = animation:new
+    local play_pause_animation = helpers.animation:new
     {
 		duration = 0.125,
-        easing = animation.easing.linear,
+        easing = helpers.animation.easing.linear,
 		update = function(self, pos)
 			widget.draw = get_draw(pos, point_maker)
 			widget:emit_signal("widget::redraw_needed")

@@ -16,7 +16,6 @@ local bluetooth_daemon = require("daemons.hardware.bluetooth")
 local pactl_daemon = require("daemons.hardware.pactl")
 local upower_daemon = require("daemons.hardware.upower")
 local favorites_daemon = require("daemons.system.favorites")
-local animation = require("services.animation")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local string = string
@@ -143,10 +142,10 @@ local function tag_list(s)
                     indicator
                 }
 
-                self.indicator_animation = animation:new
+                self.indicator_animation = helpers.animation:new
                 {
                     duration = 0.125,
-                    easing = animation.easing.linear,
+                    easing = helpers.animation.easing.linear,
                     update = function(self, pos)
                         indicator.children[1].forced_height = pos
                     end
@@ -374,11 +373,11 @@ local function client_task(favorites_layout, task_list, client)
         }
     }
 
-    local indicator_animation = animation:new
+    local indicator_animation = helpers.animation:new
     {
 		pos = capi.client.focus == client and dpi(50) or dpi(20),
         duration = 0.125,
-        easing = animation.easing.linear,
+        easing = helpers.animation.easing.linear,
         update = function(self, pos)
             indicator.children[1].forced_width = pos
         end
@@ -512,9 +511,9 @@ local function system_tray()
         }
     }
 
-    local system_tray_animation = animation:new
+    local system_tray_animation = helpers.animation:new
     {
-        easing = animation.easing.linear,
+        easing = helpers.animation.easing.linear,
         duration = 0.125,
         update = function(self, pos)
             system_tray.width = pos
