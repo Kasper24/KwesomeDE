@@ -31,7 +31,7 @@ local GVariant = lgi.GLib.Variant
 
 local _DEFAULT_TIMEOUT = -1
 
-local variant = require("services.dbus_proxy._variant")
+local variant = require("helpers.dbus_proxy._variant")
 
 local gdebug = require("gears.debug")
 
