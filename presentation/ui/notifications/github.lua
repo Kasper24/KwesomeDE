@@ -44,7 +44,7 @@ github_daemon:connect_signal("new_event", function(self, event, avatar_path)
         app_name = "Github",
         icon = avatar_path,
         title = "New Event",
-        text = event.actor.display_login  .. generate_action_string(event) .. event.repo.name,
+        text = event.actor.display_login  .. " " .. generate_action_string(event) .. " " .. event.repo.name,
         category = "email.arrived"
     }
 end)
