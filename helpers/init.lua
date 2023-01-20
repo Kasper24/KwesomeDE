@@ -4,6 +4,7 @@ return
     client = require(... .. ".client"),
     color = require(... .. ".color"),
     filesystem = require(... .. ".filesystem"),
+    global_menu = require(... .. ".global_menu"),
     input = require(... .. ".input"),
     inspect = require(... .. ".inspect"),
     json = require(... .. ".json"),
