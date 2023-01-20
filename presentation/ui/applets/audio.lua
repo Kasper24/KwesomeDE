@@ -12,7 +12,6 @@ local widgets = require("presentation.ui.widgets")
 local beautiful = require("beautiful")
 local pactl_daemon = require("daemons.hardware.pactl")
 local helpers = require("helpers")
-local icon_theme = require("services.icon_theme")
 local dpi = beautiful.xresources.apply_dpi
 
 local audio = { }
@@ -70,7 +69,7 @@ local function application_widget(args)
             valign = "center",
             forced_height = dpi(25),
             forced_width = dpi(25),
-            image = icon_theme:choose_icon
+            image = helpers.icon_theme:choose_icon
             {
                 args.application.name,
                 "gnome-audio",
@@ -151,7 +150,7 @@ local function application_widget(args)
     end)
 
     pactl_daemon:connect_signal(args.type .. "::" .. args.application.id .. "::icon_name", function(self, icon_name)
-        icon.image = icon_theme:choose_icon
+        icon.image = helpers.icon_theme:choose_icon
         {
             icon_name,
             args.application.name,

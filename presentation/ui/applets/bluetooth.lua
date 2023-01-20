@@ -12,7 +12,6 @@ local widgets = require("presentation.ui.widgets")
 local beautiful = require("beautiful")
 local bluetooth_daemon = require("daemons.hardware.bluetooth")
 local helpers = require("helpers")
-local icon_theme = require("services.icon_theme")
 local dpi = beautiful.xresources.apply_dpi
 local capi = { awesome = awesome }
 
@@ -47,7 +46,7 @@ local function device_widget(device, path, layout, accent_color)
         widget = wibox.widget.imagebox,
         forced_width = dpi(50),
         forced_height = dpi(50),
-        image = icon_theme:get_icon_path(device.Icon or "bluetooth")
+        image = helpers.icon_theme:get_icon_path(device.Icon or "bluetooth")
     }
 
     local name = widgets.text

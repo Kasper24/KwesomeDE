@@ -11,7 +11,6 @@ local widgets = require("presentation.ui.widgets")
 local beautiful = require("beautiful")
 local desktop_daemon = require("daemons.system.desktop")
 local helpers = require("helpers")
-local icon_theme = require("services.icon_theme")
 local dpi = beautiful.xresources.apply_dpi
 local capi = { mousegrabber = mousegrabber }
 
@@ -200,7 +199,7 @@ local function desktop_icon(self, pos, path, name, mimetype)
                     forced_width = dpi(40),
                     halign = "center",
                     clip_shape = helpers.ui.rrect(beautiful.border_radius),
-                    image = icon_theme:get_icon_path(mimetype_to_image_lookup_table[mimetype] or "org.gnome.gedit"),
+                    image = helpers.icon_theme:get_icon_path(mimetype_to_image_lookup_table[mimetype] or "org.gnome.gedit"),
                 },
                 widgets.text
                 {

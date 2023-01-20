@@ -5,6 +5,7 @@ return
     color = require(... .. ".color"),
     filesystem = require(... .. ".filesystem"),
     global_menu = require(... .. ".global_menu"),
+    icon_theme = require(... .. ".icon_theme"),
     input = require(... .. ".input"),
     inspect = require(... .. ".inspect"),
     json = require(... .. ".json"),
