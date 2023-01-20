@@ -8,7 +8,7 @@ local wibox = require("wibox")
 local widgets = require("presentation.ui.widgets")
 local ruled = require("ruled")
 local beautiful = require("beautiful")
-local bling = require("modules.bling")
+local bling = require("external.bling")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 

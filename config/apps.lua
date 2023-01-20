@@ -7,7 +7,7 @@ local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local beautiful = require("beautiful")
-local bling = require("modules.bling")
+local bling = require("external.bling")
 local helpers = require("helpers")
 local math = math
 local keys = { mod = "Mod4", ctrl = "Control", shift = "Shift", alt = "Mod1" }

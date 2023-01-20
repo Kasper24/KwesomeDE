@@ -1,4 +1,4 @@
-local color_libary = require("modules.color")
+local color_libary = require("external.color")
 local tonumber = tonumber
 local string = string
 local math = math

@@ -4,7 +4,7 @@
 -------------------------------------------
 
 local awful = require("awful")
-local bling = require("modules.bling")
+local bling = require("external.bling")
 local capi = { awesome = awesome, mouse = mouse, client = client }
 
 capi.client.connect_signal("property::fullscreen", function(c)

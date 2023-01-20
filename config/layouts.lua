@@ -4,8 +4,8 @@
 -------------------------------------------
 
 local awful = require("awful")
-local bling = require("modules.bling")
-local machi = require("modules.layout-machi")
+local bling = require("external.bling")
+local machi = require("external.layout-machi")
 local capi = { tag = tag }
 
 capi.tag.connect_signal("request::default_layouts", function()

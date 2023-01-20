@@ -3,7 +3,7 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 
-local bling = require("modules.bling")
+local bling = require("external.bling")
 
 local instance = nil
 

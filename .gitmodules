@@ -1,9 +1,9 @@
-[submodule "color"]
-	path = modules/color
-	url = https://github.com/andOrlando/color
-[submodule "layout-machi"]
-	path = modules/layout-machi
-	url = https://github.com/xinhaoyuan/layout-machi
 [submodule "bling"]
-	path = modules/bling
+	path = external/bling
 	url = https://github.com/BlingCorp/bling
+[submodule "layout-machi"]
+	path = external/layout-machi
+	url = https://github.com/xinhaoyuan/layout-machi
+[submodule "color"]
+	path = external/color
+	url = https://github.com/andOrlando/color

@@ -6,7 +6,7 @@
 local gcolor = require("gears.color")
 local beautiful = require("beautiful")
 local theme_daemon = require("daemons.system.theme")
-local color_libary = require("modules.color")
+local color_libary = require("external.color")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local math = math
@@ -525,7 +525,7 @@ local function machi()
     theme.machi_switcher_fill_color_hl = helpers.color.darken(theme.colors.background, 20)
     theme.machi_switcher_fill_hl_opacity = 1
 
-    theme.layout_machi = gcolor.recolor_image(require("modules.layout-machi").get_icon(), theme.colors.on_background)
+    theme.layout_machi = gcolor.recolor_image(require("external.layout-machi").get_icon(), theme.colors.on_background)
 end
 
 colors()

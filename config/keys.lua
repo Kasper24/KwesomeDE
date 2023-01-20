@@ -14,8 +14,8 @@ local pactl_daemon = require("daemons.hardware.pactl")
 local brightness_daemon = require("daemons.system.brightness")
 local rgb_daemon = require("daemons.hardware.rgb")
 local helpers = require("helpers")
-local bling = require("modules.bling")
-local machi = require("modules.layout-machi")
+local bling = require("external.bling")
+local machi = require("external.layout-machi")
 local capi = { awesome = awesome, client = client }
 local keys = { mod = "Mod4", ctrl = "Control", shift = "Shift", alt = "Mod1" }
 
