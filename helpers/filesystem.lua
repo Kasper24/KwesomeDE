@@ -105,8 +105,8 @@ end
 function _filesystem.make_directory(path, callback)
     local gfile = Gio.File.new_for_path(path)
     _filesystem.is_directory_readable(path, function(is_readable)
+        -- Directory exists
         if is_readable then
-            print("directory '" .. path .. "' already exists")
             callback(true)
             return
         else
@@ -125,7 +125,6 @@ function _filesystem.make_directory(path, callback)
 end
 
 function _filesystem.save_file(path, text, callback, is_retry)
-    print("writing to file " .. path)
     local gfile = Gio.File.new_for_path(path)
     _filesystem.is_file_readable(path, function(is_readable)
         if not is_readable then
@@ -136,10 +135,10 @@ function _filesystem.save_file(path, text, callback, is_retry)
                 end
                 return
             end
-            print("making parent directories...")
+            -- making parent directories
             gfile:get_parent():make_directory_with_parents()
             gfile:create_readwrite_async(Gio.FileCreateFlags.NONE, Glib.PRIORITY_DEFAULT, nil, function(_, create_result)
-                print("file created " .. tostring(gfile:create_readwrite_finish(create_result)))
+                -- file created
                 _filesystem.save_file(path, text, callback, true)
             end, nil)
         else
@@ -149,12 +148,12 @@ function _filesystem.save_file(path, text, callback, is_retry)
                 local file = io_stream:get_output_stream()
                 file:write_all_async(text, Glib.PRIORITY_DEFAULT, nil, function(_, write_result)
                     local length_written = file:write_all_finish(write_result)
-                    print("file written " .. length_written)
+                    -- file written
                     file:truncate(length_written, nil)
                     file:close_async(Glib.PRIORITY_DEFAULT, nil, function(_, file_close_result)
-                        print("output stream closed " .. tostring(file:close_finish(file_close_result)))
+                        -- output stream closed
                         io_stream:close_async(Glib.PRIORITY_DEFAULT, nil, function(_, stream_close_result)
-                            print("file stream closed " .. tostring(io_stream:close_finish(stream_close_result)))
+                            -- file stream closed
                             if callback then
                                 callback(true)
                             end
@@ -379,7 +378,7 @@ function _filesystem.remote_watch(path, uri, interval, callback, old_content_cal
                         local time = info:get_modification_date_time()
                         local diff = math.ceil(Glib.DateTime.new_now_local():difference(time) / 1000000)
                         if diff >= interval then
-                            print("Enough time has passed, redownloading " .. path)
+                            print("Enough time had passed, redownloading " .. path)
                             download()
                         else
                             _filesystem.read_file(path, function(content)
@@ -394,7 +393,7 @@ function _filesystem.remote_watch(path, uri, interval, callback, old_content_cal
                             -- Schedule an update for when the remaining time to complete the interval passes
                             timer:stop()
                             gtimer.start_new(interval - diff, function()
-                                print("Finally! redownloading " .. path)
+                                print("Enough time had passed, redownloading " .. path)
                                 download()
                                 timer:again()
                             end)
