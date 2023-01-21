@@ -326,7 +326,7 @@ local function icons()
         name = name:gsub("_", "")
         name = name:gsub("%s+", "")
         name = name:gsub("-", "")
-        name = name:gsub(".", "")
+        name = name:gsub("%.", "")
 
         return theme.app_to_font_icon_lookup[name] or beautiful.window_icon
     end
