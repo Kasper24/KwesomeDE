@@ -15,6 +15,8 @@ local info_panel = { }
 local instance = nil
 
 local path = ...
+local calender = require(path .. ".calendar")
+local weather = require(path .. ".weather")
 
 function info_panel:show()
     self.widget.screen = awful.screen.focused()
@@ -65,8 +67,8 @@ local function new()
             {
                 layout = wibox.layout.flex.horizontal,
                 spacing = dpi(15),
-                require(path .. ".calendar"),
-                require(path .. ".weather")
+                calender,
+                weather
             }
         }
     }

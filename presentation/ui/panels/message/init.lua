@@ -16,6 +16,8 @@ local message_panel = { }
 local instance = nil
 
 local path = ...
+local notifications = require(path .. ".notifications")
+local email_github_gitlab = require(path .. ".email_github_gitlab")
 
 local function separator()
     return wibox.widget
@@ -80,9 +82,9 @@ local function new()
             {
                 layout = wibox.layout.fixed.vertical,
                 spacing = dpi(30),
-                require(path .. ".notifications"),
+                notifications,
                 separator(),
-                require(path .. ".email_github_gitlab")
+                email_github_gitlab
             }
         }
     }

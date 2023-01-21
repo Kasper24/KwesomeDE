@@ -10,6 +10,7 @@ local wibox = require("wibox")
 local widgets = require("presentation.ui.widgets")
 local beautiful = require("beautiful")
 local helpers = require("helpers")
+
 local dpi = beautiful.xresources.apply_dpi
 local capi = { screen = screen }
 
@@ -17,6 +18,10 @@ local action_panel = { }
 local instance = nil
 
 local path = ...
+local user = require(path .. ".user")
+local system_control = require(path .. ".system_control")
+local system_info = require(path .. ".system_info")
+local playerctl = require(path .. ".playerctl")
 
 local function separator()
     return wibox.widget
@@ -88,13 +93,13 @@ local function new()
                 },
                 scrollbar_width = dpi(10),
                 step = 50,
-                require(path .. ".user"),
+                user,
                 separator(),
-                require(path .. ".system_control")(ret),
+                system_control(ret),
                 separator(),
-                require(path .. ".system_info")(ret),
+                system_info(ret),
                 separator(),
-                require(path .. ".playerctl"),
+                playerctl,
             }
         }
     }
