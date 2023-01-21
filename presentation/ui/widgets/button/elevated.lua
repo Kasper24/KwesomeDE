@@ -263,7 +263,7 @@ function elevated_button.state(args)
 			if args.child and args.child.on_secondary_release ~= nil then
 				args.child:on_secondary_release(self, lx, ly, button, mods, find_widgets_result)
 			end
-			if args.on_secondary_release ~= nil and fake ~= trrue then
+			if args.on_secondary_release ~= nil and fake ~= true then
 				args.on_secondary_release(self, lx, ly, button, mods, find_widgets_result)
 			end
 		end
