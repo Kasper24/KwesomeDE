@@ -252,16 +252,6 @@ local function task_list_menu(client)
     }
 end
 
-local function find_icon_for_client(client)
-    client.font_icon = beautiful.window_icon
-    for _, app in pairs(beautiful.apps) do
-        if app.class == client.class then
-            client.font_icon = app.icon
-            return
-        end
-    end
-end
-
 local function favorite(layout, client, class)
     favorites[class] = true
 
@@ -319,7 +309,7 @@ local function favorite(layout, client, class)
 end
 
 local function client_task(favorites_layout, task_list, client)
-    find_icon_for_client(client)
+    client.font_icon = beautiful.get_font_icon_for_app_name(client.class)
     local menu = task_list_menu(client)
 
     local button = widgets.button.text.state
@@ -391,7 +381,7 @@ local function client_task(favorites_layout, task_list, client)
     }
 
     client:connect_signal("property::class", function()
-        find_icon_for_client(client)
+        client.font_icon = beautiful.get_font_icon_for_app_name(client.class)
         button:set_font(client.font_icon.font)
         button:set_text(client.font_icon.icon)
     end)

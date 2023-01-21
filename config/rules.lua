@@ -12,6 +12,73 @@ local ncmpcpp_titlebar = require("presentation.ui.titlebar.ncmpcpp")
 local helpers = require("helpers")
 local capi = { awesome = awesome, client = client }
 
+local apps = {
+    kitty = { command = "kitty", class = "kitty" },
+    alacritty = { command = "alacritty", class = "Alacritty" },
+    termite = { command = "termite", class = "Termite" },
+    urxvt = { command = "urxvt", class = "URxvt" },
+    st = { command = "st", class = "st" },
+    st_256color = { command = "st-256color", class = "st-256color" },
+    htop = { command = "kitty --class htop htop", class = "htop" },
+    nm_connection_editor = { command = "nm-connection-editor", class = "Nm-connection-editor" },
+    network_manager_dmenu = { name = "network", command = "networkmanager_dmenu", class = "Rofi" },
+    pavucontrol = { command = "pavucontrol", class = "Pavucontrol" },
+    blueman_manager = { name = "bluetooth", command = "blueman-manager", class = "Blueman-manager" },
+    file_roller = { command = "file-roller", class = "File-roller" },
+    lxappearance = { command = "Lxappearance", class = "lxappearance" },
+    nvidia_settings = { command = "nvidia-settings", class = "Nvidia-settings" },
+    wpgtk = { command = "wpg", class = "Wpg" },
+    feh = { command = "feh", class = "feh" },
+    eye_of_gnome = { command = "eog", class = "Eog" },
+    gwenview = { command = "gwenview", class = "gwenview" },
+    flameshot_gui = { command = "flameshot gui -p ~/Pictures", class = "flameshot" },
+    flameshot = { command = "flameshot full -c -p ~/Pictures", class = "flameshot" },
+    gnome_calculator = { command = "gnome-calculator", class = "Gnome-calculator" },
+    gnome_system_monitor = { name = "system-monitor", command = "gnome-system-monitor", class = "Gnome-system-monitor" },
+    notepadqq = { command = "notepadqq", class = "Notepadqq" },
+    ranger = { command = "kitty --class ranger ranger", class = "ranger" },
+    nemo = { command = "nemo", class = "Nemo" },
+    thunar = { class = "Thunar" },
+    files = { class = "files" },
+    firefox = { command = "firefox", class = "firefox" },
+    vivaldi = { command = "vivaldi-stable", class = "Vivaldi-stable" },
+    chromium = { class = "Chromium" },
+    emacs = { class = "Emacs" },
+    vim = { class = "vim" },
+    vscode = { command = "code", class = "Code" },
+    android_studio = { command = "android-studio", class = "jetbrains-studio" },
+    qt_creator = { command = "qtcreator", class = "QtCreator" },
+    lazygit = { command = "kitty --class gitqlient lazygit", class = "gitqlient" },
+    gitkraken = { command = "gitkraken", class = "GitKraken" },
+    discord = { command = "discocss", class = "discord" },
+    telegram = { command = "kotatogram-desktop", class = "KotatogramDesktop" },
+    kotatogram = { command = "telegram-desktop", class = "TelegramDesktop" },
+    spotify = { command = "spotify", class = "Spotify" },
+    ncmpcpp = { command = "kitty --class mopidy ncmpcpp", class = "mopidy" },
+    steam = { command = "steam", class = "Steam" },
+    lutris = { command = "lutris", class = "Lutris" },
+    heroic = { command = "heroic", class = "heroic" },
+    rockstar_games_launcer = { name = "Rockstar Games Launcher" },
+    rocket_league = { class = "steam_app_252950" },
+    gta_v = { name = "Grand Theft Auto V" },
+    openrgb = { command = "openrgb", class = "openrgb" },
+    artemis = { command = "artemis", class = "artemis.ui.exe" },
+    qbittorrent = { command = "qbittorrent", class = "qBittorrent" },
+    webtorrent = { class = "WebTorrent" },
+    virtualbox = { command = "virtualbox", class = "VirtualBox Manager" },
+    qemui = { class = "Qemu-system-x86_64" },
+    thunderbird = { command = "thunderbird", class = "Thunderbird" },
+    bitwarden = { command = "bitwarden", class = "Bitwarden" },
+    keepassxc = { command = "keepassxc", class = "KeePassXC" },
+    libreoffice_writer = { command = "libreoffice", class = "libreoffice-writer" },
+    libreoffice_impress = { command = "libreoffice", class = "libreoffice-impress" },
+    libreoffice_calc = { command = "libreoffice", class = "libreoffice-calc" },
+    screenshot = { command = "", class = "Screenshot" },
+    record = { command = "", class = "Record" },
+    theme = { command = "", class = "Theme" },
+    xfce4_settings_manager = { command = "xfce4-settings-manager", class = "Xfce4-settings-manager" }
+}
+
 require("awful.autofocus")
 
 capi.client.connect_signal("mouse::enter", function(c)
@@ -80,11 +147,11 @@ ruled.client.connect_signal("request::rules", function()
             },
             class =
             {
-                beautiful.apps.lxappearance.class,
-                beautiful.apps.nm_connection_editor.class,
-                beautiful.apps.file_roller.class,
-                beautiful.apps.nvidia_settings.class,
-                beautiful.apps.blueman_manager.class,
+                apps.lxappearance.class,
+                apps.nm_connection_editor.class,
+                apps.file_roller.class,
+                apps.nvidia_settings.class,
+                apps.blueman_manager.class,
                 "Yad"
             },
             name =
@@ -155,42 +222,42 @@ ruled.client.connect_signal("request::rules", function()
     -- Pavucontrol
     ruled.client.append_rule
     {
-        rule = { class = beautiful.apps.pavucontrol.class },
+        rule = { class = apps.pavucontrol.class },
         properties = { floating = true, width = awful.screen.focused().geometry.width * 0.45, height = awful.screen.focused().geometry.height * 0.8 }
     }
 
     -- System monitors
     ruled.client.append_rule
     {
-        rule_any = { class = { beautiful.apps.htop.class, beautiful.apps.gnome_system_monitor.class } },
+        rule_any = { class = { apps.htop.class, apps.gnome_system_monitor.class } },
         properties = { floating = true, width = awful.screen.focused().geometry.width * 0.4, height = awful.screen.focused().geometry.height * 0.9 }
     }
 
     -- Gnome calculator
     ruled.client.append_rule
     {
-        rule = { class = beautiful.apps.gnome_calculator.class },
+        rule = { class = apps.gnome_calculator.class },
         properties = { floating = true, width = awful.screen.focused().geometry.width * 0.2, height = awful.screen.focused().geometry.height * 0.4 }
     }
 
     -- Image viewers
     ruled.client.append_rule
     {
-        rule_any = { class = { beautiful.apps.feh.class, beautiful.apps.eye_of_gnome.class, beautiful.apps.gwenview.class } },
+        rule_any = { class = { apps.feh.class, apps.eye_of_gnome.class, apps.gwenview.class } },
         properties = { floating = true, width = awful.screen.focused().geometry.width * 0.7, height = awful.screen.focused().geometry.height * 0.75 }
     }
 
     -- WPGTK
     ruled.client.append_rule
     {
-        rule = { class = beautiful.apps.wpgtk.class },
+        rule = { class = apps.wpgtk.class },
         properties = { floating = true, width = awful.screen.focused().geometry.width * 0.6, height = awful.screen.focused().geometry.height * 0.6 }
     }
 
     -- Notepadqq
     ruled.client.append_rule
     {
-        rule = { class = beautiful.apps.notepadqq.class },
+        rule = { class = apps.notepadqq.class },
         properties = { floating = true, width = awful.screen.focused().geometry.width * 0.8, height = awful.screen.focused().geometry.height * 0.8 }
     }
 
@@ -207,7 +274,7 @@ ruled.client.connect_signal("request::rules", function()
     -- SDL_VIDEO_MINIMIZE_ON_FOCUS_LOSS=0 but not all games use SDL
     ruled.client.append_rule
     {
-        rule = { name = beautiful.apps.gta_v.name },
+        rule = { name = apps.gta_v.name },
         callback = function (c)
             c:connect_signal("property::minimized", function()
                 if c.minimized then
@@ -224,7 +291,7 @@ ruled.client.connect_signal("request::rules", function()
     -- so I don't want it to raise Rocket League as I can see it and there is no need
     ruled.client.append_rule
     {
-        rule = { class = beautiful.apps.rocket_league.class },
+        rule = { class = apps.rocket_league.class },
         callback = function (c)
             c:connect_signal("property::urgent", function()
                 if c.urgent then
@@ -245,7 +312,7 @@ ruled.client.connect_signal("request::rules", function()
     -- Start the start page server when opening firefox and close it when closing firefox
     ruled.client.append_rule
     {
-        rule = { class = beautiful.apps.firefox.class },
+        rule = { class = apps.firefox.class },
         callback = function (c)
             awful.spawn.with_shell("bash -c \"exec -a start-page-server python -m http.server --directory /usr/share/start-page\"", false)
             c:connect_signal("unmanage", function()
@@ -257,7 +324,7 @@ ruled.client.connect_signal("request::rules", function()
     -- Hack to not close artemis to tray
     ruled.client.append_rule
     {
-        rule = { class = beautiful.apps.artemis.class },
+        rule = { class = apps.artemis.class },
         callback = function (c)
             -- Artemis first open a splash loading window before opening the main window
             if c.name ~= " " then
@@ -280,7 +347,7 @@ ruled.client.connect_signal("request::rules", function()
     -- Browsing
     ruled.client.append_rule
     {
-        rule_any = { class = { beautiful.apps.vivaldi.class, beautiful.apps.firefox.class } },
+        rule_any = { class = { apps.vivaldi.class, apps.firefox.class } },
         except = { role = "GtkFileChooserDialog" },
         properties = { tag = awful.screen.focused().tags[1], switch_to_tags = true },
     }
@@ -288,7 +355,7 @@ ruled.client.connect_signal("request::rules", function()
     -- Code
     ruled.client.append_rule
     {
-        rule_any ={ class = { beautiful.apps.vscode.class, beautiful.apps.qt_creator.class, beautiful.apps.android_studio.class } },
+        rule_any ={ class = { apps.vscode.class, apps.qt_creator.class, apps.android_studio.class } },
         except = { role = "GtkFileChooserDialog" },
         properties = { tag = awful.screen.focused().tags[2], switch_to_tags = true },
     }
@@ -296,7 +363,7 @@ ruled.client.connect_signal("request::rules", function()
     -- Git client
     ruled.client.append_rule
     {
-        rule_any = { class = { beautiful.apps.gitkraken.class, beautiful.apps.lazygit.class } },
+        rule_any = { class = { apps.gitkraken.class, apps.lazygit.class } },
         except = { role = "GtkFileChooserDialog" },
         properties = { tag = awful.screen.focused().tags[3], switch_to_tags = true  },
     }
@@ -304,7 +371,7 @@ ruled.client.connect_signal("request::rules", function()
     -- Chat
     ruled.client.append_rule
     {
-        rule_any = { class = { beautiful.apps.discord.class, beautiful.apps.kotatogram.class } },
+        rule_any = { class = { apps.discord.class, apps.kotatogram.class } },
         except = { role = "GtkFileChooserDialog" },
         properties = { tag = awful.screen.focused().tags[4], switch_to_tags = true  },
     }
@@ -312,7 +379,7 @@ ruled.client.connect_signal("request::rules", function()
     -- Music
     ruled.client.append_rule
     {
-        rule_any = { class = { beautiful.apps.spotify.class, beautiful.apps.ncmpcpp.class } },
+        rule_any = { class = { apps.spotify.class, apps.ncmpcpp.class } },
         except = { role = "GtkFileChooserDialog" },
         properties = { tag = awful.screen.focused().tags[5], switch_to_tags = true  },
     }
@@ -320,7 +387,7 @@ ruled.client.connect_signal("request::rules", function()
     -- Game launchers
     ruled.client.append_rule
     {
-        rule_any = { class = { beautiful.apps.steam.class, beautiful.apps.lutris.class, beautiful.apps.heroic.class }, name = { beautiful.apps.rockstar_games_launcer.name } },
+        rule_any = { class = { apps.steam.class, apps.lutris.class, apps.heroic.class }, name = { apps.rockstar_games_launcer.name } },
         except = { role = "GtkFileChooserDialog" },
         properties = { tag = awful.screen.focused().tags[6] },
     }
@@ -328,7 +395,7 @@ ruled.client.connect_signal("request::rules", function()
     -- Games
     ruled.client.append_rule
     {
-        rule_any = { class = { beautiful.apps.rocket_league.class  }, name = { beautiful.apps.gta_v.name } },
+        rule_any = { class = { apps.rocket_league.class  }, name = { apps.gta_v.name } },
         except = { role = "GtkFileChooserDialog" },
         properties = { fullscreen = true, tag = awful.screen.focused().tags[7] },
         callback = function (c)
@@ -349,7 +416,7 @@ ruled.client.connect_signal("request::rules", function()
     -- RGB Lighting
     ruled.client.append_rule
     {
-        rule_any = { class = { beautiful.apps.openrgb.class, beautiful.apps.artemis.class } },
+        rule_any = { class = { apps.openrgb.class, apps.artemis.class } },
         except = { role = "GtkFileChooserDialog" },
         properties = { tag = awful.screen.focused().tags[8] },
     }
@@ -357,14 +424,14 @@ ruled.client.connect_signal("request::rules", function()
     -- Miscellaneous
     ruled.client.append_rule
     {
-        rule_any = { class = { beautiful.apps.qbittorrent.class, beautiful.apps.webtorrent.class, beautiful.apps.virtualbox.class } },
+        rule_any = { class = { apps.qbittorrent.class, apps.webtorrent.class, apps.virtualbox.class } },
         except = { role = "GtkFileChooserDialog" },
         properties = { tag = awful.screen.focused().tags[9] },
     }
 
     ruled.client.append_rule
     {
-        rule = { class = beautiful.apps.ncmpcpp.class },
+        rule = { class = apps.ncmpcpp.class },
         callback = function(c)
             c.custom_titlebar = true
 
@@ -373,3 +440,13 @@ ruled.client.connect_signal("request::rules", function()
         end
     }
 end)
+
+local function find_icon_for_client(client)
+    client.font_icon = beautiful.window_icon
+    for _, app in pairs(apps) do
+        if app.class == client.class then
+            client.font_icon = app.icon
+            return
+        end
+    end
+end

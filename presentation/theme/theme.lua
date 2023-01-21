@@ -252,6 +252,84 @@ local function icons()
     theme.moon_cloud_icon = { icon = "", font = font_awesome_6_solid_font_name }
     theme.cloud_moon_rain_icon = { icon = "", font = font_awesome_6_solid_font_name }
     theme.cloud_bolt_moon_icon = { icon = "", font = font_awesome_6_solid_font_name }
+
+    theme.app_to_font_icon_lookup =
+    {
+        ["kitty"] = theme.laptop_code_icon,
+        ["alacritty"] = theme.laptop_code_icon,
+        ["termite"] = theme.laptop_code_icon,
+        ["urxvt"] = theme.laptop_code_icon,
+        ["st"] = theme.laptop_code_icon,
+        ["st256color"] = theme.laptop_code_icon,
+        ["htop"] = theme.system_monitor_icon,
+        ["nmconnectioneditor"] = theme.router_icon,
+        ["network_manager_dmenu"] = theme.router_icon,
+        ["pavucontrol"] = theme.speaker_icon,
+        ["bluemanmanager"] = theme.bluetooth_icon,
+        ["fileroller"] = theme.archeive_icon,
+        ["lxappearance"] = theme.palette_icon,
+        ["nvidiasettings"] = theme.nvidia_icon,
+        ["wpg"] = theme.spraycan_icon,
+        ["feh"] = theme.image_icon,
+        ["eog"] = theme.image_icon,
+        ["gwenview"] = theme.image_icon,
+        ["flameshot"] = theme.camera_retro_icon,
+        ["gnomecalculator"] = theme.calculator_icon,
+        ["gnomesystemmonitor"] = theme.system_monitor_icon,
+        ["notepadqq"] = theme.note_icon,
+        ["ranger"] = theme.file_manager_icon,
+        ["nemo"] = theme.file_manager_icon,
+        ["thunar"] = theme.file_manager_icon,
+        ["files"] = theme.file_manager_icon,
+        ["firefox"] = theme.firefox_icon,
+        ["vivaldistable"] = theme.chrome_icon,
+        ["chromium"] = theme.chrome_icon,
+        ["emacs"] = theme.code_icon,
+        ["vim"] = theme.code_icon,
+        ["code"] = theme.code_icon,
+        ["jetbrainsstudio"] = theme.code_icon,
+        ["qtcreator"] = theme.code_icon,
+        ["lazygit"] = theme.git_icon,
+        ["gitqlient"] = theme.git_icon,
+        ["gitkraken"] = theme.gitkraken_icon,
+        ["discord"] = theme.discord_icon,
+        ["kotatogramdesktop"] = theme.telegram_icon,
+        ["telegramdesktop"] =  theme.telegram_icon,
+        ["spotify"] = theme.spotify_icon,
+        ["ncmpcpp"] = theme.spotify_icon,
+        ["steam"] = theme.steam_icon,
+        ["lutris"] = theme.gamepad_alt_icon,
+        ["heroic"] = theme.gamepad_alt_icon,
+        ["rockstarGamesLauncher"] = theme.gamepad_alt_icon,
+        ["steamapp252950"] = theme.gamepad_alt_icon,
+        ["grand Theft Auto V"] = theme.gamepad_alt_icon,
+        ["openrgb"] = theme.led_icon,
+        ["artemisuiexe"] = theme.led_icon,
+        ["qbittorrent"] = theme.download_icon,
+        ["webtorrent"] = theme.video_download_icon,
+        ["virtualBoxmanager"] = theme.computer_icon,
+        ["qemusystemx8664"] = theme.computer_icon,
+        ["thunderbird"] = theme.envelope_icon,
+        ["bitwarden"] = theme.unlock_icon,
+        ["keePassXC"] = theme.unlock_icon,
+        ["libreofficewriter"] = theme.word_icon,
+        ["libreofficeimpress"] = theme.powerpoint_icon,
+        ["libreofficecalc"] = theme.excel_icon,
+        ["screenshot"] = theme.camera_retro_icon,
+        ["record"] = theme.video_icon,
+        ["theme"] = theme.spraycan_icon,
+        ["xfce4settingsmanager"] = theme.gear_icon
+    }
+
+    function theme.get_font_icon_for_app_name(name)
+        name = name:lower()
+        name = name:gsub("_", "")
+        name = name:gsub("%s+", "")
+        name = name:gsub("-", "")
+        name = name:gsub(".", "")
+
+        return theme.app_to_font_icon_lookup[name] or beautiful.window_icon
+    end
 end
 
 local function assets()
@@ -270,90 +348,6 @@ local function assets()
         assets_folder .. "8.png",
         assets_folder .. "9.png"
     }
-end
-
-local function apps()
-    theme.apps =
-    {
-        kitty = { command = "kitty", class = "kitty", icon = theme.laptop_code_icon },
-        alacritty = { command = "alacritty", class = "Alacritty", icon = theme.laptop_code_icon },
-        termite = { command = "termite", class = "Termite", icon = theme.laptop_code_icon },
-        urxvt = { command = "urxvt", class = "URxvt", icon = theme.laptop_code_icon },
-        st = { command = "st", class = "st", icon = theme.laptop_code_icon },
-        st_256color = { command = "st-256color", class = "st-256color", icon = theme.laptop_code_icon },
-        htop = { command = "kitty --class htop htop", class = "htop", icon = theme.system_monitor_icon },
-        nm_connection_editor = { command = "nm-connection-editor", class = "Nm-connection-editor", icon = theme.router_icon },
-        network_manager_dmenu = { name = "network", command = "networkmanager_dmenu", class = "Rofi", icon = theme.router_icon },
-        pavucontrol = { command = "pavucontrol", class = "Pavucontrol", icon = theme.speaker_icon },
-        blueman_manager = { name = "bluetooth", command = "blueman-manager", class = "Blueman-manager", icon = theme.bluetooth_icon },
-        file_roller = { command = "file-roller", class = "File-roller", icon = theme.archeive_icon },
-        lxappearance = { command = "Lxappearance", class = "lxappearance", icon = theme.palette_icon },
-        nvidia_settings = { command = "nvidia-settings", class = "Nvidia-settings", icon = theme.nvidia_icon },
-        wpgtk = { command = "wpg", class = "Wpg", icon = theme.spraycan_icon },
-        feh = { command = "feh", class = "feh", icon = theme.image_icon },
-        eye_of_gnome = { command = "eog", class = "Eog" , icon = theme.image_icon},
-        gwenview = { command = "gwenview", class = "gwenview", icon = theme.image_icon },
-        flameshot_gui = { command = "flameshot gui -p ~/Pictures", class = "flameshot", icon = theme.camera_retro_icon },
-        flameshot = { command = "flameshot full -c -p ~/Pictures", class = "flameshot", icon = theme.camera_retro_icon },
-        gnome_calculator = { command = "gnome-calculator", class = "Gnome-calculator", icon = theme.calculator_icon },
-        gnome_system_monitor = { name = "system-monitor", command = "gnome-system-monitor", class = "Gnome-system-monitor", icon = theme.system_monitor_icon },
-        notepadqq = { command = "notepadqq", class = "Notepadqq", icon = theme.note_icon },
-        ranger = { command = "kitty --class ranger ranger", class = "ranger", icon = theme.file_manager_icon },
-        nemo = { command = "nemo", class = "Nemo", icon = theme.file_manager_icon },
-        thunar = { class = "Thunar", icon = theme.file_manager_icon },
-        files = { class = "files", icon = theme.file_manager_icon },
-        firefox = { command = "firefox", class = "firefox", icon = theme.firefox_icon },
-        vivaldi = { command = "vivaldi-stable", class = "Vivaldi-stable", icon = theme.chrome_icon },
-        chromium = { class = "Chromium", icon = theme.chrome_icon },
-        emacs = { class = "Emacs", icon = theme.code_icon },
-        vim = { class = "vim", icon = theme.code_icon },
-        vscode = { command = "code", class = "Code", icon = theme.code_icon },
-        android_studio = { command = "android-studio", class = "jetbrains-studio", icon = theme.code_icon },
-        qt_creator = { command = "qtcreator", class = "QtCreator", icon = theme.code_icon },
-        lazygit = { command = "kitty --class gitqlient lazygit", class = "gitqlient", icon = theme.git_icon },
-        gitkraken = { command = "gitkraken", class = "GitKraken", icon = theme.gitkraken_icon },
-        discord = { command = "discocss", class = "discord", icon = theme.discord_icon },
-        telegram = { command = "kotatogram-desktop", class = "KotatogramDesktop", icon = theme.telegram_icon },
-        kotatogram = { command = "telegram-desktop", class = "TelegramDesktop", icon = theme.telegram_icon },
-        spotify = { command = "spotify", class = "Spotify", icon = theme.spotify_icon },
-        ncmpcpp = { command = "kitty --class mopidy ncmpcpp", class = "mopidy", icon = theme.spotify_icon },
-        steam = { command = "steam", class = "Steam", icon = theme.steam_icon },
-        lutris = { command = "lutris", class = "Lutris", icon = theme.gamepad_alt_icon },
-        heroic = { command = "heroic", class = "heroic" , icon = theme.gamepad_alt_icon},
-        rockstar_games_launcer = { name = "Rockstar Games Launcher", icon = theme.gamepad_alt_icon },
-        rocket_league = { class = "steam_app_252950", icon = theme.gamepad_alt_icon },
-        gta_v = { name = "Grand Theft Auto V", icon = theme.gamepad_alt_icon },
-        openrgb = { command = "openrgb", class = "openrgb", icon = theme.led_icon },
-        artemis = { command = "artemis", class = "artemis.ui.exe", icon = theme.led_icon },
-        qbittorrent = { command = "qbittorrent", class = "qBittorrent", icon = theme.download_icon },
-        webtorrent = { class = "WebTorrent", icon = theme.video_download_icon },
-        virtualbox = { command = "virtualbox", class = "VirtualBox Manager", icon = theme.computer_icon },
-        qemui = { class = "Qemu-system-x86_64", icon = theme.computer_icon },
-        thunderbird = { command = "thunderbird", class = "Thunderbird", icon = theme.envelope_icon },
-        bitwarden = { command = "bitwarden", class = "Bitwarden", icon = theme.unlock_icon },
-        keepassxc = { command = "keepassxc", class = "KeePassXC", icon = theme.unlock_icon },
-        libreoffice_writer = { command = "libreoffice", class = "libreoffice-writer", icon = theme.word_icon },
-        libreoffice_impress = { command = "libreoffice", class = "libreoffice-impress", icon = theme.powerpoint_icon },
-        libreoffice_calc = { command = "libreoffice", class = "libreoffice-calc", icon = theme.excel_icon },
-        screenshot = { command = "", class = "Screenshot", icon = theme.camera_retro_icon },
-        record = { command = "", class = "Record", icon = theme.video_icon },
-        theme = { command = "", class = "Theme", icon = theme.spraycan_icon },
-        xfce4_settings_manager = { command = "xfce4-settings-manager", class = "Xfce4-settings-manager", icon = theme.gear_icon}
-    }
-
-    function theme.get_font_icon_for_app_name(name)
-        for key, value in pairs(theme.apps) do
-            key = key:lower()
-            name = name:lower()
-            local _name = (value.name or ""):lower()
-            local class = (value.class or ""):lower()
-            local command = (value.command or ""):lower()
-
-            if key:match(name) or _name:match(name) or class:match(name) or command:match(name) then
-                return value.icon
-            end
-        end
-    end
 end
 
 local function defaults()
@@ -531,7 +525,6 @@ end
 colors()
 icons()
 assets()
-apps()
 defaults()
 opacity()
 layoutlist()
