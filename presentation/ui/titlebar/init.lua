@@ -147,5 +147,3 @@ capi.client.connect_signal("request::titlebars", function(c)
         }
     }
 end)
-
-require(... .. ".ncmpcpp")

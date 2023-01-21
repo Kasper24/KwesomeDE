@@ -8,6 +8,7 @@ local gtimer = require("gears.timer")
 local ruled = require("ruled")
 local beautiful = require("beautiful")
 local picom_daemon = require("daemons.system.picom")
+local ncmpcpp_titlebar = require("presentation.ui.titlebar.ncmpcpp")
 local helpers = require("helpers")
 local capi = { awesome = awesome, client = client }
 
@@ -372,5 +373,16 @@ ruled.client.connect_signal("request::rules", function()
         rule_any = { class = { beautiful.apps.qbittorrent.class, beautiful.apps.webtorrent.class, beautiful.apps.virtualbox.class } },
         except = { role = "GtkFileChooserDialog" },
         properties = { tag = awful.screen.focused().tags[9] },
+    }
+
+    ruled.client.append_rule
+    {
+        rule = { class = beautiful.apps.ncmpcpp.class },
+        callback = function(c)
+            c.custom_titlebar = true
+
+            ncmpcpp_titlebar.tabs_titlebar(c)
+            ncmpcpp_titlebar.media_controls_titlebar(c)
+        end
     }
 end)

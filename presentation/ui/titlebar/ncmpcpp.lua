@@ -6,13 +6,14 @@
 local awful = require("awful")
 local wibox = require("wibox")
 local widgets = require("presentation.ui.widgets")
-local ruled = require("ruled")
 local beautiful = require("beautiful")
 local bling = require("external.bling")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 
-local function tabs_titlebar(c)
+local ncmppcpp = {}
+
+function ncmppcpp.tabs_titlebar(c)
     local current_playlist = nil
     local local_files = nil
     local search = nil
@@ -177,7 +178,7 @@ local function tabs_titlebar(c)
     }
 end
 
-local function media_controls_titlebar(c)
+function ncmppcpp.media_controls_titlebar(c)
     local playerctl_daemon = bling.signal.playerctl.lib
     {
         update_on_activity = true,
@@ -232,15 +233,4 @@ local function media_controls_titlebar(c)
     }
 end
 
-ruled.client.connect_signal("request::rules", function()
-    ruled.client.append_rule
-    {
-        rule = { class = beautiful.apps.ncmpcpp.class },
-        callback = function(c)
-            c.custom_titlebar = true
-
-            tabs_titlebar(c)
-            media_controls_titlebar(c)
-        end
-    }
-end)
+return ncmppcpp
