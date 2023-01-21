@@ -130,6 +130,7 @@ $ makepkg -si
 | xfce4-settings                          | Used in the main menu                                     |
 | imagemagick                             | Used to generate colors from wallpapers                   |
 | yad                                     | Used to pick a folder                                     |
+| libgudev                                | Used for USB notifications                                |
 
 **Arch Linux (and other Arch-based distributions)**
    ```sh
