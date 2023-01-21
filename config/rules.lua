@@ -14,19 +14,6 @@ local capi = { awesome = awesome, client = client }
 
 require("awful.autofocus")
 
-local mutex = false
-capi.client.connect_signal("mouse::move", function(c)
-    if capi.client.focus ~= c then
-        if not mutex then
-            mutex = true
-            gtimer.delayed_call(function ()
-                c:activate { context = "mouse_enter", raise = false }
-                mutex = false
-            end)
-        end
-    end
-end)
-
 capi.client.connect_signal("mouse::enter", function(c)
     if not c.fullscreen then
         c:activate { context = "mouse_enter", raise = false }
