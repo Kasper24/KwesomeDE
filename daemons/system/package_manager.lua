@@ -19,9 +19,9 @@ local function apt()
 end
 
 local function pacman(self)
-    awful.spawn.easy_async_with_shell("sudo pacman -Qq | wc -l", function(packages_count)
+    awful.spawn.easy_async_with_shell("pacman -Qq | wc -l", function(packages_count)
         packages_count = packages_count:gsub('^%s*(.-)%s*$', '%1')
-        awful.spawn.easy_async_with_shell("sudo pacman -Qu | wc -l", function(outdated_package_count)
+        awful.spawn.easy_async_with_shell("pacman -Qu | wc -l", function(outdated_package_count)
             outdated_package_count = outdated_package_count:gsub('^%s*(.-)%s*$', '%1')
             self:emit_signal("update", packages_count, outdated_package_count)
         end)
