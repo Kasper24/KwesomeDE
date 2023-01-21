@@ -407,6 +407,7 @@ local function client_task(favorites_layout, task_list, client)
     end)
 
     client:connect_signal("unmanage", function()
+        menu:hide()
         task_list:remove_widgets(widget)
 
         for _, c in ipairs(capi.client.get()) do
