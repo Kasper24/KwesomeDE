@@ -95,7 +95,7 @@ capi.screen.connect_signal("request::desktop_decoration", function(s)
             s.loading_popup = widgets.screen_mask(s)
         end
 
-        gtimer { timeout = 5, autostart = true, call_now = false, single_shot = true, callback = function()
+        gtimer { timeout = 3, autostart = true, call_now = false, single_shot = true, callback = function()
             s.loading_popup.visible = false
             spinning_circle:abort()
             s.loading_popup = nil
