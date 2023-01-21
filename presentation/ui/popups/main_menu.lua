@@ -387,32 +387,6 @@ local function widget()
         },
         widgets.menu.button
         {
-            icon = beautiful.terminal_icon,
-            icon_size = 20,
-            text = "Terminal",
-            on_press = function() awful.spawn(beautiful.apps.kitty.command, false) end
-        },
-        widgets.menu.button
-        {
-            icon = beautiful.chrome_icon,
-            text = "Web Browser",
-            on_press = function() awful.spawn(beautiful.apps.firefox.command, false) end
-        },
-        widgets.menu.button
-        {
-            icon = beautiful.file_manager_icon,
-            text = "File Manager",
-            on_press = function() awful.spawn(beautiful.apps.ranger.command, false) end
-        },
-        widgets.menu.button
-        {
-            icon = beautiful.clipboard_icon,
-            text = "Text Editor",
-            on_press = function() awful.spawn(beautiful.apps.firefox.command, false) end
-        },
-        widgets.menu.separator(),
-        widgets.menu.button
-        {
             icon = beautiful.industry_icon,
             text = "Action Panel",
             on_press = function() action_panel:toggle() end
@@ -449,19 +423,6 @@ local function widget()
             on_press = function() record_popup:toggle() end
         },
         widgets.menu.separator(),
-        widgets.menu.button
-        {
-            icon = beautiful.gear_icon,
-            text = "Settings Manager",
-            on_press = function() awful.spawn(beautiful.apps.xfce4_settings_manager.command, false) end
-        },
-        widgets.menu.button
-        {
-            icon = beautiful.spraycan_icon,
-            text = "Theme Manager",
-            on_press = function() theme_popup:toggle() end
-        },
-        widgets.menu.separator(),
         widgets.menu.sub_menu_button
         {
             icon = beautiful.tag_icon,
@@ -486,6 +447,19 @@ local function widget()
             icon = beautiful.command_icon,
             text = "Commands",
             sub_menu = commands_sub_menu()
+        },
+        widgets.menu.separator(),
+        widgets.menu.button
+        {
+            icon = beautiful.gear_icon,
+            text = "Settings",
+            on_press = function() awful.spawn(beautiful.apps.xfce4_settings_manager.command, false) end
+        },
+        widgets.menu.button
+        {
+            icon = beautiful.spraycan_icon,
+            text = "Theme",
+            on_press = function() theme_popup:toggle() end
         },
         widgets.menu.separator(),
         widgets.menu.button
