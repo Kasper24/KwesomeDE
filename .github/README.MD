@@ -91,14 +91,12 @@ AwesomeWM Modules:
 <details>
 <summary><b>1. Install AwesomeWM</b></summary>
 
-Install the **[git version of AwesomeWM](https://github.com/awesomeWM/awesome/) built with LUA 5.3**
+Install the **[git version of AwesomeWM](https://github.com/awesomeWM/awesome/)**
 
 **Arch users** can use this following command
 
 ```sh
-# I edited the awesome-git PKGBUILD to make it build with 5.3
-$ wget -q --show-progress https://raw.githubusercontent.com/Kasper24/KwesomeDE/main/PKGBUILD
-$ makepkg -si
+yay/paru -S awesome-git
 ```
 
 **For other distros**, build instructions are [here](https://github.com/awesomeWM/awesome/#building-and-installation).
@@ -136,7 +134,7 @@ $ makepkg -si
    ```sh
       pacman -Sy kitty networkmanager blueman pipewire pipewire-pulse lm_sensors inotify-tools
       redshift maim ffmpeg xdotool xclip upower brightnessctl playerctl fortune-mod flameshot
-      xfce4-settings imagemagick yad --needed
+      xfce4-settings imagemagick yad libgudev dconf-editor --needed
    ```
    Assuming your **AUR Helper** is [yay](https://github.com/Jguer/yay) or [paru](https://github.com/Morganamilo/paru).
    ```sh
