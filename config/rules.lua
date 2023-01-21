@@ -64,7 +64,17 @@ ruled.client.connect_signal("request::rules", function()
             maximized_horizontal = false,
             maximized_vertical = false,
             placement = awful.placement.centered
-        }
+        },
+        callback = function(c)
+            if c.floating then
+                if c.transient_for == nil then
+                   awful.placement.centered(c)
+                else
+                   awful.placement.centered(c, {parent = c.transient_for})
+                end
+                   awful.placement.no_offscreen(c)
+             end
+        end
     }
 
     -- Floating clients
@@ -151,7 +161,7 @@ ruled.client.connect_signal("request::rules", function()
     ruled.client.append_rule
     {
         rule = { role = "GtkFileChooserDialog" },
-        properties = { floating = true, width = awful.screen.focused().geometry.width * 0.55, height = awful.screen.focused().geometry.height * 0.65 }
+        -- properties = { floating = true, width = awful.screen.focused().geometry.width * 0.55, height = awful.screen.focused().geometry.height * 0.65 }
     }
 
     -- Pavucontrol
