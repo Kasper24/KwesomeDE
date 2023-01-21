@@ -483,6 +483,7 @@ local function scan_for_wallpapers(self)
     }
 
     for index, path in ipairs(self._private.wallpapers_paths) do
+        local path = path:gsub("~", os.getenv("HOME"))
         helpers.filesystem.scan(path, function(result)
             for _index, wallpaper_path in pairs(result) do
                 local found = false
@@ -531,19 +532,19 @@ function theme:set_wallpaper(type)
     if type == "image" then
         self:save_colorscheme()
         self._private.wallpaper = self._private.selected_wallpaper
-        helpers.settings:set_value("theme.wallpaper", self._private.wallpaper)
+        helpers.settings:set_value("theme-wallpaper", self._private.wallpaper)
         print("sudo ln -sf " .. self._private.wallpaper .. " ~/.config/wpg/.current")
         awful.spawn.with_shell("sudo ln -sf " .. self._private.wallpaper .. " ~/.config/wpg/.current")
     elseif type == "tiled" then
     elseif type == "color" then
         self._private.color = self._private.selected_color
-        helpers.settings:set_value("theme.color", self._private.color)
+        helpers.settings:set_value("theme-color", self._private.color)
     elseif type == "digital_sun" then
     elseif type == "binary" then
     end
 
     self._private.type = type
-    helpers.settings:set_value("theme.wallpaper_type", type)
+    helpers.settings:set_value("theme-wallpaper-type", type)
 
     for s in capi.screen do
         capi.screen.emit_signal("request::wallpaper", s)
@@ -552,7 +553,7 @@ end
 
 function theme:set_colorscheme()
     self._private.colorscheme = self._private.colors[self._private.selected_wallpaper]
-    helpers.settings:set_value("theme.colorscheme", self._private.colorscheme)
+    helpers.settings:set_value("theme-colorscheme", self._private.colorscheme)
     generate_templates(self, self._private.templates, false)
     generate_templates(self, DEFAULT_TEMPLATES, true)
     generate_sequences(self._private.colorscheme)
@@ -608,7 +609,7 @@ function theme:add_wallpapers_path()
                 end
 
                 table.insert(self._private.wallpapers_paths, line)
-                helpers.settings:set_value("theme.wallpapers_paths", self._private.wallpapers_paths)
+                helpers.settings:set_value("theme-wallpapers-paths", self._private.wallpapers_paths)
                 self:emit_signal("wallpapers_paths::added", line)
                 -----------
                 watch_wallpaper_changes(self)
@@ -622,7 +623,7 @@ function theme:remove_wallpapers_path(path)
     for index, value in ipairs(self._private.wallpapers_paths) do
         if value == path then
             table.remove(self._private.wallpapers_paths, index)
-            helpers.settings:set_value("theme.wallpapers_paths", self._private.wallpapers_paths)
+            helpers.settings:set_value("theme-wallpapers-paths", self._private.wallpapers_paths)
             self:emit_signal("wallpapers_paths::" .. path .. "::removed")
             watch_wallpaper_changes(self)
             scan_for_wallpapers(self)
@@ -648,7 +649,7 @@ function theme:add_template()
                 end
 
                 table.insert(self._private.templates, line)
-                helpers.settings:set_value("theme.templates", self._private.templates)
+                helpers.settings:set_value("theme-templates", self._private.templates)
                 self:emit_signal("templates::added", line)
             end
         end
@@ -659,7 +660,7 @@ function theme:remove_template(template)
     for index, value in ipairs(self._private.templates) do
         if value == template then
             table.remove(self._private.templates, index)
-            helpers.settings:set_value("theme.templates", self._private.templates)
+            helpers.settings:set_value("theme-templates", self._private.templates)
             self:emit_signal("templates::" .. template .. "::removed")
             break
         end
@@ -668,7 +669,7 @@ end
 
 function theme:set_command_after_generation(text)
     self._private.command_after_generation = text
-    helpers.settings:set_value("theme.command_after_generation", self._private.command_after_generation)
+    helpers.settings:set_value("theme-command-after-generation", self._private.command_after_generation)
 end
 
 function theme:get_colorscheme()
@@ -716,22 +717,15 @@ local function new()
         ret._private.colors = data
     end)
 
-    ret._private.wallpapers_paths = helpers.settings:get_value("theme.wallpapers_paths") or {}
-    if #ret._private.wallpapers_paths == 0 then
-        ret._private.wallpapers_paths = { helpers.filesystem.get_awesome_config_dir("presentation/assets/wallpapers") }
-    end
+    local wallpaper = helpers.settings:get_value("theme-wallpaper")
+    ret._private.wallpaper = wallpaper:gsub("~", os.getenv("HOME"))
 
-    ret._private.templates = helpers.settings:get_value("theme.templates") or {}
-    ret._private.wallpaper_type = helpers.settings:get_value("theme.wallpaper_type") or "image"
-    ret._private.wallpaper = helpers.settings:get_value("theme.wallpaper") or
-                    helpers.filesystem.get_awesome_config_dir("presentation/assets/wallpapers") .. "wp8148939-minimalist-landscape-wallpapers.jpg"
-    ret._private.colorscheme = helpers.settings:get_value("theme.colorscheme") or
-    {
-        "#110104","#DF712D","#B88836","#F98B35","#FCA33E","#DE9E43","#FEB449","#f7e09d","#40040f","#ff9b5d","#f0b146","#ffbd8a","#ffcf99","#ffc879","#ffdcaa","#fbefcb"
-    }
-    ret._private.command_after_generation = helpers.settings:get_value("theme.command_after_generation") or nil
-
-    ret._private.color = helpers.settings:get_value("theme.color") or "#000000"
+    ret._private.wallpapers_paths = helpers.settings:get_value("theme-wallpapers-paths")
+    ret._private.templates = helpers.settings:get_value("theme-templates")
+    ret._private.wallpaper_type = helpers.settings:get_value("theme-wallpaper-type")
+    ret._private.colorscheme = helpers.settings:get_value("theme-colorscheme")
+    ret._private.command_after_generation = helpers.settings:get_value("theme-command-after-generation")
+    ret._private.color = helpers.settings:get_value("theme-color")
 
     scan_for_wallpapers(ret)
     watch_wallpaper_changes(ret)

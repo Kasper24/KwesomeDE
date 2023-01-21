@@ -352,7 +352,7 @@ end
 
 local function defaults()
     theme.hover_cursor = "hand2"
-    theme.useless_gap = helpers.settings:get_value("useless_gap") or 0
+    theme.useless_gap = helpers.settings:get_value("useless-gap")
     theme.font_name = "Iosevka "
     theme.font = theme.font_name .. 12
     theme.secondary_font_name = "Oswald Medium "

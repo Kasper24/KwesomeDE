@@ -1,0 +1,250 @@
+<schemalist>
+  <schema id="org.awesome.settings" path="/org/awesome/settings/">
+
+    <key name="theme-wallpapers-paths" type="as">
+      <default>['~/.config/awesome/presentation/assets/wallpapers']</default>
+      <summary>Wallpaper paths</summary>
+      <description>
+        Folders containing wallpapers
+      </description>
+    </key>
+
+    <key name="theme-templates" type="as">
+      <default>[]</default>
+      <summary>Theme templates</summary>
+      <description>
+        The linked templates
+      </description>
+    </key>
+
+    <key name="theme-colorscheme" type="as">
+      <default>["#110104","#DF712D","#B88836","#F98B35","#FCA33E","#DE9E43","#FEB449","#f7e09d","#40040f","#ff9b5d","#f0b146","#ffbd8a","#ffcf99","#ffc879","#ffdcaa","#fbefcb"]</default>
+      <summary>Theme Colorscheme</summary>
+      <description>
+        The current colorscheme
+      </description>
+    </key>
+
+    <key name="theme-wallpaper-type" type="s">
+      <default>"image"</default>
+      <summary>Theme wallpaper type</summary>
+      <description>
+        The wallpaper type (image/sun/binary/etc)
+      </description>
+    </key>
+
+    <key name="theme-wallpaper" type="s">
+      <default>"~/.config/awesome/presentation/assets/wallpapers/wallpaperflare.com_wallpaper_2.jpg"</default>
+      <summary>Theme wallpaper</summary>
+      <description>
+        Image wallpaper path
+      </description>
+    </key>
+
+    <key name="theme-color" type="s">
+      <default>"#000000"</default>
+      <summary>Theme color</summary>
+      <description>
+        The background color if mode == color is used
+      </description>
+    </key>
+
+    <key name="theme-command-after-generation" type="s">
+      <default>""</default>
+      <summary>Command after generation</summary>
+      <description>
+        Command to run after theme generation
+      </description>
+    </key>
+
+    <key name="initial" type="b">
+      <default>true</default>
+      <summary>Initial login</summary>
+      <description>
+        If true the welcome screen will show
+      </description>
+    </key>
+
+    <key name="airplane" type="b">
+      <default>false</default>
+      <summary>Airplane mode</summary>
+      <description>
+        Enable or disable Airplane mode
+      </description>
+    </key>
+
+    <key name="picom" type="b">
+      <default>true</default>
+      <summary>Picom</summary>
+      <description>
+        Enable or disable picom
+      </description>
+    </key>
+
+    <key name="redshift" type="b">
+      <default>false</default>
+      <summary>Redshift</summary>
+      <description>
+        Enable or disable Redshift
+      </description>
+    </key>
+
+    <key name="dont-disturb" type="b">
+      <default>false</default>
+      <summary>Don't Disturb</summary>
+      <description>
+        Disable notifications when enabled
+      </description>
+    </key>
+
+    <key name="password" type="s">
+      <default>""</default>
+      <summary>Password</summary>
+      <description>
+        The lockscreen password (not secured)
+      </description>
+    </key>
+
+    <key name="screenshot-show-cursor" type="b">
+      <default>true</default>
+      <summary>Screenshot show cursor</summary>
+      <description>
+        Should the cursor show in the screenshot
+      </description>
+    </key>
+
+    <key name="screenshot-delay" type="i">
+      <default>1</default>
+      <summary>Screenshot delay</summary>
+      <description>
+        How much time to wait before taking the screenshot
+      </description>
+    </key>
+
+    <key name="screenshot-folder" type="s">
+      <default>"~/Pictures/Screenshot"</default>
+      <summary>Screenshot folder</summary>
+      <description>
+        Where to save the screenshots
+      </description>
+    </key>
+
+
+    <key name="record-resolution" type="s">
+      <default>"1920x1080"</default>
+      <summary>Record resolution</summary>
+      <description>
+        The resolution of the recording
+      </description>
+    </key>
+
+    <key name="record-fps" type="i">
+      <default>1</default>
+      <summary>Record FPS</summary>
+      <description>
+        The recording frame rate
+      </description>
+    </key>
+
+    <key name="record-delay" type="i">
+      <default>0</default>
+      <summary>Record delay</summary>
+      <description>
+        How much time to wait before starting to record
+      </description>
+    </key>
+
+   <key name="record-folder" type="s">
+      <default>"~/Recording"</default>
+      <summary>Record format</summary>
+      <description>
+        The file format of the recording
+      </description>
+    </key>
+
+    <key name="record-format" type="s">
+      <default>"mp4"</default>
+      <summary>Record format</summary>
+      <description>
+        The file format of the recording
+      </description>
+    </key>
+
+    <key name="github-username" type="s">
+      <default>""</default>
+      <summary>Github username</summary>
+      <description>
+        Your Github username
+      </description>
+    </key>
+
+    <key name="gitlab-host" type="s">
+      <default>"https://gitlab.com"</default>
+      <summary>Gitlab host</summary>
+      <description>
+        Your Gitlab host URL
+      </description>
+    </key>
+
+    <key name="gitlab-access-token" type="s">
+      <default>""</default>
+      <summary>Gitlab access token</summary>
+      <description>
+        Your Gitlab access token
+      </description>
+    </key>
+
+     <key name="weather-api-key" type="s">
+      <default>""</default>
+      <summary>Weather API key</summary>
+      <description>
+        Your OpenWeather API key
+      </description>
+    </key>
+
+    <key name="weather-latitude" type="s">
+      <default>"40.730610"</default>
+      <summary>Weather latitude</summary>
+      <description>
+        The latitude at your location
+      </description>
+    </key>
+
+    <key name="weather-longitude" type="s">
+      <default>"-73.935242"</default>
+      <summary>Weather longitude</summary>
+      <description>
+        The Longitude at your location
+      </description>
+    </key>
+
+    <key name="weather-unit" type="s">
+      <choices>
+        <choice value="metric"/>
+        <choice value="imperial"/>
+      </choices>
+      <default>"metric"</default>
+         <summary>Weather unit</summary>
+      <description>
+        The measurement systems to use
+      </description>
+    </key>
+
+   <key name="useless-gap" type="i">
+      <default>0</default>
+      <summary>Useless gap</summary>
+      <description>
+        The spacing between clients
+      </description>
+    </key>
+
+    <key name="favorite-apps" type="a{ss}">
+      <default>[]</default>
+      <summary>Favorite apps</summary>
+      <description>
+        Your most loved apps
+      </description>
+    </key>
+
+  </schema>
+</schemalist>

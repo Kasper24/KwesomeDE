@@ -20,14 +20,14 @@ function redshift:turn_on()
     helpers.run.check_if_running("redshift", nil,
     function()
         awful.spawn.with_shell("redshift -l 0:0 -t 4500:4500 -r &>/dev/null &")
-        helpers.settings:set_value("blue_light", true)
+        helpers.settings:set_value("redshift", true)
     end)
 end
 
 function redshift:turn_off()
     helpers.run.check_if_running("redshift", function()
         awful.spawn.with_shell("redshift -x && pkill redshift && killall redshift")
-        helpers.settings:set_value("blue_light", false)
+        helpers.settings:set_value("redshift", false)
     end, nil)
 end
 
@@ -60,9 +60,9 @@ local function new()
     gtable.crush(ret, redshift, true)
 
     gtimer.delayed_call(function()
-        if helpers.settings:get_value("blue_light") == true then
+        if helpers.settings:get_value("redshift") == true then
             ret:turn_on()
-        elseif helpers.settings:get_value("blue_light") == false then
+        elseif helpers.settings:get_value("redshift") == false then
             -- ret:turn_off()
         end
 

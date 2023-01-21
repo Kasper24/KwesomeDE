@@ -23,7 +23,7 @@ package.cpath = package.cpath .. ';' .. LUA_PAM_PATH
 
 function system:set_password(password)
     self._private.password = password
-    helpers.settings:set_value("system.password", self._private.password)
+    helpers.settings:set_value("password", self._private.password)
 end
 
 function system:get_password()
@@ -87,7 +87,7 @@ local function new()
     gtable.crush(ret, system, true)
 
     ret._private = {}
-    ret._private.password = helpers.settings:get_value("system.password")
+    ret._private.password = helpers.settings:get_value("password")
 
     if package.loaded["liblua_pam"] then
         ret._private.is_pam_installed = true

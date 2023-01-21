@@ -156,7 +156,7 @@ For more information visit the following links.]],
         size = 13,
         text = "Finish",
         on_press = function()
-            settings:set_value("welcome.show", false)
+            helpers.settings:set_value("initial", false)
             on_next_pressed()
         end,
     }
@@ -1154,7 +1154,7 @@ local function new()
         }
     end)
 
-    if helpers.settings:get_value("welcome.show") ~= false then
+    if helpers.settings:get_value("initial") ~= false then
         ret:show()
     end
 

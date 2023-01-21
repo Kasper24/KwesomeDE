@@ -8,7 +8,7 @@ function _layout.resize_gaps(amt)
     local t = awful.screen.focused().selected_tag
     t.gap = t.gap + tonumber(amt)
     awful.layout.arrange(awful.screen.focused())
-    hsettings:set_value("useless_gap", t.gap)
+    hsettings:set_value("useless-gap", t.gap)
 end
 
 function _layout.resize_padding(amt)

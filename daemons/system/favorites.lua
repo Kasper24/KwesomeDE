@@ -15,15 +15,15 @@ local instance = nil
 function favorites:add_favorite(client)
     self._private.favorites[client.class] = {}
     awful.spawn.easy_async(string.format("ps -p %d -o args=", client.pid), function(stdout)
-        self._private.favorites[client.class] = { font_icon = client.font_icon, command = stdout }
-        helpers.settings:set_value("favorites", self._private.favorites)
+        self._private.favorites[client.class] = stdout
+        helpers.settings:set_value("favorite-apps", self._private.favorites)
     end)
 end
 
 function favorites:remove_favorite(client)
     self._private.favorites[client.class] = nil
     self:emit_signal(client.class .. "::removed")
-    helpers.settings:set_value("favorites", self._private.favorites)
+    helpers.settings:set_value("favorite-apps", self._private.favorites)
 end
 
 function favorites:toggle_favorite(client)
@@ -47,7 +47,7 @@ local function new()
     gtable.crush(ret, favorites, true)
 
     ret._private = {}
-    ret._private.favorites = helpers.settings:get_value("favorites") or {}
+    ret._private.favorites = helpers.settings:get_value("favorite-apps")
 
     return ret
 end

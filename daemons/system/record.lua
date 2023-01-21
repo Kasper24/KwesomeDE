@@ -16,7 +16,7 @@ local instance = nil
 
 function record:set_resolution(resolution)
     self._private.resolution = resolution
-    helpers.settings:set_value("record.resolution", self._private.resolution)
+    helpers.settings:set_value("record-resolution", self._private.resolution)
 end
 
 function record:get_resolution()
@@ -25,14 +25,14 @@ end
 
 function record:increase_fps()
     self._private.fps = self._private.fps + 1
-    helpers.settings:set_value("record.fps", self._private.fps)
+    helpers.settings:set_value("record-fps", self._private.fps)
     return self:get_fps()
 end
 
 function record:decrease_fps()
     if self._private.fps > 0 then
         self._private.fps = self._private.fps - 1
-        helpers.settings:set_value("record.fps", self._private.fps)
+        helpers.settings:set_value("record-fps", self._private.fps)
     end
     return self:get_fps()
 end
@@ -47,14 +47,14 @@ end
 
 function record:increase_delay()
     self._private.delay = self._private.delay + 1
-    helpers.settings:set_value("record.delay", self._private.delay)
+    helpers.settings:set_value("record-delay", self._private.delay)
     return self:get_delay()
 end
 
 function record:decrease_delay()
     if self._private.delay > 0 then
         self._private.delay = self._private.delay - 1
-        helpers.settings:set_value("record.delay", self._private.delay)
+        helpers.settings:set_value("record-delay", self._private.delay)
     end
     return self:get_delay()
 end
@@ -68,7 +68,7 @@ function record:set_folder()
         for line in stdout:gmatch("[^\r\n]+") do
             if line ~= "" then
                 self._private.folder = line
-                helpers.settings:set_value("record.folder", line)
+                helpers.settings:set_value("record-folder", line)
                 self:emit_signal("folder::updated", line)
             end
         end
@@ -81,7 +81,7 @@ end
 
 function record:set_format(format)
     self._private.format = format
-    helpers.settings:set_value("record.format", self._private.format)
+    helpers.settings:set_value("record-format", self._private.format)
 end
 
 function record:set_audio_source(audio_source)
@@ -135,13 +135,12 @@ local function new()
 
     ret._private = {}
 
-    ret._private.resolution = helpers.settings:get_value("record.resolution") or "1920x1080"
-    ret._private.fps = helpers.settings:get_value("record.fps") or 60
-    ret._private.delay = helpers.settings:get_value("record.delay") or 0
-    ret._private.show_cursor = helpers.settings:get_value("record.show_cursor") or false
-    ret._private.folder = helpers.settings:get_value("record.folder") or
+    ret._private.resolution = helpers.settings:get_value("record-resolution")
+    ret._private.fps = helpers.settings:get_value("record-fps")
+    ret._private.delay = helpers.settings:get_value("record-delay")
+    ret._private.folder = helpers.settings:get_value("record-folder") or
                                 "/home/" .. os.getenv("USER") .. "/Recordings/"
-    ret._private.format = helpers.settings:get_value("record.format") or "mp4"
+    ret._private.format = helpers.settings:get_value("record-format")
 
     ret._private.is_recording = false
 

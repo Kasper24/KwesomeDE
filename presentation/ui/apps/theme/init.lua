@@ -121,7 +121,7 @@ local function new()
         }
     end)
 
-    if helpers.settings:get_value("welcome.show") ~= false then
+    if helpers.settings:get_value("initial") ~= false then
         ret:show()
     end
 

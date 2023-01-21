@@ -272,6 +272,8 @@ local function favorite(layout, client, class)
         },
     }
 
+    local font_icon = beautiful.get_font_icon_for_app_name(class)
+
     local button = widgets.button.text.state
     {
         forced_width = dpi(65),
@@ -279,8 +281,8 @@ local function favorite(layout, client, class)
         margins = dpi(5),
         valign = "center",
         size = 20,
-        font = client.font_icon.font,
-        text = client.font_icon.icon,
+        font = font_icon.font,
+        text = font_icon.icon,
         on_release = function()
             menu:hide()
             awful.spawn(client.command, false)
