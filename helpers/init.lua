@@ -6,7 +6,7 @@ return
     client = require(... .. ".client"),
     color = require(... .. ".color"),
     filesystem = require(... .. ".filesystem"),
-    global_menu = require(... .. ".global_menu"),
+    -- global_menu = require(... .. ".global_menu"),
     ical = require(... .. ".ical"),
     icon_theme = require(... .. ".icon_theme"),
     inotify = require(... .. ".inotify"),
