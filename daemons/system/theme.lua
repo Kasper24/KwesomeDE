@@ -22,7 +22,7 @@ local instance = nil
 
 local DATA_PATH = helpers.filesystem.get_cache_dir("colorschemes") .. "data.json"
 
-local DEFAULT_TEMPLATES_PATH = helpers.filesystem.get_awesome_config_dir("presentation/assets/templates")
+local DEFAULT_TEMPLATES_PATH = helpers.filesystem.get_awesome_config_dir("config/templates")
 local DEFAULT_TEMPLATES_GENERATED_PATH =  helpers.filesystem.get_xdg_cache_home("wal")
 local DEFAULT_TEMPLATES =
 {
