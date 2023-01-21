@@ -338,15 +338,15 @@ local function assets()
     theme.profile_icon = assets_folder .. "profile.png"
     theme.overview_pictures =
     {
-        assets_folder .. "1.png",
-        assets_folder .. "2.png",
-        assets_folder .. "3.png",
-        assets_folder .. "4.png",
-        assets_folder .. "5.png",
-        assets_folder .. "6.png",
-        assets_folder .. "7.png",
-        assets_folder .. "8.png",
-        assets_folder .. "9.png"
+        assets_folder .. "overview/1.png",
+        assets_folder .. "overview/2.png",
+        assets_folder .. "overview/3.png",
+        assets_folder .. "overview/4.png",
+        assets_folder .. "overview/5.png",
+        assets_folder .. "overview/6.png",
+        assets_folder .. "overview/7.png",
+        assets_folder .. "overview/8.png",
+        assets_folder .. "overview/9.png"
     }
 end
 
