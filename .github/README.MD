@@ -127,7 +127,6 @@ $ makepkg -si
 | brightnessctl                           | Brightness daemon and widget                              |
 | playerctl                               | Media daemon and controls                                 |
 | fortune-mod                             | Fortune daemon (right now that daemon is unused)          |
-| xfce4-settings                          | Used in the main menu                                     |
 | imagemagick                             | Used to generate colors from wallpapers                   |
 | yad                                     | Used to pick a folder                                     |
 | libgudev                                | Used for USB notifications                                |

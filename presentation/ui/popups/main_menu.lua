@@ -459,7 +459,7 @@ local function widget()
         {
             icon = beautiful.gear_icon,
             text = "Settings",
-            on_press = function() awful.spawn(beautiful.apps.xfce4_settings_manager.command, false) end
+            on_press = function() print('wip') end
         },
         widgets.menu.button
         {
