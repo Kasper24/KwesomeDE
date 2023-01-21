@@ -318,7 +318,8 @@ local function icons()
         ["screenshot"] = theme.camera_retro_icon,
         ["record"] = theme.video_icon,
         ["theme"] = theme.spraycan_icon,
-        ["xfce4settingsmanager"] = theme.gear_icon
+        ["xfce4settingsmanager"] = theme.gear_icon,
+        ["dconfeditor"] = theme.gear_icon
     }
 
     function theme.get_font_icon_for_app_name(name)

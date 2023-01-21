@@ -130,6 +130,7 @@ $ makepkg -si
 | imagemagick                             | Used to generate colors from wallpapers                   |
 | yad                                     | Used to pick a folder                                     |
 | libgudev                                | Used for USB notifications                                |
+| dconf-editor                            | Used as a settings manager                                |
 
 **Arch Linux (and other Arch-based distributions)**
    ```sh

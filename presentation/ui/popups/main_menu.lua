@@ -178,7 +178,7 @@ local function widget()
         {
             icon = beautiful.gear_icon,
             text = "Settings",
-            on_press = function() print('wip') end
+            on_press = function() awful.spawn("dconf-editor", false) end
         },
         widgets.menu.button
         {
