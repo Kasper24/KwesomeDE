@@ -5,8 +5,6 @@
 
 local awful = require("awful")
 local gtimer = require("gears.timer")
-local beautiful = require("beautiful")
-local persistent_daemon = require("daemons.system.persistent")
 local helpers = require("helpers")
 
 local function setup_system_tools()
@@ -45,11 +43,15 @@ local function configure_xserver()
    awful.spawn("xset -dpms", false)
    awful.spawn("xset s noblank", false)
 
-   gtimer { timeout = 60, autostart = true, single_shot = false, call_now = true, callback = function()
-      configure_keyboard()
-  end}
+   gtimer {
+      timeout = 60,
+      autostart = true,
+      single_shot = false,
+      call_now = true,
+      callback = function()
+         configure_keyboard()
+      end}
 end
 
 setup_system_tools()
 configure_xserver()
-persistent_daemon:enable()

@@ -25,3 +25,6 @@ beautiful.init(helpers.filesystem.get_awesome_config_dir("presentation") .. "the
 
 require("config")
 require("presentation")
+
+local persistent_daemon = require("daemons.system.persistent")
+persistent_daemon:enable()

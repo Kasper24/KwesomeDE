@@ -3,7 +3,11 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 
-require(... .. ".startup")
+-- Only runs this on my system, other don't need it
+if os.getenv("USER") == 'kasper' then
+    require(... .. ".startup")
+end
+
 require(... .. ".apps")
 require(... .. ".layouts")
 require(... .. ".tags")
