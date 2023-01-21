@@ -512,6 +512,8 @@ local function watch_wallpaper_changes(self)
     end
 
     for _, path in ipairs(self._private.wallpapers_paths) do
+        local path = path:gsub("~", os.getenv("HOME"))
+
         local wallpaper_watcher = helpers.inotify:watch(path,
         {
             helpers.inotify.Events.create,
