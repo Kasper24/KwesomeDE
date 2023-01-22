@@ -132,10 +132,10 @@ local function new()
         {
             forced_width = dpi(35),
             forced_height = dpi(35),
-            font = beautiful.caret_left_icon.font,
+            font = beautiful.icons.caret_left.font,
             size = 15,
             text_normal_bg = beautiful.colors.on_background,
-            text = beautiful.caret_left_icon.icon,
+            text = beautiful.icons.caret_left.icon,
             on_release = function()
                 ret:decrease_date()
             end
@@ -145,10 +145,10 @@ local function new()
         {
             forced_width = dpi(35),
             forced_height = dpi(35),
-            font = beautiful.caret_right_icon.font,
+            font = beautiful.icons.caret_right.font,
             size = 15,
             text_normal_bg = beautiful.colors.on_background,
-            text = beautiful.caret_right_icon.icon,
+            text = beautiful.icons.caret_right.icon,
             on_release = function()
                 ret:increase_date()
             end

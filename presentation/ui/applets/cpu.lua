@@ -215,9 +215,9 @@ local function new()
                 },
                 widgets.button.text.normal
                 {
-                    font = beautiful.xmark_icon.font,
+                    font = beautiful.icons.xmark.font,
                     size = 15,
-                    text = beautiful.xmark_icon.icon,
+                    text = beautiful.icons.xmark.icon,
                     text_normal_bg = accent_color,
                     on_release = function()
                         awful.spawn("kill -9 " .. process.pid, false)

@@ -142,19 +142,19 @@ local function desktop_icon(self, pos, path, name, mimetype)
     {
         widgets.menu.button
         {
-            icon = beautiful.launcher_icon,
+            icon = beautiful.icons.launcher,
             text = "Launch",
             on_press = function() awful.spawn("xdg-open " .. path, false) end
         },
         widgets.menu.button
         {
-            icon = beautiful.trash_icon,
+            icon = beautiful.icons.trash,
             text = "Move to Trash",
             on_press = function() awful.spawn("trash-put " .. path, false) end
         },
         widgets.menu.button
         {
-            icon = beautiful.xmark_icon_fw,
+            icon = beautiful.icons.xmark_fw,
             text = "Delete",
             on_press = function() awful.spawn("rm -rf " .. path, false) end
         }

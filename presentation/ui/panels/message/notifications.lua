@@ -124,7 +124,7 @@ local function notification_widget(notification, on_removed)
             margins = { left = dpi(10), bottom = dpi(10) },
             hover_bg = beautiful.colors.surface,
             text_normal_bg = accent_color,
-            text = beautiful.xmark_icon.icon,
+            text = beautiful.icons.xmark.icon,
             on_release = function()
                 on_removed(widget)
                 notifications_daemon:remove_notification(notification)
@@ -254,8 +254,8 @@ local function new()
     {
         forced_width = dpi(50),
         forced_height = dpi(50),
-        font = beautiful.trash_icon.font,
-        text = beautiful.trash_icon.icon,
+        font = beautiful.icons.trash.font,
+        text = beautiful.icons.trash.icon,
         on_release = function()
             notifications_daemon:remove_all_notifications()
         end
@@ -273,8 +273,8 @@ local function new()
                 halign = "center",
                 size = 50,
                 color = beautiful.random_accent_color(),
-                font = beautiful.bell_icon.font,
-                text = beautiful.bell_icon.icon
+                font = beautiful.icons.bell.font,
+                text = beautiful.icons.bell.icon
             },
             widgets.text
             {

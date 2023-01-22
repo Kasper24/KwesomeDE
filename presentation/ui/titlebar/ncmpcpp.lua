@@ -151,8 +151,8 @@ function ncmppcpp.tabs_titlebar(c)
                 {
                     size = 50,
                     color = accent_color,
-                    font = beautiful.list_music_icon.font,
-                    text = beautiful.list_music_icon.icon
+                    font = beautiful.icons.list_music.font,
+                    text = beautiful.icons.list_music.icon
                 },
                 widgets.text
                 {

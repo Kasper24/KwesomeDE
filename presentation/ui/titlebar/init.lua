@@ -18,8 +18,8 @@ capi.client.connect_signal("request::titlebars", function(c)
         forced_height = dpi(40),
         text_normal_bg = beautiful.colors.cyan,
         size = 12,
-        font = beautiful.triangle_icon.font,
-        text = beautiful.triangle_icon.icon,
+        font = beautiful.icons.triangle.font,
+        text = beautiful.icons.triangle.icon,
         on_release = function(self)
             c.minimized = not c.minimized
         end
@@ -31,8 +31,8 @@ capi.client.connect_signal("request::titlebars", function(c)
         forced_height = dpi(40),
         text_normal_bg = beautiful.colors.green,
         size = 12,
-        font = beautiful.square_icon.font,
-        text = beautiful.square_icon.icon,
+        font = beautiful.icons.square.font,
+        text = beautiful.icons.square.icon,
         on_release = function(self)
             c.maximized = not c.maximized
             c:raise()
@@ -45,8 +45,8 @@ capi.client.connect_signal("request::titlebars", function(c)
         forced_height = dpi(40),
         text_normal_bg = beautiful.colors.error,
         size = 12,
-        font = beautiful.circle_icon.font,
-        text = beautiful.circle_icon.icon,
+        font = beautiful.icons.circle.font,
+        text = beautiful.icons.circle.icon,
         on_release = function()
             c:kill()
         end

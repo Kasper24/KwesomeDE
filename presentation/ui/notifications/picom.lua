@@ -29,11 +29,11 @@ local icons =
 picom_daemon:connect_signal("state", function(self, state)
     if helpers.misc.should_show_notification() == true then
         local text = state == true and "Enabled" or "Disabled"
-        local font_icon = state == true and beautiful.toggle_on_icon or beautiful.toggle_off_icon
+        local font_icon = state == true and beautiful.icons.toggle_on or beautiful.icons.toggle_off
 
         naughty.notification
         {
-            app_font_icon = beautiful.spraycan_icon,
+            app_font_icon = beautiful.icons.spraycan,
             app_icon = icons,
             app_name = "Picom",
             font_icon = font_icon,

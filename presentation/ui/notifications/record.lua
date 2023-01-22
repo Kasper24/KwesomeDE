@@ -65,10 +65,10 @@ record_daemon:connect_signal("started", function()
 
     naughty.notification
     {
-        app_font_icon = beautiful.video_icon,
+        app_font_icon = beautiful.icons.video,
         app_icon = icons,
         app_name = "Recorder",
-        font_icon = beautiful.toggle_on_icon,
+        font_icon = beautiful.icons.toggle_on,
         icon = icons,
         title = "Video Recording",
         message = "Started",
@@ -90,10 +90,10 @@ record_daemon:connect_signal("ended", function(self, folder, file_name)
 
     naughty.notification
     {
-        app_font_icon = beautiful.video_icon,
+        app_font_icon = beautiful.icons.video,
         app_icon = icons,
         app_name = "Recorder",
-        font_icon = beautiful.toggle_off_icon,
+        font_icon = beautiful.icons.toggle_off,
         icon = icons,
         title = "Video Recording",
         message = "Video saved to " .. folder .. file_name,
@@ -104,10 +104,10 @@ end)
 record_daemon:connect_signal("error::create_directory", function()
     naughty.notification
     {
-        app_font_icon = beautiful.video_icon,
+        app_font_icon = beautiful.icons.video,
         app_icon = icons,
         app_name = "Recorder",
-        font_icon = beautiful.circle_exclamation_icon,
+        font_icon = beautiful.icons.circle_exclamation,
         icon = error_icons,
         title = "Error",
         message = "Failed to create directory",

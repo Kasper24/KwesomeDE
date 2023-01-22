@@ -90,8 +90,8 @@ local function last_page(on_next_pressed)
     {
         halign = "center",
         size = 120,
-        font = beautiful.circle_check_icon.font,
-        text = beautiful.circle_check_icon.icon
+        font = beautiful.icons.circle_check.font,
+        text = beautiful.icons.circle_check.icon
     }
 
     local title = widgets.text
@@ -203,8 +203,8 @@ local function weather_page(on_next_pressed, on_previous_pressed)
     {
         halign = "center",
         size = 120,
-        font = beautiful.clouds_icon.font,
-        text = beautiful.clouds_icon.icon
+        font = beautiful.icons.clouds.font,
+        text = beautiful.icons.clouds.icon
     }
 
     local title = widgets.text
@@ -259,8 +259,8 @@ local function weather_page(on_next_pressed, on_previous_pressed)
         reset_on_stop = false,
         prompt = "API Key: ",
         text = weather_daemon:get_api_key() or "",
-        icon_font = beautiful.lock_icon.font,
-        icon = beautiful.lock_icon.icon,
+        icon_font = beautiful.icons.lock.font,
+        icon = beautiful.icons.lock.icon,
         icon_color = beautiful.colors.on_background,
         text_color = beautiful.colors.on_background,
     }
@@ -272,8 +272,8 @@ local function weather_page(on_next_pressed, on_previous_pressed)
         reset_on_stop = false,
         prompt = "Lat: ",
         text = weather_daemon:get_coordinate_x() or "",
-        icon_font = beautiful.location_dot_icon.font,
-        icon = beautiful.location_dot_icon.icon,
+        icon_font = beautiful.icons.location_dot.font,
+        icon = beautiful.icons.location_dot.icon,
         icon_color = beautiful.colors.on_background,
         text_color = beautiful.colors.on_background,
     }
@@ -285,8 +285,8 @@ local function weather_page(on_next_pressed, on_previous_pressed)
         reset_on_stop = false,
         prompt = "Lon: ",
         text = weather_daemon:get_coordinate_y() or "",
-        icon_font = beautiful.location_dot_icon.font,
-        icon = beautiful.location_dot_icon.icon,
+        icon_font = beautiful.icons.location_dot.font,
+        icon = beautiful.icons.location_dot.icon,
         icon_color = beautiful.colors.on_background,
         fg_cursor = beautiful.colors.on_background,
     }
@@ -412,8 +412,8 @@ local function gitlab_page(on_next_pressed, on_previous_pressed)
     {
         halign = "center",
         size = 120,
-        font = beautiful.gitlab_icon.font,
-        text = beautiful.gitlab_icon.icon
+        font = beautiful.icons.gitlab.font,
+        text = beautiful.icons.gitlab.icon
     }
 
     local title = widgets.text
@@ -476,8 +476,8 @@ local function gitlab_page(on_next_pressed, on_previous_pressed)
         reset_on_stop = false,
         prompt = "Host: ",
         text = gitlab_daemon:get_host() or "",
-        icon_font = beautiful.server_icon.font,
-        icon = beautiful.server_icon.icon,
+        icon_font = beautiful.icons.server.font,
+        icon = beautiful.icons.server.icon,
         icon_color = beautiful.colors.on_background,
         text_color = beautiful.colors.on_background,
     }
@@ -489,8 +489,8 @@ local function gitlab_page(on_next_pressed, on_previous_pressed)
         reset_on_stop = false,
         prompt = "Access Token: ",
         text = gitlab_daemon:get_access_token() or "",
-        icon_font = beautiful.lock_icon.font,
-        icon = beautiful.lock_icon.icon,
+        icon_font = beautiful.icons.lock.font,
+        icon = beautiful.icons.lock.icon,
         icon_color = beautiful.colors.on_background,
         text_color = beautiful.colors.on_background,
     }
@@ -582,8 +582,8 @@ local function github_page(on_next_pressed, on_previous_pressed)
     {
         halign = "center",
         size = 120,
-        font = beautiful.github_icon.font,
-        text = beautiful.github_icon.icon
+        font = beautiful.icons.github.font,
+        text = beautiful.icons.github.icon
     }
 
     local title = widgets.text
@@ -607,8 +607,8 @@ local function github_page(on_next_pressed, on_previous_pressed)
         reset_on_stop = false,
         prompt = "Username: ",
         text = github_daemon:get_username() or "",
-        icon_font = beautiful.user_icon.font,
-        icon = beautiful.user_icon.icon,
+        icon_font = beautiful.icons.user.font,
+        icon = beautiful.icons.user.icon,
         icon_color = beautiful.colors.on_background,
         text_color = beautiful.colors.on_background,
     }
@@ -689,8 +689,8 @@ local function email_page(on_next_pressed, on_previous_pressed)
     {
         halign = "center",
         size = 120,
-        font = beautiful.envelope_icon.font,
-        text = beautiful.envelope_icon.icon
+        font = beautiful.icons.envelope.font,
+        text = beautiful.icons.envelope.icon
     }
 
     local title = widgets.text
@@ -714,8 +714,8 @@ local function email_page(on_next_pressed, on_previous_pressed)
         reset_on_stop = false,
         prompt = "Machine: ",
         text = email_daemon:get_machine() or "mail.google.com",
-        icon_font = beautiful.server_icon.font,
-        icon = beautiful.server_icon.icon,
+        icon_font = beautiful.icons.server.font,
+        icon = beautiful.icons.server.icon,
         icon_color = beautiful.colors.on_background,
         text_color = beautiful.colors.on_background,
     }
@@ -727,8 +727,8 @@ local function email_page(on_next_pressed, on_previous_pressed)
         reset_on_stop = false,
         prompt = "Login: ",
         text = email_daemon:get_login() or "",
-        icon_font = beautiful.user_icon.font,
-        icon = beautiful.user_icon.icon,
+        icon_font = beautiful.icons.user.font,
+        icon = beautiful.icons.user.icon,
         icon_color = beautiful.colors.on_background,
         text_color = beautiful.colors.on_background,
     }
@@ -740,8 +740,8 @@ local function email_page(on_next_pressed, on_previous_pressed)
         reset_on_stop = false,
         prompt = "Password: ",
         text = email_daemon:get_password() or "",
-        icon_font = beautiful.lock_icon.font,
-        icon = beautiful.lock_icon.icon,
+        icon_font = beautiful.icons.lock.font,
+        icon = beautiful.icons.lock.icon,
         icon_color = beautiful.colors.on_background,
         text_color = beautiful.colors.on_background,
     }
@@ -833,8 +833,8 @@ local function password_page(on_next_pressed, on_previous_pressed)
     {
         halign = "center",
         size = 120,
-        font = beautiful.lock_icon.font,
-        text = beautiful.lock_icon.icon
+        font = beautiful.icons.lock.font,
+        text = beautiful.icons.lock.icon
     }
 
     local title = widgets.text
@@ -858,8 +858,8 @@ local function password_page(on_next_pressed, on_previous_pressed)
         reset_on_stop = false,
         prompt = "Password: ",
         text = system_daemon:get_password() or "",
-        icon_font = beautiful.lock_icon.font,
-        icon = beautiful.lock_icon.icon,
+        icon_font = beautiful.icons.lock.font,
+        icon = beautiful.icons.lock.icon,
         icon_color = beautiful.colors.on_background,
         text_color = beautiful.colors.on_background,
     }

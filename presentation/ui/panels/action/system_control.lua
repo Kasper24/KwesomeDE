@@ -48,8 +48,8 @@ local function arrow_button(icon, text, on_icon_release, on_arrow_release)
         normal_bg = beautiful.colors.surface,
         on_normal_bg = accent_color,
         text_on_normal_bg = beautiful.colors.on_accent,
-        font = beautiful.chevron_right_icon.font,
-        text = beautiful.chevron_right_icon.icon,
+        font = beautiful.icons.chevron_right.font,
+        text = beautiful.icons.chevron_right.icon,
         on_release = on_arrow_release
     }
 
@@ -157,7 +157,7 @@ end
 local function wifi(action_panel)
     local widget = arrow_button
     (
-        beautiful.wifi_high_icon,
+        beautiful.icons.wifi_high,
         "Wi-Fi",
         function()
             network_daemon:toggle_wireless_state()
@@ -185,7 +185,7 @@ end
 local function bluetooth(action_panel)
     local widget = arrow_button
     (
-        beautiful.bluetooth_icon,
+        beautiful.icons.bluetooth,
         "Bluetoooth",
         function()
             bluetooth_daemon:toggle()
@@ -209,7 +209,7 @@ end
 local function airplane_mode()
     local widget = button
     (
-        beautiful.airplane_icon,
+        beautiful.icons.airplane,
         "Airplane Mode",
         function()
             radio_daemon:toggle()
@@ -230,7 +230,7 @@ end
 local function blue_light()
     local widget =  button
     (
-        beautiful.lightbulb_icon,
+        beautiful.icons.lightbulb,
         "Blue Light",
         function()
             redshift_daemon:toggle()
@@ -251,7 +251,7 @@ end
 local function compositor()
     local widget =  button
     (
-        beautiful.spraycan_icon,
+        beautiful.icons.spraycan,
         "Compositor",
         function()
             picom_daemon:toggle(true)
@@ -272,7 +272,7 @@ end
 local function dont_disturb()
     local widget = button
     (
-        beautiful.suspend_icon,
+        beautiful.icons.suspend,
         "Don't Disturb",
         function()
             notifications_daemon:toggle()
@@ -293,7 +293,7 @@ end
 local function screenshot()
     local widget = quick_action
     (
-        beautiful.camera_retro_icon,
+        beautiful.icons.camera_retro,
         "Screenshot",
         function()
             screenshot_popup:show()
@@ -306,7 +306,7 @@ end
 local function microphone()
     local widget = button
     (
-        beautiful.microphone_icon,
+        beautiful.icons.microphone,
         "Microphone",
         function()
             pactl_daemon:source_toggle_mute()
@@ -327,7 +327,7 @@ end
 local function record()
     local widget = button
     (
-        beautiful.video_icon,
+        beautiful.icons.video,
         "Record",
         function()
             if record_daemon:get_is_recording() == false then

@@ -18,13 +18,13 @@ local function new(args)
     args = args or {}
 
     args.animate_size = false
-    args.font = beautiful.toggle_on_icon.font
-    args.text = beautiful.toggle_off_icon.icon
+    args.font = beautiful.icons.toggle_on.font
+    args.text = beautiful.icons.toggle_off.icon
     args.on_normal_bg = "#00000000"
 
     local on_turn_on = args.on_turn_on
     args.on_turn_on = function(self)
-        self:set_text(beautiful.toggle_on_icon.icon)
+        self:set_text(beautiful.icons.toggle_on.icon)
         if on_turn_on ~= nil then
             on_turn_on()
         end
@@ -32,7 +32,7 @@ local function new(args)
 
     local on_turn_off = args.on_turn_off
     args.on_turn_off = function(self)
-        self:set_text(beautiful.toggle_off_icon.icon)
+        self:set_text(beautiful.icons.toggle_off.icon)
         if on_turn_off ~= nil then
             on_turn_off()
         end
@@ -42,7 +42,7 @@ local function new(args)
     gtable.crush(widget, checkbox)
 
 	if args.on_by_default == true then
-        widget:set_text(beautiful.toggle_on_icon.icon)
+        widget:set_text(beautiful.icons.toggle_on.icon)
 	end
 
     return widget

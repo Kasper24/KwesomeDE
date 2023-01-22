@@ -21,10 +21,10 @@ local function new()
     {
         halign = "center",
         valign = "bottom",
-        font = beautiful.keyboard_icon.font,
+        font = beautiful.icons.keyboard.font,
         size = 30,
         color = beautiful.random_accent_color(),
-        text = beautiful.keyboard_icon.icon,
+        text = beautiful.icons.keyboard.icon,
     }
 
     local text = widgets.text

@@ -185,11 +185,11 @@ local function widget(self)
         text = greeters[math.random(#greeters)]
     }
 
-    local shutdown = button(beautiful.poweroff_icon, "Shutdown", function() system_daemon:shutdown() end)
-    local reboot = button(beautiful.reboot_icon, "Restart", function() system_daemon:reboot() end)
-    local suspend = button(beautiful.suspend_icon, "Suspend", function() system_daemon:suspend() end)
-    local exit = button(beautiful.exit_icon, "Exit", function() system_daemon:exit() end)
-    local lock = button(beautiful.lock_icon, "Lock", function() self:hide() system_daemon:lock() end)
+    local shutdown = button(beautiful.icons.poweroff, "Shutdown", function() system_daemon:shutdown() end)
+    local reboot = button(beautiful.icons.reboot, "Restart", function() system_daemon:reboot() end)
+    local suspend = button(beautiful.icons.suspend, "Suspend", function() system_daemon:suspend() end)
+    local exit = button(beautiful.icons.exit, "Exit", function() system_daemon:exit() end)
+    local lock = button(beautiful.icons.lock, "Lock", function() self:hide() system_daemon:lock() end)
 
     local buttons = wibox.widget
     {

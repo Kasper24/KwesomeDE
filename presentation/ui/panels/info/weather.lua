@@ -20,24 +20,24 @@ local weather = { mt = {} }
 
 local icon_map =
 {
-	["01d"] = beautiful.sun_icon, -- clear-sky
-	["02d"] = beautiful.sun_cloud_icon, -- few-clouds
-	["03d"] = beautiful.cloud_icon, -- scattered-clouds
-	["04d"] = beautiful.cloud_sun_icon, -- broken-clouds
-	["09d"] = beautiful.cloud_sun_rain_icon, -- shower-rain
-	["10d"] = beautiful.raindrops_icon, -- rain
-	["11d"] = beautiful.cloud_bolt_sun_icon, -- thunderstorm
-	["13d"] = beautiful.snowflake_icon, -- snow
-	["50d"] = beautiful.cloud_fog_icon, -- mist
-	["01n"] = beautiful.moon_icon, -- clear-sky-night
-	["02n"] = beautiful.moon_cloud_icon, -- few-clouds-night
-	["03n"] = beautiful.cloud_icon, -- scattered-clouds-night
-	["04n"] = beautiful.cloud_moon_icon, -- broken-clouds-night
-	["09n"] = beautiful.cloud_moon_rain_icon, -- shower-rain-night
-	["10n"] = beautiful.raindrops_icon, -- rain-night
-	["11n"] = beautiful.cloud_bolt_moon_icon, -- thunderstorm-night
-	["13n"] = beautiful.snowflake_icon, -- snow-night
-	["50n"] = beautiful.cloud_fog_icon -- mist-night
+	["01d"] = beautiful.icons.sun, -- clear-sky
+	["02d"] = beautiful.icons.sun_cloud, -- few-clouds
+	["03d"] = beautiful.icons.cloud, -- scattered-clouds
+	["04d"] = beautiful.icons.cloud_sun, -- broken-clouds
+	["09d"] = beautiful.icons.cloud_sun_rain, -- shower-rain
+	["10d"] = beautiful.icons.raindrops, -- rain
+	["11d"] = beautiful.icons.cloud_bolt_sun, -- thunderstorm
+	["13d"] = beautiful.icons.snowflake, -- snow
+	["50d"] = beautiful.icons.cloud_fog, -- mist
+	["01n"] = beautiful.icons.moon, -- clear-sky-night
+	["02n"] = beautiful.icons.moon_cloud, -- few-clouds-night
+	["03n"] = beautiful.icons.cloud, -- scattered-clouds-night
+	["04n"] = beautiful.icons.cloud_moon, -- broken-clouds-night
+	["09n"] = beautiful.icons.cloud_moon_rain, -- shower-rain-night
+	["10n"] = beautiful.icons.raindrops, -- rain-night
+	["11n"] = beautiful.icons.cloud_bolt_moon, -- thunderstorm-night
+	["13n"] = beautiful.icons.snowflake, -- snow-night
+	["50n"] = beautiful.icons.cloud_fog -- mist-night
 }
 
 local function curvaceous(cr, x, y, b, step_width, options, draw_line)
@@ -305,8 +305,8 @@ local function new(args)
         halign = "center",
         size = 120,
         color = beautiful.random_accent_color(),
-        font = beautiful.circle_exclamation_icon.font,
-        text = beautiful.circle_exclamation_icon.icon
+        font = beautiful.icons.circle_exclamation.font,
+        text = beautiful.icons.circle_exclamation.icon
     }
 
     local weather_widget = wibox.widget

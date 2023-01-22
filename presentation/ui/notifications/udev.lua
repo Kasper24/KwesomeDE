@@ -48,10 +48,10 @@ local disk_icons =
 udev_daemon:connect_signal("usb::added", function(self, device)
     naughty.notification
     {
-        app_font_icon = beautiful.usb_icon,
+        app_font_icon = beautiful.icons.usb,
         app_icon = usb_icons,
         app_name = "USB",
-        font_icon = beautiful.circle_plus_icon,
+        font_icon = beautiful.icons.circle_plus,
         icon = usb_icons,
         title = device.vendor .. " " .. device.name,
         message = "Connected",
@@ -62,10 +62,10 @@ end)
 udev_daemon:connect_signal("usb::removed", function(self, device)
     naughty.notification
     {
-        app_font_icon = beautiful.usb_icon,
+        app_font_icon = beautiful.icons.usb,
         app_icon = usb_icons,
         app_name = "USB",
-        font_icon = beautiful.circle_minus_icon,
+        font_icon = beautiful.icons.circle_minus,
         icon = usb_icons,
         title = device.vendor .. " " .. device.name,
         message = "Disconnected",
@@ -81,10 +81,10 @@ udev_daemon:connect_signal("block::added", function(self, device)
 
     naughty.notification
     {
-        app_font_icon = beautiful.usb_drive_icon,
+        app_font_icon = beautiful.icons.usb_drive,
         app_icon = disk_icons,
         app_name = "Storage",
-        font_icon = beautiful.circle_plus_icon,
+        font_icon = beautiful.icons.circle_plus,
         icon = disk_icons,
         title = device.name,
         message = device.partition .. ": mounted on " .. device.mount_point,
@@ -96,10 +96,10 @@ end)
 udev_daemon:connect_signal("block::removed", function(self, device)
     naughty.notification
     {
-        app_font_icon = beautiful.usb_drive_icon,
+        app_font_icon = beautiful.icons.usb_drive,
         app_icon = disk_icons,
         app_name = "Storage",
-        font_icon = beautiful.circle_minus_icon,
+        font_icon = beautiful.icons.circle_minus,
         icon = disk_icons,
         title = device.name,
         message = device.partition .. ": removed from " .. device.mount_point,

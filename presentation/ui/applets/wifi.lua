@@ -44,17 +44,17 @@ local function access_point_widget(layout, access_point, accent_color)
     local wifi_icon = widgets.text
     {
         halign = "left",
-        font = beautiful.wifi_high_icon.font,
+        font = beautiful.icons.wifi_high.font,
         size = 25,
-        text =  access_point.strength > 66 and beautiful.wifi_high_icon.icon or
-                access_point.strength > 33 and beautiful.wifi_medium_icon.icon or beautiful.wifi_low_icon.icon
+        text =  access_point.strength > 66 and beautiful.icons.wifi_high.icon or
+                access_point.strength > 33 and beautiful.icons.wifi_medium.icon or beautiful.icons.wifi_low.icon
     }
 
     local lock_icon = widgets.text
     {
-        font = beautiful.lock_icon.font,
+        font = beautiful.icons.lock.font,
         size = 20,
-        text =  beautiful.lock_icon.icon
+        text =  beautiful.icons.lock.icon
     }
 
     local prompt = widgets.prompt
@@ -62,8 +62,8 @@ local function access_point_widget(layout, access_point, accent_color)
         forced_width = dpi(450),
         obscure = true,
         text = access_point.password,
-        icon_font = beautiful.lock_icon.font,
-        icon = beautiful.lock_icon.icon,
+        icon_font = beautiful.icons.lock.font,
+        icon = beautiful.icons.lock.icon,
         forced_height = dpi(50),
         paddings = dpi(15),
     }
@@ -248,8 +248,8 @@ local function new()
     {
         text_normal_bg = beautiful.colors.on_background,
         size = 15,
-        font = beautiful.arrow_rotate_right_icon.font,
-        text = beautiful.arrow_rotate_right_icon.icon,
+        font = beautiful.icons.arrow_rotate_right.font,
+        text = beautiful.icons.arrow_rotate_right.icon,
         on_press = function()
             network_daemon:scan_access_points()
         end
@@ -259,8 +259,8 @@ local function new()
     {
         text_normal_bg = beautiful.colors.on_background,
         size = 15,
-        font = beautiful.gear_icon.font,
-        text = beautiful.gear_icon.icon,
+        font = beautiful.icons.gear.font,
+        text = beautiful.icons.gear.icon,
         on_press = function()
             network_daemon:open_settings()
         end
@@ -285,8 +285,8 @@ local function new()
         color = beautiful.random_accent_color(),
         halign = "center",
         size = 100,
-        font = beautiful.wifi_off_icon.font,
-        text = beautiful.wifi_off_icon.icon
+        font = beautiful.icons.wifi_off.font,
+        text = beautiful.icons.wifi_off.icon
     }
 
     local stack = wibox.widget

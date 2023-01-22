@@ -136,8 +136,8 @@ local function image_tab(self)
                 halign = "center",
                 size = 50,
                 color = beautiful.random_accent_color(),
-                font = beautiful.spraycan_icon.font,
-                text = beautiful.spraycan_icon.icon
+                font = beautiful.icons.spraycan.font,
+                text = beautiful.icons.spraycan.icon
             },
             widgets.text
             {
@@ -452,8 +452,8 @@ local function new(self, layout)
         forced_height = dpi(50),
         size = 15,
         text_normal_bg = accent_color,
-        font = beautiful.gear_icon.font,
-        text = beautiful.gear_icon.icon,
+        font = beautiful.icons.gear.font,
+        text = beautiful.icons.gear.icon,
         on_release = function()
             layout:raise(2)
         end
@@ -464,8 +464,8 @@ local function new(self, layout)
         forced_width = dpi(50),
         forced_height = dpi(50),
         text_normal_bg = accent_color,
-        font = beautiful.xmark_icon.font,
-        text = beautiful.xmark_icon.icon,
+        font = beautiful.icons.xmark.font,
+        text = beautiful.icons.xmark.icon,
         on_release = function()
             self:hide()
         end

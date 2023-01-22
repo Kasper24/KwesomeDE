@@ -116,8 +116,8 @@ local function widget(self)
         reset_on_stop = true,
         always_on = true,
         obscure = true,
-        icon_font = beautiful.lock_icon.font,
-        icon = beautiful.lock_icon.icon,
+        icon_font = beautiful.icons.lock.font,
+        icon = beautiful.icons.lock.icon,
         paddings = dpi(15),
         keyreleased_callback = function(mod, key, text)
             if key == "Return" then
@@ -153,8 +153,8 @@ local function widget(self)
         normal_bg = beautiful.colors.transparent,
         text_normal_bg = accent_color,
         size = 40,
-        font = beautiful.poweroff_icon.font,
-        text = beautiful.poweroff_icon.icon,
+        font = beautiful.icons.poweroff.font,
+        text = beautiful.icons.poweroff.icon,
         on_release = function()
             system_daemon:shutdown()
         end
@@ -165,8 +165,8 @@ local function widget(self)
         normal_bg = beautiful.colors.transparent,
         text_normal_bg = accent_color,
         size = 40,
-        font = beautiful.reboot_icon.font,
-        text = beautiful.reboot_icon.icon,
+        font = beautiful.icons.reboot.font,
+        text = beautiful.icons.reboot.icon,
         on_release = function()
             system_daemon:restart()
         end
@@ -177,8 +177,8 @@ local function widget(self)
         normal_bg = beautiful.colors.transparent,
         text_normal_bg = accent_color,
         size = 40,
-        font = beautiful.suspend_icon.font,
-        text = beautiful.suspend_icon.icon,
+        font = beautiful.icons.suspend.font,
+        text = beautiful.icons.suspend.icon,
         on_release = function()
             system_daemon:suspend()
         end
@@ -189,8 +189,8 @@ local function widget(self)
         normal_bg = beautiful.colors.transparent,
         text_normal_bg = accent_color,
         size = 40,
-        font = beautiful.exit_icon.font,
-        text = beautiful.exit_icon.icon,
+        font = beautiful.icons.exit.font,
+        text = beautiful.icons.exit.icon,
         on_release = function()
             system_daemon:exit()
         end

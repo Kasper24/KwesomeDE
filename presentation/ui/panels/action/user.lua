@@ -46,8 +46,8 @@ local function new()
         forced_width = dpi(50),
         forced_height = dpi(50),
         size = 15,
-        font = beautiful.poweroff_icon.font,
-        text = beautiful.poweroff_icon.icon,
+        font = beautiful.icons.poweroff.font,
+        text = beautiful.icons.poweroff.icon,
         on_release = function()
             power_popup:show()
         end
@@ -60,8 +60,8 @@ local function new()
         widgets.text
         {
             color = beautiful.random_accent_color(),
-            font = beautiful.clock_icon.font,
-            text = beautiful.clock_icon.icon,
+            font = beautiful.icons.clock.font,
+            text = beautiful.icons.clock.icon,
         },
         widgets.text
         {
@@ -81,8 +81,8 @@ local function new()
         widgets.text
         {
             color = beautiful.random_accent_color(),
-            font = beautiful.box_icon.font,
-            text = beautiful.box_icon.icon,
+            font = beautiful.icons.box.font,
+            text = beautiful.icons.box.icon,
         },
         widgets.text
         {

@@ -29,31 +29,31 @@ local function generate_action_string(event)
     if (event.type == "PullRequestEvent") then
         action_string = event.payload.action .. " a pull request in"
         link = event.pr_url
-        icon = beautiful.code_pull_request_icon
+        icon = beautiful.icons.code_pull_request
     elseif (event.type == "PullRequestReviewCommentEvent") then
         action_string = event.payload.action == "created" and "commented in pull request" or event.payload.action .. " a comment in"
         link = event.pr_url
-        icon = beautiful.message_icon
+        icon = beautiful.icons.message
     elseif (event.type == "IssuesEvent") then
         action_string = event.payload.action .. " an issue in"
         link = event.issue_url
-        icon = beautiful.circle_exclamation_icon
+        icon = beautiful.icons.circle_exclamation
     elseif (event.type == "IssueCommentEvent") then
         action_string = event.payload.action == "created" and "commented in issue" or event.payload.action .. " a comment in"
         link = event.issue_url
-        icon = beautiful.message_icon
+        icon = beautiful.icons.message
     elseif (event.type == "WatchEvent") then
         action_string = "starred"
-        icon = beautiful.star_icon
+        icon = beautiful.icons.star
     elseif (event.type == "PushEvent") then
         action_string = "pushed to"
-        icon = beautiful.commit_icon
+        icon = beautiful.icons.commit
     elseif (event.type == "ForkEvent") then
         action_string = "forked"
-        icon = beautiful.code_branch_icon
+        icon = beautiful.icons.code_branch
     elseif (event.type == "CreateEvent") then
         action_string = "created"
-        icon = beautiful.code_branch_icon
+        icon = beautiful.icons.code_branch
     end
 
     return { action_string = action_string, link = link, icon = icon }
@@ -96,8 +96,8 @@ local function widget()
             halign = "center",
             size = 120,
             color = beautiful.random_accent_color(),
-            font = beautiful.circle_exclamation_icon.font,
-            text = beautiful.circle_exclamation_icon.icon
+            font = beautiful.icons.circle_exclamation.font,
+            text = beautiful.icons.circle_exclamation.icon
         }
     }
 
@@ -386,10 +386,10 @@ local function github_pr()
                             spacing = dpi(10),
                             widgets.text
                             {
-                                font = beautiful.message_icon.font,
+                                font = beautiful.icons.message.font,
                                 size = 15,
                                 color = beautiful.random_accent_color(),
-                                text = beautiful.message_icon.icon
+                                text = beautiful.icons.message.icon
                             },
                             widgets.text
                             {
@@ -569,10 +569,10 @@ local function gitlab()
                 spacing = dpi(10),
                 widgets.text
                 {
-                    font = beautiful.check_icon.font,
+                    font = beautiful.icons.check.font,
                     size = 15,
                     color = beautiful.random_accent_color(),
-                    text = beautiful.check_icon.icon
+                    text = beautiful.icons.check.icon
                 },
                 widgets.text
                 {
@@ -587,10 +587,10 @@ local function gitlab()
                 spacing = dpi(10),
                 widgets.text
                 {
-                    font = beautiful.message_icon.font,
+                    font = beautiful.icons.message.font,
                     size = 15,
                     color = beautiful.random_accent_color(),
-                    text = beautiful.message_icon.icon
+                    text = beautiful.icons.message.icon
                 },
                 widgets.text
                 {

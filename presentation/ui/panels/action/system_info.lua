@@ -111,7 +111,7 @@ local function arc_widget(icon, on_release, on_scroll_up, on_scroll_down)
 end
 
 local function cpu(action_panel)
-    local arc = arc_widget(beautiful.microchip_icon, function()
+    local arc = arc_widget(beautiful.icons.microchip, function()
         cpu_popup:toggle(action_panel.widget)
     end)
 
@@ -123,7 +123,7 @@ local function cpu(action_panel)
 end
 
 local function ram(action_panel)
-    local arc = arc_widget(beautiful.memory_icon, function()
+    local arc = arc_widget(beautiful.icons.memory, function()
         ram_popup:toggle(action_panel.widget)
     end)
 
@@ -138,7 +138,7 @@ local function ram(action_panel)
 end
 
 local function disk(action_panel)
-    local arc = arc_widget(beautiful.disc_drive_icon, function()
+    local arc = arc_widget(beautiful.icons.disc_drive, function()
         disk_popup:toggle(action_panel.widget)
     end)
 
@@ -154,21 +154,21 @@ local function disk(action_panel)
 end
 
 local function temperature()
-    local arc = arc_widget(beautiful.thermometer_full_icon)
+    local arc = arc_widget(beautiful.icons.thermometer_full)
 
     temperature_daemon:connect_signal("update", function(self, value)
         if value == nil then
-            arc:set_icon(beautiful.thermometer_quarter_icon.icon)
+            arc:set_icon(beautiful.icons.thermometer_quarter.icon)
             arc:set_value(10)
         else
             if value == 0 then
-                arc:set_icon(beautiful.thermometer_quarter_icon.icon)
+                arc:set_icon(beautiful.icons.thermometer_quarter.icon)
             elseif value <= 33 then
-                arc:set_icon(beautiful.thermometer_half_icon.icon)
+                arc:set_icon(beautiful.icons.thermometer_half.icon)
             elseif value <= 66 then
-                arc:set_icon(beautiful.thermometer_three_quarter_icon.icon)
+                arc:set_icon(beautiful.icons.thermometer_three_quarter.icon)
             elseif value > 66 then
-                arc:set_icon(beautiful.thermometer_full_icon.icon)
+                arc:set_icon(beautiful.icons.thermometer_full.icon)
             end
 
             arc:set_value(value)
@@ -179,7 +179,7 @@ local function temperature()
 end
 
 local function brightness()
-    local arc = arc_widget(beautiful.brightness_icon)
+    local arc = arc_widget(beautiful.icons.brightness)
 
     brightness_daemon:connect_signal("update", function(self, value)
         if value >= 0 then
@@ -191,7 +191,7 @@ local function brightness()
 end
 
 local function audio(action_panel)
-    local arc = arc_widget(beautiful.volume_off_icon, function()
+    local arc = arc_widget(beautiful.icons.volume_off, function()
         audio_popup:toggle(action_panel.widget)
     end,
     function()
@@ -205,13 +205,13 @@ local function audio(action_panel)
         arc:set_value(device.volume)
 
         if device.mute or device.volume == 0 then
-            arc:set_icon(beautiful.volume_off_icon.icon)
+            arc:set_icon(beautiful.icons.volume_off.icon)
         elseif device.volume <= 33 then
-            arc:set_icon(beautiful.volume_low_icon.icon)
+            arc:set_icon(beautiful.icons.volume_low.icon)
         elseif device.volume <= 66 then
-            arc:set_icon(beautiful.volume_normal_icon.icon)
+            arc:set_icon(beautiful.icons.volume_normal.icon)
         elseif device.volume > 66 then
-            arc:set_icon(beautiful.volume_high_icon.icon)
+            arc:set_icon(beautiful.icons.volume_high.icon)
         end
     end)
 

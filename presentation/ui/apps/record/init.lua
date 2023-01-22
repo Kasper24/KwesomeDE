@@ -107,8 +107,8 @@ local function fps()
         forced_width = dpi(50),
         forced_height = dpi(50),
         text_normal_bg = accent_color,
-        font = beautiful.circle_plus_icon.font,
-        text = beautiful.circle_plus_icon.icon,
+        font = beautiful.icons.circle_plus.font,
+        text = beautiful.icons.circle_plus.icon,
         on_release = function()
             value_text:set_text(record_daemon:increase_fps())
         end
@@ -119,8 +119,8 @@ local function fps()
         forced_width = dpi(50),
         forced_height = dpi(50),
         text_normal_bg = accent_color,
-        font = beautiful.circle_minus_icon.font,
-        text = beautiful.circle_minus_icon.icon,
+        font = beautiful.icons.circle_minus.font,
+        text = beautiful.icons.circle_minus.icon,
         on_release = function()
             value_text:set_text(record_daemon:decrease_fps())
         end
@@ -155,8 +155,8 @@ local function delay()
         forced_width = dpi(50),
         forced_height = dpi(50),
         text_normal_bg = accent_color,
-        font = beautiful.circle_plus_icon.font,
-        text = beautiful.circle_plus_icon.icon,
+        font = beautiful.icons.circle_plus.font,
+        text = beautiful.icons.circle_plus.icon,
         on_release = function()
             value_text:set_text(record_daemon:increase_delay())
         end
@@ -167,8 +167,8 @@ local function delay()
         forced_width = dpi(50),
         forced_height = dpi(50),
         text_normal_bg = accent_color,
-        font = beautiful.circle_minus_icon.font,
-        text = beautiful.circle_minus_icon.icon,
+        font = beautiful.icons.circle_minus.font,
+        text = beautiful.icons.circle_minus.icon,
         on_release = function()
             value_text:set_text(record_daemon:decrease_delay())
         end
@@ -307,8 +307,8 @@ local function main(self)
     {
         forced_width = dpi(50),
         forced_height = dpi(50),
-        font = beautiful.xmark_icon.font,
-        text = beautiful.xmark_icon.icon,
+        font = beautiful.icons.xmark.font,
+        text = beautiful.icons.xmark.icon,
         on_release = function()
             self:hide()
         end

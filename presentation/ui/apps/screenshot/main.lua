@@ -54,7 +54,7 @@ local function new(self, layout)
 
     selection_button = button
     (
-        beautiful.scissors_icon,
+        beautiful.icons.scissors,
         "Selection",
         function()
             screenshot_daemon:set_screenshot_method("selection")
@@ -67,7 +67,7 @@ local function new(self, layout)
 
     screen_button = button
     (
-        beautiful.computer_icon,
+        beautiful.icons.computer,
         "Screen",
         function()
             screenshot_daemon:set_screenshot_method("screen")
@@ -79,7 +79,7 @@ local function new(self, layout)
 
     window_button = button
     (
-        beautiful.window_icon,
+        beautiful.icons.window,
         "Window",
         function()
             screenshot_daemon:set_screenshot_method("window")
@@ -102,8 +102,8 @@ local function new(self, layout)
         forced_height = dpi(50),
         size = 15,
         text_normal_bg = accent_color,
-        font = beautiful.gear_icon.font,
-        text = beautiful.gear_icon.icon,
+        font = beautiful.icons.gear.font,
+        text = beautiful.icons.gear.icon,
         on_release = function()
             layout:raise(2)
         end
@@ -114,8 +114,8 @@ local function new(self, layout)
         forced_width = dpi(50),
         forced_height = dpi(50),
         text_normal_bg = accent_color,
-        font = beautiful.xmark_icon.font,
-        text = beautiful.xmark_icon.icon,
+        font = beautiful.icons.xmark.font,
+        text = beautiful.icons.xmark.icon,
         on_release = function()
             self:hide()
         end

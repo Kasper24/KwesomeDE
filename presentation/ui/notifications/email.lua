@@ -41,10 +41,10 @@ email_daemon:connect_signal("new_email", function(self, email)
 
     naughty.notification
     {
-        app_font_icon = beautiful.envelope_icon,
+        app_font_icon = beautiful.icons.envelope,
         app_icon = icons,
         app_name = "Email",
-        font_icon = beautiful.envelope_icon,
+        font_icon = beautiful.icons.envelope,
         icon = icons,
         title = title,
         text = text,

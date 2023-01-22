@@ -37,7 +37,7 @@ screenshot_daemon:connect_signal("ended", function(self, screenshot_directory, f
 
     naughty.notification
     {
-        app_font_icon = beautiful.camera_retro_icon,
+        app_font_icon = beautiful.icons.camera_retro,
         app_icon = icons,
         app_name = "Screenshot",
         icon = file_path,

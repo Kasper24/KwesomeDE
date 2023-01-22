@@ -59,8 +59,8 @@ local function delay()
         forced_width = dpi(50),
         forced_height = dpi(50),
         text_normal_bg = accent_color,
-        font = beautiful.circle_plus_icon.font,
-        text = beautiful.circle_plus_icon.icon,
+        font = beautiful.icons.circle_plus.font,
+        text = beautiful.icons.circle_plus.icon,
         on_release = function()
             value_text:set_text(screenshot_daemon:increase_delay())
         end
@@ -71,8 +71,8 @@ local function delay()
         forced_width = dpi(50),
         forced_height = dpi(50),
         text_normal_bg = accent_color,
-        font = beautiful.circle_minus_icon.font,
-        text = beautiful.circle_minus_icon.icon,
+        font = beautiful.icons.circle_minus.font,
+        text = beautiful.icons.circle_minus.icon,
         on_release = function()
             value_text:set_text(screenshot_daemon:decrease_delay())
         end
@@ -136,8 +136,8 @@ local function new(layout)
     {
         forced_width = dpi(50),
         forced_height = dpi(50),
-        font = beautiful.left_icon.font,
-        text = beautiful.left_icon.icon,
+        font = beautiful.icons.left.font,
+        text = beautiful.icons.left.icon,
         on_release = function()
             layout:raise(2)
         end

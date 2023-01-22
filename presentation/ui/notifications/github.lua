@@ -39,7 +39,7 @@ end
 github_daemon:connect_signal("new_event", function(self, event, avatar_path)
     naughty.notification
     {
-        app_font_icon = beautiful.github_icon,
+        app_font_icon = beautiful.icons.github,
         app_icon = icons,
         app_name = "Github",
         icon = avatar_path,
@@ -52,10 +52,10 @@ end)
 github_daemon:connect_signal("new_pr", function(self, pr)
     naughty.notification
     {
-        app_font_icon = beautiful.github_icon,
+        app_font_icon = beautiful.icons.github,
         app_icon = icons,
         app_name = "Github",
-        font_icon = beautiful.envelope_icon,
+        font_icon = beautiful.icons.envelope,
         icon = icons,
         title = "New PR",
         text = pr.title,

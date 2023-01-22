@@ -26,8 +26,8 @@ local function template_widget(layout, template)
         forced_width = dpi(40),
         forced_height = dpi(40),
         animate_size = false,
-        font = beautiful.xmark_icon.font,
-        text = beautiful.xmark_icon.icon,
+        font = beautiful.icons.xmark.font,
+        text = beautiful.icons.xmark.icon,
         on_press = function()
             theme_daemon:remove_template(template)
         end
@@ -114,8 +114,8 @@ local function wallpaper_path_widget(layout, path)
         forced_width = dpi(40),
         forced_height = dpi(40),
         animate_size = false,
-        font = beautiful.xmark_icon.font,
-        text = beautiful.xmark_icon.icon,
+        font = beautiful.icons.xmark.font,
+        text = beautiful.icons.xmark.icon,
         on_press = function()
             theme_daemon:remove_wallpapers_path(path)
         end
@@ -202,7 +202,7 @@ local function command_after_generation_widget()
         prompt = "",
         text = theme_daemon:get_command_after_generation(),
         text_color = beautiful.colors.on_background,
-        icon_font = beautiful.launcher_icon.font,
+        icon_font = beautiful.icons.launcher.font,
         icon = nil,
         changed_callback = function(text)
             theme_daemon:set_command_after_generation(text)
@@ -223,8 +223,8 @@ local function new(layout)
     {
         forced_width = dpi(50),
         forced_height = dpi(50),
-        font = beautiful.left_icon.font,
-        text = beautiful.left_icon.icon,
+        font = beautiful.icons.left.font,
+        text = beautiful.icons.left.icon,
         on_release = function()
             layout:raise(2)
         end

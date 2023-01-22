@@ -187,8 +187,8 @@ local function new()
     {
         text_normal_bg = beautiful.colors.on_background,
         size = 15,
-        font = beautiful.arrow_rotate_right_icon.font,
-        text = beautiful.arrow_rotate_right_icon.icon,
+        font = beautiful.icons.arrow_rotate_right.font,
+        text = beautiful.icons.arrow_rotate_right.icon,
         on_press = function()
             bluetooth_daemon:scan()
         end
@@ -198,8 +198,8 @@ local function new()
     {
         text_normal_bg = beautiful.colors.on_background,
         size = 15,
-        font = beautiful.gear_icon.font,
-        text = beautiful.gear_icon.icon,
+        font = beautiful.icons.gear.font,
+        text = beautiful.icons.gear.icon,
         on_press = function()
             bluetooth_daemon:open_settings()
         end
@@ -224,8 +224,8 @@ local function new()
         color = beautiful.random_accent_color(),
         halign = "center",
         size = 100,
-        font = beautiful.bluetooth_off_icon.font,
-        text = beautiful.bluetooth_off_icon.icon
+        font = beautiful.icons.bluetooth_off.font,
+        text = beautiful.icons.bluetooth_off.icon
     }
 
     local stack = wibox.widget

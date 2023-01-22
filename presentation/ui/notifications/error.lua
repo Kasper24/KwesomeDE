@@ -32,10 +32,10 @@ local icons =
 naughty.connect_signal("request::display_error", function(message, startup)
     naughty.notification
     {
-        app_font_icon = beautiful.gear_icon,
+        app_font_icon = beautiful.icons.gear,
         app_icon = icons,
         app_name = "Awesome",
-        font_icon = beautiful.circle_exclamation_icon,
+        font_icon = beautiful.icons.circle_exclamation,
         icon = icons,
         title = "Error" .. (startup and " during startup" or ""),
         message = message,

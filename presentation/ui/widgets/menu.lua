@@ -231,9 +231,9 @@ function menu.sub_menu_button(args)
             nil,
             twidget
             {
-                font = beautiful.chevron_right_icon.font,
+                font = beautiful.icons.chevron_right.font,
                 size = 12,
-                text = beautiful.chevron_right_icon.icon,
+                text = beautiful.icons.chevron_right.icon,
             },
         }
     }
@@ -335,9 +335,9 @@ function menu.checkbox_button(args)
     {
         size = 13,
         color = args.checkbox_color,
-        font = beautiful.toggle_on_icon.font,
-        text = args.on_by_default == true and beautiful.toggle_on_icon.icon
-                or beautiful.toggle_off_icon.icon,
+        font = beautiful.icons.toggle_on.font,
+        text = args.on_by_default == true and beautiful.icons.toggle_on.icon
+                or beautiful.icons.toggle_off.icon,
     }
 
     local widget = welevated.normal
@@ -373,10 +373,10 @@ function menu.checkbox_button(args)
     }
 
     function widget.turn_on()
-        checkbox:set_text(beautiful.toggle_on_icon.icon)
+        checkbox:set_text(beautiful.icons.toggle_on.icon)
     end
     function widget.turn_off()
-        checkbox:set_text(beautiful.toggle_off_icon.icon)
+        checkbox:set_text(beautiful.icons.toggle_off.icon)
     end
 
     return widget

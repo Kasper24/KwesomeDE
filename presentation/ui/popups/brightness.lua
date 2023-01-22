@@ -21,10 +21,10 @@ local function new()
     {
         halign = "center",
         valign = "bottom",
-        font = beautiful.brightness_icon.font,
+        font = beautiful.icons.brightness.font,
         size = 30,
         color = beautiful.random_accent_color(),
-        text = beautiful.brightness_icon.icon,
+        text = beautiful.icons.brightness.icon,
     }
 
     local text = widgets.text

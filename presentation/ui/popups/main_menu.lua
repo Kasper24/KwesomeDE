@@ -112,84 +112,84 @@ local function widget()
     {
         widgets.menu.button
         {
-            icon = beautiful.launcher_icon,
+            icon = beautiful.icons.launcher,
             text = "Applicaitons",
             on_press = function() app_launcher:show() end
         },
         widgets.menu.button
         {
-            icon = beautiful.industry_icon,
+            icon = beautiful.icons.industry,
             text = "Action Panel",
             on_press = function() action_panel:toggle() end
         },
         widgets.menu.button
         {
-            icon = beautiful.message_icon,
+            icon = beautiful.icons.message,
             text = "Message Panel",
             on_press = function() message_panel:toggle() end
         },
         widgets.menu.button
         {
-            icon = beautiful.calendar_icon,
+            icon = beautiful.icons.calendar,
             text = "Info Panel",
             on_press = function() info_panel:toggle() end
         },
         widgets.menu.button
         {
-            icon = beautiful.keyboard_icon,
+            icon = beautiful.icons.keyboard,
             text = "Keybinds",
             on_press = function() hotkeys_popup.show_help() end
         },
         widgets.menu.separator(),
         widgets.menu.button
         {
-            icon = beautiful.camera_retro_icon,
+            icon = beautiful.icons.camera_retro,
             text = "Screenshot",
             on_press = function() screenshot_popup:toggle() end
         },
         widgets.menu.button
         {
-            icon = beautiful.video_icon,
+            icon = beautiful.icons.video,
             text = "Record",
             on_press = function() record_popup:toggle() end
         },
         widgets.menu.separator(),
         widgets.menu.sub_menu_button
         {
-            icon = beautiful.tag_icon,
+            icon = beautiful.icons.tag,
             text = "Tag",
             sub_menu = tag_sub_menu()
         },
         widgets.menu.sub_menu_button
         {
-            icon = beautiful.table_layout_icon,
+            icon = beautiful.icons.table_layout,
             text = "Layout",
             sub_menu = layout_sub_menu()
         },
         widgets.menu.separator(),
         widgets.menu.sub_menu_button
         {
-            icon = beautiful.folder_open_icon,
+            icon = beautiful.icons.folder_open,
             text = "Recent Places",
             sub_menu = recent_places_sub_menu()
         },
         widgets.menu.separator(),
         widgets.menu.button
         {
-            icon = beautiful.gear_icon,
+            icon = beautiful.icons.gear,
             text = "Settings",
             on_press = function() awful.spawn("dconf-editor", false) end
         },
         widgets.menu.button
         {
-            icon = beautiful.spraycan_icon,
+            icon = beautiful.icons.spraycan,
             text = "Theme",
             on_press = function() theme_popup:toggle() end
         },
         widgets.menu.separator(),
         widgets.menu.button
         {
-            icon = beautiful.exit_icon,
+            icon = beautiful.icons.exit,
             text = "Exit",
             on_press = function() power_popup:show() end
         }

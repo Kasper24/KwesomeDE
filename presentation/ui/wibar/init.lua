@@ -32,9 +32,9 @@ local function start()
         forced_width = dpi(60),
         forced_height = dpi(60),
         margins = dpi(5),
-        font = beautiful.bars_staggered_icon.font,
+        font = beautiful.icons.bars_staggered.font,
         size = 25,
-        text = beautiful.bars_staggered_icon.icon,
+        text = beautiful.icons.bars_staggered.icon,
         on_release = function()
             app_launcher:toggle()
         end
@@ -71,15 +71,15 @@ end
 local function tag_list(s)
     local taglist_icons =
     {
-        beautiful.firefox_icon,
-        beautiful.code_icon,
-        beautiful.git_icon,
-        beautiful.discord_icon,
-        beautiful.spotify_icon,
-        beautiful.steam_icon,
-        beautiful.gamepad_alt_icon,
-        beautiful.led_icon,
-        beautiful.mug_saucer_icon
+        beautiful.icons.firefox,
+        beautiful.icons.code,
+        beautiful.icons.git,
+        beautiful.icons.discord,
+        beautiful.icons.spotify,
+        beautiful.icons.steam,
+        beautiful.icons.gamepad_alt,
+        beautiful.icons.led,
+        beautiful.icons.mug_saucer
     }
 
     return awful.widget.taglist
@@ -536,15 +536,15 @@ local function system_tray()
         forced_width = dpi(50),
         forced_height = dpi(50),
         margins = dpi(5),
-        font = beautiful.chevron_circle_left_icon.font,
-        text = beautiful.chevron_circle_left_icon.icon,
+        font = beautiful.icons.chevron_circle_left.font,
+        text = beautiful.icons.chevron_circle_left.icon,
         on_turn_on = function(self)
             system_tray_animation:set(400)
-            self:set_text(beautiful.chevron_circle_right_icon.icon)
+            self:set_text(beautiful.icons.chevron_circle_right.icon)
         end,
         on_turn_off = function(self)
             system_tray_animation:set(0)
-            self:set_text(beautiful.chevron_circle_left_icon.icon)
+            self:set_text(beautiful.icons.chevron_circle_left.icon)
         end,
     }
 
@@ -562,25 +562,25 @@ local function network()
         halign = "center",
         size = 17,
         color = beautiful.random_accent_color(),
-        font = beautiful.wifi_off_icon.font,
-        text = beautiful.wifi_off_icon.icon,
+        font = beautiful.icons.wifi_off.font,
+        text = beautiful.icons.wifi_off.icon,
     }
 
     network_daemon:connect_signal("wireless_state", function(self, state)
         if state then
-            widget:set_text(beautiful.router_icon.icon)
+            widget:set_text(beautiful.icons.router.icon)
         else
-            widget:set_text(beautiful.wifi_off_icon.icon)
+            widget:set_text(beautiful.icons.wifi_off.icon)
         end
     end)
 
     network_daemon:connect_signal("access_point::connected", function(self, ssid, strength)
         if strength < 33 then
-            widget:set_text(beautiful.wifi_low_icon.icon)
+            widget:set_text(beautiful.icons.wifi_low.icon)
         elseif strength >= 33 then
-            widget:set_text(beautiful.wifi_medium_icon.icon)
+            widget:set_text(beautiful.icons.wifi_medium.icon)
         elseif strength >= 66 then
-            widget:set_text(beautiful.wifi_high_icon.icon)
+            widget:set_text(beautiful.icons.wifi_high.icon)
         end
     end)
 
@@ -593,15 +593,15 @@ local function bluetooth()
         halign = "center",
         size = 17,
         color = beautiful.random_accent_color(),
-        font = beautiful.bluetooth_icon.font,
-        text = beautiful.bluetooth_icon.icon,
+        font = beautiful.icons.bluetooth.font,
+        text = beautiful.icons.bluetooth.icon,
     }
 
     bluetooth_daemon:connect_signal("state", function(self, state)
         if state == true then
-            widget:set_text(beautiful.bluetooth_icon.icon)
+            widget:set_text(beautiful.icons.bluetooth.icon)
         else
-            widget:set_text(beautiful.bluetooth_off_icon.icon)
+            widget:set_text(beautiful.icons.bluetooth_off.icon)
         end
     end)
 
@@ -614,19 +614,19 @@ local function volume()
         halign = "center",
         size = 17,
         color = beautiful.random_accent_color(),
-        font = beautiful.volume_normal_icon.font,
-        text = beautiful.volume_normal_icon.icon,
+        font = beautiful.icons.volume_normal.font,
+        text = beautiful.icons.volume_normal.icon,
     }
 
     pactl_daemon:connect_signal("default_sinks_updated", function(self, device)
         if device.mute or device.volume == 0 then
-            widget:set_text(beautiful.volume_off_icon.icon)
+            widget:set_text(beautiful.icons.volume_off.icon)
         elseif device.volume <= 33 then
-            widget:set_text(beautiful.volume_low_icon.icon)
+            widget:set_text(beautiful.icons.volume_low.icon)
         elseif device.volume <= 66 then
-            widget:set_text(beautiful.volume_normal_icon.icon)
+            widget:set_text(beautiful.icons.volume_normal.icon)
         elseif device.volume > 66 then
-            widget:set_text(beautiful.volume_high_icon.icon)
+            widget:set_text(beautiful.icons.volume_high.icon)
         end
     end)
 
@@ -728,8 +728,8 @@ local function messages_button()
         forced_width = dpi(50),
         forced_height = dpi(50),
         margins = dpi(5),
-        font = beautiful.envelope_icon.font,
-        text = beautiful.envelope_icon.icon,
+        font = beautiful.icons.envelope.font,
+        text = beautiful.icons.envelope.icon,
         on_release = function()
             message_panel:toggle()
         end

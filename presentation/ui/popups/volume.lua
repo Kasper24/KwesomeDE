@@ -22,8 +22,8 @@ local function new()
         halign = "center",
         size = 30,
         color = beautiful.random_accent_color(),
-        font = beautiful.volume_normal_icon.font,
-        text = beautiful.volume_normal_icon.icon,
+        font = beautiful.icons.volume_normal.font,
+        text = beautiful.icons.volume_normal.icon,
     }
 
     local text = widgets.text
@@ -100,13 +100,13 @@ local function new()
     pactl_daemon:connect_signal("default_sinks_updated", function(self, device)
         if show == true then
             if device.mute or device.volume == 0 then
-                icon:set_text(beautiful.volume_off_icon.icon)
+                icon:set_text(beautiful.icons.volume_off.icon)
             elseif device.volume <= 33 then
-                icon:set_text(beautiful.volume_low_icon.icon)
+                icon:set_text(beautiful.icons.volume_low.icon)
             elseif device.volume <= 66 then
-                icon:set_text(beautiful.volume_normal_icon.icon)
+                icon:set_text(beautiful.icons.volume_normal.icon)
             elseif device.volume > 66 then
-                icon:set_text(beautiful.volume_high_icon.icon)
+                icon:set_text(beautiful.icons.volume_high.icon)
             end
 
             text:set_text(device.volume)

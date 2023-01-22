@@ -38,8 +38,8 @@ function playerctl.art(halign, valign, size, default_icon_size, daemon)
         valign = valign or "center",
         color = beautiful.random_accent_color(),
         size = default_icon_size or 150,
-        font = beautiful.spotify_icon.font,
-        text = beautiful.spotify_icon.icon,
+        font = beautiful.icons.spotify.font,
+        text = beautiful.icons.spotify.icon,
     }
 
     local stack = wibox.widget
@@ -61,14 +61,14 @@ function playerctl.art(halign, valign, size, default_icon_size, daemon)
             if app_font_icon ~= nil then
                 default_icon:set_text(app_font_icon.icon)
             else
-                default_icon:set_text(beautiful.spotify_icon.icon)
+                default_icon:set_text(beautiful.icons.spotify.icon)
             end
             stack:raise_widget(default_icon)
         end
     end)
 
     playerctl_daemon:connect_signal("no_players", function(self)
-        default_icon:set_text(beautiful.spotify_icon.icon)
+        default_icon:set_text(beautiful.icons.spotify.icon)
         stack:raise_widget(default_icon)
     end)
 
@@ -325,10 +325,10 @@ function playerctl.previous(width, height, daemon)
         forced_width = width or dpi(50),
         forced_height = height or dpi(50),
         normal_shape = gshape.circle,
-        font = beautiful.backward_icon.font,
+        font = beautiful.icons.backward.font,
         size = 12,
         text_normal_bg = beautiful.colors.on_background,
-        text = beautiful.backward_icon.icon,
+        text = beautiful.icons.backward.icon,
         on_release = function()
             playerctl_daemon:previous()
         end
@@ -343,10 +343,10 @@ function playerctl.next(width, height, daemon)
         forced_width = width or dpi(50),
         forced_height = height or dpi(50),
         normal_shape = gshape.circle,
-        font = beautiful.forward_icon.font,
+        font = beautiful.icons.forward.font,
         size = 12,
         text_normal_bg = beautiful.colors.on_background,
-        text = beautiful.forward_icon.icon,
+        text = beautiful.icons.forward.icon,
         on_release = function()
             playerctl_daemon:next()
         end
@@ -361,10 +361,10 @@ function playerctl.loop(width, height, daemon)
         forced_width = width or dpi(50),
         forced_height = height or dpi(50),
         normal_shape = gshape.circle,
-        font = beautiful.repeat_icon.font,
+        font = beautiful.icons._repeat.font,
         size = 12,
         text_normal_bg = beautiful.colors.on_background,
-        text = beautiful.repeat_icon.icon,
+        text = beautiful.icons._repeat.icon,
         on_release = function(self)
             playerctl_daemon:cycle_loop_status()
         end
@@ -389,10 +389,10 @@ function playerctl.shuffle(width, height, daemon)
         forced_width = width or dpi(50),
         forced_height = height or dpi(50),
         normal_shape = gshape.circle,
-        font = beautiful.shuffle_icon.font,
+        font = beautiful.icons.shuffle.font,
         size = 12,
         text_normal_bg = beautiful.colors.on_background,
-        text = beautiful.shuffle_icon.icon,
+        text = beautiful.icons.shuffle.icon,
         on_release = function(self)
             playerctl_daemon:cycle_shuffle()
         end
@@ -606,9 +606,9 @@ function playerctl.volume(width, daemon)
 
     local icon = twidget
     {
-        font = beautiful.volume_normal_icon.font,
+        font = beautiful.icons.volume_normal.font,
         size = 12,
-        text = beautiful.volume_normal_icon.icon,
+        text = beautiful.icons.volume_normal.icon,
         color = accent_color
     }
 
@@ -642,13 +642,13 @@ function playerctl.volume(width, daemon)
         widget.value = volume * 100
 
         if volume == 0 then
-            icon:set_text(beautiful.volume_off_icon.icon)
+            icon:set_text(beautiful.icons.volume_off.icon)
         elseif volume <= 0.33 then
-            icon:set_text(beautiful.volume_low_icon.icon)
+            icon:set_text(beautiful.icons.volume_low.icon)
         elseif volume <= 0.66 then
-            icon:set_text(beautiful.volume_normal_icon.icon)
+            icon:set_text(beautiful.icons.volume_normal.icon)
         elseif volume > 0.66 then
-            icon:set_text(beautiful.volume_high_icon.icon)
+            icon:set_text(beautiful.icons.volume_high.icon)
         end
     end
 

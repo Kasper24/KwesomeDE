@@ -86,7 +86,7 @@ naughty.connect_signal("added", function(n)
     if n._private.app_font_icon == nil then
         n.app_font_icon = beautiful.get_font_icon_for_app_name(n.app_name)
         if n.app_font_icon == nil then
-            n.app_font_icon = beautiful.window_icon
+            n.app_font_icon = beautiful.icons.window
         end
     else
         n.app_font_icon = n._private.app_font_icon
@@ -108,7 +108,7 @@ naughty.connect_signal("added", function(n)
     end
 
     if (n.icon == "" or n.icon == nil) and n.font_icon == nil then
-        n.font_icon = beautiful.message_icon
+        n.font_icon = beautiful.icons.message
         n.icon = helpers.icon_theme:get_icon_path("preferences-desktop-notification-bell")
     end
 end)
@@ -152,9 +152,9 @@ naughty.connect_signal("request::display", function(n)
 
     local dismiss = widgets.button.text.normal
     {
-        font = beautiful.xmark_icon.font,
+        font = beautiful.icons.xmark.font,
         size = 12,
-        text = beautiful.xmark_icon.icon,
+        text = beautiful.icons.xmark.icon,
         on_release = function()
             n:destroy(naughty.notification_closed_reason.dismissed_by_user)
         end
