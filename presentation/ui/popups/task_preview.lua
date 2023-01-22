@@ -7,10 +7,10 @@ local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gmatrix = require("gears.matrix")
+local gshape = require("gears.shape")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
 local widgets = require("presentation.ui.widgets")
-local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local collectgarbage = collectgarbage
 local ipairs = ipairs
@@ -76,45 +76,44 @@ function task_preview:show(c, args)
         self._private.widget.y = args.coords.y
     end
 
-    if c:isvisible() then
-        c.task_preview_thumbnail = get_client_content_as_imagebox(c)
-    end
-
     local font_icon = beautiful.get_font_icon_for_app_name(c.class)
 
     local widget = wibox.widget
     {
-        widget = wibox.container.background,
-        shape = helpers.ui.rrect(beautiful.border_radius),
-        bg = beautiful.colors.background,
+        widget = wibox.container.constraint,
+        mode = "max",
+        width = dpi(300),
+        height = dpi(150),
         {
-            widget = wibox.container.margin,
-            margins = dpi(15),
+            widget = wibox.container.background,
+            bg = beautiful.colors.background,
             {
-                layout = wibox.layout.fixed.vertical,
-                spacing = dpi(10),
+                widget = wibox.container.margin,
+                margins = dpi(15),
                 {
-                    layout = wibox.layout.fixed.horizontal,
-                    spacing = dpi(20),
+                    layout = wibox.layout.fixed.vertical,
+                    spacing = dpi(15),
                     {
-                        widget = widgets.text,
-                        color = beautiful.random_accent_color(),
-                        font = font_icon.font,
-                        text = font_icon.icon,
+                        layout = wibox.layout.fixed.horizontal,
+                        spacing = dpi(10),
+                        {
+                            widget = widgets.text,
+                            halign = "center",
+                            valign ="center",
+                            color = beautiful.random_accent_color(),
+                            font = font_icon.font,
+                            text = font_icon.icon
+                        },
+                        {
+                            widget = widgets.text,
+                            forced_height = dpi(30),
+                            halign = "center",
+                            valign = "center",
+                            size = 15,
+                            text = c.name
+                        },
                     },
-                    {
-                        widget = wibox.widget.textbox,
-                        forced_width = dpi(120),
-                        forced_height = dpi(20),
-                        align = "center",
-                        text = c.name,
-                    },
-                },
-                {
-                    widget = wibox.container.background,
-                    forced_width = dpi(150),
-                    forced_height = dpi(100),
-                    c.task_preview_thumbnail,
+                    widgets.client_thumbnail(c)
                 }
             }
         }
@@ -153,6 +152,9 @@ local function new(args)
         visible = false,
         ontop = true,
         bg = "#00000000",
+        shape = function(cr, width, height)
+            gshape.infobubble(cr, width, height, nil, nil, dpi(27))
+        end,
         widget = wibox.container.background, -- A dummy widget to make awful.popup not scream
     }
 
