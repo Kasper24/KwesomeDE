@@ -77,12 +77,10 @@ function task_preview:show(c, args)
         self._private.widget.y = args.coords.y
     end
 
-
-    local preview = nil
-    if c.active then
-        preview = get_client_content_as_imagebox(c)
-    elseif c.prev_content then
-        preview = c.prev_content
+    for _, tag in ipairs(c:tags()) do
+        if tag.selected then
+            c.task_preview_thumbnail = get_client_content_as_imagebox(c)
+        end
     end
 
     local font_icon = beautiful.get_font_icon_for_app_name(c.class)
@@ -119,7 +117,7 @@ function task_preview:show(c, args)
                     widget = wibox.container.background,
                     forced_width = dpi(150),
                     forced_height = dpi(100),
-                    preview,
+                    c.task_preview_thumbnail,
                 }
             }
         }
@@ -160,24 +158,6 @@ local function new(args)
         bg = "#00000000",
         widget = wibox.container.background, -- A dummy widget to make awful.popup not scream
     }
-
-    capi.tag.connect_signal("property::selected", function(t)
-        -- Awesome switches up tags on startup really fast it seems, probably depends on what rules you have set
-        -- which can cause the c.content to not show the correct image
-        gtimer {
-            timeout = 0.1,
-            call_now  = false,
-            autostart = true,
-            single_shot = true,
-            callback = function()
-                if t.selected == true then
-                    for _, c in ipairs(t:clients()) do
-                        c.prev_content = get_client_content_as_imagebox(c)
-                    end
-                end
-            end
-        }
-    end)
 
     capi.client.connect_signal("property::fullscreen", function(c)
         if c.fullscreen then
