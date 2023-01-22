@@ -152,7 +152,7 @@ local function widget(self)
     {
         normal_bg = beautiful.colors.transparent,
         text_normal_bg = accent_color,
-        size = 30,
+        size = 40,
         font = beautiful.poweroff_icon.font,
         text = beautiful.poweroff_icon.icon,
         on_release = function()
@@ -164,7 +164,7 @@ local function widget(self)
     {
         normal_bg = beautiful.colors.transparent,
         text_normal_bg = accent_color,
-        size = 30,
+        size = 40,
         font = beautiful.reboot_icon.font,
         text = beautiful.reboot_icon.icon,
         on_release = function()
@@ -176,7 +176,7 @@ local function widget(self)
     {
         normal_bg = beautiful.colors.transparent,
         text_normal_bg = accent_color,
-        size = 30,
+        size = 40,
         font = beautiful.suspend_icon.font,
         text = beautiful.suspend_icon.icon,
         on_release = function()
@@ -188,7 +188,7 @@ local function widget(self)
     {
         normal_bg = beautiful.colors.transparent,
         text_normal_bg = accent_color,
-        size = 30,
+        size = 40,
         font = beautiful.exit_icon.font,
         text = beautiful.exit_icon.icon,
         on_release = function()
@@ -224,26 +224,21 @@ local function widget(self)
                         }
                     }
                 },
-                unlock_button
-            }
-        },
-        {
-            widget = wibox.container.margin,
-            margins = { bottom = dpi(30), right = dpi(30) },
-            {
-                widget = wibox.container.place,
-                halign = "right",
-                valign = "bottom",
+                unlock_button,
                 {
-                    layout = wibox.layout.fixed.horizontal,
-                    spacing = dpi(15),
-                    shutdown_button,
-                    restart_button,
-                    suspend_button,
-                    exit_button
+                    widget = wibox.container.place,
+                    halign = "center",
+                    {
+                        layout = wibox.layout.fixed.horizontal,
+                        spacing = dpi(15),
+                        shutdown_button,
+                        restart_button,
+                        suspend_button,
+                        exit_button
+                    }
                 }
             }
-        }
+        },
     }
 end
 
