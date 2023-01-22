@@ -419,29 +419,17 @@ local function new(args)
 
     update_markup(ret, false)
 
-    awful.mouse.append_client_mousebinding(awful.button(helpers.input.all_mods(), 1, function ()
+    capi.awesome.connect_signal("root::pressed", function()
         if args.always_on == false and ret.can_stop == true then
             ret:stop()
         end
-    end))
+    end)
 
-    awful.mouse.append_client_mousebinding(awful.button(helpers.input.all_mods(), 3, function ()
+    capi.awesome.connect_signal("client::pressed", function()
         if args.always_on == false and ret.can_stop == true then
             ret:stop()
         end
-    end))
-
-    awful.mouse.append_global_mousebinding(awful.button(helpers.input.all_mods(), 1, function ()
-        if args.always_on == false and ret.can_stop == true then
-            ret:stop()
-        end
-    end))
-
-    awful.mouse.append_global_mousebinding(awful.button(helpers.input.all_mods(), 3, function ()
-        if args.always_on == false and ret.can_stop == true then
-            ret:stop()
-        end
-    end))
+    end)
 
     capi.tag.connect_signal("property::selected", function()
         if args.always_on == false then

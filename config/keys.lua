@@ -20,6 +20,31 @@ local capi = { awesome = awesome, client = client }
 local keys = { mod = "Mod4", ctrl = "Control", shift = "Shift", alt = "Mod1" }
 
 -- =============================================================================
+-- An Access error is generated if some other client has issued a GrabKey with the
+-- same key combination on the same window. When using AnyModifier or AnyKey, the
+-- request fails completely (no grabs are established), and an Access error is
+-- generated if there is a conflicting grab for any combination.
+-- so instead I'm doing it once and emitting global signals
+-- =============================================================================
+awful.mouse.append_client_mousebindings {
+    awful.button({"Any"}, 1, function()
+        capi.awesome.emit_signal("client::pressed", 1)
+    end),
+    awful.button({"Any"}, 3, function()
+        capi.awesome.emit_signal("client::pressed", 3)
+    end)
+}
+
+awful.mouse.append_global_mousebindings {
+    awful.button({"Any"}, 1, function()
+        capi.awesome.emit_signal("root::pressed", 1)
+    end),
+    awful.button({"Any"}, 3, function()
+        capi.awesome.emit_signal("root::pressed", 3)
+    end)
+}
+
+-- =============================================================================
 --  Awesome
 -- =============================================================================
 awful.keyboard.append_global_keybindings
@@ -1000,15 +1025,8 @@ awful.keyboard.append_global_keybindings
 -- =============================================================================
 --  Root
 -- =============================================================================
-awful.mouse.append_global_mousebindings
-({
-    -- Right button
-    awful.button
-    {
-        modifiers = {  },
-        button = 3,
-        on_press = function()
-            main_menu:toggle()
-        end,
-    },
-})
+capi.awesome.connect_signal("root::pressed", function(button)
+    if button == 3 then
+        main_menu:toggle()
+    end
+end)

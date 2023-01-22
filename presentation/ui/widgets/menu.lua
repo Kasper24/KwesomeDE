@@ -14,7 +14,7 @@ local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 local ipairs = ipairs
-local capi = { awesome = awesome, mouse = mouse, tag = tag }
+local capi = { awesome = awesome, tag = tag, mouse = mouse }
 
 local menu = { mt = {} }
 
@@ -153,29 +153,18 @@ function menu.menu(widgets, width)
     }
 	gtable.crush(widget, menu, true)
 
-    awful.mouse.append_client_mousebinding(awful.button(helpers.input.all_mods(), 1, function (c)
-        if widget.can_hide == true then
-            widget:hide(true)
-        end
-    end))
 
-    awful.mouse.append_client_mousebinding(awful.button(helpers.input.all_mods(), 3, function (c)
+    capi.awesome.connect_signal("root::pressed", function()
         if widget.can_hide == true then
             widget:hide(true)
         end
-    end))
+    end)
 
-    awful.mouse.append_global_mousebinding(awful.button(helpers.input.all_mods(), 1, function (c)
+    capi.awesome.connect_signal("client::pressed", function()
         if widget.can_hide == true then
             widget:hide(true)
         end
-    end))
-
-    awful.mouse.append_global_mousebinding(awful.button(helpers.input.all_mods(), 3, function (c)
-        if widget.can_hide == true then
-            widget:hide(true)
-        end
-    end))
+    end)
 
     capi.tag.connect_signal("property::selected", function(t)
         widget:hide(true)
