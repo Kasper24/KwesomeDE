@@ -51,7 +51,6 @@ local function new(self, layout)
     local selection_button = nil
     local screen_button = nil
     local window_button = nil
-    local flameshot_button = nil
 
     selection_button = button
     (
@@ -62,7 +61,6 @@ local function new(self, layout)
             selection_button:turn_on()
             screen_button:turn_off()
             window_button:turn_off()
-            flameshot_button:turn_off()
         end,
         true
     )
@@ -76,7 +74,6 @@ local function new(self, layout)
             selection_button:turn_off()
             screen_button:turn_on()
             window_button:turn_off()
-            flameshot_button:turn_off()
         end
     )
 
@@ -89,20 +86,6 @@ local function new(self, layout)
             selection_button:turn_off()
             screen_button:turn_off()
             window_button:turn_on()
-            flameshot_button:turn_off()
-        end
-    )
-
-    flameshot_button = button
-    (
-        beautiful.flameshot_icon,
-        "Flameshot",
-        function()
-            screenshot_daemon:set_screenshot_method("flameshot")
-            selection_button:turn_off()
-            screen_button:turn_off()
-            window_button:turn_off()
-            flameshot_button:turn_on()
         end
     )
 
@@ -174,8 +157,7 @@ local function new(self, layout)
                 spacing = dpi(15),
                 selection_button,
                 screen_button,
-                window_button,
-                flameshot_button
+                window_button
             },
             screenshot_button
         }

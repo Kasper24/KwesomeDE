@@ -85,7 +85,7 @@ local function new()
         ruled.client.append_rule
         {
             rule = { name = "no-one-gonna-match-this1" },
-            properties = { floating = true, width = dpi(550), height = 1, placement = awful.placement.centered },
+            properties = { floating = true, width = dpi(420), height = 1, placement = awful.placement.centered },
             callback = function(c)
                 ret._private.client = c
 
@@ -120,14 +120,6 @@ local function new()
     end)
 
     screenshot_daemon:connect_signal("ended", function()
-        ret._private.client.hidden = false
-    end)
-
-    screenshot_daemon:connect_signal("error::create_file", function()
-        ret._private.client.hidden = false
-    end)
-
-    screenshot_daemon:connect_signal("error::create_directory", function()
         ret._private.client.hidden = false
     end)
 

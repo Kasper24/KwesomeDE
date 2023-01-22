@@ -8,7 +8,7 @@ local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local helpers = require("helpers")
-local os = os
+local capi = { client = client }
 
 local screenshot = { }
 local instance = nil
@@ -63,43 +63,32 @@ end
 function screenshot:screenshot()
     self:emit_signal("started")
 
+    local screenshot = awful.screenshot {
+        directory = self._private.folder,
+        auto_save_delay = self._private.delay,
+        interactive = self._private.screenshot_method == "selection"
+    }
+
+    screenshot:connect_signal("timer::timeout", function()
+        if self._private.screenshot_method == "screen" then
+            screenshot.screen = awful.screen.focused()
+        elseif self._private.screenshot_method == "window" then
+            screenshot.client = capi.client.focus
+        end
+    end)
+
+    screenshot:connect_signal("file::saved", function(_, file_path, method)
+        self:emit_signal("ended", self._private.folder, file_path)
+    end)
+
+    -- Small delay so the screenshot widget can hide itself
     gtimer {
-        timeout = self._private.delay,
+        timeout = 0.1,
         single_shot = true,
         autostart = true,
         call_now = false,
         callback = function()
-            helpers.filesystem.make_directory(self._private.folder, function(result)
-                if result == true then
-                    local file_name = os.date("%d-%m-%Y-%H:%M:%S") .. ".png"
-                    local command = self._private.show_cursor and "maim " or "maim -u "
-                    if self._private.screenshot_method == "selection" then
-                        command = command .. "-s " .. self._private.folder .. file_name
-                    elseif self._private.screenshot_method == "screen" then
-                        command = command .. " " .. self._private.folder .. file_name
-                    elseif self._private.screenshot_method == "window" then
-                        command = command .. " -i $(xdotool getactivewindow) " .. self._private.folder .. file_name
-                    elseif self._private.screenshot_method == "flameshot" then
-                        -- Sleep for 0.5 so the screnshot popup can hide itself before opening flameshot
-                        command = "sleep 0.5 && flameshot gui"
-                    end
-
-                    awful.spawn.easy_async_with_shell(command, function(stdout, stderr)
-                        if self._private.screenshot_method ~= "flameshot" then
-                            helpers.filesystem.is_file_readable(self._private.folder .. file_name, function(result)
-                                if result == true then
-                                    awful.spawn("xclip -selection clipboard -t image/png -i " .. self._private.folder .. file_name, false)
-                                    self:emit_signal("ended", self._private.screenshot_method, self._private.folder, file_name)
-                                else
-                                    self:emit_signal("error::create_file", stderr)
-                                end
-                            end)
-                        end
-                    end)
-                else
-                    self:emit_signal("error::create_directory")
-                end
-            end)
+            screenshot:refresh()
         end
     }
 end
@@ -110,10 +99,9 @@ local function new()
 
     ret._private = {}
     ret._private.screenshot_method = "selection"
-    ret._private.delay = helpers.settings:get_value("screenshot-delay") or 0
-    ret._private.show_cursor = helpers.settings:get_value("screenshot-show-cursor") or false
-    ret._private.folder = helpers.settings:get_value("screenshot-folder") or
-                                    "/home/" .. os.getenv("USER") .. "/Pictures/Screenshots/"
+    ret._private.delay = helpers.settings:get_value("screenshot-delay")
+    ret._private.show_cursor = helpers.settings:get_value("screenshot-show-cursor")
+    ret._private.folder = helpers.settings:get_value("screenshot-folder")
 
     return ret
 end
