@@ -9,6 +9,7 @@ local main_menu = require("presentation.ui.popups.main_menu")
 local power_popup = require("presentation.ui.popups.power")
 local app_launcher = require("presentation.ui.popups.app_launcher")
 local hotkeys_popup = require("presentation.ui.popups.hotkeys")
+local window_switcher = require("presentation.ui.popups.window_switcher")
 local playerctl_daemon = require("daemons.system.playerctl")
 local pactl_daemon = require("daemons.hardware.pactl")
 local brightness_daemon = require("daemons.system.brightness")
@@ -1007,7 +1008,7 @@ awful.keyboard.append_global_keybindings
         group = "ui",
         description = "window swicher",
         on_press = function()
-            capi.awesome.emit_signal("bling::window_switcher::turn_on", awful.screen.focused())
+            window_switcher:show()
         end,
     },
 
