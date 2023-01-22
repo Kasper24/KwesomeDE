@@ -134,7 +134,7 @@ yay/paru -S awesome-git
    ```sh
       pacman -Sy kitty networkmanager blueman pipewire pipewire-pulse lm_sensors inotify-tools
       redshift maim ffmpeg xdotool xclip upower brightnessctl playerctl fortune-mod flameshot
-      xfce4-settings imagemagick yad libgudev dconf-editor --needed
+      imagemagick yad libgudev dconf-editor --needed
    ```
    Assuming your **AUR Helper** is [yay](https://github.com/Jguer/yay) or [paru](https://github.com/Morganamilo/paru).
    ```sh
