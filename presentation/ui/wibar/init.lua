@@ -112,6 +112,7 @@ local function tag_list(s)
                     on_release = function(self, lx, ly, button, mods, find_widgets_result)
                         if button == 1 then
                             helpers.misc.tag_back_and_forth(tag.index)
+                            tag_preview:hide()
                         elseif button == 3 then
                             awful.tag.viewtoggle(tag)
                         elseif button == 4 then
@@ -331,6 +332,7 @@ local function client_task(favorites_layout, task_list, client)
             task_preview:hide()
         end,
         on_release = function()
+            task_preview:hide()
             menu:hide()
 
             if client.minimized == false then
