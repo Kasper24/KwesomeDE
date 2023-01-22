@@ -103,7 +103,12 @@ local function tag_list(s)
                     text_normal_bg = accent_color,
                     on_hover = function()
                         if #tag:clients() > 0 then
-                            tag_preview:show(tag, {wibox = awful.screen.focused().left_wibar, widget = self, offset = { x = 75, y = 10 }})
+                            tag_preview:show(tag,
+                            {
+                                wibox = awful.screen.focused().left_wibar,
+                                widget = self,
+                                offset = { x = 70, y = 70 }
+                            })
                         end
                     end,
                     on_leave = function()
@@ -326,7 +331,12 @@ local function client_task(favorites_layout, task_list, client)
         font = client.font_icon.font,
         text = client.font_icon.icon,
         on_hover = function(self)
-            task_preview:show(client, {wibox = awful.screen.focused().top_wibar, widget = self, offset = { y = 75}})
+            task_preview:show(client,
+            {
+                wibox = awful.screen.focused().top_wibar,
+                widget = self,
+                offset = { y = 75}
+            })
         end,
         on_leave = function()
             task_preview:hide()
