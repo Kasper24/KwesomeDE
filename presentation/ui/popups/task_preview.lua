@@ -3,21 +3,18 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 
-local cairo = require("lgi").cairo
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local gmatrix = require("gears.matrix")
-local gsurface = require("gears.surface")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
+local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local collectgarbage = collectgarbage
 local ipairs = ipairs
-local pcall = pcall
-local type = type
-local capi = { awesome = awesome, mouse = mouse, client = client, tag = tag }
+local capi = { client = client, tag = tag }
 
 local task_preview  = { }
 local instance = nil
@@ -42,6 +39,22 @@ local function get_widget_geometry(wibox, widget)
     return _get_widget_geometry(wibox._drawable._widget_hierarchy, widget)
 end
 
+local function get_client_content_as_imagebox(c)
+    local ss = awful.screenshot {
+        client = c,
+    }
+
+    ss:refresh()
+    local ib = ss.content_widget
+    ib.valign = "center"
+    ib.halign = "center"
+    ib.horizontal_fit_policy = "fit"
+    ib.vertical_fit_policy = "fit"
+    ib.resize = true
+
+    return ib
+end
+
 function task_preview:show(c, args)
     args = args or {}
 
@@ -63,99 +76,54 @@ function task_preview:show(c, args)
         self._private.widget.y = args.coords.y
     end
 
-    if not pcall(function()
-        return type(c.content)
-    end) then
-        return
-    end
 
-    local content = nil
+    local preview = nil
     if c.active then
-        content = gsurface(c.content)
+        preview = get_client_content_as_imagebox(c)
     elseif c.prev_content then
-        content = gsurface(c.prev_content)
+        preview = c.prev_content
     end
 
-    local img = nil
-    if content ~= nil then
-        local cr = cairo.Context(content)
-        local x, y, w, h = cr:clip_extents()
-        img = cairo.ImageSurface.create(cairo.Format.ARGB32, w - x, h - y)
-        cr = cairo.Context(img)
-        cr:set_source_surface(content, 0, 0)
-        cr.operator = cairo.Operator.SOURCE
-        cr:paint()
-    end
-
-    local widget = wibox.widget{
-        (self.widget_template or {
+    local widget = wibox.widget
+    {
+        widget = wibox.container.background,
+        shape = helpers.ui.rrect(beautiful.border_radius),
+        bg = beautiful.colors.background,
+        {
+            widget = wibox.container.margin,
+            margins = dpi(15),
             {
+                layout = wibox.layout.fixed.vertical,
+                spacing = dpi(10),
                 {
+                    layout = wibox.layout.fixed.horizontal,
+                    spacing = dpi(10),
                     {
-                        {
-                            id = "icon_role",
-                            resize = true,
-                            forced_height = dpi(20),
-                            forced_width = dpi(20),
-                            widget = wibox.widget.imagebox,
-                        },
-                        {
-                            {
-                                id = "name_role",
-                                align = "center",
-                                widget = wibox.widget.textbox,
-                            },
-                            left = dpi(4),
-                            right = dpi(4),
-                            widget = wibox.container.margin,
-                        },
-                        layout = wibox.layout.align.horizontal,
+                        widget = wibox.widget.imagebox,
+                        id = "icon_role",
+                        forced_height = dpi(20),
+                        forced_width = dpi(20),
+                        resize = true,
+                        image = c.icon,
                     },
                     {
-                        {
-                            {
-                                id = "image_role",
-                                resize = true,
-                                clip_shape = self.image_shape,
-                                widget = wibox.widget.imagebox,
-                            },
-                            valign = "center",
-                            halign = "center",
-                            widget = wibox.container.place,
-                        },
-                        top = self.margin * 0.25,
-                        widget = wibox.container.margin,
+                        widget = wibox.widget.textbox,
+                        forced_width = dpi(120),
+                        forced_height = dpi(20),
+                        id = "name_role",
+                        align = "center",
+                        text = c.name,
                     },
-                    fill_space = true,
-                    layout = wibox.layout.fixed.vertical,
                 },
-                margins = self.margin,
-                widget = wibox.container.margin,
-            },
-            bg = self.bg,
-            shape_border_width = self.border_width,
-            shape_border_color = self.border_color,
-            shape = self.shape,
-            widget = wibox.container.background,
-        }),
-        width = self.forced_width,
-        height = self.forced_height,
-        widget = wibox.container.constraint,
+                {
+                    widget = wibox.container.background,
+                    forced_width = dpi(150),
+                    forced_height = dpi(100),
+                    preview,
+                }
+            }
+        }
     }
-
-    -- TODO: have something like a create callback here?
-
-    for _, w in ipairs(widget:get_children_by_id("image_role")) do
-        w.image = img -- TODO: copy it with gsurface.xxx or something
-    end
-
-    for _, w in ipairs(widget:get_children_by_id("name_role")) do
-        w.text = c.name
-    end
-
-    for _, w in ipairs(widget:get_children_by_id("icon_role")) do
-        w.image = c.icon -- TODO: detect clienticon
-    end
 
     self._private.widget.widget = widget
     self._private.widget.visible = true
@@ -178,20 +146,6 @@ end
 local function new(args)
     args = args or {}
 
-    args.type = args.type or "dropdown_menu"
-    args.coords = args.coords or nil
-    args.placement = args.placement or nil
-    args.forced_width = args.forced_width or dpi(200)
-    args.forced_height = args.forced_height or dpi(200)
-    args.input_passthrough = args.input_passthrough or false
-
-    args.margin = args.margin or beautiful.task_preview_widget_margin or dpi(0)
-    args.shape = args.shape or beautiful.task_preview_widget_shape or nil
-    args.bg = args.bg or beautiful.task_preview_widget_bg or "#000000"
-    args.border_width = args.border_width or beautiful.task_preview_widget_border_width or nil
-    args.border_color = args.border_color or beautiful.task_preview_widget_border_color or "#ffffff"
-    args.image_shape = args.image_shape or beautiful.task_preview_image_shape or nil
-
     local ret = gobject{}
     ret._private = {}
 
@@ -200,11 +154,9 @@ local function new(args)
 
     ret._private.widget = awful.popup
     {
-        type = ret.type,
+        type = 'dropdown_menu',
         visible = false,
         ontop = true,
-        placement = ret.placement,
-        input_passthrough = ret.input_passthrough,
         bg = "#00000000",
         widget = wibox.container.background, -- A dummy widget to make awful.popup not scream
     }
@@ -220,7 +172,7 @@ local function new(args)
             callback = function()
                 if t.selected == true then
                     for _, c in ipairs(t:clients()) do
-                        c.prev_content = gsurface.duplicate_surface(c.content)
+                        c.prev_content = get_client_content_as_imagebox(c)
                     end
                 end
             end

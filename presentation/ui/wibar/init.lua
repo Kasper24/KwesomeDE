@@ -10,6 +10,7 @@ local action_panel = require("presentation.ui.panels.action")
 local info_panel = require("presentation.ui.panels.info")
 local message_panel = require("presentation.ui.panels.message")
 local app_launcher = require("presentation.ui.popups.app_launcher")
+local task_preview = require("presentation.ui.popups.task_preview")
 local beautiful = require("beautiful")
 local network_daemon = require("daemons.hardware.network")
 local bluetooth_daemon = require("daemons.hardware.bluetooth")
@@ -18,7 +19,6 @@ local upower_daemon = require("daemons.hardware.upower")
 local favorites_daemon = require("daemons.system.favorites")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
-local string = string
 local ipairs = ipairs
 local capi = { awesome = awesome, root = root, screen = screen, client = client }
 
@@ -324,6 +324,12 @@ local function client_task(favorites_layout, task_list, client)
         size = client.font_icon.size or 20,
         font = client.font_icon.font,
         text = client.font_icon.icon,
+        on_hover = function(self)
+            task_preview:show(client, {wibox = awful.screen.focused().top_wibar, widget = self, offset = { y = 75}})
+        end,
+        on_leave = function()
+            task_preview:hide()
+        end,
         on_release = function()
             menu:hide()
 
