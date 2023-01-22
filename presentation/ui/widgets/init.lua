@@ -9,6 +9,7 @@ return
     button = require(... .. ".button"),
     calendar = require(... .. ".calendar"),
     checkbox = require(... .. ".checkbox"),
+    client_thumbnail = require(... .. ".client_thumbnail"),
     container = require(... .. ".container"),
     dropdown = require(... .. ".dropdown"),
     graph = require(... .. ".graph"),
