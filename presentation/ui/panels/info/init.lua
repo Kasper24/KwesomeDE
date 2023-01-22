@@ -58,7 +58,9 @@ local function new()
                 attach = true
             })
         end,
-        shape = gshape.infobubble,
+        shape = function(cr, width, height)
+            gshape.infobubble(cr, width, height, nil, nil, dpi(360))
+        end,
         bg = beautiful.colors.background,
         widget =
         {
