@@ -10,6 +10,7 @@ local gtimer = require("gears.timer")
 local gmatrix = require("gears.matrix")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
+local widgets = require("presentation.ui.widgets")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local collectgarbage = collectgarbage
@@ -84,6 +85,8 @@ function task_preview:show(c, args)
         preview = c.prev_content
     end
 
+    local font_icon = beautiful.get_font_icon_for_app_name(c.class)
+
     local widget = wibox.widget
     {
         widget = wibox.container.background,
@@ -97,20 +100,17 @@ function task_preview:show(c, args)
                 spacing = dpi(10),
                 {
                     layout = wibox.layout.fixed.horizontal,
-                    spacing = dpi(10),
+                    spacing = dpi(20),
                     {
-                        widget = wibox.widget.imagebox,
-                        id = "icon_role",
-                        forced_height = dpi(20),
-                        forced_width = dpi(20),
-                        resize = true,
-                        image = c.icon,
+                        widget = widgets.text,
+                        color = beautiful.random_accent_color(),
+                        font = font_icon.font,
+                        text = font_icon.icon,
                     },
                     {
                         widget = wibox.widget.textbox,
                         forced_width = dpi(120),
                         forced_height = dpi(20),
-                        id = "name_role",
                         align = "center",
                         text = c.name,
                     },
