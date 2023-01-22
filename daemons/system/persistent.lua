@@ -119,7 +119,7 @@ local function save_clients(self)
     {
         "hidden", "minimized", "above", "ontop", "below", "fullscreen",
         "maximized", "maximized_horizontal", "maximized_vertical", "sticky",
-        "floating", "x", "y", "width", "height"
+        "floating", "x", "y", "width", "height", "class"
     }
 
     for _, client in ipairs(capi.client.get()) do
@@ -207,9 +207,20 @@ local function restore_clients(self, args)
     if args.create_clients == true then
         for pid, client in pairs(self.restored_settings.clients) do
             helpers.run._is_pid_running(pid, function(is_running)
-                local new_pid = awful.spawn(client.command, false)
-                self.restored_settings.clients[tostring(new_pid)] = self.restored_settings.clients[pid]
-                self.restored_settings.clients[pid] = nil
+                -- Checking only by PID won't be enough in a case
+                -- of a full restart
+                local found_client = false
+                for _, c in ipairs(capi.client.get()) do
+                    if client.class == c.class then
+                        found_client = true
+                    end
+                end
+
+                if is_running == false and found_client == false then
+                    local new_pid = awful.spawn(client.command, false)
+                    self.restored_settings.clients[tostring(new_pid)] = self.restored_settings.clients[pid]
+                    self.restored_settings.clients[pid] = nil
+                end
             end)
         end
 
@@ -277,7 +288,16 @@ function persistent:enable(args)
             args.create_clients = args.create_clients == nil and true or args.create_clients
         end
 
-        self:restore(args)
+        -- Wait for autostart programs, so we don't have 2 running instances of those
+        gtimer {
+            timeout = 3,
+            autostart = true,
+            call_now = false,
+            single_shot = true,
+            callback = function()
+                self:restore(args)
+            end,
+        }
     end)
 end
 
