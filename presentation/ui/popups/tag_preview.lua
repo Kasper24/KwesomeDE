@@ -41,6 +41,16 @@ local function get_widget_geometry(wibox, widget)
     return _get_widget_geometry(wibox._drawable._widget_hierarchy, widget)
 end
 
+local function save_tag_thumbnail(tag)
+    if tag.selected == true then
+        local screenshot = awful.screenshot {
+            screen = awful.screen.focused(),
+        }
+        screenshot:refresh()
+        tag.thumbnail = screenshot.surface
+    end
+end
+
 function tag_preview:show(t, args)
     args = args or {}
 
@@ -62,59 +72,25 @@ function tag_preview:show(t, args)
         self._private.widget.y = args.coords.y
     end
 
-    local geo = t.screen:get_bounding_geometry({
-        honor_padding = false,
-        honor_workarea = false,
-    })
-
-    local client_list = wibox.layout.manual()
-    client_list.forced_width = geo.width
-    client_list.forced_height = geo.height
-
-    for i, c in ipairs(t:clients()) do
-        if not c.hidden and not c.minimized then
-            local client_box = wibox.widget
-            {
-                widget = wibox.container.background,
-                forced_width = math.floor(c.width * 0.2),
-                forced_height = math.floor(c.height * 0.2),
-                bg = beautiful.colors.background,
-                -- border_width = dpi(2),
-                border_color = beautiful.colors.surface,
-                widgets.client_thumbnail(c),
-            }
-
-            client_box.point =
-            {
-                x = math.floor((c.x - geo.x) * 0.2) - (65 * 0.2),
-                y = math.floor((c.y - geo.y) * 0.2) - (65 * 0.2),
-            }
-
-            client_list:add(client_box)
-        end
-    end
+    save_tag_thumbnail(t)
 
     local widget = wibox.widget
     {
         widget = wibox.container.constraint,
         mode = "max",
-        width = (geo.width * 0.2) + dpi(15),
-        height = (geo.height * 0.2) + dpi(15),
+        width = dpi(300),
+        height = dpi(150),
         {
-            layout = wibox.layout.stack,
+            widget = wibox.container.background,
+            shape = helpers.ui.rrect(beautiful.border_radius),
+            border_width = dpi(5),
+            border_color = beautiful.colors.background,
             {
-                widget = wibox.container.background,
-                shape = helpers.ui.rrect(beautiful.border_radius),
-                border_width = dpi(5),
-                border_color = beautiful.colors.background,
-                {
-                    widget = wibox.widget.imagebox,
-                    image = theme_daemon:get_wallpaper(),
-                    horizontal_fit_policy = "fit",
-                    vertical_fit_policy = "fit",
-                }
-            },
-            client_list
+                widget = wibox.widget.imagebox,
+                image = t.thumbnail or theme_daemon:get_wallpaper(),
+                horizontal_fit_policy = "fit",
+                vertical_fit_policy = "fit",
+            }
         }
     }
 
@@ -164,6 +140,10 @@ local function new(args)
         if c.fullscreen then
             ret:hide()
         end
+    end)
+
+    capi.tag.connect_signal("property::selected", function(t)
+        save_tag_thumbnail(t)
     end)
 
     return ret
