@@ -122,7 +122,7 @@
     </key>
 
     <key name="screenshot-folder" type="s">
-      <default>"~/Pictures/Screenshot"</default>
+      <default>"~/"</default>
       <summary>Screenshot folder</summary>
       <description>
         Where to save the screenshots
@@ -155,7 +155,7 @@
     </key>
 
    <key name="record-folder" type="s">
-      <default>"~/Recording"</default>
+      <default>"~/"</default>
       <summary>Record format</summary>
       <description>
         The file format of the recording
