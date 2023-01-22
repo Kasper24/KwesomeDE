@@ -167,11 +167,11 @@ function tag_preview:hide()
     collectgarbage("collect")
 end
 
-function tag_preview:toggle(c, args)
+function tag_preview:toggle(t, args)
     if self._private.widget.visible == true then
         self:hide()
     else
-        self:show(c, args)
+        self:show(t, args)
     end
 end
 
