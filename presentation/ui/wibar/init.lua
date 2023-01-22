@@ -11,6 +11,7 @@ local info_panel = require("presentation.ui.panels.info")
 local message_panel = require("presentation.ui.panels.message")
 local app_launcher = require("presentation.ui.popups.app_launcher")
 local task_preview = require("presentation.ui.popups.task_preview")
+local tag_preview = require("presentation.ui.popups.tag_preview")
 local beautiful = require("beautiful")
 local network_daemon = require("daemons.hardware.network")
 local bluetooth_daemon = require("daemons.hardware.bluetooth")
@@ -102,12 +103,11 @@ local function tag_list(s)
                     text_normal_bg = accent_color,
                     on_hover = function()
                         if #tag:clients() > 0 then
-                            -- capi.awesome.emit_signal("bling::tag_preview::update", tag)
-                            -- capi.awesome.emit_signal("bling::tag_preview::visibility", s, true)
+                            tag_preview:show(tag, {wibox = awful.screen.focused().left_wibar, widget = self, offset = { x = 75, y = 10 }})
                         end
                     end,
                     on_leave = function()
-                        -- capi.awesome.emit_signal("bling::tag_preview::visibility", s, false)
+                        tag_preview:hide()
                     end,
                     on_release = function(self, lx, ly, button, mods, find_widgets_result)
                         if button == 1 then
