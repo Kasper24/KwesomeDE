@@ -6,7 +6,6 @@
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
-local gtimer = require("gears.timer")
 local gmatrix = require("gears.matrix")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
