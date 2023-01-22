@@ -319,6 +319,8 @@ local function generate_colorscheme(self, wallpaper, reset, light)
             self:emit_signal("wallpaper::selected", wallpaper)
 
             self._private.colors[wallpaper] = colors
+            local colorschemes_schema = helpers.settings.get_settings_schema("org.awesome.colorschemes")
+
             helpers.filesystem.save_file(
                 DATA_PATH,
                 helpers.json.encode(self._private.colors, { indent = true })
@@ -486,15 +488,9 @@ local function scan_for_wallpapers(self)
         local path = path:gsub("~", os.getenv("HOME"))
         helpers.filesystem.scan(path, function(result)
             for _index, wallpaper_path in pairs(result) do
-                local found = false
-                for _, image in ipairs(self._private.images) do
-                    if image == wallpaper_path then
-                        found = true
-                    end
-                end
-
+                local is_duplicate = helpers.table.contains(self._private.images, wallpaper_path)
                 local mimetype = Gio.content_type_guess(wallpaper_path)
-                if found == false and PICTURES_MIMETYPES[mimetype] ~= nil then
+                if is_duplicate == false and PICTURES_MIMETYPES[mimetype] ~= nil then
                     table.insert(self._private.images, wallpaper_path)
                 end
 
@@ -610,7 +606,8 @@ function theme:add_wallpapers_path()
                     end
                 end
 
-                table.insert(self._private.wallpapers_paths, line)
+                local new_wallpapers_paths = { table.unpack(self._private.wallpapers_paths), line }
+                self._private.wallpapers_paths = new_wallpapers_paths
                 helpers.settings:set_value("theme-wallpapers-paths", self._private.wallpapers_paths)
                 self:emit_signal("wallpapers_paths::added", line)
                 -----------
@@ -624,9 +621,12 @@ end
 function theme:remove_wallpapers_path(path)
     for index, value in ipairs(self._private.wallpapers_paths) do
         if value == path then
-            table.remove(self._private.wallpapers_paths, index)
+            local new_wallpapers_paths = { table.unpack(self._private.wallpapers_paths) }
+            table.remove(new_wallpapers_paths, index)
+            self._private.wallpapers_paths = new_wallpapers_paths
             helpers.settings:set_value("theme-wallpapers-paths", self._private.wallpapers_paths)
             self:emit_signal("wallpapers_paths::" .. path .. "::removed")
+
             watch_wallpaper_changes(self)
             scan_for_wallpapers(self)
             break
@@ -650,7 +650,8 @@ function theme:add_template()
                     return
                 end
 
-                table.insert(self._private.templates, line)
+                local new_templates = { table.unpack(self._private.templates), line }
+                self._private.templates = new_templates
                 helpers.settings:set_value("theme-templates", self._private.templates)
                 self:emit_signal("templates::added", line)
             end
@@ -661,8 +662,10 @@ end
 function theme:remove_template(template)
     for index, value in ipairs(self._private.templates) do
         if value == template then
-            table.remove(self._private.templates, index)
-            helpers.settings:set_value("theme-templates", self._private.templates)
+            local new_templates = { table.unpack(self._private.templates) }
+            table.remove(new_templates, index)
+            self._private.templates = new_templates
+            helpers.settings:set_value("theme-templates", new_templates)
             self:emit_signal("templates::" .. template .. "::removed")
             break
         end
