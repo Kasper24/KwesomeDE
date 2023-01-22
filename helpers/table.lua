@@ -53,7 +53,7 @@ function _table.dump(o, args)
 	end
 end
 
-function _table.table_contains(table, elem, strify)
+function _table.contains(table, elem, strify)
 	strify = strify or false
 	for _, val in pairs(table) do
 		if strify then
@@ -66,33 +66,33 @@ function _table.table_contains(table, elem, strify)
 	return false
 end
 
-function _table.table_contains_any(table, elems, strify)
+function _table.contains_any(table, elems, strify)
 	strify = strify or false
 	for _, elem in pairs(elems) do
-		if _table.table_contains(table, elem, strify) then
+		if _table.contains(table, elem, strify) then
 			return true
 		end
 	end
 	return false
 end
 
-function _table.table_contains_all(table, elems, strify)
+function _table.contains_all(table, elems, strify)
 	strify = strify or false
 	for _, elem in pairs(elems) do
-		if not _table.table_contains(table, elem, strify) then
+		if not _table.contains(table, elem, strify) then
 			return false
 		end
 	end
 	return true
 end
 
-function _table.table_contains_only(table, elems, strify)
+function _table.contains_only(table, elems, strify)
 	strify = strify or false
 	for _, val in pairs(table) do
     if strify then
 			val = tostring(val)
 		end
-		if not _table.table_contains(elems, val) then
+		if not _table.contains(elems, val) then
 			return false
 		end
 	end
