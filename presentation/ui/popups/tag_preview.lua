@@ -9,6 +9,7 @@ local gtable = require("gears.table")
 local gmatrix = require("gears.matrix")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
+local widgets = require("presentation.ui.widgets")
 local theme_daemon = require("daemons.system.theme")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
@@ -38,24 +39,6 @@ end
 
 local function get_widget_geometry(wibox, widget)
     return _get_widget_geometry(wibox._drawable._widget_hierarchy, widget)
-end
-
-local function get_client_content_as_imagebox(c)
-    local ss = awful.screenshot {
-        client = c,
-    }
-
-    ss:refresh()
-    local ib = ss.content_widget
-    ib.valign = "center"
-    ib.halign = "center"
-    ib.horizontal_fit_policy = "fit"
-    ib.vertical_fit_policy = "fit"
-    ib.resize = true
-    ib.forced_width = math.floor(c.width * 0.2)
-    ib.forced_height = math.floor(c.height * 0.2)
-
-    return ib
 end
 
 function tag_preview:show(t, args)
@@ -90,29 +73,15 @@ function tag_preview:show(t, args)
 
     for i, c in ipairs(t:clients()) do
         if not c.hidden and not c.minimized then
-            if c:isvisible() then
-                c.tag_preview_thumbnail = get_client_content_as_imagebox(c)
-            end
-
             local client_box = wibox.widget
             {
                 widget = wibox.container.background,
                 forced_width = math.floor(c.width * 0.2),
                 forced_height = math.floor(c.height * 0.2),
                 bg = beautiful.colors.background,
-                {
-                    widget = wibox.layout.align.vertical,
-                    expand = "outside",
-                    nil,
-                    {
-                        layout = wibox.layout.align.horizontal,
-                        expand = "outside",
-                        nil,
-                        c.tag_preview_thumbnail,
-                        nil,
-                    },
-                    nil,
-                },
+                -- border_width = dpi(2),
+                border_color = beautiful.colors.surface,
+                widgets.client_thumbnail(c),
             }
 
             client_box.point =
@@ -127,33 +96,25 @@ function tag_preview:show(t, args)
 
     local widget = wibox.widget
     {
-        widget = wibox.container.background,
-        shape = helpers.ui.rrect(beautiful.border_radius),
-        bg = beautiful.colors.background,
-        forced_width = (geo.width * 0.2) + dpi(15),
-        forced_height = (geo.height * 0.2) + dpi(15),
+        widget = wibox.container.constraint,
+        mode = "max",
+        width = (geo.width * 0.2) + dpi(15),
+        height = (geo.height * 0.2) + dpi(15),
         {
-            widget = wibox.container.margin,
-            margins = dpi(15),
+            layout = wibox.layout.stack,
             {
-                layout = wibox.layout.stack,
+                widget = wibox.container.background,
+                shape = helpers.ui.rrect(beautiful.border_radius),
+                border_width = dpi(5),
+                border_color = beautiful.colors.background,
                 {
                     widget = wibox.widget.imagebox,
                     image = theme_daemon:get_wallpaper(),
                     horizontal_fit_policy = "fit",
                     vertical_fit_policy = "fit",
-                },
-                {
-                    layout = wibox.layout.align.vertical,
-                    {
-                        layout = wibox.layout.align.horizontal,
-                        {
-                            widget = wibox.container.place,
-                            client_list,
-                        },
-                    },
-                },
-            }
+                }
+            },
+            client_list
         }
     }
 
