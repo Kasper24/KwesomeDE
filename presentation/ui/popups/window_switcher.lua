@@ -12,24 +12,10 @@ local widgets = require("presentation.ui.widgets")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local ipairs = ipairs
-local pairs = pairs
-local table = table
-local capi = { awesome = awesome, client = client, tag = tag }
+local capi = { client = client }
 
 local window_switcher  = { }
 local instance = nil
-
-local function focus_client(increase)
-    capi.client.focus = gtable.cycle_value(capi.client.get(), capi.client.focus, increase and 1 or -1)
-    capi.client.focus:raise()
-    capi.client.focus.minimized = false
-
-    if capi.client.focus:tags() and capi.client.focus:tags()[1] then
-        capi.client.focus:tags()[1]:view_only()
-    else
-        capi.client.focus:tags({awful.screen.focused().selected_tag})
-    end
-end
 
 local function focus_client(client)
     capi.client.focus = client
@@ -44,42 +30,88 @@ local function focus_client(client)
     end
 end
 
-local function cycle_clients(increase)
-    focus_client(gtable.cycle_value(capi.client.get(), capi.client.focus, increase and 1 or -1))
+local function cycle_clients(self, increase)
+    self._private.selected_index = self._private.selected_index + (increase and 1 or -1)
+
+    if self._private.selected_index > #capi.client.get() then
+        self._private.selected_index = 1
+    end
+    if self._private.selected_index < 1 then
+        self._private.selected_index = #capi.client.get()
+    end
+
+    focus_client(capi.client.get()[self._private.selected_index])
 end
 
-local function get_num_clients()
-    local minimized_clients_in_tag = 0
-    local matcher = function(c)
-        return awful.rules.match(
-            c,
-            {
-                minimized = true,
-                skip_taskbar = false,
-                hidden = false,
-                -- first_tag = awful.screen.focused().selected_tag,
-            }
-        )
-    end
-    for c in awful.client.iterate(matcher) do
-        minimized_clients_in_tag = minimized_clients_in_tag + 1
-    end
-    return minimized_clients_in_tag + #awful.screen.focused().clients
-end
-
-local function get_client_content_as_surface(c)
-    local screenshot = awful.screenshot {
+local function get_client_content_as_imagebox(c)
+    local ss = awful.screenshot {
         client = c,
     }
 
-    screenshot:refresh()
+    ss:refresh()
+    local ib = ss.content_widget
+    ib.valign = "center"
+    ib.halign = "center"
+    ib.horizontal_fit_policy = "fit"
+    ib.vertical_fit_policy = "fit"
+    ib.resize = true
 
-    return screenshot.surface
+    return ib
+end
+
+local function client_button(client)
+    local font_icon = beautiful.get_font_icon_for_app_name(client.class)
+
+    for _, tag in ipairs(client:tags()) do
+        if tag.selected then
+            client.window_switcher_thumbnail = get_client_content_as_imagebox(client)
+        end
+    end
+
+    return wibox.widget
+    {
+        widget = wibox.container.background,
+        id = "bg_role",
+        forced_width = dpi(150),
+        forced_height = dpi(250),
+        {
+            layout = wibox.layout.flex.vertical,
+            {
+                widget = wibox.container.margin,
+                margins = dpi(5),
+                client.window_switcher_thumbnail
+            },
+            {
+                layout = wibox.layout.fixed.horizontal,
+                spacing = dpi(5),
+                {
+                    widget = wibox.container.place,
+                    forced_width = dpi(40),
+                    valign = "center",
+                    {
+                        widget = widgets.text,
+                        color = beautiful.random_accent_color(),
+                        font = font_icon.font,
+                        text = font_icon.icon
+                    }
+                },
+                {
+                    widget = wibox.container.margin,
+                    margins = dpi(10),
+                    {
+                        widget = wibox.widget.textbox,
+                        forced_width = dpi(200),
+                        valign = "center",
+                        text = client.name
+                    }
+                }
+            }
+        }
+    }
 end
 
 function window_switcher:show()
-    local number_of_clients = get_num_clients()
-    if number_of_clients == 0 then
+    if #capi.client.get() == 0 then
         return
     end
 
@@ -91,19 +123,6 @@ function window_switcher:show()
 
     -- Go to previously focused client (in the tag)
     awful.client.focus.history.previous()
-
-    -- Track minimized clients
-    -- Unminimize them
-    -- Lower them so that they are always below other
-    -- originally unminimized windows
-    local clients = awful.screen.focused().selected_tag:clients()
-    for _, c in pairs(clients) do
-        if c.minimized then
-            table.insert(self._private.window_switcher_minimized_clients, c)
-            c.minimized = false
-            c:lower()
-        end
-    end
 
     -- Start the keygrabber
     self._private.window_switcher_grabber = awful.keygrabber.run(function(_, key, event)
@@ -124,6 +143,12 @@ function window_switcher:show()
         end
     end)
 
+    local layout = wibox.layout.fixed.horizontal()
+
+    for _, client in ipairs(capi.client.get()) do
+        layout:add(client_button(client))
+    end
+
     local widget = wibox.widget
     {
         widget = wibox.container.background,
@@ -132,77 +157,7 @@ function window_switcher:show()
         {
             widget = wibox.container.margin,
             margins = dpi(10),
-            awful.widget.tasklist
-            {
-                screen = awful.screen.focused(),
-                filter = awful.widget.tasklist.filter.allscreen,
-                buttons = self._private.mouse_keys,
-                style = {
-                    font = beautiful.font,
-                    fg_normal = beautiful.colors.surface,
-                    fg_focus = beautiful.colors.on_background,
-                },
-                layout = {
-                    layout = wibox.layout.flex.horizontal,
-                    spacing = dpi(20),
-                },
-                widget_template = {
-                    widget = wibox.container.background,
-                    id = "bg_role",
-                    forced_width = dpi(150),
-                    forced_height = dpi(250),
-                    create_callback = function(self, c, _, __)
-                        local font_icon = beautiful.get_font_icon_for_app_name(c.class)
-                        self:get_children_by_id("font_icon")[1]:set_font(font_icon.font)
-                        self:get_children_by_id("font_icon")[1]:set_text(font_icon.icon)
-
-                        for _, tag in ipairs(c:tags()) do
-                            if tag.selected then
-                                c.window_switcher_thumbnail = get_client_content_as_surface(c)
-                            end
-                        end
-
-                        self:get_children_by_id("preview")[1].image = c.window_switcher_thumbnail
-                    end,
-                    {
-                        layout = wibox.layout.flex.vertical,
-                        {
-                            widget = wibox.container.margin,
-                            margins = dpi(5),
-                            {
-                                widget = wibox.widget.imagebox,
-                                id = "preview",
-                                horizontal_fit_policy = "fit",
-                                vertical_fit_policy = "fit",
-                            },
-                        },
-                        {
-                            layout = wibox.layout.fixed.horizontal,
-                            spacing = dpi(5),
-                            {
-                                widget = wibox.container.place,
-                                forced_width = dpi(40),
-                                valign = "center",
-                                {
-                                    widget = widgets.text,
-                                    id = "font_icon",
-                                    color = beautiful.random_accent_color(),
-                                },
-                            },
-                            {
-                                widget = wibox.container.margin,
-                                margins = dpi(10),
-                                {
-                                    widget = wibox.widget.textbox,
-                                    id = "text_role",
-                                    forced_width = dpi(200),
-                                    valign = "center",
-                                },
-                            },
-                        },
-                    },
-                },
-            }
+            layout
         }
     }
 
@@ -225,19 +180,10 @@ function window_switcher:hide()
         end
     end
 
-    -- Minimize originally minimized clients
-    local s = awful.screen.focused()
-    for _, c in pairs(self._private.window_switcher_minimized_clients) do
-        if c and c.valid and not (capi.client.focus and capi.client.focus == c) then
-            c.minimized = true
-        end
-    end
-    -- Reset helper table
-    self._private.window_switcher_minimized_clients = {}
-
     -- Resume recording focus history
     awful.client.focus.history.enable_tracking()
-    -- Stop and hide window_switcher
+
+    -- Stop the key grabber
     awful.keygrabber.stop(self._private.window_switcher_grabber)
 
     -- Hide the widget
@@ -263,10 +209,11 @@ local function new(args)
 
     -- The client that was focused when the window_switcher was activated
     ret._private.window_switcher_first_client = {}
-    -- The clients that were minimized when the window switcher was activated
-    ret._private.window_switcher_minimized_clients = {}
     -- The mouse grabber object
     ret._private.window_switcher_grabber = nil
+
+    ret._private.selected_index = 1
+
 
     gtable.crush(ret, window_switcher)
     gtable.crush(ret, args)
@@ -329,15 +276,18 @@ local function new(args)
         end,
 
         ["Tab"] = function()
-            capi.client.focus = gtable.cycle_value(capi.client.get(), capi.client.focus, 1)
-            capi.client.focus:raise()
-            capi.client.focus.minimized = false
+            cycle_clients(ret, true)
 
-            if capi.client.focus:tags() and capi.client.focus:tags()[1] then
-                capi.client.focus:tags()[1]:view_only()
-            else
-                capi.client.focus:tags({awful.screen.focused().selected_tag})
-            end
+            -- capi.client.focus = gtable.cycle_value(capi.client.get(), capi.client.focus, 1)
+            -- capi.client.focus:raise()
+            -- capi.client.focus.minimized = false
+            -- capi.client.focus:tags()[1]:view_only()
+
+            -- if capi.client.focus:tags() and capi.client.focus:tags()[1] then
+            --     capi.client.focus:tags()[1]:view_only()
+            -- else
+            --     capi.client.focus:tags({awful.screen.focused().selected_tag})
+            -- end
         end,
 
         ["Left"] = function()
