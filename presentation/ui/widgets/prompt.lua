@@ -385,7 +385,7 @@ local function new(args)
     args.icon = args.icon or nil
     args.font = args.font or beautiful.prompt_font or beautiful.font
     args.prompt = args.prompt or ""
-    args.text = tostring(args.text) or ""
+    args.text = tostring(args.text or "")
 
     args.icon_color = args.icon_color or beautiful.colors.on_background or "#FFFFFF"
     args.prompt_color = args.prompt_color or beautiful.colors.on_background or "#FFFFFF"
