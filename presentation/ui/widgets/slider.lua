@@ -421,7 +421,7 @@ function slider:draw(_, cr, width, height)
     local margins = self._private.bar_margins
         or beautiful.slider_bar_margins
 
-    local x_offset, right_margin, y_offset = 0, 0
+    local x_offset, right_margin, y_offset = 0, 0, 0
 
     if margins then
         if type(margins) == "number" then

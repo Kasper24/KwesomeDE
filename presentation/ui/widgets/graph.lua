@@ -914,7 +914,7 @@ end
 -- @tparam[opt=NaN] number value The value to be added to a graph's data group.
 -- @tparam[opt=1] integer group The index of the data group.
 function graph:add_value(value, group)
-    value = value or 0/0 -- default to NaN
+    value = value or (0/0) -- default to NaN
     group = group or 1
 
     local values = self._private.values

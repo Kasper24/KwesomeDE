@@ -7,6 +7,8 @@ local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
+local bling = require("external.bling")
+local tabbed = bling.module.tabbed
 local helpers = require("helpers")
 local tostring = tostring
 local string = string
@@ -126,8 +128,10 @@ local function save_clients(self)
 
         -- Has to be blocking!
         local handle = io.popen(string.format("ps -p %d -o args=", client.pid))
-        self.settings.clients[pid].command = handle:read("*a"):gsub('^%s*(.-)%s*$', '%1')
-        handle:close()
+        if handle ~= nil then
+            self.settings.clients[pid].command = handle:read("*a"):gsub('^%s*(.-)%s*$', '%1')
+            handle:close()
+        end
 
         -- Properties
         for _, property in ipairs(properties) do
