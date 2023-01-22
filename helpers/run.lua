@@ -42,6 +42,13 @@ function _run.check_if_running(command, running_callback, not_running_callback)
     end)
 end
 
+function _run._is_pid_running(pid, callback)
+    awful.spawn.easy_async_with_shell(string.format("ps -o pid= -p %s", pid), function(stdout)
+        -- If empty, program is not running
+        callback(stdout ~= "")
+    end)
+end
+
 local AWESOME_SENSIBLE_TERMINAL_PATH =
      debug.getinfo(1).source:match("@?(.*/)").."../external/awesome-sensible-terminal"
 

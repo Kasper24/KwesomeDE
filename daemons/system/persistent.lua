@@ -206,12 +206,10 @@ local function restore_clients(self, args)
 
     if args.create_clients == true then
         for pid, client in pairs(self.restored_settings.clients) do
-            awful.spawn.easy_async_with_shell(string.format("ps aux | grep '%s' | grep -v 'grep'", client.command), function(stdout)
-                if stdout == "" or stdout == nil then
-                    local new_pid = awful.spawn(client.command, false)
-                    self.restored_settings.clients[tostring(new_pid)] = self.restored_settings.clients[pid]
-                    self.restored_settings.clients[pid] = nil
-                end
+            helpers.run._is_pid_running(pid, function(is_running)
+                local new_pid = awful.spawn(client.command, false)
+                self.restored_settings.clients[tostring(new_pid)] = self.restored_settings.clients[pid]
+                self.restored_settings.clients[pid] = nil
             end)
         end
 
