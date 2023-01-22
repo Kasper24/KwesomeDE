@@ -76,10 +76,8 @@ function task_preview:show(c, args)
         self._private.widget.y = args.coords.y
     end
 
-    for _, tag in ipairs(c:tags()) do
-        if tag.selected then
-            c.task_preview_thumbnail = get_client_content_as_imagebox(c)
-        end
+    if c:isvisible() then
+        c.task_preview_thumbnail = get_client_content_as_imagebox(c)
     end
 
     local font_icon = beautiful.get_font_icon_for_app_name(c.class)

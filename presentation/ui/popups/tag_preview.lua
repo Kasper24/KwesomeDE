@@ -90,7 +90,7 @@ function tag_preview:show(t, args)
 
     for i, c in ipairs(t:clients()) do
         if not c.hidden and not c.minimized then
-            if t.selected then
+            if c:isvisible() then
                 c.tag_preview_thumbnail = get_client_content_as_imagebox(c)
             end
 
