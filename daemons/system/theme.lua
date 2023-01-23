@@ -274,7 +274,6 @@ local function generate_colorscheme(self, wallpaper, reset, light)
             self:emit_signal("wallpaper::selected", wallpaper)
 
             self._private.colors[wallpaper] = colors
-            local colorschemes_schema = helpers.settings.get_settings_schema("org.awesome.colorschemes")
 
             helpers.filesystem.save_file(
                 DATA_PATH,
