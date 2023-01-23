@@ -1,3 +1,5 @@
+copy_to=~/.config/vivaldi/vivaldi-theme.json
+
 {{
     "name": "VivThemer",
     "colors":

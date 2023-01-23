@@ -6,6 +6,7 @@
  */
 
 copy_to=~/.config/discocss/custom.css
+copy_to=~/.config/BetterDiscord/themes/wpgtk_discord.theme.css
 
 :root {{
     /* Color palette */
