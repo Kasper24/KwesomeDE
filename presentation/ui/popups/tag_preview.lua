@@ -9,13 +9,11 @@ local gtable = require("gears.table")
 local gmatrix = require("gears.matrix")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
-local widgets = require("presentation.ui.widgets")
 local theme_daemon = require("daemons.system.theme")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local collectgarbage = collectgarbage
 local ipairs = ipairs
-local math = math
 local capi = { client = client, tag = tag }
 
 local tag_preview  = { }
