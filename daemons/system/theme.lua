@@ -24,6 +24,8 @@ local instance = nil
 
 local DATA_PATH = helpers.filesystem.get_cache_dir("colorschemes") .. "data.json"
 local WALLPAPERS_PATH = helpers.filesystem.get_awesome_config_dir("presentation/assets/wallpapers")
+local GTK_THEME_PATH = helpers.filesystem.get_awesome_config_dir("config/FlatColor")
+local INSTALLED_GTK_THEME_PATH = os.getenv("HOME") .. "/.local/share/themes/"
 local BASE_TEMPLATES_PATH = helpers.filesystem.get_awesome_config_dir("config/templates")
 local BACKGROUND_PATH = helpers.filesystem.get_cache_dir("wallpaper")
 local GENERATED_TEMPLATES_PATH = helpers.filesystem.get_cache_dir("templates")
@@ -76,7 +78,9 @@ local function generate_sequences(colors)
     table.insert(sequences, set_special(708, colors[1], 0))
 
     local string = table.concat(sequences)
+    -- Backwards compatibility with wal/wpgtk
     helpers.filesystem.save_file(WAL_CACHE_PATH .. "sequences", string)
+    helpers.filesystem.save_file(GENERATED_TEMPLATES_PATH .. "sequences", string)
 
     for index = 0, 9 do
         helpers.filesystem.save_file("/dev/pts/" .. index, string)
@@ -176,10 +180,23 @@ local function generate_templates(self)
                         end
                     end
 
-                    local name = template_path:sub(helpers.string.find_last(template_path, "/") + 1, #template_path)
-                    local path = GENERATED_TEMPLATES_PATH .. name:gsub(".base", "") .. ""
+                    -- Store the output as a string
                     local output = table.concat(lines, "\n")
-                    helpers.filesystem.save_file(path, output)
+
+                    -- Get the name of the file
+                    local name = template_path:sub(
+                        helpers.string.find_last(template_path, "/") + 1,
+                        #template_path
+                    )
+                    name = name:gsub(".base", "")
+
+                    -- Backwards compatibility with wal/wpgtk
+                    helpers.filesystem.save_file(WAL_CACHE_PATH .. name, output)
+
+                    -- Save to ~/.cache/awesome/templates
+                    helpers.filesystem.save_file(GENERATED_TEMPLATES_PATH .. name, output)
+
+                    -- Save to addiontal location specified in the template file
                     if copy_to ~= nil then
                         copy_to = copy_to:gsub("~", os.getenv("HOME"))
                         helpers.filesystem.save_file(copy_to, output)
@@ -192,6 +209,11 @@ local function generate_templates(self)
             end
         end
     end, true)
+end
+
+local function install_gtk_theme()
+    print(string.format("cp -r %s %s", GTK_THEME_PATH, INSTALLED_GTK_THEME_PATH))
+    awful.spawn(string.format("cp -r %s %s", GTK_THEME_PATH, INSTALLED_GTK_THEME_PATH))
 end
 
 local function generate_colorscheme(self, wallpaper, reset, light)
@@ -492,6 +514,7 @@ end
 function theme:set_colorscheme()
     self._private.colorscheme = self._private.colors[self._private.selected_wallpaper]
     helpers.settings:set_value("theme-colorscheme", self._private.colorscheme)
+    install_gtk_theme()
     generate_templates(self)
     generate_sequences(self._private.colorscheme)
 end
