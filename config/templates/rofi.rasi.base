@@ -1,3 +1,5 @@
+copy_to=~/.config/rofi/styles/colors.rasi
+
 * {{
     al-colorful:  #00000000;
     bg-colorful:  {color0};

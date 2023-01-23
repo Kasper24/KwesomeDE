@@ -1,3 +1,5 @@
+copy_to=/usr/share/start-page/styles.css
+
 [General]
 
 Background="Backgrounds/wpgtk.png"

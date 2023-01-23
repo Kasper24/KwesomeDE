@@ -1,3 +1,5 @@
+copy_to=~/.config/spicetify/Themes/SpicetifyDefault/color.ini
+
 ;COLORS KEYS DESCRIPTION
 ; text               = Main text, playlist names in main field, name of playlist selected in sidebar, headings
 ; subtext            = Text in main buttons in sidebar, playlist names in sidebar, artist names, and mini infos
