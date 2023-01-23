@@ -422,6 +422,8 @@ local function wip_tab()
     return wibox.widget
     {
         widget = wibox.container.place,
+        forced_width = dpi(500),
+        forced_height = dpi(500),
         halign = "center",
         valign = "center",
         {
@@ -429,13 +431,17 @@ local function wip_tab()
             spacing = dpi(30),
             {
                 widget = widgets.text,
-                size = 80,
+                halign = "center",
+                valign = "center",
+                size = 120,
                 color = beautiful.random_accent_color(),
                 font = beautiful.icons.hammer.font,
                 text = beautiful.icons.hammer.icon,
             },
             {
                 widget = widgets.text,
+                halign = "center",
+                valign = "center",
                 size = 50,
                 text = "WIP",
             }
