@@ -476,7 +476,7 @@ end
 local function machi()
     theme.machi_editor_border_color = theme.border_color_active
     theme.machi_editor_border_opacity = 0.75
-    theme.machi_editor_active_color = helpers.color.darken(theme.colors.background, 20)
+    theme.machi_editor_active_color = theme.colors.background
     theme.machi_editor_active_opacity = 0.5
     theme.machi_editor_open_color = theme.colors.background
     theme.machi_editor_open_opacity = 0.5
@@ -487,7 +487,7 @@ local function machi()
     theme.machi_switcher_fill_opacity = 0.5
     theme.machi_switcher_box_bg = theme.colors.background
     theme.machi_switcher_box_opacity = 0.85
-    theme.machi_switcher_fill_color_hl = helpers.color.darken(theme.colors.background, 20)
+    theme.machi_switcher_fill_color_hl = theme.colors.background
     theme.machi_switcher_fill_hl_opacity = 1
 
     theme.layout_machi = gcolor.recolor_image(require("external.layout-machi").get_icon(), theme.colors.on_background)
