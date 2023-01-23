@@ -23,7 +23,7 @@ local capi = { awesome = awesome, screen = screen, client = client }
 local theme = { }
 local instance = nil
 
-local DATA_PATH = helpers.filesystem.get_cache_dir("colorschemes") .. "data.json"
+local COLORSCHEME_DATA_PATH = helpers.filesystem.get_cache_dir("colorschemes") .. "data.json"
 local WALLPAPERS_PATH = helpers.filesystem.get_awesome_config_dir("presentation/assets/wallpapers")
 local GTK_THEME_PATH = helpers.filesystem.get_awesome_config_dir("config/FlatColor")
 local INSTALLED_GTK_THEME_PATH = os.getenv("HOME") .. "/.local/share/themes/"
@@ -295,7 +295,7 @@ local function generate_colorscheme(self, wallpaper, reset, light)
             self._private.colors[wallpaper] = colors
 
             helpers.filesystem.save_file(
-                DATA_PATH,
+                COLORSCHEME_DATA_PATH,
                 helpers.json.encode(self._private.colors, { indent = true })
             )
         end)
@@ -523,7 +523,7 @@ end
 
 function theme:save_colorscheme()
     helpers.filesystem.save_file(
-        DATA_PATH,
+        COLORSCHEME_DATA_PATH,
         helpers.json.encode(self._private.colors, { indent = true })
     )
 end
@@ -587,7 +587,7 @@ local function new()
     ret._private.wallpapers_watchers = {}
     ret._private.colors = {}
 
-    helpers.filesystem.read_file(DATA_PATH, function(content)
+    helpers.filesystem.read_file(COLORSCHEME_DATA_PATH, function(content)
         if content == nil then
             return
         end
