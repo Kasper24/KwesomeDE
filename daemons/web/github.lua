@@ -13,7 +13,7 @@ local ipairs = ipairs
 local github = { }
 local instance = nil
 
-local UPDATE_INTERVAL = 60 * 60 * 1 -- 1 hour
+local UPDATE_INTERVAL = 60 * 3 -- 5 mins
 local PATH = helpers.filesystem.get_cache_dir("github")
 
 function github:set_username(username)
