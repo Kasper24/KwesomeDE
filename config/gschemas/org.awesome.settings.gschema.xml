@@ -1,7 +1,7 @@
 <schemalist>
   <schema id="org.awesome.settings" path="/org/awesome/settings/">
     <key name="theme-colorscheme" type="as">
-      <default>["#110104","#DF712D","#B88836","#F98B35","#FCA33E","#DE9E43","#FEB449","#f7e09d","#40040f","#ff9b5d","#f0b146","#ffbd8a","#ffcf99","#ffc879","#ffdcaa","#fbefcb"]</default>
+      <default>['#0c0606', '#BB303B', '#EA1416', '#97635D', '#62857E', '#D99666', '#CD5697', '#e1d0c8', '#2d1717', '#f43e4c', '#ff4b4d', '#d2756b', '#67c5b3', '#fac8a4', '#f586c2', '#f3ece8']</default>
       <summary>Theme Colorscheme</summary>
       <description>
         The current colorscheme
