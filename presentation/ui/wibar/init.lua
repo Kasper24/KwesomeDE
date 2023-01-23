@@ -107,7 +107,7 @@ local function tag_list(s)
                             {
                                 wibox = awful.screen.focused().left_wibar,
                                 widget = self,
-                                offset = { x = 70, y = 70 }
+                                offset = { x = dpi(70), y = dpi(70) }
                             })
                         end
                     end,
@@ -297,7 +297,7 @@ local function favorite(layout, client, class)
             menu:toggle{
                 wibox = awful.screen.focused().top_wibar,
                 widget = self,
-                offset = { y = 100 },
+                offset = { y = dpi(70) },
             }
         end
     }
@@ -335,7 +335,7 @@ local function client_task(favorites_layout, task_list, client)
             {
                 wibox = awful.screen.focused().top_wibar,
                 widget = self,
-                offset = { y = 75}
+                offset = { y = dpi(70) }
             })
         end,
         on_leave = function()
@@ -365,7 +365,7 @@ local function client_task(favorites_layout, task_list, client)
             menu:toggle{
                 wibox = awful.screen.focused().top_wibar,
                 widget = self,
-                offset = { y = 100 },
+                offset = { y = dpi(70) },
             }
         end
     }
