@@ -27,7 +27,7 @@ local WALLPAPERS_PATH = helpers.filesystem.get_awesome_config_dir("presentation/
 local GTK_THEME_PATH = helpers.filesystem.get_awesome_config_dir("config/FlatColor")
 local INSTALLED_GTK_THEME_PATH = os.getenv("HOME") .. "/.local/share/themes/"
 local BASE_TEMPLATES_PATH = helpers.filesystem.get_awesome_config_dir("config/templates")
-local BACKGROUND_PATH = helpers.filesystem.get_cache_dir("wallpaper")
+local BACKGROUND_PATH = helpers.filesystem.get_cache_dir("") .. "wallpaper"
 local GENERATED_TEMPLATES_PATH = helpers.filesystem.get_cache_dir("templates")
 local WAL_CACHE_PATH =  helpers.filesystem.get_xdg_cache_home("wal")
 
@@ -490,7 +490,7 @@ function theme:set_wallpaper(type)
         self:save_colorscheme()
         self._private.wallpaper = self._private.selected_wallpaper
         helpers.settings:set_value("theme-wallpaper", self._private.wallpaper)
-        awful.spawn.with_shell("ln -sf " .. self._private.wallpaper .. " " .. BACKGROUND_PATH)
+        awful.spawn.with_shell(string.format("cp %s %s", self._private.wallpaper, BACKGROUND_PATH))
     elseif type == "tiled" then
     elseif type == "color" then
         self._private.color = self._private.selected_color
