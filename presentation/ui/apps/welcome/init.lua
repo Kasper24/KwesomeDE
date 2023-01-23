@@ -30,7 +30,7 @@ local window = [[ lua -e "
     -- Create top level window with some properties and connect its 'destroy'
     -- signal to the event loop termination.
     local window = Gtk.Window {
-    title = 'no-one-gonna-match-this3',
+    title = 'Welcome',
     default_width = 0,
     default_height = 0,
     on_destroy = Gtk.main_quit
@@ -48,7 +48,7 @@ local window = [[ lua -e "
     pixbuf96 = Gtk.IconTheme.get_default():load_icon(icon, 96, 0)
     window:set_icon_list({pixbuf24, pixbuf32, pixbuf48, pixbuf64, pixbuf96});
 
-    window:set_wmclass('Welcome', 'Welcome')
+    window:set_wmclass('awesome-app-welcome', 'awesome-app-welcome')
 
     -- Show window and start the loop.
     window:show_all()
@@ -59,7 +59,7 @@ local window = [[ lua -e "
 local accent_color = beautiful.random_accent_color()
 
 function welcome:show()
-    helpers.client.run_or_raise({class = "Welcome"}, false, window, { switchtotag = true })
+    helpers.client.run_or_raise({class = "awesome-app-welcome"}, false, window, { switchtotag = true })
     self._private.visible = true
 end
 
@@ -1130,7 +1130,7 @@ local function new()
     ruled.client.connect_signal("request::rules", function()
         ruled.client.append_rule
         {
-            rule = { name = "no-one-gonna-match-this3" },
+            rule = { class = "awesome-app-welcome" },
             properties = { floating = true, width = dpi(550), height = 1, placement = awful.placement.centered },
             callback = function(c)
                 ret._private.client = c

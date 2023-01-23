@@ -24,7 +24,7 @@ local window = [[ lua -e "
     -- Create top level window with some properties and connect its 'destroy'
     -- signal to the event loop termination.
     local window = Gtk.Window {
-    title = 'no-one-gonna-match-this4',
+    title = 'Theme Manager',
     default_width = 0,
     default_height = 0,
     on_destroy = Gtk.main_quit
@@ -42,7 +42,7 @@ local window = [[ lua -e "
     -- pixbuf96 = Gtk.IconTheme.get_default():load_icon(icon, 96, 0)
     -- window:set_icon_list({pixbuf24, pixbuf32, pixbuf48, pixbuf64, pixbuf96});
 
-    window:set_wmclass('Theme', 'Theme')
+    window:set_wmclass('awesome-app-theme-manager', 'awesome-app-theme-manager')
 
     -- Show window and start the loop.
     window:show_all()
@@ -51,7 +51,7 @@ local window = [[ lua -e "
 ]]
 
 function theme:show()
-    helpers.client.run_or_raise({class = "Theme"}, false, window, { switchtotag = true })
+    helpers.client.run_or_raise({class = "awesome-app-theme-manager"}, false, window, { switchtotag = true })
     self._private.visible = true
 end
 
@@ -85,7 +85,7 @@ local function new()
     ruled.client.connect_signal("request::rules", function()
         ruled.client.append_rule
         {
-            rule = { name = "no-one-gonna-match-this4" },
+            rule = { class = "awesome-app-theme-manager" },
             properties = { floating = true, width = dpi(800), height = 1, placement = awful.placement.centered },
             callback = function(c)
                 ret:emit_signal("visible", true)

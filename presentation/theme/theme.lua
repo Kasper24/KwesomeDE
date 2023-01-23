@@ -317,9 +317,9 @@ local function icons()
         ["libreofficewriter"] = theme.icons.word,
         ["libreofficeimpress"] = theme.icons.powerpoint,
         ["libreofficecalc"] = theme.icons.excel,
-        ["screenshot"] = theme.icons.camera_retro,
-        ["record"] = theme.icons.video,
-        ["theme"] = theme.icons.spraycan,
+        ["awesomeappscreenshot"] = theme.icons.camera_retro,
+        ["awesomeapprecord"] = theme.icons.video,
+        ["awesomeappthememanager"] = theme.icons.spraycan,
         ["xfce4settingsmanager"] = theme.icons.gear,
         ["dconfeditor"] = theme.icons.gear
     }
