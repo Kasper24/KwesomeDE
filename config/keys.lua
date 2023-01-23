@@ -169,7 +169,7 @@ capi.client.connect_signal("request::default_keybindings", function()
             group = "client",
             description = "toggle titlebar",
             on_press = function(c)
-                if c.custom_titlebar ~= false then
+                if c.custom_titlebar ~= true then
                     if c.titlebar == nil then
                         c.titlebar = true
                     else

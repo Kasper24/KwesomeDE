@@ -1140,8 +1140,8 @@ local function new()
                     ret._private.client = nil
                 end)
 
+                c.custom_titlebar = true
                 c.can_resize = false
-                c.custom_titlebar = false
                 c.can_tile = false
 
                 -- Settings placement in properties doesn't work
