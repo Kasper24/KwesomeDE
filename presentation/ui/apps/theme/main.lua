@@ -259,19 +259,18 @@ local function image_tab(self)
         colors,
         wallpapers_layout,
         {
-            layout = wibox.layout.flex.horizontal,
+            layout = wibox.layout.grid,
             spacing = dpi(10),
+            forced_num_rows = 3,
+            forced_num_cols = 3,
+            horizontal_expand = true,
             light_dark,
             reset_colorscheme,
             save_colorscheme,
-        },
-        {
-            layout = wibox.layout.flex.horizontal,
-            spacing = dpi(10),
             set_wallpaper,
             set_colorscheme,
             set_both
-        }
+        },
     }
 
     local stack = wibox.widget
@@ -419,6 +418,31 @@ local function digital_sun_tab()
     }
 end
 
+local function wip_tab()
+    return wibox.widget
+    {
+        widget = wibox.container.place,
+        halign = "center",
+        valign = "center",
+        {
+            layout = wibox.layout.fixed.vertical,
+            spacing = dpi(30),
+            {
+                widget = widgets.text,
+                size = 80,
+                color = beautiful.random_accent_color(),
+                font = beautiful.icons.hammer.font,
+                text = beautiful.icons.hammer.icon,
+            },
+            {
+                widget = widgets.text,
+                size = 50,
+                text = "WIP",
+            }
+        }
+    }
+end
+
 local function new(self, layout)
     local accent_color = beautiful.random_accent_color()
 
@@ -430,10 +454,10 @@ local function new(self, layout)
 
     local _stack = {}
     local _image_tab = image_tab(self)
-    local _tiled_tab = {}
-    local _color_tab = {}
+    local _tiled_tab = wip_tab()
+    local _color_tab = wip_tab()
     local _digital_sun_tab = digital_sun_tab()
-    local _binary_tab = {}
+    local _binary_tab = wip_tab()
 
     local title = widgets.text
     {
@@ -502,7 +526,7 @@ local function new(self, layout)
             _color_button:turn_off()
             _digital_sun_button:turn_off()
             _binary_button:turn_off()
-            _stack:raise_widget(_image_tab)
+            _stack:raise_widget(_tiled_tab)
         end
     }
 
@@ -520,7 +544,7 @@ local function new(self, layout)
             _color_button:turn_on()
             _digital_sun_button:turn_off()
             _binary_button:turn_off()
-            _stack:raise_widget(_image_tab)
+            _stack:raise_widget(_color_tab)
         end
     }
 
@@ -556,7 +580,7 @@ local function new(self, layout)
             _color_button:turn_off()
             _digital_sun_button:turn_off()
             _binary_button:turn_on()
-            _stack:raise_widget(_image_tab)
+            _stack:raise_widget(_binary_tab)
         end
     }
 
@@ -565,10 +589,10 @@ local function new(self, layout)
         layout = wibox.layout.stack,
         top_only = true,
         _image_tab,
-        _image_tab,
-        _image_tab,
+        _tiled_tab,
+        _color_tab,
         _digital_sun_tab,
-        _image_tab
+        _binary_tab
     }
 
     return wibox.widget
