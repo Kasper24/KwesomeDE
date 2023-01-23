@@ -12,24 +12,35 @@ local widgets = require("presentation.ui.widgets")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local ipairs = ipairs
-local capi = { client = client }
+local pairs = pairs
+local table = table
+local capi = { root = root, client = client }
 
 local window_switcher  = { }
 local instance = nil
 
 local function focus_client(client)
+    local is_valid = pcall(function() return client.valid end) and client.valid
+    if client == nil or not is_valid then
+        return
+    end
+
     if not client:isvisible() and client.first_tag then
         client.first_tag:view_only()
     end
 
-    client:emit_signal('request::activate')
+    client:emit_signal("request::activate")
     client:raise()
-    -- client.minimized = false
+    client.minimized = false
 end
 
 local function client_widget(self, client)
+    if client == nil then
+        return
+    end
+
     local font_icon = beautiful.get_font_icon_for_app_name(client.class)
-    local is_selected = client == self._private.clients[self._private.selected_index]
+    local is_selected = client == self._private.selected_client
 
     return wibox.widget
     {
@@ -90,7 +101,7 @@ local function clients_widget(self)
         spacing = dpi(15)
     }
 
-    for _, client in ipairs(self._private.clients) do
+    for _, client in pairs(self._private.sorted_clients) do
         clients_layout:add(client_widget(self, client))
     end
 
@@ -107,30 +118,58 @@ local function clients_widget(self)
     }
 end
 
-function window_switcher:cycle_clients(increase)
-    self._private.selected_index = self._private.selected_index + (increase and 1 or -1)
-    if self._private.selected_index > #self._private.clients then
-        self._private.selected_index = 1
-    elseif self._private.selected_index < 1 then
-        self._private.selected_index = #self._private.clients
+local function sort_clients(self)
+    self._private.sorted_clients = {}
+
+    for _, tag in pairs(capi.root.tags()) do
+        for index, client in pairs(tag:clients()) do
+            if awful.client.getmaster() == client then
+                local pos = math.min(math.max(1, #self._private.sorted_clients), tag.index)
+                print(pos)
+                table.insert(self._private.sorted_clients,
+                    pos,
+                    client
+                )
+            else
+                table.insert(self._private.sorted_clients,
+                    #self._private.sorted_clients + 1,
+                    client
+                )
+            end
+        end
     end
+end
+
+function window_switcher:cycle_clients(increase)
+    self._private.selected_client = gtable.cycle_value(
+        self._private.sorted_clients,
+        self._private.selected_client,
+        (increase and 1 or -1)
+    )
 
     self._private.widget.widget = clients_widget(self)
 end
 
-function window_switcher:show()
-    if #capi.client.get() == 0 then
+function window_switcher:show(set_selected_client)
+    sort_clients(self)
+
+    if #self._private.sorted_clients == 0 then
+        self:hide(false)
         return
     end
 
-    self._private.clients = capi.client.get()
+    if set_selected_client == true or set_selected_client == nil then
+        self._private.selected_client = capi.client.focus
+    end
 
     self._private.widget.widget = clients_widget(self)
     self._private.widget.visible = true
 end
 
-function window_switcher:hide()
-    focus_client(self._private.clients[self._private.selected_index])
+function window_switcher:hide(focus)
+    if focus == nil or focus == true then
+        focus_client(self._private.selected_client)
+    end
 
     self._private.widget.visible = false
     self._private.widget.widget = nil
@@ -151,8 +190,7 @@ local function new()
     gtable.crush(ret, window_switcher)
 
     ret._private = {}
-    ret._private.selected_index = 1
-    ret._private.clients = {}
+    ret._private.sorted_clients = {}
 
     ret._private.widget = awful.popup
     {
@@ -164,15 +202,19 @@ local function new()
         widget = wibox.container.background, -- A dummy widget to make awful.popup not scream
     }
 
-    ret._private.widget:connect_signal("property::width", function()
-        if ret._private.widget.visible and #capi.client.get() == 0 then
-            ret:hide()
+    capi.client.connect_signal("manage", function()
+        if ret._private.widget.visible == true then
+            ret:show()
         end
     end)
 
-    ret._private.widget:connect_signal("property::height", function()
-        if ret._private.widget.visible and #capi.client.get() == 0 then
-            ret:hide()
+    capi.client.connect_signal("unmanage", function(client)
+        if ret._private.widget.visible == true then
+            if client == ret._private.selected_client then
+                ret:cycle_clients(true)
+            end
+
+            ret:show(false)
         end
     end)
 
