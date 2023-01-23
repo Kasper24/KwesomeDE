@@ -1,3 +1,5 @@
+save_to=~/.cache/awesome/templates/vivaldi/vivaldi.css
+
 :root {{
     --customTabBar: transparent;
     --customFg: {foreground};
