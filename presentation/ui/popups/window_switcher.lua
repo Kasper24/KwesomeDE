@@ -42,56 +42,60 @@ local function client_widget(self, client)
     local font_icon = beautiful.get_font_icon_for_app_name(client.class)
     local is_selected = client == self._private.selected_client
 
-    return wibox.widget
+    local widget = wibox.widget
     {
         widget = wibox.container.constraint,
         mode = "max",
         width = dpi(300),
         height = dpi(150),
-        {
-            widget = wibox.container.background,
-            shape = helpers.ui.rrect(beautiful.border_radius),
-            border_width = dpi(5),
-            border_color = (is_selected) and beautiful.random_accent_color() or beautiful.colors.surface,
-            {
-                widget = wibox.layout.stack,
+        widgets.button.elevated.state {
+            normal_bg = beautiful.colors.background,
+            normal_border_width = dpi(5),
+            normal_border_color = beautiful.colors.surface,
+            on_normal_border_color = beautiful.random_accent_color(),
+            on_release = function()
+                self:select_client(client)
+                self:hide()
+            end,
+            child = {
+                widget = wibox.container.margin,
+                margins = dpi(15),
                 {
-                    widget = wibox.container.background,
-                    shape = helpers.ui.rrect(beautiful.border_radius),
-                    bg = beautiful.colors.background,
-                },
-                {
-                    widget = wibox.container.margin,
-                    margins = dpi(15),
+                    layout = wibox.layout.fixed.vertical,
+                    spacing = dpi(15),
                     {
-                        layout = wibox.layout.fixed.vertical,
-                        spacing = dpi(15),
+                        layout = wibox.layout.fixed.horizontal,
+                        spacing = dpi(10),
                         {
-                            layout = wibox.layout.fixed.horizontal,
-                            spacing = dpi(10),
-                            {
-                                widget = widgets.text,
-                                halign = "center",
-                                valign ="center",
-                                color = beautiful.random_accent_color(),
-                                font = font_icon.font,
-                                text = font_icon.icon
-                            },
-                            {
-                                widget = widgets.text,
-                                forced_height = dpi(30),
-                                halign = "center",
-                                valign = "center",
-                                size = 15,
-                                text = client.name
-                            }
+                            widget = widgets.text,
+                            halign = "center",
+                            valign ="center",
+                            color = beautiful.random_accent_color(),
+                            font = font_icon.font,
+                            text = font_icon.icon
                         },
-                        widgets.client_thumbnail(client)
-                    }
+                        {
+                            widget = widgets.text,
+                            forced_height = dpi(30),
+                            halign = "center",
+                            valign = "center",
+                            size = 15,
+                            text = client.name
+                        }
+                    },
+                    widgets.client_thumbnail(client)
                 }
             }
         }
     }
+
+    if is_selected == true then
+        widget.children[1]:turn_on()
+    else
+        widget.children[1]:turn_off()
+    end
+
+    return widget
 end
 
 local function clients_widget(self)
@@ -140,14 +144,18 @@ local function sort_clients(self)
     end
 end
 
+function window_switcher:select_client(client)
+    self._private.selected_client = client
+    self._private.widget.widget = clients_widget(self)
+end
+
 function window_switcher:cycle_clients(increase)
-    self._private.selected_client = gtable.cycle_value(
+    local client = gtable.cycle_value(
         self._private.sorted_clients,
         self._private.selected_client,
         (increase and 1 or -1)
     )
-
-    self._private.widget.widget = clients_widget(self)
+    self:select_client(client)
 end
 
 function window_switcher:show(set_selected_client)
