@@ -87,14 +87,12 @@ local function generate_sequences(colors)
     end
 end
 
-local function run_scripts_after_template_generation(self)
+local function on_finished_generating(self)
     if self._private.command_after_generation ~= nil then
         awful.spawn.with_shell(self._private.command_after_generation, false)
     end
 
-    gtimer { timeout = 2,autostart = true,single_shot = true, callback = function()
-        capi.awesome.restart()
-    end }
+    capi.awesome.restart()
 end
 
 local function replace_template_colors(color, color_name, line)
@@ -194,7 +192,11 @@ local function generate_templates(self)
                     helpers.filesystem.save_file(WAL_CACHE_PATH .. name, output)
 
                     -- Save to ~/.cache/awesome/templates
-                    helpers.filesystem.save_file(GENERATED_TEMPLATES_PATH .. name, output)
+                    helpers.filesystem.save_file(GENERATED_TEMPLATES_PATH .. name, output, function()
+                        if index == #result then
+                            on_finished_generating(self)
+                        end
+                    end)
 
                     -- Save to addiontal location specified in the template file
                     if copy_to ~= nil then
@@ -202,10 +204,6 @@ local function generate_templates(self)
                         helpers.filesystem.save_file(copy_to, output)
                     end
                 end)
-            end
-
-            if index == #result then
-                run_scripts_after_template_generation(self)
             end
         end
     end, true)
