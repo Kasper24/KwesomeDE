@@ -89,25 +89,25 @@ function elevated_button.state(args)
 	args.on_press_bg = args.on_press_bg or helpers.color.button_color(args.on_normal_bg, 0.2)
 
 	args.normal_shape = args.normal_shape or helpers.ui.rrect(beautiful.border_radius)
-	args.hover_shape = args.hover_shape or nil
-	args.press_shape = args.press_shape or nil
-	args.on_normal_shape = args.on_normal_shape or nil
-	args.on_hover_shape = args.on_hover_shape or nil
-	args.on_press_shape = args.on_press_shape or nil
+	args.hover_shape = args.hover_shape or args.normal_shape
+	args.press_shape = args.press_shape or args.normal_shape
+	args.on_normal_shape = args.on_normal_shape or args.normal_shape
+	args.on_hover_shape = args.on_hover_shape or args.normal_shape
+	args.on_press_shape = args.on_press_shape or args.normal_shape
 
 	args.normal_border_width = args.normal_border_width or nil
-	args.hover_border_width = args.hover_border_width or nil
-	args.press_border_width = args.press_border_width or nil
-	args.on_normal_border_width = args.on_normal_border_width or nil
-	args.on_hover_border_width = args.on_hover_border_width or nil
-	args.on_press_border_width = args.on_press_border_width or nil
+	args.hover_border_width = args.hover_border_width or args.normal_border_width
+	args.press_border_width = args.press_border_width or args.hover_border_width
+	args.on_normal_border_width = args.on_normal_border_width or args.press_border_width
+	args.on_hover_border_width = args.on_hover_border_width or args.on_normal_border_width
+	args.on_press_border_width = args.on_press_border_width or args.on_hover_border_width
 
 	args.normal_border_color = args.normal_border_color or beautiful.colors.transparent
-	args.hover_border_color = args.hover_border_color or beautiful.colors.transparent
-	args.press_border_color = args.press_border_color or beautiful.colors.transparent
-	args.on_normal_border_color = args.on_normal_border_color or beautiful.colors.transparent
-	args.on_hover_border_color = args.on_hover_border_color or beautiful.colors.transparent
-	args.on_press_border_color = args.on_press_border_color or beautiful.colors.transparent
+	args.hover_border_color = args.hover_border_color or args.normal_border_color
+	args.press_border_color = args.press_border_color or args.hover_border_color
+	args.on_normal_border_color = args.on_normal_border_color or args.press_border_color
+	args.on_hover_border_color = args.on_hover_border_color or args.on_normal_border_color
+	args.on_press_border_color = args.on_press_border_color or args.on_hover_border_color
 
     args.on_hover = args.on_hover or nil
     args.on_leave = args.on_leave or nil
@@ -280,16 +280,16 @@ function elevated_button.normal(args)
 	args.press_bg = args.press_bg or helpers.color.button_color(args.normal_bg, 0.2)
 
 	args.normal_shape = args.normal_shape or helpers.ui.rrect(beautiful.border_radius)
-	args.hover_shape = args.hover_shape or nil
-	args.press_shape = args.press_shape or nil
+	args.hover_shape = args.hover_shape or args.normal_shape
+	args.press_shape = args.press_shape or args.normal_shape
 
 	args.normal_border_width = args.normal_border_width or nil
-	args.hover_border_width = args.hover_border_width or nil
-	args.press_border_width = args.press_border_width or nil
+	args.hover_border_width = args.hover_border_width or args.normal_border_width
+	args.press_border_width = args.press_border_width or args.hover_border_width
 
 	args.normal_border_color = args.normal_border_color or beautiful.colors.transparent
-	args.hover_border_color = args.hover_border_color or beautiful.colors.transparent
-	args.press_border_color = args.press_border_color or beautiful.colors.transparent
+	args.hover_border_color = args.hover_border_color or args.normal_border_color
+	args.press_border_color = args.press_border_color or args.hover_border_color
 
     args.on_hover = args.on_hover or nil
     args.on_leave = args.on_leave or nil
