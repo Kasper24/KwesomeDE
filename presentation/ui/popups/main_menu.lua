@@ -16,7 +16,7 @@ local power_popup = require("presentation.ui.popups.power")
 local theme_popup = require("presentation.ui.apps.theme")
 local beautiful = require("beautiful")
 local ipairs = ipairs
-local capi = { screen = screen, tag = tag }
+local capi = { awesome = awesome, screen = screen, tag = tag }
 
 local recent_places_daemon = require("daemons.system.recent_places")
 
@@ -187,6 +187,12 @@ local function widget()
             on_press = function() theme_popup:toggle() end
         },
         widgets.menu.separator(),
+        widgets.menu.button
+        {
+            icon = beautiful.icons.reboot,
+            text = "Restart",
+            on_press = function() capi.awesome.restart() end
+        },
         widgets.menu.button
         {
             icon = beautiful.icons.exit,
