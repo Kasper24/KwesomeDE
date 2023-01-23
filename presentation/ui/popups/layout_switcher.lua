@@ -4,48 +4,46 @@
 -------------------------------------------
 
 local awful = require("awful")
+local gobject = require("gears.object")
 local gtable = require("gears.table")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 
+local layout_switcher  = { }
 local instance = nil
 
+function layout_switcher:cycle_layouts(increase)
+    local ll = self._private.layout_list
+    local increase = increase and 1 or -1
+    awful.layout.set(gtable.cycle_value(ll.layouts, ll.current_layout, increase), nil)
+end
+
+function layout_switcher:show()
+    self._private.widget.visible = true
+end
+
+function layout_switcher:hide()
+    self._private.widget.visible = false
+end
+
+function layout_switcher:toggle()
+    if self._private.widget.visible == true then
+        self:hide()
+    else
+        self:show()
+    end
+end
+
 local function new()
-    local ret = {}
+    local ret = gobject{}
+    ret._private = {}
 
-    awful.keygrabber
-    {
-        start_callback = function()
-            ret.widget.visible = true
-        end,
-        stop_callback = function()
-            ret.widget.visible = false
-        end,
-        export_keybindings = true,
-        stop_event = "release",
-        stop_key = { "Escape", "Super_L", "Super_R", "Mod4" },
-        keybindings =
-        {
-            {
-                {"Mod4", "Shift"},
-                " ",
-                function()
-                    awful.layout.set(gtable.cycle_value(ret.layout_list.layouts, ret.layout_list.current_layout, -1), nil)
-                end
-            },
-            {
-                {"Mod4", "Mod1"},
-                " ",
-                function()
-                    awful.layout.set(gtable.cycle_value(ret.layout_list.layouts, ret.layout_list.current_layout, 1), nil)
-                end
-            }
-        }
-    }
+    gtable.crush(ret, layout_switcher)
 
-    ret.layout_list = awful.widget.layoutlist
+    ret._private = {}
+    ret._private.layout_list = awful.widget.layoutlist
     {
         source = awful.widget.layoutlist.source.default_layouts,
         base_layout = wibox.widget
@@ -73,7 +71,7 @@ local function new()
         }
     }
 
-    ret.widget = awful.popup
+    ret._private.widget = awful.popup
     {
         placement = awful.placement.centered,
         ontop = true,
@@ -84,7 +82,7 @@ local function new()
         {
             widget = wibox.container.margin,
             margins = dpi(25),
-            ret.layout_list
+            ret._private.layout_list
         },
     }
 
