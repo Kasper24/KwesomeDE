@@ -421,14 +421,6 @@ ruled.client.connect_signal("request::rules", function()
         properties = { tag = awful.screen.focused().tags[8] },
     }
 
-    -- Miscellaneous
-    ruled.client.append_rule
-    {
-        rule_any = { class = { apps.qbittorrent.class, apps.webtorrent.class, apps.virtualbox.class } },
-        except = { role = "GtkFileChooserDialog" },
-        properties = { tag = awful.screen.focused().tags[9] },
-    }
-
     ruled.client.append_rule
     {
         rule = { class = apps.ncmpcpp.class },
