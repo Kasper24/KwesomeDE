@@ -1,22 +1,5 @@
 <schemalist>
   <schema id="org.awesome.settings" path="/org/awesome/settings/">
-
-    <key name="theme-wallpapers-paths" type="as">
-      <default>['~/.config/awesome/presentation/assets/wallpapers']</default>
-      <summary>Wallpaper paths</summary>
-      <description>
-        Folders containing wallpapers
-      </description>
-    </key>
-
-    <key name="theme-templates" type="as">
-      <default>[]</default>
-      <summary>Theme templates</summary>
-      <description>
-        The linked templates
-      </description>
-    </key>
-
     <key name="theme-colorscheme" type="as">
       <default>["#110104","#DF712D","#B88836","#F98B35","#FCA33E","#DE9E43","#FEB449","#f7e09d","#40040f","#ff9b5d","#f0b146","#ffbd8a","#ffcf99","#ffc879","#ffdcaa","#fbefcb"]</default>
       <summary>Theme Colorscheme</summary>
