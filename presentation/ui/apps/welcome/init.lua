@@ -16,6 +16,7 @@ local email_daemon = require("daemons.web.email")
 local github_daemon = require("daemons.web.github")
 local gitlab_daemon = require("daemons.web.gitlab")
 local weather_daemon = require("daemons.web.weather")
+local theme_app = require("presentation.ui.apps.theme")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 
@@ -65,6 +66,10 @@ end
 function welcome:hide()
     self._private.client:kill()
     self._private.visible = false
+
+    if helpers.settings:get_value("initial") ~= false then
+        theme_app:show()
+    end
 end
 
 function welcome:toggle()
@@ -156,8 +161,8 @@ For more information visit the following links.]],
         size = 13,
         text = "Finish",
         on_press = function()
-            helpers.settings:set_value("initial", false)
             on_next_pressed()
+            helpers.settings:set_value("initial", false)
         end,
     }
 
