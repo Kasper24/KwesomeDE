@@ -78,7 +78,7 @@ local function tag_list(s)
         beautiful.icons.spotify,
         beautiful.icons.steam,
         beautiful.icons.gamepad_alt,
-        beautiful.icons.led,
+        beautiful.icons.lights_holiday,
         beautiful.icons.spraycan
     }
 
