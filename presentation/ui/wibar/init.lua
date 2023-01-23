@@ -362,6 +362,7 @@ local function client_task(favorites_layout, task_list, client)
             end
         end,
         on_secondary_press = function(self)
+            task_preview:hide()
             menu:toggle{
                 wibox = awful.screen.focused().top_wibar,
                 widget = self,
