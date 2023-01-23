@@ -1,7 +1,5 @@
 /* Custom Variables | Color Scheme */
 
-copy_to=/usr/share/start-page/styles.css
-
 :root {{
   --primary: {color1};
   --text-light: #eeeeee;
