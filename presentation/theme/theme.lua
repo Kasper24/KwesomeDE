@@ -473,36 +473,6 @@ local function tabbed()
     theme.mstab_tabbar_style = "default" -- style of the tabbar ("default", "boxes" or "modern")
 end
 
-local function tag_preview()
-    theme.tag_preview_widget_border_radius = theme.border_radius
-    theme.tag_preview_client_border_radius = theme.border_radius
-    theme.tag_preview_client_opacity = 1
-    theme.tag_preview_client_bg = theme.colors.background
-    theme.tag_preview_client_border_color = nil
-    theme.tag_preview_client_border_width = 0
-    theme.tag_preview_widget_bg = theme.colors.background
-    theme.tag_preview_widget_border_color = theme.border_color_active
-    theme.tag_preview_widget_border_width = theme.border_width
-    theme.tag_preview_widget_margin = dpi(15)
-end
-
-local function task_preview()
-    theme.task_preview_widget_border_radius = theme.border_radius
-    theme.task_preview_widget_bg = theme.colors.background
-    theme.task_preview_widget_border_color = theme.border_color_active
-    theme.task_preview_widget_border_width = theme.border_width
-    theme.task_preview_widget_margin = dpi(15)
-end
-
-local function window_switcher()
-    theme.window_switcher_widget_bg = theme.colors.background
-    theme.window_switcher_widget_border_radius = theme.border_radius
-    theme.window_switcher_widget_border_width = 0
-    theme.window_switcher_name_normal_color = theme.colors.on_background
-    theme.window_switcher_name_focus_color = theme.random_accent_color()
-    theme.window_switcher_name_font = theme.font_name .. 13
-end
-
 local function machi()
     theme.machi_editor_border_color = theme.border_color_active
     theme.machi_editor_border_opacity = 0.75
@@ -532,9 +502,6 @@ layoutlist()
 notification()
 systray()
 tabbed()
-tag_preview()
-task_preview()
-window_switcher()
 machi()
 
 return theme

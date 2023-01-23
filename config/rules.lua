@@ -440,13 +440,3 @@ ruled.client.connect_signal("request::rules", function()
         end
     }
 end)
-
-local function find_icon_for_client(client)
-    client.font_icon = beautiful.icons.window
-    for _, app in pairs(apps) do
-        if app.class == client.class then
-            client.font_icon = app.icon
-            return
-        end
-    end
-end
