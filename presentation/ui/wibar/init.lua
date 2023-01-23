@@ -63,6 +63,8 @@ local function update_taglist(self, tag)
         self.widget:set_text(beautiful.icons.circle.icon)
     end
 
+    self.widget:set_size(20)
+
     if tag.selected then
         self.widget:turn_on()
     else
