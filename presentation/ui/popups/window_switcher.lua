@@ -34,6 +34,28 @@ local function focus_client(client)
     client.minimized = false
 end
 
+local function sort_clients(self)
+    self._private.sorted_clients = {}
+
+    for _, tag in pairs(capi.root.tags()) do
+        for index, client in pairs(tag:clients()) do
+            if awful.client.getmaster() == client then
+                local pos = math.min(math.max(1, #self._private.sorted_clients), tag.index)
+                print(pos)
+                table.insert(self._private.sorted_clients,
+                    pos,
+                    client
+                )
+            else
+                table.insert(self._private.sorted_clients,
+                    #self._private.sorted_clients + 1,
+                    client
+                )
+            end
+        end
+    end
+end
+
 local function client_widget(self, client)
     if client == nil then
         return
@@ -120,28 +142,6 @@ local function clients_widget(self)
             clients_layout
         }
     }
-end
-
-local function sort_clients(self)
-    self._private.sorted_clients = {}
-
-    for _, tag in pairs(capi.root.tags()) do
-        for index, client in pairs(tag:clients()) do
-            if awful.client.getmaster() == client then
-                local pos = math.min(math.max(1, #self._private.sorted_clients), tag.index)
-                print(pos)
-                table.insert(self._private.sorted_clients,
-                    pos,
-                    client
-                )
-            else
-                table.insert(self._private.sorted_clients,
-                    #self._private.sorted_clients + 1,
-                    client
-                )
-            end
-        end
-    end
 end
 
 function window_switcher:select_client(client)
