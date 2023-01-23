@@ -441,6 +441,8 @@ end
 local function scan_for_wallpapers(self)
     self._private.images = {}
 
+    -- Make sure Awesome doesn't work too hard adding widgets
+    -- if there are more changes coming soon
     local emit_signal_timer = gtimer
     {
         timeout = 1,
@@ -461,11 +463,17 @@ local function scan_for_wallpapers(self)
     }
 
     helpers.filesystem.scan(WALLPAPERS_PATH, function(result)
-        for _index, wallpaper_path in pairs(result) do
+        for _, wallpaper_path in pairs(result) do
             local is_duplicate = helpers.table.contains(self._private.images, wallpaper_path)
             local mimetype = Gio.content_type_guess(wallpaper_path)
             if is_duplicate == false and PICTURES_MIMETYPES[mimetype] ~= nil then
-                table.insert(self._private.images, wallpaper_path)
+                -- Get the name of the file
+                local name = wallpaper_path:sub(
+                    helpers.string.find_last(wallpaper_path, "/") + 1,
+                    #wallpaper_path
+                )
+                name = name:gsub(".base", "")
+                table.insert(self._private.images, name)
             end
         end
 
