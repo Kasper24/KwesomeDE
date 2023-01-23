@@ -13,16 +13,14 @@ local setmetatable = setmetatable
 local client_thumbnail = { mt = {} }
 
 local function get_client_thumbnail(client)
-    local screenshot = awful.screenshot {
-        client = client,
-    }
-    screenshot:refresh()
-
     -- Thumbnails for clients with custom titlebars, i.e welcome/screenshot/record/theme manager
     -- won't work correctly since all the UI is hacked on with the titlebars which aren't included
     -- when taking a screenshot with awful.screenshot
     if client:isvisible() and client.custom_titlebar ~= true then
-
+        local screenshot = awful.screenshot {
+            client = client,
+        }
+        screenshot:refresh()
         client.thumbnail = screenshot.surface
     end
 
