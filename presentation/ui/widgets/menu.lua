@@ -130,8 +130,8 @@ function menu:add(widget)
     self.widget:add(widget)
 end
 
-function menu:remove(widget)
-    self.widget:remove(widget)
+function menu:remove(index)
+    self.widget:remove(index)
 end
 
 function menu:reset()

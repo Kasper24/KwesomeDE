@@ -12,8 +12,8 @@ local pairs = pairs
 
 local dropdown = { mt = {} }
 
-function dropdown:remove(widget)
-    self.menu:remove(widget)
+function dropdown:remove(index)
+    self.menu:remove(index)
 end
 
 function dropdown:add(key, value)
