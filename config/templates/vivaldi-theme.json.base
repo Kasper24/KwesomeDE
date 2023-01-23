@@ -1,0 +1,18 @@
+{{
+    "name": "VivThemer",
+    "colors":
+    {{
+      "baseBg": "{background}",
+      "baseFg": "{foreground}",
+      "highlightBg": "{color3}",
+      "accentBg": "{color2}"
+    }},
+    "settings":
+    {{
+      "accentFromPage": true,
+      "accentOnWindow": true,
+      "tabsTransparent": true,
+      "borderRadius": 0
+    }},
+    "version": 0.1
+  }}
