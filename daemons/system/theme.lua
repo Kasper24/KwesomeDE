@@ -17,6 +17,7 @@ local string = string
 local ipairs = ipairs
 local pairs = pairs
 local table = table
+local os = os
 local capi = { awesome = awesome, screen = screen, client = client }
 
 local theme = { }
