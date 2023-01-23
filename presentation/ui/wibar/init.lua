@@ -56,23 +56,32 @@ end
 -- =============================================================================
 local function update_taglist(self, tag)
     if #tag:clients() == 0 then
-        self.widget:set_font(beautiful.icons.circle_outline.font)
-        self.widget:set_text(beautiful.icons.circle_outline.icon)
+        self.indicator_animation:set(dpi(0))
     else
-        self.widget:set_font(beautiful.icons.circle.font)
-        self.widget:set_text(beautiful.icons.circle.icon)
+        self.indicator_animation:set(dpi(40))
     end
 
-    self.widget:set_size(20)
-
     if tag.selected then
-        self.widget:turn_on()
+        self.widget.children[1]:turn_on()
     else
-        self.widget:turn_off()
+        self.widget.children[1]:turn_off()
     end
 end
 
 local function tag_list(s)
+    local taglist_icons =
+    {
+        beautiful.icons.firefox,
+        beautiful.icons.code,
+        beautiful.icons.git,
+        beautiful.icons.discord,
+        beautiful.icons.spotify,
+        beautiful.icons.steam,
+        beautiful.icons.gamepad_alt,
+        beautiful.icons.led,
+        beautiful.icons.spraycan
+    }
+
     return awful.widget.taglist
     {
         screen = s,
@@ -81,12 +90,17 @@ local function tag_list(s)
         widget_template =
         {
             widget = wibox.container.margin,
+            forced_width = dpi(60),
+            forced_height = dpi(60),
             create_callback = function(self, tag, index, tags)
+                local accent_color = beautiful.random_accent_color()
+
                 local button = widgets.button.text.state
                 {
-                    forced_width = dpi(60),
-                    forced_height = dpi(60),
-                    text_normal_bg = beautiful.random_accent_color(),
+                    size = taglist_icons[index].size,
+                    font = taglist_icons[index].font,
+                    text = taglist_icons[index].icon,
+                    text_normal_bg = accent_color,
                     on_hover = function()
                         if #tag:clients() > 0 then
                             tag_preview:show(tag,
@@ -111,10 +125,39 @@ local function tag_list(s)
                         elseif button == 5 then
                             awful.tag.viewprev(tag.screen)
                         end
-                    end,
+                    end
                 }
 
-                self:set_widget(button)
+                local indicator = wibox.widget
+                {
+                    widget = wibox.container.place,
+                    halign = "right",
+                    valign = "center",
+                    {
+                        widget = wibox.container.background,
+                        forced_width = dpi(5),
+                        shape = helpers.ui.rrect(beautiful.border_radius),
+                        bg = accent_color
+                    }
+                }
+
+                local stack = wibox.widget
+                {
+                    widget = wibox.layout.stack,
+                    button,
+                    indicator
+                }
+
+                self.indicator_animation = helpers.animation:new
+                {
+                    duration = 0.125,
+                    easing = helpers.animation.easing.linear,
+                    update = function(self, pos)
+                        indicator.children[1].forced_height = pos
+                    end
+                }
+
+                self:set_widget(stack)
 
                 update_taglist(self, tag)
             end,
