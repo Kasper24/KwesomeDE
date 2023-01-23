@@ -14,6 +14,8 @@ local beautiful = require("beautiful")
 local color_libary = require("external.color")
 local helpers = require("helpers")
 local string = string
+local ipairs = ipairs
+local pairs = pairs
 local table = table
 local capi = { awesome = awesome, screen = screen, client = client }
 
@@ -21,71 +23,10 @@ local theme = { }
 local instance = nil
 
 local DATA_PATH = helpers.filesystem.get_cache_dir("colorschemes") .. "data.json"
-
-local DEFAULT_TEMPLATES_PATH = helpers.filesystem.get_awesome_config_dir("config/templates")
-local DEFAULT_TEMPLATES_GENERATED_PATH =  helpers.filesystem.get_xdg_cache_home("wal")
-local DEFAULT_TEMPLATES =
-{
-    DEFAULT_TEMPLATES_PATH .. "colors",
-    DEFAULT_TEMPLATES_PATH .. "colors-kitty.conf",
-    DEFAULT_TEMPLATES_PATH .. "colors-konsole.colorscheme",
-    DEFAULT_TEMPLATES_PATH .. "colors-nqq.css",
-    DEFAULT_TEMPLATES_PATH .. "colors-oomox",
-    DEFAULT_TEMPLATES_PATH .. "colors-putty.reg",
-    DEFAULT_TEMPLATES_PATH .. "colors-rofi-dark.rasi",
-    DEFAULT_TEMPLATES_PATH .. "colors-rofi-light.rasi",
-    DEFAULT_TEMPLATES_PATH .. "colors-speedcrunch.json",
-    DEFAULT_TEMPLATES_PATH .. "colors-sway",
-    DEFAULT_TEMPLATES_PATH .. "colors-themer.js",
-    DEFAULT_TEMPLATES_PATH .. "colors-tilix.json",
-    DEFAULT_TEMPLATES_PATH .. "colors-tty.sh",
-    DEFAULT_TEMPLATES_PATH .. "colors-vscode.json",
-    DEFAULT_TEMPLATES_PATH .. "colors-wal-dmenu.h",
-    DEFAULT_TEMPLATES_PATH .. "colors-wal-dwm.h",
-    DEFAULT_TEMPLATES_PATH .. "colors-wal-st.h",
-    DEFAULT_TEMPLATES_PATH .. "colors-wal-tabbed.h",
-    DEFAULT_TEMPLATES_PATH .. "colors-wal.vim",
-    DEFAULT_TEMPLATES_PATH .. "colors-waybar.css",
-    DEFAULT_TEMPLATES_PATH .. "colors.css",
-    DEFAULT_TEMPLATES_PATH .. "colors.hs",
-    DEFAULT_TEMPLATES_PATH .. "colors.json",
-    DEFAULT_TEMPLATES_PATH .. "colors.scss",
-    DEFAULT_TEMPLATES_PATH .. "colors.sh",
-    DEFAULT_TEMPLATES_PATH .. "colors.styl",
-    DEFAULT_TEMPLATES_PATH .. "colors.Xresources",
-    DEFAULT_TEMPLATES_PATH .. "colors.yml"
-}
-local DEFAULT_TEMPLATES_NAMES =
-{
-    "colors",
-    "colors-kitty.conf",
-    "colors-konsole.colorscheme",
-    "colors-nqq.css",
-    "colors-oomox",
-    "colors-putty.reg",
-    "colors-rofi-dark.rasi",
-    "colors-rofi-light.rasi",
-    "colors-speedcrunch.json",
-    "colors-sway",
-    "colors-themer.js",
-    "colors-tilix.json",
-    "colors-tty.sh",
-    "colors-vscode.json",
-    "colors-wal-dmenu.h",
-    "colors-wal-dwm.h",
-    "colors-wal-st.h",
-    "colors-wal-tabbed.h",
-    "colors-wal.vim",
-    "colors-waybar.css",
-    "colors.css",
-    "colors.hs",
-    "colors.json",
-    "colors.scss",
-    "colors.sh",
-    "colors.styl",
-    "colors.Xresources",
-    "colors.yml"
-}
+local WALLPAPERS_PATH = helpers.filesystem.get_awesome_config_dir("presentation/assets/wallpapers")
+local BASE_TEMPLATES_PATH = helpers.filesystem.get_awesome_config_dir("config/templates")
+local GENERATED_TEMPLATES_PATH = helpers.filesystem.get_cache_dir("templates")
+local WAL_CACHE_PATH =  helpers.filesystem.get_xdg_cache_home("wal")
 
 local PICTURES_MIMETYPES =
 {
@@ -134,7 +75,7 @@ local function generate_sequences(colors)
     table.insert(sequences, set_special(708, colors[1], 0))
 
     local string = table.concat(sequences)
-    helpers.filesystem.save_file(DEFAULT_TEMPLATES_GENERATED_PATH .. "sequences", string)
+    helpers.filesystem.save_file(WAL_CACHE_PATH .. "sequences", string)
 
     for index = 0, 9 do
         helpers.filesystem.save_file("/dev/pts/" .. index, string)
@@ -180,62 +121,76 @@ local function replace_template_colors(color, color_name, line)
     end
 end
 
-local function generate_templates(self, templates, is_default)
-    for index, template in ipairs(templates) do
-        helpers.filesystem.read_file(template, function(content)
-            local lines = {}
-            if content ~= nil then
-                for line in content:gmatch("[^\r\n$]+") do
-                    if line:match("{{") then
-                        line = line:gsub("{{", "{")
-                    end
-                    if line:match("}}") then
-                        line = line:gsub("}}", "}")
-                    end
+local function generate_templates(self)
+    helpers.filesystem.scan(BASE_TEMPLATES_PATH, function(result)
+        for index, template_path in pairs(result) do
+            local copy_to = nil
 
-                    local colors = self._private.colors[self._private.selected_wallpaper]
+            if template_path:match(".base") ~= nil then
+                helpers.filesystem.read_file(template_path, function(content)
+                    local lines = {}
+                    if content ~= nil then
+                        for line in content:gmatch("[^\r\n$]+") do
+                            if line:match("{{") then
+                                line = line:gsub("{{", "{")
+                            end
+                            if line:match("}}") then
+                                line = line:gsub("}}", "}")
+                            end
 
-                    for index = 0, 15 do
-                        local color = replace_template_colors(colors[index + 1], "color" .. index, line)
-                        if color ~= nil then
-                            line = color
+                            if line:match("copy_to=") then
+                                copy_to = line:gsub("copy_to=", "")
+                                line = ""
+                            end
+
+                            local colors = self._private.colors[self._private.selected_wallpaper]
+
+                            for index = 0, 15 do
+                                local color = replace_template_colors(colors[index + 1], "color" .. index, line)
+                                if color ~= nil then
+                                    line = color
+                                end
+                            end
+
+                            local background = replace_template_colors(colors[1], "background", line)
+                            if background ~= nil then
+                                line = background
+                            end
+
+                            local foreground = replace_template_colors(colors[16], "foreground", line)
+                            if foreground ~= nil then
+                                line = foreground
+                            end
+
+                            local cursor = replace_template_colors(colors[16], "cursor", line)
+                            if cursor ~= nil then
+                                line = cursor
+                            end
+
+                            if line:match("{wallpaper}") then
+                                line = line:gsub("{wallpaper}", self._private.wallpaper)
+                            end
+
+                            table.insert(lines, line)
                         end
                     end
 
-                    local background = replace_template_colors(colors[1], "background", line)
-                    if background ~= nil then
-                        line = background
+                    local name = template_path:sub(helpers.string.find_last(template_path, "/") + 1, #template_path)
+                    local path = GENERATED_TEMPLATES_PATH .. name:gsub(".base", "") .. ""
+                    local output = table.concat(lines, "\n")
+                    helpers.filesystem.save_file(path, output)
+                    if copy_to ~= nil then
+                        copy_to = copy_to:gsub("~", os.getenv("HOME"))
+                        helpers.filesystem.save_file(copy_to, output)
                     end
-
-                    local foreground = replace_template_colors(colors[16], "foreground", line)
-                    if foreground ~= nil then
-                        line = foreground
-                    end
-
-                    local cursor = replace_template_colors(colors[16], "cursor", line)
-                    if cursor ~= nil then
-                        line = cursor
-                    end
-
-                    if line:match("{wallpaper}") then
-                        line = line:gsub("{wallpaper}", self._private.wallpaper)
-                    end
-
-                    table.insert(lines, line)
-                end
+                end)
             end
 
-            local new_name = is_default == true
-                and DEFAULT_TEMPLATES_GENERATED_PATH .. DEFAULT_TEMPLATES_NAMES[index]
-                or template:gsub(".base", "") .. ""
-
-            helpers.filesystem.save_file(new_name, table.concat(lines, "\n"), function()
-                if index == #templates then
-                    run_scripts_after_template_generation(self)
-                end
-            end)
-        end)
-    end
+            if index == #result then
+                run_scripts_after_template_generation(self)
+            end
+        end
+    end, true)
 end
 
 local function generate_colorscheme(self, wallpaper, reset, light)
@@ -464,11 +419,6 @@ local function binary_wallpaper(screen)
 end
 
 local function scan_for_wallpapers(self)
-    if #self._private.wallpapers_paths == 0 then
-        self:emit_signal("wallpapers::empty")
-        return
-    end
-
     self._private.images = {}
 
     local emit_signal_timer = gtimer
@@ -480,50 +430,41 @@ local function scan_for_wallpapers(self)
             table.sort(self._private.images, function(a, b)
                 return a < b
             end)
-            self:emit_signal("wallpapers", self._private.images)
+
+            if #self._private.images == 0 then
+                self:emit_signal("wallpapers::empty")
+                return
+            else
+                self:emit_signal("wallpapers", self._private.images)
+            end
         end
     }
 
-    for index, path in self._private.wallpapers_paths:ipairs() do
-        local path = path:gsub("~", os.getenv("HOME"))
-        helpers.filesystem.scan(path, function(result)
-            for _index, wallpaper_path in pairs(result) do
-                local is_duplicate = helpers.table.contains(self._private.images, wallpaper_path)
-                local mimetype = Gio.content_type_guess(wallpaper_path)
-                if is_duplicate == false and PICTURES_MIMETYPES[mimetype] ~= nil then
-                    table.insert(self._private.images, wallpaper_path)
-                end
-
-                if index == #self._private.wallpapers_paths and _index == #result then
-                    emit_signal_timer:again()
-                end
+    helpers.filesystem.scan(WALLPAPERS_PATH, function(result)
+        for _index, wallpaper_path in pairs(result) do
+            local is_duplicate = helpers.table.contains(self._private.images, wallpaper_path)
+            local mimetype = Gio.content_type_guess(wallpaper_path)
+            if is_duplicate == false and PICTURES_MIMETYPES[mimetype] ~= nil then
+                table.insert(self._private.images, wallpaper_path)
             end
-        end, true)
-    end
+        end
+
+        emit_signal_timer:again()
+    end, true)
 end
 
 local function watch_wallpaper_changes(self)
-    for _, wallpaper_watcher in ipairs(self._private.wallpapers_watchers) do
-        wallpaper_watcher:stop()
-    end
+    local wallpaper_watcher = helpers.inotify:watch(WALLPAPERS_PATH,
+    {
+        helpers.inotify.Events.create,
+        helpers.inotify.Events.delete,
+        helpers.inotify.Events.moved_from,
+        helpers.inotify.Events.moved_to,
+    })
 
-    for _, path in self._private.wallpapers_paths:ipairs() do
-        local path = path:gsub("~", os.getenv("HOME"))
-
-        local wallpaper_watcher = helpers.inotify:watch(path,
-        {
-            helpers.inotify.Events.create,
-            helpers.inotify.Events.delete,
-            helpers.inotify.Events.moved_from,
-            helpers.inotify.Events.moved_to,
-        })
-
-        wallpaper_watcher:connect_signal("event", function(_, event, path, file)
-            scan_for_wallpapers(self)
-        end)
-
-        table.insert(self._private.wallpapers_watchers, wallpaper_watcher)
-    end
+    wallpaper_watcher:connect_signal("event", function()
+        scan_for_wallpapers(self)
+    end)
 end
 
 function theme:set_wallpaper(type)
@@ -531,7 +472,6 @@ function theme:set_wallpaper(type)
         self:save_colorscheme()
         self._private.wallpaper = self._private.selected_wallpaper
         helpers.settings:set_value("theme-wallpaper", self._private.wallpaper)
-        print("sudo ln -sf " .. self._private.wallpaper .. " ~/.config/wpg/.current")
         awful.spawn.with_shell("sudo ln -sf " .. self._private.wallpaper .. " ~/.config/wpg/.current")
     elseif type == "tiled" then
     elseif type == "color" then
@@ -552,8 +492,7 @@ end
 function theme:set_colorscheme()
     self._private.colorscheme = self._private.colors[self._private.selected_wallpaper]
     helpers.settings:set_value("theme-colorscheme", self._private.colorscheme)
-    generate_templates(self, self._private.templates, false)
-    generate_templates(self, DEFAULT_TEMPLATES, true)
+    generate_templates(self)
     generate_sequences(self._private.colorscheme)
 end
 
@@ -595,83 +534,6 @@ function theme:edit_color(index)
     end)
 end
 
-function theme:add_wallpapers_path()
-    awful.spawn.easy_async("yad --file --directory", function(stdout)
-        for line in stdout:gmatch("[^\r\n]+") do
-            if line ~= "" then
-                for _, wallpapers_path in self._private.wallpapers_paths:ipairs() do
-                    if wallpapers_path == line then
-                        self:emit_signal("wallpapers_paths::already_exists", line)
-                        return
-                    end
-                end
-
-                local new_wallpapers_paths = { table.unpack(self._private.wallpapers_paths), line }
-                self._private.wallpapers_paths = new_wallpapers_paths
-                helpers.settings:set_value("theme-wallpapers-paths", self._private.wallpapers_paths)
-                self:emit_signal("wallpapers_paths::added", line)
-                -----------
-                watch_wallpaper_changes(self)
-                scan_for_wallpapers(self)
-            end
-        end
-    end)
-end
-
-function theme:remove_wallpapers_path(path)
-    for index, value in self._private.wallpapers_paths:ipairs() do
-        if value == path then
-            local new_wallpapers_paths = { table.unpack(self._private.wallpapers_paths) }
-            table.remove(new_wallpapers_paths, index)
-            self._private.wallpapers_paths = new_wallpapers_paths
-            helpers.settings:set_value("theme-wallpapers-paths", self._private.wallpapers_paths)
-            self:emit_signal("wallpapers_paths::" .. path .. "::removed")
-
-            watch_wallpaper_changes(self)
-            scan_for_wallpapers(self)
-            break
-        end
-    end
-end
-
-function theme:add_template()
-    awful.spawn.easy_async("yad --file --mime-filter text/plain", function(stdout)
-        for line in stdout:gmatch("[^\r\n]+") do
-            if line ~= "" then
-                for _, template in self._private.templates:ipairs() do
-                    if template == line then
-                        self:emit_signal("templates::already_exists", line)
-                        return
-                    end
-                end
-
-                if line:match(".base") == nil then
-                    self:emit_signal("templates::not_base", line)
-                    return
-                end
-
-                local new_templates = { table.unpack(self._private.templates), line }
-                self._private.templates = new_templates
-                helpers.settings:set_value("theme-templates", self._private.templates)
-                self:emit_signal("templates::added", line)
-            end
-        end
-    end)
-end
-
-function theme:remove_template(template)
-    for index, value in self._private.templates:ipairs() do
-        if value == template then
-            local new_templates = { table.unpack(self._private.templates) }
-            table.remove(new_templates, index)
-            self._private.templates = new_templates
-            helpers.settings:set_value("theme-templates", new_templates)
-            self:emit_signal("templates::" .. template .. "::removed")
-            break
-        end
-    end
-end
-
 function theme:set_command_after_generation(text)
     self._private.command_after_generation = text
     helpers.settings:set_value("theme-command-after-generation", self._private.command_after_generation)
@@ -687,14 +549,6 @@ end
 
 function theme:get_wallpapers()
     return self._private.images or {}
-end
-
-function theme:get_wallpapers_paths()
-    return self._private.wallpapers_paths
-end
-
-function theme:get_templates()
-    return self._private.templates
 end
 
 function theme:get_command_after_generation()
@@ -724,9 +578,6 @@ local function new()
 
     local wallpaper = helpers.settings:get_value("theme-wallpaper")
     ret._private.wallpaper = wallpaper:gsub("~", os.getenv("HOME"))
-
-    ret._private.wallpapers_paths = helpers.settings:get_value("theme-wallpapers-paths")
-    ret._private.templates = helpers.settings:get_value("theme-templates")
     ret._private.wallpaper_type = helpers.settings:get_value("theme-wallpaper-type")
     ret._private.colorscheme = helpers.settings:get_value("theme-colorscheme")
     ret._private.command_after_generation = helpers.settings:get_value("theme-command-after-generation")

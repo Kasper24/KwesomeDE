@@ -13,182 +13,6 @@ local setmetatable = setmetatable
 
 local settings = { mt = {} }
 
-local function template_widget(layout, template)
-    local title = widgets.text
-    {
-        halign = "left",
-        size = 12,
-        text = template
-    }
-
-    local remove_button = widgets.button.text.normal
-    {
-        forced_width = dpi(40),
-        forced_height = dpi(40),
-        animate_size = false,
-        font = beautiful.icons.xmark.font,
-        text = beautiful.icons.xmark.icon,
-        on_press = function()
-            theme_daemon:remove_template(template)
-        end
-    }
-
-    local widget = wibox.widget
-    {
-        layout = wibox.layout.align.horizontal,
-        title,
-        nil,
-        remove_button
-    }
-
-    theme_daemon:connect_signal("templates::" .. template .. "::removed", function()
-        layout:remove_widgets(widget)
-    end)
-
-    return widget
-end
-
-local function templates_widget()
-    local title = widgets.text
-    {
-        size = 15,
-        text = "Templates:"
-    }
-
-    local layout = wibox.widget
-    {
-        layout = widgets.overflow.vertical,
-        spacing = dpi(15),
-        scrollbar_widget =
-        {
-            widget = wibox.widget.separator,
-            shape = helpers.ui.rrect(beautiful.border_radius),
-            color = beautiful.colors.on_background
-        },
-        scrollbar_width = dpi(3),
-        step = 50,
-    }
-
-    local add = widgets.button.text.normal
-    {
-        animate_size = false,
-        text = "Add",
-        on_press = function()
-            theme_daemon:add_template()
-        end
-    }
-
-    for _, template in theme_daemon:get_templates():ipairs() do
-        layout:add(template_widget(layout, template))
-    end
-
-    theme_daemon:connect_signal("templates::added", function(self, template)
-        layout:add(template_widget(layout, template))
-    end)
-
-    return wibox.widget
-    {
-        layout = wibox.layout.fixed.vertical,
-        spacing = dpi(15),
-        title,
-        {
-            widget = wibox.container.constraint,
-            strategy = "max",
-            height = dpi(400),
-            layout
-        },
-        add
-    }
-end
-
-local function wallpaper_path_widget(layout, path)
-    local title = widgets.text
-    {
-        halign = "left",
-        size = 12,
-        text = path
-    }
-
-    local remove_button = widgets.button.text.normal
-    {
-        forced_width = dpi(40),
-        forced_height = dpi(40),
-        animate_size = false,
-        font = beautiful.icons.xmark.font,
-        text = beautiful.icons.xmark.icon,
-        on_press = function()
-            theme_daemon:remove_wallpapers_path(path)
-        end
-    }
-
-    local widget = wibox.widget
-    {
-        layout = wibox.layout.align.horizontal,
-        title,
-        nil,
-        remove_button
-    }
-
-    theme_daemon:connect_signal("wallpapers_paths::" .. path .. "::removed", function()
-        layout:remove_widgets(widget)
-    end)
-
-    return widget
-end
-
-local function wallpapers_paths_widget()
-    local title = widgets.text
-    {
-        size = 15,
-        text = "Wallpapers Paths:"
-    }
-
-    local layout = wibox.widget
-    {
-        layout = widgets.overflow.vertical,
-        spacing = dpi(15),
-        scrollbar_widget =
-        {
-            widget = wibox.widget.separator,
-            shape = helpers.ui.rrect(beautiful.border_radius),
-            color = beautiful.colors.on_background
-        },
-        scrollbar_width = dpi(3),
-        step = 50,
-    }
-
-    local add = widgets.button.text.normal
-    {
-        animate_size = false,
-        text = "Add",
-        on_press = function()
-            theme_daemon:add_wallpapers_path()
-        end
-    }
-
-    for _, path in theme_daemon:get_wallpapers_paths():ipairs() do
-        layout:add(wallpaper_path_widget(layout, path))
-    end
-
-    theme_daemon:connect_signal("wallpapers_paths::added", function(self, path)
-        layout:add(wallpaper_path_widget(layout, path))
-    end)
-
-    return wibox.widget
-    {
-        layout = wibox.layout.fixed.vertical,
-        spacing = dpi(15),
-        title,
-        {
-            widget = wibox.container.constraint,
-            strategy = "max",
-            height = dpi(400),
-            layout
-        },
-        add
-    }
-end
-
 local function command_after_generation_widget()
     local title = widgets.text
     {
@@ -198,6 +22,8 @@ local function command_after_generation_widget()
 
     local prompt = widgets.prompt
     {
+        forced_width = dpi(600),
+        forced_height = dpi(50),
         reset_on_stop = false,
         prompt = "",
         text = theme_daemon:get_command_after_generation(),
@@ -211,8 +37,8 @@ local function command_after_generation_widget()
 
     return wibox.widget
     {
-        layout = wibox.layout.fixed.vertical,
-        spacing = dpi(15),
+        layout = wibox.layout.fixed.horizontal,
+        spacing = dpi(5),
         title,
         prompt.widget
     }
@@ -250,13 +76,7 @@ local function new(layout)
                 back_button,
                 settings_text
             },
-            {
-                layout = wibox.layout.fixed.vertical,
-                spacing = dpi(15),
-                command_after_generation_widget(),
-                wallpapers_paths_widget(),
-                templates_widget()
-            }
+            command_after_generation_widget()
         }
     }
 end
