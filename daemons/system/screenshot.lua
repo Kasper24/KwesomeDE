@@ -65,7 +65,6 @@ function screenshot:screenshot()
 
     local screenshot = awful.screenshot {
         directory = self._private.folder,
-        auto_save_delay = self._private.delay,
         interactive = self._private.screenshot_method == "selection"
     }
 
@@ -81,9 +80,10 @@ function screenshot:screenshot()
         self:emit_signal("ended", self._private.folder, file_path)
     end)
 
-    -- Small delay so the screenshot widget can hide itself
+    -- Adding a small delay so the screenshot widget can hide itself
+    -- Using awful.screenshot built in delay fucks it up
     gtimer {
-        timeout = 0.1,
+        timeout = math.max(0.5, self._private.delay),
         single_shot = true,
         autostart = true,
         call_now = false,
