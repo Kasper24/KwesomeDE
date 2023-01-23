@@ -124,6 +124,14 @@ local function new()
         ret._private.client.hidden = false
     end)
 
+    screenshot_daemon:connect_signal("error::create_file", function()
+        ret._private.client.hidden = false
+    end)
+
+    screenshot_daemon:connect_signal("error::create_directory", function()
+        ret._private.client.hidden = false
+    end)
+
     return ret
 end
 
