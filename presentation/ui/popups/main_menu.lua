@@ -9,11 +9,11 @@ local action_panel = require("presentation.ui.panels.action")
 local message_panel = require("presentation.ui.panels.message")
 local info_panel = require("presentation.ui.panels.info")
 local app_launcher = require("presentation.ui.popups.app_launcher")
-local screenshot_popup = require("presentation.ui.apps.screenshot")
-local record_popup = require("presentation.ui.apps.record")
+local screenshot_app = require("presentation.ui.apps.screenshot")
+local record_app = require("presentation.ui.apps.record")
 local hotkeys_popup = require("presentation.ui.popups.hotkeys")
 local power_popup = require("presentation.ui.popups.power")
-local theme_popup = require("presentation.ui.apps.theme")
+local theme_app = require("presentation.ui.apps.theme")
 local beautiful = require("beautiful")
 local ipairs = ipairs
 local capi = { awesome = awesome, screen = screen, tag = tag }
@@ -145,13 +145,13 @@ local function widget()
         {
             icon = beautiful.icons.camera_retro,
             text = "Screenshot",
-            on_press = function() screenshot_popup:toggle() end
+            on_press = function() screenshot_app:toggle() end
         },
         widgets.menu.button
         {
             icon = beautiful.icons.video,
             text = "Record",
-            on_press = function() record_popup:toggle() end
+            on_press = function() record_app:toggle() end
         },
         widgets.menu.separator(),
         widgets.menu.sub_menu_button
@@ -184,7 +184,7 @@ local function widget()
         {
             icon = beautiful.icons.spraycan,
             text = "Theme",
-            on_press = function() theme_popup:toggle() end
+            on_press = function() theme_app:toggle() end
         },
         widgets.menu.separator(),
         widgets.menu.button
