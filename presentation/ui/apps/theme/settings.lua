@@ -78,7 +78,7 @@ local function templates_widget()
         end
     }
 
-    for _, template in ipairs(theme_daemon:get_templates()) do
+    for _, template in theme_daemon:get_templates():ipairs() do
         layout:add(template_widget(layout, template))
     end
 
@@ -166,7 +166,7 @@ local function wallpapers_paths_widget()
         end
     }
 
-    for _, path in ipairs(theme_daemon:get_wallpapers_paths()) do
+    for _, path in theme_daemon:get_wallpapers_paths():ipairs() do
         layout:add(wallpaper_path_widget(layout, path))
     end
 

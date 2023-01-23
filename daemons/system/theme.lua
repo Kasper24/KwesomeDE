@@ -484,7 +484,7 @@ local function scan_for_wallpapers(self)
         end
     }
 
-    for index, path in ipairs(self._private.wallpapers_paths) do
+    for index, path in self._private.wallpapers_paths:ipairs() do
         local path = path:gsub("~", os.getenv("HOME"))
         helpers.filesystem.scan(path, function(result)
             for _index, wallpaper_path in pairs(result) do
@@ -507,7 +507,7 @@ local function watch_wallpaper_changes(self)
         wallpaper_watcher:stop()
     end
 
-    for _, path in ipairs(self._private.wallpapers_paths) do
+    for _, path in self._private.wallpapers_paths:ipairs() do
         local path = path:gsub("~", os.getenv("HOME"))
 
         local wallpaper_watcher = helpers.inotify:watch(path,
@@ -599,7 +599,7 @@ function theme:add_wallpapers_path()
     awful.spawn.easy_async("yad --file --directory", function(stdout)
         for line in stdout:gmatch("[^\r\n]+") do
             if line ~= "" then
-                for _, wallpapers_path in ipairs(self._private.wallpapers_paths) do
+                for _, wallpapers_path in self._private.wallpapers_paths:ipairs() do
                     if wallpapers_path == line then
                         self:emit_signal("wallpapers_paths::already_exists", line)
                         return
@@ -619,7 +619,7 @@ function theme:add_wallpapers_path()
 end
 
 function theme:remove_wallpapers_path(path)
-    for index, value in ipairs(self._private.wallpapers_paths) do
+    for index, value in self._private.wallpapers_paths:ipairs() do
         if value == path then
             local new_wallpapers_paths = { table.unpack(self._private.wallpapers_paths) }
             table.remove(new_wallpapers_paths, index)
@@ -638,7 +638,7 @@ function theme:add_template()
     awful.spawn.easy_async("yad --file --mime-filter text/plain", function(stdout)
         for line in stdout:gmatch("[^\r\n]+") do
             if line ~= "" then
-                for _, template in ipairs(self._private.templates) do
+                for _, template in self._private.templates:ipairs() do
                     if template == line then
                         self:emit_signal("templates::already_exists", line)
                         return
@@ -660,7 +660,7 @@ function theme:add_template()
 end
 
 function theme:remove_template(template)
-    for index, value in ipairs(self._private.templates) do
+    for index, value in self._private.templates:ipairs() do
         if value == template then
             local new_templates = { table.unpack(self._private.templates) }
             table.remove(new_templates, index)
