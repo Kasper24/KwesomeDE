@@ -170,7 +170,7 @@ local function task_list_menu(client)
         client_checkbox_button(client, "ontop", "On Top")
     }
 
-    return widgets.menu
+    local menu = widgets.menu
     {
         widgets.menu.button
         {
@@ -195,9 +195,7 @@ local function task_list_menu(client)
         client_checkbox_button(client, "minimized", "Minimize"),
         client_checkbox_button(client, "fullscreen", "Fullscreen"),
         client_checkbox_button(client, "titlebar", "Titlebar", function()
-            if client.custom_titlebar ~= false then
-                awful.titlebar.toggle(client)
-            end
+            awful.titlebar.toggle(client)
         end),
         client_checkbox_button(client, "sticky", "Sticky"),
         client_checkbox_button(client, "hidden", "Hidden"),
@@ -213,6 +211,16 @@ local function task_list_menu(client)
             on_press = function() client:kill() end
         },
     }
+
+    -- At the time this funciton runs client.custom_titlebar is still nil
+    -- so check if that property change and if so remove the titlebar toggle button
+    client:connect_signal("property::custom_titlebar", function()
+        if client.custom_titlebar == true then
+            menu:remove(6)
+        end
+    end)
+
+    return menu
 end
 
 local function favorite(layout, client, class)
