@@ -7,6 +7,7 @@ local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gmatrix = require("gears.matrix")
+local gtimer = require("gears.timer")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
 local theme_daemon = require("daemons.system.theme")
@@ -137,7 +138,16 @@ local function new(args)
     end)
 
     capi.tag.connect_signal("property::selected", function(t)
-        save_tag_thumbnail(t)
+        -- Wait a little bit so it won't screenshot the previous tag
+        gtimer {
+            timeout = 0.4,
+            autostart = true,
+            call_now = false,
+            single_shot = true,
+            callback = function()
+                save_tag_thumbnail(t)
+            end,
+        }
     end)
 
     return ret
