@@ -78,6 +78,7 @@ end
 
 local function icons()
     local font_awesome_6_solid_font_name = "Font Awesome 6 Pro Solid "
+    local font_awesome_6_regular_font_name = "Font Awesome 6 Pro Regular "
     local font_awesome_6_brands_font_name = "Font Awesome 6 Brands "
     local nerd_font_name = "Nerd Font Mono "
 
@@ -172,6 +173,7 @@ local function icons()
         pen_to_square = { icon = "︁", font = font_awesome_6_solid_font_name },
         triangle = { icon = "", font = font_awesome_6_solid_font_name },
         circle = { icon = "", font = font_awesome_6_solid_font_name },
+        circle_outline = { icon = "", font = font_awesome_6_regular_font_name },
         xmark = { icon = "", font = nerd_font_name },
         arch = { icon = "", font = nerd_font_name },
         home = { icon = "", font = font_awesome_6_solid_font_name },
