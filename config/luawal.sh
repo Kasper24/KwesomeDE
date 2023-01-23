@@ -6,6 +6,5 @@ sudo cp  ~/.cache/awesome/templates/sddm-sugar-candy.conf /usr/share/sddm/themes
 
 telegram-palette-gen --wal
 pywalfox update
-~/Dotfiles/packages/wal-vivaldi/generator.py
 pgrep -u $USER -x Discord > /dev/null && discocss
 spicetify update -q
