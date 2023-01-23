@@ -29,7 +29,7 @@ local function get_client_thumbnail(client)
     end
 end
 
-local function new(client)
+local function new(client, color)
     local thumbnail = get_client_thumbnail(client)
     local widget = thumbnail.thumbnail and
         wibox.widget {
@@ -43,7 +43,7 @@ local function new(client)
             forced_height = dpi(300),
             halign = "center",
             valign = "center",
-            color = beautiful.random_accent_color(),
+            color = color or beautiful.random_accent_color(),
             font = thumbnail.font_icon.font,
             size = 50,
             text = thumbnail.font_icon.icon

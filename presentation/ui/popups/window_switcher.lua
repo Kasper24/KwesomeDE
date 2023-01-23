@@ -19,6 +19,8 @@ local capi = { root = root, client = client }
 local window_switcher  = { }
 local instance = nil
 
+local accent_color = beautiful.random_accent_color()
+
 local function focus_client(client)
     local is_valid = pcall(function() return client.valid end) and client.valid
     if client == nil or not is_valid then
@@ -74,7 +76,7 @@ local function client_widget(self, client)
             normal_bg = beautiful.colors.background,
             normal_border_width = dpi(5),
             normal_border_color = beautiful.colors.surface,
-            on_normal_border_color = beautiful.random_accent_color(),
+            on_normal_border_color = accent_color,
             on_release = function()
                 self:select_client(client)
                 self:hide()
@@ -92,7 +94,7 @@ local function client_widget(self, client)
                             widget = widgets.text,
                             halign = "center",
                             valign ="center",
-                            color = beautiful.random_accent_color(),
+                            color = accent_color,
                             font = font_icon.font,
                             text = font_icon.icon
                         },
@@ -105,7 +107,7 @@ local function client_widget(self, client)
                             text = client.name
                         }
                     },
-                    widgets.client_thumbnail(client)
+                    widgets.client_thumbnail(client, accent_color)
                 }
             }
         }
