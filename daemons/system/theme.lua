@@ -208,7 +208,6 @@ local function generate_templates(self)
 end
 
 local function install_gtk_theme()
-    print(string.format("cp -r %s %s", GTK_THEME_PATH, INSTALLED_GTK_THEME_PATH))
     awful.spawn(string.format("cp -r %s %s", GTK_THEME_PATH, INSTALLED_GTK_THEME_PATH))
 end
 
@@ -579,13 +578,17 @@ function theme:get_command_after_generation()
     return self._private.command_after_generation
 end
 
+function theme:get_wallpaper_index()
+    for index, wallpaper in ipairs(self._private.images) do
+        if wallpaper == self:get_wallpaper() then
+            return index
+        end
+    end
+end
+
 local function new()
     local ret = gobject{}
     gtable.crush(ret, theme, true)
-
-    ret._private = {}
-    ret._private.wallpapers_watchers = {}
-    ret._private.colors = {}
 
     helpers.filesystem.read_file(COLORSCHEME_DATA_PATH, function(content)
         if content == nil then
@@ -600,12 +603,17 @@ local function new()
         ret._private.colors = data
     end)
 
+    ret._private = {}
+
     local wallpaper = helpers.settings:get_value("theme-wallpaper")
     ret._private.wallpaper = wallpaper:gsub("~", os.getenv("HOME"))
     ret._private.wallpaper_type = helpers.settings:get_value("theme-wallpaper-type")
     ret._private.colorscheme = helpers.settings:get_value("theme-colorscheme")
     ret._private.command_after_generation = helpers.settings:get_value("theme-command-after-generation")
     ret._private.color = helpers.settings:get_value("theme-color")
+
+    ret._private.images = {}
+    ret._private.selected_wallpaper = nil
 
     scan_for_wallpapers(ret)
     watch_wallpaper_changes(ret)

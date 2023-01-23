@@ -307,35 +307,28 @@ local function image_tab(self)
         stack:raise_widget(widget)
     end)
 
-    local selected_wallpaper_index = 0
     theme_daemon:connect_signal("wallpapers", function(self, wallpapers)
+        spinning_circle.children[1]:start()
+        stack:raise_widget(spinning_circle)
+
         wallpapers_layout:reset()
 
-        if wallpapers ~= nil then
-            for index, wallpaper in ipairs(wallpapers) do
-                wallpapers_layout:add(wallpaper_widget(wallpaper))
-
-                if wallpaper == theme_daemon:get_wallpaper() then
-                    selected_wallpaper_index = index
-                end
-            end
-
-            theme_daemon:select_wallpaper(theme_daemon:get_wallpaper())
-            stack:raise_widget(widget)
+        for _, wallpaper in ipairs(wallpapers) do
+            wallpapers_layout:add(wallpaper_widget(wallpaper))
         end
+
+        gtimer { timeout = 0.1, single_shot = true, autostart = true, call_now = false, callback = function()
+            theme_daemon:select_wallpaper(theme_daemon:get_wallpaper())
+            wallpapers_layout:set_scroll_factor(0)
+            wallpapers_layout:scroll(theme_daemon:get_wallpaper_index())
+            stack:raise_widget(widget)
+            spinning_circle.children[1]:abort()
+        end}
     end)
 
     theme_daemon:connect_signal("wallpapers::empty", function()
         stack:raise_widget(empty_wallpapers)
         wallpapers_layout:reset()
-    end)
-
-    self:connect_signal("visible", function(self, visiblity)
-        if visiblity == true then
-            gtimer { timeout = 0.1, single_shot = true, autostart = true, call_now = false, callback = function()
-                wallpapers_layout:scroll(selected_wallpaper_index)
-            end}
-        end
     end)
 
     for i = 1, 16 do
@@ -546,7 +539,6 @@ local function new(self, layout)
             _digital_sun_button:turn_on()
             _binary_button:turn_off()
             _stack:raise_widget(_digital_sun_tab)
-            print("sun")
         end
     }
 
