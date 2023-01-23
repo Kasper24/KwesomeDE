@@ -18,7 +18,11 @@ local function get_client_thumbnail(client)
     }
     screenshot:refresh()
 
-    if client:isvisible() then
+    -- Thumbnails for clients with custom titlebars, i.e welcome/screenshot/record/theme manager
+    -- won't work correctly since all the UI is hacked on with the titlebars which aren't included
+    -- when taking a screenshot with awful.screenshot
+    if client:isvisible() and client.custom_titlebar ~= true then
+
         client.thumbnail = screenshot.surface
     end
 
