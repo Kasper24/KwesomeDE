@@ -182,10 +182,7 @@ local function generate_templates(self)
                     local output = table.concat(lines, "\n")
 
                     -- Get the name of the file
-                    local name = template_path:sub(
-                        helpers.string.find_last(template_path, "/") + 1,
-                        #template_path
-                    )
+                    local name = template_path:gsub(BASE_TEMPLATES_PATH, "")
                     name = name:gsub(".base", "")
 
                     -- Backwards compatibility with wal/wpgtk
@@ -449,14 +446,13 @@ local function scan_for_wallpapers(self)
         autostart = false,
         single_shot = true,
         callback = function()
-            table.sort(self._private.images, function(a, b)
-                return a < b
-            end)
-
             if #self._private.images == 0 then
                 self:emit_signal("wallpapers::empty")
-                return
             else
+                table.sort(self._private.images, function(a, b)
+                    return a < b
+                end)
+
                 self:emit_signal("wallpapers", self._private.images)
             end
         end
@@ -467,13 +463,7 @@ local function scan_for_wallpapers(self)
             local is_duplicate = helpers.table.contains(self._private.images, wallpaper_path)
             local mimetype = Gio.content_type_guess(wallpaper_path)
             if is_duplicate == false and PICTURES_MIMETYPES[mimetype] ~= nil then
-                -- Get the name of the file
-                local name = wallpaper_path:sub(
-                    helpers.string.find_last(wallpaper_path, "/") + 1,
-                    #wallpaper_path
-                )
-                name = name:gsub(".base", "")
-                table.insert(self._private.images, name)
+                table.insert(self._private.images, wallpaper_path)
             end
         end
 
@@ -574,6 +564,10 @@ end
 
 function theme:get_wallpaper()
     return self._private.wallpaper
+end
+
+function theme:get_short_wallpaper_name(wallpaper_path)
+    return wallpaper_path:gsub(WALLPAPERS_PATH, "")
 end
 
 function theme:get_wallpapers()

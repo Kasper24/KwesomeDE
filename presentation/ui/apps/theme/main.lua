@@ -22,7 +22,7 @@ local function wallpaper_widget(wallpaper)
         halign = "left",
         text_normal_bg = beautiful.colors.on_background,
         size = 12,
-        text = wallpaper,
+        text = theme_daemon:get_short_wallpaper_name(wallpaper),
         on_press = function()
             theme_daemon:select_wallpaper(wallpaper)
         end
@@ -294,6 +294,11 @@ local function image_tab(self)
     theme_daemon:connect_signal("colorscheme::generating", function(self)
         spinning_circle.children[1]:start()
         stack:raise_widget(spinning_circle)
+    end)
+
+    theme_daemon:connect_signal("colorscheme::failed_to_generate", function(self, wallpaper)
+        spinning_circle.children[1]:abort()
+        stack:raise_widget(widget)
     end)
 
     theme_daemon:connect_signal("wallpaper::selected", function(self, wallpaper)
