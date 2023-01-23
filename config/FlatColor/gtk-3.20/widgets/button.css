@@ -1,0 +1,55 @@
+
+/**********
+ * button *
+ **********/
+button {
+    padding: 5px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: transparent;
+    border-radius: 0px;
+    background-color: @button_normal_color;
+    background-image: none;
+    color: @text_color;
+}
+
+button:focus {
+    border: @selected_bg_color 2px dotted;
+    color: @fg_color;
+}
+
+button:hover {
+    background-color: shade(@selected_bg_color, 0.9);
+    color: @fg_color;
+}
+
+button:active,
+button:active:hover,
+button.toggle:checked {
+    color: @fg_color;
+    background-color: shade(@selected_bg_color, 0.83);
+}
+
+button:disabled {
+    background-color: mix(@color8, @color0, 0.40);
+    background-image: none;
+    color: mix(@text_color, @color0, 0.40);
+}
+
+button:active:disabled {
+
+}
+
+GtkLinkButton.button,
+GtkLinkButton.button:focus,
+GtkLinkButton.button:hover,
+GtkLinkButton.button:active,
+GtkLinkButton.button:focus:active,
+GtkLinkButton.button:focus:hover {
+
+}
+
+button.radio:checked {
+    color: @fg_color;
+    background-color: shade(@selected_bg_color, 0.83);
+}
