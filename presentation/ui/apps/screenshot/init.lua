@@ -58,7 +58,9 @@ function screenshot:show()
 end
 
 function screenshot:hide()
-    self._private.client:kill()
+    if self._private.client ~= nil then
+        self._private.client:kill()
+    end
     self._private.visible = false
 end
 

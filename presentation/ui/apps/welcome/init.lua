@@ -64,7 +64,9 @@ function welcome:show()
 end
 
 function welcome:hide()
-    self._private.client:kill()
+    if self._private.client ~= nil then
+        self._private.client:kill()
+    end
     self._private.visible = false
 
     if helpers.settings:get_value("initial") ~= false then

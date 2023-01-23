@@ -56,7 +56,9 @@ function theme:show()
 end
 
 function theme:hide()
-    self._private.client:kill()
+    if self._private.client ~= nil then
+        self._private.client:kill()
+    end
     self._private.visible = false
     self:emit_signal("visible", false)
 end
