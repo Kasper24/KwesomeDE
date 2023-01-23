@@ -25,6 +25,7 @@ local instance = nil
 local DATA_PATH = helpers.filesystem.get_cache_dir("colorschemes") .. "data.json"
 local WALLPAPERS_PATH = helpers.filesystem.get_awesome_config_dir("presentation/assets/wallpapers")
 local BASE_TEMPLATES_PATH = helpers.filesystem.get_awesome_config_dir("config/templates")
+local BACKGROUND_PATH = helpers.filesystem.get_cache_dir("wallpaper")
 local GENERATED_TEMPLATES_PATH = helpers.filesystem.get_cache_dir("templates")
 local WAL_CACHE_PATH =  helpers.filesystem.get_xdg_cache_home("wal")
 
@@ -471,7 +472,7 @@ function theme:set_wallpaper(type)
         self:save_colorscheme()
         self._private.wallpaper = self._private.selected_wallpaper
         helpers.settings:set_value("theme-wallpaper", self._private.wallpaper)
-        awful.spawn.with_shell("ln -sf " .. self._private.wallpaper .. " ~/.config/wpg/.current")
+        awful.spawn.with_shell("ln -sf " .. self._private.wallpaper .. " " .. BACKGROUND_PATH)
     elseif type == "tiled" then
     elseif type == "color" then
         self._private.color = self._private.selected_color
