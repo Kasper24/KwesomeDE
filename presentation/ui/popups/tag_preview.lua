@@ -74,21 +74,17 @@ function tag_preview:show(t, args)
 
     local widget = wibox.widget
     {
-        widget = wibox.container.constraint,
-        mode = "max",
-        width = dpi(300),
-        height = dpi(150),
+        widget = wibox.container.background,
+        shape = helpers.ui.rrect(beautiful.border_radius),
+        border_width = dpi(5),
+        border_color = beautiful.colors.background,
         {
-            widget = wibox.container.background,
-            shape = helpers.ui.rrect(beautiful.border_radius),
-            border_width = dpi(5),
-            border_color = beautiful.colors.background,
-            {
-                widget = wibox.widget.imagebox,
-                image = t.thumbnail or theme_daemon:get_wallpaper(),
-                horizontal_fit_policy = "fit",
-                vertical_fit_policy = "fit",
-            }
+            widget = wibox.widget.imagebox,
+            forced_width = dpi(300),
+            forced_height = dpi(150),
+            horizontal_fit_policy = "fit",
+            vertical_fit_policy = "fit",
+            image = t.thumbnail or theme_daemon:get_wallpaper(),
         }
     }
 
