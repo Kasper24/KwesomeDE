@@ -472,7 +472,7 @@ function theme:set_wallpaper(type)
         self:save_colorscheme()
         self._private.wallpaper = self._private.selected_wallpaper
         helpers.settings:set_value("theme-wallpaper", self._private.wallpaper)
-        awful.spawn.with_shell("sudo ln -sf " .. self._private.wallpaper .. " ~/.config/wpg/.current")
+        awful.spawn.with_shell("ln -sf " .. self._private.wallpaper .. " ~/.config/wpg/.current")
     elseif type == "tiled" then
     elseif type == "color" then
         self._private.color = self._private.selected_color

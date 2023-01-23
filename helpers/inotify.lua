@@ -66,7 +66,7 @@ function inotify:watch(path, events)
     end})
 
     function ret:stop()
-        awful.spawn("sudo kill -9 " .. pid)
+        awful.spawn("kill -9 " .. pid)
     end
 
     return ret
