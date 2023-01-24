@@ -41,8 +41,9 @@ end
 local function access_point_widget(layout, access_point, accent_color)
     local widget = nil
 
-    local wifi_icon = widgets.text
+    local wifi_icon = wibox.widget
     {
+        widget = widgets.text,
         halign = "left",
         font = beautiful.icons.wifi_high.font,
         size = 25,
@@ -50,8 +51,9 @@ local function access_point_widget(layout, access_point, accent_color)
                 access_point.strength > 33 and beautiful.icons.wifi_medium.icon or beautiful.icons.wifi_low.icon
     }
 
-    local lock_icon = widgets.text
+    local lock_icon = wibox.widget
     {
+        widget = widgets.text,
         font = beautiful.icons.lock.font,
         size = 20,
         text =  beautiful.icons.lock.icon
@@ -79,8 +81,9 @@ local function access_point_widget(layout, access_point, accent_color)
         end
     }
 
-    local name = widgets.text
+    local name = wibox.widget
     {
+        widget = widgets.text,
         width = dpi(600),
         height = dpi(30),
         halign = "left",
@@ -91,8 +94,9 @@ local function access_point_widget(layout, access_point, accent_color)
         color = beautiful.colors.on_surface,
     }
 
-    local auto_connect_text = widgets.text
+    local auto_connect_text = wibox.widget
     {
+        widget = widgets.text,
         valign = "center",
         size = 12,
         color = beautiful.colors.on_surface,
@@ -236,8 +240,9 @@ local function new()
 
     ret._private = {}
 
-    local header = widgets.text
+    local header = wibox.widget
     {
+        widget = widgets.text,
         halign = "left",
         bold = true,
         color = beautiful.random_accent_color(),
@@ -280,8 +285,9 @@ local function new()
         step = 50,
     }
 
-    local no_wifi = widgets.text
+    local no_wifi = wibox.widget
     {
+        widget = widgets.text,
         color = beautiful.random_accent_color(),
         halign = "center",
         size = 100,

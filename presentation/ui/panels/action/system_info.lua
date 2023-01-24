@@ -51,8 +51,9 @@ local function arc_widget(icon, on_release, on_scroll_up, on_scroll_down)
             end,
         }
     else
-        icon_widget = widgets.text
+        icon_widget = wibox.widget
         {
+            widget = widgets.text,
             halign = "center",
             valign = "center",
             size = 30,
@@ -84,8 +85,9 @@ local function arc_widget(icon, on_release, on_scroll_up, on_scroll_down)
         icon_widget
     }
 
-    local value_text = widgets.text
+    local value_text = wibox.widget
     {
+        widget = widgets.text,
         halign = "center",
         text = "0%"
     }

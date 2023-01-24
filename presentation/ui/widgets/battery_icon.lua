@@ -3,6 +3,7 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 
+local wibox = require("wibox")
 local twidget = require("presentation.ui.widgets.text")
 local beautiful = require("beautiful")
 local upower_daemon = require("daemons.hardware.upower")
@@ -33,8 +34,9 @@ local Battery_States =
 local battery_state = nil
 
 local function new()
-    local widget = twidget
+    local widget = wibox.widget
     {
+        widget = twidget,
         halign = "center",
         size = 17,
         color = beautiful.random_accent_color(),

@@ -25,8 +25,9 @@ local function show_cursor()
         end
     }
 
-    local text = widgets.text
+    local text = wibox.widget
     {
+        widget = widgets.text,
         valign = "center",
         size = 15,
         text = "Show Cursor: "
@@ -42,14 +43,16 @@ local function show_cursor()
 end
 
 local function delay()
-    local title = widgets.text
+    local title = wibox.widget
     {
+        widget = widgets.text,
         size = 15,
         text = "Delay:"
     }
 
-    local value_text = widgets.text
+    local value_text = wibox.widget
     {
+        widget = widgets.text,
         size = 15,
         text = screenshot_daemon:get_delay(),
     }
@@ -94,14 +97,16 @@ local function delay()
 end
 
 local function folder()
-    local title = widgets.text
+    local title = wibox.widget
     {
+        widget = widgets.text,
         size = 15,
         text = "Folder:"
     }
 
-    local folder_text  = widgets.text
+    local folder_text  = wibox.widget
     {
+        widget = widgets.text,
         width = dpi(350),
         size = 12,
         text = screenshot_daemon:get_folder(),
@@ -143,8 +148,9 @@ local function new(layout)
         end
     }
 
-    local settings_text = widgets.text
+    local settings_text = wibox.widget
     {
+        widget = widgets.text,
         bold = true,
         size = 15,
         text = "Settings",

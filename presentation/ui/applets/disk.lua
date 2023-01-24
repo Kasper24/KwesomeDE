@@ -58,16 +58,16 @@ local function new()
     local header = wibox.widget
     {
         layout = wibox.layout.fixed.horizontal,
-        widgets.text
         {
+            widget = widgets.text,
             width = dpi(170),
             halign = "left",
             bold = true,
             color = beautiful.random_accent_color(),
             text = "Mount"
         },
-        widgets.text
         {
+            widget = widgets.text,
             halign = "left",
             bold = true,
             color = beautiful.random_accent_color(),
@@ -89,8 +89,8 @@ local function new()
             {
                 layout = wibox.layout.fixed.horizontal,
                 spacing = dpi(15),
-                widgets.text
                 {
+                    widget = widgets.text,
                     width = dpi(150),
                     halign = "left",
                     size = 12,
@@ -115,8 +115,8 @@ local function new()
                         stops = {{0, beautiful.random_accent_color()}, {0.33, beautiful.random_accent_color()},  {0.66, beautiful.random_accent_color()}}
                     },
                 },
-                widgets.text
                 {
+                    widget = widgets.text,
                     halign = "left",
                     size = 12,
                     text = math.floor(entry.used / 1024 / 1024)

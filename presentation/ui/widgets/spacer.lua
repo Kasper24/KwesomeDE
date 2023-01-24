@@ -14,8 +14,9 @@ function spacer.text(amount)
     local str = ""
     for i = 1, amount do str = str .. " " end
 
-    return twidget
+    return wibox.widget
     {
+        widget = twidget,
         text = str,
     }
 end

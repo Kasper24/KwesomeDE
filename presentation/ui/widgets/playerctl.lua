@@ -8,7 +8,7 @@ local wibox = require("wibox")
 local twidget = require("presentation.ui.widgets.text")
 local tbutton = require("presentation.ui.widgets.button.text")
 local ebutton = require("presentation.ui.widgets.button.elevated")
-local wslider = require("presentation.ui.widgets.slider")
+local swidget = require("presentation.ui.widgets.slider")
 local beautiful = require("beautiful")
 local general_playerctl_daemon = require("daemons.system.playerctl")
 local helpers = require("helpers")
@@ -32,8 +32,9 @@ function playerctl.art(halign, valign, size, default_icon_size, daemon)
         image = helpers.icon_theme:get_icon_path("spotify")
     }
 
-    local default_icon = twidget
+    local default_icon = wibox.widget
     {
+        widget = twidget,
         halign = halign or "left",
         valign = valign or "center",
         color = beautiful.random_accent_color(),
@@ -78,8 +79,9 @@ end
 function playerctl.title_artist(daemon)
     local playerctl_daemon = daemon or general_playerctl_daemon
 
-    local widget = twidget
+    local widget = wibox.widget
     {
+        widget = twidget,
         halign = "center",
         width = dpi(70),
         height = dpi(20),
@@ -105,8 +107,9 @@ end
 function playerctl.player_name(halign, daemon)
     local playerctl_daemon = daemon or general_playerctl_daemon
 
-    local widget = twidget
+    local widget = wibox.widget
     {
+        widget = twidget,
         halign = halign or "center",
         size = 12,
         text = "Not Playing"
@@ -125,8 +128,9 @@ end
 function playerctl.title(width, halign, daemon)
     local playerctl_daemon = daemon or general_playerctl_daemon
 
-    local widget = twidget
+    local widget = wibox.widget
     {
+        widget = twidget,
         width = width or dpi(70),
         height = dpi(20),
         halign = halign or "center",
@@ -152,8 +156,9 @@ end
 function playerctl.artist(width, halign, daemon)
     local playerctl_daemon = daemon or general_playerctl_daemon
 
-    local widget = twidget
+    local widget = wibox.widget
     {
+        widget = twidget,
         width = width or dpi(70),
         height = dpi(20),
         halign = halign or "center",
@@ -448,7 +453,7 @@ end
 function playerctl.slider(width, daemon)
     local playerctl_daemon = daemon or general_playerctl_daemon
 
-    local widget = wslider
+    local widget = swidget
     {
         forced_width = width or dpi(200),
         value = 0,
@@ -520,8 +525,9 @@ end
 function playerctl.position(daemon)
     local playerctl_daemon = daemon or general_playerctl_daemon
 
-    local widget = twidget
+    local widget = wibox.widget
     {
+        widget = twidget,
         size = 12,
         color = beautiful.colors.on_background,
         text = "00:00"
@@ -555,8 +561,9 @@ end
 function playerctl.length(daemon)
     local playerctl_daemon = daemon or general_playerctl_daemon
 
-    local widget = twidget
+    local widget = wibox.widget
     {
+        widget = twidget,
         size = 12,
         color = beautiful.colors.on_background,
         text = "00:00"
@@ -604,15 +611,16 @@ end
 function playerctl.volume(width, daemon)
     local playerctl_daemon = daemon or general_playerctl_daemon
 
-    local icon = twidget
+    local icon = wibox.widget
     {
+        widget = twidget,
         font = beautiful.icons.volume_normal.font,
         size = 12,
         text = beautiful.icons.volume_normal.icon,
         color = accent_color
     }
 
-    local widget = wslider
+    local widget = swidget
     {
         forced_width = width or dpi(50),
         value = 100,

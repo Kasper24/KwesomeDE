@@ -17,8 +17,9 @@ local instance = nil
 local function new()
     local ret = {}
 
-    local icon = widgets.text
+    local icon = wibox.widget
     {
+        widget = widgets.text,
         halign = "center",
         size = 30,
         color = beautiful.random_accent_color(),
@@ -26,8 +27,9 @@ local function new()
         text = beautiful.icons.volume_normal.icon,
     }
 
-    local text = widgets.text
+    local text = wibox.widget
     {
+        widget = widgets.text,
         halign = "center",
         valign = "bottom",
         size = 15

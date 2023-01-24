@@ -193,8 +193,9 @@ function menu.sub_menu_button(args)
     args.sub_menu = args.sub_menu or nil
 
     local icon = args.icon ~= nil
-    and twidget
+    and wibox.widget
     {
+        widget = twidget,
         font = args.icon.font,
         size =  args.icon_size,
         color = beautiful.random_accent_color(),
@@ -222,15 +223,15 @@ function menu.sub_menu_button(args)
                 layout = wibox.layout.fixed.horizontal,
                 spacing = dpi(15),
                 icon,
-                twidget
                 {
+                    widget = twidget,
                     size = args.text_size,
                     text = args.text,
                 },
             },
             nil,
-            twidget
             {
+                widget = twidget,
                 font = beautiful.icons.chevron_right.font,
                 size = 12,
                 text = beautiful.icons.chevron_right.icon,
@@ -256,8 +257,9 @@ function menu.button(args)
     local icon = nil
 
     if args.icon ~= nil then
-        icon = twidget
+        icon = wibox.widget
         {
+            widget = twidget,
             font = args.icon.font,
             size =  args.icon_size,
             color = beautiful.random_accent_color(),
@@ -271,8 +273,9 @@ function menu.button(args)
         }
     end
 
-    local text_widget = twidget
+    local text_widget = wibox.widget
     {
+        widget = twidget,
         size = args.text_size,
         text = args.text,
     }
@@ -316,8 +319,9 @@ function menu.checkbox_button(args)
     local icon = nil
 
     if args.icon ~= nil then
-        icon = twidget
+        icon = wibox.widget
         {
+            widget = twidget,
             font = args.icon.font,
             size =  args.icon_size,
             color = beautiful.random_accent_color(),
@@ -331,8 +335,9 @@ function menu.checkbox_button(args)
         }
     end
 
-    local checkbox = twidget
+    local checkbox = wibox.widget
     {
+        widget = twidget,
         size = 13,
         color = args.checkbox_color,
         font = beautiful.icons.toggle_on.font,
@@ -361,8 +366,8 @@ function menu.checkbox_button(args)
                 forced_width = dpi(250),
                 spacing = dpi(15),
                 icon,
-                twidget
                 {
+                    widget = twidget,
                     font = args.font,
                     size = args.text_size,
                     text = args.text,

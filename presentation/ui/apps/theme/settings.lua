@@ -14,8 +14,9 @@ local setmetatable = setmetatable
 local settings = { mt = {} }
 
 local function command_after_generation_widget()
-    local title = widgets.text
+    local title = wibox.widget
     {
+        widget = widgets.text,
         size = 15,
         text = "Run after generation:"
     }
@@ -56,8 +57,9 @@ local function new(layout)
         end
     }
 
-    local settings_text = widgets.text
+    local settings_text = wibox.widget
     {
+        widget = widgets.text,
         bold = true,
         size = 15,
         text = "Settings",

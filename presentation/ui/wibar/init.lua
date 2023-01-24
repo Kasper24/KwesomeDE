@@ -565,8 +565,9 @@ local function system_tray()
 end
 
 local function network()
-    local widget = widgets.text
+    local widget = wibox.widget
     {
+        widget = widgets.text,
         halign = "center",
         size = 17,
         color = beautiful.random_accent_color(),
@@ -596,8 +597,9 @@ local function network()
 end
 
 local function bluetooth()
-    local widget = widgets.text
+    local widget = wibox.widget
     {
+        widget = widgets.text,
         halign = "center",
         size = 17,
         color = beautiful.random_accent_color(),
@@ -617,8 +619,9 @@ local function bluetooth()
 end
 
 local function volume()
-    local widget = widgets.text
+    local widget = wibox.widget
     {
+        widget = widgets.text,
         halign = "center",
         size = 17,
         color = beautiful.random_accent_color(),

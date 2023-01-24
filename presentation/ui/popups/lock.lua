@@ -77,8 +77,9 @@ local function widget(self)
         image = beautiful.profile_icon,
     }
 
-    local name = widgets.text
+    local name = wibox.widget
     {
+        widget = widgets.text,
         halign = "center",
         text = os.getenv("USER"):upper()
     }

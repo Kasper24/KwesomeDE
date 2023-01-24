@@ -12,15 +12,17 @@ local dpi = beautiful.xresources.apply_dpi
 local main = { mt = {} }
 
 local function button(icon, text, on_release, on_by_default)
-    local icon = widgets.text
+    local icon = wibox.widget
     {
+        widget = widgets.text,
         halign = "center",
         font = icon.font,
         text = icon.icon
     }
 
-    local text = widgets.text
+    local text = wibox.widget
     {
+        widget = widgets.text,
         halign = "center",
         size = 12,
         text = text
@@ -89,8 +91,9 @@ local function new(self, layout)
         end
     )
 
-    local title = widgets.text
+    local title = wibox.widget
     {
+        widget = widgets.text,
         bold = true,
         size = 15,
         text = "Screenshot",

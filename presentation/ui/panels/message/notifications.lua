@@ -34,8 +34,9 @@ local function notification_widget(notification, on_removed)
             image = notification.icon,
         }
     else
-        icon = widgets.text
+        icon = wibox.widget
         {
+            widget = widgets.text,
             halign = "left",
             valign = "top",
             size = 30,
@@ -49,8 +50,8 @@ local function notification_widget(notification, on_removed)
     {
         widget = wibox.container.place,
         halign = "left",
-        widgets.text
         {
+            widget = widgets.text,
             halign = helpers.string.contain_right_to_left_characters(notification.title) and "right" or "left",
             valign = "top",
             size = 15,
@@ -81,8 +82,9 @@ local function notification_widget(notification, on_removed)
         }
     }
 
-    local time = widgets.text
+    local time = wibox.widget
     {
+        widget = widgets.text,
         halign = "left",
         valign = "top",
         size = 12,
@@ -176,8 +178,9 @@ local function notification_group(notification)
             image = notification.app_icon,
         }
     else
-        icon = widgets.text
+        icon = wibox.widget
         {
+            widget = widgets.text,
             size = 30,
             color = beautiful.random_accent_color(),
             font = notification.app_font_icon.font,
@@ -185,8 +188,9 @@ local function notification_group(notification)
         }
     end
 
-    local title = widgets.text
+    local title = wibox.widget
     {
+        widget = widgets.text,
         text = notification.app_name:gsub("^%l", string.upper)
     }
 
@@ -244,8 +248,9 @@ local function notification_group(notification)
 end
 
 local function new()
-    local header = widgets.text
+    local header = wibox.widget
     {
+        widget = widgets.text,
         bold = true,
         text = "Notifications"
     }
@@ -268,16 +273,16 @@ local function new()
         {
             layout = wibox.layout.fixed.vertical,
             spacing = dpi(15),
-            widgets.text
             {
+                widget = widgets.text,
                 halign = "center",
                 size = 50,
                 color = beautiful.random_accent_color(),
                 font = beautiful.icons.bell.font,
                 text = beautiful.icons.bell.icon
             },
-            widgets.text
             {
+                widget = widgets.text,
                 halign = "center",
                 size = 15,
                 text = "No Notifications"

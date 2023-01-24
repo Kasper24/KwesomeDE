@@ -18,7 +18,7 @@ local function effect(widget, bg, shape, border_width, border_color)
 		animation_targets.color = helpers.color.hex_to_rgb(bg)
     end
     if shape ~= nil then
-        widget:get_children_by_id("background_role")[1].shape = shape
+        -- widget:get_children_by_id("background_role")[1].shape = shape
     end
     if border_width ~= nil then
 		animation_targets.border_width = border_width

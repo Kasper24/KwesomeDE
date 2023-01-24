@@ -117,8 +117,9 @@ end
 local function button(image, text, on_release)
     local accent_color = beautiful.random_accent_color()
 
-    local text = widgets.text
+    local text = wibox.widget
     {
+        widget = widgets.text,
         halign = "center",
         size = 15,
         text = text,
@@ -164,8 +165,9 @@ local function widget(self)
         image = beautiful.profile_icon,
     }
 
-    local name = widgets.text
+    local name = wibox.widget
     {
+        widget = widgets.text,
         halign = "center",
         text = os.getenv("USER"):upper()
     }
@@ -178,8 +180,9 @@ local function widget(self)
         name
     }
 
-    local greeter = widgets.text
+    local greeter = wibox.widget
     {
+        widget = widgets.text,
         halign = "center",
         size = 50,
         text = greeters[math.random(#greeters)]

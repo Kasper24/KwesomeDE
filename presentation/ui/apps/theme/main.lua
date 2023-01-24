@@ -48,8 +48,9 @@ local function color_button(index)
         bg = "#FFFFFF"
     }
 
-    local color_text = widgets.text
+    local color_text = wibox.widget
     {
+        widget = widgets.text,
         halign = "center",
         size = 12,
         color = beautiful.colors.background,
@@ -60,8 +61,8 @@ local function color_button(index)
     {
         layout = wibox.layout.fixed.vertical,
         spacing = dpi(15),
-        widgets.text
         {
+            widget = widgets.text,
             halign = "center",
             size = 12,
             text = index
@@ -131,16 +132,16 @@ local function image_tab(self)
         {
             layout = wibox.layout.fixed.vertical,
             spacing = dpi(15),
-            widgets.text
             {
+                widget = widgets.text,
                 halign = "center",
                 size = 50,
                 color = beautiful.random_accent_color(),
                 font = beautiful.icons.spraycan.font,
                 text = beautiful.icons.spraycan.icon
             },
-            widgets.text
             {
+                widget = widgets.text,
                 halign = "center",
                 size = 15,
                 text = "It's empty out here ):"
@@ -318,8 +319,8 @@ local function image_tab(self)
 
         gtimer { timeout = 0.1, single_shot = true, autostart = true, call_now = false, callback = function()
             theme_daemon:select_wallpaper(theme_daemon:get_wallpaper())
-            wallpapers_layout:set_scroll_factor(0)
-            wallpapers_layout:scroll(theme_daemon:get_wallpaper_index())
+            -- wallpapers_layout:set_scroll_factor(0)
+            -- wallpapers_layout:scroll(theme_daemon:get_wallpaper_index())
             stack:raise_widget(widget)
             spinning_circle.children[1]:abort()
         end}
@@ -465,8 +466,9 @@ local function new(self, layout)
     local _digital_sun_tab = digital_sun_tab()
     local _binary_tab = wip_tab()
 
-    local title = widgets.text
+    local title = wibox.widget
     {
+        widget = widgets.text,
         forced_width = dpi(50),
         forced_height = dpi(50),
         bold = true,

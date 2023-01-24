@@ -77,8 +77,9 @@ local function application_widget(args)
             }
         }
     else
-        icon = widgets.text
+        icon = wibox.widget
         {
+            widget = widgets.text,
             size = 15,
             color = args.accent_color,
             font = font_icon.font,
@@ -86,8 +87,9 @@ local function application_widget(args)
         }
     end
 
-    local name = widgets.text
+    local name = wibox.widget
     {
+        widget = widgets.text,
         halign = "left",
         size = 15,
         text = args.application.name
@@ -189,8 +191,9 @@ local function device_widget(args)
     args.on_removed_cb = args.on_removed_cb or nil
     args.accent_color = args.accent_color or nil
 
-    local name = widgets.text
+    local name = wibox.widget
     {
+        widget = widgets.text,
         width = dpi(440),
         halign = "left",
         size = 12,
@@ -294,8 +297,9 @@ local function applications()
     local sink_inputs_accent_color = beautiful.random_accent_color()
     local sources_outputs_accent_color = beautiful.random_accent_color()
 
-    local sink_inputs_header = widgets.text
+    local sink_inputs_header = wibox.widget
     {
+        widget = widgets.text,
         halign = "left",
         bold = true,
         color = sink_inputs_accent_color,
@@ -399,8 +403,9 @@ local function devices()
     local sinks_accent_color = beautiful.random_accent_color()
     local sources_accent_color = beautiful.random_accent_color()
 
-    local sinks_header = widgets.text
+    local sinks_header = wibox.widget
     {
+        widget = widgets.text,
         halign = "left",
         bold = true,
         color = sinks_accent_color,
@@ -421,8 +426,9 @@ local function devices()
         step = 50,
     }
 
-    local sources_header = widgets.text
+    local sources_header = wibox.widget
     {
+        widget = widgets.text,
         halign = "left",
         bold = true,
         color = sources_accent_color,

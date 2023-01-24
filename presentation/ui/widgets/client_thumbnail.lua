@@ -40,7 +40,8 @@ local function new(client, color)
             vertical_fit_policy = "fit",
             image = thumbnail.thumbnail
         } or
-        twidget {
+        wibox.widget {
+            widget = twidget,
             forced_width = dpi(300),
             forced_height = dpi(300),
             halign = "center",

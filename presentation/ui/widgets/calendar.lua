@@ -7,7 +7,7 @@ local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gshape = require("gears.shape")
 local wibox = require("wibox")
-local wtext = require("presentation.ui.widgets.text")
+local twidget = require("presentation.ui.widgets.text")
 local wtbutton = require("presentation.ui.widgets.button.text")
 local beautiful = require("beautiful")
 local helpers = require("helpers")
@@ -23,8 +23,9 @@ local function day_name_widget(name)
 		widget = wibox.container.background,
 		forced_width = dpi(35),
 		forced_height = dpi(35),
-		wtext
+		wibox.widget
 		{
+			widget = twidget,
 			halign = "center",
 			size = 15,
 			bold = true,
@@ -48,8 +49,9 @@ local function date_widget(date, is_current, is_another_month)
 		forced_height = dpi(35),
 		shape = gshape.circle,
 		bg = is_current and beautiful.random_accent_color() or beautiful.colors.transparent,
-		wtext
+		wibox.widget
 		{
+			widget = twidget,
 			halign = "center",
 			size = 15,
 			color = text_color,

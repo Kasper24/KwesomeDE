@@ -135,8 +135,9 @@ naughty.connect_signal("request::display", function(n)
             }
         }
     else
-        app_icon = widgets.text
+        app_icon = wibox.widget
         {
+            widget = widgets.text,
             size = 20,
             color = beautiful.random_accent_color(),
             font = n.app_font_icon.font,
@@ -144,8 +145,9 @@ naughty.connect_signal("request::display", function(n)
         }
     end
 
-    local app_name = widgets.text
+    local app_name = wibox.widget
     {
+        widget = widgets.text,
         size = 12,
         text = n.app_name:gsub("^%l", string.upper)
     }
@@ -198,8 +200,9 @@ naughty.connect_signal("request::display", function(n)
             }
         }
     else
-        icon = widgets.text
+        icon = wibox.widget
         {
+            widget = widgets.text,
             size = 30,
             color = beautiful.random_accent_color(),
             font = n.font_icon.font,
@@ -212,8 +215,8 @@ naughty.connect_signal("request::display", function(n)
         widget = wibox.container.scroll.horizontal,
         step_function = wibox.container.scroll.step_functions.waiting_nonlinear_back_and_forth,
         speed = 50,
-        widgets.text
         {
+            widget = widgets.text,
             size = 15,
             bold = true,
             text = n.title,
@@ -253,8 +256,8 @@ naughty.connect_signal("request::display", function(n)
             },
             scrollbar_width = dpi(10),
             scroll_speed = 3,
-            widgets.text
             {
+                widget = widgets.text,
                 size = 15,
                 text = n.message
             }

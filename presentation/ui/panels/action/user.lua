@@ -34,8 +34,9 @@ local function new()
         }
     }
 
-    local name = widgets.text
+    local name = wibox.widget
     {
+        widget = widgets.text,
         size = 15,
         italic = true,
         text = os.getenv("USER") ..  "@" .. capi.awesome.hostname
@@ -57,14 +58,14 @@ local function new()
     {
         layout = wibox.layout.fixed.horizontal,
         spacing = dpi(15),
-        widgets.text
         {
+            widget = widgets.text,
             color = beautiful.random_accent_color(),
             font = beautiful.icons.clock.font,
             text = beautiful.icons.clock.icon,
         },
-        widgets.text
         {
+            widget = widgets.text,
             size = 12,
             text = "0%",
         }
@@ -78,14 +79,14 @@ local function new()
     {
         layout = wibox.layout.fixed.horizontal,
         spacing = dpi(15),
-        widgets.text
         {
+            widget = widgets.text,
             color = beautiful.random_accent_color(),
             font = beautiful.icons.box.font,
             text = beautiful.icons.box.icon,
         },
-        widgets.text
         {
+            widget = widgets.text,
             size = 12,
             text = "0 Packages",
         }
@@ -100,8 +101,8 @@ local function new()
         layout = wibox.layout.fixed.horizontal,
         spacing = dpi(15),
         widgets.battery_icon(),
-        widgets.text
         {
+            widget = widgets.text,
             size = 12,
             text = "50 %",
         }

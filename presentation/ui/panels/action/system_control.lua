@@ -61,8 +61,9 @@ local function arrow_button(icon, text, on_icon_release, on_arrow_release)
         arrow
     }
 
-    local name = widgets.text
+    local name = wibox.widget
     {
+        widget = widgets.text,
         halign = "center",
         size = 15,
         text = text
@@ -101,8 +102,9 @@ local function button(icon, text, on_release)
         on_release = on_release
     }
 
-    local name = widgets.text
+    local name = wibox.widget
     {
+        widget = widgets.text,
         halign = "center",
         size = 15,
         text = text
@@ -137,8 +139,9 @@ local function quick_action(icon, text, on_release)
         on_release = on_release
     }
 
-    local name = widgets.text
+    local name = wibox.widget
     {
+        widget = widgets.text,
         halign = "center",
         size = 15,
         text = text

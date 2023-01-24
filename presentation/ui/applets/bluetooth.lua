@@ -49,8 +49,9 @@ local function device_widget(device, path, layout, accent_color)
         image = helpers.icon_theme:get_icon_path(device.Icon or "bluetooth")
     }
 
-    local name = widgets.text
+    local name = wibox.widget
     {
+        widget = widgets.text,
         width = dpi(600),
         height = dpi(30),
         halign = "left",
@@ -175,8 +176,9 @@ local function new()
 
     ret._private = {}
 
-    local header = widgets.text
+    local header = wibox.widget
     {
+        widget = widgets.text,
         halign = "left",
         bold = true,
         color = beautiful.random_accent_color(),
@@ -219,8 +221,9 @@ local function new()
         step = 50,
     }
 
-    local no_bluetooth = widgets.text
+    local no_bluetooth = wibox.widget
     {
+        widget = widgets.text,
         color = beautiful.random_accent_color(),
         halign = "center",
         size = 100,

@@ -165,8 +165,9 @@ local function new(args)
     args.time_format_12h = args.time_format_12h or false
     args.both_units_widget = args.both_units_widget or false
 
-    local icon = widgets.text
+    local icon = wibox.widget
     {
+        widget = widgets.text,
         color = beautiful.random_accent_color(),
         size = 85,
         font = icon_map["01d"].font
@@ -291,8 +292,8 @@ local function new(args)
         widget = wibox.container.place,
         halign = "center",
         valign = "center",
-        widgets.text
         {
+            widget = widgets.text,
             halign = "center",
             size = 25,
             color = beautiful.colors.on_background,
@@ -300,8 +301,9 @@ local function new(args)
         }
     }
 
-    local error_icon = widgets.text
+    local error_icon = wibox.widget
     {
+        widget = widgets.text,
         halign = "center",
         size = 120,
         color = beautiful.random_accent_color(),
@@ -390,15 +392,17 @@ local function new(args)
             hourly_forecast_graph_border:add_value(hour.temp)
 
             if (i - 1) % 4 == 0 then
-                local hour_widget = widgets.text
+                local hour_widget = wibox.widget
                 {
+                    widget = widgets.text,
                     halign = "center",
                     size = 12,
                     text = os.date(args.time_format_12h and "%I%p" or "%H:00", tonumber(hour.dt)),
                 }
 
-                local temperature_widget = widgets.text
+                local temperature_widget = wibox.widget
                 {
+                    widget = widgets.text,
                     halign = "center",
                     size = 15,
                     text = string.format("%.0f", hour.temp) .. "°"
@@ -423,8 +427,8 @@ local function new(args)
                 {
                     layout = wibox.layout.fixed.vertical,
                     spacing = dpi(8),
-                    widgets.text
                     {
+                        widget = widgets.text,
                         halign = "center",
                         color = beautiful.random_accent_color(),
                         size = 35,

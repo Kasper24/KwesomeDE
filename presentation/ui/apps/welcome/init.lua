@@ -93,23 +93,26 @@ local function indicator(active)
 end
 
 local function last_page(on_next_pressed)
-    local icon = widgets.text
+    local icon = wibox.widget
     {
+        widget = widgets.text,
         halign = "center",
         size = 120,
         font = beautiful.icons.circle_check.font,
         text = beautiful.icons.circle_check.icon
     }
 
-    local title = widgets.text
+    local title = wibox.widget
     {
+        widget = widgets.text,
         halign = "center",
         size = 30,
         text = "Congratulations"
     }
 
-    local description = widgets.text
+    local description = wibox.widget
     {
+        widget = widgets.text,
         halign = "center",
         size = 13,
         text = [[Your system is now ready to be used!
@@ -206,16 +209,18 @@ For more information visit the following links.]],
 end
 
 local function weather_page(on_next_pressed, on_previous_pressed)
-    local icon = widgets.text
+    local icon = wibox.widget
     {
+        widget = widgets.text,
         halign = "center",
         size = 120,
         font = beautiful.icons.clouds.font,
         text = beautiful.icons.clouds.icon
     }
 
-    local title = widgets.text
+    local title = wibox.widget
     {
+        widget = widgets.text,
         halign = "center",
         size = 30,
         text = "Weather"
@@ -415,16 +420,18 @@ local function weather_page(on_next_pressed, on_previous_pressed)
 end
 
 local function gitlab_page(on_next_pressed, on_previous_pressed)
-    local icon = widgets.text
+    local icon = wibox.widget
     {
+        widget = widgets.text,
         halign = "center",
         size = 120,
         font = beautiful.icons.gitlab.font,
         text = beautiful.icons.gitlab.icon
     }
 
-    local title = widgets.text
+    local title = wibox.widget
     {
+        widget = widgets.text,
         halign = "center",
         size = 30,
         text = "Gitlab"
@@ -585,23 +592,26 @@ local function gitlab_page(on_next_pressed, on_previous_pressed)
 end
 
 local function github_page(on_next_pressed, on_previous_pressed)
-    local icon = widgets.text
+    local icon = wibox.widget
     {
+        widget = widgets.text,
         halign = "center",
         size = 120,
         font = beautiful.icons.github.font,
         text = beautiful.icons.github.icon
     }
 
-    local title = widgets.text
+    local title = wibox.widget
     {
+        widget = widgets.text,
         halign = "center",
         size = 30,
         text = "Github"
     }
 
-    local description = widgets.text
+    local description = wibox.widget
     {
+        widget = widgets.text,
         halign = "center",
         size = 13,
         text = "Please fill your GitHub username in order for the GitHub panel info to show.",
@@ -692,23 +702,26 @@ local function github_page(on_next_pressed, on_previous_pressed)
 end
 
 local function email_page(on_next_pressed, on_previous_pressed)
-    local icon = widgets.text
+    local icon = wibox.widget
     {
+        widget = widgets.text,
         halign = "center",
         size = 120,
         font = beautiful.icons.envelope.font,
         text = beautiful.icons.envelope.icon
     }
 
-    local title = widgets.text
+    local title = wibox.widget
     {
+        widget = widgets.text,
         halign = "center",
         size = 30,
         text = "Email"
     }
 
-    local description = widgets.text
+    local description = wibox.widget
     {
+        widget = widgets.text,
         halign = "center",
         size = 13,
         text = "Please fill your email info in order for the email panel info to show.",
@@ -836,23 +849,26 @@ local function email_page(on_next_pressed, on_previous_pressed)
 end
 
 local function password_page(on_next_pressed, on_previous_pressed)
-    local icon = widgets.text
+    local icon = wibox.widget
     {
+        widget = widgets.text,
         halign = "center",
         size = 120,
         font = beautiful.icons.lock.font,
         text = beautiful.icons.lock.icon
     }
 
-    local title = widgets.text
+    local title = wibox.widget
     {
+        widget = widgets.text,
         halign = "center",
         size = 30,
         text = "Password"
     }
 
-    local description = widgets.text
+    local description = wibox.widget
     {
+        widget = widgets.text,
         halign = "center",
         size = 13,
         text = "Please pick a password for the lock screen.",
@@ -963,8 +979,9 @@ local function welcome_page(on_next_pressed, on_previous_pressed)
         image = beautiful.profile_icon,
     }
 
-    local title = widgets.text
+    local title = wibox.widget
     {
+        widget = widgets.text,
         halign = "center",
         size = 25,
         text = "Hi " .. os.getenv("USER"):upper() .. ", Welcome to KwesomeDE!"

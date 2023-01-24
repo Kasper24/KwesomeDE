@@ -55,8 +55,9 @@ local window = [[ lua -e "
 local accent_color = beautiful.random_accent_color()
 
 local function resolution()
-    local title = widgets.text
+    local title = wibox.widget
     {
+        widget = widgets.text,
         size = 15,
         text = "Resolution:"
     }
@@ -90,14 +91,16 @@ local function resolution()
 end
 
 local function fps()
-    local title = widgets.text
+    local title = wibox.widget
     {
+        widget = widgets.text,
         size = 15,
         text = "FPS:"
     }
 
-    local value_text = widgets.text
+    local value_text = wibox.widget
     {
+        widget = widgets.text,
         size = 15,
         text = record_daemon:get_fps(),
     }
@@ -138,14 +141,16 @@ local function fps()
 end
 
 local function delay()
-    local title = widgets.text
+    local title = wibox.widget
     {
+        widget = widgets.text,
         size = 15,
         text = "Delay:"
     }
 
-    local value_text = widgets.text
+    local value_text = wibox.widget
     {
+        widget = widgets.text,
         size = 15,
         text = record_daemon:get_delay(),
     }
@@ -186,8 +191,9 @@ local function delay()
 end
 
 local function audio_source()
-    local title = widgets.text
+    local title = wibox.widget
     {
+        widget = widgets.text,
         size = 15,
         text = "Audio Source:"
     }
@@ -227,14 +233,16 @@ local function audio_source()
 end
 
 local function folder()
-    local title = widgets.text
+    local title = wibox.widget
     {
+        widget = widgets.text,
         size = 15,
         text = "Folder: "
     }
 
-    local folder_text  = widgets.text
+    local folder_text  = wibox.widget
     {
+        widget = widgets.text,
         width = dpi(350),
         size = 12,
         text = record_daemon:get_folder(),
@@ -265,8 +273,9 @@ local function folder()
 end
 
 local function format()
-    local title = widgets.text
+    local title = wibox.widget
     {
+        widget = widgets.text,
         size = 15,
         text = "Format:"
     }
@@ -296,8 +305,9 @@ local function format()
 end
 
 local function main(self)
-    local title = widgets.text
+    local title = wibox.widget
     {
+        widget = widgets.text,
         bold = true,
         size = 15,
         text = "Record",

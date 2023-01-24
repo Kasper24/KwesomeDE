@@ -77,8 +77,8 @@ local function widget()
         widget = wibox.container.place,
         halign = "center",
         valign = "center",
-        widgets.text
         {
+            widget = widgets.text,
             halign = "center",
             size = 25,
             color = beautiful.colors.on_background,
@@ -91,8 +91,8 @@ local function widget()
         widget = wibox.container.place,
         halign = "center",
         valign = "center",
-        widgets.text
         {
+            widget = widgets.text,
             halign = "center",
             size = 120,
             color = beautiful.random_accent_color(),
@@ -152,26 +152,26 @@ local function email()
                 {
                     layout = wibox.layout.fixed.vertical,
                     spacing = dpi(5),
-                    widgets.text
                     {
+                        widget = widgets.text,
                         halign = "left",
                         size = 12,
                         text = "From: " .. email.author.name
                     },
-                    widgets.text
                     {
+                        widget = widgets.text,
                         halign = "left",
                         size = 12,
                         text = "Date: " .. email.modified
                     },
-                    widgets.text
                     {
+                        widget = widgets.text,
                         halign = "left",
                         size = 12,
                         text = "Subject: " .. tostring(email.title)
                     },
-                    widgets.text
                     {
+                        widget = widgets.text,
                         halign = "left",
                         size = 12,
                         text = "Summary: " .. tostring(email.summary)
@@ -246,16 +246,18 @@ local function github_activity()
                     " <b>" .. event.repo.name .. "</b>"
             }
 
-            local icon = widgets.text
+            local icon = wibox.widget
             {
+                widget = widgets.text,
                 font = action_and_link.icon.font,
                 size = 15,
                 color = beautiful.random_accent_color(),
                 text = action_and_link.icon.icon
             }
 
-            local time = widgets.text
+            local time = wibox.widget
             {
+                widget = widgets.text,
                 size = 12,
                 text = helpers.string.to_time_ago(os.difftime(os.time(os.date("!*t")), helpers.string.parse_date(event.created_at))),
             }
@@ -362,20 +364,20 @@ local function github_pr()
                         {
                             layout = wibox.layout.fixed.horizontal,
                             spacing = dpi(10),
-                            widgets.text
                             {
+                                widget = widgets.text,
                                 size = 12,
                                 bold = true,
                                 text = string.sub(pr.repository_url, string.find(pr.repository_url, "/[^/]*$") + 1) .. " |",
                             },
-                            widgets.text
                             {
+                                widget = widgets.text,
                                 size = 12,
                                 text = pr.title,
                             },
                         },
-                        widgets.text
                         {
+                            widget = widgets.text,
                             size = 12,
                             text =  "#" .. pr.number .. " opened " ..
                                     helpers.string.to_time_ago(os.difftime(os.time(os.date("!*t")), helpers.string.parse_date(pr.created_at))) ..
@@ -384,15 +386,15 @@ local function github_pr()
                         {
                             layout = wibox.layout.fixed.horizontal,
                             spacing = dpi(10),
-                            widgets.text
                             {
+                                widget = widgets.text,
                                 font = beautiful.icons.message.font,
                                 size = 15,
                                 color = beautiful.random_accent_color(),
                                 text = beautiful.icons.message.icon
                             },
-                            widgets.text
                             {
+                                widget = widgets.text,
                                 size = 12,
                                 text = pr.comments,
                             }
@@ -534,15 +536,17 @@ local function gitlab()
                 },
             }
 
-            local title = widgets.text
+            local title = wibox.widget
             {
+                widget = widgets.text,
                 size = 12,
                 bold = true,
                 text = pr.title,
             }
 
-            local from_branch_to_branch = widgets.text
+            local from_branch_to_branch = wibox.widget
             {
+                widget = widgets.text,
                 size = 12,
                 text = pr.source_branch .. " -> " .. pr.target_branch
             }
@@ -551,13 +555,13 @@ local function gitlab()
             {
                 layout = wibox.layout.fixed.horizontal,
                 spacing = dpi(10),
-                widgets.text
                 {
+                    widget = widgets.text,
                     size = 12,
                     text = pr.author.name
                 },
-                widgets.text
                 {
+                    widget = widgets.text,
                     size = 12,
                     text = helpers.string.to_time_ago(os.difftime(os.time(os.date("!*t")), helpers.string.parse_date(pr.created_at)))
                 }
@@ -567,15 +571,15 @@ local function gitlab()
             {
                 layout = wibox.layout.fixed.horizontal,
                 spacing = dpi(10),
-                widgets.text
                 {
+                    widget = widgets.text,
                     font = beautiful.icons.check.font,
                     size = 15,
                     color = beautiful.random_accent_color(),
                     text = beautiful.icons.check.icon
                 },
-                widgets.text
                 {
+                    widget = widgets.text,
                     size = 12,
                     text = pr.upvotes,
                 }
@@ -585,15 +589,15 @@ local function gitlab()
             {
                 layout = wibox.layout.fixed.horizontal,
                 spacing = dpi(10),
-                widgets.text
                 {
+                    widget = widgets.text,
                     font = beautiful.icons.message.font,
                     size = 15,
                     color = beautiful.random_accent_color(),
                     text = beautiful.icons.message.icon
                 },
-                widgets.text
                 {
+                    widget = widgets.text,
                     size = 12,
                     text = pr.user_notes_count
                 }

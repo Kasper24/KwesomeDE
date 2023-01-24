@@ -40,8 +40,9 @@ capi.screen.connect_signal("request::desktop_decoration", function(s)
         image = beautiful.profile_icon,
     }
 
-    local name = widgets.text
+    local name = wibox.widget
     {
+        widget = widgets.text,
         halign = "center",
         size = 50,
         text = "Welcome back, " .. os.getenv("USER"):upper() .. "!"
@@ -55,8 +56,9 @@ capi.screen.connect_signal("request::desktop_decoration", function(s)
         name
     }
 
-    local greeter = widgets.text
+    local greeter = wibox.widget
     {
+        widget = widgets.text,
         halign = "center",
         text = greeters[math.random(#greeters)]
     }

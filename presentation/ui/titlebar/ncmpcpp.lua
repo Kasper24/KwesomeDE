@@ -147,15 +147,17 @@ function ncmppcpp.tabs_titlebar(c)
             {
                 layout = wibox.layout.fixed.horizontal,
                 spacing = dpi(15),
-                widgets.text
+                wibox.widget
                 {
+                    widget = widgets.text,
                     size = 50,
                     color = accent_color,
                     font = beautiful.icons.list_music.font,
                     text = beautiful.icons.list_music.icon
                 },
-                widgets.text
+                wibox.widget
                 {
+                    widget = widgets.text,
                     size = 25,
                     text = "Mopidy"
                 }
