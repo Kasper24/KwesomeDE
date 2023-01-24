@@ -81,6 +81,7 @@ local function widget(self)
     {
         widget = widgets.text,
         halign = "center",
+        color = beautiful.colors.on_background,
         text = os.getenv("USER"):upper()
     }
 
@@ -110,6 +111,12 @@ local function widget(self)
         font = beautiful.font_name .. 30,
     }
 
+    local show_password_text = wibox.widget
+    {
+        widget = widgets.text,
+        text = "Show password"
+    }
+
     self._private.prompt = widgets.prompt
     {
         forced_width = dpi(450),
@@ -129,6 +136,7 @@ local function widget(self)
 
     local toggle_password_button = widgets.checkbox
     {
+        text_normal_bg = beautiful.colors.on_background,
         on_by_default = true,
         on_turn_on = function()
             self._private.prompt:set_obscure(true)
@@ -140,6 +148,7 @@ local function widget(self)
 
     local unlock_button = widgets.button.text.normal
     {
+        text_normal_bg = beautiful.colors.on_background,
         animate_size = false,
         text = "Unlock",
         on_release = function()
@@ -147,12 +156,10 @@ local function widget(self)
         end,
     }
 
-    local accent_color = beautiful.random_accent_color()
-
     local shutdown_button = widgets.button.text.normal
     {
         normal_bg = beautiful.colors.transparent,
-        text_normal_bg = accent_color,
+        text_normal_bg = beautiful.colors.on_background,
         size = 40,
         font = beautiful.icons.poweroff.font,
         text = beautiful.icons.poweroff.icon,
@@ -164,7 +171,7 @@ local function widget(self)
     local restart_button = widgets.button.text.normal
     {
         normal_bg = beautiful.colors.transparent,
-        text_normal_bg = accent_color,
+        text_normal_bg = beautiful.colors.on_background,
         size = 40,
         font = beautiful.icons.reboot.font,
         text = beautiful.icons.reboot.icon,
@@ -176,7 +183,7 @@ local function widget(self)
     local suspend_button = widgets.button.text.normal
     {
         normal_bg = beautiful.colors.transparent,
-        text_normal_bg = accent_color,
+        text_normal_bg = beautiful.colors.on_background,
         size = 40,
         font = beautiful.icons.suspend.font,
         text = beautiful.icons.suspend.icon,
@@ -188,7 +195,7 @@ local function widget(self)
     local exit_button = widgets.button.text.normal
     {
         normal_bg = beautiful.colors.transparent,
-        text_normal_bg = accent_color,
+        text_normal_bg = beautiful.colors.on_background,
         size = 40,
         font = beautiful.icons.exit.font,
         text = beautiful.icons.exit.icon,
@@ -212,18 +219,15 @@ local function widget(self)
                 date,
                 user,
                 {
-                    layout = wibox.layout.fixed.horizontal,
+                    layout = wibox.layout.fixed.vertical,
                     spacing = dpi(5),
+                    self._private.prompt.widget,
                     {
-                        layout = wibox.layout.stack,
-                        self._private.prompt.widget,
-                        {
-                            widget = wibox.container.place,
-                            halign = "right",
-                            valign = "center",
-                            toggle_password_button
-                        }
-                    }
+                        layout = wibox.layout.fixed.horizontal,
+                        spacing = dpi(5),
+                        toggle_password_button,
+                        show_password_text,
+                    },
                 },
                 unlock_button,
                 {
