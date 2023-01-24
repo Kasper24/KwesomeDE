@@ -18,31 +18,51 @@ local instance = nil
 local CONFIG_PATH = helpers.filesystem.get_awesome_config_dir("config") .. "picom.conf"
 local UPDATE_INTERVAL = 1
 
-function picom:turn_on(save)
-    helpers.run.check_if_running("picom --experimental-backends", nil,
-    function()
+function picom:turn_on(save, skip_check)
+    local function turn_on()
         awful.spawn("picom --experimental-backends --config " .. CONFIG_PATH, false)
         if save == true then
             helpers.settings:set_value("picom", true)
         end
-    end)
+    end
+
+    if skip_check ~= true then
+        helpers.run.is_running("picom",  function(is_running)
+            if is_running == false then
+                turn_on()
+            end
+        end)
+    else
+        turn_on()
+    end
 end
 
-function picom:turn_off(save)
-    helpers.run.check_if_running("picom --experimental-backends", function()
+function picom:turn_off(save, skip_check)
+    local function turn_off()
         awful.spawn("pkill -f 'picom --experimental-backends'", false)
         if save == true then
             helpers.settings:set_value("picom", false)
         end
-    end, nil)
+    end
+
+    if skip_check ~= true then
+        helpers.run.is_running("picom", function(is_running)
+            if is_running == true then
+                turn_off()
+            end
+        end)
+    else
+        turn_off()
+    end
 end
 
 function picom:toggle(save)
-    helpers.run.check_if_running("picom --experimental-backends", function()
-        self:turn_off(save)
-    end,
-    function()
-        self:turn_on(save)
+    helpers.run.is_running("picom", function(is_running)
+        if is_running == true then
+            self:turn_off(save, true)
+        else
+            self:turn_on(save, true)
+        end
     end)
 end
 
@@ -80,13 +100,6 @@ local function get_settings(self)
     end)
 end
 
-local function get_is_running(self)
-    if self._private.state ~= capi.awesome.composite_manager_running then
-        self:emit_signal("state", capi.awesome.composite_manager_running)
-        self._private.state = capi.awesome.composite_manager_running
-    end
-end
-
 local function new()
     local ret = gobject{}
     gtable.crush(ret, picom, true)
@@ -118,7 +131,10 @@ local function new()
         end
 
         gtimer { timeout = UPDATE_INTERVAL, autostart = true, call_now = true, callback = function()
-            get_is_running(ret)
+            if ret._private.state ~= capi.awesome.composite_manager_running then
+                ret:emit_signal("state", capi.awesome.composite_manager_running)
+                ret._private.state = capi.awesome.composite_manager_running
+            end
         end}
     end)
 

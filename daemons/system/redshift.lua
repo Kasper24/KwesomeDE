@@ -14,43 +14,46 @@ local instance = nil
 
 local UPDATE_INTERVAL = 1
 
-local state = -1
-
-function redshift:turn_on()
-    helpers.run.check_if_running("redshift", nil,
-    function()
+function redshift:turn_on(skip_check)
+    local function turn_on()
         awful.spawn.with_shell("redshift -l 0:0 -t 4500:4500 -r &>/dev/null &")
         helpers.settings:set_value("redshift", true)
-    end)
+    end
+
+    if skip_check ~= true then
+        helpers.run.check_if_running("redshift", function(is_running)
+            if is_running == false then
+                turn_on()
+            end
+        end)
+    else
+        turn_on()
+    end
 end
 
-function redshift:turn_off()
-    helpers.run.check_if_running("redshift", function()
+function redshift:turn_off(skip_check)
+    local function turn_off()
         awful.spawn.with_shell("redshift -x && pkill redshift && killall redshift")
         helpers.settings:set_value("redshift", false)
-    end, nil)
+    end
+
+    if skip_check ~= true then
+        helpers.run.is_running("redshift", function(is_running)
+            if is_running == true then
+                turn_off()
+            end
+        end)
+    else
+        turn_off()
+    end
 end
 
 function redshift:toggle()
-    helpers.run.check_if_running("redshift", function()
-        self:turn_off()
-    end,
-    function()
-        self:turn_on()
-    end)
-end
-
-local function is_running(self)
-    helpers.run.check_if_running("redshift", function()
-        if state ~= true then
-            self:emit_signal("update", true)
-            state = true
-        end
-    end,
-    function()
-        if state ~= false then
-            self:emit_signal("update", false)
-            state = false
+    helpers.run.is_running("redshift", function(is_running)
+        if is_running == true then
+            self:turn_off(true)
+        else
+            self:turn_on(true)
         end
     end)
 end
@@ -58,6 +61,9 @@ end
 local function new()
     local ret = gobject{}
     gtable.crush(ret, redshift, true)
+
+    ret._private = {}
+    ret._private.state = -1
 
     gtimer.delayed_call(function()
         if helpers.settings:get_value("redshift") == true then
@@ -67,7 +73,16 @@ local function new()
         end
 
         gtimer { timeout = UPDATE_INTERVAL, autostart = true, call_now = true, callback = function()
-            is_running(ret)
+            helpers.run.is_running("redshift", function(is_running)
+                if is_running == true and state ~= true then
+                    ret:emit_signal("update", true)
+                    ret._private.state = true
+                end
+                if is_running == false and state ~= false then
+                    ret:emit_signal("update", false)
+                    ret._private.state = false
+                end
+            end)
         end}
     end)
 

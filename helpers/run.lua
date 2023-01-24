@@ -28,21 +28,14 @@ function _run.run_once_grep(command)
     end)
 end
 
-function _run.check_if_running(command, running_callback, not_running_callback)
-    awful.spawn.easy_async_with_shell(string.format("ps aux | grep '%s' | grep -v 'grep'", command), function(stdout)
-        if stdout == "" or stdout == nil then
-            if not_running_callback ~= nil then
-                not_running_callback()
-            end
-        else
-            if running_callback ~= nil then
-                running_callback()
-            end
-        end
+
+function _run.is_running(command, callback)
+    awful.spawn.easy_async(string.format("pidof -s %s", command), function(stdout)
+        callback(stdout ~= "")
     end)
 end
 
-function _run._is_pid_running(pid, callback)
+function _run.is_pid_running(pid, callback)
     awful.spawn.easy_async_with_shell(string.format("ps -o pid= -p %s", pid), function(stdout)
         -- If empty, program is not running
         callback(stdout ~= "")
@@ -54,6 +47,12 @@ local AWESOME_SENSIBLE_TERMINAL_PATH =
 
 function _run.exec_terminal_app(command)
     awful.spawn.with_shell(AWESOME_SENSIBLE_TERMINAL_PATH .. " -e " .. command)
+end
+
+function _run.is_installed(program, callback)
+    awful.spawn.easy_async(string.format("which %s", program), function(stdout, stderr)
+        callback(stderr == "")
+    end)
 end
 
 return _run

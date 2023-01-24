@@ -206,7 +206,7 @@ local function restore_clients(self, args)
 
     if args.create_clients == true then
         for pid, client in pairs(self.restored_settings.clients) do
-            helpers.run._is_pid_running(pid, function(is_running)
+            helpers.run.is_pid_running(pid, function(is_running)
                 -- Checking only by PID won't be enough in a case
                 -- of a full restart
                 local found_client = false
