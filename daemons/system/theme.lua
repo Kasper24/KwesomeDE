@@ -3,6 +3,8 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 
+local lgi = require("lgi")
+local Gdk = lgi.require("Gdk", "3.0")
 local Gio = require("lgi").Gio
 local awful = require("awful")
 local gobject = require("gears.object")
@@ -26,6 +28,7 @@ local instance = nil
 local COLORSCHEME_DATA_PATH = helpers.filesystem.get_cache_dir("colorschemes") .. "data.json"
 local WALLPAPERS_PATH = helpers.filesystem.get_awesome_config_dir("presentation/assets/wallpapers")
 local GTK_THEME_PATH = helpers.filesystem.get_awesome_config_dir("config/FlatColor")
+local GTK_3_CONFIG_PATH = helpers.filesystem.get_config_dir("gtk-3.0") .. "settings.ini"
 local INSTALLED_GTK_THEME_PATH = os.getenv("HOME") .. "/.local/share/themes/"
 local BASE_TEMPLATES_PATH = helpers.filesystem.get_awesome_config_dir("config/templates")
 local BACKGROUND_PATH = helpers.filesystem.get_cache_dir("") .. "wallpaper"
@@ -88,12 +91,59 @@ local function generate_sequences(colors)
     end
 end
 
+local function reload_gtk()
+    local refresh_gsettings = [[
+gsettings set org.gnome.desktop.interface
+ gtk-theme '%s' && sleep 0.1 && gsettings set
+ org.gnome.desktop.interface gtk-theme '%s'
+]]
+
+    local refresh_xfsettings = [[
+xfconf-query -c xsettings -p /Net/ThemeName -s
+ '%s' && sleep 0.1 && xfconf-query -c xsettings -p
+ /Net/ThemeName -s '%s'
+]]
+
+    local gsettings_theme = nil
+    helpers.run.is_installed("gsettings", function(is_installed)
+        if is_installed == true then
+            awful.spawn.easy_async("gsettings get org.gnome.desktop.interface gtk-theme", function(stdout)
+                gsettings_theme = stdout
+            end)
+        end
+    end)
+
+    local xfsettings_theme = nil
+    helpers.run.is_installed("xfconf-query", function(is_installed)
+        if is_installed == true then
+            awful.spawn.easy_async("xfconf-query -c xsettings -p /Net/ThemeName", function(stdout)
+                xfsettings_theme = stdout
+            end)
+        end
+    end)
+
+    helpers.run.is_pid_running("gsd-settings", function(is_running)
+        if is_running == true and gsettings_theme ~= nil then
+            awful.spawn.with_shell(string.format(refresh_gsettings, gsettings_theme))
+        end
+    end)
+
+    helpers.run.is_pid_running("xfsettingsd", function(is_running)
+        if is_running == true and xfsettings_theme ~= nil then
+            awful.spawn.with_shell(string.format(refresh_xfsettings, xfsettings_theme))
+        end
+    end)
+end
+
+
 local function on_finished_generating(self)
     if self._private.command_after_generation ~= nil then
         awful.spawn.with_shell(self._private.command_after_generation, false)
     end
 
-    capi.awesome.restart()
+    reload_gtk()
+    beautiful.init(helpers.filesystem.get_awesome_config_dir("presentation") .. "theme/theme.lua")
+    capi.awesome.emit_signal("wallpaper_changed")
 end
 
 local function replace_template_colors(color, color_name, line)
@@ -509,6 +559,8 @@ end
 
 function theme:set_colorscheme()
     self._private.colorscheme = self._private.colors[self._private.selected_wallpaper]
+    -- beautiful.init(helpers.filesystem.get_awesome_config_dir("presentation") .. "theme/theme.lua")
+    -- capi.awesome.emit_signal("wallpaper_changed")
     helpers.settings:set_value("theme-colorscheme", self._private.colorscheme)
     install_gtk_theme()
     generate_templates(self)
