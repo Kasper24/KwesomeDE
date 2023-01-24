@@ -92,45 +92,35 @@ local function generate_sequences(colors)
 end
 
 local function reload_gtk()
-    local refresh_gsettings = [[
-gsettings set org.gnome.desktop.interface
- gtk-theme '%s' && sleep 0.1 && gsettings set
- org.gnome.desktop.interface gtk-theme '%s'
+    local refresh_gsettings = [[ gsettings set org.gnome.desktop.interface \
+gtk-theme 'FlatColor' && sleep 0.1 && gsettings set \
+org.gnome.desktop.interface gtk-theme 'FlatColor'
 ]]
 
-    local refresh_xfsettings = [[
-xfconf-query -c xsettings -p /Net/ThemeName -s
- '%s' && sleep 0.1 && xfconf-query -c xsettings -p
- /Net/ThemeName -s '%s'
+    local refresh_xfsettings = [[ xfconf-query -c xsettings -p /Net/ThemeName -s \
+'FlatColor' && sleep 0.1 && xfconf-query -c xsettings -p \
+/Net/ThemeName -s 'FlatColor'
 ]]
 
-    local gsettings_theme = nil
     helpers.run.is_installed("gsettings", function(is_installed)
         if is_installed == true then
-            awful.spawn.easy_async("gsettings get org.gnome.desktop.interface gtk-theme", function(stdout)
-                gsettings_theme = stdout
-            end)
+            awful.spawn.with_shell(refresh_gsettings)
         end
     end)
 
-    local xfsettings_theme = nil
     helpers.run.is_installed("xfconf-query", function(is_installed)
         if is_installed == true then
-            awful.spawn.easy_async("xfconf-query -c xsettings -p /Net/ThemeName", function(stdout)
-                xfsettings_theme = stdout
+            awful.spawn.with_shell(refresh_xfsettings)
+        end
+    end)
+
+    helpers.run.is_installed("xsettingsd", function(is_installed)
+        if is_installed == true then
+            local path = os.tmpname()
+            local content = 'Net/ThemeName "FlatColor" \n'
+            helpers.filesystem.save_file(path, content, function()
+                awful.spawn(string.format("timeout 0.2s xsettingsd -c %s", path))
             end)
-        end
-    end)
-
-    helpers.run.is_pid_running("gsd-settings", function(is_running)
-        if is_running == true and gsettings_theme ~= nil then
-            awful.spawn.with_shell(string.format(refresh_gsettings, gsettings_theme))
-        end
-    end)
-
-    helpers.run.is_pid_running("xfsettingsd", function(is_running)
-        if is_running == true and xfsettings_theme ~= nil then
-            awful.spawn.with_shell(string.format(refresh_xfsettings, xfsettings_theme))
         end
     end)
 end
