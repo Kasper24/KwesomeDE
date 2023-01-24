@@ -139,7 +139,7 @@
 
    <key name="record-folder" type="s">
       <default>"~/"</default>
-      <summary>Record format</summary>
+      <summary>Record folder</summary>
       <description>
         The file format of the recording
       </description>
