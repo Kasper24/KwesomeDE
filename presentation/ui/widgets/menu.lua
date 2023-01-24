@@ -345,7 +345,6 @@ function menu.checkbox_button(args)
         halign = "left",
         normal_shape = helpers.ui.rrect(0),
         on_release = function(self)
-            self.menu:hide(true)
             args.on_press()
         end,
         on_hover = function(self)
