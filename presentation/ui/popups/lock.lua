@@ -224,7 +224,7 @@ local function widget(self)
                     self._private.prompt.widget,
                     {
                         layout = wibox.layout.fixed.horizontal,
-                        spacing = dpi(5),
+                        spacing = dpi(15),
                         toggle_password_button,
                         show_password_text,
                     },

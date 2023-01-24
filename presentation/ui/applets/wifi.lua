@@ -94,19 +94,19 @@ local function access_point_widget(layout, access_point, accent_color)
         color = beautiful.colors.on_surface,
     }
 
+    local auto_connect_checkbox = widgets.checkbox
+    {
+        valign = "center",
+        on_by_default = true
+    }
+
     local auto_connect_text = wibox.widget
     {
         widget = widgets.text,
         valign = "center",
         size = 12,
         color = beautiful.colors.on_surface,
-        text =  "Auto Connect: "
-    }
-
-    local auto_connect_checkbox = widgets.checkbox
-    {
-        valign = "center",
-        on_by_default = true
+        text =  "Auto Connect"
     }
 
     local cancel = widgets.button.text.normal
@@ -211,8 +211,9 @@ local function access_point_widget(layout, access_point, accent_color)
             },
             {
                 layout = wibox.layout.fixed.horizontal,
-                auto_connect_text,
+                spacing = dpi(10),
                 auto_connect_checkbox,
+                auto_connect_text,
             },
             {
                 layout = wibox.layout.flex.horizontal,
