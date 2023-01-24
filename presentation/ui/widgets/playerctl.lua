@@ -83,8 +83,8 @@ function playerctl.title_artist(daemon)
     {
         widget = twidget,
         halign = "center",
-        width = dpi(70),
-        height = dpi(20),
+        forced_width = dpi(70),
+        forced_height = dpi(20),
         size = 12,
         text = "Not Playing"
     }
@@ -131,8 +131,8 @@ function playerctl.title(width, halign, daemon)
     local widget = wibox.widget
     {
         widget = twidget,
-        width = width or dpi(70),
-        height = dpi(20),
+        forced_width = width or dpi(70),
+        forced_height = dpi(20),
         halign = halign or "center",
         size = 12,
         text = "Not Playing"
@@ -159,8 +159,8 @@ function playerctl.artist(width, halign, daemon)
     local widget = wibox.widget
     {
         widget = twidget,
-        width = width or dpi(70),
-        height = dpi(20),
+        forced_width = width or dpi(70),
+        forced_height = dpi(20),
         halign = halign or "center",
         size = 12,
         markup = "Artist"

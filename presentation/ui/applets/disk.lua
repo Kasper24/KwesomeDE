@@ -60,7 +60,7 @@ local function new()
         layout = wibox.layout.fixed.horizontal,
         {
             widget = widgets.text,
-            width = dpi(170),
+            forced_width = dpi(170),
             halign = "left",
             bold = true,
             color = beautiful.random_accent_color(),
@@ -91,7 +91,7 @@ local function new()
                 spacing = dpi(15),
                 {
                     widget = widgets.text,
-                    width = dpi(150),
+                    forced_width = dpi(150),
                     halign = "left",
                     size = 12,
                     text = entry.mount,

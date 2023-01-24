@@ -52,8 +52,8 @@ local function device_widget(device, path, layout, accent_color)
     local name = wibox.widget
     {
         widget = widgets.text,
-        width = dpi(600),
-        height = dpi(30),
+        forced_width = dpi(600),
+        forced_height = dpi(30),
         halign = "left",
         size = 12,
         text = device.Name,

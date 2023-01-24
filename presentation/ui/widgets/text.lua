@@ -38,14 +38,6 @@ local function generate_markup(self)
 		italic_end .. bold_end
 end
 
-function text:set_width(width)
-	self.forced_width = width
-end
-
-function text:set_height(height)
-	self.forced_height = height
-end
-
 function text:set_font(font)
 	self._private.font = font
     self._private.layout:set_font_description(beautiful.get_font(font))
@@ -82,38 +74,20 @@ function text:set_text(text)
 end
 
 local function new(args)
-	args = args or {}
-
-	args.width = args.width or nil
-	args.height = args.height or nil
-	args.halign = args.halign or nil
-	args.valign = args.valign or nil
-	args.font = args.font or beautiful.font_name or nil
-	args.bold = args.bold ~= nil and args.bold or false
-	args.italic = args.italic ~= nil and args.italic or false
-	args.size = args.size or 20
-	args.color = args.color or beautiful.colors.on_background
-	args.text = args.text ~= nil and args.text or ""
-
-	local widget = wibox.widget
-	{
-		widget = wibox.widget.textbox,
-		forced_width = args.width,
-		forced_height = args.height,
-		align = args.halign,
-		valign = args.valign,
-		font = args.font .. args.size,
-	}
-
+	local widget = wibox.widget.textbox()
 	gtable.crush(widget, text, true)
 
-	widget._private.font = args.font
-	widget._private.bold = args.bold
-	widget._private.italic = args.italic
-	widget._private.size = args.size
-	widget._private.color = args.color
-	widget._private.text = args.text
+	args = args or {}
 
+	widget._private.font = args.font or beautiful.font_name or nil
+	widget._private.bold = args.bold ~= nil and args.bold or false
+	widget._private.italic = args.italic ~= nil and args.italic or false
+	widget._private.size = args.size or 20
+	widget._private.color = args.color or beautiful.colors.on_background
+	widget._private.text = args.text ~= nil and args.text or ""
+
+	-- Set the size and markup initally
+	widget:set_font(widget._private.font .. widget._private.size)
 	generate_markup(widget)
 
 	return widget

@@ -81,7 +81,7 @@ local function new()
                 spacing = dpi(15),
                 {
                     widget = widgets.text,
-                    width = dpi(70),
+                    forced_width = dpi(70),
                     halign = "left",
                     bold = true,
                     color = beautiful.random_accent_color(),
@@ -89,7 +89,7 @@ local function new()
                 },
                 {
                     widget = widgets.text,
-                    width = dpi(200),
+                    forced_width = dpi(200),
                     halign = "left",
                     bold = true,
                     color = beautiful.random_accent_color(),
@@ -108,13 +108,13 @@ local function new()
                 spacing = dpi(15),
                 {
                     widget = widgets.text,
-                    width = dpi(70),
+                    forced_width = dpi(70),
                     halign = "left",
                     text = cpu.name,
                 },
                 {
                     widget = widgets.text,
-                    width = dpi(60),
+                    forced_width = dpi(60),
                     halign = "left",
                     text = math.floor(cpu.diff_usage) .. "%",
                 },
@@ -148,7 +148,7 @@ local function new()
                 layout  = wibox.layout.fixed.horizontal,
                 {
                     widget = widgets.text,
-                    width = dpi(110),
+                    forced_width = dpi(110),
                     halign = "left",
                     bold = true,
                     color = beautiful.random_accent_color(),
@@ -156,7 +156,7 @@ local function new()
                 },
                 {
                     widget = widgets.text,
-                    width = dpi(210),
+                    forced_width = dpi(210),
                     halign = "left",
                     bold = true,
                     color = beautiful.random_accent_color(),
@@ -164,7 +164,7 @@ local function new()
                 },
                 {
                     widget = widgets.text,
-                    width = dpi(90),
+                    forced_width = dpi(90),
                     halign = "left",
                     bold = true,
                     color = beautiful.random_accent_color(),
@@ -172,7 +172,7 @@ local function new()
                 },
                 {
                     widget = widgets.text,
-                    width = dpi(70),
+                    forced_width = dpi(70),
                     halign = "left",
                     bold = true,
                     color = beautiful.random_accent_color(),
@@ -191,25 +191,25 @@ local function new()
                 layout  = wibox.layout.fixed.horizontal,
                 {
                     widget = widgets.text,
-                    width = dpi(110),
+                    forced_width = dpi(110),
                     halign = "left",
                     text = process.pid,
                 },
                 {
                     widget = widgets.text,
-                    width = dpi(210),
+                    forced_width = dpi(210),
                     halign = "left",
                     text = process.comm,
                 },
                 {
                     widget = widgets.text,
-                    width = dpi(80),
+                    forced_width = dpi(80),
                     halign = "left",
                     text = process.cpu,
                 },
                 {
                     widget = widgets.text,
-                    width = dpi(80),
+                    forced_width = dpi(80),
                     halign = "left",
                     text = process.mem,
                 },

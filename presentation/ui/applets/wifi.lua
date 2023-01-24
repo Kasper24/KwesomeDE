@@ -84,8 +84,8 @@ local function access_point_widget(layout, access_point, accent_color)
     local name = wibox.widget
     {
         widget = widgets.text,
-        width = dpi(600),
-        height = dpi(30),
+        forced_width = dpi(600),
+        forced_height = dpi(30),
         halign = "left",
         size = 12,
         text =  network_daemon:is_access_point_active(access_point)

@@ -194,7 +194,7 @@ local function device_widget(args)
     local name = wibox.widget
     {
         widget = widgets.text,
-        width = dpi(440),
+        forced_width = dpi(440),
         halign = "left",
         size = 12,
         text = args.device.description

@@ -107,7 +107,7 @@ local function folder()
     local folder_text  = wibox.widget
     {
         widget = widgets.text,
-        width = dpi(350),
+        forced_width = dpi(350),
         size = 12,
         text = screenshot_daemon:get_folder(),
     }
