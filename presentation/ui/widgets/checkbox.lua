@@ -15,8 +15,8 @@ local checkbox = { mt = {} }
 local function new(args)
     args = args or {}
 
-    local switch_dimensions = { h = dpi(18), w = dpi(46) }
-    local ball_dimensions = { h = dpi(18), w = dpi(18) }
+    local switch_dimensions = { w = dpi(46), h = dpi(18) }
+    local ball_dimensions = {  w = dpi(18), h = dpi(18) }
 
     local start_ball_position = ball_dimensions.w - switch_dimensions.w
     local done_ball_position = -start_ball_position -- just invert it
