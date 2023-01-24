@@ -170,6 +170,7 @@ local function widget(self)
 
     local shutdown_button = widgets.button.text.normal
     {
+        animate_size = false,
         normal_bg = beautiful.colors.transparent,
         hover_bg = beautiful.colors.on_background,
         press_bg = beautiful.colors.on_background,
@@ -186,6 +187,7 @@ local function widget(self)
 
     local restart_button = widgets.button.text.normal
     {
+        animate_size = false,
         normal_bg = beautiful.colors.transparent,
         hover_bg = beautiful.colors.on_background,
         press_bg = beautiful.colors.on_background,
@@ -202,6 +204,7 @@ local function widget(self)
 
     local suspend_button = widgets.button.text.normal
     {
+        animate_size = false,
         normal_bg = beautiful.colors.transparent,
         hover_bg = beautiful.colors.on_background,
         press_bg = beautiful.colors.on_background,
@@ -218,6 +221,7 @@ local function widget(self)
 
     local exit_button = widgets.button.text.normal
     {
+        animate_size = false,
         normal_bg = beautiful.colors.transparent,
         hover_bg = beautiful.colors.on_background,
         press_bg = beautiful.colors.on_background,
