@@ -9,6 +9,7 @@ local theme_daemon = require("daemons.system.theme")
 local color_libary = require("external.color")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
+local string = string
 local math = math
 
 local theme = {}
@@ -47,6 +48,7 @@ local function colors()
         on_accent = helpers.color.is_dark(colors[1]) and colors[1] or colors[8],
     }
 
+    -- TODO make it part of the colors objject
     function theme.random_accent_color()
         local color_1 = color_libary.color { hex = theme.colors.bright_red }
         local color_2 = color_libary.color { hex = theme.colors.bright_green }
@@ -73,6 +75,11 @@ local function colors()
 
         local i = math.random(1, #accents)
         return accents[i]
+    end
+
+    function theme.colors.background_with_opacity(opacity)
+        opacity = opacity or 0.9
+        return theme.colors.background .. string.format("%x", math.floor(opacity * 255))
     end
 end
 

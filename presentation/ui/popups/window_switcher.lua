@@ -137,7 +137,7 @@ local function clients_widget(self)
     {
         widget = wibox.container.background,
         shape = helpers.ui.rrect(beautiful.border_radius),
-        bg = beautiful.colors.background .. "C8",
+        bg = beautiful.colors.background_with_opacity(),
         {
             widget = wibox.container.margin,
             margins = dpi(15),

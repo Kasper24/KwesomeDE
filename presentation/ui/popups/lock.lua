@@ -67,6 +67,12 @@ local function widget(self)
         image = theme_daemon:get_wallpaper()
     }
 
+    local blur = wibox.widget
+    {
+        widget = wibox.container.background,
+        bg = beautiful.colors.background_with_opacity(),
+    }
+
     local picture = wibox.widget
     {
         widget = wibox.widget.imagebox,
@@ -111,12 +117,6 @@ local function widget(self)
         font = beautiful.font_name .. 30,
     }
 
-    local show_password_text = wibox.widget
-    {
-        widget = widgets.text,
-        text = "Show Password"
-    }
-
     self._private.prompt = widgets.prompt
     {
         forced_width = dpi(450),
@@ -124,6 +124,12 @@ local function widget(self)
         reset_on_stop = true,
         always_on = true,
         obscure = true,
+        normal_bg = beautiful.colors.transparent,
+        hover_bg = beautiful.colors.transparent,
+        press_bg = beautiful.colors.transparent,
+        on_normal_bg = beautiful.colors.transparent,
+        on_hover_bg = beautiful.colors.transparent,
+        on_press_bg = beautiful.colors.transparent,
         icon_font = beautiful.icons.lock.font,
         icon = beautiful.icons.lock.icon,
         paddings = dpi(15),
@@ -148,6 +154,12 @@ local function widget(self)
 
     local unlock_button = widgets.button.text.normal
     {
+        normal_bg = beautiful.colors.transparent,
+        hover_bg = beautiful.colors.on_background,
+        press_bg = beautiful.colors.on_background,
+        text_normal_bg = beautiful.colors.on_background,
+        text_hover_bg = beautiful.colors.transparent,
+        text_press_bg = beautiful.colors.transparent,
         text_normal_bg = beautiful.colors.on_background,
         animate_size = false,
         text = "Unlock",
@@ -159,7 +171,11 @@ local function widget(self)
     local shutdown_button = widgets.button.text.normal
     {
         normal_bg = beautiful.colors.transparent,
+        hover_bg = beautiful.colors.on_background,
+        press_bg = beautiful.colors.on_background,
         text_normal_bg = beautiful.colors.on_background,
+        text_hover_bg = beautiful.colors.transparent,
+        text_press_bg = beautiful.colors.transparent,
         size = 40,
         font = beautiful.icons.poweroff.font,
         text = beautiful.icons.poweroff.icon,
@@ -171,7 +187,11 @@ local function widget(self)
     local restart_button = widgets.button.text.normal
     {
         normal_bg = beautiful.colors.transparent,
+        hover_bg = beautiful.colors.on_background,
+        press_bg = beautiful.colors.on_background,
         text_normal_bg = beautiful.colors.on_background,
+        text_hover_bg = beautiful.colors.transparent,
+        text_press_bg = beautiful.colors.transparent,
         size = 40,
         font = beautiful.icons.reboot.font,
         text = beautiful.icons.reboot.icon,
@@ -183,7 +203,11 @@ local function widget(self)
     local suspend_button = widgets.button.text.normal
     {
         normal_bg = beautiful.colors.transparent,
+        hover_bg = beautiful.colors.on_background,
+        press_bg = beautiful.colors.on_background,
         text_normal_bg = beautiful.colors.on_background,
+        text_hover_bg = beautiful.colors.transparent,
+        text_press_bg = beautiful.colors.transparent,
         size = 40,
         font = beautiful.icons.suspend.font,
         text = beautiful.icons.suspend.icon,
@@ -195,7 +219,11 @@ local function widget(self)
     local exit_button = widgets.button.text.normal
     {
         normal_bg = beautiful.colors.transparent,
+        hover_bg = beautiful.colors.on_background,
+        press_bg = beautiful.colors.on_background,
         text_normal_bg = beautiful.colors.on_background,
+        text_hover_bg = beautiful.colors.transparent,
+        text_press_bg = beautiful.colors.transparent,
         size = 40,
         font = beautiful.icons.exit.font,
         text = beautiful.icons.exit.icon,
@@ -208,6 +236,7 @@ local function widget(self)
     {
         widget = wibox.layout.stack,
         background,
+        blur,
         {
             widget = wibox.container.place,
             halign = "center",
@@ -219,31 +248,31 @@ local function widget(self)
                 date,
                 user,
                 {
-                    layout = wibox.layout.fixed.vertical,
-                    spacing = dpi(5),
+                    layout = wibox.layout.fixed.horizontal,
+                    spacing = dpi(15),
                     self._private.prompt.widget,
-                    {
-                        layout = wibox.layout.fixed.horizontal,
-                        spacing = dpi(15),
-                        toggle_password_button,
-                        show_password_text,
-                    },
+                    toggle_password_button
                 },
-                unlock_button,
-                {
-                    widget = wibox.container.place,
-                    halign = "center",
-                    {
-                        layout = wibox.layout.fixed.horizontal,
-                        spacing = dpi(15),
-                        shutdown_button,
-                        restart_button,
-                        suspend_button,
-                        exit_button
-                    }
-                }
+                unlock_button
             }
         },
+        {
+            widget = wibox.container.margin,
+            margins = { bottom = dpi(30), right = dpi(30) },
+            {
+                widget = wibox.container.place,
+                halign = "right",
+                valign = "bottom",
+                {
+                    layout = wibox.layout.fixed.horizontal,
+                    spacing = dpi(15),
+                    shutdown_button,
+                    restart_button,
+                    suspend_button,
+                    exit_button
+                }
+            }
+        }
     }
 end
 
@@ -260,7 +289,6 @@ local function new()
         visible = false,
         ontop = true,
         placement = awful.placement.maximize,
-        bg = beautiful.colors.background .. "28",
         widget = widget(ret)
     }
 

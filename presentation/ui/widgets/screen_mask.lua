@@ -51,7 +51,7 @@ function screen_mask.color(screen)
         placement = awful.placement.maximize,
         visible = false,
         ontop = true,
-        bg = beautiful.colors.background .. 80
+        bg = beautiful.colors.background_with_opacity()
     }
 end
 
