@@ -114,7 +114,7 @@ local function widget(self)
     local show_password_text = wibox.widget
     {
         widget = widgets.text,
-        text = "Show password"
+        text = "Show Password"
     }
 
     self._private.prompt = widgets.prompt
