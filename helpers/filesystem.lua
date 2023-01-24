@@ -408,6 +408,11 @@ function _filesystem.remote_watch(path, uri, interval, callback, old_content_cal
     end)
 end
 
+function _filesystem.get_config_dir(sub_folder)
+    return (os.getenv("XDG_CONFIG_HOME") or os.getenv("HOME") .. "/.config/")
+     .. sub_folder .. "/"
+end
+
 function _filesystem.get_awesome_config_dir(sub_folder)
     return (capi.awesome.conffile:match(".*/") or "./") .. sub_folder .. "/"
 end
