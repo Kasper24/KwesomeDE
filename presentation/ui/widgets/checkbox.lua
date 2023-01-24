@@ -73,6 +73,7 @@ local function new(args)
             ball_indicator,
         },
     }
+    helpers.ui.add_hover_cursor(widget, beautiful.hover_cursor)
 
     function widget:turn_on()
         ball_animation:set
