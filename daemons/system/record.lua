@@ -138,8 +138,8 @@ local function new()
     ret._private.resolution = helpers.settings:get_value("record-resolution")
     ret._private.fps = helpers.settings:get_value("record-fps")
     ret._private.delay = helpers.settings:get_value("record-delay")
-    ret._private.folder = helpers.settings:get_value("record-folder") or
-                                "/home/" .. os.getenv("USER") .. "/Recordings/"
+    ret._private.folder =
+        helpers.settings:get_value("record-folder"):gsub("~", os.getenv("HOME"))
     ret._private.format = helpers.settings:get_value("record-format")
 
     ret._private.is_recording = false
