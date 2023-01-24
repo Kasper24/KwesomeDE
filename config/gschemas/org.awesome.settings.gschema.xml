@@ -122,7 +122,7 @@
     </key>
 
     <key name="record-fps" type="i">
-      <default>1</default>
+      <default>60</default>
       <summary>Record FPS</summary>
       <description>
         The recording frame rate
