@@ -9,6 +9,7 @@ local gtimer = require("gears.timer")
 local wibox = require("wibox")
 local welevated = require("presentation.ui.widgets.button.elevated")
 local twidget = require("presentation.ui.widgets.text")
+local cbwidget = require("presentation.ui.widgets.checkbox")
 local beautiful = require("beautiful")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
@@ -335,15 +336,7 @@ function menu.checkbox_button(args)
         }
     end
 
-    local checkbox = wibox.widget
-    {
-        widget = twidget,
-        size = 13,
-        color = args.checkbox_color,
-        font = beautiful.icons.toggle_on.font,
-        text = args.on_by_default == true and beautiful.icons.toggle_on.icon
-                or beautiful.icons.toggle_off.icon,
-    }
+    local checkbox = cbwidget{args}
 
     local widget = welevated.normal
     {
@@ -363,7 +356,7 @@ function menu.checkbox_button(args)
             layout = wibox.layout.fixed.horizontal,
             {
                 layout = wibox.layout.fixed.horizontal,
-                forced_width = dpi(250),
+                forced_width = dpi(230),
                 spacing = dpi(15),
                 icon,
                 {
@@ -377,11 +370,11 @@ function menu.checkbox_button(args)
         }
     }
 
-    function widget.turn_on()
-        checkbox:set_text(beautiful.icons.toggle_on.icon)
+    function widget:turn_on()
+        checkbox:turn_on()
     end
-    function widget.turn_off()
-        checkbox:set_text(beautiful.icons.toggle_off.icon)
+    function widget:turn_off()
+        checkbox:turn_off()
     end
 
     return widget
