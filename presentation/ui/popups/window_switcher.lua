@@ -43,7 +43,6 @@ local function sort_clients(self)
         for index, client in pairs(tag:clients()) do
             if awful.client.getmaster() == client then
                 local pos = math.min(math.max(1, #self._private.sorted_clients), tag.index)
-                print(pos)
                 table.insert(self._private.sorted_clients,
                     pos,
                     client

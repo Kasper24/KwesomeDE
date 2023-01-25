@@ -13,18 +13,6 @@ local math = math
 
 local text_button = { mt = {} }
 
-function text_button:set_font(font)
-	self.children[1].children[1].children[1]:set_font(font)
-end
-
-function text_button:set_bold(bold)
-	self.children[1].children[1].children[1]:set_bold(bold)
-end
-
-function text_button:set_size(font, size)
-	self.children[1].children[1].children[1]:set_size(font, size)
-end
-
 function text_button:set_color(color)
 	self.children[1].children[1].children[1]:set_color(color)
 end
@@ -121,51 +109,53 @@ function text_button.state(args)
 
 	local widget = button(args, "state")
 	build_properties(widget, state_properties)
+    gtable.crush(widget._private, args, true)
+	local wp = widget._private
 
 	widget:connect_signal("_private::on_hover", function(state)
 		if state == true then
-			effect(widget, args.text_on_hover_bg)
+			effect(widget, wp.text_on_hover_bg)
 		else
-			effect(widget, args.text_hover_bg)
+			effect(widget, wp.text_hover_bg)
 		end
 	end)
 
 	widget:connect_signal("_private::on_leave", function(state)
 		if state == true then
-			effect(widget, args.text_on_normal_bg)
+			effect(widget, wp.text_on_normal_bg)
 		else
-			effect(widget, args.text_normal_bg)
+			effect(widget, wp.text_normal_bg)
 		end
 	end)
 
 	widget:connect_signal("_private::on_turn_on", function(state)
-		effect(widget, args.text_on_normal_bg)
+		effect(widget, wp.text_on_normal_bg)
 	end)
 
 	widget:connect_signal("_private::on_turn_off", function(state)
-		effect(widget, args.text_normal_bg)
+		effect(widget, wp.text_normal_bg)
 	end)
 
 	widget:connect_signal("_private::on_press", function(state)
-		if args.animate_size == true then
-			widget.size_animation:set(math.max(12, args.size - 20))
+		if wp.animate_size == true then
+			widget.size_animation:set(math.max(12, wp.size - 20))
 		end
 	end)
 
 	widget:connect_signal("_private::on_release", function(state)
-		if args.animate_size == true then
+		if wp.animate_size == true then
 			if widget.size_animation.state == true then
 				widget.size_animation.ended:subscribe(function()
-					widget.size_animation:set(args.size)
+					widget.size_animation:set(wp.size)
 					widget.size_animation.ended:unsubscribe()
 				end)
 			else
-				widget.size_animation:set(args.size)
+				widget.size_animation:set(wp.size)
 			end
 		end
 	end)
 
-	if args.on_by_default == true then
+	if wp.on_by_default == true then
 		widget:turn_on()
 	end
 
@@ -174,41 +164,41 @@ end
 
 function text_button.normal(args)
 	args = args or {}
-
 	args.text_normal_bg = args.text_normal_bg or beautiful.random_accent_color()
 	args.text_hover_bg = args.text_hover_bg or helpers.color.button_color(args.text_normal_bg, 0.1)
 	args.text_press_bg = args.text_press_bg or helpers.color.button_color(args.text_normal_bg, 0.2)
-
 	args.animate_size = args.animate_size == nil and true or args.animate_size
 
 	local widget = button(args, "normal")
 	build_properties(widget, normal_properties)
+    gtable.crush(widget._private, args, true)
+	local wp = widget._private
 
 	widget:connect_signal("_private::on_hover", function(state)
-		effect(widget, args.text_hover_bg)
+		effect(widget, wp.text_hover_bg)
 	end)
 
 	widget:connect_signal("_private::on_leave", function(state)
-		effect(widget, args.text_normal_bg)
+		effect(widget, wp.text_normal_bg)
 	end)
 
 	widget:connect_signal("_private::on_press", function(state)
-		effect(widget, args.text_press_bg)
-		if args.animate_size == true then
-			widget.size_animation:set(math.max(12, args.size - 20))
+		effect(widget, wp.text_press_bg)
+		if wp.animate_size == true then
+			widget.size_animation:set(math.max(12, wp.size - 20))
 		end
 	end)
 
 	widget:connect_signal("_private::on_release", function(state)
-		effect(widget, args.text_normal_bg)
-		if args.animate_size == true then
+		effect(widget, wp.text_normal_bg)
+		if wp.animate_size == true then
 			if widget.size_animation.state == true then
 				widget.size_animation.ended:subscribe(function()
-					widget.size_animation:set(args.size)
+					widget.size_animation:set(wp.size)
 					widget.size_animation.ended:unsubscribe()
 				end)
 			else
-				widget.size_animation:set(args.size)
+				widget.size_animation:set(wp.size)
 			end
 		end
 	end)

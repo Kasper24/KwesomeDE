@@ -422,11 +422,11 @@ local function client_task(favorites_layout, task_list, client)
         indicator
     }
 
-    client:connect_signal("property::class", function()
-        client.font_icon = beautiful.get_font_icon_for_app_name(client.class)
-        button:set_font(client.font_icon.font)
-        button:set_text(client.font_icon.icon)
-    end)
+    -- client:connect_signal("property::class", function()
+    --     client.font_icon = beautiful.get_font_icon_for_app_name(client.class)
+    --     button:set_font(client.font_icon.font)
+    --     button:set_text(client.font_icon.icon)
+    -- end)
 
     client:connect_signal("focus", function()
         button:get_children_by_id("button")[1]:turn_on()

@@ -20,26 +20,6 @@ local properties =
 	"size", "color", "text"
 }
 
-local function build_properties(prototype, prop_names)
-    for _, prop in ipairs(prop_names) do
-        if not prototype["set_" .. prop] then
-            prototype["set_" .. prop] = function(self, value)
-                if self._private[prop] ~= value then
-                    self._private[prop] = value
-                    self:emit_signal("widget::redraw_needed")
-                    self:emit_signal("property::"..prop, value)
-                end
-                return self
-            end
-        end
-        if not prototype["get_" .. prop] then
-            prototype["get_" .. prop] = function(self)
-                return self._private[prop]
-            end
-        end
-    end
-end
-
 local function generate_markup(self)
 	local bold_start = ""
 	local bold_end = ""
@@ -69,28 +49,25 @@ local function generate_markup(self)
 	-- 	italic_end .. bold_end
 end
 
-function text:set_bold(bold)
-	self._private.bold = bold
-	generate_markup(self)
-end
-
-function text:set_italic(italic)
-	self._private.italic = italic
-	generate_markup(self)
-end
-
-function text:set_size(size)
-	self._private.size = size
-end
-
-function text:set_color(color)
-	self._private.color = color
-	generate_markup(self)
-end
-
-function text:set_text(text)
-	self._private.text = text
-	generate_markup(self)
+local function build_properties(prototype, prop_names)
+    for _, prop in ipairs(prop_names) do
+        if not prototype["set_" .. prop] then
+            prototype["set_" .. prop] = function(self, value)
+                if self._private[prop] ~= value then
+                    self._private[prop] = value
+					generate_markup(self)
+                    self:emit_signal("widget::redraw_needed")
+                    self:emit_signal("property::"..prop, value)
+                end
+                return self
+            end
+        end
+        if not prototype["get_" .. prop] then
+            prototype["get_" .. prop] = function(self)
+                return self._private[prop]
+            end
+        end
+    end
 end
 
 local function new(args)
@@ -99,8 +76,8 @@ local function new(args)
 
 	args = args or {}
 
-	widget._private.bold = args.bold ~= nil and args.bold or false
-	widget._private.italic = args.italic ~= nil and args.italic or false
+	widget._private.bold = args.bold or false
+	widget._private.italic = args.italic or false
 	widget._private.size = args.size or 20
 	widget._private.color = args.color or beautiful.colors.on_background
 	widget._private.text = args.text or ""
