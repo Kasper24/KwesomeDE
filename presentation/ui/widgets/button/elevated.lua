@@ -68,7 +68,7 @@ local function effect(widget, bg, shape, border_width, border_color)
 		animation_targets.color = helpers.color.hex_to_rgb(bg)
     end
     if shape ~= nil then
-        -- widget:get_children_by_id("background_role")[1].shape = shape
+        widget.shape = shape
     end
     if border_width ~= nil then
 		animation_targets.border_width = border_width
@@ -83,7 +83,7 @@ end
 local function button(args)
 	local widget = wibox.container.background()
 
-    local bg = beautiful.colors.surface
+    local bg = args.normal_bg or beautiful.colors.background
 	local shape = args.normal_shape or helpers.ui.rrect(beautiful.border_radius)
 	local border_width = args.normal_border_width or nil
 	local border_color = args.normal_border_color or beautiful.colors.transparent
@@ -127,15 +127,15 @@ local function button(args)
 		easing = helpers.animation.easing.linear,
 		duration = 0.2,
 		update = function(self, pos)
-			if pos.color then
-				widget.bg = helpers.color.rgb_to_hex(pos.color)
-			end
-			if pos.border_width then
-				widget.border_width = pos.border_width
-			end
-			if pos.border_color then
-				widget.border_color = helpers.color.rgb_to_hex(pos.border_color)
-			end
+			-- if pos.color then
+			-- 	widget.bg = helpers.color.rgb_to_hex(pos.color)
+			-- end
+			-- if pos.border_width then
+			-- 	widget.border_width = pos.border_width
+			-- end
+			-- if pos.border_color then
+			-- 	widget.border_color = helpers.color.rgb_to_hex(pos.border_color)
+			-- end
 		end
 	}
 
@@ -324,6 +324,7 @@ end
 
 function elevated_button.normal(args)
 	args = args or {}
+	print(helpers.inspect.inspect(args))
 
 	args.normal_bg = args.normal_bg or beautiful.colors.background
 	args.hover_bg = args.hover_bg or helpers.color.button_color(args.normal_bg, 0.1)
@@ -351,7 +352,7 @@ function elevated_button.normal(args)
     args.on_scroll_down = args.on_scroll_down or nil
 
 	local widget = button(args)
-	build_properties(widget, state_properties)
+	build_properties(widget, normal_properties)
     gtable.crush(widget._private, args, true)
 	local wp = widget._private
 

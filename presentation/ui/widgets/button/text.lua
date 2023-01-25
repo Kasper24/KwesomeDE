@@ -62,7 +62,16 @@ end
 
 local function button(args, type)
     local widget = type == "normal" and ebwidget.normal(args) or ebwidget.state(args)
-	gtable.crush(widget, text_button, true)
+
+	function widget:set_color(color)
+		self.children[1].children[1].children[1]:set_color(color)
+	end
+
+	function widget:set_text(text)
+		self.children[1].children[1].children[1]:set_text(text)
+	end
+
+	-- gtable.crush(widget, text_button, true)
 
 	local text_widget = twidget(args)
 
@@ -171,7 +180,15 @@ function text_button.normal(args)
 
 	local widget = button(args, "normal")
 	build_properties(widget, normal_properties)
-    gtable.crush(widget._private, args, true)
+    -- gtable.crush(widget._private, args, true)
+
+	-- print(helpers.inspect.inspect(widget._private))
+
+	-- widget._private.text_normal_bg = args.text_normal_bg
+	-- widget._private.text_hover_bg = args.text_hover_bg
+	-- widget._private.text_press_bg = args.text_press_bg
+	-- widget._private.animate_size = args.animate_size
+
 	local wp = widget._private
 
 	widget:connect_signal("_private::on_hover", function(state)

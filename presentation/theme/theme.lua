@@ -261,6 +261,7 @@ local function icons()
         moon_cloud = { icon = "", font = font_awesome_6_solid_font_name },
         cloud_moon_rain = { icon = "", font = font_awesome_6_solid_font_name },
         cloud_bolt_moon = { icon = "", font = font_awesome_6_solid_font_name },
+        vscode = { icon = "﬏", font = "JetBrainsMono Nerd Font 40" },
     }
 
     theme.app_to_font_icon_lookup =
@@ -296,7 +297,7 @@ local function icons()
         ["chromium"] = theme.icons.chrome,
         ["emacs"] = theme.icons.code,
         ["vim"] = theme.icons.code,
-        ["code"] = theme.icons.code,
+        ["code"] = theme.icons.vscode,
         ["jetbrainsstudio"] = theme.icons.code,
         ["qtcreator"] = theme.icons.code,
         ["lazygit"] = theme.icons.git,
