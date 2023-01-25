@@ -14,6 +14,32 @@ local string = string
 
 local text = { mt = {} }
 
+local properties =
+{
+	"bold", "italic",
+	"size", "color", "text"
+}
+
+local function build_properties(prototype, prop_names)
+    for _, prop in ipairs(prop_names) do
+        if not prototype["set_" .. prop] then
+            prototype["set_" .. prop] = function(self, value)
+                if self._private[prop] ~= value then
+                    self._private[prop] = value
+                    self:emit_signal("widget::redraw_needed")
+                    self:emit_signal("property::"..prop, value)
+                end
+                return self
+            end
+        end
+        if not prototype["get_" .. prop] then
+            prototype["get_" .. prop] = function(self)
+                return self._private[prop]
+            end
+        end
+    end
+end
+
 local function generate_markup(self)
 	local bold_start = ""
 	local bold_end = ""
@@ -33,17 +59,14 @@ local function generate_markup(self)
 	self._private.text = gstring.xml_unescape(tostring(self._private.text))
 	self._private.text = gstring.xml_escape(tostring(self._private.text))
 
-	self.markup = bold_start .. italic_start ..
+	local size = (self._private.size or 20) * 1024
+	self.markup = string.format("<span font_size='%s'>", size) .. bold_start .. italic_start ..
 		helpers.ui.colorize_text(self._private.text, self._private.color) ..
-		italic_end .. bold_end
-end
+		italic_end .. bold_end .. "</span>"
 
-function text:set_font(font)
-	self._private.font = font
-    self._private.layout:set_font_description(beautiful.get_font(font))
-    self:emit_signal("widget::redraw_needed")
-    self:emit_signal("widget::layout_changed")
-    self:emit_signal("property::font", font)
+	-- self.markup = bold_start .. italic_start ..
+	-- 	helpers.ui.colorize_text(self._private.text, self._private.color) ..
+	-- 	italic_end .. bold_end
 end
 
 function text:set_bold(bold)
@@ -57,10 +80,7 @@ function text:set_italic(italic)
 end
 
 function text:set_size(size)
-	-- Remove the previous size from the font field
-	local font = string.gsub(self._private.font, self._private.size, "")
 	self._private.size = size
-	self:set_font(font .. size)
 end
 
 function text:set_color(color)
@@ -79,15 +99,13 @@ local function new(args)
 
 	args = args or {}
 
-	widget._private.font = args.font or beautiful.font_name or nil
 	widget._private.bold = args.bold ~= nil and args.bold or false
 	widget._private.italic = args.italic ~= nil and args.italic or false
 	widget._private.size = args.size or 20
 	widget._private.color = args.color or beautiful.colors.on_background
 	widget._private.text = args.text or ""
 
-	-- Set the size and markup initally
-	widget:set_font(widget._private.font .. widget._private.size)
+	-- Set markup for initialaztion
 	generate_markup(widget)
 
 	return widget
@@ -96,5 +114,7 @@ end
 function text.mt:__call(...)
     return new(...)
 end
+
+build_properties(text, properties)
 
 return setmetatable(text, text.mt)

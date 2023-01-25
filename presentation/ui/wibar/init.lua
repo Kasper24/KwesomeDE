@@ -67,9 +67,9 @@ local function update_taglist(self, tag)
     end
 
     if tag.selected then
-        self.widget.get_children_by_id("button")[1]:turn_on()
+        self.widget.children[1]:turn_on()
     else
-        self.widget.get_children_by_id("button")[1]:turn_off()
+        self.widget.children[1]:turn_off()
     end
 end
 

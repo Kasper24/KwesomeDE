@@ -95,7 +95,7 @@ local function button(args, type)
 
 	widget.size_animation = helpers.animation:new
 	{
-		pos = args.size,
+		pos = args.size or 20,
 		easing = helpers.animation.easing.linear,
 		duration = 0.2,
 		update = function(self, pos)
