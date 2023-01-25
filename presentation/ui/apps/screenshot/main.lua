@@ -28,8 +28,9 @@ local function button(icon, text, on_release, on_by_default)
         text = text
     }
 
-    return widgets.button.elevated.state
+    return wibox.widget
     {
+        widget = widgets.button.elevated.state,
         on_by_default = on_by_default,
         forced_width = dpi(120),
         forced_height = dpi(120),
@@ -99,8 +100,9 @@ local function new(self, layout)
         text = "Screenshot",
     }
 
-    local settings_button = widgets.button.text.normal
+    local settings_button = wibox.widget
     {
+        widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
         size = 15,
@@ -112,8 +114,9 @@ local function new(self, layout)
         end
     }
 
-    local close_button = widgets.button.text.normal
+    local close_button = wibox.widget
     {
+        widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
         text_normal_bg = accent_color,
@@ -124,8 +127,9 @@ local function new(self, layout)
         end
     }
 
-    local screenshot_button = widgets.button.text.normal
+    local screenshot_button = wibox.widget
     {
+        widget = widgets.button.text.normal,
         forced_width = dpi(50),
         size = 15,
         normal_bg = beautiful.random_accent_color(),

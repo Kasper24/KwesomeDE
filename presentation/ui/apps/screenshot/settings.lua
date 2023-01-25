@@ -57,8 +57,9 @@ local function delay()
         text = screenshot_daemon:get_delay(),
     }
 
-    local plus_button = widgets.button.text.normal
+    local plus_button = wibox.widget
     {
+        widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
         text_normal_bg = accent_color,
@@ -69,8 +70,9 @@ local function delay()
         end
     }
 
-    local minus_button = widgets.button.text.normal
+    local minus_button = wibox.widget
     {
+        widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
         text_normal_bg = accent_color,
@@ -112,8 +114,9 @@ local function folder()
         text = screenshot_daemon:get_folder(),
     }
 
-    local set_folder_button  = widgets.button.text.normal
+    local set_folder_button  = wibox.widget
     {
+        widget = widgets.button.text.normal,
         text_normal_bg = accent_color,
         size = 15,
         text = "...",
@@ -137,8 +140,9 @@ local function folder()
 end
 
 local function new(layout)
-    local back_button = widgets.button.text.normal
+    local back_button = wibox.widget
     {
+        widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
         font = beautiful.icons.left.font,

@@ -141,40 +141,47 @@ local function email()
         widget:raise_widget(scrollbox)
 
         for index, email in ipairs(emails) do
-            local widget =  widgets.button.elevated.normal
+            local widget =  wibox.widget
             {
-                constraint_height = dpi(500),
-                halign = "left",
-                on_release = function()
-                    email_daemon:open(email)
-                end,
-                child = wibox.widget
+                widget = wibox.container.constraint,
+                height = dpi(500),
                 {
-                    layout = wibox.layout.fixed.vertical,
-                    spacing = dpi(5),
+                    widget = wibox.container.place,
+                    halign = "left",
                     {
-                        widget = widgets.text,
-                        halign = "left",
-                        size = 12,
-                        text = "From: " .. email.author.name
-                    },
-                    {
-                        widget = widgets.text,
-                        halign = "left",
-                        size = 12,
-                        text = "Date: " .. email.modified
-                    },
-                    {
-                        widget = widgets.text,
-                        halign = "left",
-                        size = 12,
-                        text = "Subject: " .. tostring(email.title)
-                    },
-                    {
-                        widget = widgets.text,
-                        halign = "left",
-                        size = 12,
-                        text = "Summary: " .. tostring(email.summary)
+                        widget = widgets.button.elevated.normal,
+                        on_release = function()
+                            email_daemon:open(email)
+                        end,
+                        child = wibox.widget
+                        {
+                            layout = wibox.layout.fixed.vertical,
+                            spacing = dpi(5),
+                            {
+                                widget = widgets.text,
+                                halign = "left",
+                                size = 12,
+                                text = "From: " .. email.author.name
+                            },
+                            {
+                                widget = widgets.text,
+                                halign = "left",
+                                size = 12,
+                                text = "Date: " .. email.modified
+                            },
+                            {
+                                widget = widgets.text,
+                                halign = "left",
+                                size = 12,
+                                text = "Subject: " .. tostring(email.title)
+                            },
+                            {
+                                widget = widgets.text,
+                                halign = "left",
+                                size = 12,
+                                text = "Summary: " .. tostring(email.summary)
+                            }
+                        }
                     }
                 }
             }
@@ -222,8 +229,9 @@ local function github_activity()
         for index, event in ipairs(events) do
             local action_and_link = generate_action_string(event)
 
-            local avatar = widgets.button.elevated.normal
+            local avatar = wibox.widget
             {
+                widget = widgets.button.elevated.normal,
                 child =
                 {
                     widget = wibox.widget.imagebox,
@@ -262,24 +270,28 @@ local function github_activity()
                 text = helpers.string.to_time_ago(os.difftime(os.time(os.date("!*t")), helpers.string.parse_date(event.created_at))),
             }
 
-            local info = widgets.button.elevated.normal
+            local info = wibox.widget
             {
+                widget = wibox.container.place,
                 halign = "left",
-                on_release = function()
-                    awful.spawn("xdg-open " .. action_and_link.link, false)
-                end,
-                child =
                 {
-                    layout = wibox.layout.fixed.vertical,
-                    forced_width = dpi(1000),
-                    user_action_repo,
+                    widget = widgets.button.elevated.normal,
+                    on_release = function()
+                        awful.spawn("xdg-open " .. action_and_link.link, false)
+                    end,
+                    child =
                     {
-                        layout = wibox.layout.fixed.horizontal,
-                        spacing = dpi(10),
-                        icon,
-                        time
+                        layout = wibox.layout.fixed.vertical,
+                        forced_width = dpi(1000),
+                        user_action_repo,
+                        {
+                            layout = wibox.layout.fixed.horizontal,
+                            spacing = dpi(10),
+                            icon,
+                            time
+                        },
                     },
-                },
+                }
             }
 
             local widget = wibox.widget
@@ -333,8 +345,9 @@ local function github_pr()
         widget:raise_widget(scrollbox)
 
         for index, pr in ipairs(prs) do
-            local avatar = widgets.button.elevated.normal
+            local avatar = wibox.widget
             {
+                widget = widgets.button.elevated.normal,
                 on_release = function()
                     awful.spawn("xdg-open " .. pr.user.html_url, false)
                 end,
@@ -348,8 +361,9 @@ local function github_pr()
                 }
             }
 
-            local button = widgets.button.elevated.normal
+            local button = wibox.widget
             {
+                widget = widgets.button.elevated.normal,
                 on_release = function()
                     awful.spawn("xdg-open " .. pr.html_url, false)
                 end,
@@ -440,8 +454,9 @@ local function github()
     local activity_button = nil
     local pr_button = nil
 
-    activity_button = widgets.button.text.state
+    activity_button = wibox.widget
     {
+        widget = widgets.button.text.state,
         on_by_default = true,
         size = 15,
         on_normal_bg = accent_color,
@@ -456,8 +471,9 @@ local function github()
         end
     }
 
-    pr_button = widgets.button.text.state
+    pr_button = wibox.widget
     {
+        widget = widgets.button.text.state,
         size = 15,
         on_normal_bg = accent_color,
         text_normal_bg = beautiful.colors.on_background,
@@ -521,8 +537,9 @@ local function gitlab()
         widget:raise_widget(scrollbox)
 
         for index, pr in ipairs(prs) do
-            local avatar = widgets.button.elevated.normal
+            local avatar = wibox.widget
             {
+                widget = widgets.button.elevated.normal,
                 forced_width = dpi(60),
                 forced_height = dpi(60),
                 on_release = function()
@@ -603,8 +620,9 @@ local function gitlab()
                 }
             }
 
-            local button = widgets.button.elevated.normal
+            local button = wibox.widget
             {
+                widget = widgets.button.elevated.normal,
                 on_release = function()
                     awful.spawn("xdg-open " .. pr.web_url, false)
                 end,
@@ -667,8 +685,9 @@ local function new()
     local github_button = nil
     local gitlab_button = nil
 
-    email_button = widgets.button.text.state
+    email_button = wibox.widget
     {
+        widget = widgets.button.text.state,
         on_by_default = true,
         size = 15,
         on_normal_bg = accent_color,
@@ -684,8 +703,9 @@ local function new()
         end
     }
 
-    github_button = widgets.button.text.state
+    github_button = wibox.widget
     {
+        widget = widgets.button.text.state,
         size = 15,
         on_normal_bg = accent_color,
         text_normal_bg = beautiful.colors.on_background,
@@ -700,8 +720,9 @@ local function new()
         end
     }
 
-    gitlab_button = widgets.button.text.state
+    gitlab_button = wibox.widget
     {
+        widget = widgets.button.text.state,
         size = 15,
         on_normal_bg = accent_color,
         text_normal_bg = beautiful.colors.on_background,

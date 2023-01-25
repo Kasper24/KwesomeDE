@@ -105,8 +105,9 @@ local function fps()
         text = record_daemon:get_fps(),
     }
 
-    local plus_button = widgets.button.text.normal
+    local plus_button = wibox.widget
     {
+        widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
         text_normal_bg = accent_color,
@@ -117,8 +118,9 @@ local function fps()
         end
     }
 
-    local minus_button = widgets.button.text.normal
+    local minus_button = wibox.widget
     {
+        widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
         text_normal_bg = accent_color,
@@ -155,8 +157,9 @@ local function delay()
         text = record_daemon:get_delay(),
     }
 
-    local plus_button = widgets.button.text.normal
+    local plus_button = wibox.widget
     {
+        widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
         text_normal_bg = accent_color,
@@ -167,8 +170,9 @@ local function delay()
         end
     }
 
-    local minus_button = widgets.button.text.normal
+    local minus_button = wibox.widget
     {
+        widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
         text_normal_bg = accent_color,
@@ -248,8 +252,9 @@ local function folder()
         text = record_daemon:get_folder(),
     }
 
-    local set_folder_button  = widgets.button.text.normal
+    local set_folder_button  = wibox.widget
     {
+        widget = widgets.button.text.normal,
         text_normal_bg = accent_color,
         size = 15,
         text = "...",
@@ -313,8 +318,9 @@ local function main(self)
         text = "Record",
     }
 
-    local close_button = widgets.button.text.normal
+    local close_button = wibox.widget
     {
+        widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
         font = beautiful.icons.xmark.font,
@@ -324,8 +330,9 @@ local function main(self)
         end
     }
 
-    local record_button = widgets.button.text.normal
+    local record_button = wibox.widget
     {
+        widget = widgets.button.text.normal,
         forced_width = dpi(50),
         size = 15,
         normal_bg = beautiful.random_accent_color(),

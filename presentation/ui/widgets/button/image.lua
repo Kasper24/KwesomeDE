@@ -5,7 +5,7 @@
 
 local gtable = require("gears.table")
 local wibox = require("wibox")
-local ewidget = require("presentation.ui.widgets.button.elevated")
+local ebwidget = require("presentation.ui.widgets.button.elevated")
 local helpers = require("helpers")
 local setmetatable = setmetatable
 
@@ -40,7 +40,7 @@ local function button(args, type)
 	}
 
     args.child = image_widget
-    local widget = type == "normal" and ewidget.normal(args) or ewidget.state(args)
+    local widget = type == "normal" and ebwidget.normal(args) or ebwidget.state(args)
 
     gtable.crush(widget, image_button, true)
 	widget._private.image = image_widget

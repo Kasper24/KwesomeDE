@@ -132,7 +132,6 @@ local function widget(self)
         on_press_bg = beautiful.colors.transparent,
         icon_font = beautiful.icons.lock.font,
         icon = beautiful.icons.lock.icon,
-        paddings = dpi(15),
         keyreleased_callback = function(mod, key, text)
             if key == "Return" then
                 system_daemon:unlock(text)
@@ -152,8 +151,9 @@ local function widget(self)
         end
     }
 
-    local unlock_button = widgets.button.text.normal
+    local unlock_button = wibox.widget
     {
+        widget = widgets.button.text.normal,
         normal_bg = beautiful.colors.transparent,
         hover_bg = beautiful.colors.on_background,
         press_bg = beautiful.colors.on_background,
@@ -168,8 +168,9 @@ local function widget(self)
         end,
     }
 
-    local shutdown_button = widgets.button.text.normal
+    local shutdown_button = wibox.widget
     {
+        widget = widgets.button.text.normal,
         animate_size = false,
         normal_bg = beautiful.colors.transparent,
         hover_bg = beautiful.colors.on_background,
@@ -185,8 +186,9 @@ local function widget(self)
         end
     }
 
-    local restart_button = widgets.button.text.normal
+    local restart_button = wibox.widget
     {
+        widget = widgets.button.text.normal,
         animate_size = false,
         normal_bg = beautiful.colors.transparent,
         hover_bg = beautiful.colors.on_background,
@@ -202,8 +204,9 @@ local function widget(self)
         end
     }
 
-    local suspend_button = widgets.button.text.normal
+    local suspend_button = wibox.widget
     {
+        widget = widgets.button.text.normal,
         animate_size = false,
         normal_bg = beautiful.colors.transparent,
         hover_bg = beautiful.colors.on_background,
@@ -219,8 +222,9 @@ local function widget(self)
         end
     }
 
-    local exit_button = widgets.button.text.normal
+    local exit_button = wibox.widget
     {
+        widget = widgets.button.text.normal,
         animate_size = false,
         normal_bg = beautiful.colors.transparent,
         hover_bg = beautiful.colors.on_background,

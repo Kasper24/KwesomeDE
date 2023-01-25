@@ -72,7 +72,9 @@ local function client_widget(self, client)
         mode = "max",
         width = dpi(300),
         height = dpi(150),
-        widgets.button.elevated.state {
+        {
+            widget = widgets.button.elevated.state,
+            id = "button",
             normal_bg = beautiful.colors.background,
             normal_border_width = dpi(5),
             normal_border_color = beautiful.colors.surface,
@@ -81,7 +83,8 @@ local function client_widget(self, client)
                 self:select_client(client)
                 self:hide()
             end,
-            child = {
+            child =
+            {
                 widget = wibox.container.margin,
                 margins = dpi(15),
                 {
@@ -114,9 +117,9 @@ local function client_widget(self, client)
     }
 
     if is_selected == true then
-        widget.children[1]:turn_on()
+        widget.get_children_by_id("button")[1]:turn_on()
     else
-        widget.children[1]:turn_off()
+        widget.get_children_by_id("button")[1]:turn_off()
     end
 
     return widget

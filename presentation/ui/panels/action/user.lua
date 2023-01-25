@@ -42,8 +42,9 @@ local function new()
         text = os.getenv("USER") ..  "@" .. capi.awesome.hostname
     }
 
-    local power_button = widgets.button.text.normal
+    local power_button = wibox.widget
     {
+        widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
         size = 15,

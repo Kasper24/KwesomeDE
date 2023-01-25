@@ -119,11 +119,11 @@ local function last_page(on_next_pressed)
 For more information visit the following links.]],
     }
 
-    local github_link = widgets.button.text.normal
+    local github_link = wibox.widget
     {
+        widget = widgets.button.text.normal,
         forced_width = dpi(300),
         animate_size = false,
-        halign = "center",
         size = 13,
         text_normal_bg = accent_color,
         text = "Github...",
@@ -132,11 +132,11 @@ For more information visit the following links.]],
         end,
     }
 
-    local reddit_link = widgets.button.text.normal
+    local reddit_link = wibox.widget
     {
+        widget = widgets.button.text.normal,
         forced_width = dpi(300),
         animate_size = false,
-        halign = "center",
         size = 13,
         text_normal_bg = accent_color,
         text = "Reddit...",
@@ -145,11 +145,11 @@ For more information visit the following links.]],
         end,
     }
 
-    local awesome_link = widgets.button.text.normal
+    local awesome_link = wibox.widget
     {
+        widget = widgets.button.text.normal,
         forced_width = dpi(300),
         animate_size = false,
-        halign = "center",
         size = 13,
         text_normal_bg = accent_color,
         text = "Awesome...",
@@ -158,10 +158,10 @@ For more information visit the following links.]],
         end,
     }
 
-    local finish_button = widgets.button.text.normal
+    local finish_button = wibox.widget
     {
+        widget = widgets.button.text.normal,
         animate_size = false,
-        halign = "center",
         text_normal_bg = accent_color,
         size = 13,
         text = "Finish",
@@ -226,9 +226,9 @@ local function weather_page(on_next_pressed, on_previous_pressed)
         text = "Weather"
     }
 
-    local sign_up_open_weather_map = widgets.button.text.normal
+    local sign_up_open_weather_map = wibox.widget
     {
-        halign = "center",
+        widget = widgets.button.text.normal,
         size = 13,
         text_normal_bg = beautiful.colors.on_background,
         text = "1. Sign up and login on OpenWeatherMap.",
@@ -237,9 +237,9 @@ local function weather_page(on_next_pressed, on_previous_pressed)
         end
     }
 
-    local visit_the_api_key_tab = widgets.button.text.normal
+    local visit_the_api_key_tab = wibox.widget
     {
-        halign = "center",
+        widget = widgets.button.text.normal,
         size = 13,
         text_normal_bg = beautiful.colors.on_background,
         text = "2. Visit the API key tab",
@@ -248,17 +248,17 @@ local function weather_page(on_next_pressed, on_previous_pressed)
         end
     }
 
-    local generate_key = widgets.button.text.normal
+    local generate_key = wibox.widget
     {
-        halign = "center",
+        widget = widgets.button.text.normal,
         size = 13,
         text_normal_bg = beautiful.colors.on_background,
         text = "3. Select a name for your key and click generate",
     }
 
-    local copy_and_paste_key = widgets.button.text.normal
+    local copy_and_paste_key = wibox.widget
     {
-        halign = "center",
+        widget = widgets.button.text.normal,
         size = 13,
         text_normal_bg = beautiful.colors.on_background,
         text = "4. Copy the generated key and paste it in the prompt below",
@@ -320,10 +320,10 @@ local function weather_page(on_next_pressed, on_previous_pressed)
         end
     }
 
-    local back_button = widgets.button.text.normal
+    local back_button = wibox.widget
     {
+        widget = widgets.button.text.normal,
         animate_size = false,
-        halign = "center",
         text_normal_bg = accent_color,
         size = 13,
         text = "Back",
@@ -332,10 +332,10 @@ local function weather_page(on_next_pressed, on_previous_pressed)
         end,
     }
 
-    local next_button = widgets.button.text.normal
+    local next_button = wibox.widget
     {
+        widget = widgets.button.text.normal,
         animate_size = false,
-        halign = "center",
         text_normal_bg = accent_color,
         size = 13,
         text = "Next",
@@ -437,9 +437,9 @@ local function gitlab_page(on_next_pressed, on_previous_pressed)
         text = "Gitlab"
     }
 
-    local login_on_gitlab = widgets.button.text.normal
+    local login_on_gitlab = wibox.widget
     {
-        halign = "center",
+        widget = widgets.button.text.normal,
         size = 13,
         text_normal_bg = beautiful.colors.on_background,
         text = "1. Login on GitLab.",
@@ -448,9 +448,9 @@ local function gitlab_page(on_next_pressed, on_previous_pressed)
         end
     }
 
-    local visit_access_tokens_tab = widgets.button.text.normal
+    local visit_access_tokens_tab = wibox.widget
     {
-        halign = "center",
+        widget = widgets.button.text.normal,
         size = 13,
         text_normal_bg = beautiful.colors.on_background,
         text = "2. Visit the access tokens tab.",
@@ -459,25 +459,25 @@ local function gitlab_page(on_next_pressed, on_previous_pressed)
         end
     }
 
-    local enter_a_name_and_date = widgets.button.text.normal
+    local enter_a_name_and_date = wibox.widget
     {
-        halign = "center",
+        widget = widgets.button.text.normal,
         size = 13,
         text_normal_bg = beautiful.colors.on_background,
         text = "3. Enter a name and optional expiry date for the token.",
     }
 
-    local select_the_desired_scopes = widgets.button.text.normal
+    local select_the_desired_scopes = wibox.widget
     {
-        halign = "center",
+        widget = widgets.button.text.normal,
         size = 13,
         text_normal_bg = beautiful.colors.on_background,
         text = "4. Select the desired scopes.",
     }
 
-    local press_create_access_token = widgets.button.text.normal
+    local press_create_access_token = wibox.widget
     {
-        halign = "center",
+        widget = widgets.button.text.normal,
         size = 13,
         text_normal_bg = beautiful.colors.on_background,
         text = "5. Press Create personal access token.",
@@ -509,10 +509,10 @@ local function gitlab_page(on_next_pressed, on_previous_pressed)
         text_color = beautiful.colors.on_background,
     }
 
-    local back_button = widgets.button.text.normal
+    local back_button = wibox.widget
     {
+        widget = widgets.button.text.normal,
         animate_size = false,
-        halign = "center",
         text_normal_bg = accent_color,
         size = 13,
         text = "Back",
@@ -521,10 +521,10 @@ local function gitlab_page(on_next_pressed, on_previous_pressed)
         end,
     }
 
-    local next_button = widgets.button.text.normal
+    local next_button = wibox.widget
     {
+        widget = widgets.button.text.normal,
         animate_size = false,
-        halign = "center",
         text_normal_bg = accent_color,
         size = 13,
         text = "Next",
@@ -630,10 +630,10 @@ local function github_page(on_next_pressed, on_previous_pressed)
         text_color = beautiful.colors.on_background,
     }
 
-    local back_button = widgets.button.text.normal
+    local back_button = wibox.widget
     {
+        widget = widgets.button.text.normal,
         animate_size = false,
-        halign = "center",
         text_normal_bg = accent_color,
         size = 13,
         text = "Back",
@@ -642,10 +642,10 @@ local function github_page(on_next_pressed, on_previous_pressed)
         end,
     }
 
-    local next_button = widgets.button.text.normal
+    local next_button = wibox.widget
     {
+        widget = widgets.button.text.normal,
         animate_size = false,
-        halign = "center",
         text_normal_bg = accent_color,
         size = 13,
         text = "Next",
@@ -766,10 +766,10 @@ local function email_page(on_next_pressed, on_previous_pressed)
         text_color = beautiful.colors.on_background,
     }
 
-    local back_button = widgets.button.text.normal
+    local back_button = wibox.widget
     {
+        widget = widgets.button.text.normal,
         animate_size = false,
-        halign = "center",
         text_normal_bg = accent_color,
         size = 13,
         text = "Back",
@@ -778,10 +778,10 @@ local function email_page(on_next_pressed, on_previous_pressed)
         end,
     }
 
-    local next_button = widgets.button.text.normal
+    local next_button = wibox.widget
     {
+        widget = widgets.button.text.normal,
         animate_size = false,
-        halign = "center",
         text_normal_bg = accent_color,
         size = 13,
         text = "Next",
@@ -887,10 +887,10 @@ local function password_page(on_next_pressed, on_previous_pressed)
         text_color = beautiful.colors.on_background,
     }
 
-    local back_button = widgets.button.text.normal
+    local back_button = wibox.widget
     {
+        widget = widgets.button.text.normal,
         animate_size = false,
-        halign = "center",
         text_normal_bg = accent_color,
         size = 13,
         text = "Back",
@@ -899,10 +899,10 @@ local function password_page(on_next_pressed, on_previous_pressed)
         end,
     }
 
-    local next_button = widgets.button.text.normal
+    local next_button = wibox.widget
     {
+        widget = widgets.button.text.normal,
         animate_size = false,
-        halign = "center",
         text_normal_bg = accent_color,
         size = 13,
         text = "Next",
@@ -1003,10 +1003,10 @@ local function welcome_page(on_next_pressed, on_previous_pressed)
         picture(8),
     }
 
-    local quit_button = widgets.button.text.normal
+    local quit_button = wibox.widget
     {
+        widget = widgets.button.text.normal,
         animate_size = false,
-        halign = "center",
         text_normal_bg = accent_color,
         size = 13,
         text = "Quit",
@@ -1015,10 +1015,10 @@ local function welcome_page(on_next_pressed, on_previous_pressed)
         end,
     }
 
-    local next_button = widgets.button.text.normal
+    local next_button = wibox.widget
     {
+        widget = widgets.button.text.normal,
         animate_size = false,
-        halign = "center",
         text_normal_bg = accent_color,
         size = 13,
         text = "Next",

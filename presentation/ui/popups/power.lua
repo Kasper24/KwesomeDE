@@ -125,8 +125,9 @@ local function button(image, text, on_release)
         text = text,
     }
 
-    local button =  widgets.button.text.normal
+    local button =  wibox.widget
     {
+        widget = widgets.button.text.normal,
         forced_height = dpi(120),
         forced_width = dpi(120),
         normal_bg = beautiful.colors.background,

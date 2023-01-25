@@ -152,8 +152,9 @@ naughty.connect_signal("request::display", function(n)
         text = n.app_name:gsub("^%l", string.upper)
     }
 
-    local dismiss = widgets.button.text.normal
+    local dismiss = wibox.widget
     {
+        widget = widgets.button.text.normal,
         font = beautiful.icons.xmark.font,
         size = 12,
         text = beautiful.icons.xmark.icon,
@@ -271,8 +272,9 @@ naughty.connect_signal("request::display", function(n)
     }
 
     for _, action in ipairs(n.actions) do
-        local button = widgets.button.text.normal
+        local button = wibox.widget
         {
+            widget = widgets.button.text.normal,
             size = 12,
             hover_bg = beautiful.colors.surface,
             text_normal_bg = beautiful.colors.on_background,

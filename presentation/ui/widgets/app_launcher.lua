@@ -117,9 +117,11 @@ local function create_app_widget(self, entry)
     --     }
     -- }
 
-    local app = wibox.widget {
+    local app = wibox.widget
+    {
         id = "background",
-        widget = ebutton.normal {
+        widget = ebutton.normal
+        {
             forced_width = self.app_width,
             forced_height = self.app_height,
             child = {

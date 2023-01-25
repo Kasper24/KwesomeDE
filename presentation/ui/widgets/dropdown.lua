@@ -4,8 +4,9 @@
 -------------------------------------------
 
 local gtable = require("gears.table")
+local wibox = require("wibox")
 local wmenu = require("presentation.ui.widgets.menu")
-local wbuttontext = require("presentation.ui.widgets.button.text")
+local tbwidget = require("presentation.ui.widgets.button.text")
 local beautiful = require("beautiful")
 local setmetatable = setmetatable
 local pairs = pairs
@@ -49,8 +50,9 @@ local function new(args)
 
     local menu = wmenu({}, args.menu_width)
 
-    dropdown_button = wbuttontext.state
+    dropdown_button = wibox.widget
     {
+        widget = tbwidget.state,
         animate_size = false,
         halign = "left",
         text = args.prompt .. args.initial_value,

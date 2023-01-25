@@ -60,8 +60,9 @@ local function device_widget(device, path, layout, accent_color)
         color = beautiful.colors.on_surface,
     }
 
-    local cancel = widgets.button.text.normal
+    local cancel = wibox.widget
     {
+        widget = widgets.button.text.normal,
         normal_bg = beautiful.colors.surface,
         text_normal_bg = beautiful.colors.on_surface,
         size = 12,
@@ -72,8 +73,9 @@ local function device_widget(device, path, layout, accent_color)
         end
     }
 
-    local connect_or_disconnect = widgets.button.text.normal
+    local connect_or_disconnect = wibox.widget
     {
+        widget = widgets.button.text.normal,
         normal_bg = beautiful.colors.surface,
         text_normal_bg = beautiful.colors.on_surface,
         size = 12,
@@ -87,8 +89,9 @@ local function device_widget(device, path, layout, accent_color)
         end
     }
 
-    local trust_or_untrust = widgets.button.text.normal
+    local trust_or_untrust = wibox.widget
     {
+        widget = widgets.button.text.normal,
         normal_bg = beautiful.colors.surface,
         text_normal_bg = beautiful.colors.on_surface,
         size = 12,
@@ -100,8 +103,9 @@ local function device_widget(device, path, layout, accent_color)
         end
     }
 
-    local pair_or_unpair = widgets.button.text.normal
+    local pair_or_unpair = wibox.widget
     {
+        widget = widgets.button.text.normal,
         normal_bg = beautiful.colors.surface,
         text_normal_bg = beautiful.colors.on_surface,
         size = 12,
@@ -115,8 +119,9 @@ local function device_widget(device, path, layout, accent_color)
         end
     }
 
-    widget = widgets.button.elevated.state
+    widget = wibox.widget
     {
+        widget = widgets.button.elevated.state,
         forced_height = dpi(60),
         on_normal_bg = beautiful.colors.background,
         on_hover_bg = beautiful.colors.background,
@@ -128,7 +133,6 @@ local function device_widget(device, path, layout, accent_color)
                 self:turn_on()
             end
         end,
-        child =
         {
             layout = wibox.layout.fixed.vertical,
             spacing = dpi(15),
@@ -185,8 +189,9 @@ local function new()
         text = "Bluetooth"
     }
 
-    local scan = widgets.button.text.normal
+    local scan = wibox.widget
     {
+        widget = widgets.button.text.normal,
         text_normal_bg = beautiful.colors.on_background,
         size = 15,
         font = beautiful.icons.arrow_rotate_right.font,
@@ -196,8 +201,9 @@ local function new()
         end
     }
 
-    local settings = widgets.button.text.normal
+    local settings = wibox.widget
     {
+        widget = widgets.button.text.normal,
         text_normal_bg = beautiful.colors.on_background,
         size = 15,
         font = beautiful.icons.gear.font,

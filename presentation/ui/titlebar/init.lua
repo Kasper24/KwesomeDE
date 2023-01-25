@@ -15,8 +15,9 @@ capi.client.connect_signal("request::titlebars", function(c)
     local color  = helpers.client.get_dominant_color(c)
 
     -- No clue why by minimizng only works if I do it via on_release?
-    local minimize = widgets.button.text.normal
+    local minimize = wibox.widget
     {
+        widget = widgets.button.text.normal,
         forced_width = dpi(40),
         forced_height = dpi(40),
         normal_bg = color,
@@ -29,8 +30,9 @@ capi.client.connect_signal("request::titlebars", function(c)
         end
     }
 
-    local maximize = widgets.button.text.normal
+    local maximize = wibox.widget
     {
+        widget = widgets.button.text.normal,
         forced_width = dpi(40),
         forced_height = dpi(40),
         normal_bg = color,
@@ -44,8 +46,9 @@ capi.client.connect_signal("request::titlebars", function(c)
         end
     }
 
-    local close = widgets.button.text.normal
+    local close = wibox.widget
     {
+        widget = widgets.button.text.normal,
         forced_width = dpi(40),
         forced_height = dpi(40),
         normal_bg = color,

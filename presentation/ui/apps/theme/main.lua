@@ -15,8 +15,9 @@ local setmetatable = setmetatable
 local main = { mt = {} }
 
 local function wallpaper_widget(wallpaper)
-    local button = widgets.button.text.state
+    local button = wibox.widget
     {
+        widget = widgets.button.text.state,
         forced_height = dpi(40),
         animate_size = false,
         halign = "left",
@@ -67,9 +68,8 @@ local function color_button(index)
             size = 12,
             text = index
         },
-        widgets.button.elevated.normal
         {
-            paddings = dpi(0),
+            widget = widgets.button.elevated.normal,
             on_press = function()
                 theme_daemon:edit_color(index)
             end,
@@ -179,8 +179,9 @@ local function image_tab(self)
         step = 43,
     }
 
-    local light_dark = widgets.button.text.normal
+    local light_dark = wibox.widget
     {
+        widget = widgets.button.text.normal,
         animate_size = false,
         normal_bg = beautiful.colors.surface,
         text_normal_bg = beautiful.colors.on_surface,
@@ -191,8 +192,9 @@ local function image_tab(self)
         end
     }
 
-    local reset_colorscheme = widgets.button.text.normal
+    local reset_colorscheme = wibox.widget
     {
+        widget = widgets.button.text.normal,
         animate_size = false,
         normal_bg = beautiful.colors.surface,
         text_normal_bg = beautiful.colors.on_surface,
@@ -203,8 +205,9 @@ local function image_tab(self)
         end
     }
 
-    local save_colorscheme = widgets.button.text.normal
+    local save_colorscheme = wibox.widget
     {
+        widget = widgets.button.text.normal,
         animate_size = false,
         normal_bg = beautiful.colors.surface,
         text_normal_bg = beautiful.colors.on_surface,
@@ -215,8 +218,9 @@ local function image_tab(self)
         end
     }
 
-    local set_wallpaper = widgets.button.text.normal
+    local set_wallpaper = wibox.widget
     {
+        widget = widgets.button.text.normal,
         animate_size = false,
         normal_bg = beautiful.colors.surface,
         text_normal_bg = beautiful.colors.on_surface,
@@ -227,8 +231,9 @@ local function image_tab(self)
         end
     }
 
-    local set_colorscheme = widgets.button.text.normal
+    local set_colorscheme = wibox.widget
     {
+        widget = widgets.button.text.normal,
         animate_size = false,
         normal_bg = beautiful.colors.surface,
         text_normal_bg = beautiful.colors.on_surface,
@@ -239,8 +244,9 @@ local function image_tab(self)
         end
     }
 
-    local set_both = widgets.button.text.normal
+    local set_both = wibox.widget
     {
+        widget = widgets.button.text.normal,
         animate_size = false,
         normal_bg = beautiful.colors.surface,
         text_normal_bg = beautiful.colors.on_surface,
@@ -341,8 +347,9 @@ end
 local function digital_sun_tab()
     local gcolor = require("gears.color")
 
-    local set = widgets.button.text.normal
+    local set = wibox.widget
     {
+        widget = widgets.button.text.normal,
         animate_size = false,
         normal_bg = beautiful.colors.surface,
         text_normal_bg = beautiful.colors.on_surface,
@@ -476,8 +483,9 @@ local function new(self, layout)
         text = "Theme Manager"
     }
 
-    local settings_button = widgets.button.text.normal
+    local settings_button = wibox.widget
     {
+        widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
         size = 15,
@@ -489,8 +497,9 @@ local function new(self, layout)
         end
     }
 
-    local close_button = widgets.button.text.normal
+    local close_button = wibox.widget
     {
+        widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
         text_normal_bg = accent_color,
@@ -501,8 +510,9 @@ local function new(self, layout)
         end
     }
 
-    _image_button = widgets.button.text.state
+    _image_button = wibox.widget
     {
+        widget = widgets.button.text.state,
         on_by_default = true,
         size = 15,
         on_normal_bg = accent_color,
@@ -520,8 +530,9 @@ local function new(self, layout)
         end
     }
 
-    _tiled_button = widgets.button.text.state
+    _tiled_button = wibox.widget
     {
+        widget = widgets.button.text.state,
         size = 15,
         on_normal_bg = accent_color,
         text_normal_bg = beautiful.colors.on_background,
@@ -538,8 +549,9 @@ local function new(self, layout)
         end
     }
 
-    _color_button = widgets.button.text.state
+    _color_button = wibox.widget
     {
+        widget = widgets.button.text.state,
         size = 15,
         on_normal_bg = accent_color,
         text_normal_bg = beautiful.colors.on_background,
@@ -556,8 +568,9 @@ local function new(self, layout)
         end
     }
 
-    _digital_sun_button = widgets.button.text.state
+    _digital_sun_button = wibox.widget
     {
+        widget = widgets.button.text.state,
         size = 15,
         on_normal_bg = accent_color,
         text_normal_bg = beautiful.colors.on_background,
@@ -574,8 +587,9 @@ local function new(self, layout)
         end
     }
 
-    _binary_button = widgets.button.text.state
+    _binary_button = wibox.widget
     {
+        widget = widgets.button.text.state,
         size = 15,
         on_normal_bg = accent_color,
         text_normal_bg = beautiful.colors.on_background,

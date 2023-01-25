@@ -23,8 +23,9 @@ function ncmppcpp.tabs_titlebar(c)
 
     local accent_color = beautiful.random_accent_color()
 
-    current_playlist = widgets.button.text.state
+    current_playlist = wibox.widget
     {
+        widget = widgets.button.text.state,
         on_by_default = true,
         halign = "left",
         on_normal_bg = accent_color,
@@ -42,8 +43,9 @@ function ncmppcpp.tabs_titlebar(c)
         end
     }
 
-    local_files = widgets.button.text.state
+    local_files = wibox.widget
     {
+        widget = widgets.button.text.state,
         halign = "left",
         on_normal_bg = accent_color,
         text_normal_bg = beautiful.colors.on_background,
@@ -60,8 +62,9 @@ function ncmppcpp.tabs_titlebar(c)
         end
     }
 
-    search = widgets.button.text.state
+    search = wibox.widget
     {
+        widget = widgets.button.text.state,
         halign = "left",
         on_normal_bg = accent_color,
         text_normal_bg = beautiful.colors.on_background,
@@ -78,8 +81,9 @@ function ncmppcpp.tabs_titlebar(c)
         end
     }
 
-    libary = widgets.button.text.state
+    libary = wibox.widget
     {
+        widget = widgets.button.text.state,
         halign = "left",
         on_normal_bg = accent_color,
         text_normal_bg = beautiful.colors.on_background,
@@ -96,8 +100,9 @@ function ncmppcpp.tabs_titlebar(c)
         end
     }
 
-    playlist_editor = widgets.button.text.state
+    playlist_editor = wibox.widget
     {
+        widget = widgets.button.text.state,
         halign = "left",
         on_normal_bg = accent_color,
         text_normal_bg = beautiful.colors.on_background,
@@ -114,8 +119,9 @@ function ncmppcpp.tabs_titlebar(c)
         end
     }
 
-    lyrics = widgets.button.text.state
+    lyrics = wibox.widget
     {
+        widget = widgets.button.text.state,
         halign = "left",
         on_normal_bg = accent_color,
         text_normal_bg = beautiful.colors.on_background,

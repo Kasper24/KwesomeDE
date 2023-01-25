@@ -10,9 +10,8 @@ local gcolor = require("gears.color")
 local gstring = require("gears.string")
 local gtimer = require("gears.timer")
 local wibox = require("wibox")
-local ebutton = require("presentation.ui.widgets.button.elevated")
+local ebwidget = require("presentation.ui.widgets.button.elevated")
 local beautiful = require("beautiful")
-local helpers = require("helpers")
 local tostring = tostring
 local ipairs = ipairs
 local string = string
@@ -414,7 +413,7 @@ local function new(args)
         end
     end
 
-    ret.widget = ebutton.state(args)
+    ret.widget = ebwidget.state(args)
     ret.textbox = args.child
 
     update_markup(ret, false)

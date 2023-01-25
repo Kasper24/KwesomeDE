@@ -99,8 +99,9 @@ local function notification_widget(notification, on_removed)
 
     if notification.actions ~= nil then
         for _, action in ipairs(notification.actions) do
-            local button = widgets.button.text.normal
+            local button = wibox.widget
             {
+                widget = widgets.button.text.normal,
                 -- forced_height = dpi(40),
                 size = 12,
                 normal_bg = beautiful.colors.surface,
@@ -119,18 +120,21 @@ local function notification_widget(notification, on_removed)
     {
         widget = wibox.container.place,
         valign = "top",
-        widgets.button.text.normal
         {
-            forced_width = dpi(40),
-            forced_height = dpi(40),
+            widget = wibox.container.margin,
             margins = { left = dpi(10), bottom = dpi(10) },
-            hover_bg = beautiful.colors.surface,
-            text_normal_bg = accent_color,
-            text = beautiful.icons.xmark.icon,
-            on_release = function()
-                on_removed(widget)
-                notifications_daemon:remove_notification(notification)
-            end
+            {
+                widget = widgets.button.text.normal,
+                forced_width = dpi(40),
+                forced_height = dpi(40),
+                hover_bg = beautiful.colors.surface,
+                text_normal_bg = accent_color,
+                text = beautiful.icons.xmark.icon,
+                on_release = function()
+                    on_removed(widget)
+                    notifications_daemon:remove_notification(notification)
+                end
+            }
         }
     }
 
@@ -195,21 +199,25 @@ local function notification_group(notification)
     }
 
     local widget = nil
-    local button = widgets.button.elevated.state
+    local button = wibox.widget
     {
+        widget = wibox.container.place,
         halign = "left",
-        on_turn_on = function()
-            widget.height = dpi(500000000)
-        end,
-        on_turn_off = function()
-            widget.height = dpi(70)
-        end,
-        child =
         {
-            layout = wibox.layout.fixed.horizontal,
-            spacing = dpi(15),
-            icon,
-            title,
+            widget = widgets.button.elevated.state,
+            on_turn_on = function()
+                widget.height = dpi(500000000)
+            end,
+            on_turn_off = function()
+                widget.height = dpi(70)
+            end,
+            child =
+            {
+                layout = wibox.layout.fixed.horizontal,
+                spacing = dpi(15),
+                icon,
+                title,
+            }
         }
     }
 
@@ -255,8 +263,9 @@ local function new()
         text = "Notifications"
     }
 
-    local clear_notifications = widgets.button.text.normal
+    local clear_notifications = wibox.widget
     {
+        widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
         font = beautiful.icons.trash.font,

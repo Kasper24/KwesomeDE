@@ -84,7 +84,7 @@ local function new(args)
 	widget._private.italic = args.italic ~= nil and args.italic or false
 	widget._private.size = args.size or 20
 	widget._private.color = args.color or beautiful.colors.on_background
-	widget._private.text = args.text ~= nil and args.text or ""
+	widget._private.text = args.text or ""
 
 	-- Set the size and markup initally
 	widget:set_font(widget._private.font .. widget._private.size)

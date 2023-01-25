@@ -27,8 +27,9 @@ local system_info = { mt = {} }
 local function arc_widget(icon, on_release, on_scroll_up, on_scroll_down)
     local icon_widget = nil
     if on_release ~= nil then
-        icon_widget = widgets.button.text.normal
+        icon_widget = wibox.widget
         {
+            widget = widgets.button.text.normal,
             halign = "center",
             valign = "center",
             size = 30,

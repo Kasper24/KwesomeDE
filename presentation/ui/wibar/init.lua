@@ -27,24 +27,29 @@ local capi = { awesome = awesome, root = root, screen = screen, client = client 
 --  Start button
 -- =============================================================================
 local function start()
-    local widget = widgets.button.text.state
+    local widget = wibox.widget
     {
-        forced_width = dpi(60),
-        forced_height = dpi(60),
+        widget = wibox.container.margin,
         margins = dpi(5),
-        font = beautiful.icons.bars_staggered.font,
-        size = 25,
-        text = beautiful.icons.bars_staggered.icon,
-        on_release = function()
-            app_launcher:toggle()
-        end
+        {
+            widget = widgets.button.text.state,
+            id = "button",
+            forced_width = dpi(60),
+            forced_height = dpi(60),
+            font = beautiful.icons.bars_staggered.font,
+            size = 25,
+            text = beautiful.icons.bars_staggered.icon,
+            on_release = function()
+                app_launcher:toggle()
+            end
+        }
     }
 
     app_launcher:connect_signal("bling::app_launcher::visibility", function(self, visibility)
         if visibility == true then
-            widget:turn_on()
+            widget:get_children_by_id("button")[1]:turn_on()
         else
-            widget:turn_off()
+            widget:get_children_by_id("button")[1]:turn_off()
         end
     end)
 
@@ -62,9 +67,9 @@ local function update_taglist(self, tag)
     end
 
     if tag.selected then
-        self.widget.children[1]:turn_on()
+        self.widget.get_children_by_id("button")[1]:turn_on()
     else
-        self.widget.children[1]:turn_off()
+        self.widget.get_children_by_id("button")[1]:turn_off()
     end
 end
 
@@ -94,37 +99,39 @@ local function tag_list(s)
             create_callback = function(self, tag, index, tags)
                 local accent_color = beautiful.random_accent_color()
 
-                local button = widgets.button.text.state
+                local button = wibox.widget
                 {
+                    widget = widgets.button.text.state,
+                    id = "button",
                     size = taglist_icons[index].size,
-                    font = taglist_icons[index].font,
-                    text = taglist_icons[index].icon,
-                    text_normal_bg = accent_color,
-                    on_hover = function()
-                        if #tag:clients() > 0 then
-                            tag_preview:show(tag,
-                            {
-                                wibox = awful.screen.focused().left_wibar,
-                                widget = self,
-                                offset = { x = dpi(70), y = dpi(70) }
-                            })
-                        end
-                    end,
-                    on_leave = function()
-                        tag_preview:hide()
-                    end,
-                    on_release = function(self, lx, ly, button, mods, find_widgets_result)
-                        if button == 1 then
-                            helpers.misc.tag_back_and_forth(tag.index)
+                        font = taglist_icons[index].font,
+                        text = taglist_icons[index].icon,
+                        text_normal_bg = accent_color,
+                        on_hover = function()
+                            if #tag:clients() > 0 then
+                                tag_preview:show(tag,
+                                {
+                                    wibox = awful.screen.focused().left_wibar,
+                                    widget = self,
+                                    offset = { x = dpi(70), y = dpi(70) }
+                                })
+                            end
+                        end,
+                        on_leave = function()
                             tag_preview:hide()
-                        elseif button == 3 then
-                            awful.tag.viewtoggle(tag)
-                        elseif button == 4 then
-                            awful.tag.viewnext(tag.screen)
-                        elseif button == 5 then
-                            awful.tag.viewprev(tag.screen)
+                        end,
+                        on_release = function(self, lx, ly, button, mods, find_widgets_result)
+                            if button == 1 then
+                                helpers.misc.tag_back_and_forth(tag.index)
+                                tag_preview:hide()
+                            elseif button == 3 then
+                                awful.tag.viewtoggle(tag)
+                            elseif button == 4 then
+                                awful.tag.viewnext(tag.screen)
+                            elseif button == 5 then
+                                awful.tag.viewprev(tag.screen)
+                            end
                         end
-                    end
                 }
 
                 local indicator = wibox.widget
@@ -287,26 +294,29 @@ local function favorite(layout, client, class)
 
     local font_icon = beautiful.get_font_icon_for_app_name(class)
 
-    local button = widgets.button.text.state
+    local button = wibox.widget
     {
-        forced_width = dpi(65),
-        forced_height = dpi(65),
+        widget = wibox.container.margin,
         margins = dpi(5),
-        valign = "center",
-        size = 20,
-        font = font_icon.font,
-        text = font_icon.icon,
-        on_release = function()
-            menu:hide()
-            awful.spawn(client.command, false)
-        end,
-        on_secondary_press = function(self)
-            menu:toggle{
-                wibox = awful.screen.focused().top_wibar,
-                widget = self,
-                offset = { y = dpi(70) },
-            }
-        end
+        {
+            widget = widgets.button.text.state,
+            forced_width = dpi(65),
+            forced_height = dpi(65),
+            size = 20,
+            font = font_icon.font,
+            text = font_icon.icon,
+            on_release = function()
+                menu:hide()
+                awful.spawn(client.command, false)
+            end,
+            on_secondary_press = function(self)
+                menu:toggle{
+                    wibox = awful.screen.focused().top_wibar,
+                    widget = self,
+                    offset = { y = dpi(70) },
+                }
+            end
+        }
     }
 
     favorites_daemon:connect_signal(class .. "::removed", function()
@@ -327,55 +337,59 @@ local function client_task(favorites_layout, task_list, client)
     client.font_icon = beautiful.get_font_icon_for_app_name(client.class)
     local menu = task_list_menu(client)
 
-    local button = widgets.button.text.state
+    local button = wibox.widget
     {
-        on_by_default = capi.client.focus == client,
-        forced_width = dpi(65),
-        forced_height = dpi(65),
+        widget = wibox.container.margin,
         margins = dpi(5),
-        valign = "center",
-        size = client.font_icon.size or 20,
-        font = client.font_icon.font,
-        text = client.font_icon.icon,
-        on_hover = function(self)
-            task_preview:show(client,
-            {
-                wibox = awful.screen.focused().top_wibar,
-                widget = self,
-                offset = { y = dpi(70) }
-            })
-        end,
-        on_leave = function()
-            task_preview:hide()
-        end,
-        on_release = function()
-            task_preview:hide()
-            menu:hide()
+        {
+            widget = widgets.button.text.state,
+            id = "button",
+            on_by_default = capi.client.focus == client,
+            forced_width = dpi(65),
+            forced_height = dpi(65),
+            size = client.font_icon.size or 20,
+            font = client.font_icon.font,
+            text = client.font_icon.icon,
+            on_hover = function(self)
+                task_preview:show(client,
+                {
+                    wibox = awful.screen.focused().top_wibar,
+                    widget = self,
+                    offset = { y = dpi(70) }
+                })
+            end,
+            on_leave = function()
+                task_preview:hide()
+            end,
+            on_release = function()
+                task_preview:hide()
+                menu:hide()
 
-            if client.minimized == false then
-                if capi.client.focus == client then
-                    client.minimized = true
+                if client.minimized == false then
+                    if capi.client.focus == client then
+                        client.minimized = true
+                    else
+                        capi.client.focus = client
+                        client:raise()
+                    end
                 else
-                    capi.client.focus = client
-                    client:raise()
+                    client.minimized = false
                 end
-            else
-                client.minimized = false
+                if client:tags() and client:tags()[1] then
+                    client:tags()[1]:view_only()
+                else
+                    client:tags({awful.screen.focused().selected_tag})
+                end
+            end,
+            on_secondary_press = function(self)
+                task_preview:hide()
+                menu:toggle{
+                    wibox = awful.screen.focused().top_wibar,
+                    widget = self,
+                    offset = { y = dpi(70) },
+                }
             end
-            if client:tags() and client:tags()[1] then
-                client:tags()[1]:view_only()
-            else
-                client:tags({awful.screen.focused().selected_tag})
-            end
-        end,
-        on_secondary_press = function(self)
-            task_preview:hide()
-            menu:toggle{
-                wibox = awful.screen.focused().top_wibar,
-                widget = self,
-                offset = { y = dpi(70) },
-            }
-        end
+        }
     }
 
     local indicator = wibox.widget
@@ -415,12 +429,12 @@ local function client_task(favorites_layout, task_list, client)
     end)
 
     client:connect_signal("focus", function()
-        button:turn_on()
+        button:get_children_by_id("button")[1]:turn_on()
         indicator_animation:set(dpi(50))
     end)
 
     client:connect_signal("unfocus", function()
-        button:turn_off()
+        button:get_children_by_id("button")[1]:turn_off()
         indicator_animation:set(dpi(20))
     end)
 
@@ -539,21 +553,25 @@ local function system_tray()
         end
     }
 
-    local arrow = widgets.button.text.state
+    local arrow = wibox.widget
     {
-        forced_width = dpi(50),
-        forced_height = dpi(50),
+        widget = wibox.container.margin,
         margins = dpi(5),
-        font = beautiful.icons.chevron_circle_left.font,
-        text = beautiful.icons.chevron_circle_left.icon,
-        on_turn_on = function(self)
-            system_tray_animation:set(400)
-            self:set_text(beautiful.icons.chevron_circle_right.icon)
-        end,
-        on_turn_off = function(self)
-            system_tray_animation:set(0)
-            self:set_text(beautiful.icons.chevron_circle_left.icon)
-        end,
+        {
+            widget = widgets.button.text.state,
+            forced_width = dpi(50),
+            forced_height = dpi(50),
+            font = beautiful.icons.chevron_circle_left.font,
+            text = beautiful.icons.chevron_circle_left.icon,
+            on_turn_on = function(self)
+                system_tray_animation:set(400)
+                self:set_text(beautiful.icons.chevron_circle_right.icon)
+            end,
+            on_turn_off = function(self)
+                system_tray_animation:set(0)
+                self:set_text(beautiful.icons.chevron_circle_left.icon)
+            end,
+        }
     }
 
     return wibox.widget
@@ -662,20 +680,25 @@ local function custom_tray()
         end
     end)
 
-    local widget = widgets.button.elevated.state
+    local widget = wibox.widget
     {
+        widget = wibox.container.margin,
         margins = dpi(5),
-        on_release = function()
-            action_panel:toggle()
-        end,
-        child = layout
+        {
+            widget = widgets.button.elevated.state,
+            id = "button",
+            on_release = function()
+                action_panel:toggle()
+            end,
+            child = layout
+        }
     }
 
     action_panel:connect_signal("visibility", function(self, visibility)
         if visibility == true then
-            widget:turn_on()
+            widget:get_children_by_id("button")[1]:turn_on()
         else
-            widget:turn_off()
+            widget:get_children_by_id("button")[1]:turn_off()
         end
     end)
 
@@ -710,20 +733,25 @@ local function time()
         clock.markup = helpers.ui.colorize_text(clock.text, accent_color)
     end)
 
-    local widget = widgets.button.elevated.state
+    local widget = wibox.widget
     {
+        widget = wibox.container.margin,
         margins = dpi(5),
-        on_release = function()
-            info_panel:toggle()
-        end,
-        child = clock
+        {
+            widget = widgets.button.elevated.state,
+            id = "button",
+            on_release = function()
+                info_panel:toggle()
+            end,
+            child = clock
+        }
     }
 
     info_panel:connect_signal("visibility", function(self, visibility)
         if visibility == true then
-            widget:turn_on()
+            widget:get_children_by_id("button")[1]:turn_on()
         else
-            widget:turn_off()
+            widget:get_children_by_id("button")[1]:turn_off()
         end
     end)
 
@@ -734,23 +762,28 @@ end
 --  Messages center button
 -- =============================================================================
 local function messages_button()
-    local widget =  widgets.button.text.state
+    local widget =  wibox.widget
     {
-        forced_width = dpi(50),
-        forced_height = dpi(50),
+        widget = wibox.container.margin,
         margins = dpi(5),
-        font = beautiful.icons.envelope.font,
-        text = beautiful.icons.envelope.icon,
-        on_release = function()
-            message_panel:toggle()
-        end
+        {
+            widget = widgets.button.text.state,
+            id = "button",
+            forced_width = dpi(50),
+            forced_height = dpi(50),
+            font = beautiful.icons.envelope.font,
+            text = beautiful.icons.envelope.icon,
+            on_release = function()
+                message_panel:toggle()
+            end
+        }
     }
 
     message_panel:connect_signal("visibility", function(self, visibility)
         if visibility == true then
-            widget:turn_on()
+            widget:get_children_by_id("button")[1]:turn_on()
         else
-            widget:turn_off()
+            widget:get_children_by_id("button")[1]:turn_off()
         end
     end)
 

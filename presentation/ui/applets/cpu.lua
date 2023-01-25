@@ -213,8 +213,8 @@ local function new()
                     halign = "left",
                     text = process.mem,
                 },
-                widgets.button.text.normal
                 {
+                    widget = widgets.button.text.normal,
                     font = beautiful.icons.xmark.font,
                     size = 15,
                     text = beautiful.icons.xmark.icon,

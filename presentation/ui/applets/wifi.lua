@@ -62,12 +62,11 @@ local function access_point_widget(layout, access_point, accent_color)
     local prompt = widgets.prompt
     {
         forced_width = dpi(450),
+        forced_height = dpi(50),
         obscure = true,
         text = access_point.password,
         icon_font = beautiful.icons.lock.font,
         icon = beautiful.icons.lock.icon,
-        forced_height = dpi(50),
-        paddings = dpi(15),
     }
 
     local toggle_password_button = widgets.checkbox
@@ -109,8 +108,9 @@ local function access_point_widget(layout, access_point, accent_color)
         text =  "Auto Connect"
     }
 
-    local cancel = widgets.button.text.normal
+    local cancel = wibox.widget
     {
+        widget = widgets.button.text.normal,
         normal_bg = beautiful.colors.surface,
         text_normal_bg = beautiful.colors.on_surface,
         size = 12,
@@ -122,8 +122,9 @@ local function access_point_widget(layout, access_point, accent_color)
         end
     }
 
-    local connect_or_disconnect = widgets.button.text.normal
+    local connect_or_disconnect = wibox.widget
     {
+        widget = widgets.button.text.normal,
         normal_bg = beautiful.colors.surface,
         text_normal_bg = beautiful.colors.on_surface,
         size = 12,
@@ -180,10 +181,10 @@ local function access_point_widget(layout, access_point, accent_color)
 
     widget = widgets.button.elevated.state
     {
+        forced_height = dpi(65),
         on_normal_bg = beautiful.colors.background,
         on_hover_bg = beautiful.colors.background,
         on_press_bg = beautiful.colors.background,
-        forced_height = dpi(65),
         on_press = function(self)
             if self._private.state == false then
                 capi.awesome.emit_signal("access_point_widget::expanded", widget)
@@ -250,8 +251,9 @@ local function new()
         text = "Wi-Fi"
     }
 
-    local rescan = widgets.button.text.normal
+    local rescan = wibox.widget
     {
+        widget = widgets.button.text.normal,
         text_normal_bg = beautiful.colors.on_background,
         size = 15,
         font = beautiful.icons.arrow_rotate_right.font,
@@ -261,8 +263,9 @@ local function new()
         end
     }
 
-    local settings = widgets.button.text.normal
+    local settings = wibox.widget
     {
+        widget = widgets.button.text.normal,
         text_normal_bg = beautiful.colors.on_background,
         size = 15,
         font = beautiful.icons.gear.font,

@@ -27,8 +27,9 @@ local system_control = { mt = {} }
 local function arrow_button(icon, text, on_icon_release, on_arrow_release)
     local accent_color = beautiful.random_accent_color()
 
-    local icon = widgets.button.text.state
+    local icon = wibox.widget
     {
+        widget = widgets.button.text.state,
         forced_width = dpi(75),
         forced_height = dpi(90),
         normal_shape = helpers.ui.prrect(beautiful.border_radius, true, false, false, true),
@@ -40,8 +41,9 @@ local function arrow_button(icon, text, on_icon_release, on_arrow_release)
         on_release = on_icon_release
     }
 
-    local arrow = widgets.button.text.state
+    local arrow = wibox.widget
     {
+        widget = widgets.button.text.state,
         forced_width = dpi(75),
         forced_height = dpi(90),
         normal_shape = helpers.ui.prrect(beautiful.border_radius, false, true, true, false),
@@ -90,8 +92,9 @@ local function arrow_button(icon, text, on_icon_release, on_arrow_release)
 end
 
 local function button(icon, text, on_release)
-    local icon = widgets.button.text.state
+    local icon = wibox.widget
     {
+        widget = widgets.button.text.state,
         forced_width = dpi(150),
         forced_height = dpi(90),
         normal_bg = beautiful.colors.surface,
@@ -129,8 +132,9 @@ local function button(icon, text, on_release)
 end
 
 local function quick_action(icon, text, on_release)
-    local icon = widgets.button.text.normal
+    local icon = wibox.widget
     {
+        widget = widgets.button.text.normal,
         forced_width = dpi(150),
         forced_height = dpi(90),
         normal_bg = beautiful.colors.surface,

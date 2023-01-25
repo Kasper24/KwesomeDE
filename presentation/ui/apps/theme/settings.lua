@@ -46,8 +46,9 @@ local function command_after_generation_widget()
 end
 
 local function new(layout)
-    local back_button = widgets.button.text.normal
+    local back_button = wibox.widget
     {
+        widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
         font = beautiful.icons.left.font,

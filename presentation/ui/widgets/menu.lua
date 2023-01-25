@@ -7,7 +7,7 @@ local awful = require("awful")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local wibox = require("wibox")
-local welevated = require("presentation.ui.widgets.button.elevated")
+local ebwidget = require("presentation.ui.widgets.button.elevated")
 local twidget = require("presentation.ui.widgets.text")
 local cbwidget = require("presentation.ui.widgets.checkbox")
 local beautiful = require("beautiful")
@@ -203,40 +203,43 @@ function menu.sub_menu_button(args)
         text = args.icon.icon,
     } or nil
 
-    local widget = welevated.state
+    local widget = wibox.widget
     {
-        forced_height = dpi(35),
+        widget = wibox.container.margin,
         margins = dpi(5),
-        halign = "left",
-        normal_shape = helpers.ui.rrect(0),
-        on_hover = function(self)
-            local coords = helpers.ui.get_widget_geometry(self.menu, self)
-            coords.x = coords.x + self.menu.x + self.menu.width
-            coords.y = coords.y + self.menu.y
-            args.sub_menu:show{coords = coords, offset = { x = -5 }}
-            self:turn_on()
-        end,
-        child =
         {
-            layout = wibox.layout.align.horizontal,
-            forced_width = dpi(270),
+            widget = ebwidget.state,
+            forced_height = dpi(35),
+            normal_shape = helpers.ui.rrect(0),
+            on_hover = function(self)
+                local coords = helpers.ui.get_widget_geometry(self.menu, self)
+                coords.x = coords.x + self.menu.x + self.menu.width
+                coords.y = coords.y + self.menu.y
+                args.sub_menu:show{coords = coords, offset = { x = -5 }}
+                self:turn_on()
+            end,
+            child =
             {
-                layout = wibox.layout.fixed.horizontal,
-                spacing = dpi(15),
-                icon,
+                layout = wibox.layout.align.horizontal,
+                forced_width = dpi(270),
+                {
+                    layout = wibox.layout.fixed.horizontal,
+                    spacing = dpi(15),
+                    icon,
+                    {
+                        widget = twidget,
+                        size = args.text_size,
+                        text = args.text,
+                    },
+                },
+                nil,
                 {
                     widget = twidget,
-                    size = args.text_size,
-                    text = args.text,
+                    font = beautiful.icons.chevron_right.font,
+                    size = 12,
+                    text = beautiful.icons.chevron_right.icon,
                 },
-            },
-            nil,
-            {
-                widget = twidget,
-                font = beautiful.icons.chevron_right.font,
-                size = 12,
-                text = beautiful.icons.chevron_right.icon,
-            },
+            }
         }
     }
 
@@ -281,25 +284,32 @@ function menu.button(args)
         text = args.text,
     }
 
-    return welevated.normal
+    return wibox.widget
     {
-        forced_height = dpi(35),
+        widget = wibox.container.margin,
         margins = dpi(5),
-        halign = "left",
-        normal_shape = helpers.ui.rrect(0),
-        on_release = function(self)
-            self.menu:hide(true)
-            args.on_press(self, text_widget)
-        end,
-        on_hover = function(self)
-            self.menu:hide_children_menus()
-        end,
-        child =
         {
-            layout = wibox.layout.fixed.horizontal,
-            spacing = dpi(15),
-            icon,
-            text_widget
+            widget = wibox.container.place,
+            halign = "left",
+            {
+                widget = ebwidget.normal,
+                forced_height = dpi(35),
+                normal_shape = helpers.ui.rrect(0),
+                on_release = function(self)
+                    self.menu:hide(true)
+                    args.on_press(self, text_widget)
+                end,
+                on_hover = function(self)
+                    self.menu:hide_children_menus()
+                end,
+                child =
+                {
+                    layout = wibox.layout.fixed.horizontal,
+                    spacing = dpi(15),
+                    icon,
+                    text_widget
+                }
+            }
         }
     }
 end
@@ -338,34 +348,41 @@ function menu.checkbox_button(args)
 
     local checkbox = cbwidget{args}
 
-    local widget = welevated.normal
+    local widget = wibox.widget
     {
-        forced_height = dpi(35),
+        widget = wibox.container.margin,
         margins = dpi(5),
-        halign = "left",
-        normal_shape = helpers.ui.rrect(0),
-        on_release = function(self)
-            args.on_press()
-        end,
-        on_hover = function(self)
-            self.menu:hide_children_menus()
-        end,
-        child =
         {
-            layout = wibox.layout.fixed.horizontal,
+            widget = wibox.container.place,
+            halign = "left",
             {
-                layout = wibox.layout.fixed.horizontal,
-                forced_width = dpi(230),
-                spacing = dpi(15),
-                icon,
+                widget = ebwidget.normal,
+                forced_height = dpi(35),
+                normal_shape = helpers.ui.rrect(0),
+                on_release = function(self)
+                    args.on_press()
+                end,
+                on_hover = function(self)
+                    self.menu:hide_children_menus()
+                end,
+                child =
                 {
-                    widget = twidget,
-                    font = args.font,
-                    size = args.text_size,
-                    text = args.text,
-                },
-            },
-            checkbox
+                    layout = wibox.layout.fixed.horizontal,
+                    {
+                        layout = wibox.layout.fixed.horizontal,
+                        forced_width = dpi(230),
+                        spacing = dpi(15),
+                        icon,
+                        {
+                            widget = twidget,
+                            font = args.font,
+                            size = args.text_size,
+                            text = args.text,
+                        },
+                    },
+                    checkbox
+                }
+            }
         }
     }
 

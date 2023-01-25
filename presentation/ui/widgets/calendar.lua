@@ -8,7 +8,7 @@ local gtable = require("gears.table")
 local gshape = require("gears.shape")
 local wibox = require("wibox")
 local twidget = require("presentation.ui.widgets.text")
-local wtbutton = require("presentation.ui.widgets.button.text")
+local tbwidget = require("presentation.ui.widgets.button.text")
 local beautiful = require("beautiful")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
@@ -118,8 +118,9 @@ local function new()
     local ret = gobject{}
     gtable.crush(ret, calendar, true)
 
-	ret.month = wtbutton.normal
+	ret.month = wibox.widget
 	{
+		widget = tbwidget.normal,
 		animate_size = false,
 		text = os.date("%B %Y"),
 		on_release = function()
@@ -130,8 +131,8 @@ local function new()
     local month = wibox.widget
     {
         layout = wibox.layout.align.horizontal,
-        wtbutton.normal
         {
+			widget = tbwidget.normal,
             forced_width = dpi(35),
             forced_height = dpi(35),
             font = beautiful.icons.caret_left.font,
@@ -143,8 +144,8 @@ local function new()
             end
         },
 		ret.month,
-        wtbutton.normal
         {
+			widget = tbwidget.normal,
             forced_width = dpi(35),
             forced_height = dpi(35),
             font = beautiful.icons.caret_right.font,

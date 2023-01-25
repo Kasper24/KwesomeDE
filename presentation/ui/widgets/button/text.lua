@@ -5,7 +5,7 @@
 
 local gtable = require("gears.table")
 local twidget = require("presentation.ui.widgets.text")
-local ewidget = require("presentation.ui.widgets.button.elevated")
+local ebwidget = require("presentation.ui.widgets.button.elevated")
 local beautiful = require("beautiful")
 local helpers = require("helpers")
 local setmetatable = setmetatable
@@ -14,44 +14,76 @@ local math = math
 local text_button = { mt = {} }
 
 function text_button:set_font(font)
-	self._private.text:set_font(font)
+	self.children[1].children[1].children[1]:set_font(font)
 end
 
 function text_button:set_bold(bold)
-	self._private.text:set_bold(bold)
+	self.children[1].children[1].children[1]:set_bold(bold)
 end
 
 function text_button:set_size(font, size)
-	self._private.text:set_size(font, size)
+	self.children[1].children[1].children[1]:set_size(font, size)
 end
 
 function text_button:set_color(color)
-	self._private.text:set_color(color)
+	self.children[1].children[1].children[1]:set_color(color)
 end
 
 function text_button:set_text(text)
-	self._private.text:set_text(text)
+	self.children[1].children[1].children[1]:set_text(text)
+end
+
+local normal_properties =
+{
+	"text_normal_bg", "text_hover_bg", "text_press_bg",
+	"animate_size"
+}
+
+local state_properties =
+{
+	"text_normal_bg", "text_hover_bg", "text_press_bg",
+	"text_on_normal_bg", "text_on_hover_bg", "text_on_press_bg",
+	"animate_size"
+}
+
+local function build_properties(prototype, prop_names)
+    for _, prop in ipairs(prop_names) do
+        if not prototype["set_" .. prop] then
+            prototype["set_" .. prop] = function(self, value)
+                if self._private[prop] ~= value then
+                    self._private[prop] = value
+                    self:emit_signal("widget::redraw_needed")
+                    self:emit_signal("property::"..prop, value)
+                end
+                return self
+            end
+        end
+        if not prototype["get_" .. prop] then
+            prototype["get_" .. prop] = function(self)
+                return self._private[prop]
+            end
+        end
+    end
 end
 
 local function effect(widget, text_bg)
     if text_bg ~= nil then
-		widget.text_animation:set(helpers.color.hex_to_rgb(text_bg))
+		widget.color_animation:set(helpers.color.hex_to_rgb(text_bg))
     end
 end
 
 local function button(args, type)
-	args = args or {}
+    local widget = type == "normal" and ebwidget.normal(args) or ebwidget.state(args)
+	gtable.crush(widget, text_button, true)
 
-	args.color = args.text_normal_bg
 	local text_widget = twidget(args)
 
-    args.child = text_widget
-    local widget = type == "normal" and ewidget.normal(args) or ewidget.state(args)
+	-- Set initial values
+	text_widget:set_color(args.text_normal_bg)
+	widget:set_child(text_widget)
 
-    gtable.crush(widget, text_button, true)
-	widget._private.text = text_widget
-
-	widget.text_animation = helpers.animation:new
+	-- Setup animations
+	widget.color_animation = helpers.animation:new
 	{
 		pos = helpers.color.hex_to_rgb(args.text_normal_bg),
 		easing = helpers.animation.easing.linear,
@@ -71,7 +103,7 @@ local function button(args, type)
 		end
 	}
 
-	return widget, text_widget
+	return widget
 end
 
 function text_button.state(args)
@@ -87,43 +119,40 @@ function text_button.state(args)
 
 	args.animate_size = args.animate_size == nil and true or args.animate_size
 
-	local widget, text_widget = button(args, "state")
+	local widget = button(args, "state")
+	build_properties(widget, state_properties)
 
-	function text_widget:on_hover(widget, state)
+	widget:connect_signal("_private::on_hover", function(state)
 		if state == true then
 			effect(widget, args.text_on_hover_bg)
 		else
 			effect(widget, args.text_hover_bg)
 		end
-	end
+	end)
 
-	function text_widget:on_leave(widget, state)
+	widget:connect_signal("_private::on_leave", function(state)
 		if state == true then
 			effect(widget, args.text_on_normal_bg)
 		else
 			effect(widget, args.text_normal_bg)
 		end
-	end
+	end)
 
-	function text_widget:on_turn_on()
+	widget:connect_signal("_private::on_turn_on", function(state)
 		effect(widget, args.text_on_normal_bg)
-	end
+	end)
 
-	if args.on_by_default == true then
-		text_widget:on_turn_on()
-	end
-
-	function text_widget:on_turn_off()
+	widget:connect_signal("_private::on_turn_off", function(state)
 		effect(widget, args.text_normal_bg)
-	end
+	end)
 
-	function text_widget:on_press()
+	widget:connect_signal("_private::on_press", function(state)
 		if args.animate_size == true then
 			widget.size_animation:set(math.max(12, args.size - 20))
 		end
-	end
+	end)
 
-	function text_widget:on_release()
+	widget:connect_signal("_private::on_release", function(state)
 		if args.animate_size == true then
 			if widget.size_animation.state == true then
 				widget.size_animation.ended:subscribe(function()
@@ -134,6 +163,10 @@ function text_button.state(args)
 				widget.size_animation:set(args.size)
 			end
 		end
+	end)
+
+	if args.on_by_default == true then
+		widget:turn_on()
 	end
 
 	return widget
@@ -148,24 +181,25 @@ function text_button.normal(args)
 
 	args.animate_size = args.animate_size == nil and true or args.animate_size
 
-	local widget, text_widget = button(args, "normal")
+	local widget = button(args, "normal")
+	build_properties(widget, normal_properties)
 
-	function text_widget:on_hover()
+	widget:connect_signal("_private::on_hover", function(state)
 		effect(widget, args.text_hover_bg)
-	end
+	end)
 
-	function text_widget:on_leave()
+	widget:connect_signal("_private::on_leave", function(state)
 		effect(widget, args.text_normal_bg)
-	end
+	end)
 
-	function text_widget:on_press()
+	widget:connect_signal("_private::on_press", function(state)
 		effect(widget, args.text_press_bg)
 		if args.animate_size == true then
 			widget.size_animation:set(math.max(12, args.size - 20))
 		end
-	end
+	end)
 
-	function text_widget:on_release()
+	widget:connect_signal("_private::on_release", function(state)
 		effect(widget, args.text_normal_bg)
 		if args.animate_size == true then
 			if widget.size_animation.state == true then
@@ -177,7 +211,7 @@ function text_button.normal(args)
 				widget.size_animation:set(args.size)
 			end
 		end
-	end
+	end)
 
 	return widget
 end

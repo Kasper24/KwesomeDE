@@ -6,8 +6,8 @@
 local gshape = require("gears.shape")
 local wibox = require("wibox")
 local twidget = require("presentation.ui.widgets.text")
-local tbutton = require("presentation.ui.widgets.button.text")
-local ebutton = require("presentation.ui.widgets.button.elevated")
+local tbwidget = require("presentation.ui.widgets.button.text")
+local ebwidget = require("presentation.ui.widgets.button.elevated")
 local swidget = require("presentation.ui.widgets.slider")
 local beautiful = require("beautiful")
 local general_playerctl_daemon = require("daemons.system.playerctl")
@@ -287,8 +287,9 @@ function playerctl.play(daemon)
 		draw = get_draw(0, point_maker),
 	}
 
-    local button = ebutton.normal
+    local button = wibox.widget
     {
+        widget = ebwidget.normal,
         normal_shape = gshape.circle,
         normal_bg = accent_color,
         on_release = function()
@@ -325,8 +326,9 @@ end
 function playerctl.previous(width, height, daemon)
     local playerctl_daemon = daemon or general_playerctl_daemon
 
-    return tbutton.normal
+    return wibox.widget
     {
+        widget = tbwidget.normal,
         forced_width = width or dpi(50),
         forced_height = height or dpi(50),
         normal_shape = gshape.circle,
@@ -343,8 +345,9 @@ end
 function playerctl.next(width, height, daemon)
     local playerctl_daemon = daemon or general_playerctl_daemon
 
-    return tbutton.normal
+    return wibox.widget
     {
+        widget = tbwidget.normal,
         forced_width = width or dpi(50),
         forced_height = height or dpi(50),
         normal_shape = gshape.circle,
@@ -361,8 +364,9 @@ end
 function playerctl.loop(width, height, daemon)
     local playerctl_daemon = daemon or general_playerctl_daemon
 
-    local widget = tbutton.state
+    local widget = wibox.widget
     {
+        widget = tbwidget.state,
         forced_width = width or dpi(50),
         forced_height = height or dpi(50),
         normal_shape = gshape.circle,
@@ -389,8 +393,9 @@ end
 function playerctl.shuffle(width, height, daemon)
     local playerctl_daemon = daemon or general_playerctl_daemon
 
-    local widget = tbutton.state
+    local widget = wibox.widget
     {
+        widget = tbwidget.state,
         forced_width = width or dpi(50),
         forced_height = height or dpi(50),
         normal_shape = gshape.circle,

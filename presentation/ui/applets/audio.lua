@@ -95,8 +95,9 @@ local function application_widget(args)
         text = args.application.name
     }
 
-    local mute = widgets.button.text.state
+    local mute = wibox.widget
     {
+        widget = widgets.button.text.state,
         on_by_default = args.application.mute,
         text_normal_bg = args.accent_color,
         on_normal_bg = args.accent_color,
@@ -200,8 +201,9 @@ local function device_widget(args)
         text = args.device.description
     }
 
-    local mute = widgets.button.text.state
+    local mute = wibox.widget
     {
+        widget = widgets.button.text.state,
         on_by_default = args.device.mute,
         text_normal_bg = args.accent_color,
         on_normal_bg = args.accent_color,
@@ -214,8 +216,9 @@ local function device_widget(args)
         end
     }
 
-    local default = widgets.button.text.state
+    local default = wibox.widget
     {
+        widget = widgets.button.text.state,
         on_by_default = args.device.default,
         text_normal_bg = args.accent_color,
         on_normal_bg = args.accent_color,
@@ -529,8 +532,9 @@ local function widget()
     local devices_button = nil
     local applications_button = nil
 
-    devices_button = widgets.button.text.state
+    devices_button = wibox.widget
     {
+        widget = widgets.button.text.state,
         on_by_default = true,
         size = 15,
         on_normal_bg = accent_color,
@@ -545,8 +549,9 @@ local function widget()
         end
     }
 
-    applications_button = widgets.button.text.state
+    applications_button = wibox.widget
     {
+        widget = widgets.button.text.state,
         size = 15,
         on_normal_bg = accent_color,
         text_normal_bg = beautiful.colors.on_background,
