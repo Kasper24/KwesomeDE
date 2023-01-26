@@ -393,10 +393,11 @@ local function client_task(favorites_layout, task_list, client)
         valign = "bottom",
         {
             widget = wibox.container.background,
+            id = "background",
             forced_width = capi.client.focus == client and dpi(50) or dpi(20),
             forced_height = dpi(5),
             shape = helpers.ui.rrect(beautiful.border_radius),
-            bg = beautiful.random_accent_color(),
+            bg = client.font_icon.color,
         }
     }
 
@@ -417,11 +418,11 @@ local function client_task(favorites_layout, task_list, client)
         indicator
     }
 
-    -- client:connect_signal("property::class", function()
-    --     client.font_icon = beautiful.get_font_icon_for_app_name(client.class)
-    --     button:set_font(client.font_icon.font)
-    --     button:set_text(client.font_icon.icon)
-    -- end)
+    client:connect_signal("property::class", function()
+        client.font_icon = beautiful.get_font_icon_for_app_name(client.class)
+        button:set_icon(client.font_icon)
+        indicator:set_bg(client.font_icon.color)
+    end)
 
     client:connect_signal("focus", function()
         button:get_children_by_id("button")[1]:turn_on()

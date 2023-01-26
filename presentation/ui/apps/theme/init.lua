@@ -108,7 +108,7 @@ local function new()
                 awful.titlebar(c,
                 {
                     position = "top",
-                    size = dpi(1020),
+                    size = dpi(1060),
                     bg = beautiful.colors.background
                 }) : setup
                 {

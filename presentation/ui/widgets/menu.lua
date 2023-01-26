@@ -201,10 +201,8 @@ function menu.sub_menu_button(args)
     and wibox.widget
     {
         widget = twidget,
-        font = args.icon.font,
+        icon = args.icon,
         size =  args.icon_size,
-        color = beautiful.random_accent_color(),
-        text = args.icon.icon,
     } or nil
 
     local widget = wibox.widget
@@ -248,6 +246,7 @@ function menu.sub_menu_button(args)
         }
     }
 
+    -- TODO use id instead
     widget.sub_menu = args.sub_menu
 
     return widget

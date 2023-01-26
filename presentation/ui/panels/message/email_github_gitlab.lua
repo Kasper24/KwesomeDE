@@ -94,10 +94,8 @@ local function widget()
         {
             widget = widgets.text,
             halign = "center",
+            icon = beautiful.icons.circle_exclamation,
             size = 120,
-            color = beautiful.random_accent_color(),
-            font = beautiful.icons.circle_exclamation.font,
-            text = beautiful.icons.circle_exclamation.icon
         }
     }
 
@@ -257,10 +255,8 @@ local function github_activity()
             local icon = wibox.widget
             {
                 widget = widgets.text,
-                font = action_and_link.icon.font,
+                icon = action_and_link.icon,
                 size = 15,
-                color = beautiful.random_accent_color(),
-                text = action_and_link.icon.icon
             }
 
             local time = wibox.widget
@@ -402,10 +398,8 @@ local function github_pr()
                             spacing = dpi(10),
                             {
                                 widget = widgets.text,
-                                font = beautiful.icons.message.font,
+                                icon = beautiful.icons.message,
                                 size = 15,
-                                color = beautiful.random_accent_color(),
-                                text = beautiful.icons.message.icon
                             },
                             {
                                 widget = widgets.text,
@@ -590,10 +584,8 @@ local function gitlab()
                 spacing = dpi(10),
                 {
                     widget = widgets.text,
-                    font = beautiful.icons.check.font,
+                    icon = beautiful.icons.check,
                     size = 15,
-                    color = beautiful.random_accent_color(),
-                    text = beautiful.icons.check.icon
                 },
                 {
                     widget = widgets.text,
@@ -608,10 +600,8 @@ local function gitlab()
                 spacing = dpi(10),
                 {
                     widget = widgets.text,
-                    font = beautiful.icons.message.font,
+                    icon = beautiful.icons.message,
                     size = 15,
-                    color = beautiful.random_accent_color(),
-                    text = beautiful.icons.message.icon
                 },
                 {
                     widget = widgets.text,

@@ -18,6 +18,14 @@ local math = math
 local cpu = { }
 local instance = nil
 
+local accent_color = beautiful.random_accent_color()
+local gradient_colors =
+{
+    {0, beautiful.random_accent_color()},
+    {0.33, beautiful.random_accent_color()},
+    {0.66, beautiful.random_accent_color()}
+}
+
 function cpu:show(next_to)
     cpu_daemon:set_slim(false)
     self.widget.screen = awful.screen.focused()
@@ -70,7 +78,6 @@ local function new()
         step = 50,
     }
 
-    local accent_color = beautiful.random_accent_color()
     cpu_daemon:connect_signal("update::full", function(self, cpus, processes)
         scrollbox:reset()
 
@@ -84,7 +91,7 @@ local function new()
                     forced_width = dpi(70),
                     halign = "left",
                     bold = true,
-                    color = beautiful.random_accent_color(),
+                    color = accent_color,
                     text = "Core"
                 },
                 {
@@ -92,7 +99,7 @@ local function new()
                     forced_width = dpi(200),
                     halign = "left",
                     bold = true,
-                    color = beautiful.random_accent_color(),
+                    color = accent_color,
                     text = "Usage"
                 },
             }
@@ -134,7 +141,7 @@ local function new()
                         type = "linear",
                         from = {0, 0},
                         to = {300, 300},
-                        stops = {{0, beautiful.random_accent_color()}, {0.33, beautiful.random_accent_color()},  {0.66, beautiful.random_accent_color()}}
+                        stops = gradient_colors
                     },
                 },
             }
@@ -151,7 +158,7 @@ local function new()
                     forced_width = dpi(110),
                     halign = "left",
                     bold = true,
-                    color = beautiful.random_accent_color(),
+                    color = accent_color,
                     text = "PID"
                 },
                 {
@@ -159,7 +166,7 @@ local function new()
                     forced_width = dpi(210),
                     halign = "left",
                     bold = true,
-                    color = beautiful.random_accent_color(),
+                    color = accent_color,
                     text = "Name"
                 },
                 {
@@ -167,7 +174,7 @@ local function new()
                     forced_width = dpi(90),
                     halign = "left",
                     bold = true,
-                    color = beautiful.random_accent_color(),
+                    color = accent_color,
                     text = "%CPU"
                 },
                 {
@@ -175,7 +182,7 @@ local function new()
                     forced_width = dpi(70),
                     halign = "left",
                     bold = true,
-                    color = beautiful.random_accent_color(),
+                    color = accent_color,
                     text = "%MEM"
                 },
             }
@@ -215,10 +222,8 @@ local function new()
                 },
                 {
                     widget = widgets.button.text.normal,
-                    font = beautiful.icons.xmark.font,
+                    icon = beautiful.icons.xmark,
                     size = 15,
-                    text = beautiful.icons.xmark.icon,
-                    text_normal_bg = accent_color,
                     on_release = function()
                         awful.spawn("kill -9 " .. process.pid, false)
                     end

@@ -100,9 +100,7 @@ function task_preview:show(c, args)
                             widget = widgets.text,
                             halign = "center",
                             valign ="center",
-                            color = beautiful.random_accent_color(),
-                            font = font_icon.font,
-                            text = font_icon.icon
+                            icon = font_icon,
                         },
                         {
                             widget = widgets.text,

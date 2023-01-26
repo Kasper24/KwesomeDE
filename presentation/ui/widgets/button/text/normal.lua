@@ -21,6 +21,7 @@ local properties =
 
 local ebutton_properties =
 {
+	"forced_width", "forced_height",
 	"normal_bg", "hover_bg", "press_bg",
 	"normal_shape", "hover_shape", "press_shape",
 	"normal_border_width", "hover_border_width", "press_border_width",
@@ -33,8 +34,9 @@ local ebutton_properties =
 
 local text_properties =
 {
-	"bold", "italic", "size", "color",
-	"text", "icon", "font"
+	"bold", "italic", "size",
+	"color", "text", "icon",
+	"halign", "valign", "font"
 }
 
 local function build_properties(prototype, prop_names)
@@ -57,36 +59,41 @@ local function build_properties(prototype, prop_names)
     end
 end
 
-local function effect(widget, bg, shape, border_width, border_color)
-	local animation_targets = {}
-
-    if bg ~= nil then
-		animation_targets.color = helpers.color.hex_to_rgb(bg)
-    end
-    if shape ~= nil then
-        widget.shape = shape
-    end
-    if border_width ~= nil then
-		animation_targets.border_width = border_width
-    end
-    if border_color ~= nil then
-		animation_targets.border_color = helpers.color.hex_to_rgb(border_color)
-    end
-
-	widget.animation:set(animation_targets)
-end
-
 local function build_text_properties(prototype, prop_names)
     for _, prop in ipairs(prop_names) do
-		prototype["set_" .. prop] = function(self, value)
-			local text_widget = self.children[1].children[1].children[1]
-			text_widget["set_" .. prop](text_widget, value)
+		if not prototype["set_" .. prop] then
+			prototype["set_" .. prop] = function(self, value)
+				local text_widget = self.children[1].children[1].children[1]
+				text_widget["set_" .. prop](text_widget, value)
+			end
 		end
-		prototype["get_" .. prop] = function(self)
-			local text_widget = self.children[1].children[1].children[1]
-			return text_widget["get_" .. prop]()
+		if not prototype["get_" .. prop] then
+			prototype["get_" .. prop] = function(self)
+				local text_widget = self.children[1].children[1].children[1]
+				return text_widget["get_" .. prop](text_widget)
+			end
 		end
     end
+end
+
+local function effect(widget, text_bg)
+    if text_bg ~= nil then
+		widget.color_animation:set(helpers.color.hex_to_rgb(text_bg))
+    end
+end
+
+function text_button_normal:set_text_normal_bg(text_normal_bg)
+	local wp = self._private
+	wp.text_normal_bg = text_normal_bg
+	wp.text_hover_bg = helpers.color.button_color(text_normal_bg, 0.1)
+	wp.text_press_bg = helpers.color.button_color(text_normal_bg, 0.2)
+	effect(self, text_normal_bg)
+end
+
+function text_button_normal:set_icon(icon)
+	local text_widget = self.children[1].children[1].children[1]
+	text_widget:set_icon(icon)
+	self:set_text_normal_bg(icon.color)
 end
 
 local function new()
@@ -156,6 +163,8 @@ local function new()
 		end
 	end)
 
+	effect(widget, wp.text_normal_bg)
+
 	return widget
 end
 
@@ -163,8 +172,8 @@ function text_button_normal.mt:__call(...)
     return new(...)
 end
 
-build_properties(text_button_normal, properties)
 build_properties(text_button_normal, ebutton_properties)
+build_properties(text_button_normal, properties)
 build_text_properties(text_button_normal, text_properties)
 
 return setmetatable(text_button_normal, text_button_normal.mt)

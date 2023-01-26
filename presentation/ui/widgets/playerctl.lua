@@ -37,10 +37,8 @@ function playerctl.art(halign, valign, size, default_icon_size, daemon)
         widget = twidget,
         halign = halign or "left",
         valign = valign or "center",
-        color = beautiful.random_accent_color(),
+        icon = beautiful.icons.spotify,
         size = default_icon_size or 150,
-        font = beautiful.icons.spotify.font,
-        text = beautiful.icons.spotify.icon,
     }
 
     local stack = wibox.widget

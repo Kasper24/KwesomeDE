@@ -57,7 +57,6 @@ local function application_widget(args)
     args.on_mute_press = args.on_mute_press or nil
     args.on_slider_moved = args.on_slider_moved or nil
     args.on_removed_cb = args.on_removed_cb or nil
-    args.accent_color = args.accent_color or nil
 
     local icon = nil
     local font_icon = beautiful.get_font_icon_for_app_name(args.application.name)
@@ -80,10 +79,8 @@ local function application_widget(args)
         icon = wibox.widget
         {
             widget = widgets.text,
-            size = 15,
-            color = args.accent_color,
-            font = font_icon.font,
-            text = font_icon.icon
+            size = font_icon.size or 15,
+            icon = font_icon,
         }
     end
 
@@ -358,8 +355,7 @@ local function applications()
             end,
             on_removed_cb = function(widget)
                 sinks_inputs_layout:remove_widgets(widget)
-            end,
-            accent_color = sink_inputs_accent_color
+            end
         })
     end)
 
@@ -376,8 +372,7 @@ local function applications()
             end,
             on_removed_cb = function(widget)
                 source_outputs_layout:remove_widgets(widget)
-            end,
-            accent_color = sources_outputs_accent_color
+            end
         })
     end)
 

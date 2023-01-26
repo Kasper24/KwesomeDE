@@ -76,7 +76,7 @@ local function notification_widget(notification, on_removed)
             scrollbar_width = dpi(10),
             step = 50,
             {
-                widget = wibox.widget.textbox,
+                widget = widgets.text,
                 text = gstring.xml_unescape(notification.message)
             }
         }
@@ -127,7 +127,7 @@ local function notification_widget(notification, on_removed)
                 widget = widgets.button.text.normal,
                 forced_width = dpi(40),
                 forced_height = dpi(40),
-                hover_bg = beautiful.colors.surface,
+                -- hover_bg = beautiful.random_accent_color(),
                 text_normal_bg = accent_color,
                 text = beautiful.icons.xmark.icon,
                 on_release = function()
