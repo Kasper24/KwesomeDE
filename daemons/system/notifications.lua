@@ -29,7 +29,7 @@ local function save_notification(self, notification)
     local icon_path = ICONS_PATH .. notification.uuid .. ".svg"
     local app_icon_path = ICONS_PATH .. notification.uuid .. "_app.svg"
 
-    table.insert(self.notifications, {
+    table.insert(self._private.notifications, {
         uuid = notification.uuid,
         app_font_icon = notification.app_font_icon,
         app_icon = app_icon_path,
@@ -162,7 +162,7 @@ local function new()
         single_shot = true,
         callback = function()
             local file = helpers.file.new_for_path(DATA_PATH)
-            file:write(helpers.json.encode(ret.notifications, { indent = true }))
+            file:write(helpers.json.encode(ret._private.notifications, { indent = true }))
         end
     }
 
