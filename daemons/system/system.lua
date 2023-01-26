@@ -9,8 +9,6 @@ local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local notification_daemon = require("daemons.system.notifications")
 local helpers = require("helpers")
-local ipairs = ipairs
-local type = type
 local capi = { awesome = awesome }
 
 local system = { }
@@ -18,7 +16,7 @@ local instance = nil
 
 local UPDATE_INTERVAL = 60
 
-local LUA_PAM_PATH = helpers.filesystem.get_awesome_config_dir("services") .. "?.so"
+local LUA_PAM_PATH = helpers.filesystem.get_awesome_config_dir("external/liblua_pam") .. "?.so;"
 package.cpath = package.cpath .. ';' .. LUA_PAM_PATH
 
 function system:set_password(password)
@@ -92,13 +90,6 @@ local function new()
     if package.loaded["liblua_pam"] then
         ret._private.is_pam_installed = true
     else
-        for _, searcher in ipairs(package.searchers or package.loaders) do
-            local loader = searcher("liblua_pam")
-            if type(loader) == 'function' then
-                package.preload["liblua_pam"] = loader
-                ret._private.is_pam_installed = true
-            end
-        end
         ret._private.is_pam_installed = false
     end
 
