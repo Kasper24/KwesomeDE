@@ -67,7 +67,7 @@ function menu:hide_children_menus()
     for _, button in ipairs(self.widget.children) do
         if button.sub_menu ~= nil then
             button.sub_menu:hide()
-            button:turn_off()
+            button:get_children_by_id("button")[1]:turn_off()
         end
     end
 end
@@ -104,7 +104,7 @@ function menu:show(args)
         for _, button in ipairs(self.parent_menu.widget.children) do
             if button.sub_menu ~= nil and button.sub_menu ~= self then
                 button.sub_menu:hide()
-                button:turn_off()
+                button:get_children_by_id("button")[1]:turn_off()
             end
         end
     end
@@ -127,7 +127,11 @@ function menu:add(widget)
     if widget.sub_menu then
         widget.sub_menu.parent_menu = self
     end
-    widget.menu = self
+
+    if widget:get_children_by_id("button")[1] ~= nil then
+        widget:get_children_by_id("button")[1].menu = self
+    end
+
     self.widget:add(widget)
 end
 
@@ -209,6 +213,7 @@ function menu.sub_menu_button(args)
         margins = dpi(5),
         {
             widget = ebwidget.state,
+            id = "button",
             forced_height = dpi(35),
             normal_shape = helpers.ui.rrect(0),
             on_hover = function(self)
@@ -289,29 +294,32 @@ function menu.button(args)
         widget = wibox.container.margin,
         margins = dpi(5),
         {
-            widget = wibox.container.place,
-            halign = "left",
+            widget = ebwidget.normal,
+            id = "button",
+            forced_height = dpi(35),
+            normal_shape = helpers.ui.rrect(0),
+            on_release = function(self)
+                self.menu:hide(true)
+                args.on_press(self, text_widget)
+            end,
+            on_hover = function(self)
+                self.menu:hide_children_menus()
+            end,
+            child =
             {
-                widget = ebwidget.normal,
-                forced_height = dpi(35),
-                normal_shape = helpers.ui.rrect(0),
-                on_release = function(self)
-                    self.menu:hide(true)
-                    args.on_press(self, text_widget)
-                end,
-                on_hover = function(self)
-                    self.menu:hide_children_menus()
-                end,
-                child =
+                layout = wibox.layout.align.horizontal,
+                forced_width = dpi(270),
                 {
                     layout = wibox.layout.fixed.horizontal,
                     spacing = dpi(15),
                     icon,
                     text_widget
-                }
+                },
+                nil,
             }
         }
     }
+
 end
 
 function menu.checkbox_button(args)
@@ -357,6 +365,7 @@ function menu.checkbox_button(args)
             halign = "left",
             {
                 widget = ebwidget.normal,
+                id = "button",
                 forced_height = dpi(35),
                 normal_shape = helpers.ui.rrect(0),
                 on_release = function(self)
@@ -389,6 +398,7 @@ function menu.checkbox_button(args)
     function widget:turn_on()
         checkbox:turn_on()
     end
+
     function widget:turn_off()
         checkbox:turn_off()
     end
