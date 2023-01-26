@@ -128,12 +128,13 @@ yay/paru -S awesome-git
 | yad                                     | Used to pick a folder                                     |
 | libgudev                                | Used for USB notifications                                |
 | dconf-editor                            | Used as a settings manager                                |
+| neofetch                                | Used to display system info                               |
 
 **Arch Linux (and other Arch-based distributions)**
    ```sh
       pacman -Sy kitty networkmanager blueman pipewire pipewire-pulse lm_sensors inotify-tools
       redshift maim ffmpeg xdotool xclip upower brightnessctl playerctl fortune-mod
-      imagemagick yad libgudev dconf-editor --needed
+      imagemagick yad libgudev dconf-editor neofetch --needed
    ```
    Assuming your **AUR Helper** is [yay](https://github.com/Jguer/yay) or [paru](https://github.com/Morganamilo/paru).
    ```sh

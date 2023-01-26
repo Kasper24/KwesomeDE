@@ -9,7 +9,6 @@ local power_popup = require("presentation.ui.popups.power")
 local beautiful = require("beautiful")
 local upower_daemon = require("daemons.hardware.upower")
 local system_daemon = require("daemons.system.system")
-local package_manager_daemon = require("daemons.system.package_manager")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
@@ -55,25 +54,24 @@ local function new()
         end
     }
 
-    local uptime = wibox.widget
+    local uptime_widget = wibox.widget
     {
         layout = wibox.layout.fixed.horizontal,
         spacing = dpi(15),
         {
             widget = widgets.text,
-            color = beautiful.random_accent_color(),
-            font = beautiful.icons.clock.font,
-            text = beautiful.icons.clock.icon,
+            icon = beautiful.icons.clock,
         },
         {
             widget = widgets.text,
+            id = "text",
             size = 12,
-            text = "0%",
+            text = "0",
         }
     }
 
-    system_daemon:connect_signal("uptime", function(self, value)
-        uptime.children[2]:set_text(value)
+    system_daemon:connect_signal("update", function(self, packages_count, uptime)
+        uptime_widget:get_children_by_id("text")[1]:set_text(uptime)
     end)
 
     local packages = wibox.widget
@@ -88,13 +86,14 @@ local function new()
         },
         {
             widget = widgets.text,
+            id = "text",
             size = 12,
             text = "0 Packages",
         }
     }
 
-    package_manager_daemon:connect_signal("update", function(self, packages_count, outdated_package_count)
-        packages.children[2]:set_text(packages_count .. " Packages")
+    system_daemon:connect_signal("update", function(self, packages_count, uptime)
+        packages:get_children_by_id("text")[1]:set_text(packages_count .. " Packages")
     end)
 
     local battery = wibox.widget
@@ -120,7 +119,7 @@ local function new()
             name,
             power_button
         },
-        uptime,
+        uptime_widget,
         packages,
         widgets.spacer.vertical(1)
     }

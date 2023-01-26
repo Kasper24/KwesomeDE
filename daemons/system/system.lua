@@ -16,7 +16,7 @@ local capi = { awesome = awesome }
 local system = { }
 local instance = nil
 
-local UPTIME_UPDATE_INTERVAL = 60
+local UPDATE_INTERVAL = 60
 
 local LUA_PAM_PATH = helpers.filesystem.get_awesome_config_dir("services") .. "?.so"
 package.cpath = package.cpath .. ';' .. LUA_PAM_PATH
@@ -102,19 +102,14 @@ local function new()
         ret._private.is_pam_installed = false
     end
 
-    -- awful.spawn.easy_async_with_shell("stat "..LUA_PAM_PATH.." >/dev/null 2>&1", function (_, __, ___, exitcode)
-    --     if exitcode == 0 then
-    --         local pam = require("liblua_pam")
-    --         ret._private.is_pam_installed = true
-    --     else
-    --         ret._private.is_pam_installed = false
-    --     end
-    -- end)
+    gtimer { timeout = UPDATE_INTERVAL, autostart = true, call_now = true, callback = function()
+        awful.spawn.easy_async("neofetch packages", function(packages_count)
+            packages_count = helpers.string.trim(packages_count:gsub("packages", ""))
 
-    gtimer { timeout = UPTIME_UPDATE_INTERVAL, autostart = true, call_now = true, callback = function()
-        awful.spawn.easy_async("uptime -p", function(stdout)
-            stdout = stdout:gsub('^%s*(.-)%s*$', '%1')
-            ret:emit_signal("uptime", stdout)
+            awful.spawn.easy_async("neofetch uptime", function(uptime)
+                uptime = uptime:gsub("time", "")
+                ret:emit_signal("update", packages_count, uptime)
+            end)
         end)
     end}
 
