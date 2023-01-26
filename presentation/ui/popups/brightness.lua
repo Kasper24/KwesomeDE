@@ -61,6 +61,15 @@ local function new()
         end
     }
 
+    local anim = helpers.animation:new
+    {
+        duration = 0.2,
+        easing = helpers.animation.easing.linear,
+        update = function(self, pos)
+            slider.value = pos
+        end,
+    }
+
     ret.widget = awful.popup
     {
         type = "notification",
@@ -101,7 +110,7 @@ local function new()
     brightness_daemon:connect_signal("update", function(self, brightness)
         if show == true then
             text:set_text(brightness)
-            slider.value = brightness
+            anim:set(brightness)
 
             if ret.widget.visible then
                 hide_timer:again()
@@ -110,7 +119,7 @@ local function new()
                 hide_timer:again()
             end
         else
-            slider.value = brightness
+            anim:set(brightness)
             show = true
         end
     end)

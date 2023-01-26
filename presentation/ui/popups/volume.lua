@@ -21,10 +21,8 @@ local function new()
     {
         widget = widgets.text,
         halign = "center",
+        icon = beautiful.icons.volume_normal,
         size = 30,
-        color = beautiful.random_accent_color(),
-        font = beautiful.icons.volume_normal.font,
-        text = beautiful.icons.volume_normal.icon,
     }
 
     local text = wibox.widget
@@ -60,6 +58,15 @@ local function new()
         callback = function()
             ret.widget.visible = false
         end
+    }
+
+    local anim = helpers.animation:new
+    {
+        duration = 0.2,
+        easing = helpers.animation.easing.linear,
+        update = function(self, pos)
+            slider.value = pos
+        end,
     }
 
     ret.widget = awful.popup
@@ -112,7 +119,7 @@ local function new()
             end
 
             text:set_text(device.volume)
-            slider.value = device.volume
+            anim:set(device.volume)
 
             if ret.widget.visible then
                 hide_timer:again()
@@ -121,7 +128,7 @@ local function new()
                 hide_timer:again()
             end
         else
-            slider.value = device.volume
+            anim:set(device.volume / 100)
             show = true
         end
     end)
