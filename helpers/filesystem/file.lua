@@ -291,6 +291,11 @@ function File:write(data, mode, cb)
         mode = nil
     end
 
+    -- Stop it from complaing since I don't always need a cb
+    if cb == nil then
+        cb = function() end
+    end
+
     async.dag({
         stream = function(_, cb_inner)
             self:write_stream(mode, cb_inner)
