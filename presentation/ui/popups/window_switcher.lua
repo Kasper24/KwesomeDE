@@ -71,6 +71,7 @@ local function client_widget(self, client)
         {
             widget = widgets.button.elevated.state,
             id = "button",
+            on_by_default = is_selected,
             normal_bg = beautiful.colors.background,
             normal_border_width = dpi(5),
             normal_border_color = beautiful.colors.surface,
@@ -109,12 +110,6 @@ local function client_widget(self, client)
             }
         }
     }
-
-    if is_selected == true then
-        widget.get_children_by_id("button")[1]:turn_on()
-    else
-        widget.get_children_by_id("button")[1]:turn_off()
-    end
 
     return widget
 end
@@ -157,8 +152,10 @@ function window_switcher:cycle_clients(increase)
     self:select_client(client)
 end
 
-function window_switcher:show(set_selected_client)
+function window_switcher:show(set_selected_client, keygrabber)
     sort_clients(self)
+
+    self._private.keygrabber = keygrabber
 
     if #self._private.sorted_clients == 0 then
         self:hide(false)
@@ -178,17 +175,19 @@ function window_switcher:hide(focus)
         focus_client(self._private.selected_client)
     end
 
+    awful.keygrabber.stop(self._private.keygrabber)
+
     self._private.widget.visible = false
     self._private.widget.widget = nil
 
     collectgarbage("collect")
 end
 
-function window_switcher:toggle()
+function window_switcher:toggle(keygrabber)
     if self._private.widget.visible == true then
         self:hide()
     else
-        self:show()
+        self:show(true, keygrabber)
     end
 end
 
