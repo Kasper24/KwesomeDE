@@ -230,11 +230,9 @@ local function new()
     local no_bluetooth = wibox.widget
     {
         widget = widgets.text,
-        color = beautiful.random_accent_color(),
         halign = "center",
+        icon = beautiful.icons.bluetooth_off,
         size = 100,
-        font = beautiful.icons.bluetooth_off.font,
-        text = beautiful.icons.bluetooth_off.icon
     }
 
     local stack = wibox.widget

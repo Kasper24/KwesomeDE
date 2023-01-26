@@ -22,10 +22,8 @@ local function new()
         widget = widgets.text,
         halign = "center",
         valign = "bottom",
-        font = beautiful.icons.keyboard.font,
+        icon = beautiful.icons.keyboard,
         size = 30,
-        color = beautiful.random_accent_color(),
-        text = beautiful.icons.keyboard.icon,
     }
 
     local text = wibox.widget

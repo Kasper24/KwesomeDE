@@ -38,10 +38,8 @@ local function new()
     {
         widget = twidget,
         halign = "center",
+        icon = beautiful.icons.battery_full,
         size = 17,
-        color = beautiful.random_accent_color(),
-        font = beautiful.icons.battery_full.font,
-        text = beautiful.icons.battery_full.icon,
     }
 
     upower_daemon:connect_signal("battery::update", function(self, device)

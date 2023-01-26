@@ -39,10 +39,6 @@ local function generate_markup(self)
 	self._private.text = gstring.xml_unescape(tostring(self._private.text))
 	self._private.text = gstring.xml_escape(tostring(self._private.text))
 
-	if self._private.icon ~= nil then
-		print(helpers.inspect.inspect(self._private.icon))
-	end
-
 	local size = math.ceil(self._private.size * 1024)
 	self.markup = string.format("<span font_family='%s' font_size='%s'>", self._private.font, size) ..
 		bold_start .. italic_start ..

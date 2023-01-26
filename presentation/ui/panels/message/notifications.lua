@@ -18,8 +18,6 @@ local os = os
 
 local notifications = { mt = {} }
 
-local accent_color = beautiful.random_accent_color()
-
 local function notification_widget(notification, on_removed)
     local icon = nil
     if notification.font_icon == nil then
@@ -39,10 +37,8 @@ local function notification_widget(notification, on_removed)
             widget = widgets.text,
             halign = "left",
             valign = "top",
+            icon = notification.font_icon,
             size = 30,
-            color = beautiful.random_accent_color(),
-            font = notification.font_icon.font,
-            text = notification.font_icon.icon
         }
     end
 
@@ -127,9 +123,7 @@ local function notification_widget(notification, on_removed)
                 widget = widgets.button.text.normal,
                 forced_width = dpi(40),
                 forced_height = dpi(40),
-                -- hover_bg = beautiful.random_accent_color(),
-                text_normal_bg = accent_color,
-                text = beautiful.icons.xmark.icon,
+                icon = beautiful.icons.xmark,
                 on_release = function()
                     on_removed(widget)
                     notifications_daemon:remove_notification(notification)
@@ -185,10 +179,8 @@ local function notification_group(notification)
         icon = wibox.widget
         {
             widget = widgets.text,
+            icon = notification.app_font_icon,
             size = 30,
-            color = beautiful.random_accent_color(),
-            font = notification.app_font_icon.font,
-            text = notification.app_font_icon.icon
         }
     end
 
@@ -285,10 +277,8 @@ local function new()
             {
                 widget = widgets.text,
                 halign = "center",
+                icon = beautiful.icons.bell,
                 size = 50,
-                color = beautiful.random_accent_color(),
-                font = beautiful.icons.bell.font,
-                text = beautiful.icons.bell.icon
             },
             {
                 widget = widgets.text,

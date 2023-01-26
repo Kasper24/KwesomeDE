@@ -97,14 +97,11 @@ local function tag_list(s)
             forced_width = dpi(60),
             forced_height = dpi(60),
             create_callback = function(self, tag, index, tags)
-                local accent_color = beautiful.random_accent_color()
-
                 local button = wibox.widget
                 {
                     widget = widgets.button.text.state,
                     id = "button",
                     icon = taglist_icons[index],
-                    text_normal_bg = accent_color,
                     on_hover = function()
                         if #tag:clients() > 0 then
                             tag_preview:show(tag,
@@ -141,7 +138,7 @@ local function tag_list(s)
                         widget = wibox.container.background,
                         forced_width = dpi(5),
                         shape = helpers.ui.rrect(beautiful.border_radius),
-                        bg = accent_color
+                        bg = taglist_icons[index].color
                     }
                 }
 

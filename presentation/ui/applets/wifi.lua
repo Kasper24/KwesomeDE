@@ -242,6 +242,8 @@ local function new()
 
     ret._private = {}
 
+    local accent_color = beautiful.random_accent_color()
+
     local header = wibox.widget
     {
         widget = widgets.text,
@@ -292,11 +294,9 @@ local function new()
     local no_wifi = wibox.widget
     {
         widget = widgets.text,
-        color = beautiful.random_accent_color(),
         halign = "center",
+        icon = beautiful.icons.wifi_off,
         size = 100,
-        font = beautiful.icons.wifi_off.font,
-        text = beautiful.icons.wifi_off.icon
     }
 
     local stack = wibox.widget
@@ -316,8 +316,6 @@ local function new()
         orientation = "horizontal",
         color = beautiful.colors.surface
     }
-
-    local accent_color = beautiful.random_accent_color()
 
     network_daemon:connect_signal("scan_access_points::success", function(self, access_points)
         layout:reset()

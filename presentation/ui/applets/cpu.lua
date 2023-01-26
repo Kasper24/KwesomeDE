@@ -18,14 +18,6 @@ local math = math
 local cpu = { }
 local instance = nil
 
-local accent_color = beautiful.random_accent_color()
-local gradient_colors =
-{
-    {0, beautiful.random_accent_color()},
-    {0.33, beautiful.random_accent_color()},
-    {0.66, beautiful.random_accent_color()}
-}
-
 function cpu:show(next_to)
     cpu_daemon:set_slim(false)
     self.widget.screen = awful.screen.focused()
@@ -76,6 +68,14 @@ local function new()
         },
         scrollbar_width = dpi(10),
         step = 50,
+    }
+
+    local accent_color = beautiful.random_accent_color()
+    local gradient_colors =
+    {
+        {0, beautiful.random_accent_color()},
+        {0.33, beautiful.random_accent_color()},
+        {0.66, beautiful.random_accent_color()}
     }
 
     cpu_daemon:connect_signal("update::full", function(self, cpus, processes)

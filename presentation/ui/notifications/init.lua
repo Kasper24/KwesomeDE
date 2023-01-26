@@ -138,8 +138,8 @@ naughty.connect_signal("request::display", function(n)
         app_icon = wibox.widget
         {
             widget = widgets.text,
-            size = n.app_font_icon.size or 20,
             icon = n.app_font_icon,
+            size = n.app_font_icon.size or 20,
         }
     end
 
