@@ -476,8 +476,6 @@ local function new(self, layout)
     local title = wibox.widget
     {
         widget = widgets.text,
-        forced_width = dpi(50),
-        forced_height = dpi(50),
         bold = true,
         size = 15,
         text = "Theme Manager"
