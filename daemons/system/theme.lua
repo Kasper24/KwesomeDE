@@ -82,12 +82,15 @@ local function generate_sequences(colors)
     table.insert(sequences, set_special(708, colors[1], 0))
 
     local string = table.concat(sequences)
+
+    local file = helpers.file.new_for_path(GENERATED_TEMPLATES_PATH .. "sequences")
+    file:write(string)
+
     -- Backwards compatibility with wal/wpgtk
-    helpers.filesystem.save_file(WAL_CACHE_PATH .. "sequences", string)
-    helpers.filesystem.save_file(GENERATED_TEMPLATES_PATH .. "sequences", string)
+    file:copy(WAL_CACHE_PATH .. "sequences")
 
     for index = 0, 9 do
-        helpers.filesystem.save_file("/dev/pts/" .. index, string)
+        file:copy("/dev/pts/" .. index)
     end
 end
 
@@ -117,9 +120,11 @@ org.gnome.desktop.interface gtk-theme 'FlatColor'
     helpers.run.is_installed("xsettingsd", function(is_installed)
         if is_installed == true then
             local path = os.tmpname()
-            local content = 'Net/ThemeName "FlatColor" \n'
-            helpers.filesystem.save_file(path, content, function()
-                awful.spawn(string.format("timeout 0.2s xsettingsd -c %s", path))
+            local file = helpers.file.new_for_path(path)
+            file:write('Net/ThemeName "FlatColor" \n', function(error)
+                if error == nil then
+                    awful.spawn(string.format("timeout 0.2s xsettingsd -c %s", path))
+                end
             end)
         end
     end)
@@ -166,13 +171,15 @@ local function replace_template_colors(color, color_name, line)
 end
 
 local function generate_templates(self)
-    helpers.filesystem.scan(BASE_TEMPLATES_PATH, function(result)
-        for index, template_path in pairs(result) do
-            local copy_to = nil
-
-            if template_path:match(".base") ~= nil then
-                helpers.filesystem.read_file(template_path, function(content)
+    helpers.filesystem.iterate_contents(BASE_TEMPLATES_PATH, function(file)
+        local template_path = file:get_path()
+        if template_path:match(".base") ~= nil then
+            local file = helpers.file.new_for_path(template_path)
+            file:read_string(function(error, content)
+                if error == nil then
                     local lines = {}
+                    local copy_to = nil
+
                     if content ~= nil then
                         for line in content:gmatch("[^\r\n$]+") do
                             if line:match("{{") then
@@ -226,25 +233,24 @@ local function generate_templates(self)
                     local name = template_path:gsub(BASE_TEMPLATES_PATH, "")
                     name = name:gsub(".base", "")
 
-                    -- Backwards compatibility with wal/wpgtk
-                    helpers.filesystem.save_file(WAL_CACHE_PATH .. name, output)
-
                     -- Save to ~/.cache/awesome/templates
-                    helpers.filesystem.save_file(GENERATED_TEMPLATES_PATH .. name, output, function()
-                        if index == #result then
-                            on_finished_generating(self)
-                        end
-                    end)
+                    local file = helpers.file.new_for_path(GENERATED_TEMPLATES_PATH .. name)
+                    file:write(output)
+
+                    -- Backwards compatibility with wal/wpgtk
+                    file:copy(WAL_CACHE_PATH .. name)
 
                     -- Save to addiontal location specified in the template file
                     if copy_to ~= nil then
                         copy_to = copy_to:gsub("~", os.getenv("HOME"))
-                        helpers.filesystem.save_file(copy_to, output)
+                        file:copy(copy_to)
                     end
-                end)
-            end
+                end
+            end)
         end
-    end, true)
+    end, {recursive = true}, function()
+        on_finished_generating(self)
+    end)
 end
 
 local function install_gtk_theme()
@@ -333,10 +339,8 @@ local function generate_colorscheme(self, wallpaper, reset, light)
 
             self._private.colors[wallpaper] = colors
 
-            helpers.filesystem.save_file(
-                COLORSCHEME_DATA_PATH,
-                helpers.json.encode(self._private.colors, { indent = true })
-            )
+            local file = helpers.file.new_for_path(COLORSCHEME_DATA_PATH)
+            file:write(helpers.json.encode(self._private.colors, { indent = true }))
         end)
     end
 
@@ -498,17 +502,15 @@ local function scan_for_wallpapers(self)
         end
     }
 
-    helpers.filesystem.scan(WALLPAPERS_PATH, function(result)
-        for _, wallpaper_path in pairs(result) do
-            local is_duplicate = helpers.table.contains(self._private.images, wallpaper_path)
-            local mimetype = Gio.content_type_guess(wallpaper_path)
-            if is_duplicate == false and PICTURES_MIMETYPES[mimetype] ~= nil then
-                table.insert(self._private.images, wallpaper_path)
-            end
-        end
+    helpers.filesystem.iterate_contents(WALLPAPERS_PATH, function(file)
+        local wallpaper_path = file:get_path()
 
-        emit_signal_timer:again()
-    end, true)
+        local is_duplicate = helpers.table.contains(self._private.images, wallpaper_path)
+        local mimetype = Gio.content_type_guess(wallpaper_path)
+        if is_duplicate == false and PICTURES_MIMETYPES[mimetype] ~= nil then
+            table.insert(self._private.images, wallpaper_path)
+        end
+    end, {})
 end
 
 local function watch_wallpaper_changes(self)
@@ -563,10 +565,8 @@ function theme:select_wallpaper(wallpaper)
 end
 
 function theme:save_colorscheme()
-    helpers.filesystem.save_file(
-        COLORSCHEME_DATA_PATH,
-        helpers.json.encode(self._private.colors, { indent = true })
-    )
+    local file = helpers.file.new_for_path(COLORSCHEME_DATA_PATH)
+    file:write(helpers.json.encode(self._private.colors, { indent = true }))
 end
 
 function theme:reset_colorscheme()
@@ -632,20 +632,14 @@ local function new()
     local ret = gobject{}
     gtable.crush(ret, theme, true)
 
-    helpers.filesystem.read_file(COLORSCHEME_DATA_PATH, function(content)
-        if content == nil then
-            return
-        end
-
-        local data = helpers.json.decode(content)
-        if data == nil then
-            return
-        end
-
-        ret._private.colors = data
-    end)
-
     ret._private = {}
+
+    local file = helpers.file.new_for_path(COLORSCHEME_DATA_PATH)
+    file:read_string(function(error, content)
+        if error == nil then
+            ret._private.colors = helpers.json.decode(content) or {}
+        end
+    end)
 
     local wallpaper = helpers.settings:get_value("theme-wallpaper")
     ret._private.wallpaper = wallpaper:gsub("~", os.getenv("HOME"))

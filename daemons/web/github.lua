@@ -58,17 +58,28 @@ local function github_events(self)
                 end
 
                 local is_downloading = false
-                helpers.filesystem.is_file_readable(path_to_avatar, function(result)
-                    if result == false then
-                        is_downloading = true
-                        helpers.filesystem.save_uri(path_to_avatar, event.actor.avatar_url, function()
-                            is_downloading = false
-                            if index == #data then
-                                self:emit_signal("events", data, avatars_path)
-                            end
-                        end)
-                    elseif index == #data and is_downloading == false then
-                        self:emit_signal("events", data, avatars_path)
+
+                local file = helpers.file.new_for_path(path_to_avatar)
+                file:exists(function(error, exists)
+                    if error == nil then
+                        if exists == false then
+                            is_downloading = true
+
+                            local remote_file = helpers.file.new_for_uri(event.actor.avatar_url)
+                            remote_file:read_string(function(error, content)
+                                if error == nil then
+                                    file:write(content, function(error)
+                                        is_downloading = false
+                                        if index == #data then
+                                            self:emit_signal("events", data, avatars_path)
+                                        end
+                                    end)
+                                end
+                            end)
+
+                        elseif index == #data and is_downloading == false then
+                            self:emit_signal("events", data, avatars_path)
+                        end
                     end
                 end)
             end
@@ -117,17 +128,26 @@ local function github_prs(self)
 
                 local is_downloading = false
                 local path_to_avatar = avatars_path .. pr.user.id
-                helpers.filesystem.is_file_readable(path_to_avatar, function(result)
-                    if result == false then
-                        is_downloading = true
-                        helpers.filesystem.save_uri(path_to_avatar, pr.user.avatar_url, function()
-                            is_downloading = false
-                            if index == #data.items then
-                                self:emit_signal("prs", data.items, avatars_path)
-                            end
-                        end)
-                    elseif index == #data.items and is_downloading == false then
-                        self:emit_signal("prs", data.items, avatars_path)
+                local file = helpers.file.new_for_path(path_to_avatar)
+                file:exists(function(error, exists)
+                    if error == nil then
+                        if exists == false then
+                            is_downloading = true
+
+                            local remote_file = helpers.file.new_for_uri(pr.user.avatar_url)
+                            remote_file:read_string(function(error, content)
+                                if error == nil then
+                                    file:write(content, function(error)
+                                        is_downloading = false
+                                        if index == #data.items then
+                                            self:emit_signal("prs", data.items, avatars_path)
+                                        end
+                                    end)
+                                end
+                            end)
+                        elseif index == #data.items and is_downloading == false then
+                            self:emit_signal("prs", data.items, avatars_path)
+                        end
                     end
                 end)
             end

@@ -26,11 +26,8 @@ function email:open(email)
 end
 
 function email:update_net_rc(machine, login, password)
-    helpers.filesystem.save_file
-    (
-        NET_RC_PATH,
-        string.format("machine %s\nlogin %s\npassword %s", machine, login, password)
-    )
+    local file = helpers.file.new_for_path(NET_RC_PATH)
+    file:write(string.format("machine %s\nlogin %s\npassword %s", machine, login, password))
 end
 
 function email:get_machine()
@@ -51,9 +48,9 @@ local function new()
 
     ret._private = {}
 
-    local content = helpers.filesystem.read_file_block(NET_RC_PATH)
-    if content ~= nil then
-        for line in content:gmatch("[^\r\n]+") do
+    local file = helpers.file.new_for_path(NET_RC_PATH)
+    file:iterate_lines(function(error, line)
+        if error == nil then
             if line:match("machine") then
                 ret._private.machine = line:match("machine (.*)")
             elseif line:match("login") then
@@ -62,12 +59,13 @@ local function new()
                 ret._private.password = line:match("password (.*)")
             end
         end
-    end
+    end)
 
     gtimer { timeout = UPDATE_INTERVAL, autostart = true, call_now = true, callback = function()
         local old_data = nil
-        helpers.filesystem.read_file(DATA_PATH, function(content)
-            if content ~= nil and content ~= false then
+        local file = helpers.file.new_for_path(DATA_PATH)
+        file:read_string(function(error, content)
+            if error == nil then
                 local data = helpers.json.decode(content)
                 if data ~= nil then
                     old_data = {}
@@ -90,10 +88,7 @@ local function new()
                         end
                     end
 
-                    helpers.filesystem.save_file(
-                        DATA_PATH,
-                        helpers.json.encode(handler.root.feed.entry, { indent = true })
-                    )
+                    file:write(helpers.json.encode(handler.root.feed.entry, { indent = true }))
 
                     ret:emit_signal("emails", handler.root.feed.entry, handler.root.feed.fullcount)
                 else

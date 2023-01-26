@@ -46,10 +46,9 @@ function desktop:ask_for_new_position(widget, path)
 
         desktop_icons[path].x = new_grid_pos.x
         desktop_icons[path].y = new_grid_pos.y
-        helpers.filesystem.save_file(
-            DATA_PATH,
-            helpers.json.encode(desktop_icons, { indent = true })
-        )
+
+        local file = helpers.file.new_for_path(path)
+        file:write(helpers.json.encode(desktop_icons, { indent = true }))
 
         return
         {
@@ -88,10 +87,9 @@ local function on_desktop_icon_added(self, pos, path, name, mimetype)
         name,
         mimetype
     )
-    helpers.filesystem.save_file(
-        DATA_PATH,
-        helpers.json.encode(desktop_icons, { indent = true })
-    )
+
+    local file = helpers.file.new_for_path(path)
+    file:write(helpers.json.encode(desktop_icons, { indent = true }))
 end
 
 
@@ -101,10 +99,8 @@ local function on_desktop_icon_removed(self, path)
     grid[desktop_icons[path].x][desktop_icons[path].y].empty = true
 
     desktop_icons[path] = nil
-    helpers.filesystem.save_file(
-        DATA_PATH,
-        helpers.json.encode(desktop_icons, { indent = true })
-    )
+    local file = helpers.file.new_for_path(path)
+    file:write(helpers.json.encode(desktop_icons, { indent = true }))
 end
 
 local function watch_desktop_directory(self)
@@ -131,43 +127,51 @@ local function watch_desktop_directory(self)
 end
 
 local function scan_for_desktop_files_on_init(self)
-    local content = helpers.filesystem.read_file_block(DATA_PATH)
-    local old_desktop_icons = {}
-    if content ~= nil then
-        local data = helpers.json.decode(content)
-        if data ~= nil then
-            old_desktop_icons = data
-        end
-    end
+    local file = helpers.file.new_for_path(DATA_PATH)
+    file:read_string(function(error, content)
+        if error == nil then
+            local old_desktop_icons = helpers.json.decode(content) or {}
+            helpers.filesystem.iterate_contents(DESKTOP_PATH, function(file)
+                local path = file:get_path()
+                if path:find("/home/" .. os.getenv("USER") .. "/Desktop/.", 1, true) == nil then
+                    local mimetype = "folder"
+                    local file_type = file:get_file_type()
+                    if file_type == "REGULAR" and file:get_attribute_boolean("access::can-read") then
+                        mimetype = Gio.content_type_guess(path)
+                    end
 
-    helpers.filesystem.scan_with_folders(DESKTOP_PATH, function(files, folders)
-        for _, path in pairs(files) do
-            if path:find("/home/" .. os.getenv("USER") .. "/Desktop/.", 1, true) == nil then
-                local name = path:sub(helpers.string.find_last(path, "/") + 1, #path)
-                local mimetype = Gio.content_type_guess(path)
-                local pos = nil
-                if old_desktop_icons[path] ~= nil then
-                    pos = old_desktop_icons[path]
-                else
-                    pos = get_position_for_new_desktop_file()
+                    local name = path:sub(helpers.string.find_last(path, "/") + 1, #path)
+                    local pos = nil
+                    if old_desktop_icons[path] ~= nil then
+                        pos = old_desktop_icons[path]
+                    else
+                        pos = get_position_for_new_desktop_file()
+                    end
+                    on_desktop_icon_added(self, pos, path, name, mimetype)
                 end
-                on_desktop_icon_added(self, pos, path, name, mimetype)
-            end
+            end, {})
         end
+    end)
 
-        for _, path in pairs(folders) do
-            if path:find("/home/" .. os.getenv("USER") .. "/Desktop/.", 1, true) == nil then
-                local name = path:sub(helpers.string.find_last(path, "/") + 1, #path)
-                local pos = nil
-                if old_desktop_icons[path] ~= nil then
-                    pos = old_desktop_icons[path]
-                else
-                    pos = get_position_for_new_desktop_file()
-                end
-                on_desktop_icon_added(self, pos, path, name, "folder")
+    helpers.filesystem.iterate_contents(DESKTOP_PATH, function(file)
+        local path = file:get_path()
+        if path:find("/home/" .. os.getenv("USER") .. "/Desktop/.", 1, true) == nil then
+            local mimetype = "folder"
+            local file_type = file:get_file_type()
+            if file_type == "REGULAR" and file:get_attribute_boolean("access::can-read") then
+                mimetype = Gio.content_type_guess(path)
             end
+
+            local name = path:sub(helpers.string.find_last(path, "/") + 1, #path)
+            local pos = nil
+            if old_desktop_icons[path] ~= nil then
+                pos = old_desktop_icons[path]
+            else
+                pos = get_position_for_new_desktop_file()
+            end
+            on_desktop_icon_added(self, pos, path, name, mimetype)
         end
-    end, false)
+    end, {})
 end
 
 local function generate_grid()

@@ -156,7 +156,10 @@ local function desktop_icon(self, pos, path, name, mimetype)
         {
             icon = beautiful.icons.xmark_fw,
             text = "Delete",
-            on_press = function() awful.spawn("rm -rf " .. path, false) end
+            on_press = function()
+                local file = helpers.file.new_for_path(path)
+                file:delete()
+            end
         }
     }
 

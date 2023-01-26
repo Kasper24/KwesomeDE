@@ -57,28 +57,21 @@ local function save_notification(self, notification)
         image = notification.app_icon,
     }, app_icon_path, 35, 35)
 
-    self.save_timer:again()
+    self._private.save_timer:again()
 end
 
 local function read_notifications(self)
-    helpers.filesystem.read_file(DATA_PATH, function(content)
-        self.notifications = {}
+    local file = helpers.file.new_for_path(DATA_PATH)
+    file:read_string(function(error, content)
+        if error == nil then
+            self._private.notifications = helpers.json.decode(content) or {}
 
-        if content == nil then
-            self:emit_signal("empty")
-            return
-        end
-
-        local data = helpers.json.decode(content)
-        if data == nil then
-            self:emit_signal("empty")
-            return
-        end
-
-        self.notifications = data
-        if #self.notifications > 0 then
-            for i, notification in ipairs(self.notifications) do
-                self:emit_signal("new", notification)
+            if #self._private.notifications > 0 then
+                for _, notification in ipairs(self._private.notifications) do
+                    self:emit_signal("new", notification)
+                end
+            else
+                self:emit_signal("empty")
             end
         else
             self:emit_signal("empty")
@@ -87,15 +80,15 @@ local function read_notifications(self)
 end
 
 function notifications:remove_all_notifications()
-    self.notifications = {}
-    self.save_timer:again()
-    awful.spawn("rm -rf " .. ICONS_PATH)
+    self._private.notifications = {}
+    self._private.save_timer:again()
+    helpers.filesystem.remove_directory(ICONS_PATH)
     self:emit_signal("empty")
 end
 
 function notifications:remove_notification(notification_data)
     local index = 0
-    for i, notification in ipairs(self.notifications) do
+    for i, notification in ipairs(self._private.notifications) do
         if notification.uuid == notification_data.uuid then
             index = i
             break
@@ -103,11 +96,12 @@ function notifications:remove_notification(notification_data)
     end
 
     if index ~= 0 then
-        helpers.filesystem.delete_file(self.notifications[index].icon)
+        local file = helpers.file.new_for_path(self._private.notifications[index].icon)
+        file:delete()
 
-        table.remove(self.notifications, index)
-        self.save_timer:again()
-        if #self.notifications == 0 then
+        table.remove(self._private.notifications, index)
+        self._private.save_timer:again()
+        if #self._private.notifications == 0 then
             self:emit_signal("empty")
         end
     end
@@ -159,21 +153,20 @@ local function new()
     local ret = gobject{}
     gtable.crush(ret, notifications, true)
 
-    helpers.filesystem.make_directory(ICONS_PATH, function() end)
-
-    ret.notifications = {}
-    ret.save_timer = gtimer
+    ret._private = {}
+    ret._private.notifications = {}
+    ret._private.save_timer = gtimer
     {
         timeout = 1,
         autostart = false,
         single_shot = true,
         callback = function()
-            helpers.filesystem.save_file(
-                DATA_PATH,
-                helpers.json.encode(ret.notifications, { indent = true })
-            )
+            local file = helpers.file.new_for_path(DATA_PATH)
+            file:write(helpers.json.encode(ret.notifications, { indent = true }))
         end
     }
+
+    helpers.filesystem.make_directory(ICONS_PATH)
 
     gtimer.delayed_call(function()
         if helpers.settings:get_value("dont-disturb") == true then

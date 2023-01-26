@@ -87,16 +87,19 @@ function picom:set_blur(blur)
 end
 
 local function get_settings(self)
-    helpers.filesystem.read_file(CONFIG_PATH, function(stdout)
-        stdout = stdout:gsub("%s+", "")
-        local active_opacity = stdout:match("active%-opacity=(%d+.%d+)") or stdout:match("active%-opacity=(%d+)")
-        local inactive_opacity = stdout:match("inactive%-opacity=(%d+.%d+)") or stdout:match("inactive%-opacity=(%d+)")
-        local frame_opacity = stdout:match("frame%-opacity=(%d+.%d+)") or stdout:match("frame%-opacity=(%d+)")
-        local corner_radius = stdout:match("corner%-radius=(%d+.%d+)") or stdout:match("corner%-radius=(%d+)")
-        local blur = stdout:match("strength=(%d+.%d+)") or stdout:match("strength=(%d+)")
+    local file = helpers.file.new_for_path(CONFIG_PATH)
+    file:read_string(function(error, content)
+        if error == nil then
+            content = content:gsub("%s+", "")
+            local active_opacity = content:match("active%-opacity=(%d+.%d+)") or content:match("active%-opacity=(%d+)")
+            local inactive_opacity = content:match("inactive%-opacity=(%d+.%d+)") or content:match("inactive%-opacity=(%d+)")
+            local frame_opacity = content:match("frame%-opacity=(%d+.%d+)") or content:match("frame%-opacity=(%d+)")
+            local corner_radius = content:match("corner%-radius=(%d+.%d+)") or content:match("corner%-radius=(%d+)")
+            local blur = content:match("strength=(%d+.%d+)") or content:match("strength=(%d+)")
 
-        self:emit_signal("settings", tonumber(active_opacity), tonumber(inactive_opacity),
-            tonumber(frame_opacity), tonumber(corner_radius), tonumber(blur))
+            self:emit_signal("settings", tonumber(active_opacity), tonumber(inactive_opacity),
+                tonumber(frame_opacity), tonumber(corner_radius), tonumber(blur))
+        end
     end)
 end
 

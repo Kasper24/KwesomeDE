@@ -1,11 +1,14 @@
 return
 {
     animation = require(... .. ".animation"),
+    async = require(... .. ".async"),
     dbus_proxy = require(... .. ".dbus_proxy"),
+    file = require(... .. ".filesystem.file"),
+    filesystem = require(... .. ".filesystem.filesystem"),
+    stream = require(... .. ".filesystem.stream"),
     bezier = require(... .. ".bezier"),
     client = require(... .. ".client"),
     color = require(... .. ".color"),
-    filesystem = require(... .. ".filesystem"),
     -- global_menu = require(... .. ".global_menu"),
     ical = require(... .. ".ical"),
     icon_theme = require(... .. ".icon_theme"),

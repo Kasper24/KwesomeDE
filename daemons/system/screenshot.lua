@@ -82,12 +82,15 @@ function screenshot:screenshot()
                     end
 
                     awful.spawn.easy_async_with_shell(command, function(stdout, stderr)
-                        helpers.filesystem.is_file_readable(self._private.folder .. file_name, function(result)
-                            if result == true then
-                                awful.spawn("xclip -selection clipboard -t image/png -i " .. self._private.folder .. file_name, false)
-                                self:emit_signal("ended", self._private.screenshot_method, self._private.folder, file_name)
-                            else
-                                self:emit_signal("error::create_file", stderr)
+                        local file = helpers.file.new_for_path(self._private.folder .. file_name)
+                        file:exists(function(error, exists)
+                            if error == nil then
+                                if exists == true then
+                                    awful.spawn("xclip -selection clipboard -t image/png -i " .. self._private.folder .. file_name, false)
+                                    self:emit_signal("ended", self._private.screenshot_method, self._private.folder, file_name)
+                                else
+                                    self:emit_signal("error::create_file", stderr)
+                                end
                             end
                         end)
                     end)
