@@ -16,7 +16,25 @@ local text_button_normal = { mt = {} }
 local properties =
 {
 	"text_normal_bg", "text_hover_bg", "text_press_bg",
-	"animate_size"
+	"animate_size",
+}
+
+local ebutton_properties =
+{
+	"normal_bg", "hover_bg", "press_bg",
+	"normal_shape", "hover_shape", "press_shape",
+	"normal_border_width", "hover_border_width", "press_border_width",
+	"normal_border_color", "hover_border_color", "press_border_color",
+	"on_hover", "on_leave",
+	"on_press", "on_release",
+	"on_secondary_press", "on_secondary_release",
+	"on_scroll_up", "on_scroll_down",
+}
+
+local text_properties =
+{
+	"bold", "italic", "size", "color",
+	"text", "icon", "font"
 }
 
 local function build_properties(prototype, prop_names)
@@ -58,23 +76,28 @@ local function effect(widget, bg, shape, border_width, border_color)
 	widget.animation:set(animation_targets)
 end
 
-function text_button_normal:set_color(color)
-	self.children[1].children[1].children[1]:set_color(color)
+local function build_text_properties(prototype, prop_names)
+    for _, prop in ipairs(prop_names) do
+		prototype["set_" .. prop] = function(self, value)
+			local text_widget = self.children[1].children[1].children[1]
+			text_widget["set_" .. prop](text_widget, value)
+		end
+		prototype["get_" .. prop] = function(self)
+			local text_widget = self.children[1].children[1].children[1]
+			return text_widget["get_" .. prop]()
+		end
+    end
 end
 
-function text_button_normal:set_text(text)
-	self.children[1].children[1].children[1]:set_text(text)
-end
-
-local function new(args)
+local function new()
 	local widget = ebwidget.normal()
-	local text_widget = twidget(args)
+	local text_widget = twidget()
 	widget:set_child(text_widget)
 
 	gtable.crush(widget, text_button_normal, true)
-	gtable.crush(widget, text_widget, true)
 
 	local wp = widget._private
+	wp.size = text_widget:get_size()
 
 	-- Setup default values
 	wp.text_normal_bg = beautiful.random_accent_color()
@@ -96,7 +119,7 @@ local function new(args)
 	-- TODO check how to get size
 	widget.size_animation = helpers.animation:new
 	{
-		pos = text_widget.size or 20,
+		pos = wp.size,
 		easing = helpers.animation.easing.linear,
 		duration = 0.2,
 		update = function(self, pos)
@@ -141,5 +164,7 @@ function text_button_normal.mt:__call(...)
 end
 
 build_properties(text_button_normal, properties)
+build_properties(text_button_normal, ebutton_properties)
+build_text_properties(text_button_normal, text_properties)
 
 return setmetatable(text_button_normal, text_button_normal.mt)
