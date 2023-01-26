@@ -10,21 +10,9 @@ local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 
-local elevated_button = { mt = {} }
+local elevated_button_state = { mt = {} }
 
-local normal_properties =
-{
-	"normal_bg", "hover_bg", "press_bg",
-	"normal_shape", "hover_shape", "press_shape",
-	"normal_border_width", "hover_border_width", "press_border_width",
-	"normal_border_color", "hover_border_color", "press_border_color",
-	"on_hover", "on_leave",
-	"on_press", "on_release",
-	"on_secondary_press", "on_secondary_release",
-	"on_scroll_up", "on_scroll_down",
-}
-
-local state_properties =
+local properties =
 {
 	"normal_bg", "hover_bg", "press_bg",
 	"normal_shape", "hover_shape", "press_shape",
@@ -80,7 +68,7 @@ local function effect(widget, bg, shape, border_width, border_color)
 	widget.animation:set(animation_targets)
 end
 
-function elevated_button:set_child(child)
+function elevated_button_state:set_child(child)
 	local child_widget = wibox.widget
 	{
 		widget = wibox.container.place,
@@ -95,16 +83,51 @@ function elevated_button:set_child(child)
 	self:set_widget(child_widget)
 end
 
-function elevated_button:get_child()
+function elevated_button_state:get_child()
 	return self._private.child
 end
 
-function elevated_button.state()
+function elevated_button_state:set_on_by_default(value)
+	if value == true then
+		self:turn_on()
+	end
+end
+
+function elevated_button_state:turn_on()
+	local wp = self._private
+	if wp.state == false then
+		effect(self, wp.on_normal_bg, wp.on_normal_shape, wp.on_normal_border_width, wp.on_normal_border_color)
+		self:emit_signal("_private::on_turn_on")
+		wp.state = true
+	end
+end
+
+function elevated_button_state:turn_off()
+	local wp = self._private
+	if wp.state == true then
+		effect(self, wp.normal_bg, wp.normal_shape, wp.normal_border_width, wp.normal_border_color)
+		self:emit_signal("_private::on_turn_off")
+		wp.state = false
+	end
+end
+
+function elevated_button_state:toggle()
+	local wp = self._private
+	if wp.state == true then
+		self:turn_off()
+	else
+		self:turn_on()
+	end
+end
+
+local function new()
 	local widget = wibox.container.background()
-	gtable.crush(widget, elevated_button, true)
+	gtable.crush(widget, elevated_button_state, true)
 
 	local wp = widget._private
+	wp.state = false
 
+	-- Setup default values
 	wp.normal_bg = beautiful.colors.background
 	wp.hover_bg = helpers.color.button_color(beautiful.colors.background, 0.1)
 	wp.press_bg = helpers.color.button_color(beautiful.colors.background, 0.2)
@@ -133,7 +156,7 @@ function elevated_button.state()
 	wp.on_hover_border_color = beautiful.colors.transparent
 	wp.on_press_border_color = beautiful.colors.transparent
 
-	-- Set to empty function by default to prevent all these if checks ffs
+	-- TODO: Set to empty function by default to prevent all these if checks ffs
     wp.on_hover = nil
     wp.on_leave = nil
     wp.on_press = nil
@@ -145,9 +168,6 @@ function elevated_button.state()
     wp.on_turn_on = nil
     wp.on_turn_off = nil
 
-	build_properties(widget, state_properties)
-	wp._private.state = false
-
 	-- Add hover cursor
 	helpers.ui.add_hover_cursor(widget, beautiful.hover_cursor)
 
@@ -156,9 +176,9 @@ function elevated_button.state()
 	{
 		pos =
 		{
-			color = helpers.color.hex_to_rgb(args.normal_bg),
-			border_width = args.normal_border_width,
-			border_color =  helpers.color.hex_to_rgb(args.normal_border_color)
+			color = helpers.color.hex_to_rgb(wp.normal_bg),
+			border_width = wp.normal_border_width,
+			border_color =  helpers.color.hex_to_rgb(wp.normal_border_color)
 		},
 		easing = helpers.animation.easing.linear,
 		duration = 0.2,
@@ -175,45 +195,21 @@ function elevated_button.state()
 		end
 	}
 
-	function widget:turn_on()
-		if wp._private.state == false then
-			effect(widget, wp.on_normal_bg, wp.on_normal_shape, wp.on_normal_border_width, wp.on_normal_border_color)
-			widget:emit_signal("_private::on_turn_on")
-			wp._private.state = true
-		end
-	end
-
-	function widget:turn_off()
-		if wp._private.state == true then
-			effect(widget, wp.normal_bg, wp.normal_shape, wp.normal_border_width, wp.normal_border_color)
-			widget:emit_signal("_private::on_turn_off")
-			wp._private.state = false
-		end
-	end
-
-	function widget:toggle()
-		if wp._private.state == true then
-			widget:turn_off()
-		else
-			widget:turn_on()
-		end
-	end
-
 	widget:connect_signal("mouse::enter", function(self, find_widgets_result)
 		if wp.hover_effect == false then
 			return
 		end
 
-		if widget._private.state == true then
+		if wp.state == true then
 			effect(widget, wp.on_hover_bg, wp.on_hover_shape, wp.on_hover_border_width, wp.on_hover_border_color)
 		else
 			effect(widget, wp.hover_bg, wp.hover_shape, wp.hover_border_width, wp.hover_border_color)
 		end
         if wp.on_hover ~= nil then
-		    wp.on_hover(self, widget._private.state)
+		    wp.on_hover(self, wp.state)
         end
 
-		widget:emit_signal("_private::on_hover", widget._private.state)
+		widget:emit_signal("_private::on_hover", wp.state)
 	end)
 
 	widget:connect_signal("mouse::leave", function(self, find_widgets_result)
@@ -221,15 +217,15 @@ function elevated_button.state()
 			widget:emit_signal("button::release", 1, 1, widget.button, {}, find_widgets_result, true)
 		end
 
-		if widget._private.state == true then
+		if wp.state == true then
 			effect(widget, wp.on_normal_bg, wp.on_normal_shape, wp.on_normal_border_width, wp.on_normal_border_color)
 		else
 			effect(widget, wp.normal_bg, wp.normal_shape, wp.normal_border_width, wp.normal_border_color)
 		end
         if wp.on_leave ~= nil then
-		    wp.on_leave(self, widget._private.state)
+		    wp.on_leave(self, wp.state)
         end
-		widget:emit_signal("_private::on_leave", widget._private.state)
+		widget:emit_signal("_private::on_leave", wp.state)
 	end)
 
 	widget:connect_signal("button::press", function(self, lx, ly, button, mods, find_widgets_result)
@@ -240,7 +236,7 @@ function elevated_button.state()
 		widget.button = button
 
 		if button == 1 then
-			if widget._private.state == true then
+			if wp.state == true then
 				if wp.on_turn_off then
 					widget:turn_off()
 					wp.on_turn_off(self, lx, ly, button, mods, find_widgets_result)
@@ -279,7 +275,7 @@ function elevated_button.state()
 
 		if button == 1 then
 			if wp.on_turn_on ~= nil or wp.on_turn_off ~= nil or wp.on_press then
-				if widget._private.state == true then
+				if wp.state == true then
 					effect(widget, wp.on_normal_bg, wp.on_normal_shape, wp.on_normal_border_width, wp.on_normal_border_color)
 				else
 					effect(widget, wp.normal_bg, wp.normal_shape, wp.normal_border_width, wp.normal_border_color)
@@ -300,159 +296,13 @@ function elevated_button.state()
 		end
 	end)
 
-	if wp.on_by_default == true then
-		widget:turn_on()
-	end
-
 	return widget
 end
 
-function elevated_button.normal()
-	local widget = wibox.container.background()
-	gtable.crush(widget, elevated_button, true)
-
-	local wp = widget._private
-
-	wp.normal_bg = beautiful.colors.background
-	wp.hover_bg = helpers.color.button_color(beautiful.colors.background, 0.1)
-	wp.press_bg = helpers.color.button_color(beautiful.colors.background, 0.2)
-
-	wp.normal_shape = helpers.ui.rrect(beautiful.border_radius)
-	wp.hover_shape = helpers.ui.rrect(beautiful.border_radius)
-	wp.press_shape = helpers.ui.rrect(beautiful.border_radius)
-
-	wp.normal_border_width = nil
-	wp.hover_border_width = nil
-	wp.press_border_width = nil
-
-	wp.normal_border_color = beautiful.colors.transparent
-	wp.hover_border_color = beautiful.colors.transparent
-	wp.press_border_color = beautiful.colors.transparent
-
-	-- Set to empty function by default to prevent all these if checks ffs
-    wp.on_hover = nil
-    wp.on_leave = nil
-    wp.on_press = nil
-    wp.on_release = nil
-	wp.on_secondary_press = nil
-    wp.on_secondary_release = nil
-	wp.on_scroll_up = nil
-    wp.on_scroll_down = nil
-
-	build_properties(widget, normal_properties)
-	wp._private.state = false
-
-	-- Add hover cursor
-	helpers.ui.add_hover_cursor(widget, beautiful.hover_cursor)
-
-	-- Color/Border animations
-	widget.animation = helpers.animation:new
-	{
-		pos =
-		{
-			color = helpers.color.hex_to_rgb(args.normal_bg),
-			border_width = args.normal_border_width,
-			border_color =  helpers.color.hex_to_rgb(args.normal_border_color)
-		},
-		easing = helpers.animation.easing.linear,
-		duration = 0.2,
-		update = function(self, pos)
-			if pos.color then
-				widget.bg = helpers.color.rgb_to_hex(pos.color)
-			end
-			if pos.border_width then
-				widget.border_width = pos.border_width
-			end
-			if pos.border_color then
-				widget.border_color = helpers.color.rgb_to_hex(pos.border_color)
-			end
-		end
-	}
-
-	widget:connect_signal("mouse::enter", function(self, find_widgets_result)
-		effect(widget, wp.hover_bg, wp.hover_shape, wp.hover_border_width, wp.hover_border_color)
-        if wp.on_hover ~= nil then
-		    wp.on_hover(self, find_widgets_result)
-        end
-		widget:emit_signal("_private::on_hover", self, find_widgets_result)
-	end)
-
-	widget:connect_signal("mouse::leave", function(self, find_widgets_result)
-		if widget.button ~= nil then
-			if widget.button == 1 then
-				if wp.on_release ~= nil or wp.on_press ~= nil then
-					effect(widget, wp.normal_bg, wp.normal_shape, wp.normal_border_width, wp.normal_border_color)
-				end
-				widget:emit_signal("_private::on_release", self, 1, 1, widget.button, {}, find_widgets_result)
-			elseif widget.button == 3 then
-				if wp.on_secondary_release ~= nil or wp.on_secondary_press ~= nil then
-					effect(widget, wp.normal_bg, wp.normal_shape, wp.normal_border_width, wp.normal_border_color)
-				end
-				widget:emit_signal("_private::on_secondary_release", self, 1, 1, widget.button, {}, find_widgets_result)
-			end
-			widget.button = nil
-		end
-		effect(widget, wp.normal_bg, wp.normal_shape, wp.normal_border_width, wp.normal_border_color)
-        if wp.on_leave ~= nil then
-		    wp.on_leave(self, find_widgets_result)
-        end
-		widget:emit_signal("_private::on_leave", self, find_widgets_result)
-	end)
-
-	widget:connect_signal("button::press", function(self, lx, ly, button, mods, find_widgets_result)
-		if #mods > 0 and not helpers.table.contains_only(mods, {"Lock", "Mod2",}) then
-			return
-		end
-
-		widget.button = button
-		if button == 1 then
-			if wp.on_press ~= nil then
-				wp.on_press(self, lx, ly, button, mods, find_widgets_result)
-				effect(widget, wp.press_bg, wp.press_shape, wp.press_border_width, wp.press_border_color)
-			end
-			widget:emit_signal("_private::on_press", self, lx, ly, button, mods, find_widgets_result)
-		elseif button == 3 then
-			if wp.on_secondary_press ~= nil then
-				wp.on_secondary_press(self, lx, ly, button, mods, find_widgets_result)
-				effect(widget, wp.press_bg, wp.press_shape, wp.press_border_width, wp.press_border_color)
-				widget:emit_signal("_private::on_secondary_press", self, lx, ly, button, mods, find_widgets_result)
-			end
-		elseif button == 4 then
-			if wp.on_scroll_up ~= nil then
-				wp.on_scroll_up(self, lx, ly, button, mods, find_widgets_result)
-			end
-		elseif button == 5 then
-			if wp.on_scroll_down ~= nil then
-				wp.on_scroll_down(self, lx, ly, button, mods, find_widgets_result)
-			end
-		end
-	end)
-
-	widget:connect_signal("button::release", function(self, lx, ly, button, mods, find_widgets_result)
-		widget.button = nil
-		if button == 1 then
-			if wp.on_release ~= nil or wp.on_press ~= nil then
-				effect(widget, wp.normal_bg, wp.normal_shape, wp.normal_border_width, wp.normal_border_color)
-			end
-			if wp.on_release ~= nil then
-				wp.on_release(self, lx, ly, button, mods, find_widgets_result)
-			end
-			widget:emit_signal("_private::on_release", self, lx, ly, button, mods, find_widgets_result)
-
-		elseif button == 3 then
-			if wp.on_secondary_release ~= nil or wp.on_secondary_press ~= nil then
-				effect(widget, wp.normal_bg, wp.normal_shape, wp.normal_border_width, wp.normal_border_color)
-			end
-			if wp.on_secondary_release ~= nil then
-				wp.on_secondary_release(self, lx, ly, button, mods, find_widgets_result)
-			end
-			widget:emit_signal("_private::on_secondary_release", self, lx, ly, button, mods, find_widgets_result)
-		end
-	end)
-
-	return widget
+function elevated_button_state.mt:__call(...)
+    return new(...)
 end
 
-build_properties(graph, properties)
+build_properties(elevated_button_state, properties)
 
-return setmetatable(elevated_button, elevated_button.mt)
+return setmetatable(elevated_button_state, elevated_button_state.mt)
