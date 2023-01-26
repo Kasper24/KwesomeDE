@@ -17,7 +17,7 @@ local text = { mt = {} }
 local properties =
 {
 	"bold", "italic", "size",
-	"color", "icon", "text"
+	"color", "text", "icon"
 }
 
 local function generate_markup(self)
@@ -39,17 +39,11 @@ local function generate_markup(self)
 	self._private.text = gstring.xml_unescape(tostring(self._private.text))
 	self._private.text = gstring.xml_escape(tostring(self._private.text))
 
-	if self._private.icon == nil then
-		local size = (self._private.size or 20) * 1024
-		self.markup = string.format("<span font_size='%s'>", size) .. bold_start .. italic_start ..
-			helpers.ui.colorize_text(self._private.text, self._private.color) ..
-			italic_end .. bold_end .. "</span>"
-	else
-		local size = (self._private.icon.size or 20) * 1024
-		self.markup = string.format("<span font_size='%s'>", size) .. bold_start .. italic_start ..
-			helpers.ui.colorize_text(self._private.icon.icon, self._private.icon.color) ..
-			italic_end .. bold_end .. "</span>"
-	end
+	local size = math.ceil(self._private.size * 1024)
+	self.markup = string.format("<span font_family='%s' font_size='%s'>", self._private.font, size) ..
+		bold_start .. italic_start ..
+		helpers.ui.colorize_text(self._private.text, self._private.color) ..
+		italic_end .. bold_end .. "</span>"
 end
 
 local function build_properties(prototype, prop_names)
@@ -58,7 +52,6 @@ local function build_properties(prototype, prop_names)
             prototype["set_" .. prop] = function(self, value)
                 if self._private[prop] ~= value then
                     self._private[prop] = value
-					generate_markup(self)
                     self:emit_signal("widget::redraw_needed")
                     self:emit_signal("property::"..prop, value)
                 end
@@ -73,21 +66,33 @@ local function build_properties(prototype, prop_names)
     end
 end
 
-local function new(args)
+function text:set_icon(icon)
+	self._private.font = icon.font
+	self._private.size = icon.size or self._private.size
+	self._private.color = icon.color
+	self._private.text = icon.icon
+	self:emit_signal("widget::redraw_needed")
+	self:emit_signal("property::icon", icon)
+end
+
+local function new()
 	local widget = wibox.widget.textbox()
 	gtable.crush(widget, text, true)
 
-	args = args or {}
+	local wp = widget._private
 
-	widget._private.bold = args.bold or false
-	widget._private.italic = args.italic or false
-	widget._private.size = args.size or 20
-	widget._private.color = args.color or beautiful.colors.on_background
-	widget._private.text = args.text or ""
-	widget._private.icon = args.icon or nil
+	-- Setup default values
+	wp.bold = false
+	wp.italic = false
+	wp.size = 20
+	wp.color = beautiful.colors.on_background
+	wp.text = ""
+	wp.icon = nil
+	wp.font = beautiful.font_name
 
-	-- Set markup for initialaztion
-	generate_markup(widget)
+	widget:connect_signal("widget::redraw_needed", function()
+		generate_markup(widget)
+	end)
 
 	return widget
 end
