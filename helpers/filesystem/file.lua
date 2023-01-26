@@ -286,6 +286,9 @@ end
 function File:write(data, mode, cb)
     local priority = GLib.PRIORITY_DEFAULT
 
+    -- Make parent directories
+    self._private.f:get_parent():make_directory_with_parents()
+
     if type(mode) == "function" then
         cb = mode
         mode = nil
