@@ -119,38 +119,53 @@ local function device_widget(device, path, layout, accent_color)
         end
     }
 
+    local anim = nil
     widget = wibox.widget
     {
-        widget = widgets.button.elevated.state,
-        forced_height = dpi(60),
-        on_normal_bg = beautiful.colors.background,
-        on_hover_bg = beautiful.colors.background,
-        on_press_bg = beautiful.colors.background,
-        on_press = function(self)
-            if self._private.state == false then
-                capi.awesome.emit_signal("bluetooth_device_widget::expanded", widget)
-                self.forced_height = dpi(130)
-                self:turn_on()
-            end
-        end,
+        widget = wibox.container.constraint,
+        mode = "exact",
+        height = dpi(60),
         {
-            layout = wibox.layout.fixed.vertical,
-            spacing = dpi(15),
+            widget = widgets.button.elevated.state,
+            id = "button",
+            on_normal_bg = beautiful.colors.background,
+            on_hover_bg = beautiful.colors.background,
+            on_press_bg = beautiful.colors.background,
+            on_press = function(self)
+                if self._private.state == false then
+                    capi.awesome.emit_signal("bluetooth_device_widget::expanded", widget)
+                    anim:set(dpi(130))
+                    self:turn_on()
+                end
+            end,
             {
-                layout = wibox.layout.fixed.horizontal,
+                layout = wibox.layout.fixed.vertical,
                 spacing = dpi(15),
-                device_icon,
-                name,
-            },
-            {
-                layout = wibox.layout.flex.horizontal,
-                spacing = dpi(15),
-                connect_or_disconnect,
-                trust_or_untrust,
-                pair_or_unpair,
-                cancel
+                {
+                    layout = wibox.layout.fixed.horizontal,
+                    spacing = dpi(15),
+                    device_icon,
+                    name,
+                },
+                {
+                    layout = wibox.layout.flex.horizontal,
+                    spacing = dpi(15),
+                    connect_or_disconnect,
+                    trust_or_untrust,
+                    pair_or_unpair,
+                    cancel
+                }
             }
         }
+    }
+
+    anim = helpers.animation:new
+    {
+        duration = 0.2,
+        easing = helpers.animation.easing.linear,
+        update = function(self, pos)
+            widget.height = pos
+        end,
     }
 
     bluetooth_daemon:connect_signal(path .. "_removed", function(self)
@@ -166,8 +181,8 @@ local function device_widget(device, path, layout, accent_color)
 
     capi.awesome.connect_signal("bluetooth_device_widget::expanded", function(toggled_on_widget)
         if toggled_on_widget ~= widget then
-            widget:turn_off()
-            widget.forced_height = dpi(60)
+            widget:get_children_by_id("button")[1]:turn_off()
+            anim:set(dpi(60))
         end
     end)
 

@@ -179,57 +179,73 @@ local function access_point_widget(layout, access_point, accent_color)
         connect_or_disconnect_stack:raise_widget(connect_or_disconnect)
     end)
 
-    widget = widgets.button.elevated.state
+    local anim = nil
+    widget = wibox.widget
     {
-        forced_height = dpi(65),
-        on_normal_bg = beautiful.colors.background,
-        on_hover_bg = beautiful.colors.background,
-        on_press_bg = beautiful.colors.background,
-        on_press = function(self)
-            if self._private.state == false then
-                capi.awesome.emit_signal("access_point_widget::expanded", widget)
-                prompt:start()
-                self.forced_height = dpi(250)
-                self:turn_on()
-            end
-        end,
-        child =
+        widget = wibox.container.constraint,
+        mode = "exact",
+        height = dpi(65),
         {
-            layout = wibox.layout.fixed.vertical,
-            spacing = dpi(15),
+            widget = widgets.button.elevated.state,
+            id = "button",
+            on_normal_bg = beautiful.colors.background,
+            on_hover_bg = beautiful.colors.background,
+            on_press_bg = beautiful.colors.background,
+            on_press = function(self)
+                if self._private.state == false then
+                    capi.awesome.emit_signal("access_point_widget::expanded", widget)
+                    prompt:start()
+                    anim:set(dpi(250))
+                    self:turn_on()
+                end
+            end,
+            child =
             {
-                layout = wibox.layout.fixed.horizontal,
+                layout = wibox.layout.fixed.vertical,
                 spacing = dpi(15),
-                wifi_icon,
-                name,
-                lock_icon
-            },
-            {
-                layout = wibox.layout.fixed.horizontal,
-                spacing = dpi(5),
-                prompt.widget,
-                toggle_password_button
-            },
-            {
-                layout = wibox.layout.fixed.horizontal,
-                spacing = dpi(10),
-                auto_connect_checkbox,
-                auto_connect_text,
-            },
-            {
-                layout = wibox.layout.flex.horizontal,
-                spacing = dpi(15),
-                connect_or_disconnect_stack,
-                cancel
+                {
+                    layout = wibox.layout.fixed.horizontal,
+                    spacing = dpi(15),
+                    wifi_icon,
+                    name,
+                    lock_icon
+                },
+                {
+                    layout = wibox.layout.fixed.horizontal,
+                    spacing = dpi(5),
+                    prompt.widget,
+                    toggle_password_button
+                },
+                {
+                    layout = wibox.layout.fixed.horizontal,
+                    spacing = dpi(10),
+                    auto_connect_checkbox,
+                    auto_connect_text,
+                },
+                {
+                    layout = wibox.layout.flex.horizontal,
+                    spacing = dpi(15),
+                    connect_or_disconnect_stack,
+                    cancel
+                }
             }
         }
+    }
+
+    anim = helpers.animation:new
+    {
+        duration = 0.2,
+        easing = helpers.animation.easing.linear,
+        update = function(self, pos)
+            widget.height = pos
+        end,
     }
 
     capi.awesome.connect_signal("access_point_widget::expanded", function(toggled_on_widget)
         if toggled_on_widget ~= widget then
             prompt:stop()
-            widget:turn_off()
-            widget.forced_height = dpi(60)
+            widget:get_children_by_id("button")[1]:turn_off()
+            anim:set(dpi(65))
         end
     end)
 
