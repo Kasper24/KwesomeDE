@@ -39,6 +39,10 @@ end
 function filesystem.make_directory(path, cb)
     local f = file_arg(path)
 
+    if cb == nil then
+        cb = function() end
+    end
+
     f:make_directory_async(GLib.PRIORITY_DEFAULT, nil, function(_, token)
         local _, err = f:make_directory_finish(token)
         cb(err)
@@ -243,6 +247,10 @@ function filesystem.remove_directory(dir, cb)
     local priority = GLib.PRIORITY_DEFAULT
     local f = file_arg(dir)
     local BUFFER_SIZE = 50
+
+    if cb == nil then
+        cb = function() end
+    end
 
     async.dag({
         enumerator = function(_, cb)
