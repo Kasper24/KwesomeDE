@@ -316,74 +316,111 @@ function filesystem.remove_directory(dir, cb)
 end
 
 function filesystem.remote_watch(path, uri, interval, callback, old_content_callback)
-    local function download()
-        local file = File.new_for_uri(uri)
-        file:read_string(function(error, content)
-            callback(content)
-            if error == nil then
-                local old_file = File.new_for_path(path)
-                old_file:read_string(function(error, old_content)
-                    if error == nil then
-                        if old_content_callback ~= nil then
-                            old_content_callback(old_content)
-                        end
-                    end
+    local file = File.new_for_path(path)
 
-                    file:write(content)
-                end)
+    local function download()
+        local remote_file = File.new_for_uri(uri)
+        remote_file:read_string(function(error, content)
+            if error == nil then
+                callback(content)
+                file:write(content)
             end
         end)
     end
 
-    local file = File.new_for_path(path)
-    file:read_string(function(error, old_content)
-        if error == nil then
-            if old_content_callback ~= nil then
-                old_content_callback(old_content)
-            end
-        end
+    local timer
+    timer = gtimer
+    {
+        timeout = interval,
+        call_now = true,
+        autostart = true,
+        single_shot = false,
+        callback = function()
+            file:read_string(function(error, old_content)
+                if error == nil then
+                    if old_content_callback ~= nil then
+                        old_content_callback(old_content)
+                    end
 
-        local timer
-        timer = gtimer
-        {
-            timeout = interval,
-            call_now = true,
-            autostart = true,
-            single_shot = false,
-            callback = function()
-                file:query_info("time::modified", function(error, info)
-                    if error == nil then
-                        local time = info:get_modification_date_time()
-                        local diff = math.ceil(GLib.DateTime.new_now_local():difference(time) / 1000000)
-                        if diff >= interval then
-                            print("Enough time had passed, redownloading " .. path)
-                            download()
-                        else
-                            file:read_string(function(error, content)
-                                if error or content == nil or content:gsub("%s+", "") == "" then
-                                    print("Empty file, Redownloading " .. path)
-                                    download()
-                                else
-                                    callback(content)
-                                end
-                            end)
+                    file:query_info("time::modified", function(error, info)
+                        if error == nil then
+                            local time = info:get_modification_date_time()
+                            local diff = math.ceil(GLib.DateTime.new_now_local():difference(time) / 1000000)
+                            -- print("diff: " .. diff .. " interval: " .. interval)
 
-                            -- Schedule an update for when the remaining time to complete the interval passes
-                            timer:stop()
-                            gtimer.start_new(interval - diff, function()
+                            if diff >= interval then
                                 print("Enough time had passed, redownloading " .. path)
                                 download()
-                                timer:again()
-                            end)
+                            else
+                                callback(old_content)
+
+                                -- Schedule an update for when the remaining time to complete the interval passes
+                                timer:stop()
+                                gtimer.start_new(interval - diff, function()
+                                    timer:again()
+                                end)
+                            end
                         end
-                    else
-                        print(path .. " doesn't exist, downloading " .. uri)
-                        download()
-                    end
-                end)
-            end
-        }
-    end)
+                    end)
+                else
+                    print(path .. " doesn't exist, downloading " .. uri)
+                    download()
+                end
+            end)
+        end
+    }
+
+    -- file:read_string(function(error, old_content)
+    --     if error == nil then
+    --         if old_content_callback ~= nil then
+    --             old_content_callback(old_content)
+    --         end
+    --     end
+
+    --     local timer
+    --     timer = gtimer
+    --     {
+    --         timeout = interval,
+    --         call_now = true,
+    --         autostart = true,
+    --         single_shot = false,
+    --         callback = function()
+    --             file:query_info("time::modified", function(error, info)
+    --                 if error == nil then
+    --                     local time = info:get_modification_date_time()
+    --                     local diff = math.ceil(GLib.DateTime.new_now_local():difference(time) / 1000000)
+    --                     print("diff: " .. diff .. " interval: " .. interval)
+
+    --                     if diff >= interval then
+    --                         print("Enough time had passed, redownloading " .. path)
+    --                         download()
+    --                     else
+    --                         file:read_string(function(error, content)
+    --                             print(path .. " " .. error)
+    --                             if error or content == nil or content:gsub("%s+", "") == "" then
+    --                                 print("Empty file, Redownloading " .. path)
+    --                                 download()
+    --                             else
+    --                                 callback(content)
+    --                             end
+    --                         end)
+
+    --                         -- Schedule an update for when the remaining time to complete the interval passes
+    --                         timer:stop()
+    --                         gtimer.start_new(interval - diff, function()
+    --                             print("Enough time had passed, redownloading " .. path)
+    --                             download()
+    --                             timer:again()
+    --                         end)
+    --                     end
+    --                 else
+    --                     print(path .. " doesn't exist, downloading " .. uri)
+    --                     download()
+    --                 end
+    --             end)
+    --         end
+    --     }
+    -- end)
 end
 
 function filesystem.get_config_dir(sub_folder)
