@@ -264,6 +264,10 @@ local function icons()
         vscode = { icon = "﬏", font = "JetBrainsMono Nerd Font 40" },
     }
 
+    for _, icon in pairs(theme.icons) do
+        icon.color = theme.random_accent_color()
+    end
+
     theme.app_to_font_icon_lookup =
     {
         ["kitty"] = theme.icons.laptop_code,
