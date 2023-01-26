@@ -80,37 +80,73 @@ local function effect(widget, bg, shape, border_width, border_color)
 	widget.animation:set(animation_targets)
 end
 
-local function button(args)
-	local widget = wibox.container.background()
-
-    local bg = args.normal_bg or beautiful.colors.background
-	local shape = args.normal_shape or helpers.ui.rrect(beautiful.border_radius)
-	local border_width = args.normal_border_width or nil
-	local border_color = args.normal_border_color or beautiful.colors.transparent
-
-	function widget:set_child(child)
-		local child_widget = wibox.widget
+function elevated_button:set_child(child)
+	local child_widget = wibox.widget
+	{
+		widget = wibox.container.place,
+		halign = "center",
+		valign = "center",
 		{
-			widget = wibox.container.place,
-			halign = "center",
-			valign = "center",
-			{
-				widget = wibox.container.margin,
-				margins = dpi(10),
-				child
-			}
+			widget = wibox.container.margin,
+			margins = dpi(10),
+			child
 		}
-		widget:set_widget(child_widget)
-	end
+	}
+	self:set_widget(child_widget)
+end
 
-	-- Setup initial values
-	widget:set_bg(bg)
-	widget:set_shape(shape)
-	widget:set_border_width(border_width)
-	widget:set_border_color(border_color)
+function elevated_button:get_child()
+	return self._private.child
+end
 
-	-- Set the child widget
-	widget:set_child(args.child)
+function elevated_button.state()
+	local widget = wibox.container.background()
+	gtable.crush(widget, elevated_button, true)
+
+	local wp = widget._private
+
+	wp.normal_bg = beautiful.colors.background
+	wp.hover_bg = helpers.color.button_color(beautiful.colors.background, 0.1)
+	wp.press_bg = helpers.color.button_color(beautiful.colors.background, 0.2)
+	wp.on_normal_bg = helpers.color.button_color(beautiful.colors.background, 0.2)
+	wp.on_hover_bg = helpers.color.button_color(beautiful.colors.on_normal_bg, 0.1)
+	wp.on_press_bg = helpers.color.button_color(beautiful.colors.on_normal_bg, 0.2)
+
+	wp.normal_shape = helpers.ui.rrect(beautiful.border_radius)
+	wp.hover_shape = helpers.ui.rrect(beautiful.border_radius)
+	wp.press_shape = helpers.ui.rrect(beautiful.border_radius)
+	wp.on_normal_shape = helpers.ui.rrect(beautiful.border_radius)
+	wp.on_hover_shape = helpers.ui.rrect(beautiful.border_radius)
+	wp.on_press_shape = helpers.ui.rrect(beautiful.border_radius)
+
+	wp.normal_border_width = nil
+	wp.hover_border_width = nil
+	wp.press_border_width = nil
+	wp.on_normal_border_width = nil
+	wp.on_hover_border_width = nil
+	wp.on_press_border_width = nil
+
+	wp.normal_border_color = beautiful.colors.transparent
+	wp.hover_border_color = beautiful.colors.transparent
+	wp.press_border_color = beautiful.colors.transparent
+	wp.on_normal_border_color =  beautiful.colors.transparent
+	wp.on_hover_border_color = beautiful.colors.transparent
+	wp.on_press_border_color = beautiful.colors.transparent
+
+	-- Set to empty function by default to prevent all these if checks ffs
+    wp.on_hover = nil
+    wp.on_leave = nil
+    wp.on_press = nil
+    wp.on_release = nil
+	wp.on_secondary_press = nil
+    wp.on_secondary_release = nil
+	wp.on_scroll_up = nil
+    wp.on_scroll_down = nil
+    wp.on_turn_on = nil
+    wp.on_turn_off = nil
+
+	build_properties(widget, state_properties)
+	wp._private.state = false
 
 	-- Add hover cursor
 	helpers.ui.add_hover_cursor(widget, beautiful.hover_cursor)
@@ -127,87 +163,36 @@ local function button(args)
 		easing = helpers.animation.easing.linear,
 		duration = 0.2,
 		update = function(self, pos)
-			-- if pos.color then
-			-- 	widget.bg = helpers.color.rgb_to_hex(pos.color)
-			-- end
-			-- if pos.border_width then
-			-- 	widget.border_width = pos.border_width
-			-- end
-			-- if pos.border_color then
-			-- 	widget.border_color = helpers.color.rgb_to_hex(pos.border_color)
-			-- end
+			if pos.color then
+				widget.bg = helpers.color.rgb_to_hex(pos.color)
+			end
+			if pos.border_width then
+				widget.border_width = pos.border_width
+			end
+			if pos.border_color then
+				widget.border_color = helpers.color.rgb_to_hex(pos.border_color)
+			end
 		end
 	}
 
-	return widget
-end
-
-function elevated_button.state(args)
-	args = args or {}
-
-	args.normal_bg = args.normal_bg or beautiful.colors.background
-	args.hover_bg = args.hover_bg or helpers.color.button_color(args.normal_bg, 0.1)
-	args.press_bg = args.press_bg or helpers.color.button_color(args.normal_bg, 0.2)
-	args.on_normal_bg = args.on_normal_bg or args.press_bg
-	args.on_hover_bg = args.on_hover_bg or helpers.color.button_color(args.on_normal_bg, 0.1)
-	args.on_press_bg = args.on_press_bg or helpers.color.button_color(args.on_normal_bg, 0.2)
-
-	args.normal_shape = args.normal_shape or helpers.ui.rrect(beautiful.border_radius)
-	args.hover_shape = args.hover_shape or args.normal_shape
-	args.press_shape = args.press_shape or args.hover_shape
-	args.on_normal_shape = args.on_normal_shape or args.press_shape
-	args.on_hover_shape = args.on_hover_shape or args.on_normal_shape
-	args.on_press_shape = args.on_press_shape or args.on_hover_shape
-
-	args.normal_border_width = args.normal_border_width or nil
-	args.hover_border_width = args.hover_border_width or args.normal_border_width
-	args.press_border_width = args.press_border_width or args.hover_border_width
-	args.on_normal_border_width = args.on_normal_border_width or args.press_border_width
-	args.on_hover_border_width = args.on_hover_border_width or args.on_normal_border_width
-	args.on_press_border_width = args.on_press_border_width or args.on_hover_border_width
-
-	args.normal_border_color = args.normal_border_color or beautiful.colors.transparent
-	args.hover_border_color = args.hover_border_color or args.normal_border_color
-	args.press_border_color = args.press_border_color or args.hover_border_color
-	args.on_normal_border_color = args.on_normal_border_color or args.press_border_color
-	args.on_hover_border_color = args.on_hover_border_color or args.on_normal_border_color
-	args.on_press_border_color = args.on_press_border_color or args.on_hover_border_color
-
-    args.on_hover = args.on_hover or nil
-    args.on_leave = args.on_leave or nil
-    args.on_press = args.on_press or nil
-    args.on_release = args.on_release or nil
-	args.on_secondary_press = args.on_secondary_press or nil
-    args.on_secondary_release = args.on_secondary_release or nil
-	args.on_scroll_up = args.on_scroll_up or nil
-    args.on_scroll_down = args.on_scroll_down or nil
-    args.on_turn_on = args.on_turn_on or nil
-    args.on_turn_off = args.on_turn_off or nil
-
-	local widget = button(args)
-	build_properties(widget, state_properties)
-    gtable.crush(widget._private, args, true)
-	local wp = widget._private
-	wp.state = false
-
 	function widget:turn_on()
-		if wp.state == false then
+		if wp._private.state == false then
 			effect(widget, wp.on_normal_bg, wp.on_normal_shape, wp.on_normal_border_width, wp.on_normal_border_color)
 			widget:emit_signal("_private::on_turn_on")
-			wp.state = true
+			wp._private.state = true
 		end
 	end
 
 	function widget:turn_off()
-		if wp.state == true then
+		if wp._private.state == true then
 			effect(widget, wp.normal_bg, wp.normal_shape, wp.normal_border_width, wp.normal_border_color)
 			widget:emit_signal("_private::on_turn_off")
-			wp.state = false
+			wp._private.state = false
 		end
 	end
 
 	function widget:toggle()
-		if wp.state == true then
+		if wp._private.state == true then
 			widget:turn_off()
 		else
 			widget:turn_on()
@@ -322,39 +307,67 @@ function elevated_button.state(args)
 	return widget
 end
 
-function elevated_button.normal(args)
-	args = args or {}
-	print(helpers.inspect.inspect(args))
+function elevated_button.normal()
+	local widget = wibox.container.background()
+	gtable.crush(widget, elevated_button, true)
 
-	args.normal_bg = args.normal_bg or beautiful.colors.background
-	args.hover_bg = args.hover_bg or helpers.color.button_color(args.normal_bg, 0.1)
-	args.press_bg = args.press_bg or helpers.color.button_color(args.normal_bg, 0.2)
-
-	args.normal_shape = args.normal_shape or helpers.ui.rrect(beautiful.border_radius)
-	args.hover_shape = args.hover_shape or args.normal_shape
-	args.press_shape = args.press_shape or args.normal_shape
-
-	args.normal_border_width = args.normal_border_width or nil
-	args.hover_border_width = args.hover_border_width or args.normal_border_width
-	args.press_border_width = args.press_border_width or args.hover_border_width
-
-	args.normal_border_color = args.normal_border_color or beautiful.colors.transparent
-	args.hover_border_color = args.hover_border_color or args.normal_border_color
-	args.press_border_color = args.press_border_color or args.hover_border_color
-
-    args.on_hover = args.on_hover or nil
-    args.on_leave = args.on_leave or nil
-    args.on_press = args.on_press or nil
-    args.on_release = args.on_release or nil
-	args.on_secondary_press = args.on_secondary_press or nil
-    args.on_secondary_release = args.on_secondary_release or nil
-	args.on_scroll_up = args.on_scroll_up or nil
-    args.on_scroll_down = args.on_scroll_down or nil
-
-	local widget = button(args)
-	build_properties(widget, normal_properties)
-    gtable.crush(widget._private, args, true)
 	local wp = widget._private
+
+	wp.normal_bg = beautiful.colors.background
+	wp.hover_bg = helpers.color.button_color(beautiful.colors.background, 0.1)
+	wp.press_bg = helpers.color.button_color(beautiful.colors.background, 0.2)
+
+	wp.normal_shape = helpers.ui.rrect(beautiful.border_radius)
+	wp.hover_shape = helpers.ui.rrect(beautiful.border_radius)
+	wp.press_shape = helpers.ui.rrect(beautiful.border_radius)
+
+	wp.normal_border_width = nil
+	wp.hover_border_width = nil
+	wp.press_border_width = nil
+
+	wp.normal_border_color = beautiful.colors.transparent
+	wp.hover_border_color = beautiful.colors.transparent
+	wp.press_border_color = beautiful.colors.transparent
+
+	-- Set to empty function by default to prevent all these if checks ffs
+    wp.on_hover = nil
+    wp.on_leave = nil
+    wp.on_press = nil
+    wp.on_release = nil
+	wp.on_secondary_press = nil
+    wp.on_secondary_release = nil
+	wp.on_scroll_up = nil
+    wp.on_scroll_down = nil
+
+	build_properties(widget, normal_properties)
+	wp._private.state = false
+
+	-- Add hover cursor
+	helpers.ui.add_hover_cursor(widget, beautiful.hover_cursor)
+
+	-- Color/Border animations
+	widget.animation = helpers.animation:new
+	{
+		pos =
+		{
+			color = helpers.color.hex_to_rgb(args.normal_bg),
+			border_width = args.normal_border_width,
+			border_color =  helpers.color.hex_to_rgb(args.normal_border_color)
+		},
+		easing = helpers.animation.easing.linear,
+		duration = 0.2,
+		update = function(self, pos)
+			if pos.color then
+				widget.bg = helpers.color.rgb_to_hex(pos.color)
+			end
+			if pos.border_width then
+				widget.border_width = pos.border_width
+			end
+			if pos.border_color then
+				widget.border_color = helpers.color.rgb_to_hex(pos.border_color)
+			end
+		end
+	}
 
 	widget:connect_signal("mouse::enter", function(self, find_widgets_result)
 		effect(widget, wp.hover_bg, wp.hover_shape, wp.hover_border_width, wp.hover_border_color)
@@ -439,5 +452,7 @@ function elevated_button.normal(args)
 
 	return widget
 end
+
+build_properties(graph, properties)
 
 return setmetatable(elevated_button, elevated_button.mt)
