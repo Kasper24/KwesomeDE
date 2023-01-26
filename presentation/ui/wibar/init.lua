@@ -103,35 +103,33 @@ local function tag_list(s)
                 {
                     widget = widgets.button.text.state,
                     id = "button",
-                    size = taglist_icons[index].size,
-                        font = taglist_icons[index].font,
-                        text = taglist_icons[index].icon,
-                        text_normal_bg = accent_color,
-                        on_hover = function()
-                            if #tag:clients() > 0 then
-                                tag_preview:show(tag,
-                                {
-                                    wibox = awful.screen.focused().left_wibar,
-                                    widget = self,
-                                    offset = { x = dpi(70), y = dpi(70) }
-                                })
-                            end
-                        end,
-                        on_leave = function()
-                            tag_preview:hide()
-                        end,
-                        on_release = function(self, lx, ly, button, mods, find_widgets_result)
-                            if button == 1 then
-                                helpers.misc.tag_back_and_forth(tag.index)
-                                tag_preview:hide()
-                            elseif button == 3 then
-                                awful.tag.viewtoggle(tag)
-                            elseif button == 4 then
-                                awful.tag.viewnext(tag.screen)
-                            elseif button == 5 then
-                                awful.tag.viewprev(tag.screen)
-                            end
+                    icon = taglist_icons[index],
+                    text_normal_bg = accent_color,
+                    on_hover = function()
+                        if #tag:clients() > 0 then
+                            tag_preview:show(tag,
+                            {
+                                wibox = awful.screen.focused().left_wibar,
+                                widget = self,
+                                offset = { x = dpi(70), y = dpi(70) }
+                            })
                         end
+                    end,
+                    on_leave = function()
+                        tag_preview:hide()
+                    end,
+                    on_release = function(self, lx, ly, button, mods, find_widgets_result)
+                        if button == 1 then
+                            helpers.misc.tag_back_and_forth(tag.index)
+                            tag_preview:hide()
+                        elseif button == 3 then
+                            awful.tag.viewtoggle(tag)
+                        elseif button == 4 then
+                            awful.tag.viewnext(tag.screen)
+                        elseif button == 5 then
+                            awful.tag.viewprev(tag.screen)
+                        end
+                    end
                 }
 
                 local indicator = wibox.widget
@@ -303,8 +301,7 @@ local function favorite(layout, client, class)
             forced_width = dpi(65),
             forced_height = dpi(65),
             size = 20,
-            font = font_icon.font,
-            text = font_icon.icon,
+            icon = font_icon,
             on_release = function()
                 menu:hide()
                 awful.spawn(client.command, false)
@@ -347,9 +344,7 @@ local function client_task(favorites_layout, task_list, client)
             on_by_default = capi.client.focus == client,
             forced_width = dpi(65),
             forced_height = dpi(65),
-            size = client.font_icon.size or 20,
-            font = client.font_icon.font,
-            text = client.font_icon.icon,
+            icon = client.font_icon,
             on_hover = function(self)
                 task_preview:show(client,
                 {
