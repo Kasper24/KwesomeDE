@@ -173,99 +173,6 @@ end
 --  Task list
 -- =============================================================================
 local favorites = {}
-local checkbox_color = beautiful.random_accent_color()
-
-local function client_checkbox_button(client, property, text, on_press)
-    local button = widgets.menu.checkbox_button
-    {
-        checkbox_color = checkbox_color,
-        text = text,
-        on_press = function()
-            client[property] = not client[property]
-            if on_press ~= nil then
-                on_press()
-            end
-        end
-    }
-
-    client:connect_signal("property::" .. property, function()
-        if client[property] then
-            button:turn_on()
-        else
-            button:turn_off()
-        end
-    end)
-
-    return button
-end
-
-local function task_list_menu(client)
-    local maximize_menu = widgets.menu
-    {
-        client_checkbox_button(client, "maximized", "Maximize"),
-        client_checkbox_button(client, "maximized_horizontal", "Maximize Horizontally"),
-        client_checkbox_button(client, "maximized_vertical", "Maximize Vertically")
-    }
-
-    local layer_menu = widgets.menu
-    {
-        client_checkbox_button(client, "above", "Above"),
-        client_checkbox_button(client, "below", "Below"),
-        client_checkbox_button(client, "ontop", "On Top")
-    }
-
-    local menu = widgets.menu
-    {
-        widgets.menu.button
-        {
-            icon = client.font_icon,
-            text = client.class,
-            on_press = function() client:jump_to() end
-        },
-        widgets.menu.button
-        {
-            text = favorites_daemon:is_favorite(client.class) and "Unpin from taskbar" or "Pin to taskbar",
-            on_press = function(self, text_widget)
-                favorites_daemon:toggle_favorite(client)
-                local text = favorites_daemon:is_favorite(client.class) and "Unpin from taskbar" or "Pin to taskbar"
-                text_widget:set_text(text)
-            end
-        },
-        widgets.menu.sub_menu_button
-        {
-            text = "Maximize",
-            sub_menu = maximize_menu
-        },
-        client_checkbox_button(client, "minimized", "Minimize"),
-        client_checkbox_button(client, "fullscreen", "Fullscreen"),
-        client_checkbox_button(client, "titlebar", "Titlebar", function()
-            awful.titlebar.toggle(client)
-        end),
-        client_checkbox_button(client, "sticky", "Sticky"),
-        client_checkbox_button(client, "hidden", "Hidden"),
-        client_checkbox_button(client, "floating", "Floating"),
-        widgets.menu.sub_menu_button
-        {
-            text = "Layer",
-            sub_menu = layer_menu
-        },
-        widgets.menu.button
-        {
-            text = "Close",
-            on_press = function() client:kill() end
-        },
-    }
-
-    -- At the time this funciton runs client.custom_titlebar is still nil
-    -- so check if that property change and if so remove the titlebar toggle button
-    client:connect_signal("property::custom_titlebar", function()
-        if client.custom_titlebar == true then
-            menu:remove(6)
-        end
-    end)
-
-    return menu
-end
 
 local function favorite(layout, client, class)
     favorites[class] = true
@@ -329,7 +236,7 @@ end
 
 local function client_task(favorites_layout, task_list, client)
     client.font_icon = beautiful.get_font_icon_for_app_name(client.class)
-    local menu = task_list_menu(client)
+    local menu = widgets.client_menu(client)
 
     local button = wibox.widget
     {

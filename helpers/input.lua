@@ -1,7 +1,7 @@
 local awful = require("awful")
 local gtimer = require("gears.timer")
 local tostring = tostring
-local capi = { root = root }
+local capi = { mouse = mouse, root = root }
 
 local _input = {}
 
@@ -26,6 +26,23 @@ function _input.single_double_tap(single_tap_function, double_tap_function)
         double_tap_timer = nil
         if single_tap_function then
             single_tap_function()
+        end
+        return false
+    end)
+end
+
+function _input.tap_or_drag(args)
+    local old_coords = capi.mouse.coords()
+    gtimer.start_new(0.20, function()
+        local new_coords = capi.mouse.coords()
+
+        print(require("helpers.inspect").inspect(old_coords))
+        print(require("helpers.inspect").inspect(new_coords))
+
+        if new_coords.x ~= old_coords.x or new_coords.y ~= old_coords.y then
+            args.on_drag()
+        else
+            args.on_tap()
         end
         return false
     end)

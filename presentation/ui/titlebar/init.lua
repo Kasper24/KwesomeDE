@@ -73,6 +73,8 @@ capi.client.connect_signal("request::titlebars", function(c)
         close:set_color(beautiful.colors.surface)
     end)
 
+    local menu = widgets.client_menu(c)
+
     awful.titlebar(c,
     {
         position = "top",
@@ -121,8 +123,14 @@ capi.client.connect_signal("request::titlebars", function(c)
                     modifiers = {  },
                     button = 3,
                     on_press = function()
-                        c.maximized = false
-                        c:activate { context = "mouse_click", action = "mouse_resize"}
+                        helpers.input.tap_or_drag
+                        {on_tap = function()
+                            menu:toggle{}
+                        end,
+                        on_drag = function()
+                            c.maximized = false
+                            c:activate { context = "mouse_click", action = "mouse_resize"}
+                        end}
                     end,
                 },
 
