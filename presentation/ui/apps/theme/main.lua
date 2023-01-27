@@ -489,10 +489,9 @@ local function new(self, layout)
         widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
-        size = 15,
         text_normal_bg = accent_color,
-        font = beautiful.icons.gear.font,
-        text = beautiful.icons.gear.icon,
+        icon = beautiful.icons.gear,
+        size = 15,
         on_release = function()
             layout:raise(2)
         end
@@ -504,8 +503,7 @@ local function new(self, layout)
         forced_width = dpi(50),
         forced_height = dpi(50),
         text_normal_bg = accent_color,
-        font = beautiful.icons.xmark.font,
-        text = beautiful.icons.xmark.icon,
+        icon = beautiful.icons.xmark,
         on_release = function()
             self:hide()
         end

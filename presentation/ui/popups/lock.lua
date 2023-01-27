@@ -159,9 +159,8 @@ local function widget(self)
     {
         widget = widgets.button.text.normal,
         animate_size = false,
+        icon = beautiful.icons.poweroff,
         size = 40,
-        font = beautiful.icons.poweroff.font,
-        text = beautiful.icons.poweroff.icon,
         on_release = function()
             system_daemon:shutdown()
         end
@@ -171,9 +170,8 @@ local function widget(self)
     {
         widget = widgets.button.text.normal,
         animate_size = false,
+        icon = beautiful.icons.reboot,
         size = 40,
-        font = beautiful.icons.reboot.font,
-        text = beautiful.icons.reboot.icon,
         on_release = function()
             system_daemon:restart()
         end
@@ -183,9 +181,8 @@ local function widget(self)
     {
         widget = widgets.button.text.normal,
         animate_size = false,
+        icon = beautiful.icons.suspend,
         size = 40,
-        font = beautiful.icons.suspend.font,
-        text = beautiful.icons.suspend.icon,
         on_release = function()
             system_daemon:suspend()
         end
@@ -195,9 +192,8 @@ local function widget(self)
     {
         widget = widgets.button.text.normal,
         animate_size = false,
+        icon = beautiful.icons.exit,
         size = 40,
-        font = beautiful.icons.exit.font,
-        text = beautiful.icons.exit.icon,
         on_release = function()
             system_daemon:exit()
         end

@@ -3,6 +3,7 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 
+local gshape = require("gears.shape")
 local wibox = require("wibox")
 local widgets = require("presentation.ui.widgets")
 local beautiful = require("beautiful")
@@ -45,14 +46,40 @@ local function command_after_generation_widget()
     }
 end
 
+local function picom_slider(value)
+    local slider = wibox.widget
+    {
+        widget = widgets.slider,
+        forced_height = dpi(20),
+        -- value = args.device.volume,
+        maximum = 100,
+        bar_height = 5,
+        bar_shape = helpers.ui.rrect(beautiful.border_radius),
+        bar_color = beautiful.colors.surface,
+        bar_active_color = beautiful.random_accent_color(),
+        handle_width = dpi(15),
+        handle_color = beautiful.colors.on_background,
+        handle_shape = gshape.circle,
+    }
+
+    pactl_daemon:connect_signal(args.type .. "::" .. args.device.id .. "::updated", function(self, device)
+        slider:set_value_instant(device.volume)
+    end)
+
+    slider:connect_signal("property::value", function(self, value, instant)
+        if instant == false then
+            args.on_slider_moved(value)
+        end
+    end)
+end
+
 local function new(layout)
     local back_button = wibox.widget
     {
         widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
-        font = beautiful.icons.left.font,
-        text = beautiful.icons.left.icon,
+        icon = beautiful.icons.left,
         on_release = function()
             layout:raise(2)
         end

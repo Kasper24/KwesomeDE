@@ -46,9 +46,8 @@ local function new()
         widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
+        icon = beautiful.icons.poweroff,
         size = 15,
-        font = beautiful.icons.poweroff.font,
-        text = beautiful.icons.poweroff.icon,
         on_release = function()
             power_popup:show()
         end

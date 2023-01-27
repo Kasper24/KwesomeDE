@@ -260,8 +260,7 @@ local function new()
         widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
-        font = beautiful.icons.trash.font,
-        text = beautiful.icons.trash.icon,
+        icon = beautiful.icons.trash,
         on_release = function()
             notifications_daemon:remove_all_notifications()
         end

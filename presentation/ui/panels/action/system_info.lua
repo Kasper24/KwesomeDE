@@ -32,9 +32,8 @@ local function arc_widget(icon, on_release, on_scroll_up, on_scroll_down)
             widget = widgets.button.text.normal,
             halign = "center",
             valign = "center",
+            icon = icon,
             size = 30,
-            font = icon.font,
-            text = icon.icon,
             on_release = function()
                 if on_release ~= nil then
                     on_release()

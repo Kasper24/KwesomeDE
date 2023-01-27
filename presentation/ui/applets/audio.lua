@@ -99,8 +99,7 @@ local function application_widget(args)
         text_normal_bg = args.accent_color,
         on_normal_bg = args.accent_color,
         text_on_normal_bg = beautiful.colors.on_accent,
-        font = beautiful.icons.volume_off.font,
-        text = beautiful.icons.volume_off.icon,
+        icon = beautiful.icons.volume_off,
         size = 12,
         halign = "right",
         on_press = function()
@@ -206,8 +205,7 @@ local function device_widget(args)
         text_normal_bg = args.accent_color,
         on_normal_bg = args.accent_color,
         text_on_normal_bg = beautiful.colors.on_accent,
-        font = beautiful.icons.volume_off.font,
-        text = beautiful.icons.volume_off.icon,
+        icon = beautiful.icons.volume_off,
         size = 12,
         on_press = function()
             args.on_mute_press()
@@ -221,8 +219,7 @@ local function device_widget(args)
         text_normal_bg = args.accent_color,
         on_normal_bg = args.accent_color,
         text_on_normal_bg = beautiful.colors.on_accent,
-        font = beautiful.icons.check.font,
-        text = beautiful.icons.check.icon,
+        icon = beautiful.icons.check,
         size = 12,
         on_press = function()
             args.on_default_press()

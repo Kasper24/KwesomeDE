@@ -206,9 +206,8 @@ local function new()
     {
         widget = widgets.button.text.normal,
         text_normal_bg = beautiful.colors.on_background,
+        icon = beautiful.icons.arrow_rotate_right,
         size = 15,
-        font = beautiful.icons.arrow_rotate_right.font,
-        text = beautiful.icons.arrow_rotate_right.icon,
         on_press = function()
             bluetooth_daemon:scan()
         end
@@ -218,9 +217,8 @@ local function new()
     {
         widget = widgets.button.text.normal,
         text_normal_bg = beautiful.colors.on_background,
+        icon = beautiful.icons.gear,
         size = 15,
-        font = beautiful.icons.gear.font,
-        text = beautiful.icons.gear.icon,
         on_press = function()
             bluetooth_daemon:open_settings()
         end

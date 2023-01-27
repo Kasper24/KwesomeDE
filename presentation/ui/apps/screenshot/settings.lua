@@ -63,8 +63,7 @@ local function delay()
         forced_width = dpi(50),
         forced_height = dpi(50),
         text_normal_bg = accent_color,
-        font = beautiful.icons.circle_plus.font,
-        text = beautiful.icons.circle_plus.icon,
+        icon = beautiful.icons.circle_plus,
         on_release = function()
             value_text:set_text(screenshot_daemon:increase_delay())
         end
@@ -76,8 +75,7 @@ local function delay()
         forced_width = dpi(50),
         forced_height = dpi(50),
         text_normal_bg = accent_color,
-        font = beautiful.icons.circle_minus.font,
-        text = beautiful.icons.circle_minus.icon,
+        icon = beautiful.icons.circle_minus,
         on_release = function()
             value_text:set_text(screenshot_daemon:decrease_delay())
         end
@@ -145,8 +143,7 @@ local function new(layout)
         widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
-        font = beautiful.icons.left.font,
-        text = beautiful.icons.left.icon,
+        icon = beautiful.icons.left,
         on_release = function()
             layout:raise(2)
         end

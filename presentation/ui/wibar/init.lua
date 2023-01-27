@@ -36,9 +36,8 @@ local function start()
             id = "button",
             forced_width = dpi(60),
             forced_height = dpi(60),
-            font = beautiful.icons.bars_staggered.font,
+            icon = beautiful.icons.bars_staggered,
             size = 25,
-            text = beautiful.icons.bars_staggered.icon,
             on_release = function()
                 app_launcher:toggle()
             end
@@ -204,8 +203,8 @@ local function favorite(layout, client, class)
             widget = widgets.button.text.state,
             forced_width = dpi(65),
             forced_height = dpi(65),
-            size = 20,
             icon = font_icon,
+            size = 20,
             on_release = function()
                 menu:hide()
                 awful.spawn(client.command, false)
@@ -461,8 +460,7 @@ local function system_tray()
             widget = widgets.button.text.state,
             forced_width = dpi(50),
             forced_height = dpi(50),
-            font = beautiful.icons.chevron_circle_left.font,
-            text = beautiful.icons.chevron_circle_left.icon,
+            icon = beautiful.icons.chevron_circle_left,
             on_turn_on = function(self)
                 system_tray_animation:set(400)
                 self:set_text(beautiful.icons.chevron_circle_right.icon)
@@ -671,8 +669,7 @@ local function messages_button()
             id = "button",
             forced_width = dpi(50),
             forced_height = dpi(50),
-            font = beautiful.icons.envelope.font,
-            text = beautiful.icons.envelope.icon,
+            icon = beautiful.icons.envelope,
             on_release = function()
                 message_panel:toggle()
             end

@@ -111,8 +111,7 @@ local function fps()
         forced_width = dpi(50),
         forced_height = dpi(50),
         text_normal_bg = accent_color,
-        font = beautiful.icons.circle_plus.font,
-        text = beautiful.icons.circle_plus.icon,
+        icon = beautiful.icons.circle_plus,
         on_release = function()
             value_text:set_text(record_daemon:increase_fps())
         end
@@ -124,8 +123,7 @@ local function fps()
         forced_width = dpi(50),
         forced_height = dpi(50),
         text_normal_bg = accent_color,
-        font = beautiful.icons.circle_minus.font,
-        text = beautiful.icons.circle_minus.icon,
+        icon = beautiful.icons.circle_minus,
         on_release = function()
             value_text:set_text(record_daemon:decrease_fps())
         end
@@ -163,8 +161,7 @@ local function delay()
         forced_width = dpi(50),
         forced_height = dpi(50),
         text_normal_bg = accent_color,
-        font = beautiful.icons.circle_plus.font,
-        text = beautiful.icons.circle_plus.icon,
+        icon = beautiful.icons.circle_plus,
         on_release = function()
             value_text:set_text(record_daemon:increase_delay())
         end
@@ -176,8 +173,7 @@ local function delay()
         forced_width = dpi(50),
         forced_height = dpi(50),
         text_normal_bg = accent_color,
-        font = beautiful.icons.circle_minus.font,
-        text = beautiful.icons.circle_minus.icon,
+        icon = beautiful.icons.circle_minus,
         on_release = function()
             value_text:set_text(record_daemon:decrease_delay())
         end
@@ -323,8 +319,7 @@ local function main(self)
         widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
-        font = beautiful.icons.xmark.font,
-        text = beautiful.icons.xmark.icon,
+        icon = beautiful.icons.xmark,
         on_release = function()
             self:hide()
         end

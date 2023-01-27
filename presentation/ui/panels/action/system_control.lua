@@ -36,8 +36,7 @@ local function arrow_button(icon, text, on_icon_release, on_arrow_release)
         normal_bg = beautiful.colors.surface,
         on_normal_bg = accent_color,
         text_on_normal_bg = beautiful.colors.on_accent,
-        font = icon.font,
-        text = icon.icon,
+        icon = icon,
         on_release = on_icon_release
     }
 
@@ -50,8 +49,7 @@ local function arrow_button(icon, text, on_icon_release, on_arrow_release)
         normal_bg = beautiful.colors.surface,
         on_normal_bg = accent_color,
         text_on_normal_bg = beautiful.colors.on_accent,
-        font = beautiful.icons.chevron_right.font,
-        text = beautiful.icons.chevron_right.icon,
+        icon = beautiful.icons.chevron_right,
         on_release = on_arrow_release
     }
 
@@ -100,8 +98,7 @@ local function button(icon, text, on_release)
         normal_bg = beautiful.colors.surface,
         on_normal_bg = beautiful.random_accent_color(),
         text_on_normal_bg = beautiful.colors.on_accent,
-        font = icon.font,
-        text = icon.icon,
+        icon = icon,
         on_release = on_release
     }
 
@@ -138,8 +135,7 @@ local function quick_action(icon, text, on_release)
         forced_width = dpi(150),
         forced_height = dpi(90),
         normal_bg = beautiful.colors.surface,
-        font = icon.font,
-        text = icon.icon,
+        icon = icon,
         on_release = on_release
     }
 

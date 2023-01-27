@@ -153,9 +153,8 @@ naughty.connect_signal("request::display", function(n)
     local dismiss = wibox.widget
     {
         widget = widgets.button.text.normal,
-        font = beautiful.icons.xmark.font,
+        icon = beautiful.icons.xmark,
         size = 12,
-        text = beautiful.icons.xmark.icon,
         on_release = function()
             n:destroy(naughty.notification_closed_reason.dismissed_by_user)
         end

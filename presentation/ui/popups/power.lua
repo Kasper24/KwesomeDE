@@ -114,7 +114,7 @@ function power:toggle()
     end
 end
 
-local function button(image, text, on_release)
+local function button(icon, text, on_release)
     local accent_color = beautiful.random_accent_color()
 
     local text = wibox.widget
@@ -140,9 +140,8 @@ local function button(image, text, on_release)
         normal_border_color = beautiful.colors.background,
         -- hover_border_color = accent_color,
         -- press_border_color = helpers.color.lighten(accent_color, 0.2),
-        font = image.font,
+        icon = icon,
         size = 40,
-        text = image.icon,
         on_release = on_release
     }
 
