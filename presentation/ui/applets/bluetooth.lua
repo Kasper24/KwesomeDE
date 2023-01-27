@@ -40,6 +40,7 @@ end
 
 local function device_widget(device, path, layout, accent_color)
     local widget = nil
+    local anim = nil
 
     local device_icon = wibox.widget
     {
@@ -65,11 +66,12 @@ local function device_widget(device, path, layout, accent_color)
         widget = widgets.button.text.normal,
         normal_bg = beautiful.colors.surface,
         text_normal_bg = beautiful.colors.on_surface,
+        animate_size = false,
         size = 12,
         text = "Cancel",
         on_press = function()
-            widget:turn_off()
-            widget.forced_height = dpi(60)
+            widget:get_children_by_id("button")[1]:turn_off()
+            anim:set(dpi(60))
         end
     }
 
@@ -119,7 +121,6 @@ local function device_widget(device, path, layout, accent_color)
         end
     }
 
-    local anim = nil
     widget = wibox.widget
     {
         widget = wibox.container.constraint,

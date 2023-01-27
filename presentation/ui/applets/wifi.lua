@@ -40,6 +40,7 @@ end
 
 local function access_point_widget(layout, access_point, accent_color)
     local widget = nil
+    local anim = nil
 
     local wifi_icon = wibox.widget
     {
@@ -113,12 +114,13 @@ local function access_point_widget(layout, access_point, accent_color)
         widget = widgets.button.text.normal,
         normal_bg = beautiful.colors.surface,
         text_normal_bg = beautiful.colors.on_surface,
+        animate_size = false,
         size = 12,
         text = "Cancel",
         on_press = function()
             prompt:stop()
-            widget:turn_off()
-            widget.forced_height = dpi(60)
+            widget:get_children_by_id("button")[1]:turn_off()
+            anim:set(dpi(65))
         end
     }
 
@@ -169,8 +171,8 @@ local function access_point_widget(layout, access_point, accent_color)
             connect_or_disconnect_stack:raise_widget(connect_or_disconnect)
 
             prompt:stop()
-            widget:turn_off()
-            widget.forced_height = dpi(60)
+            widget:get_children_by_id("button")[1]:turn_off()
+            anim:set(dpi(65))
         end
     end)
 
@@ -179,7 +181,6 @@ local function access_point_widget(layout, access_point, accent_color)
         connect_or_disconnect_stack:raise_widget(connect_or_disconnect)
     end)
 
-    local anim = nil
     widget = wibox.widget
     {
         widget = wibox.container.constraint,
