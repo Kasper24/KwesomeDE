@@ -34,7 +34,7 @@ local function button(icon, text, on_release, on_by_default)
         on_by_default = on_by_default,
         forced_width = dpi(120),
         forced_height = dpi(120),
-        normal_bg = beautiful.colors.surface,
+        bg = beautiful.colors.surface,
         on_release = function(self)
             on_release(self)
         end,
@@ -105,7 +105,7 @@ local function new(self, layout)
         widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
-        text_normal_bg = accent_color,
+        text_bg = accent_color,
         icon = beautiful.icons.gear,
         size = 15,
         on_release = function()
@@ -118,7 +118,7 @@ local function new(self, layout)
         widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
-        text_normal_bg = accent_color,
+        text_bg = accent_color,
         icon = beautiful.icons.xmark,
         on_release = function()
             self:hide()
@@ -130,8 +130,8 @@ local function new(self, layout)
         widget = widgets.button.text.normal,
         forced_width = dpi(50),
         size = 15,
-        normal_bg = accent_color,
-        text_normal_bg = beautiful.colors.background,
+        bg = accent_color,
+        text_bg = beautiful.colors.background,
         text = "Screenshot",
         animate_size = false,
         on_release = function()

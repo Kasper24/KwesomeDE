@@ -64,9 +64,9 @@ local function device_widget(device, path, layout, accent_color)
     local cancel = wibox.widget
     {
         widget = widgets.button.text.normal,
-        normal_bg = beautiful.colors.surface,
-        text_normal_bg = beautiful.colors.on_surface,
         animate_size = false,
+        bg = beautiful.colors.surface,
+        text_bg = beautiful.colors.on_surface,
         size = 12,
         text = "Cancel",
         on_press = function()
@@ -78,8 +78,8 @@ local function device_widget(device, path, layout, accent_color)
     local connect_or_disconnect = wibox.widget
     {
         widget = widgets.button.text.normal,
-        normal_bg = beautiful.colors.surface,
-        text_normal_bg = beautiful.colors.on_surface,
+        bg = beautiful.colors.surface,
+        text_bg = beautiful.colors.on_surface,
         size = 12,
         text = device.Connected == true and "Disconnect" or "Connect",
         on_press = function()
@@ -94,8 +94,8 @@ local function device_widget(device, path, layout, accent_color)
     local trust_or_untrust = wibox.widget
     {
         widget = widgets.button.text.normal,
-        normal_bg = beautiful.colors.surface,
-        text_normal_bg = beautiful.colors.on_surface,
+        bg = beautiful.colors.surface,
+        text_bg = beautiful.colors.on_surface,
         size = 12,
         text = device.Trusted == true and "Untrust" or "Trust",
         on_press = function()
@@ -108,8 +108,8 @@ local function device_widget(device, path, layout, accent_color)
     local pair_or_unpair = wibox.widget
     {
         widget = widgets.button.text.normal,
-        normal_bg = beautiful.colors.surface,
-        text_normal_bg = beautiful.colors.on_surface,
+        bg = beautiful.colors.surface,
+        text_bg = beautiful.colors.on_surface,
         size = 12,
         text = device.Paired == true and "Unpair" or "Pair",
         on_press = function()
@@ -206,7 +206,7 @@ local function new()
     local scan = wibox.widget
     {
         widget = widgets.button.text.normal,
-        text_normal_bg = beautiful.colors.on_background,
+        text_bg = beautiful.colors.on_background,
         icon = beautiful.icons.arrow_rotate_right,
         size = 15,
         on_press = function()
@@ -217,7 +217,7 @@ local function new()
     local settings = wibox.widget
     {
         widget = widgets.button.text.normal,
-        text_normal_bg = beautiful.colors.on_background,
+        text_bg = beautiful.colors.on_background,
         icon = beautiful.icons.gear,
         size = 15,
         on_press = function()

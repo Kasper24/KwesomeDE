@@ -21,7 +21,7 @@ local function wallpaper_widget(wallpaper)
         forced_height = dpi(40),
         animate_size = false,
         halign = "left",
-        text_normal_bg = beautiful.colors.on_background,
+        text_bg = beautiful.colors.on_background,
         size = 12,
         text = theme_daemon:get_short_wallpaper_name(wallpaper),
         on_press = function()
@@ -183,8 +183,8 @@ local function image_tab(self)
     {
         widget = widgets.button.text.normal,
         animate_size = false,
-        normal_bg = beautiful.colors.surface,
-        text_normal_bg = beautiful.colors.on_surface,
+        bg = beautiful.colors.surface,
+        text_bg = beautiful.colors.on_surface,
         size = 15,
         text = "Light",
         on_press = function()
@@ -196,8 +196,8 @@ local function image_tab(self)
     {
         widget = widgets.button.text.normal,
         animate_size = false,
-        normal_bg = beautiful.colors.surface,
-        text_normal_bg = beautiful.colors.on_surface,
+        bg = beautiful.colors.surface,
+        text_bg = beautiful.colors.on_surface,
         size = 15,
         text = "Reset Colorscheme",
         on_press = function()
@@ -209,8 +209,8 @@ local function image_tab(self)
     {
         widget = widgets.button.text.normal,
         animate_size = false,
-        normal_bg = beautiful.colors.surface,
-        text_normal_bg = beautiful.colors.on_surface,
+        bg = beautiful.colors.surface,
+        text_bg = beautiful.colors.on_surface,
         size = 15,
         text = "Save Colorscheme",
         on_press = function()
@@ -222,8 +222,8 @@ local function image_tab(self)
     {
         widget = widgets.button.text.normal,
         animate_size = false,
-        normal_bg = beautiful.colors.surface,
-        text_normal_bg = beautiful.colors.on_surface,
+        bg = beautiful.colors.surface,
+        text_bg = beautiful.colors.on_surface,
         size = 15,
         text = "Set Wallpaper",
         on_press = function()
@@ -235,8 +235,8 @@ local function image_tab(self)
     {
         widget = widgets.button.text.normal,
         animate_size = false,
-        normal_bg = beautiful.colors.surface,
-        text_normal_bg = beautiful.colors.on_surface,
+        bg = beautiful.colors.surface,
+        text_bg = beautiful.colors.on_surface,
         size = 15,
         text = "Set Colorscheme",
         on_press = function()
@@ -248,8 +248,8 @@ local function image_tab(self)
     {
         widget = widgets.button.text.normal,
         animate_size = false,
-        normal_bg = beautiful.colors.surface,
-        text_normal_bg = beautiful.colors.on_surface,
+        bg = beautiful.colors.surface,
+        text_bg = beautiful.colors.on_surface,
         size = 15,
         text = "Set Both",
         on_press = function()
@@ -354,8 +354,8 @@ local function digital_sun_tab()
     {
         widget = widgets.button.text.normal,
         animate_size = false,
-        normal_bg = beautiful.colors.surface,
-        text_normal_bg = beautiful.colors.on_surface,
+        bg = beautiful.colors.surface,
+        text_bg = beautiful.colors.on_surface,
         size = 15,
         text = "Set",
         on_press = function()
@@ -489,7 +489,7 @@ local function new(self, layout)
         widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
-        text_normal_bg = accent_color,
+        text_bg = accent_color,
         icon = beautiful.icons.gear,
         size = 15,
         on_release = function()
@@ -502,7 +502,7 @@ local function new(self, layout)
         widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
-        text_normal_bg = accent_color,
+        text_bg = accent_color,
         icon = beautiful.icons.xmark,
         on_release = function()
             self:hide()
@@ -514,9 +514,9 @@ local function new(self, layout)
         widget = widgets.button.text.state,
         on_by_default = true,
         size = 15,
-        on_normal_bg = accent_color,
-        text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = beautiful.colors.on_accent,
+        on_bg = accent_color,
+        text_bg = beautiful.colors.on_background,
+        text_on_bg = beautiful.colors.on_accent,
         text = "Image",
         animate_size = false,
         on_release = function()
@@ -533,9 +533,9 @@ local function new(self, layout)
     {
         widget = widgets.button.text.state,
         size = 15,
-        on_normal_bg = accent_color,
-        text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = beautiful.colors.on_accent,
+        on_bg = accent_color,
+        text_bg = beautiful.colors.on_background,
+        text_on_bg = beautiful.colors.on_accent,
         text = "Tiled",
         animate_size = false,
         on_release = function()
@@ -552,9 +552,9 @@ local function new(self, layout)
     {
         widget = widgets.button.text.state,
         size = 15,
-        on_normal_bg = accent_color,
-        text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = beautiful.colors.on_accent,
+        on_bg = accent_color,
+        text_bg = beautiful.colors.on_background,
+        text_on_bg = beautiful.colors.on_accent,
         text = "Color",
         animate_size = false,
         on_release = function()
@@ -571,9 +571,9 @@ local function new(self, layout)
     {
         widget = widgets.button.text.state,
         size = 15,
-        on_normal_bg = accent_color,
-        text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = beautiful.colors.on_accent,
+        on_bg = accent_color,
+        text_bg = beautiful.colors.on_background,
+        text_on_bg = beautiful.colors.on_accent,
         text = "Digital Sun",
         animate_size = false,
         on_release = function()
@@ -590,9 +590,9 @@ local function new(self, layout)
     {
         widget = widgets.button.text.state,
         size = 15,
-        on_normal_bg = accent_color,
-        text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = beautiful.colors.on_accent,
+        on_bg = accent_color,
+        text_bg = beautiful.colors.on_background,
+        text_on_bg = beautiful.colors.on_accent,
         text = "Binary",
         animate_size = false,
         on_release = function()

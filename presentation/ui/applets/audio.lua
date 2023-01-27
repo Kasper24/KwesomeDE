@@ -96,9 +96,9 @@ local function application_widget(args)
     {
         widget = widgets.button.text.state,
         on_by_default = args.application.mute,
-        text_normal_bg = args.accent_color,
-        on_normal_bg = args.accent_color,
-        text_on_normal_bg = beautiful.colors.on_accent,
+        text_bg = args.accent_color,
+        on_bg = args.accent_color,
+        text_on_bg = beautiful.colors.on_accent,
         icon = beautiful.icons.volume_off,
         size = 12,
         halign = "right",
@@ -202,9 +202,9 @@ local function device_widget(args)
     {
         widget = widgets.button.text.state,
         on_by_default = args.device.mute,
-        text_normal_bg = args.accent_color,
-        on_normal_bg = args.accent_color,
-        text_on_normal_bg = beautiful.colors.on_accent,
+        text_bg = args.accent_color,
+        on_bg = args.accent_color,
+        text_on_bg = beautiful.colors.on_accent,
         icon = beautiful.icons.volume_off,
         size = 12,
         on_press = function()
@@ -216,9 +216,9 @@ local function device_widget(args)
     {
         widget = widgets.button.text.state,
         on_by_default = args.device.default,
-        text_normal_bg = args.accent_color,
-        on_normal_bg = args.accent_color,
-        text_on_normal_bg = beautiful.colors.on_accent,
+        text_bg = args.accent_color,
+        on_bg = args.accent_color,
+        text_on_bg = beautiful.colors.on_accent,
         icon = beautiful.icons.check,
         size = 12,
         on_press = function()
@@ -531,9 +531,9 @@ local function widget()
         widget = widgets.button.text.state,
         on_by_default = true,
         size = 15,
-        on_normal_bg = accent_color,
-        text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = beautiful.colors.on_accent,
+        on_bg = accent_color,
+        text_bg = beautiful.colors.on_background,
+        text_on_bg = beautiful.colors.on_accent,
         text = "Devices",
         animate_size = false,
         on_release = function()
@@ -547,9 +547,9 @@ local function widget()
     {
         widget = widgets.button.text.state,
         size = 15,
-        on_normal_bg = accent_color,
-        text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = beautiful.colors.on_accent,
+        on_bg = accent_color,
+        text_bg = beautiful.colors.on_background,
+        text_on_bg = beautiful.colors.on_accent,
         text = "Applications",
         animate_size = false,
         on_release = function()

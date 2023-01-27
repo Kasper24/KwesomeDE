@@ -125,7 +125,7 @@ For more information visit the following links.]],
         forced_width = dpi(300),
         animate_size = false,
         size = 13,
-        text_normal_bg = accent_color,
+        text_bg = accent_color,
         text = "Github...",
         on_press = function()
             awful.spawn("xdg-open ")
@@ -138,7 +138,7 @@ For more information visit the following links.]],
         forced_width = dpi(300),
         animate_size = false,
         size = 13,
-        text_normal_bg = accent_color,
+        text_bg = accent_color,
         text = "Reddit...",
         on_press = function()
             awful.spawn("xdg-open ")
@@ -151,7 +151,7 @@ For more information visit the following links.]],
         forced_width = dpi(300),
         animate_size = false,
         size = 13,
-        text_normal_bg = accent_color,
+        text_bg = accent_color,
         text = "Awesome...",
         on_press = function()
             awful.spawn("xdg-open https://awesomewm.org/apidoc/")
@@ -162,7 +162,7 @@ For more information visit the following links.]],
     {
         widget = widgets.button.text.normal,
         animate_size = false,
-        text_normal_bg = accent_color,
+        text_bg = accent_color,
         size = 13,
         text = "Finish",
         on_press = function()
@@ -230,7 +230,7 @@ local function weather_page(on_next_pressed, on_previous_pressed)
     {
         widget = widgets.button.text.normal,
         size = 13,
-        text_normal_bg = beautiful.colors.on_background,
+        text_bg = beautiful.colors.on_background,
         text = "1. Sign up and login on OpenWeatherMap.",
         on_press = function()
             awful.spawn("xdg-open https://home.openweathermap.org/users/sign_up", false)
@@ -241,7 +241,7 @@ local function weather_page(on_next_pressed, on_previous_pressed)
     {
         widget = widgets.button.text.normal,
         size = 13,
-        text_normal_bg = beautiful.colors.on_background,
+        text_bg = beautiful.colors.on_background,
         text = "2. Visit the API key tab",
         on_press = function()
             awful.spawn("xdg-open https://home.openweathermap.org/api_keys", false)
@@ -252,7 +252,7 @@ local function weather_page(on_next_pressed, on_previous_pressed)
     {
         widget = widgets.button.text.normal,
         size = 13,
-        text_normal_bg = beautiful.colors.on_background,
+        text_bg = beautiful.colors.on_background,
         text = "3. Select a name for your key and click generate",
     }
 
@@ -260,7 +260,7 @@ local function weather_page(on_next_pressed, on_previous_pressed)
     {
         widget = widgets.button.text.normal,
         size = 13,
-        text_normal_bg = beautiful.colors.on_background,
+        text_bg = beautiful.colors.on_background,
         text = "4. Copy the generated key and paste it in the prompt below",
     }
 
@@ -324,7 +324,7 @@ local function weather_page(on_next_pressed, on_previous_pressed)
     {
         widget = widgets.button.text.normal,
         animate_size = false,
-        text_normal_bg = accent_color,
+        text_bg = accent_color,
         size = 13,
         text = "Back",
         on_press = function()
@@ -336,7 +336,7 @@ local function weather_page(on_next_pressed, on_previous_pressed)
     {
         widget = widgets.button.text.normal,
         animate_size = false,
-        text_normal_bg = accent_color,
+        text_bg = accent_color,
         size = 13,
         text = "Next",
         on_press = function()
@@ -441,7 +441,7 @@ local function gitlab_page(on_next_pressed, on_previous_pressed)
     {
         widget = widgets.button.text.normal,
         size = 13,
-        text_normal_bg = beautiful.colors.on_background,
+        text_bg = beautiful.colors.on_background,
         text = "1. Login on GitLab.",
         on_press = function()
             awful.spawn("xdg-open https://gitlab.com", false)
@@ -452,7 +452,7 @@ local function gitlab_page(on_next_pressed, on_previous_pressed)
     {
         widget = widgets.button.text.normal,
         size = 13,
-        text_normal_bg = beautiful.colors.on_background,
+        text_bg = beautiful.colors.on_background,
         text = "2. Visit the access tokens tab.",
         on_press = function()
             awful.spawn("xdg-open https://gitlab.com/-/profile/personal_access_tokens", false)
@@ -463,7 +463,7 @@ local function gitlab_page(on_next_pressed, on_previous_pressed)
     {
         widget = widgets.button.text.normal,
         size = 13,
-        text_normal_bg = beautiful.colors.on_background,
+        text_bg = beautiful.colors.on_background,
         text = "3. Enter a name and optional expiry date for the token.",
     }
 
@@ -471,7 +471,7 @@ local function gitlab_page(on_next_pressed, on_previous_pressed)
     {
         widget = widgets.button.text.normal,
         size = 13,
-        text_normal_bg = beautiful.colors.on_background,
+        text_bg = beautiful.colors.on_background,
         text = "4. Select the desired scopes.",
     }
 
@@ -479,7 +479,7 @@ local function gitlab_page(on_next_pressed, on_previous_pressed)
     {
         widget = widgets.button.text.normal,
         size = 13,
-        text_normal_bg = beautiful.colors.on_background,
+        text_bg = beautiful.colors.on_background,
         text = "5. Press Create personal access token.",
     }
 
@@ -513,7 +513,7 @@ local function gitlab_page(on_next_pressed, on_previous_pressed)
     {
         widget = widgets.button.text.normal,
         animate_size = false,
-        text_normal_bg = accent_color,
+        text_bg = accent_color,
         size = 13,
         text = "Back",
         on_press = function()
@@ -525,7 +525,7 @@ local function gitlab_page(on_next_pressed, on_previous_pressed)
     {
         widget = widgets.button.text.normal,
         animate_size = false,
-        text_normal_bg = accent_color,
+        text_bg = accent_color,
         size = 13,
         text = "Next",
         on_press = function()
@@ -634,7 +634,7 @@ local function github_page(on_next_pressed, on_previous_pressed)
     {
         widget = widgets.button.text.normal,
         animate_size = false,
-        text_normal_bg = accent_color,
+        text_bg = accent_color,
         size = 13,
         text = "Back",
         on_press = function()
@@ -646,7 +646,7 @@ local function github_page(on_next_pressed, on_previous_pressed)
     {
         widget = widgets.button.text.normal,
         animate_size = false,
-        text_normal_bg = accent_color,
+        text_bg = accent_color,
         size = 13,
         text = "Next",
         on_press = function()
@@ -770,7 +770,7 @@ local function email_page(on_next_pressed, on_previous_pressed)
     {
         widget = widgets.button.text.normal,
         animate_size = false,
-        text_normal_bg = accent_color,
+        text_bg = accent_color,
         size = 13,
         text = "Back",
         on_press = function()
@@ -782,7 +782,7 @@ local function email_page(on_next_pressed, on_previous_pressed)
     {
         widget = widgets.button.text.normal,
         animate_size = false,
-        text_normal_bg = accent_color,
+        text_bg = accent_color,
         size = 13,
         text = "Next",
         on_press = function()
@@ -891,7 +891,7 @@ local function password_page(on_next_pressed, on_previous_pressed)
     {
         widget = widgets.button.text.normal,
         animate_size = false,
-        text_normal_bg = accent_color,
+        text_bg = accent_color,
         size = 13,
         text = "Back",
         on_press = function()
@@ -903,7 +903,7 @@ local function password_page(on_next_pressed, on_previous_pressed)
     {
         widget = widgets.button.text.normal,
         animate_size = false,
-        text_normal_bg = accent_color,
+        text_bg = accent_color,
         size = 13,
         text = "Next",
         on_press = function()
@@ -1007,7 +1007,7 @@ local function welcome_page(on_next_pressed, on_previous_pressed)
     {
         widget = widgets.button.text.normal,
         animate_size = false,
-        text_normal_bg = accent_color,
+        text_bg = accent_color,
         size = 13,
         text = "Quit",
         on_press = function()
@@ -1019,7 +1019,7 @@ local function welcome_page(on_next_pressed, on_previous_pressed)
     {
         widget = widgets.button.text.normal,
         animate_size = false,
-        text_normal_bg = accent_color,
+        text_bg = accent_color,
         size = 13,
         text = "Next",
         on_press = function()

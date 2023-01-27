@@ -28,9 +28,9 @@ function ncmppcpp.tabs_titlebar(c)
         widget = widgets.button.text.state,
         on_by_default = true,
         halign = "left",
-        on_normal_bg = accent_color,
-        text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = beautiful.colors.on_accent,
+        on_bg = accent_color,
+        text_bg = beautiful.colors.on_background,
+        text_on_bg = beautiful.colors.on_accent,
         size = 12,
         text = "Current Playlist",
         on_turn_on = function()
@@ -47,9 +47,9 @@ function ncmppcpp.tabs_titlebar(c)
     {
         widget = widgets.button.text.state,
         halign = "left",
-        on_normal_bg = accent_color,
-        text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = beautiful.colors.on_accent,
+        on_bg = accent_color,
+        text_bg = beautiful.colors.on_background,
+        text_on_bg = beautiful.colors.on_accent,
         size = 12,
         text = "Local Files",
         on_turn_on = function()
@@ -66,9 +66,9 @@ function ncmppcpp.tabs_titlebar(c)
     {
         widget = widgets.button.text.state,
         halign = "left",
-        on_normal_bg = accent_color,
-        text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = beautiful.colors.on_accent,
+        on_bg = accent_color,
+        text_bg = beautiful.colors.on_background,
+        text_on_bg = beautiful.colors.on_accent,
         size = 12,
         text = "Search",
         on_turn_on = function()
@@ -85,9 +85,9 @@ function ncmppcpp.tabs_titlebar(c)
     {
         widget = widgets.button.text.state,
         halign = "left",
-        on_normal_bg = accent_color,
-        text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = beautiful.colors.on_accent,
+        on_bg = accent_color,
+        text_bg = beautiful.colors.on_background,
+        text_on_bg = beautiful.colors.on_accent,
         size = 12,
         text = "Library",
         on_turn_on = function()
@@ -104,9 +104,9 @@ function ncmppcpp.tabs_titlebar(c)
     {
         widget = widgets.button.text.state,
         halign = "left",
-        on_normal_bg = accent_color,
-        text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = beautiful.colors.on_accent,
+        on_bg = accent_color,
+        text_bg = beautiful.colors.on_background,
+        text_on_bg = beautiful.colors.on_accent,
         size = 12,
         text = "Playlist editor",
         on_turn_on = function()
@@ -123,9 +123,9 @@ function ncmppcpp.tabs_titlebar(c)
     {
         widget = widgets.button.text.state,
         halign = "left",
-        on_normal_bg = accent_color,
-        text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = beautiful.colors.on_accent,
+        on_bg = accent_color,
+        text_bg = beautiful.colors.on_background,
+        text_on_bg = beautiful.colors.on_accent,
         size = 12,
         text = "Lyrics",
         on_turn_on = function()

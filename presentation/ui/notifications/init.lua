@@ -273,7 +273,7 @@ naughty.connect_signal("request::display", function(n)
         {
             widget = widgets.button.text.normal,
             size = 12,
-            text_normal_bg = beautiful.colors.on_background,
+            text_bg = beautiful.colors.on_background,
             text = action.name,
             on_press = function()
                 action:invoke()

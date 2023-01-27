@@ -135,7 +135,7 @@ local function widget(self)
 
     local toggle_password_button = widgets.checkbox
     {
-        text_normal_bg = beautiful.colors.on_background,
+        text_bg = beautiful.colors.on_background,
         on_by_default = true,
         on_turn_on = function()
             self._private.prompt:set_obscure(true)

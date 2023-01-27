@@ -15,26 +15,26 @@ local text_button_state = { mt = {} }
 
 local properties =
 {
-	"text_normal_bg", "text_hover_bg", "text_press_bg",
-	"text_on_normal_bg", "text_on_hover_bg", "text_on_press_bg",
+	"text_bg", "text_hover_bg", "text_press_bg",
+	"text_on_bg", "text_on_hover_bg", "text_on_press_bg",
 	"animate_size",
 }
 
 local ebutton_properties =
 {
 	"forced_width", "forced_height",
-	"normal_bg", "hover_bg", "press_bg",
-	"normal_shape", "hover_shape", "press_shape",
-	"normal_border_width", "hover_border_width", "press_border_width",
-	"normal_border_color", "hover_border_color", "press_border_color",
+	"bg", "hover_bg", "press_bg",
+	"shape", "hover_shape", "press_shape",
+	"border_width", "hover_border_width", "press_border_width",
+	"border_color", "hover_border_color", "press_border_color",
 	"on_hover", "on_leave",
 	"on_press", "on_release",
 	"on_secondary_press", "on_secondary_release",
 	"on_scroll_up", "on_scroll_down",
-	"on_normal_bg", "on_hover_bg", "on_press_bg",
-	"on_normal_shape", "on_hover_shape", "on_press_shape",
-	"on_normal_border_width", "on_hover_border_width", "on_press_border_width",
-	"on_normal_border_color", "on_hover_border_color", "on_press_border_color",
+	"on_bg", "on_hover_bg", "on_press_bg",
+	"on_shape", "on_hover_shape", "on_press_shape",
+	"on_border_width", "on_hover_border_width", "on_press_border_width",
+	"on_border_color", "on_hover_border_color", "on_press_border_color",
 	"on_turn_on", "on_turn_off",
 }
 
@@ -88,26 +88,26 @@ local function effect(widget, text_bg)
     end
 end
 
-function text_button_state:set_text_normal_bg(text_normal_bg)
+function text_button_state:set_text_bg(text_bg)
 	local wp = self._private
-	wp.text_normal_bg = text_normal_bg
-	wp.text_hover_bg = helpers.color.button_color(text_normal_bg, 0.1)
-	wp.text_press_bg = helpers.color.button_color(text_normal_bg, 0.2)
-	effect(self, text_normal_bg)
+	wp.text_bg = text_bg
+	wp.text_hover_bg = helpers.color.button_color(text_bg, 0.1)
+	wp.text_press_bg = helpers.color.button_color(text_bg, 0.2)
+	effect(self, text_bg)
 end
 
 
-function text_button_state:set_text_on_normal_bg(text_on_normal_bg)
+function text_button_state:set_text_on_bg(text_on_bg)
 	local wp = self._private
-	wp.text_on_normal_bg = text_on_normal_bg
-	wp.text_on_hover_bg = helpers.color.button_color(text_on_normal_bg, 0.1)
-	wp.text_on_press_bg = helpers.color.button_color(text_on_normal_bg, 0.2)
+	wp.text_on_bg = text_on_bg
+	wp.text_on_hover_bg = helpers.color.button_color(text_on_bg, 0.1)
+	wp.text_on_press_bg = helpers.color.button_color(text_on_bg, 0.2)
 end
 
 function text_button_state:set_icon(icon)
 	local text_widget = self.children[1].children[1].children[1]
 	text_widget:set_icon(icon)
-	self:set_text_normal_bg(icon.color)
+	self:set_text_bg(icon.color)
 end
 
 local function new()
@@ -121,20 +121,20 @@ local function new()
 	wp.size = text_widget:get_size()
 
 	-- Setup default values
-	wp.text_normal_bg = beautiful.random_accent_color()
-	wp.text_hover_bg = helpers.color.button_color(wp.text_normal_bg, 0.1)
-	wp.text_press_bg = helpers.color.button_color(wp.text_normal_bg, 0.2)
+	wp.text_bg = beautiful.random_accent_color()
+	wp.text_hover_bg = helpers.color.button_color(wp.text_bg, 0.1)
+	wp.text_press_bg = helpers.color.button_color(wp.text_bg, 0.2)
 
-	wp.text_on_normal_bg = helpers.color.button_color(wp.text_normal_bg, 0.2)
-	wp.text_on_hover_bg = helpers.color.button_color(wp.text_on_normal_bg, 0.1)
-	wp.text_on_press_bg = helpers.color.button_color(wp.text_on_normal_bg, 0.2)
+	wp.text_on_bg = helpers.color.button_color(wp.text_bg, 0.2)
+	wp.text_on_hover_bg = helpers.color.button_color(wp.text_on_bg, 0.1)
+	wp.text_on_press_bg = helpers.color.button_color(wp.text_on_bg, 0.2)
 
 	wp.animate_size = true
 
 	-- Setup animations
 	widget.color_animation = helpers.animation:new
 	{
-		pos = helpers.color.hex_to_rgb(wp.text_normal_bg),
+		pos = helpers.color.hex_to_rgb(wp.text_bg),
 		easing = helpers.animation.easing.linear,
 		duration = 0.2,
 		update = function(self, pos)
@@ -162,18 +162,18 @@ local function new()
 
 	widget:connect_signal("_private::on_leave", function(state)
 		if state == true then
-			effect(widget, wp.text_on_normal_bg)
+			effect(widget, wp.text_on_bg)
 		else
-			effect(widget, wp.text_normal_bg)
+			effect(widget, wp.text_bg)
 		end
 	end)
 
 	widget:connect_signal("_private::on_turn_on", function()
-		effect(widget, wp.text_on_normal_bg)
+		effect(widget, wp.text_on_bg)
 	end)
 
 	widget:connect_signal("_private::on_turn_off", function()
-		effect(widget, wp.text_normal_bg)
+		effect(widget, wp.text_bg)
 	end)
 
 	widget:connect_signal("_private::on_press", function()
@@ -195,7 +195,7 @@ local function new()
 		end
 	end)
 
-	effect(widget, wp.text_normal_bg)
+	effect(widget, wp.text_bg)
 
 	return widget
 end

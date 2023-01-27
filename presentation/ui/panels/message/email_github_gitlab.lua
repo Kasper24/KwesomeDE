@@ -453,9 +453,9 @@ local function github()
         widget = widgets.button.text.state,
         on_by_default = true,
         size = 15,
-        on_normal_bg = accent_color,
-        text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = beautiful.colors.on_accent,
+        on_bg = accent_color,
+        text_bg = beautiful.colors.on_background,
+        text_on_bg = beautiful.colors.on_accent,
         text = "Activity",
         animate_size = false,
         on_release = function()
@@ -469,9 +469,9 @@ local function github()
     {
         widget = widgets.button.text.state,
         size = 15,
-        on_normal_bg = accent_color,
-        text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = beautiful.colors.on_accent,
+        on_bg = accent_color,
+        text_bg = beautiful.colors.on_background,
+        text_on_bg = beautiful.colors.on_accent,
         text = "PR",
         animate_size = false,
         on_release = function()
@@ -680,9 +680,9 @@ local function new()
         widget = widgets.button.text.state,
         on_by_default = true,
         size = 15,
-        on_normal_bg = accent_color,
-        text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = beautiful.colors.on_accent,
+        on_bg = accent_color,
+        text_bg = beautiful.colors.on_background,
+        text_on_bg = beautiful.colors.on_accent,
         text = "Email",
         animate_size = false,
         on_release = function()
@@ -697,9 +697,9 @@ local function new()
     {
         widget = widgets.button.text.state,
         size = 15,
-        on_normal_bg = accent_color,
-        text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = beautiful.colors.on_accent,
+        on_bg = accent_color,
+        text_bg = beautiful.colors.on_background,
+        text_on_bg = beautiful.colors.on_accent,
         text = "Github",
         animate_size = false,
         on_release = function()
@@ -714,9 +714,9 @@ local function new()
     {
         widget = widgets.button.text.state,
         size = 15,
-        on_normal_bg = accent_color,
-        text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = beautiful.colors.on_accent,
+        on_bg = accent_color,
+        text_bg = beautiful.colors.on_background,
+        text_on_bg = beautiful.colors.on_accent,
         text = "Gitlab",
         animate_size = false,
         on_release = function()

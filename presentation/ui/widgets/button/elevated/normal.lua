@@ -15,10 +15,10 @@ local elevated_button_normal = { mt = {} }
 local properties =
 {
 	"forced_width", "forced_height",
-	"normal_bg",
-	"normal_shape", "hover_shape", "press_shape",
-	"normal_border_width", "hover_border_width", "press_border_width",
-	"normal_border_color",
+	"bg",
+	"shape", "hover_shape", "press_shape",
+	"border_width", "hover_border_width", "press_border_width",
+	"border_color",
 	"on_hover", "on_leave",
 	"on_press", "on_release",
 	"on_secondary_press", "on_secondary_release",
@@ -45,23 +45,20 @@ local function build_properties(prototype, prop_names)
     end
 end
 
-local function effect(widget, bg, shape, border_width, border_color)
-	local animation_targets = {}
+local function effect(widget, mode)
+	local wp = widget._private
+	if mode ~= "" then mode = mode .. "_" end
+	local bg = wp[mode .. "bg"]
+	local shape = wp[mode .. "shape"]
+	local border_width = wp[mode .. "border_width"]
+	local border_color = wp[mode .. "border_color"]
 
-    if bg ~= nil then
-		animation_targets.color = helpers.color.hex_to_rgb(bg)
-    end
-    if shape ~= nil then
-        widget.shape = shape
-    end
-    if border_width ~= nil then
-		animation_targets.border_width = border_width
-    end
-    if border_color ~= nil then
-		animation_targets.border_color = helpers.color.hex_to_rgb(border_color)
-    end
-
-	widget.animation:set(animation_targets)
+	widget.animation:set({
+		color = helpers.color.hex_to_rgb(bg or "#000000"),
+		border_width = border_width,
+		border_color = helpers.color.hex_to_rgb(border_color or "#000000")
+	})
+	widget.shape = shape
 end
 
 function elevated_button_normal:set_child(child)
@@ -83,13 +80,13 @@ function elevated_button_normal:get_child()
 	return self._private.child
 end
 
-function elevated_button_normal:set_normal_bg(normal_bg)
-	local wp = self._private
-	wp.normal_bg = normal_bg
-	wp.hover_bg = helpers.color.button_color(wp.normal_bg, 0.1)
-	wp.press_bg = helpers.color.button_color(wp.normal_bg, 0.2)
-	effect(self, wp.normal_bg, wp.normal_shape, wp.normal_border_width, wp.normal_border_color)
-end
+-- function elevated_button_normal:set_bg(bg)
+-- 	local wp = self._private
+-- 	-- wp.bg = bg
+-- 	wp.hover_bg = helpers.color.button_color(bg, 0.1)
+-- 	wp.press_bg = helpers.color.button_color(bg, 0.2)
+-- 	effect(self, "")
+-- end
 
 local function new()
 	local widget = wibox.container.background()
@@ -98,21 +95,21 @@ local function new()
 	local wp = widget._private
 
 	-- Setup default values
-	wp.normal_bg = beautiful.colors.background
-	wp.hover_bg = helpers.color.button_color(wp.normal_bg, 0.1)
-	wp.press_bg = helpers.color.button_color(wp.normal_bg, 0.2)
+	wp.bg = beautiful.colors.background
+	wp.hover_bg = helpers.color.button_color(wp.bg, 0.1)
+	wp.press_bg = helpers.color.button_color(wp.bg, 0.2)
 
-	wp.normal_shape = helpers.ui.rrect(beautiful.border_radius)
-	wp.hover_shape = wp.normal_shape
-	wp.press_shape = wp.normal_shape
+	wp.shape = helpers.ui.rrect(beautiful.border_radius)
+	wp.hover_shape = wp.shape
+	wp.press_shape = wp.shape
 
-	wp.normal_border_width = nil
+	wp.border_width = nil
 	wp.hover_border_width = nil
 	wp.press_border_width = nil
 
-	wp.normal_border_color = beautiful.colors.transparent
-	wp.hover_border_color = wp.normal_border_color
-	wp.press_border_color = wp.normal_border_color
+	wp.border_color = beautiful.colors.transparent
+	wp.hover_border_color = wp.border_color
+	wp.press_border_color = wp.border_color
 
 	-- TODO: Set to empty function by default to prevent all these if checks ffs
     wp.on_hover = nil
@@ -132,9 +129,9 @@ local function new()
 	{
 		pos =
 		{
-			color = helpers.color.hex_to_rgb(wp.normal_bg),
-			border_width = wp.normal_border_width,
-			border_color =  helpers.color.hex_to_rgb(wp.normal_border_color)
+			color = helpers.color.hex_to_rgb(wp.bg),
+			border_width = wp.border_width,
+			border_color =  helpers.color.hex_to_rgb(wp.border_color)
 		},
 		easing = helpers.animation.easing.linear,
 		duration = 0.2,
@@ -152,7 +149,7 @@ local function new()
 	}
 
 	widget:connect_signal("mouse::enter", function(self, find_widgets_result)
-		effect(widget, wp.hover_bg, wp.hover_shape, wp.hover_border_width, wp.hover_border_color)
+		effect(widget, "hover")
         if wp.on_hover ~= nil then
 		    wp.on_hover(self, find_widgets_result)
         end
@@ -163,18 +160,18 @@ local function new()
 		if widget.button ~= nil then
 			if widget.button == 1 then
 				if wp.on_release ~= nil or wp.on_press ~= nil then
-					effect(widget, wp.normal_bg, wp.normal_shape, wp.normal_border_width, wp.normal_border_color)
+					effect(widget, "")
 				end
 				widget:emit_signal("_private::on_release", self, 1, 1, widget.button, {}, find_widgets_result)
 			elseif widget.button == 3 then
 				if wp.on_secondary_release ~= nil or wp.on_secondary_press ~= nil then
-					effect(widget, wp.normal_bg, wp.normal_shape, wp.normal_border_width, wp.normal_border_color)
+					effect(widget, "")
 				end
 				widget:emit_signal("_private::on_secondary_release", self, 1, 1, widget.button, {}, find_widgets_result)
 			end
 			widget.button = nil
 		end
-		effect(widget, wp.normal_bg, wp.normal_shape, wp.normal_border_width, wp.normal_border_color)
+		effect(widget, wp.bg, wp.shape, wp.border_width, wp.border_color)
         if wp.on_leave ~= nil then
 		    wp.on_leave(self, find_widgets_result)
         end
@@ -190,13 +187,13 @@ local function new()
 		if button == 1 then
 			if wp.on_press ~= nil then
 				wp.on_press(self, lx, ly, button, mods, find_widgets_result)
-				effect(widget, wp.press_bg, wp.press_shape, wp.press_border_width, wp.press_border_color)
+				effect(widget, "press")
 			end
 			widget:emit_signal("_private::on_press")
 		elseif button == 3 then
 			if wp.on_secondary_press ~= nil then
 				wp.on_secondary_press(self, lx, ly, button, mods, find_widgets_result)
-				effect(widget, wp.press_bg, wp.press_shape, wp.press_border_width, wp.press_border_color)
+				effect(widget, "press")
 				widget:emit_signal("_private::on_secondary_press")
 			end
 		elseif button == 4 then
@@ -214,7 +211,7 @@ local function new()
 		widget.button = nil
 		if button == 1 then
 			if wp.on_release ~= nil or wp.on_press ~= nil then
-				effect(widget, wp.normal_bg, wp.normal_shape, wp.normal_border_width, wp.normal_border_color)
+				effect(widget, "")
 			end
 			if wp.on_release ~= nil then
 				wp.on_release(self, lx, ly, button, mods, find_widgets_result)
@@ -223,7 +220,7 @@ local function new()
 
 		elseif button == 3 then
 			if wp.on_secondary_release ~= nil or wp.on_secondary_press ~= nil then
-				effect(widget, wp.normal_bg, wp.normal_shape, wp.normal_border_width, wp.normal_border_color)
+				effect(widget, "")
 			end
 			if wp.on_secondary_release ~= nil then
 				wp.on_secondary_release(self, lx, ly, button, mods, find_widgets_result)
@@ -232,7 +229,7 @@ local function new()
 		end
 	end)
 
-	effect(widget, wp.normal_bg, wp.normal_shape, wp.normal_border_width, wp.normal_border_color)
+	effect(widget, "")
 
 	return widget
 end

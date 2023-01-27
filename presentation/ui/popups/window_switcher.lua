@@ -72,10 +72,10 @@ local function client_widget(self, client)
             widget = widgets.button.elevated.state,
             id = "button",
             on_by_default = is_selected,
-            normal_bg = beautiful.colors.background,
-            normal_border_width = dpi(5),
-            normal_border_color = beautiful.colors.surface,
-            on_normal_border_color = font_icon.color,
+            bg = beautiful.colors.background,
+            border_width = dpi(5),
+            border_color = beautiful.colors.surface,
+            on_border_color = font_icon.color,
             on_release = function()
                 self:select_client(client)
                 self:hide()

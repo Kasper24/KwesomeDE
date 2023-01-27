@@ -288,8 +288,8 @@ function playerctl.play(daemon)
     local button = wibox.widget
     {
         widget = ebwidget.normal,
-        normal_shape = gshape.circle,
-        normal_bg = accent_color,
+        shape = gshape.circle,
+        bg = accent_color,
         on_release = function()
             playerctl_daemon:play_pause()
         end,
@@ -329,10 +329,10 @@ function playerctl.previous(width, height, daemon)
         widget = tbwidget.normal,
         forced_width = width or dpi(50),
         forced_height = height or dpi(50),
-        normal_shape = gshape.circle,
+        shape = gshape.circle,
         font = beautiful.icons.backward.font,
         size = 12,
-        text_normal_bg = beautiful.colors.on_background,
+        text_bg = beautiful.colors.on_background,
         text = beautiful.icons.backward.icon,
         on_release = function()
             playerctl_daemon:previous()
@@ -348,10 +348,10 @@ function playerctl.next(width, height, daemon)
         widget = tbwidget.normal,
         forced_width = width or dpi(50),
         forced_height = height or dpi(50),
-        normal_shape = gshape.circle,
+        shape = gshape.circle,
         font = beautiful.icons.forward.font,
         size = 12,
-        text_normal_bg = beautiful.colors.on_background,
+        text_bg = beautiful.colors.on_background,
         text = beautiful.icons.forward.icon,
         on_release = function()
             playerctl_daemon:next()
@@ -367,10 +367,10 @@ function playerctl.loop(width, height, daemon)
         widget = tbwidget.state,
         forced_width = width or dpi(50),
         forced_height = height or dpi(50),
-        normal_shape = gshape.circle,
+        shape = gshape.circle,
         font = beautiful.icons._repeat.font,
         size = 12,
-        text_normal_bg = beautiful.colors.on_background,
+        text_bg = beautiful.colors.on_background,
         text = beautiful.icons._repeat.icon,
         on_release = function(self)
             playerctl_daemon:cycle_loop_status()
@@ -396,10 +396,10 @@ function playerctl.shuffle(width, height, daemon)
         widget = tbwidget.state,
         forced_width = width or dpi(50),
         forced_height = height or dpi(50),
-        normal_shape = gshape.circle,
+        shape = gshape.circle,
         font = beautiful.icons.shuffle.font,
         size = 12,
-        text_normal_bg = beautiful.colors.on_background,
+        text_bg = beautiful.colors.on_background,
         text = beautiful.icons.shuffle.icon,
         on_release = function(self)
             playerctl_daemon:cycle_shuffle()

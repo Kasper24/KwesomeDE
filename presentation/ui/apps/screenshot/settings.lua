@@ -16,7 +16,7 @@ local function show_cursor()
     local checkbox = widgets.checkbox
     {
         on_by_default = screenshot_daemon:get_show_cursor(),
-        text_normal_bg = accent_color,
+        text_bg = accent_color,
         on_turn_on = function()
             screenshot_daemon:set_show_cursor(true)
         end,
@@ -62,7 +62,7 @@ local function delay()
         widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
-        text_normal_bg = accent_color,
+        text_bg = accent_color,
         icon = beautiful.icons.circle_plus,
         on_release = function()
             value_text:set_text(screenshot_daemon:increase_delay())
@@ -74,7 +74,7 @@ local function delay()
         widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
-        text_normal_bg = accent_color,
+        text_bg = accent_color,
         icon = beautiful.icons.circle_minus,
         on_release = function()
             value_text:set_text(screenshot_daemon:decrease_delay())
@@ -115,7 +115,7 @@ local function folder()
     local set_folder_button  = wibox.widget
     {
         widget = widgets.button.text.normal,
-        text_normal_bg = accent_color,
+        text_bg = accent_color,
         size = 15,
         text = "...",
         on_press = function()

@@ -137,7 +137,7 @@ local function new()
             forced_height = dpi(35),
             font = beautiful.icons.caret_left.font,
             size = 15,
-            text_normal_bg = beautiful.colors.on_background,
+            text_bg = beautiful.colors.on_background,
             text = beautiful.icons.caret_left.icon,
             on_release = function()
                 ret:decrease_date()
@@ -150,7 +150,7 @@ local function new()
             forced_height = dpi(35),
             font = beautiful.icons.caret_right.font,
             size = 15,
-            text_normal_bg = beautiful.colors.on_background,
+            text_bg = beautiful.colors.on_background,
             text = beautiful.icons.caret_right.icon,
             on_release = function()
                 ret:increase_date()
