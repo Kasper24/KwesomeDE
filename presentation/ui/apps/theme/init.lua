@@ -6,6 +6,7 @@
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
+local gtimer = require("gears.timer")
 local ruled = require("ruled")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
@@ -51,7 +52,6 @@ local window = [[ lua -e "
 ]]
 
 function theme:show()
-    self._private.visible = true
     helpers.client.run_or_raise_with_shell({class = "awesome-app-theme-manager"}, false, window)
 end
 
@@ -88,8 +88,6 @@ local function new()
             rule = { class = "awesome-app-theme-manager" },
             properties = { floating = true, width = dpi(800), height = 1, placement = awful.placement.centered },
             callback = function(c)
-                ret:emit_signal("visible", true)
-
                 ret._private.client = c
 
                 c:connect_signal("unmanage", function()
@@ -119,6 +117,10 @@ local function new()
                         stack
                     }
                 }
+
+                gtimer.delayed_call(function()
+                    ret:emit_signal("visible", true)
+                end)
             end
         }
     end)

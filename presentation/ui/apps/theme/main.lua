@@ -323,13 +323,8 @@ local function image_tab(self)
             wallpapers_layout:add(wallpaper_widget(wallpaper))
         end
 
-        gtimer { timeout = 0.1, single_shot = true, autostart = true, call_now = false, callback = function()
-            theme_daemon:select_wallpaper(theme_daemon:get_wallpaper())
-            -- wallpapers_layout:set_scroll_factor(0)
-            -- wallpapers_layout:scroll(theme_daemon:get_wallpaper_index())
-            stack:raise_widget(widget)
-            spinning_circle.children[1]:abort()
-        end}
+        stack:raise_widget(widget)
+        spinning_circle.children[1]:abort()
     end)
 
     theme_daemon:connect_signal("wallpapers::empty", function()
@@ -340,6 +335,14 @@ local function image_tab(self)
     for i = 1, 16 do
         colors:add(color_button(i))
     end
+
+    self:connect_signal("visible", function(self, visible)
+        if visible == true then
+            theme_daemon:select_wallpaper(theme_daemon:get_wallpaper())
+            wallpapers_layout:set_scroll_factor(0)
+            wallpapers_layout:scroll(theme_daemon:get_wallpaper_index())
+        end
+    end)
 
     return stack
 end
