@@ -274,7 +274,6 @@ naughty.connect_signal("request::display", function(n)
         {
             widget = widgets.button.text.normal,
             size = 12,
-            hover_bg = beautiful.colors.surface,
             text_normal_bg = beautiful.colors.on_background,
             text = action.name,
             on_press = function()
