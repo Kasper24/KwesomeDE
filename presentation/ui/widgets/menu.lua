@@ -208,6 +208,7 @@ function menu.sub_menu_button(args)
     local widget = wibox.widget
     {
         widget = wibox.container.margin,
+        sub_menu = args.sub_menu,
         margins = dpi(5),
         {
             widget = ebwidget.state,
@@ -245,9 +246,6 @@ function menu.sub_menu_button(args)
             }
         }
     }
-
-    -- TODO use id instead
-    widget.sub_menu = args.sub_menu
 
     return widget
 end
