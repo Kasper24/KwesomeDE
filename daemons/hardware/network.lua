@@ -250,8 +250,8 @@ function network:scan_access_points()
 
     self._private.wifi_proxy:RequestScanAsync(function(proxy, context, success, failure)
         if failure ~= nil then
-            print("Rescan wifi failed: ", failure)
-            print("Rescan wifi failed error code: ", failure.code)
+            -- print("Rescan wifi failed: ", failure)
+            -- print("Rescan wifi failed error code: ", failure.code)
             self:emit_signal("scan_access_points::failed", tostring(failure), tostring(failure.code))
             return
         end
@@ -320,8 +320,8 @@ function network:connect_to_access_point(access_point, password, auto_connect)
         -- so instead I'm using the 2 seperate methods
         self._private.client_proxy:AddAndActivateConnectionAsync(function(proxy, context, success, failure)
             if failure ~= nil then
-                print("Failed to activate connection: ", failure)
-                print("Failed to activate connection error code: ", failure.code)
+                -- print("Failed to activate connection: ", failure)
+                -- print("Failed to activate connection error code: ", failure.code)
                 self:emit_signal("activate_access_point::failed", tostring(failure), tostring(failure.code))
                 return
             end
@@ -332,8 +332,8 @@ function network:connect_to_access_point(access_point, password, auto_connect)
         connections[1]:Update(profile)
         self._private.client_proxy:ActivateConnectionAsync(function(proxy, context, success, failure)
             if failure ~= nil then
-                print("Failed to activate connection: ", failure)
-                print("Failed to activate connection error code: ", failure.code)
+                -- print("Failed to activate connection: ", failure)
+                -- print("Failed to activate connection error code: ", failure.code)
                 self:emit_signal("activate_access_point::failed", tostring(failure), tostring(failure.code))
                 return
             end
