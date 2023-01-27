@@ -108,8 +108,9 @@ local function application_widget(args)
         end
     }
 
-    local slider = widgets.slider
+    local slider = wibox.widget
     {
+        widget = widgets.slider,
         forced_height = dpi(20),
         value = args.application.volume,
         maximum = 100,
@@ -228,8 +229,9 @@ local function device_widget(args)
         end
     }
 
-    local slider = widgets.slider
+    local slider = wibox.widget
     {
+        widget = widgets.slider,
         forced_height = dpi(20),
         value = args.device.volume,
         maximum = 100,
