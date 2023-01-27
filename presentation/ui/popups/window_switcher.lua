@@ -33,27 +33,6 @@ local function focus_client(client)
     client.minimized = false
 end
 
-local function sort_clients(self)
-    self._private.sorted_clients = {}
-
-    for _, tag in pairs(capi.root.tags()) do
-        for index, client in pairs(tag:clients()) do
-            if awful.client.getmaster() == client then
-                local pos = math.min(math.max(1, #self._private.sorted_clients), tag.index)
-                table.insert(self._private.sorted_clients,
-                    pos,
-                    client
-                )
-            else
-                table.insert(self._private.sorted_clients,
-                    #self._private.sorted_clients + 1,
-                    client
-                )
-            end
-        end
-    end
-end
-
 local function client_widget(self, client)
     if client == nil then
         return
@@ -121,8 +100,15 @@ local function clients_widget(self)
         spacing = dpi(15)
     }
 
-    for _, client in pairs(self._private.sorted_clients) do
-        clients_layout:add(client_widget(self, client))
+    for _, tag in ipairs(helpers.client.get_sorted_clients()) do
+        local master = tag["master"]
+        if master ~= nil then
+            clients_layout:add(client_widget(self, master))
+        end
+
+        for _, client in ipairs(tag.clients) do
+            clients_layout:add(client_widget(self, client))
+        end
     end
 
     return wibox.widget
@@ -145,7 +131,7 @@ end
 
 function window_switcher:cycle_clients(increase)
     local client = gtable.cycle_value(
-        self._private.sorted_clients,
+        capi.client.get(),
         self._private.selected_client,
         (increase and 1 or -1)
     )
@@ -153,11 +139,9 @@ function window_switcher:cycle_clients(increase)
 end
 
 function window_switcher:show(set_selected_client, keygrabber)
-    sort_clients(self)
-
     self._private.keygrabber = keygrabber
 
-    if #self._private.sorted_clients == 0 then
+    if #capi.client.get() == 0 then
         self:hide(false)
         return
     end

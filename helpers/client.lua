@@ -8,7 +8,7 @@ local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
 local math = math
 local pairs = pairs
-local capi = { client = client, mouse = mouse }
+local capi = { root = root, client = client, mouse = mouse }
 
 local _client = {}
 
@@ -329,6 +329,25 @@ function _client.get_dominant_color(client)
     end
     color = mode
     return color
+end
+
+function _client.get_sorted_clients()
+    local tags = {}
+
+    for index, tag in pairs(capi.root.tags()) do
+        tags[index] = {}
+        tags[index].clients = {}
+
+        for _, client in pairs(tag:clients()) do
+            if awful.client.getmaster() == client then
+                tags[index]["master"] = client
+            else
+                table.insert(tags[index].clients, client)
+            end
+        end
+    end
+
+    return tags
 end
 
 return _client
