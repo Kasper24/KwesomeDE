@@ -59,7 +59,7 @@ local window = [[ lua -e "
 local accent_color = beautiful.random_accent_color()
 
 function welcome:show()
-    helpers.client.run_or_raise({class = "awesome-app-welcome"}, false, window, { switchtotag = true })
+    helpers.client.run_or_raise_with_shell({class = "awesome-app-welcome"}, false, window)
     self._private.visible = true
 end
 

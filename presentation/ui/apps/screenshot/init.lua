@@ -52,7 +52,7 @@ local window = [[ lua -e "
 ]]
 
 function screenshot:show()
-    helpers.client.run_or_raise({class = "awesome-app-screenshot"}, false, window, { switchtotag = true })
+    helpers.client.run_or_raise_with_shell({class = "awesome-app-screenshot"}, false, window)
     self._private.visible = true
 end
 

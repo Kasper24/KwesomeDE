@@ -51,8 +51,8 @@ local window = [[ lua -e "
 ]]
 
 function theme:show()
-    helpers.client.run_or_raise({class = "awesome-app-theme-manager"}, false, window, { switchtotag = true })
     self._private.visible = true
+    helpers.client.run_or_raise_with_shell({class = "awesome-app-theme-manager"}, false, window)
 end
 
 function theme:hide()

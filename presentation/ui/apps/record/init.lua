@@ -385,7 +385,7 @@ local function main(self)
 end
 
 function record:show()
-    helpers.client.run_or_raise({class = "awesome-app-record"}, false, window, { switchtotag = true })
+    helpers.client.run_or_raise_with_shell({class = "awesome-app-record"}, false, window)
     self._private.visible = true
 end
 
