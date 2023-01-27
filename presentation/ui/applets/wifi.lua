@@ -234,6 +234,7 @@ local function access_point_widget(layout, access_point, accent_color)
 
     anim = helpers.animation:new
     {
+        pos = dpi(65),
         duration = 0.2,
         easing = helpers.animation.easing.linear,
         update = function(self, pos)

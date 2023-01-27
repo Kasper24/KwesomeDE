@@ -161,6 +161,7 @@ local function device_widget(device, path, layout, accent_color)
 
     anim = helpers.animation:new
     {
+        pos = dpi(60),
         duration = 0.2,
         easing = helpers.animation.easing.linear,
         update = function(self, pos)
