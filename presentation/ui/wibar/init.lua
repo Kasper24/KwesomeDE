@@ -4,6 +4,7 @@
 -------------------------------------------
 
 local awful = require("awful")
+local gtimer = require("gears.timer")
 local wibox = require("wibox")
 local widgets = require("presentation.ui.widgets")
 local action_panel = require("presentation.ui.panels.action")
@@ -393,23 +394,32 @@ local function task_list(s)
         task_list:add(tag_task_list)
     end
 
-    for _, c in ipairs(capi.client.get()) do
-        client_task(favorites, task_list.children[c.first_tag.index], c)
-    end
+    -- Wait a little bit so clients show at the correct order
+    gtimer {
+        timeout = 3.5,
+        single_shot = true,
+        call_now = false,
+        autostart = true,
+        callback = function()
+            for _, c in ipairs(capi.client.get()) do
+                client_task(favorites, task_list.children[c.first_tag.index], c)
+            end
 
-    capi.client.connect_signal("tagged", function(c, t)
-        if c.current_task_list and c.current_task_widget then
-            c.current_task_list:remove_widgets(c.current_task_widget)
-            c.current_task_list = nil
-            c.current_task_widget = nil
+            capi.client.connect_signal("tagged", function(c, t)
+                if c.current_task_list and c.current_task_widget then
+                    c.current_task_list:remove_widgets(c.current_task_widget)
+                    c.current_task_list = nil
+                    c.current_task_widget = nil
+                end
+
+                if favorites_daemon:is_favorite(c.class) then
+                    favorites:remove(c.favorite_widget)
+                end
+
+                client_task(favorites, task_list.children[t.index], c)
+            end)
         end
-
-        if favorites_daemon:is_favorite(c.class) then
-            favorites:remove(c.favorite_widget)
-        end
-
-        client_task(favorites, task_list.children[t.index], c)
-    end)
+    }
 
     for class, client in pairs(favorites_daemon:get_favorites()) do
         favorites:add(favorite(favorites, client, class))
