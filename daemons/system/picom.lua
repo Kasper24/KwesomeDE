@@ -88,7 +88,7 @@ end
 
 local function get_settings(self)
     local file = helpers.file.new_for_path(CONFIG_PATH)
-    file:read_string(function(error, content)
+    file:read(function(error, content)
         if error == nil then
             content = content:gsub("%s+", "")
             local active_opacity = content:match("active%-opacity=(%d+.%d+)") or content:match("active%-opacity=(%d+)")

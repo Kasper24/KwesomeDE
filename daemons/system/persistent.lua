@@ -262,7 +262,7 @@ function persistent:restore(args)
     args.restore_clients = args.restore_clients == nil and true or args.restore_clients
 
     local file = helpers.file.new_for_path(DATA_PATH)
-    file:read_string(function(error, content)
+    file:read(function(error, content)
         if error == nil then
             self.restored_settings = helpers.json.decode(content)
             if self.restored_settings ~= nil then

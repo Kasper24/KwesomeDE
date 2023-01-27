@@ -38,11 +38,6 @@ local function github_events(self)
         string.format(link, self._private.username),
         UPDATE_INTERVAL,
         function(content)
-            if content == nil or content == false then
-                self:emit_signal("events::error")
-                return
-            end
-
             local data = helpers.json.decode(content)
 
             if data == nil then
@@ -66,7 +61,7 @@ local function github_events(self)
                             is_downloading = true
 
                             local remote_file = helpers.file.new_for_uri(event.actor.avatar_url)
-                            remote_file:read_string(function(error, content)
+                            remote_file:read(function(error, content)
                                 if error == nil then
                                     file:write(content, function(error)
                                         is_downloading = false
@@ -102,7 +97,6 @@ local function github_prs(self)
     local DATA_PATH = path .. "data.json"
 
     local link = "https://api.github.com/search/issues?q=author%3A" .. self._private.username .. "+type%3Apr"
-
     local old_data = nil
 
     helpers.filesystem.remote_watch(
@@ -110,11 +104,6 @@ local function github_prs(self)
         link,
         UPDATE_INTERVAL,
         function(content)
-            if content == nil or content == false then
-                self:emit_signal("prs::error")
-                return
-            end
-
             local data = helpers.json.decode(content)
             if data == nil then
                 self:emit_signal("prs::error")
@@ -135,7 +124,7 @@ local function github_prs(self)
                             is_downloading = true
 
                             local remote_file = helpers.file.new_for_uri(pr.user.avatar_url)
-                            remote_file:read_string(function(error, content)
+                            remote_file:read(function(error, content)
                                 if error == nil then
                                     file:write(content, function(error)
                                         is_downloading = false

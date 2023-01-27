@@ -62,7 +62,7 @@ end
 
 local function read_notifications(self)
     local file = helpers.file.new_for_path(DATA_PATH)
-    file:read_string(function(error, content)
+    file:read(function(error, content)
         if error == nil then
             self._private.notifications = helpers.json.decode(content) or {}
 

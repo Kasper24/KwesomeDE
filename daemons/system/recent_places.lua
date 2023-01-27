@@ -17,7 +17,7 @@ local path = os.getenv("HOME").. "/.local/share/user-places.xbel"
 
 local function get_places(self)
     local file = helpers.file.new_for_path(path)
-    file:read_string(function(error, content)
+    file:read(function(error, content)
         if error == nil then
             local in_bookmark = false
             local recent_places = {}

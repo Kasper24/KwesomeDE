@@ -64,7 +64,7 @@ local function new()
     gtimer { timeout = UPDATE_INTERVAL, autostart = true, call_now = true, callback = function()
         local old_data = nil
         local file = helpers.file.new_for_path(DATA_PATH)
-        file:read_string(function(error, content)
+        file:read(function(error, content)
             if error == nil then
                 local data = helpers.json.decode(content)
                 if data ~= nil then

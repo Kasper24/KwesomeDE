@@ -46,11 +46,6 @@ function gitlab:refresh()
         string.format(link, self._private.host, self._private.access_token),
         UPDATE_INTERVAL,
         function(content)
-            if content == nil or content == false then
-                self:emit_signal("error")
-                return
-            end
-
             local data = helpers.json.decode(content)
             if data == nil then
                 self:emit_signal("error")
@@ -71,7 +66,7 @@ function gitlab:refresh()
                             is_downloading = true
 
                             local remote_file = helpers.file.new_for_uri(pr.author.avatar_url)
-                            remote_file:read_string(function(error, content)
+                            remote_file:read(function(error, content)
                                 if error == nil then
                                     file:write(content, function(error)
                                         is_downloading = false

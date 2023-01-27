@@ -36,6 +36,7 @@ local lgi = require("lgi")
 local Gio = lgi.Gio
 local GLib = lgi.GLib
 local GFile = Gio.File
+local awful = require("awful")
 
 local stream_utils = require("helpers.filesystem.stream")
 
@@ -287,33 +288,36 @@ function File:write(data, mode, cb)
     local priority = GLib.PRIORITY_DEFAULT
 
     -- Make parent directories
-    self._private.f:get_parent():make_directory_with_parents()
+    -- make_directory_with_parents is blocking
+    -- and gio provides no other easy way to do this
+    -- so shelling out
+    local parent = self._private.f:get_parent():get_path()
+    awful.spawn.easy_async(string.format("mkdir -p %s", parent), function()
+        if type(mode) == "function" then
+            cb = mode
+            mode = nil
+        end
 
-    if type(mode) == "function" then
-        cb = mode
-        mode = nil
-    end
+        -- Stop it from complaing since I don't always need a cb
+        if cb == nil then
+            cb = function() end
+        end
 
-    -- Stop it from complaing since I don't always need a cb
-    if cb == nil then
-        cb = function() end
-    end
+        async.dag({
+            stream = function(_, cb_inner)
+                self:write_stream(mode, cb_inner)
+            end,
+            write = { "stream", function(results, cb_inner)
+                local stream = table.unpack(results.stream)
 
-    async.dag({
-        stream = function(_, cb_inner)
-            self:write_stream(mode, cb_inner)
-        end,
-        write = { "stream", function(results, cb_inner)
-            local stream = table.unpack(results.stream)
-
-            stream:write_all_async(data, priority, nil, function(_, token)
-                local _, _, err = stream:write_all_finish(token)
-                cb_inner(err)
-            end)
-        end },
-    }, clean_up_stream(nil, cb))
+                stream:write_all_async(data, priority, nil, function(_, token)
+                    local _, _, err = stream:write_all_finish(token)
+                    cb_inner(err)
+                end)
+            end },
+        }, clean_up_stream(nil, cb))
+    end)
 end
-
 
 --- Read at most the specified number of bytes from the file.
 --
@@ -372,6 +376,15 @@ function File:read_string(cb)
     }, clean_up_stream("string", cb))
 end
 
+-- Read string fails to correctly read some files
+function File:read(cb)
+    local f = self._private.f
+    f:load_contents_async(nil, function(_, task, __)
+        local content = f:load_contents_finish(task)
+        local err = (content == false) and true or nil
+        cb(err, content)
+    end)
+end
 
 --- Read a line from the file.
 --

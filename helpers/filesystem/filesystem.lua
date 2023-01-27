@@ -88,6 +88,8 @@ function filesystem.iterate_contents(dir, iteratee, options, cb)
     local BUFFER_SIZE = 50
     local f = file_arg(dir)
 
+    local outer_cb = cb or function() end
+
     async.dag({
         enumerator = function(_, cb)
             f:enumerate_children_async(attributes, Gio.FileQueryInfoFlags.NONE, priority, nil, function(_, token)
@@ -112,7 +114,7 @@ function filesystem.iterate_contents(dir, iteratee, options, cb)
 
                     local tasks = {}
 
-                    for _, info in ipairs(infos) do
+                    for index, info in ipairs(infos) do
                         local path = string.format("%s/%s", f:get_path(), info:get_name())
                         local f = File.new_for_path(path)
 
@@ -124,6 +126,10 @@ function filesystem.iterate_contents(dir, iteratee, options, cb)
                             table.insert(tasks, async.callback(f, filesystem.iterate_contents, iteratee, options))
                         else
                             table.insert(tasks, async.callback(nil, iteratee, info))
+                        end
+
+                        if index == #infos then
+                            outer_cb()
                         end
                     end
 
@@ -320,11 +326,10 @@ function filesystem.remote_watch(path, uri, interval, callback, old_content_call
 
     local function download()
         local remote_file = File.new_for_uri(uri)
-        remote_file:read_string(function(error, content)
-            if error == nil then
-                callback(content)
-                file:write(content)
-            end
+
+        remote_file:read(function(error, content)
+            callback(content)
+            file:write(content)
         end)
     end
 
@@ -369,58 +374,6 @@ function filesystem.remote_watch(path, uri, interval, callback, old_content_call
             end)
         end
     }
-
-    -- file:read_string(function(error, old_content)
-    --     if error == nil then
-    --         if old_content_callback ~= nil then
-    --             old_content_callback(old_content)
-    --         end
-    --     end
-
-    --     local timer
-    --     timer = gtimer
-    --     {
-    --         timeout = interval,
-    --         call_now = true,
-    --         autostart = true,
-    --         single_shot = false,
-    --         callback = function()
-    --             file:query_info("time::modified", function(error, info)
-    --                 if error == nil then
-    --                     local time = info:get_modification_date_time()
-    --                     local diff = math.ceil(GLib.DateTime.new_now_local():difference(time) / 1000000)
-    --                     print("diff: " .. diff .. " interval: " .. interval)
-
-    --                     if diff >= interval then
-    --                         print("Enough time had passed, redownloading " .. path)
-    --                         download()
-    --                     else
-    --                         file:read_string(function(error, content)
-    --                             print(path .. " " .. error)
-    --                             if error or content == nil or content:gsub("%s+", "") == "" then
-    --                                 print("Empty file, Redownloading " .. path)
-    --                                 download()
-    --                             else
-    --                                 callback(content)
-    --                             end
-    --                         end)
-
-    --                         -- Schedule an update for when the remaining time to complete the interval passes
-    --                         timer:stop()
-    --                         gtimer.start_new(interval - diff, function()
-    --                             print("Enough time had passed, redownloading " .. path)
-    --                             download()
-    --                             timer:again()
-    --                         end)
-    --                     end
-    --                 else
-    --                     print(path .. " doesn't exist, downloading " .. uri)
-    --                     download()
-    --                 end
-    --             end)
-    --         end
-    --     }
-    -- end)
 end
 
 function filesystem.get_config_dir(sub_folder)

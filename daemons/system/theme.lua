@@ -172,10 +172,10 @@ end
 
 local function generate_templates(self)
     helpers.filesystem.iterate_contents(BASE_TEMPLATES_PATH, function(file)
-        local template_path = file:get_path()
-        if template_path:match(".base") ~= nil then
-            local file = helpers.file.new_for_path(template_path)
-            file:read_string(function(error, content)
+        local template_name = file:get_name()
+        if template_name:match(".base") ~= nil then
+            local file = helpers.file.new_for_path(template_name)
+            file:read(function(error, content)
                 if error == nil then
                     local lines = {}
                     local copy_to = nil
@@ -230,7 +230,6 @@ local function generate_templates(self)
                     local output = table.concat(lines, "\n")
 
                     -- Get the name of the file
-                    local name = template_path:gsub(BASE_TEMPLATES_PATH, "")
                     name = name:gsub(".base", "")
 
                     -- Save to ~/.cache/awesome/templates
@@ -282,8 +281,7 @@ local function generate_colorscheme(self, wallpaper, reset, light)
 
             if #colors < 16 then
                 if color_count < 37 then
-                    print("Imagemagick couldn't generate a palette.")
-                    print("Trying a larger palette size " .. color_count)
+                    print("Imagemagick couldn't generate a palette. Trying a larger palette size " .. color_count)
                     color_count = color_count + 1
                     imagemagick()
                     return
@@ -486,7 +484,7 @@ local function scan_for_wallpapers(self)
     -- if there are more changes coming soon
     local emit_signal_timer = gtimer
     {
-        timeout = 1,
+        timeout = 0.5,
         autostart = false,
         single_shot = true,
         callback = function()
@@ -503,14 +501,14 @@ local function scan_for_wallpapers(self)
     }
 
     helpers.filesystem.iterate_contents(WALLPAPERS_PATH, function(file)
-        local wallpaper_path = file:get_path()
-
-        local is_duplicate = helpers.table.contains(self._private.images, wallpaper_path)
+        local wallpaper_path = WALLPAPERS_PATH .. file:get_name()
         local mimetype = Gio.content_type_guess(wallpaper_path)
-        if is_duplicate == false and PICTURES_MIMETYPES[mimetype] ~= nil then
+        if PICTURES_MIMETYPES[mimetype] ~= nil then
             table.insert(self._private.images, wallpaper_path)
         end
-    end, {})
+    end, {}, function()
+        emit_signal_timer:again()
+    end)
 end
 
 local function watch_wallpaper_changes(self)
@@ -635,7 +633,7 @@ local function new()
     ret._private = {}
 
     local file = helpers.file.new_for_path(COLORSCHEME_DATA_PATH)
-    file:read_string(function(error, content)
+    file:read(function(error, content)
         if error == nil then
             ret._private.colors = helpers.json.decode(content) or {}
         end
