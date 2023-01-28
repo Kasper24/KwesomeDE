@@ -70,7 +70,7 @@ local function access_point_widget(layout, access_point, accent_color)
         icon = beautiful.icons.lock.icon,
     }
 
-    local toggle_password_button = widgets.checkbox
+    local toggle_password_obscure_button = widgets.checkbox
     {
         on_by_default = true,
         on_turn_on = function()
@@ -106,7 +106,7 @@ local function access_point_widget(layout, access_point, accent_color)
         valign = "center",
         size = 12,
         color = beautiful.colors.on_surface,
-        text =  "Auto Connect"
+        text =  "Auto Connect: "
     }
 
     local cancel = wibox.widget
@@ -210,15 +210,14 @@ local function access_point_widget(layout, access_point, accent_color)
                 },
                 {
                     layout = wibox.layout.fixed.horizontal,
-                    spacing = dpi(5),
+                    spacing = dpi(15),
                     prompt.widget,
-                    toggle_password_button
+                    toggle_password_obscure_button
                 },
                 {
                     layout = wibox.layout.fixed.horizontal,
-                    spacing = dpi(10),
-                    auto_connect_checkbox,
                     auto_connect_text,
+                    auto_connect_checkbox,
                 },
                 {
                     layout = wibox.layout.flex.horizontal,

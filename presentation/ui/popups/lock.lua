@@ -133,7 +133,7 @@ local function widget(self)
         end
     }
 
-    local toggle_password_button = widgets.checkbox
+    local toggle_password_obscure_button = widgets.checkbox
     {
         text_bg = beautiful.colors.on_background,
         on_by_default = true,
@@ -218,7 +218,7 @@ local function widget(self)
                     layout = wibox.layout.fixed.horizontal,
                     spacing = dpi(15),
                     self._private.prompt.widget,
-                    toggle_password_button
+                    toggle_password_obscure_button
                 },
                 unlock_button
             }
