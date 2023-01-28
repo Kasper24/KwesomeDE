@@ -116,7 +116,7 @@ local function new()
 		easing = helpers.animation.easing.linear,
 		duration = 0.2,
 		update = function(self, pos)
-			text_widget:set_size(pos)
+			widget.text_widget:set_size(pos)
 		end
 	}
 
