@@ -229,5 +229,37 @@
       </description>
     </key>
 
+   <key name="picom-active-opacity" type="i">
+      <default>1</default>
+      <summary>Picom active opacity</summary>
+      <description>
+        The opacity of the currently focused client
+      </description>
+    </key>
+
+   <key name="picom-inactive-opacity" type="i">
+      <default>1</default>
+      <summary>Picom inactive opacity</summary>
+      <description>
+        The opacity of inactive clients
+      </description>
+    </key>
+
+   <key name="picom-corner-radius" type="i">
+      <default>0</default>
+      <summary>Picom corner radius</summary>
+      <description>
+        How much rounding to apply to the clients
+      </description>
+    </key>
+
+   <key name="picom-blur-strength" type="i">
+      <default>10</default>
+      <summary>Picom blur</summary>
+      <description>
+        Blur amount
+      </description>
+    </key>
+
   </schema>
 </schemalist>

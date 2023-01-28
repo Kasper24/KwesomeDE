@@ -8,18 +8,31 @@ local wibox = require("wibox")
 local widgets = require("presentation.ui.widgets")
 local beautiful = require("beautiful")
 local theme_daemon = require("daemons.system.theme")
+local picom_daemon = require("daemons.system.picom")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 
 local settings = { mt = {} }
 
-local function command_after_generation_widget()
+local function separator()
+    return wibox.widget
+    {
+        widget = wibox.widget.separator,
+        forced_width = dpi(1),
+        forced_height = dpi(1),
+        shape = helpers.ui.rrect(beautiful.border_radius),
+        orientation = "horizontal",
+        color = beautiful.colors.surface
+    }
+end
+
+local function command_after_generation()
     local title = wibox.widget
     {
         widget = widgets.text,
-        size = 15,
-        text = "Run after generation:"
+        -- size = 15,
+        text = "Run after generation: "
     }
 
     local prompt = widgets.prompt
@@ -40,19 +53,27 @@ local function command_after_generation_widget()
     return wibox.widget
     {
         layout = wibox.layout.fixed.horizontal,
-        spacing = dpi(5),
         title,
         prompt.widget
     }
 end
 
-local function picom_slider(value)
+local function picom_slider(key, max)
+    local display_name = key:gsub("(%l)(%w*)", function(a,b) return string.upper(a)..b end)
+    display_name = display_name:gsub("-", " ")  .. ": "
+
+    local name = wibox.widget
+    {
+        widget = widgets.text,
+        text = display_name
+    }
+
     local slider = wibox.widget
     {
         widget = widgets.slider,
         forced_height = dpi(20),
-        -- value = args.device.volume,
-        maximum = 100,
+        value = picom_daemon["get_" .. key](picom_daemon),
+        maximum = max or 100,
         bar_height = 5,
         bar_shape = helpers.ui.rrect(beautiful.border_radius),
         bar_color = beautiful.colors.surface,
@@ -62,15 +83,16 @@ local function picom_slider(value)
         handle_shape = gshape.circle,
     }
 
-    pactl_daemon:connect_signal(args.type .. "::" .. args.device.id .. "::updated", function(self, device)
-        slider:set_value_instant(device.volume)
+    slider:connect_signal("property::value", function(self, value, instant)
+        picom_daemon["set_" .. key](picom_daemon, value)
     end)
 
-    slider:connect_signal("property::value", function(self, value, instant)
-        if instant == false then
-            args.on_slider_moved(value)
-        end
-    end)
+    return wibox.widget
+    {
+        layout = wibox.layout.fixed.horizontal,
+        name,
+        slider
+    }
 end
 
 local function new(layout)
@@ -95,20 +117,31 @@ local function new(layout)
 
     return wibox.widget
     {
-        widget = wibox.container.margin,
-        margins = dpi(23),
+        layout = wibox.layout.fixed.vertical,
+        spacing = dpi(15),
         {
-            layout = wibox.layout.fixed.vertical,
+            layout = wibox.layout.fixed.horizontal,
             spacing = dpi(15),
+            back_button,
+            settings_text
+        },
+        {
+            widget = wibox.container.margin,
+            margins = { left = dpi(25), right = dpi(25) },
             {
-                layout = wibox.layout.fixed.horizontal,
+                layout = wibox.layout.fixed.vertical,
                 spacing = dpi(15),
-                back_button,
-                settings_text
-            },
-            command_after_generation_widget()
+                separator(),
+                command_after_generation(),
+                separator(),
+                picom_slider("active-opacity", 1),
+                picom_slider("inactive-opacity", 1),
+                picom_slider("corner-radius"),
+                picom_slider("blur-strength", 20),
+            }
         }
     }
+
 end
 
 function settings.mt:__call(layout)
