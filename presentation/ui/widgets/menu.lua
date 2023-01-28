@@ -77,8 +77,7 @@ function menu:hide(hide_parents)
         return
     end
 
-    -- Hide self
-    self.visible = false
+    self.animation:set(1)
 
     -- Hides all child menus
     self:hide_children_menus()
@@ -110,6 +109,7 @@ function menu:show(args)
     end
 
     self:set_pos(args)
+    self.animation:set(self.menu_height)
     self.visible = true
 
     capi.awesome.emit_signal("menu::toggled_on", self)
@@ -132,18 +132,29 @@ function menu:add(widget)
         widget:get_children_by_id("button")[1].menu = self
     end
 
+    self.menu_height = self.menu_height + widget.forced_height
+
     self.widget:add(widget)
 end
 
 function menu:remove(index)
+    print(self.widget.children[index].forced_height)
+    self.menu_height = self.menu_height - self.widget.children[index].forced_height
     self.widget:remove(index)
 end
 
 function menu:reset()
+    self.menu_height = 0
     self.widget:reset()
 end
 
 function menu.menu(widgets, width)
+    local menu_container = wibox.widget
+    {
+        layout = wibox.layout.fixed.vertical,
+        forced_height = 0,
+    }
+
     local widget = awful.popup
     {
         x = 32500,
@@ -154,10 +165,28 @@ function menu.menu(widgets, width)
         maximum_width = width or dpi(300),
         shape = helpers.ui.rrect(beautiful.border_radius),
         bg = beautiful.colors.background,
-        widget = wibox.layout.fixed.vertical
+        widget = menu_container
     }
 	gtable.crush(widget, menu, true)
 
+    -- -- Setup animations
+	widget.animation = helpers.animation:new
+	{
+		pos = 0,
+		easing = helpers.animation.easing.outInCirc,
+		duration = 0.4,
+		update = function(self, pos)
+			menu_container.forced_height = dpi(pos)
+		end,
+        signals =
+        {
+            ["ended"] = function()
+                if menu_container.forced_height == 1 then
+                    widget.visible = false
+                end
+            end
+        }
+	}
 
     capi.awesome.connect_signal("root::pressed", function()
         if widget.can_hide == true then
@@ -181,6 +210,7 @@ function menu.menu(widgets, width)
         end
     end)
 
+    widget.menu_height = 0
     for _, menu_widget in ipairs(widgets) do
         widget:add(menu_widget)
     end
@@ -208,12 +238,12 @@ function menu.sub_menu_button(args)
     local widget = wibox.widget
     {
         widget = wibox.container.margin,
+        forced_height = dpi(45),
         sub_menu = args.sub_menu,
         margins = dpi(5),
         {
             widget = ebwidget.state,
             id = "button",
-            forced_height = dpi(35),
             shape = helpers.ui.rrect(0),
             on_hover = function(self)
                 local coords = helpers.ui.get_widget_geometry(self.menu, self)
@@ -289,11 +319,11 @@ function menu.button(args)
     return wibox.widget
     {
         widget = wibox.container.margin,
+        forced_height = dpi(45),
         margins = dpi(5),
         {
             widget = ebwidget.normal,
             id = "button",
-            forced_height = dpi(35),
             shape = helpers.ui.rrect(0),
             on_release = function(self)
                 self.menu:hide(true)
@@ -356,6 +386,7 @@ function menu.checkbox_button(args)
     local widget = wibox.widget
     {
         widget = wibox.container.margin,
+        forced_height = dpi(45),
         margins = dpi(5),
         {
             widget = wibox.container.place,
@@ -363,7 +394,6 @@ function menu.checkbox_button(args)
             {
                 widget = ebwidget.normal,
                 id = "button",
-                forced_height = dpi(35),
                 shape = helpers.ui.rrect(0),
                 on_release = function(self)
                     args.on_press()
@@ -407,10 +437,10 @@ function menu.separator()
     return wibox.widget
     {
         widget = wibox.container.margin,
+        forced_height = dpi(15),
         margins = dpi(5),
         {
             widget = wibox.widget.separator,
-            forced_height = dpi(2),
             orientation = "horizontal",
             thickness = dpi(1),
             color = beautiful.colors.on_background .. "64"
