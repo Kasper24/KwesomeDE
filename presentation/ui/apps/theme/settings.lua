@@ -32,7 +32,7 @@ local function command_after_generation()
     {
         widget = widgets.text,
         -- size = 15,
-        text = "Run after generation: "
+        text = "Command after generation: "
     }
 
     local prompt = widgets.prompt
@@ -58,7 +58,7 @@ local function command_after_generation()
     }
 end
 
-local function picom_slider(key, max)
+local function picom_slider(key, max, divide_by, round)
     local display_name = key:gsub("(%l)(%w*)", function(a,b) return string.upper(a)..b end)
     display_name = display_name:gsub("-", " ")  .. ": "
 
@@ -72,7 +72,7 @@ local function picom_slider(key, max)
     {
         widget = widgets.slider,
         forced_height = dpi(20),
-        value = picom_daemon["get_" .. key](picom_daemon),
+        value = picom_daemon["get_" .. key](picom_daemon) * 100,
         maximum = max or 100,
         bar_height = 5,
         bar_shape = helpers.ui.rrect(beautiful.border_radius),
@@ -84,6 +84,10 @@ local function picom_slider(key, max)
     }
 
     slider:connect_signal("property::value", function(self, value, instant)
+        local value = value / (divide_by or 1)
+        if round == true then
+            value = math.floor(value)
+        end
         picom_daemon["set_" .. key](picom_daemon, value)
     end)
 
@@ -134,19 +138,20 @@ local function new(layout)
                 separator(),
                 command_after_generation(),
                 separator(),
-                picom_slider("active-opacity", 1),
-                picom_slider("inactive-opacity", 1),
+                picom_slider("active-opacity", 100, 100, false),
+                picom_slider("inactive-opacity", 100, 100, false),
                 separator(),
-                picom_slider("corner-radius"),
-                picom_slider("blur-strength", 20),
+                picom_slider("corner-radius", 100, 1, true),
+                picom_slider("blur-strength", 20, 1, true),
                 separator(),
-                picom_slider("shadow-radius", 20),
-                picom_slider("shadow-offset-x", 1),
-                picom_slider("shadow-offset-y", 1),
+                picom_slider("shadow-radius", 100, 1, true),
+                picom_slider("shadow-opacity", 100, 100, false),
+                picom_slider("shadow-offset-x", 100, 1, true),
+                picom_slider("shadow-offset-y", 100, 1, true),
                 separator(),
-                picom_slider("fade-delta", 20),
-                picom_slider("fade-in-step", 1),
-                picom_slider("fade-out-step", 1),
+                picom_slider("fade-delta", 100, 1, true),
+                picom_slider("fade-in-step", 100, 100, false),
+                picom_slider("fade-out-step", 100, 100, false),
             }
         }
     }

@@ -85,6 +85,7 @@ end
 
 local function icons()
     local font_awesome_6_solid_font_name = "Font Awesome 6 Pro Solid "
+    local font_awesome_6_regular_font_name = "Font Awesome 6 Pro Regular "
     local font_awesome_6_brands_font_name = "Font Awesome 6 Brands "
     local nerd_font_name = "Nerd Font Mono "
 
@@ -434,14 +435,14 @@ local function defaults()
 end
 
 local function opacity()
-    theme.opacity_normal = 0.5
-    theme.opacity_active = 0.9
-    theme.opacity_urgent = 0.9
-    theme.opacity_new = 0.9
-    theme.opacity_floating_normal = 0.5
-    theme.opacity_floating_active = 0.9
-    theme.opacity_floating_urgent = 0.9
-    theme.opacity_floating_new = 0.9
+    theme.opacity_normal = nil
+    theme.opacity_active = nil
+    theme.opacity_urgent = nil
+    theme.opacity_new = nil
+    theme.opacity_floating_normal = nil
+    theme.opacity_floating_active = nil
+    theme.opacity_floating_urgent = nil
+    theme.opacity_floating_new = nil
     theme.opacity_maximized_normal = nil
     theme.opacity_maximized_active = nil
     theme.opacity_maximized_urgent = nil

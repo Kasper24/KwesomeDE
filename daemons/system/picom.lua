@@ -13,7 +13,7 @@ local capi = { awesome = awesome }
 local picom = { }
 local instance = nil
 
-local UPDATE_INTERVAL = 1
+local UPDATE_INTERVAL = 5
 local CONFIG_PATH = helpers.filesystem.get_awesome_config_dir("config") .. "picom.conf"
 
 local properties =
@@ -21,7 +21,7 @@ local properties =
 	"active-opacity", "inactive-opacity",
     "fade-delta", "fade-in-step", "fade-out-step",
 	"corner-radius", "blur-strength",
-    "shadow-radius", "shadow-offset-x", "shadow-offset-y", "shadow-opacity"
+    "shadow-radius", "shadow-opacity", "shadow-offset-x", "shadow-offset-y"
 }
 
 function picom:turn_on(save, skip_check)
