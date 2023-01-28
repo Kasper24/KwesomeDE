@@ -243,7 +243,7 @@ local function new()
     {
         widget = widgets.text,
         halign = "center",
-        icon = beautiful.icons.bluetooth_off,
+        icon = beautiful.icons.bluetooth.off,
         size = 100,
     }
 

@@ -20,7 +20,7 @@ local bluetooth_icons =
 bluetooth_daemon:connect_signal("state", function(self, state)
     if helpers.misc.should_show_notification() == true then
         local text = state == true and "Enabled" or "Disabled"
-        local font_icon = state == true and beautiful.icons.bluetooth or beautiful.icons.bluetooth_off
+        local font_icon = state == true and beautiful.icons.bluetooth.on or beautiful.icons.bluetooth.off
         local icons = state == true and bluetooth_icons
         or
         {
@@ -36,7 +36,7 @@ bluetooth_daemon:connect_signal("state", function(self, state)
 
         naughty.notification
         {
-            app_font_icon = beautiful.icons.bluetooth,
+            app_font_icon = beautiful.icons.bluetooth.on,
             app_icon = bluetooth_icons,
             app_name = "Bluetooth",
             font_icon = font_icon,
@@ -63,7 +63,7 @@ bluetooth_daemon:connect_signal("device_event", function(self, event, device)
 
     naughty.notification
     {
-        app_font_icon = beautiful.icons.bluetooth,
+        app_font_icon = beautiful.icons.bluetooth.on,
         app_icon = bluetooth_icons,
         app_name = "Bluetooth",
         icon = {device.Icon},

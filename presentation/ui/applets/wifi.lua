@@ -46,8 +46,9 @@ local function access_point_widget(layout, access_point, accent_color)
     {
         widget = widgets.text,
         halign = "left",
-        icon =  access_point.strength > 66 and beautiful.icons.wifi_high or
-                access_point.strength > 33 and beautiful.icons.wifi_medium or beautiful.icons.wifi_low,
+        icon =  access_point.strength > 66 and beautiful.icons.network.wifi_high or
+                access_point.strength > 33 and beautiful.icons.network.wifi_medium or
+                    beautiful.icons.network.wifi_low,
         size = 25,
     }
 
@@ -305,7 +306,7 @@ local function new()
     {
         widget = widgets.text,
         halign = "center",
-        icon = beautiful.icons.wifi_off,
+        icon = beautiful.icons.network.wifi_off,
         size = 100,
     }
 

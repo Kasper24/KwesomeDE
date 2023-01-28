@@ -549,14 +549,14 @@ local function system_tray()
             widget = widgets.button.text.state,
             forced_width = dpi(50),
             forced_height = dpi(50),
-            icon = beautiful.icons.chevron_circle_left,
+            icon = beautiful.icons.chevron_circle.left,
             on_turn_on = function(self)
                 system_tray_animation:set(400)
-                self:set_icon(beautiful.icons.chevron_circle_right)
+                self:set_icon(beautiful.icons.chevron_circle.right)
             end,
             on_turn_off = function(self)
                 system_tray_animation:set(0)
-                self:set_icon(beautiful.icons.chevron_circle_left)
+                self:set_icon(beautiful.icons.chevron_circle.left)
             end,
         }
     }
@@ -574,7 +574,7 @@ local function network()
     {
         widget = widgets.text,
         halign = "center",
-        icon = beautiful.icons.wifi_off,
+        icon = beautiful.icons.network.wifi_off,
         size = 17,
     }
 
@@ -582,17 +582,17 @@ local function network()
         if state then
             widget:set_icon(beautiful.icons.router)
         else
-            widget:set_icon(beautiful.icons.wifi_off)
+            widget:set_icon(beautiful.icons.network.wifi_off)
         end
     end)
 
     network_daemon:connect_signal("access_point::connected", function(self, ssid, strength)
         if strength < 33 then
-            widget:set_icon(beautiful.icons.wifi_low)
+            widget:set_icon(beautiful.icons.network.wifi_low)
         elseif strength >= 33 then
-            widget:set_icon(beautiful.icons.wifi_medium)
+            widget:set_icon(beautiful.icons.network.wifi_medium)
         elseif strength >= 66 then
-            widget:set_icon(beautiful.icons.wifi_high)
+            widget:set_icon(beautiful.icons.network.wifi_high)
         end
     end)
 
@@ -604,15 +604,15 @@ local function bluetooth()
     {
         widget = widgets.text,
         halign = "center",
-        icon = beautiful.icons.bluetooth,
+        icon = beautiful.icons.bluetooth.on,
         size = 17,
     }
 
     bluetooth_daemon:connect_signal("state", function(self, state)
         if state == true then
-            widget:set_icon(beautiful.icons.bluetooth)
+            widget:set_icon(beautiful.icons.bluetooth.on)
         else
-            widget:set_icon(beautiful.icons.bluetooth_off)
+            widget:set_icon(beautiful.icons.bluetooth.off)
         end
     end)
 
@@ -624,19 +624,19 @@ local function volume()
     {
         widget = widgets.text,
         halign = "center",
-        icon = beautiful.icons.volume_normal,
+        icon = beautiful.icons.volume.normal,
         size = 17,
     }
 
     pactl_daemon:connect_signal("default_sinks_updated", function(self, device)
         if device.mute or device.volume == 0 then
-            widget:set_icon(beautiful.icons.volume_off)
+            widget:set_icon(beautiful.icons.volume.off)
         elseif device.volume <= 33 then
-            widget:set_icon(beautiful.icons.volume_low)
+            widget:set_icon(beautiful.icons.volume.low)
         elseif device.volume <= 66 then
-            widget:set_icon(beautiful.icons.volume_normal)
+            widget:set_icon(beautiful.icons.volume.normal)
         elseif device.volume > 66 then
-            widget:set_icon(beautiful.icons.volume_high)
+            widget:set_icon(beautiful.icons.volume.high)
         end
     end)
 

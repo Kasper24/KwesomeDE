@@ -377,7 +377,7 @@ local function new(args)
         stack:raise_widget(weather_widget)
 
         local weather = result.current
-        icon:set_icon(icon_map[weather.weather[1].icon])
+        icon:set_icon(icon_map[weather.weather[1]])
         current_weather_widget:get_children_by_id("temp")[1]:set_text(gen_temperature_str(weather.temp, "%.0f", args.both_units_widget, units))
         current_weather_widget:get_children_by_id("feels_like_temp")[1]:set_text("Feels like " .. gen_temperature_str(weather.feels_like, "%.0f", false, units))
         current_weather_widget:get_children_by_id("description")[1]:set_text(weather.weather[1].description)

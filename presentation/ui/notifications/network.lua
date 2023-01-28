@@ -23,7 +23,7 @@ network_daemon:connect_signal("wireless_state", function(self, state)
     if helpers.misc.should_show_notification() == true then
         local text = state == true and "Enabled" or "Disabled"
         local category = state == true and "network.connected" or "network.disconnected"
-        local font_icon = state == true and beautiful.icons.wifi_high or beautiful.icons.wifi_off
+        local font_icon = state == true and beautiful.icons.network.wifi_high or beautiful.icons.network.wifi_off
 
         naughty.notification
         {
@@ -42,11 +42,11 @@ end)
 network_daemon:connect_signal("access_point::connected", function(self, ssid, strength)
     local font_icon = ""
     if strength < 33 then
-        font_icon = beautiful.icons.wifi_low
+        font_icon = beautiful.icons.network.wifi_low
     elseif strength >= 33 then
-        font_icon = beautiful.icons.wifi_medium
+        font_icon = beautiful.icons.network.wifi_medium
     elseif strength >= 66 then
-        font_icon = beautiful.icons.wifi_high
+        font_icon = beautiful.icons.network.wifi_high
     end
 
     if helpers.misc.should_show_notification() == true then
@@ -101,7 +101,7 @@ network_daemon:connect_signal("add_connection::success", function(self, ssid)
         app_font_icon = beautiful.icons.router,
         app_icon = icons,
         app_name = "Network Manager",
-        font_icon = beautiful.icons.circle_plus,
+        font_icon = beautiful.icons.circle.plus,
         icon = icons,
         title = "Connection " .. ssid .. " added",
         text = "Success",
@@ -128,7 +128,7 @@ network_daemon:connect_signal("activate_access_point::success", function(self, s
         app_font_icon = beautiful.icons.router,
         app_icon = icons,
         app_name = "Network Manager",
-        font_icon = beautiful.icons.toggle_on,
+        font_icon = beautiful.icons.toggle.on,
         icon = icons,
         title = "Activated " .. ssid,
         text = "Success",

@@ -99,7 +99,7 @@ local function application_widget(args)
         text_bg = args.accent_color,
         on_bg = args.accent_color,
         text_on_bg = beautiful.colors.on_accent,
-        icon = beautiful.icons.volume_off,
+        icon = beautiful.icons.volume.off,
         size = 12,
         halign = "right",
         on_press = function()
@@ -205,7 +205,7 @@ local function device_widget(args)
         text_bg = args.accent_color,
         on_bg = args.accent_color,
         text_on_bg = beautiful.colors.on_accent,
-        icon = beautiful.icons.volume_off,
+        icon = beautiful.icons.volume.off,
         size = 12,
         on_press = function()
             args.on_mute_press()

@@ -49,7 +49,7 @@ local function arrow_button(icon, text, on_icon_release, on_arrow_release)
         bg = beautiful.colors.surface,
         on_bg = accent_color,
         text_on_bg = beautiful.colors.on_accent,
-        icon = beautiful.icons.chevron_right,
+        icon = beautiful.icons.chevron.right,
         on_release = on_arrow_release
     }
 
@@ -160,7 +160,7 @@ end
 local function wifi(action_panel)
     local widget = arrow_button
     (
-        beautiful.icons.wifi_high,
+        beautiful.icons.network.wifi_high,
         "Wi-Fi",
         function()
             network_daemon:toggle_wireless_state()
@@ -188,7 +188,7 @@ end
 local function bluetooth(action_panel)
     local widget = arrow_button
     (
-        beautiful.icons.bluetooth,
+        beautiful.icons.bluetooth.on,
         "Bluetoooth",
         function()
             bluetooth_daemon:toggle()
@@ -212,7 +212,7 @@ end
 local function airplane_mode()
     local widget = button
     (
-        beautiful.icons.airplane,
+        beautiful.icons.airplane.on,
         "Airplane Mode",
         function()
             radio_daemon:toggle()
@@ -233,7 +233,7 @@ end
 local function blue_light()
     local widget =  button
     (
-        beautiful.icons.lightbulb,
+        beautiful.icons.lightbulb.on,
         "Blue Light",
         function()
             redshift_daemon:toggle()
@@ -309,7 +309,7 @@ end
 local function microphone()
     local widget = button
     (
-        beautiful.icons.microphone,
+        beautiful.icons.microphone.on,
         "Microphone",
         function()
             pactl_daemon:source_toggle_mute()

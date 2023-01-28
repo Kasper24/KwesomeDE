@@ -38,31 +38,31 @@ local function new()
     {
         widget = twidget,
         halign = "center",
-        icon = beautiful.icons.battery_full,
+        icon = beautiful.icons.battery.full,
         size = 17,
     }
 
     upower_daemon:connect_signal("battery::update", function(self, device)
         if device.state == UPower_States.Discharging then
             if device.percentage < 25 and battery_state ~= Battery_States.Low then
-                widget:set_icon(beautiful.icons.battery_quarter)
+                widget:set_icon(beautiful.icons.battery.quarter)
                 battery_state = Battery_States.Low
             end
 
             if device.percentage > 50 and battery_state ~= Battery_States.Medium then
-                widget:set_icon(beautiful.icons.battery_half)
+                widget:set_icon(beautiful.icons.battery.half)
                 battery_state = Battery_States.Medium
             end
 
             if device.percentage > 75 and battery_state ~= Battery_States.High then
-                widget:set_icon(beautiful.icons.battery_three_quarter)
+                widget:set_icon(beautiful.icons.battery.three_quarter)
                 battery_state = Battery_States.High
             end
         elseif device.state == UPower_States.Fully_charged and device.percentage > 90 and battery_state ~= Battery_States.Full then
-            widget:set_icon(beautiful.icons.battery_full)
+            widget:set_icon(beautiful.icons.battery.full)
             battery_state = Battery_States.Full
         elseif device.state == UPower_States.Charging and battery_state ~= Battery_States.Charging then
-            widget:set_icon(beautiful.icons.battery_bolt)
+            widget:set_icon(beautiful.icons.battery.bolt)
             battery_state = Battery_States.Charging
         end
     end)

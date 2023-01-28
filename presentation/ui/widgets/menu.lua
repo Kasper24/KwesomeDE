@@ -270,7 +270,7 @@ function menu.sub_menu_button(args)
                 nil,
                 {
                     widget = twidget,
-                    icon = beautiful.icons.chevron_right,
+                    icon = beautiful.icons.chevron.right,
                     size = 12,
                 },
             }

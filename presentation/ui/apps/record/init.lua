@@ -160,7 +160,7 @@ local function delay()
         forced_width = dpi(50),
         forced_height = dpi(50),
         text_bg = accent_color,
-        icon = beautiful.icons.circle_plus,
+        icon = beautiful.icons.circle.plus,
         on_release = function()
             value_text:set_text(record_daemon:increase_delay())
         end
@@ -172,7 +172,7 @@ local function delay()
         forced_width = dpi(50),
         forced_height = dpi(50),
         text_bg = accent_color,
-        icon = beautiful.icons.circle_minus,
+        icon = beautiful.icons.circle.minus,
         on_release = function()
             value_text:set_text(record_daemon:decrease_delay())
         end

@@ -156,21 +156,21 @@ local function disk(action_panel)
 end
 
 local function temperature()
-    local arc = arc_widget(beautiful.icons.thermometer_full)
+    local arc = arc_widget(beautiful.icons.thermometer.full)
 
     temperature_daemon:connect_signal("update", function(self, value)
         if value == nil then
-            arc:set_icon(beautiful.icons.thermometer_quarter.icon)
+            arc:set_icon(beautiful.icons.thermometer.quarter)
             arc:set_value(10)
         else
             if value == 0 then
-                arc:set_icon(beautiful.icons.thermometer_quarter.icon)
+                arc:set_icon(beautiful.icons.thermometer.quarter)
             elseif value <= 33 then
-                arc:set_icon(beautiful.icons.thermometer_half.icon)
+                arc:set_icon(beautiful.icons.thermometer.half)
             elseif value <= 66 then
-                arc:set_icon(beautiful.icons.thermometer_three_quarter.icon)
+                arc:set_icon(beautiful.icons.thermometer.three_quarter)
             elseif value > 66 then
-                arc:set_icon(beautiful.icons.thermometer_full.icon)
+                arc:set_icon(beautiful.icons.thermometer.full)
             end
 
             arc:set_value(value)
@@ -193,7 +193,7 @@ local function brightness()
 end
 
 local function audio(action_panel)
-    local arc = arc_widget(beautiful.icons.volume_off, function()
+    local arc = arc_widget(beautiful.icons.volume.off, function()
         audio_popup:toggle(action_panel.widget)
     end,
     function()
@@ -207,13 +207,13 @@ local function audio(action_panel)
         arc:set_value(device.volume)
 
         if device.mute or device.volume == 0 then
-            arc:set_icon(beautiful.icons.volume_off.icon)
+            arc:set_icon(beautiful.icons.volume.off)
         elseif device.volume <= 33 then
-            arc:set_icon(beautiful.icons.volume_low.icon)
+            arc:set_icon(beautiful.icons.volume.low)
         elseif device.volume <= 66 then
-            arc:set_icon(beautiful.icons.volume_normal.icon)
+            arc:set_icon(beautiful.icons.volume.normal)
         elseif device.volume > 66 then
-            arc:set_icon(beautiful.icons.volume_high.icon)
+            arc:set_icon(beautiful.icons.volume.high)
         end
     end)
 

@@ -613,7 +613,7 @@ function playerctl.volume(width, daemon)
     local icon = wibox.widget
     {
         widget = twidget,
-        icon = beautiful.icons.volume_normal,
+        icon = beautiful.icons.volume.normal,
         size = 12,
         color = accent_color
     }
@@ -648,13 +648,13 @@ function playerctl.volume(width, daemon)
         widget.value = volume * 100
 
         if volume == 0 then
-            icon:set_icon(beautiful.icons.volume_off)
+            icon:set_icon(beautiful.icons.volume.off)
         elseif volume <= 0.33 then
-            icon:set_icon(beautiful.icons.volume_low)
+            icon:set_icon(beautiful.icons.volume.low)
         elseif volume <= 0.66 then
-            icon:set_icon(beautiful.icons.volume_normal)
+            icon:set_icon(beautiful.icons.volume.normal)
         elseif volume > 0.66 then
-            icon:set_icon(beautiful.icons.volume_high)
+            icon:set_icon(beautiful.icons.volume.high)
         end
     end
 

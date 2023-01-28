@@ -36,7 +36,7 @@ local function notification(title, device, device_state)
                 app_font_icon = beautiful.icons.car_battery,
                 app_icon = "battery",
                 app_name = "UPower",
-                font_icon = beautiful.icons.battery_quarter,
+                font_icon = beautiful.icons.battery.quarter,
                 title = title,
                 text = "Running low at " .. device.percentage .. "%"
             }
@@ -49,7 +49,7 @@ local function notification(title, device, device_state)
                 app_font_icon = beautiful.icons.car_battery,
                 app_icon = "battery",
                 app_name = "UPower",
-                font_icon = beautiful.icons.battery_half,
+                font_icon = beautiful.icons.battery.half,
                 title = title,
                 text = "Battery is at " .. device.percentage .. "%"
             }
@@ -62,7 +62,7 @@ local function notification(title, device, device_state)
                 app_font_icon = beautiful.icons.car_battery,
                 app_icon = "battery",
                 app_name = "UPower",
-                font_icon = beautiful.icons.battery_three_quarter,
+                font_icon = beautiful.icons.battery.three_quarter,
                 title = title,
                 text = "Battery is at " .. device.percentage .. "%"
             }
@@ -74,7 +74,7 @@ local function notification(title, device, device_state)
             app_font_icon = beautiful.icons.car_battery,
             app_icon = "battery",
             app_name = "UPower",
-            font_icon = beautiful.icons.battery_full,
+            font_icon = beautiful.icons.battery.full,
             title = title,
             text = "Fully charged!"
         }
@@ -85,7 +85,7 @@ local function notification(title, device, device_state)
             app_font_icon = beautiful.icons.car_battery,
             app_icon = "battery",
             app_name = "UPower",
-            font_icon = beautiful.icons.battery_bolt,
+            font_icon = beautiful.icons.battery.bolt,
             title = title,
             text = "Charging"
         }
