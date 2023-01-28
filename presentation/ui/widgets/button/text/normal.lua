@@ -19,19 +19,6 @@ local properties =
 	"animate_size",
 }
 
-local ebutton_properties =
-{
-	"forced_width", "forced_height",
-	"bg", "hover_bg", "press_bg",
-	"shape", "hover_shape", "press_shape",
-	"border_width", "hover_border_width", "press_border_width",
-	"border_color", "hover_border_color", "press_border_color",
-	"on_hover", "on_leave",
-	"on_press", "on_release",
-	"on_secondary_press", "on_secondary_release",
-	"on_scroll_up", "on_scroll_down",
-}
-
 local text_properties =
 {
 	"bold", "italic", "size",
@@ -91,20 +78,19 @@ function text_button_normal:set_text_bg(text_bg)
 end
 
 function text_button_normal:set_icon(icon)
-	local text_widget = self.children[1].children[1].children[1]
-	text_widget:set_icon(icon)
+	self.text_widget:set_icon(icon)
 	self:set_text_bg(icon.color)
 end
 
 local function new()
 	local widget = ebwidget.normal()
-	local text_widget = twidget()
-	widget:set_child(text_widget)
+	widget.text_widget = twidget()
+	widget:set_child(widget.text_widget)
 
 	gtable.crush(widget, text_button_normal, true)
 
 	local wp = widget._private
-	wp.size = text_widget:get_size()
+	wp.size = widget.text_widget:get_size()
 
 	-- Setup default values
 	wp.text_bg = beautiful.random_accent_color()
@@ -119,7 +105,7 @@ local function new()
 		easing = helpers.animation.easing.linear,
 		duration = 0.2,
 		update = function(self, pos)
-			text_widget:set_color(helpers.color.rgb_to_hex(pos))
+			widget.text_widget:set_color(helpers.color.rgb_to_hex(pos))
 		end
 	}
 
@@ -172,7 +158,6 @@ function text_button_normal.mt:__call(...)
     return new(...)
 end
 
-build_properties(text_button_normal, ebutton_properties)
 build_properties(text_button_normal, properties)
 build_text_properties(text_button_normal, text_properties)
 
