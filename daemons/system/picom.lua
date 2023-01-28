@@ -22,17 +22,29 @@ local properties =
 	"corner-radius", "blur-strength"
 }
 
-function picom:turn_on(save)
-    local p = self._private
+function picom:turn_on(save, skip_check)
+    local function turn_on()
+        local p = self._private
 
-    local cmd = string.format("picom --experimental-backends --config %s ", CONFIG_PATH)
-    for _, prop in ipairs(properties) do
-        cmd = cmd .. string.format("--%s %s ", prop, p[prop])
+        local cmd = string.format("picom --experimental-backends --config %s ", CONFIG_PATH)
+        for _, prop in ipairs(properties) do
+            cmd = cmd .. string.format("--%s %s ", prop, p[prop])
+        end
+        awful.spawn(cmd)
+
+        if save == true then
+            helpers.settings:set_value("picom", true)
+        end
     end
-    awful.spawn(cmd)
 
-    if save == true then
-        helpers.settings:set_value("picom", true)
+    if skip_check ~= true then
+        helpers.run.is_running("picom",  function(is_running)
+            if is_running == false then
+                turn_on()
+            end
+        end)
+    else
+        turn_on()
     end
 end
 
@@ -61,16 +73,21 @@ local function build_properties(prototype)
                     self._private[prop] = value
                     helpers.settings:set_value("picom-" .. prop, value)
 
-                    awful.spawn.easy_async("pkill -f 'picom --experimental-backends'", function()
-                        gtimer {
-                            timeout = 0.3,
-                            call_now = false,
-                            autostart = true,
-                            single_shot = true,
-                            callback = function()
-                                self:turn_on(false)
-                            end
-                        }
+
+                    helpers.run.is_running("picom", function(is_running)
+                        if is_running == true then
+                            awful.spawn.easy_async("pkill -f 'picom --experimental-backends'", function()
+                                gtimer {
+                                    timeout = 0.3,
+                                    call_now = false,
+                                    autostart = true,
+                                    single_shot = true,
+                                    callback = function()
+                                        self:turn_on(false, true)
+                                    end
+                                }
+                            end)
+                        end
                     end)
                 end
                 return self
