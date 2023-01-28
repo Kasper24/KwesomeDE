@@ -77,7 +77,8 @@ function menu:hide(hide_parents)
         return
     end
 
-    self.animation:set(1)
+    -- No animation for hiding
+    self.animation:set({duration = 0.01, target = 1})
 
     -- Hides all child menus
     self:hide_children_menus()
