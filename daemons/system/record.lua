@@ -96,22 +96,33 @@ function record:stop_video()
 end
 
 function record:start_video()
+    local function record()
+        self._private.file_name = os.date("%d-%m-%Y-%H:%M:%S") .. "." .. self._private.format
+        local command = string.format("ffmpeg -video_size %s -framerate %d -f x11grab -i :0.0+0,0 -f pulse -i %s %s%s -c:v libx264 -profile:v main",
+                self._private.resolution, self._private.fps, self._private.audio_source, self._private.folder, self._private.file_name)
+        awful.spawn(command, false)
+        self._private.is_recording = true
+        self:emit_signal("started")
+    end
+
     gtimer {
         timeout = self._private.delay,
         single_shot = true,
         autostart = true,
         call_now = false,
         callback = function()
-            helpers.filesystem.make_directory(self._private.folder, function(result)
-                if result == true then
-                    self._private.file_name = os.date("%d-%m-%Y-%H:%M:%S") .. "." .. self._private.format
-                    local command = string.format("ffmpeg -video_size %s -framerate %d -f x11grab -i :0.0+0,0 -f pulse -i %s %s%s -c:v libx264 -profile:v main",
-                            self._private.resolution, self._private.fps, self._private.audio_source, self._private.folder, self._private.file_name)
-                    awful.spawn(command, false)
-                    self._private.is_recording = true
-                    self:emit_signal("started")
+            local folder = helpers.file.new_for_path(self._private.folder)
+            folder:exists(function(error, exists)
+                if exists == false then
+                    helpers.filesystem.make_directory(self._private.folder, function(error)
+                        if error == nil then
+                            record()
+                        else
+                            self:emit_signal("error::create_directory")
+                        end
+                    end)
                 else
-                    self:emit_signal("error::create_directory")
+                    record()
                 end
             end)
         end

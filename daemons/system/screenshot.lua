@@ -63,39 +63,50 @@ end
 function screenshot:screenshot()
     self:emit_signal("started")
 
+    local function screenshot()
+        local file_name = os.date("%d-%m-%Y-%H:%M:%S") .. ".png"
+        local command = self._private.show_cursor and "maim " or "maim -u "
+        if self._private.screenshot_method == "selection" then
+            command = command .. "-s " .. self._private.folder .. file_name
+        elseif self._private.screenshot_method == "screen" then
+            command = command .. " " .. self._private.folder .. file_name
+        elseif self._private.screenshot_method == "window" then
+            command = command .. " -i $(xdotool getactivewindow) " .. self._private.folder .. file_name
+        end
+
+        awful.spawn.easy_async_with_shell(command, function(stdout, stderr)
+            local file = helpers.file.new_for_path(self._private.folder .. file_name)
+            file:exists(function(error, exists)
+                if error == nil then
+                    if exists == true then
+                        awful.spawn("xclip -selection clipboard -t image/png -i " .. self._private.folder .. file_name, false)
+                        self:emit_signal("ended", self._private.screenshot_method, self._private.folder, file_name)
+                    else
+                        self:emit_signal("error::create_file", stderr)
+                    end
+                end
+            end)
+        end)
+    end
+
     gtimer {
         timeout = self._private.delay,
         single_shot = true,
         autostart = true,
         call_now = false,
         callback = function()
-            helpers.filesystem.make_directory(self._private.folder, function(result)
-                if result == true then
-                    local file_name = os.date("%d-%m-%Y-%H:%M:%S") .. ".png"
-                    local command = self._private.show_cursor and "maim " or "maim -u "
-                    if self._private.screenshot_method == "selection" then
-                        command = command .. "-s " .. self._private.folder .. file_name
-                    elseif self._private.screenshot_method == "screen" then
-                        command = command .. " " .. self._private.folder .. file_name
-                    elseif self._private.screenshot_method == "window" then
-                        command = command .. " -i $(xdotool getactivewindow) " .. self._private.folder .. file_name
-                    end
-
-                    awful.spawn.easy_async_with_shell(command, function(stdout, stderr)
-                        local file = helpers.file.new_for_path(self._private.folder .. file_name)
-                        file:exists(function(error, exists)
-                            if error == nil then
-                                if exists == true then
-                                    awful.spawn("xclip -selection clipboard -t image/png -i " .. self._private.folder .. file_name, false)
-                                    self:emit_signal("ended", self._private.screenshot_method, self._private.folder, file_name)
-                                else
-                                    self:emit_signal("error::create_file", stderr)
-                                end
-                            end
-                        end)
+            local folder = helpers.file.new_for_path(self._private.folder)
+            folder:exists(function(error, exists)
+                if exists == false then
+                    helpers.filesystem.make_directory(self._private.folder, function(error)
+                        if error == nil then
+                            screenshot()
+                        else
+                            self:emit_signal("error::create_directory")
+                        end
                     end)
                 else
-                    self:emit_signal("error::create_directory")
+                    screenshot()
                 end
             end)
         end
