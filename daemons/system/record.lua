@@ -23,18 +23,9 @@ function record:get_resolution()
     return self._private.resolution
 end
 
-function record:increase_fps()
-    self._private.fps = self._private.fps + 1
+function record:set_fps(fps)
+    self._private.fps = fps
     helpers.settings:set_value("record-fps", self._private.fps)
-    return self:get_fps()
-end
-
-function record:decrease_fps()
-    if self._private.fps > 0 then
-        self._private.fps = self._private.fps - 1
-        helpers.settings:set_value("record-fps", self._private.fps)
-    end
-    return self:get_fps()
 end
 
 function record:get_fps()

@@ -6,6 +6,7 @@
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
+local gshape = require("gears.shape")
 local ruled = require("ruled")
 local wibox = require("wibox")
 local widgets = require("presentation.ui.widgets")
@@ -105,38 +106,36 @@ local function fps()
         text = record_daemon:get_fps(),
     }
 
-    local plus_button = wibox.widget
+    local slider = wibox.widget
     {
-        widget = widgets.button.text.normal,
-        forced_width = dpi(50),
-        forced_height = dpi(50),
-        text_bg = accent_color,
-        icon = beautiful.icons.circle_plus,
-        on_release = function()
-            value_text:set_text(record_daemon:increase_fps())
-        end
+        widget = widgets.slider,
+        forced_width = dpi(150),
+        forced_height = dpi(20),
+        value = record_daemon:get_fps(),
+        maximum = 360,
+        bar_height = 5,
+        bar_shape = helpers.ui.rrect(beautiful.border_radius),
+        bar_color = beautiful.colors.surface,
+        bar_active_color = beautiful.random_accent_color(),
+        handle_width = dpi(15),
+        handle_color = beautiful.colors.on_background,
+        handle_shape = gshape.circle,
     }
 
-    local minus_button = wibox.widget
-    {
-        widget = widgets.button.text.normal,
-        forced_width = dpi(50),
-        forced_height = dpi(50),
-        text_bg = accent_color,
-        icon = beautiful.icons.circle_minus,
-        on_release = function()
-            value_text:set_text(record_daemon:decrease_fps())
+    slider:connect_signal("property::value", function(self, value, instant)
+        if instant == false then
+            record_daemon:set_fps(value)
+            value_text:set_text(value)
         end
-    }
+    end)
 
     return wibox.widget
     {
         layout = wibox.layout.fixed.horizontal,
         spacing = dpi(15),
         title,
-        minus_button,
-        value_text,
-        plus_button,
+        slider,
+        value_text
     }
 end
 
