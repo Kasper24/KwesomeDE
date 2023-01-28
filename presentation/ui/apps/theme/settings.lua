@@ -136,8 +136,17 @@ local function new(layout)
                 separator(),
                 picom_slider("active-opacity", 1),
                 picom_slider("inactive-opacity", 1),
+                separator(),
                 picom_slider("corner-radius"),
                 picom_slider("blur-strength", 20),
+                separator(),
+                picom_slider("shadow-radius", 20),
+                picom_slider("shadow-offset-x", 1),
+                picom_slider("shadow-offset-y", 1),
+                separator(),
+                picom_slider("fade-delta", 20),
+                picom_slider("fade-in-step", 1),
+                picom_slider("fade-out-step", 1),
             }
         }
     }

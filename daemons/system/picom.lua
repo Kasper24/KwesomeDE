@@ -19,7 +19,9 @@ local CONFIG_PATH = helpers.filesystem.get_awesome_config_dir("config") .. "pico
 local properties =
 {
 	"active-opacity", "inactive-opacity",
-	"corner-radius", "blur-strength"
+    "fade-delta", "fade-in-step", "fade-out-step",
+	"corner-radius", "blur-strength",
+    "shadow-radius", "shadow-offset-x", "shadow-offset-y", "shadow-opacity"
 }
 
 function picom:turn_on(save, skip_check)

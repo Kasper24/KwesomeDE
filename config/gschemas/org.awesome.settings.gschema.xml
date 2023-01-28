@@ -245,6 +245,62 @@
       </description>
     </key>
 
+  <key name="picom-shadow-radius" type="i">
+      <default>12</default>
+      <summary>Picom shadow radius</summary>
+      <description>
+        The blur radius for shadows
+      </description>
+    </key>
+
+   <key name="picom-shadow-offset-x" type="i">
+      <default>-15</default>
+      <summary>Picom shadow offset x</summary>
+      <description>
+        The left offset for shadows
+      </description>
+    </key>
+
+    <key name="picom-shadow-offset-y" type="i">
+      <default>-15</default>
+      <summary>Picom shadow offset y</summary>
+      <description>
+        The top offset for shadows, in pixels
+      </description>
+    </key>
+
+   <key name="picom-shadow-opacity" type="d">
+      <default>0.75</default>
+      <summary>Picom shadow opacity</summary>
+      <description>
+        The translucency for shadows
+      </description>
+    </key>
+
+   <key name="picom-fade-delta" type="i">
+      <default>10</default>
+      <summary>Picom fade delta</summary>
+      <description>
+        The time between steps in a fade in milliseconds
+      </description>
+    </key>
+
+   <key name="picom-fade-in-step" type="d">
+      <default>0.028</default>
+      <summary>Picom fade in step</summary>
+      <description>
+        Opacity change between steps while fading in
+      </description>
+    </key>
+
+   <key name="picom-fade-out-step" type="d">
+      <default>0.03</default>
+      <summary>Picom fade out sterp</summary>
+      <description>
+        Opacity change between steps while fading out
+      </description>
+    </key>
+
    <key name="picom-corner-radius" type="i">
       <default>0</default>
       <summary>Picom corner radius</summary>
