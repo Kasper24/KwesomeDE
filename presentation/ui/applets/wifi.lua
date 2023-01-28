@@ -46,18 +46,16 @@ local function access_point_widget(layout, access_point, accent_color)
     {
         widget = widgets.text,
         halign = "left",
-        font = beautiful.icons.wifi_high.font,
+        icon =  access_point.strength > 66 and beautiful.icons.wifi_high or
+                access_point.strength > 33 and beautiful.icons.wifi_medium or beautiful.icons.wifi_low,
         size = 25,
-        text =  access_point.strength > 66 and beautiful.icons.wifi_high.icon or
-                access_point.strength > 33 and beautiful.icons.wifi_medium.icon or beautiful.icons.wifi_low.icon
     }
 
     local lock_icon = wibox.widget
     {
         widget = widgets.text,
-        font = beautiful.icons.lock.font,
+        icon = beautiful.icons.lock,
         size = 20,
-        text =  beautiful.icons.lock.icon
     }
 
     local prompt = widgets.prompt

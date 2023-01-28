@@ -79,9 +79,7 @@ local function new()
         spacing = dpi(15),
         {
             widget = widgets.text,
-            color = beautiful.random_accent_color(),
-            font = beautiful.icons.box.font,
-            text = beautiful.icons.box.icon,
+            icon = beautiful.icons.box,
         },
         {
             widget = widgets.text,

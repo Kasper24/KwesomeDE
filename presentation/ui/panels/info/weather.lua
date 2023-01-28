@@ -305,10 +305,8 @@ local function new(args)
     {
         widget = widgets.text,
         halign = "center",
+        icon = beautiful.icons.circle_exclamation,
         size = 120,
-        color = beautiful.random_accent_color(),
-        font = beautiful.icons.circle_exclamation.font,
-        text = beautiful.icons.circle_exclamation.icon
     }
 
     local weather_widget = wibox.widget
@@ -379,7 +377,7 @@ local function new(args)
         stack:raise_widget(weather_widget)
 
         local weather = result.current
-        icon:set_text(icon_map[weather.weather[1].icon].icon)
+        icon:set_icon(icon_map[weather.weather[1].icon])
         current_weather_widget:get_children_by_id("temp")[1]:set_text(gen_temperature_str(weather.temp, "%.0f", args.both_units_widget, units))
         current_weather_widget:get_children_by_id("feels_like_temp")[1]:set_text("Feels like " .. gen_temperature_str(weather.feels_like, "%.0f", false, units))
         current_weather_widget:get_children_by_id("description")[1]:set_text(weather.weather[1].description)
@@ -430,10 +428,8 @@ local function new(args)
                     {
                         widget = widgets.text,
                         halign = "center",
-                        color = beautiful.random_accent_color(),
+                        icon = icon_map[day.weather[1].icon],
                         size = 35,
-                        font = icon_map[day.weather[1].icon].font,
-                        text = icon_map[day.weather[1].icon].icon
                     },
                     {
                         widget = widgets.text,

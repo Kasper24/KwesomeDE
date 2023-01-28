@@ -135,10 +135,8 @@ local function image_tab(self)
             {
                 widget = widgets.text,
                 halign = "center",
-                size = 50,
-                color = beautiful.random_accent_color(),
-                font = beautiful.icons.spraycan.font,
-                text = beautiful.icons.spraycan.icon
+                icon = beautiful.icons.spraycan,
+                size = 50
             },
             {
                 widget = widgets.text,
@@ -444,10 +442,8 @@ local function wip_tab()
                 widget = widgets.text,
                 halign = "center",
                 valign = "center",
+                icon = beautiful.icons.hammer,
                 size = 120,
-                color = beautiful.random_accent_color(),
-                font = beautiful.icons.hammer.font,
-                text = beautiful.icons.hammer.icon,
             },
             {
                 widget = widgets.text,

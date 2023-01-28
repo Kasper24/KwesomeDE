@@ -157,9 +157,8 @@ function ncmppcpp.tabs_titlebar(c)
                 {
                     widget = widgets.text,
                     size = 50,
+                    icon = beautiful.icons.list_music,
                     color = accent_color,
-                    font = beautiful.icons.list_music.font,
-                    text = beautiful.icons.list_music.icon
                 },
                 wibox.widget
                 {

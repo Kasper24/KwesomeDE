@@ -60,14 +60,14 @@ function playerctl.art(halign, valign, size, default_icon_size, daemon)
             if app_font_icon ~= nil then
                 default_icon:set_text(app_font_icon.icon)
             else
-                default_icon:set_text(beautiful.icons.spotify.icon)
+                default_icon:set_icon(beautiful.icons.spotify)
             end
             stack:raise_widget(default_icon)
         end
     end)
 
     playerctl_daemon:connect_signal("no_players", function(self)
-        default_icon:set_text(beautiful.icons.spotify.icon)
+        default_icon:set_icon(beautiful.icons.spotify)
         stack:raise_widget(default_icon)
     end)
 
@@ -330,10 +330,9 @@ function playerctl.previous(width, height, daemon)
         forced_width = width or dpi(50),
         forced_height = height or dpi(50),
         shape = gshape.circle,
-        font = beautiful.icons.backward.font,
-        size = 12,
         text_bg = beautiful.colors.on_background,
-        text = beautiful.icons.backward.icon,
+        icon = beautiful.icons.backward,
+        size = 12,
         on_release = function()
             playerctl_daemon:previous()
         end
@@ -349,10 +348,9 @@ function playerctl.next(width, height, daemon)
         forced_width = width or dpi(50),
         forced_height = height or dpi(50),
         shape = gshape.circle,
-        font = beautiful.icons.forward.font,
-        size = 12,
         text_bg = beautiful.colors.on_background,
-        text = beautiful.icons.forward.icon,
+        icon = beautiful.icons.forward,
+        size = 12,
         on_release = function()
             playerctl_daemon:next()
         end
@@ -368,10 +366,9 @@ function playerctl.loop(width, height, daemon)
         forced_width = width or dpi(50),
         forced_height = height or dpi(50),
         shape = gshape.circle,
-        font = beautiful.icons._repeat.font,
-        size = 12,
         text_bg = beautiful.colors.on_background,
-        text = beautiful.icons._repeat.icon,
+        icon = beautiful.icons._repeat,
+        size = 12,
         on_release = function(self)
             playerctl_daemon:cycle_loop_status()
         end
@@ -397,10 +394,9 @@ function playerctl.shuffle(width, height, daemon)
         forced_width = width or dpi(50),
         forced_height = height or dpi(50),
         shape = gshape.circle,
-        font = beautiful.icons.shuffle.font,
-        size = 12,
         text_bg = beautiful.colors.on_background,
-        text = beautiful.icons.shuffle.icon,
+        icon = beautiful.icons.shuffle,
+        size = 12,
         on_release = function(self)
             playerctl_daemon:cycle_shuffle()
         end
@@ -617,9 +613,8 @@ function playerctl.volume(width, daemon)
     local icon = wibox.widget
     {
         widget = twidget,
-        font = beautiful.icons.volume_normal.font,
+        icon = beautiful.icons.volume_normal,
         size = 12,
-        text = beautiful.icons.volume_normal.icon,
         color = accent_color
     }
 
@@ -653,13 +648,13 @@ function playerctl.volume(width, daemon)
         widget.value = volume * 100
 
         if volume == 0 then
-            icon:set_text(beautiful.icons.volume_off.icon)
+            icon:set_icon(beautiful.icons.volume_off)
         elseif volume <= 0.33 then
-            icon:set_text(beautiful.icons.volume_low.icon)
+            icon:set_icon(beautiful.icons.volume_low)
         elseif volume <= 0.66 then
-            icon:set_text(beautiful.icons.volume_normal.icon)
+            icon:set_icon(beautiful.icons.volume_normal)
         elseif volume > 0.66 then
-            icon:set_text(beautiful.icons.volume_high.icon)
+            icon:set_icon(beautiful.icons.volume_high)
         end
     end
 

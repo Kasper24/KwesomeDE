@@ -16,8 +16,7 @@ local function button(icon, text, on_release, on_by_default)
     {
         widget = widgets.text,
         halign = "center",
-        font = icon.font,
-        text = icon.icon
+        icon = icon
     }
 
     local text = wibox.widget

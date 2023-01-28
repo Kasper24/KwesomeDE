@@ -21,7 +21,7 @@ local function new(args)
     local start_ball_position = ball_dimensions.w - switch_dimensions.w
     local done_ball_position = -start_ball_position -- just invert it
 
-    local accent_color = beautiful.random_accent_color()
+    local accent_color = args.color or beautiful.random_accent_color()
 
     local ball_indicator = wibox.widget
     {

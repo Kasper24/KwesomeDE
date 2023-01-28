@@ -135,10 +135,9 @@ local function new()
 			widget = tbwidget.normal,
             forced_width = dpi(35),
             forced_height = dpi(35),
-            font = beautiful.icons.caret_left.font,
-            size = 15,
             text_bg = beautiful.colors.on_background,
-            text = beautiful.icons.caret_left.icon,
+            icon = beautiful.icons.caret_left,
+			size = 15,
             on_release = function()
                 ret:decrease_date()
             end
@@ -148,10 +147,9 @@ local function new()
 			widget = tbwidget.normal,
             forced_width = dpi(35),
             forced_height = dpi(35),
-            font = beautiful.icons.caret_right.font,
-            size = 15,
             text_bg = beautiful.colors.on_background,
-            text = beautiful.icons.caret_right.icon,
+            icon = beautiful.icons.caret_right,
+			size = 15,
             on_release = function()
                 ret:increase_date()
             end

@@ -97,9 +97,8 @@ local function last_page(on_next_pressed)
     {
         widget = widgets.text,
         halign = "center",
+        icon = beautiful.icons.circle_check,
         size = 120,
-        font = beautiful.icons.circle_check.font,
-        text = beautiful.icons.circle_check.icon
     }
 
     local title = wibox.widget
@@ -213,9 +212,8 @@ local function weather_page(on_next_pressed, on_previous_pressed)
     {
         widget = widgets.text,
         halign = "center",
+        icon = beautiful.icons.clouds,
         size = 120,
-        font = beautiful.icons.clouds.font,
-        text = beautiful.icons.clouds.icon
     }
 
     local title = wibox.widget
@@ -425,8 +423,8 @@ local function gitlab_page(on_next_pressed, on_previous_pressed)
         widget = widgets.text,
         halign = "center",
         size = 120,
-        font = beautiful.icons.gitlab.font,
-        text = beautiful.icons.gitlab.icon
+        icon = beautiful.icons.gitlab,
+        size = 120,
     }
 
     local title = wibox.widget
@@ -596,9 +594,8 @@ local function github_page(on_next_pressed, on_previous_pressed)
     {
         widget = widgets.text,
         halign = "center",
+        icon = beautiful.icons.github,
         size = 120,
-        font = beautiful.icons.github.font,
-        text = beautiful.icons.github.icon
     }
 
     local title = wibox.widget
@@ -706,9 +703,8 @@ local function email_page(on_next_pressed, on_previous_pressed)
     {
         widget = widgets.text,
         halign = "center",
-        size = 120,
-        font = beautiful.icons.envelope.font,
-        text = beautiful.icons.envelope.icon
+        icon = beautiful.icons.envelope,
+        size = 120
     }
 
     local title = wibox.widget
@@ -854,8 +850,8 @@ local function password_page(on_next_pressed, on_previous_pressed)
         widget = widgets.text,
         halign = "center",
         size = 120,
-        font = beautiful.icons.lock.font,
-        text = beautiful.icons.lock.icon
+        icon = beautiful.icons.lock,
+        size = 120,
     }
 
     local title = wibox.widget

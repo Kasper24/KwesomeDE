@@ -269,9 +269,8 @@ function menu.sub_menu_button(args)
                 nil,
                 {
                     widget = twidget,
-                    font = beautiful.icons.chevron_right.font,
+                    icon = beautiful.icons.chevron_right,
                     size = 12,
-                    text = beautiful.icons.chevron_right.icon,
                 },
             }
         }
@@ -358,7 +357,7 @@ function menu.checkbox_button(args)
     args.font = args.font or beautiful.font_name
     args.text = args.text or ""
     args.text_size = args.text_size or 12
-    args.checkbox_color = args.checkbox_color or beautiful.random_accent_color()
+    args.color = args.checkbox_color or beautiful.random_accent_color()
     args.on_by_default = args.on_by_default or nil
     args.on_press = args.on_press or nil
 
