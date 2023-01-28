@@ -119,6 +119,7 @@ local function new()
                 }
 
                 gtimer.delayed_call(function()
+                    ret._private.visible = true
                     ret:emit_signal("visible", true)
                 end)
             end

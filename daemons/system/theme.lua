@@ -496,6 +496,7 @@ local function scan_for_wallpapers(self)
                 end)
 
                 self:emit_signal("wallpapers", self._private.images)
+                self:select_wallpaper(self:get_wallpaper())
             end
         end
     }
