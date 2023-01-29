@@ -155,7 +155,7 @@ local function tag_list(s)
     local taglist_icons =
     {
         beautiful.icons.firefox,
-        beautiful.icons.code,
+        beautiful.icons.vscode,
         beautiful.icons.git,
         beautiful.icons.discord,
         beautiful.icons.spotify,
