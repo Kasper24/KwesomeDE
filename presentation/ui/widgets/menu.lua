@@ -6,6 +6,7 @@
 local awful = require("awful")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
+local gmath = require("gears.math")
 local wibox = require("wibox")
 local ebwidget = require("presentation.ui.widgets.button.elevated")
 local twidget = require("presentation.ui.widgets.text")
@@ -133,7 +134,8 @@ function menu:add(widget, index)
         widget:get_children_by_id("button")[1].menu = self
     end
 
-    self.menu_height = self.menu_height + widget.forced_height
+    local height_without_dpi = gmath.round(widget.forced_height * 96 / beautiful.xresources.get_dpi())
+    self.menu_height = self.menu_height + height_without_dpi
 
     if index == nil then
         self.widget:add(widget)
