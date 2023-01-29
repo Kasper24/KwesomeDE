@@ -123,32 +123,24 @@ local function new()
 		end
 	}
 
-	widget:connect_signal("_private::on_hover", function()
+	widget:connect_signal("event", function(self, event)
 		effect(widget)
-	end)
 
-	widget:connect_signal("_private::on_leave", function()
-		effect(widget)
-	end)
-
-	widget:connect_signal("_private::on_press", function()
-		effect(widget)
-		if wp.animate_size == true then
-			widget.orginal_size = widget.text_widget:get_size()
-			widget.size_animation:set(math.max(12, widget.orginal_size - 20))
-		end
-	end)
-
-	widget:connect_signal("_private::on_release", function()
-		effect(widget)
-		if wp.animate_size == true then
-			if widget.size_animation.state == true then
-				widget.size_animation.ended:subscribe(function()
+		if event == "press" then
+			if wp.animate_size == true then
+				widget.orginal_size = widget.text_widget:get_size()
+				widget.size_animation:set(math.max(12, widget.orginal_size - 20))
+			end
+		elseif event == "release" then
+			if wp.animate_size == true then
+				if widget.size_animation.state == true then
+					widget.size_animation.ended:subscribe(function()
+						widget.size_animation:set(widget.orginal_size)
+						widget.size_animation.ended:unsubscribe()
+					end)
+				else
 					widget.size_animation:set(widget.orginal_size)
-					widget.size_animation.ended:unsubscribe()
-				end)
-			else
-				widget.size_animation:set(widget.orginal_size)
+				end
 			end
 		end
 	end)

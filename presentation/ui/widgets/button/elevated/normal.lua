@@ -155,52 +155,50 @@ local function new()
 	}
 
 	widget:connect_signal("mouse::enter", function(self, find_widgets_result)
-		effect(widget, "hover")
-        if wp.on_hover ~= nil then
+		wp.mode = "hover"
+		effect(widget)
+		widget:emit_signal("event", "hover")
+
+		if wp.on_hover ~= nil then
 		    wp.on_hover(self, find_widgets_result)
         end
-		widget:emit_signal("_private::on_hover")
 	end)
 
 	widget:connect_signal("mouse::leave", function(self, find_widgets_result)
 		if widget.button ~= nil then
-			if widget.button == 1 then
-				if wp.on_release ~= nil or wp.on_press ~= nil then
-					effect(widget, "normal")
-				end
-				widget:emit_signal("_private::on_release", self, 1, 1, widget.button, {}, find_widgets_result)
-			elseif widget.button == 3 then
-				if wp.on_secondary_release ~= nil or wp.on_secondary_press ~= nil then
-					effect(widget, "normal")
-				end
-				widget:emit_signal("_private::on_secondary_release", self, 1, 1, widget.button, {}, find_widgets_result)
-			end
-			widget.button = nil
+			widget:emit_signal("event", "release")
 		end
-		effect(widget, "normal")
+
+		wp.mode = "normal"
+		effect(widget)
+		widget:emit_signal("event", "leave")
+
         if wp.on_leave ~= nil then
 		    wp.on_leave(self, find_widgets_result)
         end
-		widget:emit_signal("_private::on_leave")
 	end)
 
 	widget:connect_signal("button::press", function(self, lx, ly, button, mods, find_widgets_result)
-		if #mods > 0 and not helpers.table.contains_only(mods, {"Lock", "Mod2",}) then
+		if helpers.table.contains(mods, {"Mod4"}) then
 			return
 		end
 
 		widget.button = button
+
 		if button == 1 then
+			wp.mode = "press"
+			effect(widget)
+			widget:emit_signal("event", "press")
+
 			if wp.on_press ~= nil then
 				wp.on_press(self, lx, ly, button, mods, find_widgets_result)
-				effect(widget, "press")
 			end
-			widget:emit_signal("_private::on_press")
 		elseif button == 3 then
 			if wp.on_secondary_press ~= nil then
+				wp.mode = "press"
+				effect(widget)
+				widget:emit_signal("event", "secondary_press")
 				wp.on_secondary_press(self, lx, ly, button, mods, find_widgets_result)
-				effect(widget, "press")
-				widget:emit_signal("_private::on_secondary_press")
 			end
 		elseif button == 4 then
 			if wp.on_scroll_up ~= nil then
@@ -215,27 +213,26 @@ local function new()
 
 	widget:connect_signal("button::release", function(self, lx, ly, button, mods, find_widgets_result)
 		widget.button = nil
+
 		if button == 1 then
-			if wp.on_release ~= nil or wp.on_press ~= nil then
-				effect(widget, "normal")
-			end
+			wp.mode = "normal"
+			effect(widget)
+			widget:emit_signal("event", "release")
+
 			if wp.on_release ~= nil then
 				wp.on_release(self, lx, ly, button, mods, find_widgets_result)
 			end
-			widget:emit_signal("_private::on_release")
-
 		elseif button == 3 then
-			if wp.on_secondary_release ~= nil or wp.on_secondary_press ~= nil then
-				effect(widget, "normal")
-			end
 			if wp.on_secondary_release ~= nil then
+				wp.mode = "normal"
+				effect(widget)
+				widget:emit_signal("event", "secondary_release")
 				wp.on_secondary_release(self, lx, ly, button, mods, find_widgets_result)
 			end
-			widget:emit_signal("_private::on_secondary_release")
 		end
 	end)
 
-	effect(widget, true)
+	-- effect(widget, true)
 
 	return widget
 end
