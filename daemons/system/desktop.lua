@@ -129,29 +129,31 @@ end
 local function scan_for_desktop_files_on_init(self)
     local file = helpers.file.new_for_path(DATA_PATH)
     file:read(function(error, content)
-        local old_desktop_icons = {}
-        old_desktop_icons = helpers.json.decode(content) or {}
-        helpers.filesystem.iterate_contents(DESKTOP_PATH, function(file)
-            local name = file:get_name()
-            local path = DESKTOP_PATH .. "/" .. name
+        if error == nil then
+            local old_desktop_icons = {}
+            old_desktop_icons = helpers.json.decode(content) or {}
+            helpers.filesystem.iterate_contents(DESKTOP_PATH, function(file)
+                local name = file:get_name()
+                local path = DESKTOP_PATH .. "/" .. name
 
-            if path:find("/home/" .. os.getenv("USER") .. "/Desktop/.", 1, true) == nil then
-                local mimetype = "folder"
-                local file_type = file:get_file_type()
-                if file_type == "REGULAR" and file:get_attribute_boolean("access::can-read") then
-                    mimetype = Gio.content_type_guess(path)
-                end
+                if path:find("/home/" .. os.getenv("USER") .. "/Desktop/.", 1, true) == nil then
+                    local mimetype = "folder"
+                    local file_type = file:get_file_type()
+                    if file_type == "REGULAR" and file:get_attribute_boolean("access::can-read") then
+                        mimetype = Gio.content_type_guess(path)
+                    end
 
-                local name = path:sub(helpers.string.find_last(path, "/") + 1, #path)
-                local pos = nil
-                if old_desktop_icons[path] ~= nil then
-                    pos = old_desktop_icons[path]
-                else
-                    pos = get_position_for_new_desktop_file()
+                    local name = path:sub(helpers.string.find_last(path, "/") + 1, #path)
+                    local pos = nil
+                    if old_desktop_icons[path] ~= nil then
+                        pos = old_desktop_icons[path]
+                    else
+                        pos = get_position_for_new_desktop_file()
+                    end
+                    on_desktop_icon_added(self, pos, path, name, mimetype)
                 end
-                on_desktop_icon_added(self, pos, path, name, mimetype)
-            end
-        end, {})
+            end, {})
+        end
     end)
 end
 

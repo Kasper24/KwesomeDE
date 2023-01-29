@@ -328,8 +328,10 @@ function filesystem.remote_watch(path, uri, interval, callback, old_content_call
         local remote_file = File.new_for_uri(uri)
 
         remote_file:read(function(error, content)
-            callback(content)
-            file:write(content)
+            if error == nil then
+                callback(content)
+                file:write(content)
+            end
         end)
     end
 

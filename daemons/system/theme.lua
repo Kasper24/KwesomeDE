@@ -643,15 +643,7 @@ local function new()
 
     ret._private = {}
 
-    local file = helpers.file.new_for_path(COLORSCHEME_DATA_PATH)
-    file:read(function(error, content)
-        if error == nil then
-            ret._private.colors = helpers.json.decode(content) or {}
-        end
-    end)
-
-    local wallpaper = helpers.settings:get_value("theme-wallpaper")
-    ret._private.wallpaper = wallpaper:gsub("~", os.getenv("HOME"))
+    ret._private.wallpaper = helpers.settings:get_value("theme-wallpaper"):gsub("~", os.getenv("HOME"))
     ret._private.wallpaper_type = helpers.settings:get_value("theme-wallpaper-type")
     ret._private.command_after_generation = helpers.settings:get_value("theme-command-after-generation")
     ret._private.color = helpers.settings:get_value("theme-color")
@@ -663,6 +655,13 @@ local function new()
     end
     ret._private.colorscheme = colorscheme
 
+    local file = helpers.file.new_for_path(COLORSCHEME_DATA_PATH)
+    file:read(function(error, content)
+        ret._private.colors = ret._private.colorscheme
+        if error == nil then
+            ret._private.colors = helpers.json.decode(content)
+        end
+    end)
 
     ret._private.images = {}
     ret._private.selected_wallpaper = nil
