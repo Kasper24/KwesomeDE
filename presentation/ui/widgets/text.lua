@@ -78,7 +78,7 @@ function text:set_icon(icon)
 	wp.font = wp.font or icon.font
 	wp.size = wp.size or icon.size or 20
 	wp.color = wp.color or icon.color
-	wp.text = wp.text or icon.icon
+	wp.text = icon.icon
 
 	self:emit_signal("widget::redraw_needed")
 	self:emit_signal("property::icon", icon)
