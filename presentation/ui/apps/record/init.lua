@@ -159,7 +159,7 @@ local function delay()
         widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
-        text_bg = accent_color,
+        text_normal_bg = accent_color,
         icon = beautiful.icons.circle.plus,
         on_release = function()
             value_text:set_text(record_daemon:increase_delay())
@@ -171,7 +171,7 @@ local function delay()
         widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
-        text_bg = accent_color,
+        text_normal_bg = accent_color,
         icon = beautiful.icons.circle.minus,
         on_release = function()
             value_text:set_text(record_daemon:decrease_delay())
@@ -250,7 +250,7 @@ local function folder()
     local set_folder_button  = wibox.widget
     {
         widget = widgets.button.text.normal,
-        text_bg = accent_color,
+        text_normal_bg = accent_color,
         size = 15,
         text = "...",
         on_press = function()
@@ -329,8 +329,8 @@ local function main(self)
         widget = widgets.button.text.normal,
         forced_width = dpi(50),
         size = 15,
-        bg = beautiful.colors.random_accent_color(),
-        text_bg = beautiful.colors.background,
+        normal_bg = beautiful.colors.random_accent_color(),
+        text_normal_bg = beautiful.colors.background,
         text = record_daemon:get_is_recording() and "Stop" or "Record",
         animate_size = false,
         on_release = function()

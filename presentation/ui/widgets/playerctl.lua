@@ -288,8 +288,8 @@ function playerctl.play(daemon)
     local button = wibox.widget
     {
         widget = ebwidget.normal,
-        shape = gshape.circle,
-        bg = accent_color,
+        normal_shape = gshape.circle,
+        normal_bg = accent_color,
         on_release = function()
             playerctl_daemon:play_pause()
         end,
@@ -329,8 +329,8 @@ function playerctl.previous(width, height, daemon)
         widget = tbwidget.normal,
         forced_width = width or dpi(50),
         forced_height = height or dpi(50),
-        shape = gshape.circle,
-        text_bg = beautiful.colors.on_background,
+        normal_shape = gshape.circle,
+        text_normal_bg = beautiful.colors.on_background,
         icon = beautiful.icons.backward,
         size = 12,
         on_release = function()
@@ -347,8 +347,8 @@ function playerctl.next(width, height, daemon)
         widget = tbwidget.normal,
         forced_width = width or dpi(50),
         forced_height = height or dpi(50),
-        shape = gshape.circle,
-        text_bg = beautiful.colors.on_background,
+        normal_shape = gshape.circle,
+        text_normal_bg = beautiful.colors.on_background,
         icon = beautiful.icons.forward,
         size = 12,
         on_release = function()
@@ -365,8 +365,8 @@ function playerctl.loop(width, height, daemon)
         widget = tbwidget.state,
         forced_width = width or dpi(50),
         forced_height = height or dpi(50),
-        shape = gshape.circle,
-        text_bg = beautiful.colors.on_background,
+        normal_shape = gshape.circle,
+        text_normal_bg = beautiful.colors.on_background,
         icon = beautiful.icons._repeat,
         size = 12,
         on_release = function(self)
@@ -393,8 +393,8 @@ function playerctl.shuffle(width, height, daemon)
         widget = tbwidget.state,
         forced_width = width or dpi(50),
         forced_height = height or dpi(50),
-        shape = gshape.circle,
-        text_bg = beautiful.colors.on_background,
+        normal_shape = gshape.circle,
+        text_normal_bg = beautiful.colors.on_background,
         icon = beautiful.icons.shuffle,
         size = 12,
         on_release = function(self)

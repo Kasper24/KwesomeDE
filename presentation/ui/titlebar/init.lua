@@ -20,8 +20,8 @@ capi.client.connect_signal("request::titlebars", function(c)
         widget = widgets.button.text.normal,
         forced_width = dpi(40),
         forced_height = dpi(40),
-        bg = color,
-        text_bg = beautiful.colors.cyan,
+        normal_bg = color,
+        text_normal_bg = beautiful.colors.cyan,
         icon = beautiful.icons.triangle,
         size = 12,
         on_release = function(self)
@@ -34,8 +34,8 @@ capi.client.connect_signal("request::titlebars", function(c)
         widget = widgets.button.text.normal,
         forced_width = dpi(40),
         forced_height = dpi(40),
-        bg = color,
-        text_bg = beautiful.colors.green,
+        normal_bg = color,
+        text_normal_bg = beautiful.colors.green,
         icon = beautiful.icons.square,
         size = 12,
         on_release = function(self)
@@ -49,8 +49,8 @@ capi.client.connect_signal("request::titlebars", function(c)
         widget = widgets.button.text.normal,
         forced_width = dpi(40),
         forced_height = dpi(40),
-        bg = color,
-        text_bg = beautiful.colors.error,
+        normal_bg = color,
+        text_normal_bg = beautiful.colors.error,
         icon = beautiful.icons.circle,
         size = 12,
         on_release = function()

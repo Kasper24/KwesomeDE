@@ -174,7 +174,7 @@ local function desktop_icon(self, pos, path, name, mimetype)
         bg = beautiful.colors.transparent,
         widget = widgets.button.elevated.state
         {
-            bg = beautiful.colors.transparent,
+            normal_bg = beautiful.colors.transparent,
             forced_width = dpi(100),
             forced_height = dpi(100),
             on_press = function(self)

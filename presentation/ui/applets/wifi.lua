@@ -112,8 +112,8 @@ local function access_point_widget(layout, access_point, accent_color)
     {
         widget = widgets.button.text.normal,
         animate_size = false,
-        bg = beautiful.colors.surface,
-        text_bg = beautiful.colors.on_surface,
+        normal_bg = beautiful.colors.surface,
+        text_normal_bg = beautiful.colors.on_surface,
         size = 12,
         text = "Cancel",
         on_press = function()
@@ -126,8 +126,8 @@ local function access_point_widget(layout, access_point, accent_color)
     local connect_or_disconnect = wibox.widget
     {
         widget = widgets.button.text.normal,
-        bg = beautiful.colors.surface,
-        text_bg = beautiful.colors.on_surface,
+        normal_bg = beautiful.colors.surface,
+        text_normal_bg = beautiful.colors.on_surface,
         size = 12,
         text = network_daemon:is_access_point_active(access_point) == true and "Disconnect" or "Connect",
         on_press = function()
@@ -269,7 +269,7 @@ local function new()
     local rescan = wibox.widget
     {
         widget = widgets.button.text.normal,
-        text_bg = beautiful.colors.on_background,
+        text_normal_bg = beautiful.colors.on_background,
         icon = beautiful.icons.arrow_rotate_right,
         size = 15,
         on_press = function()
@@ -280,7 +280,7 @@ local function new()
     local settings = wibox.widget
     {
         widget = widgets.button.text.normal,
-        text_bg = beautiful.colors.on_background,
+        text_normal_bg = beautiful.colors.on_background,
         icon = beautiful.icons.gear,
         size = 15,
         on_press = function()

@@ -33,9 +33,9 @@ local function arrow_button(icon, text, on_icon_release, on_arrow_release)
         forced_width = dpi(75),
         forced_height = dpi(90),
         shape = helpers.ui.prrect(beautiful.border_radius, true, false, false, true),
-        bg = beautiful.colors.surface,
-        on_bg = accent_color,
-        text_on_bg = beautiful.colors.on_accent,
+        normal_bg = beautiful.colors.surface,
+        on_normal_bg = accent_color,
+        text_on_normal_bg = beautiful.colors.on_accent,
         icon = icon,
         on_release = on_icon_release
     }
@@ -46,9 +46,9 @@ local function arrow_button(icon, text, on_icon_release, on_arrow_release)
         forced_width = dpi(75),
         forced_height = dpi(90),
         shape = helpers.ui.prrect(beautiful.border_radius, false, true, true, false),
-        bg = beautiful.colors.surface,
-        on_bg = accent_color,
-        text_on_bg = beautiful.colors.on_accent,
+        normal_bg = beautiful.colors.surface,
+        on_normal_bg = accent_color,
+        text_on_normal_bg = beautiful.colors.on_accent,
         icon = beautiful.icons.chevron.right,
         on_release = on_arrow_release
     }
@@ -95,9 +95,9 @@ local function button(icon, text, on_release)
         widget = widgets.button.text.state,
         forced_width = dpi(150),
         forced_height = dpi(90),
-        bg = beautiful.colors.surface,
-        on_bg = beautiful.colors.random_accent_color(),
-        text_on_bg = beautiful.colors.on_accent,
+        normal_bg = beautiful.colors.surface,
+        on_normal_bg = beautiful.colors.random_accent_color(),
+        text_on_normal_bg = beautiful.colors.on_accent,
         icon = icon,
         on_release = on_release
     }
@@ -134,7 +134,7 @@ local function quick_action(icon, text, on_release)
         widget = widgets.button.text.normal,
         forced_width = dpi(150),
         forced_height = dpi(90),
-        bg = beautiful.colors.surface,
+        normal_bg = beautiful.colors.surface,
         icon = icon,
         on_release = on_release
     }

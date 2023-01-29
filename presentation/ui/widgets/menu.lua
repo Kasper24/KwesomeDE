@@ -248,7 +248,7 @@ function menu.sub_menu_button(args)
         {
             widget = ebwidget.state,
             id = "button",
-            shape = helpers.ui.rrect(0),
+            normal_shape = helpers.ui.rrect(0),
             on_hover = function(self)
                 local coords = helpers.ui.get_widget_geometry(self.menu, self)
                 coords.x = coords.x + self.menu.x + self.menu.width
@@ -327,7 +327,7 @@ function menu.button(args)
         {
             widget = ebwidget.normal,
             id = "button",
-            shape = helpers.ui.rrect(0),
+            normal_shape = helpers.ui.rrect(0),
             on_release = function(self)
                 self.menu:hide(true)
                 args.on_press(self, text_widget)
@@ -397,7 +397,7 @@ function menu.checkbox_button(args)
             {
                 widget = ebwidget.normal,
                 id = "button",
-                shape = helpers.ui.rrect(0),
+                normal_shape = helpers.ui.rrect(0),
                 on_release = function(self)
                     args.on_press()
                 end,

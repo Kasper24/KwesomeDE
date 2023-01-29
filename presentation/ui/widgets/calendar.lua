@@ -135,7 +135,7 @@ local function new()
 			widget = tbwidget.normal,
             forced_width = dpi(35),
             forced_height = dpi(35),
-            text_bg = beautiful.colors.on_background,
+            text_normal_bg = beautiful.colors.on_background,
             icon = beautiful.icons.caret.left,
 			size = 15,
             on_release = function()
@@ -147,7 +147,7 @@ local function new()
 			widget = tbwidget.normal,
             forced_width = dpi(35),
             forced_height = dpi(35),
-            text_bg = beautiful.colors.on_background,
+            text_normal_bg = beautiful.colors.on_background,
             icon = beautiful.icons.caret.right,
 			size = 15,
             on_release = function()

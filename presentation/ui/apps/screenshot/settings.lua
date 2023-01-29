@@ -62,7 +62,7 @@ local function delay()
         widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
-        text_bg = accent_color,
+        text_normal_bg = accent_color,
         icon = beautiful.icons.circle.plus,
         on_release = function()
             value_text:set_text(screenshot_daemon:increase_delay())
@@ -74,7 +74,7 @@ local function delay()
         widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
-        text_bg = accent_color,
+        text_normal_bg = accent_color,
         icon = beautiful.icons.circle.minus,
         on_release = function()
             value_text:set_text(screenshot_daemon:decrease_delay())
@@ -115,7 +115,7 @@ local function folder()
     local set_folder_button  = wibox.widget
     {
         widget = widgets.button.text.normal,
-        text_bg = accent_color,
+        text_normal_bg = accent_color,
         size = 15,
         text = "...",
         on_press = function()

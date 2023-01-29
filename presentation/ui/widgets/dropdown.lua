@@ -56,7 +56,7 @@ local function new(args)
         animate_size = false,
         halign = "left",
         text = args.prompt .. args.initial_value,
-        text_bg = beautiful.colors.on_background,
+        text_normal_bg = beautiful.colors.on_background,
         on_press = function()
             menu:toggle()
         end

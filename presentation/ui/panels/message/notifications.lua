@@ -100,8 +100,8 @@ local function notification_widget(notification, on_removed)
                 widget = widgets.button.text.normal,
                 -- forced_height = dpi(40),
                 size = 12,
-                bg = beautiful.colors.surface,
-                text_bg = beautiful.colors.on_surface,
+                normal_bg = beautiful.colors.surface,
+                text_normal_bg = beautiful.colors.on_surface,
                 text = action.name,
                 on_release = function()
                     action:invoke()
