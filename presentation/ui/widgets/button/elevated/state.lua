@@ -14,6 +14,7 @@ local elevated_button_state = { mt = {} }
 
 local properties =
 {
+	-- "forced_width", "forced_height",
 	"normal_bg", "hover_bg", "press_bg",
 	"normal_shape", "hover_shape", "press_shape",
 	"normal_border_width", "hover_border_width", "press_border_width",
@@ -49,20 +50,25 @@ local function build_properties(prototype, prop_names)
     end
 end
 
-local function effect(widget, mode)
+local function effect(widget, instant)
 	local wp = widget._private
 	local on_prefix = wp.state and "on_" or ""
-	mode = mode .. "_"
-	local bg = wp[on_prefix .. mode .. "bg"]
-	local shape = wp[on_prefix .. mode .. "shape"]
-	local border_width = wp[on_prefix .. mode .. "border_width"]
-	local border_color = wp[on_prefix .. mode .. "border_color"]
+	local bg = wp[on_prefix .. wp.mode .. "_bg"]
+	local shape = wp[on_prefix .. wp.mode .. "_shape"]
+	local border_width = wp[on_prefix .. wp.mode .. "_border_width"]
+	local border_color = wp[on_prefix .. wp.mode .. "_border_color"]
 
-	widget.animation:set{
-		color = helpers.color.hex_to_rgb(bg),
-		border_width = border_width,
-		border_color = helpers.color.hex_to_rgb(border_color)
-	}
+	if instant == true then
+		widget.bg = bg
+		widget.border_width = border_width
+		widget.border_color = border_color
+	else
+		widget.animation:set{
+			color = helpers.color.hex_to_rgb(bg),
+			border_width = border_width,
+			border_color = helpers.color.hex_to_rgb(border_color)
+		}
+	end
 	widget.shape = shape
 end
 
@@ -93,15 +99,17 @@ end
 
 function elevated_button_state:turn_on()
 	local wp = self._private
+	wp.mode = "normal"
 	wp.state = true
-	effect(self, "normal")
+	effect(self)
 	self:emit_signal("_private::on_turn_on")
 end
 
 function elevated_button_state:turn_off()
 	local wp = self._private
+	wp.mode = "normal"
 	wp.state = false
-	effect(self, "normal")
+	effect(self)
 	self:emit_signal("_private::on_turn_on")
 end
 
@@ -119,9 +127,7 @@ function elevated_button_state:set_normal_bg(normal_bg)
 	wp.normal_bg = normal_bg
 	wp.hover_bg = helpers.color.button_color(normal_bg, 0.1)
 	wp.press_bg = helpers.color.button_color(normal_bg, 0.2)
-	effect(self, "normal")
-	self:emit_signal("widget::redraw_needed")
-    self:emit_signal("property::bg", normal_bg)
+	effect(self, true)
 end
 
 function elevated_button_state:set_on_normal_bg(on_normal_bg)
@@ -129,6 +135,7 @@ function elevated_button_state:set_on_normal_bg(on_normal_bg)
 	wp.on_normal_bg = on_normal_bg
 	wp.on_hover_bg = helpers.color.button_color(on_normal_bg, 0.1)
 	wp.on_press_bg = helpers.color.button_color(on_normal_bg, 0.2)
+	effect(self, true)
 end
 
 local function new()
@@ -136,6 +143,7 @@ local function new()
 	gtable.crush(widget, elevated_button_state, true)
 
 	local wp = widget._private
+	wp.mode = "normal"
 	wp.state = false
 
 	-- Setup default values
@@ -211,7 +219,8 @@ local function new()
 			return
 		end
 
-		effect(widget, "hover")
+		wp.mode = "hover"
+		effect(widget)
 
         if wp.on_hover ~= nil then
 		    wp.on_hover(self, wp.state)
@@ -225,7 +234,8 @@ local function new()
 			widget:emit_signal("button::release", 1, 1, widget.button, {}, find_widgets_result, true)
 		end
 
-		effect(widget, "normal")
+		wp.mode = "normal"
+		effect(widget)
 
         if wp.on_leave ~= nil then
 		    wp.on_leave(self, wp.state)
@@ -280,7 +290,8 @@ local function new()
 
 		if button == 1 then
 			if wp.on_turn_on ~= nil or wp.on_turn_off ~= nil or wp.on_press then
-				effect(widget, "normal")
+				wp.mode = "normal"
+				effect(widget)
 			end
 
 			widget:emit_signal("_private::on_release", self, lx, ly, button, mods, find_widgets_result)
@@ -297,7 +308,7 @@ local function new()
 		end
 	end)
 
-	effect(widget, "normal")
+	effect(widget, true)
 
 	return widget
 end

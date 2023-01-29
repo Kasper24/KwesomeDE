@@ -14,6 +14,7 @@ local elevated_button_normal = { mt = {} }
 
 local properties =
 {
+	-- "forced_width", "forced_height",
 	"normal_bg", "hover_bg", "press_bg",
 	"normal_shape", "hover_shape", "press_shape",
 	"normal_border_width", "hover_border_width", "press_border_width",
@@ -44,19 +45,24 @@ local function build_properties(prototype, prop_names)
     end
 end
 
-local function effect(widget, mode)
+local function effect(widget, instant)
 	local wp = widget._private
-	mode = mode .. "_"
-	local bg = wp[mode .. "bg"]
-	local shape = wp[mode .. "shape"]
-	local border_width = wp[mode .. "border_width"]
-	local border_color = wp[mode .. "border_color"]
+	local bg = wp[wp.mode .. "_bg"]
+	local shape = wp[wp.mode .. "_shape"]
+	local border_width = wp[wp.mode .. "_border_width"]
+	local border_color = wp[wp.mode .. "_border_color"]
 
-	widget.animation:set({
-		color = helpers.color.hex_to_rgb(bg),
-		border_width = border_width,
-		border_color = helpers.color.hex_to_rgb(border_color)
-	})
+	if instant == true then
+		widget.bg = bg
+		widget.border_width = border_width
+		widget.border_color = border_color
+	else
+		widget.animation:set{
+			color = helpers.color.hex_to_rgb(bg),
+			border_width = border_width,
+			border_color = helpers.color.hex_to_rgb(border_color)
+		}
+	end
 	widget.shape = shape
 end
 
@@ -84,9 +90,7 @@ function elevated_button_normal:set_normal_bg(normal_bg)
 	wp.normal_bg = normal_bg
 	wp.hover_bg = helpers.color.button_color(normal_bg, 0.1)
 	wp.press_bg = helpers.color.button_color(normal_bg, 0.2)
-	effect(self, "normal")
-	self:emit_signal("widget::redraw_needed")
-    self:emit_signal("property::bg", normal_bg)
+	effect(self, true)
 end
 
 local function new()
@@ -94,6 +98,7 @@ local function new()
 	gtable.crush(widget, elevated_button_normal, true)
 
 	local wp = widget._private
+	wp.mode = "normal"
 
 	-- Setup default values
 	wp.normal_bg = beautiful.colors.background
@@ -230,7 +235,7 @@ local function new()
 		end
 	end)
 
-	effect(widget, "normal")
+	effect(widget, true)
 
 	return widget
 end
