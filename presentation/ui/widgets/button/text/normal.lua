@@ -63,14 +63,15 @@ local function build_text_properties(prototype, prop_names)
     end
 end
 
-local function effect(widget, instant)
-	local wp = widget._private
-	local bg = wp["text_" .. wp.mode .. "_bg"]
+function text_button_normal:text_effect(instant)
+	local wp = self._private
+	local on_prefix = wp.state and "on_" or ""
+	local bg = wp["text_" .. on_prefix .. wp.mode .. "_bg"]
 
 	if instant == true then
-		widget.text_widget:set_color(bg)
+		self.text_widget:set_color(bg)
 	else
-		widget.color_animation:set(helpers.color.hex_to_rgb(bg))
+		self.color_animation:set(helpers.color.hex_to_rgb(bg))
 	end
 end
 
@@ -79,7 +80,7 @@ function text_button_normal:set_text_normal_bg(text_normal_bg)
 	wp.text_normal_bg = text_normal_bg
 	wp.text_hover_bg = helpers.color.button_color(text_normal_bg, 0.1)
 	wp.text_press_bg = helpers.color.button_color(text_normal_bg, 0.2)
-	effect(self, true)
+	self:text_effect( true)
 end
 
 function text_button_normal:set_icon(icon)
@@ -87,8 +88,8 @@ function text_button_normal:set_icon(icon)
 	self:set_text_normal_bg(icon.color)
 end
 
-local function new()
-	local widget = ebwidget.normal{}
+local function new(is_state)
+	local widget = is_state and ebwidget.state{} or ebwidget.normal{}
 	widget.text_widget = twidget()
 	widget:set_child(widget.text_widget)
 
@@ -124,14 +125,14 @@ local function new()
 	}
 
 	widget:connect_signal("event", function(self, event)
-		effect(widget)
+		self:text_effect()
 
-		if event == "press" then
+		if event == "press" or event == "secondary_press" then
 			if wp.animate_size == true then
 				widget.orginal_size = widget.text_widget:get_size()
 				widget.size_animation:set(math.max(12, widget.orginal_size - 20))
 			end
-		elseif event == "release" then
+		elseif event == "release" or event == "secondary_press" then
 			if wp.animate_size == true then
 				if widget.size_animation.state == true then
 					widget.size_animation.ended:subscribe(function()
@@ -145,7 +146,7 @@ local function new()
 		end
 	end)
 
-	effect(widget, true)
+	widget:text_effect(true)
 
 	return widget
 end
