@@ -119,6 +119,7 @@ function elevated_button_state:set_normal_bg(normal_bg)
 	wp.normal_bg = normal_bg
 	wp.hover_bg = helpers.color.button_color(normal_bg, 0.1)
 	wp.press_bg = helpers.color.button_color(normal_bg, 0.2)
+	effect(self, "normal")
 	self:emit_signal("widget::redraw_needed")
     self:emit_signal("property::bg", normal_bg)
 end

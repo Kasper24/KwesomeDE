@@ -70,7 +70,7 @@ local function effect(widget, text_bg)
     end
 end
 
-function text_button_state:set_normal_text_bg(text_normal_bg)
+function text_button_state:set_text_normal_bg(text_normal_bg)
 	local wp = self._private
 	wp.text_normal_bg = text_normal_bg
 	wp.text_hover_bg = helpers.color.button_color(text_normal_bg, 0.1)
@@ -91,7 +91,7 @@ function text_button_state:set_icon(icon)
 end
 
 local function new()
-	local widget = ebwidget.state()
+	local widget = ebwidget.state{}
 	widget.text_widget = twidget()
 	widget:set_child(widget.text_widget)
 

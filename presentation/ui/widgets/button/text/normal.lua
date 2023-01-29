@@ -69,12 +69,12 @@ local function effect(widget, text_bg)
     end
 end
 
-function text_button_normal:set_normal_text_bg(normal_text_bg)
+function text_button_normal:set_text_normal_bg(text_normal_bg)
 	local wp = self._private
-	wp.normal_text_bg = normal_text_bg
-	wp.text_hover_bg = helpers.color.button_color(normal_text_bg, 0.1)
-	wp.text_press_bg = helpers.color.button_color(normal_text_bg, 0.2)
-	effect(self, normal_text_bg)
+	wp.text_normal_bg = text_normal_bg
+	wp.text_hover_bg = helpers.color.button_color(text_normal_bg, 0.1)
+	wp.text_press_bg = helpers.color.button_color(text_normal_bg, 0.2)
+	effect(self, text_normal_bg)
 end
 
 function text_button_normal:set_icon(icon)
@@ -83,7 +83,7 @@ function text_button_normal:set_icon(icon)
 end
 
 local function new()
-	local widget = ebwidget.normal()
+	local widget = ebwidget.normal{}
 	widget.text_widget = twidget()
 	widget:set_child(widget.text_widget)
 
@@ -124,7 +124,7 @@ local function new()
 	end)
 
 	widget:connect_signal("_private::on_leave", function()
-		effect(widget, wp.normal_text_bg)
+		effect(widget, wp.text_normal_bg)
 	end)
 
 	widget:connect_signal("_private::on_press", function()
@@ -135,7 +135,7 @@ local function new()
 	end)
 
 	widget:connect_signal("_private::on_release", function()
-		effect(widget, wp.normal_text_bg)
+		effect(widget, wp.text_normal_bg)
 		if wp.animate_size == true then
 			if widget.size_animation.state == true then
 				widget.size_animation.ended:subscribe(function()
@@ -148,7 +148,7 @@ local function new()
 		end
 	end)
 
-	effect(widget, wp.normal_text_bg)
+	effect(widget, wp.text_normal_bg)
 
 	return widget
 end
