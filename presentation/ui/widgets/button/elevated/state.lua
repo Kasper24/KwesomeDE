@@ -110,7 +110,7 @@ function elevated_button_state:turn_off()
 	wp.mode = "normal"
 	wp.state = false
 	effect(self)
-	self:emit_signal("_private::on_turn_on")
+	self:emit_signal("_private::on_turn_off")
 end
 
 function elevated_button_state:toggle()
@@ -215,41 +215,26 @@ local function new()
 	}
 
 	widget:connect_signal("mouse::enter", function(self, find_widgets_result)
-		if wp.hover_effect == false then
-			return
-		end
-
 		wp.mode = "hover"
 		effect(widget)
+		widget:emit_signal("_private::on_hover", wp.state)
 
         if wp.on_hover ~= nil then
 		    wp.on_hover(self, wp.state)
         end
-
-		widget:emit_signal("_private::on_hover", wp.state)
 	end)
 
 	widget:connect_signal("mouse::leave", function(self, find_widgets_result)
-		if widget.button ~= nil then
-			widget:emit_signal("button::release", 1, 1, widget.button, {}, find_widgets_result, true)
-		end
-
 		wp.mode = "normal"
 		effect(widget)
+		widget:emit_signal("_private::on_leave", wp.state)
 
-        if wp.on_leave ~= nil then
+		if wp.on_leave ~= nil then
 		    wp.on_leave(self, wp.state)
         end
-		widget:emit_signal("_private::on_leave", wp.state)
 	end)
 
 	widget:connect_signal("button::press", function(self, lx, ly, button, mods, find_widgets_result)
-		if #mods > 0 and not helpers.table.contains_only(mods, {"Lock", "Mod2",}) then
-			return
-		end
-
-		widget.button = button
-
 		if button == 1 then
 			if wp.state == true then
 				if wp.on_turn_off then
@@ -286,15 +271,12 @@ local function new()
 	end)
 
 	widget:connect_signal("button::release", function(self, lx, ly, button, mods, find_widgets_result, fake)
-		widget.button = nil
-
 		if button == 1 then
 			if wp.on_turn_on ~= nil or wp.on_turn_off ~= nil or wp.on_press then
 				wp.mode = "normal"
 				effect(widget)
+				widget:emit_signal("_private::on_release", self, lx, ly, button, mods, find_widgets_result)
 			end
-
-			widget:emit_signal("_private::on_release", self, lx, ly, button, mods, find_widgets_result)
 
 			if wp.on_release ~= nil and fake ~= true then
 				wp.on_release(self, lx, ly, button, mods, find_widgets_result)
@@ -308,7 +290,7 @@ local function new()
 		end
 	end)
 
-	effect(widget, true)
+	-- effect(widget, true)
 
 	return widget
 end
