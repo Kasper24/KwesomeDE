@@ -42,7 +42,7 @@ local function new(args)
 
     local ball_animation = helpers.animation:new
     {
-        duration = 0.25,
+        duration = 0.2,
         easing = helpers.animation.easing.inOutQuad,
         pos =
         {

@@ -229,7 +229,7 @@ local function tag_list(s)
 
                 self.indicator_animation = helpers.animation:new
                 {
-                    duration = 0.125,
+                    duration = 0.2,
                     easing = helpers.animation.easing.linear,
                     update = function(self, pos)
                         indicator.children[1].forced_height = pos
@@ -386,7 +386,7 @@ local function client_task(favorites_layout, task_list, client)
     local indicator_animation = helpers.animation:new
     {
 		pos = capi.client.focus == client and dpi(50) or dpi(20),
-        duration = 0.125,
+        duration = 0.2,
         easing = helpers.animation.easing.linear,
         update = function(self, pos)
             indicator.children[1].forced_width = pos

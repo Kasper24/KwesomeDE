@@ -298,7 +298,7 @@ function playerctl.play(daemon)
 
     local play_pause_animation = helpers.animation:new
     {
-		duration = 0.125,
+		duration = 0.2,
         easing = helpers.animation.easing.linear,
 		update = function(self, pos)
 			widget.draw = get_draw(pos, point_maker)
