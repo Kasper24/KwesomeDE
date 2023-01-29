@@ -56,9 +56,8 @@ local function arc_widget(icon, on_release, on_scroll_up, on_scroll_down)
             widget = widgets.text,
             halign = "center",
             valign = "center",
+            icon = icon,
             size = 30,
-            font = icon.font,
-            text = icon.icon,
         }
     end
 
@@ -106,7 +105,7 @@ local function arc_widget(icon, on_release, on_scroll_up, on_scroll_down)
     end
 
     function widget:set_icon(icon)
-        icon_widget:set_text(icon)
+        icon_widget:set_icon(icon)
     end
 
     return widget
