@@ -14,11 +14,10 @@ local elevated_button_normal = { mt = {} }
 
 local properties =
 {
-	"forced_width", "forced_height",
-	"bg",
-	"shape", "hover_shape", "press_shape",
-	"border_width", "hover_border_width", "press_border_width",
-	"border_color",
+	"normal_bg", "hover_bg", "press_bg",
+	"normal_shape", "hover_shape", "press_shape",
+	"normal_border_width", "hover_border_width", "press_border_width",
+	"normal_border_color", "hover_border_color", "press_border_color",
 	"on_hover", "on_leave",
 	"on_press", "on_release",
 	"on_secondary_press", "on_secondary_release",
@@ -47,16 +46,16 @@ end
 
 local function effect(widget, mode)
 	local wp = widget._private
-	if mode ~= "" then mode = mode .. "_" end
+	mode = mode .. "_"
 	local bg = wp[mode .. "bg"]
 	local shape = wp[mode .. "shape"]
 	local border_width = wp[mode .. "border_width"]
 	local border_color = wp[mode .. "border_color"]
 
 	widget.animation:set({
-		color = helpers.color.hex_to_rgb(bg or "#000000"),
+		color = helpers.color.hex_to_rgb(bg),
 		border_width = border_width,
-		border_color = helpers.color.hex_to_rgb(border_color or "#000000")
+		border_color = helpers.color.hex_to_rgb(border_color)
 	})
 	widget.shape = shape
 end
@@ -80,13 +79,13 @@ function elevated_button_normal:get_child()
 	return self._private.child
 end
 
-function elevated_button_normal:set_bg(bg)
+function elevated_button_normal:set_normal_bg(normal_bg)
 	local wp = self._private
-	wp.bg = bg
-	wp.hover_bg = helpers.color.button_color(bg, 0.1)
-	wp.press_bg = helpers.color.button_color(bg, 0.2)
+	wp.normal_bg = normal_bg
+	wp.hover_bg = helpers.color.button_color(normal_bg, 0.1)
+	wp.press_bg = helpers.color.button_color(normal_bg, 0.2)
 	self:emit_signal("widget::redraw_needed")
-    self:emit_signal("property::bg", bg)
+    self:emit_signal("property::bg", normal_bg)
 end
 
 local function new()
@@ -96,21 +95,21 @@ local function new()
 	local wp = widget._private
 
 	-- Setup default values
-	wp.bg = beautiful.colors.background
-	wp.hover_bg = helpers.color.button_color(wp.bg, 0.1)
-	wp.press_bg = helpers.color.button_color(wp.bg, 0.2)
+	wp.normal_bg = beautiful.colors.background
+	wp.hover_bg = helpers.color.button_color(wp.normal_bg, 0.1)
+	wp.press_bg = helpers.color.button_color(wp.normal_bg, 0.2)
 
-	wp.shape = helpers.ui.rrect(beautiful.border_radius)
-	wp.hover_shape = wp.shape
-	wp.press_shape = wp.shape
+	wp.normal_shape = helpers.ui.rrect(beautiful.border_radius)
+	wp.hover_shape = wp.normal_shape
+	wp.press_shape = wp.normal_shape
 
-	wp.border_width = nil
-	wp.hover_border_width = nil
-	wp.press_border_width = nil
+	wp.normal_border_width = nil
+	wp.hover_border_width = wp.normal_border_width
+	wp.press_border_width = wp.normal_border_width
 
-	wp.border_color = beautiful.colors.transparent
-	wp.hover_border_color = wp.border_color
-	wp.press_border_color = wp.border_color
+	wp.normal_border_color = beautiful.colors.transparent
+	wp.hover_border_color = wp.normal_border_color
+	wp.press_border_color = wp.normal_border_color
 
 	-- TODO: Set to empty function by default to prevent all these if checks ffs
     wp.on_hover = nil
@@ -130,9 +129,9 @@ local function new()
 	{
 		pos =
 		{
-			color = helpers.color.hex_to_rgb(wp.bg),
-			border_width = wp.border_width,
-			border_color =  helpers.color.hex_to_rgb(wp.border_color)
+			color = helpers.color.hex_to_rgb(wp.normal_bg),
+			border_width = wp.normal_border_width,
+			border_color =  helpers.color.hex_to_rgb(wp.normal_border_color)
 		},
 		easing = helpers.animation.easing.linear,
 		duration = 0.2,
@@ -161,18 +160,18 @@ local function new()
 		if widget.button ~= nil then
 			if widget.button == 1 then
 				if wp.on_release ~= nil or wp.on_press ~= nil then
-					effect(widget, "")
+					effect(widget, "normal")
 				end
 				widget:emit_signal("_private::on_release", self, 1, 1, widget.button, {}, find_widgets_result)
 			elseif widget.button == 3 then
 				if wp.on_secondary_release ~= nil or wp.on_secondary_press ~= nil then
-					effect(widget, "")
+					effect(widget, "normal")
 				end
 				widget:emit_signal("_private::on_secondary_release", self, 1, 1, widget.button, {}, find_widgets_result)
 			end
 			widget.button = nil
 		end
-		effect(widget, wp.bg, wp.shape, wp.border_width, wp.border_color)
+		effect(widget, "normal")
         if wp.on_leave ~= nil then
 		    wp.on_leave(self, find_widgets_result)
         end
@@ -212,7 +211,7 @@ local function new()
 		widget.button = nil
 		if button == 1 then
 			if wp.on_release ~= nil or wp.on_press ~= nil then
-				effect(widget, "")
+				effect(widget, "normal")
 			end
 			if wp.on_release ~= nil then
 				wp.on_release(self, lx, ly, button, mods, find_widgets_result)
@@ -221,7 +220,7 @@ local function new()
 
 		elseif button == 3 then
 			if wp.on_secondary_release ~= nil or wp.on_secondary_press ~= nil then
-				effect(widget, "")
+				effect(widget, "normal")
 			end
 			if wp.on_secondary_release ~= nil then
 				wp.on_secondary_release(self, lx, ly, button, mods, find_widgets_result)
@@ -230,7 +229,7 @@ local function new()
 		end
 	end)
 
-	effect(widget, "")
+	effect(widget, "normal")
 
 	return widget
 end
