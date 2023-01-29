@@ -35,19 +35,19 @@ local function generate_markup(self)
 		italic_end = "</i>"
 	end
 
-	self._private.font = self._private.font or beautiful.font_name
-	self._private.size = self._private.size or 20
-	self._private.color = self._private.color or beautiful.colors.on_background
-	self._private.text = self._private.text or ""
+	local font = self._private.font or beautiful.font_name
+	local size = self._private.size or 20
+	local color = self._private.color or beautiful.colors.on_background
+	local text = self._private.text or ""
 
 	-- Need to unescape in a case the text was escaped by other code before
-	self._private.text = gstring.xml_unescape(tostring(self._private.text))
-	self._private.text = gstring.xml_escape(tostring(self._private.text))
+	text = gstring.xml_unescape(tostring(text))
+	text = gstring.xml_escape(tostring(text))
 
-	local size = math.ceil(self._private.size * 1024)
-	self.markup = string.format("<span font_family='%s' font_size='%s'>", self._private.font, size) ..
+	size = math.ceil(size * 1024)
+	self.markup = string.format("<span font_family='%s' font_size='%s'>", font, size) ..
 		bold_start .. italic_start ..
-		helpers.ui.colorize_text(self._private.text, self._private.color) ..
+		helpers.ui.colorize_text(text, color) ..
 		italic_end .. bold_end .. "</span>"
 end
 
@@ -93,7 +93,6 @@ local function new()
 	-- Setup default values
 	wp.bold = false
 	wp.italic = false
-	wp.icon = nil
 
 	widget:connect_signal("widget::redraw_needed", function()
 		generate_markup(widget)
