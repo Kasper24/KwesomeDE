@@ -395,7 +395,7 @@ local function defaults()
     theme.fg_focus = theme.colors.background
     theme.fg_urgent = nil
     theme.fg_minimize = nil
-    theme.border_width = dpi(0)
+    theme.border_width = nil
     theme.border_color = theme.colors.surface
     theme.border_radius = 5
     theme.border_color_active = theme.colors.random_accent_color()
