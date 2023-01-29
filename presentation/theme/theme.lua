@@ -325,6 +325,7 @@ local function icons()
         ["kotatogramdesktop"] = theme.icons.telegram,
         ["telegramdesktop"] =  theme.icons.telegram,
         ["spotify"] = theme.icons.spotify,
+        ["mopidy"] = theme.icons.spotify,
         ["ncmpcpp"] = theme.icons.spotify,
         ["steam"] = theme.icons.steam,
         ["lutris"] = theme.icons.gamepad_alt,
