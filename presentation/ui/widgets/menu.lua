@@ -79,7 +79,8 @@ function menu:hide(hide_parents)
     end
 
     -- No animation for hiding
-    self.animation:set({duration = 0.01, target = 1})
+    self.widget.forced_height = 1
+    self.visible = false
 
     -- Hides all child menus
     self:hide_children_menus()
@@ -183,15 +184,7 @@ function menu.menu(widgets, width)
 		duration = 0.4,
 		update = function(self, pos)
 			menu_container.forced_height = dpi(pos)
-		end,
-        signals =
-        {
-            ["ended"] = function()
-                if menu_container.forced_height == 1 then
-                    widget.visible = false
-                end
-            end
-        }
+		end
 	}
 
     capi.awesome.connect_signal("root::pressed", function()
