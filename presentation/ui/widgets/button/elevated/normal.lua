@@ -80,13 +80,14 @@ function elevated_button_normal:get_child()
 	return self._private.child
 end
 
--- function elevated_button_normal:set_bg(bg)
--- 	local wp = self._private
--- 	-- wp.bg = bg
--- 	wp.hover_bg = helpers.color.button_color(bg, 0.1)
--- 	wp.press_bg = helpers.color.button_color(bg, 0.2)
--- 	effect(self, "")
--- end
+function elevated_button_normal:set_bg(bg)
+	local wp = self._private
+	wp.bg = bg
+	wp.hover_bg = helpers.color.button_color(bg, 0.1)
+	wp.press_bg = helpers.color.button_color(bg, 0.2)
+	self:emit_signal("widget::redraw_needed")
+    self:emit_signal("property::bg", bg)
+end
 
 local function new()
 	local widget = wibox.container.background()
