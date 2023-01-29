@@ -57,6 +57,8 @@ local function new()
 	wp.text_on_hover_bg = helpers.color.button_color(wp.text_on_normal_bg, 0.1)
 	wp.text_on_press_bg = helpers.color.button_color(wp.text_on_normal_bg, 0.2)
 
+	widget:text_effect(true)
+
 	return widget
 end
 

@@ -234,7 +234,7 @@ local function new(is_state)
 		end)
 	end
 
-	-- effect(widget, true)
+	widget:effect(true)
 
 	return widget
 end

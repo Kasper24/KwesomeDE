@@ -162,7 +162,7 @@ local function new()
 		end
 	end)
 
-	-- effect(widget, true)
+	widget:effect(true)
 
 	return widget
 end
