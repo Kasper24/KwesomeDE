@@ -55,12 +55,12 @@ local function new()
     local ret = gobject{}
     gtable.crush(ret, disk, true)
 
-    local accent_color = beautiful.random_accent_color()
+    local accent_color = beautiful.colors.random_accent_color()
     local gradient_colors =
     {
-        {0, beautiful.random_accent_color()},
-        {0.33, beautiful.random_accent_color()},
-        {0.66, beautiful.random_accent_color()}
+        {0, beautiful.colors.random_accent_color()},
+        {0.33, beautiful.colors.random_accent_color()},
+        {0.66, beautiful.colors.random_accent_color()}
     }
 
     local header = wibox.widget

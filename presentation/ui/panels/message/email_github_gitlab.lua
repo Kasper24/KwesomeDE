@@ -432,7 +432,7 @@ local function github_pr()
 end
 
 local function github()
-    local accent_color = beautiful.random_accent_color()
+    local accent_color = beautiful.colors.random_accent_color()
 
     local activity = github_activity()
     local pr = github_pr()
@@ -656,7 +656,7 @@ local function gitlab()
 end
 
 local function new()
-    local accent_color = beautiful.random_accent_color()
+    local accent_color = beautiful.colors.random_accent_color()
 
     local email = email()
     local github = github()

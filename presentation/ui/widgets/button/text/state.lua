@@ -101,7 +101,7 @@ local function new()
 	wp.size = widget.text_widget:get_size()
 
 	-- Setup default values
-	wp.text_normal_bg = beautiful.random_accent_color()
+	wp.text_normal_bg = beautiful.colors.random_accent_color()
 	wp.text_hover_bg = helpers.color.button_color(wp.text_normal_bg, 0.1)
 	wp.text_press_bg = helpers.color.button_color(wp.text_normal_bg, 0.2)
 

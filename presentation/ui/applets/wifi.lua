@@ -255,14 +255,14 @@ local function new()
 
     ret._private = {}
 
-    local accent_color = beautiful.random_accent_color()
+    local accent_color = beautiful.colors.random_accent_color()
 
     local header = wibox.widget
     {
         widget = widgets.text,
         halign = "left",
         bold = true,
-        color = beautiful.random_accent_color(),
+        color = beautiful.colors.random_accent_color(),
         text = "Wi-Fi"
     }
 

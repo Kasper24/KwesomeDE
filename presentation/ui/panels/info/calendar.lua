@@ -32,21 +32,21 @@ local function new()
                 forced_width = dpi(10),
                 forced_height = dpi(10),
                 shape = helpers.ui.rrect(2),
-                bg = beautiful.random_accent_color(),
+                bg = beautiful.colors.random_accent_color(),
             },
             {
                 widget = wibox.container.background,
                 forced_width = dpi(10),
                 forced_height = dpi(10),
                 shape = helpers.ui.rrect(2),
-                bg = beautiful.random_accent_color(),
+                bg = beautiful.colors.random_accent_color(),
             },
             {
                 widget = wibox.container.background,
                 forced_width = dpi(10),
                 forced_height = dpi(10),
                 shape = helpers.ui.rrect(2),
-                bg = beautiful.random_accent_color(),
+                bg = beautiful.colors.random_accent_color(),
             }
         }
     }
@@ -80,9 +80,9 @@ local function new()
         font = beautiful.font_name .. 20,
     }
 
-    date.markup = helpers.ui.colorize_text(date.text, beautiful.random_accent_color())
+    date.markup = helpers.ui.colorize_text(date.text, beautiful.colors.random_accent_color())
     date:connect_signal("widget::redraw_needed", function()
-        date.markup = helpers.ui.colorize_text(date.text, beautiful.random_accent_color())
+        date.markup = helpers.ui.colorize_text(date.text, beautiful.colors.random_accent_color())
     end)
 
     return wibox.widget

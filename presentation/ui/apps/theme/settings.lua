@@ -78,7 +78,7 @@ local function picom_slider(key, max, divide_by, round)
         bar_height = 5,
         bar_shape = helpers.ui.rrect(beautiful.border_radius),
         bar_color = beautiful.colors.surface,
-        bar_active_color = beautiful.random_accent_color(),
+        bar_active_color = beautiful.colors.random_accent_color(),
         handle_width = dpi(15),
         handle_color = beautiful.colors.on_background,
         handle_shape = gshape.circle,

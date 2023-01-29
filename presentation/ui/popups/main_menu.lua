@@ -46,7 +46,7 @@ end
 local function tag_sub_menu()
     local menu = widgets.menu{}
 
-    local checkbox_color = beautiful.random_accent_color()
+    local checkbox_color = beautiful.colors.random_accent_color()
 
     for _, tag in ipairs(capi.screen.primary.tags) do
         local button = widgets.menu.checkbox_button
@@ -78,7 +78,7 @@ local function layout_sub_menu()
     capi.tag.connect_signal("property::selected", function(t)
         menu:reset()
 
-        local checkbox_color = beautiful.random_accent_color()
+        local checkbox_color = beautiful.colors.random_accent_color()
 
         for _, layout in ipairs(t.layouts) do
             local button = widgets.menu.checkbox_button

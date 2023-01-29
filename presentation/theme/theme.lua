@@ -48,8 +48,7 @@ local function colors()
         on_accent = helpers.color.is_dark(colors[1]) and colors[1] or colors[8],
     }
 
-    -- TODO make it part of the colors objject
-    function theme.random_accent_color()
+    function theme.colors.random_accent_color()
         local color_1 = color_libary.color { hex = theme.colors.bright_red }
         local color_2 = color_libary.color { hex = theme.colors.bright_green }
 
@@ -274,7 +273,7 @@ local function icons()
     }
 
     for _, icon in pairs(theme.icons) do
-        local color = theme.random_accent_color()
+        local color = theme.colors.random_accent_color()
         if icon.icon == nil then
             for _, _icon in pairs(icon) do
                 _icon.color = color
@@ -390,7 +389,7 @@ local function defaults()
     theme.secondary_font_name = "Oswald Medium "
     theme.secondary_font = theme.secondary_font_name .. 12
     theme.bg_normal = theme.colors.background
-    theme.bg_focus = theme.random_accent_color()
+    theme.bg_focus = theme.colors.random_accent_color()
     theme.bg_urgent = theme.colors.background
     theme.bg_minimize = theme.colors.background
     theme.fg_normal = theme.colors.on_background
@@ -400,11 +399,11 @@ local function defaults()
     theme.border_width = dpi(0)
     theme.border_color = theme.colors.surface
     theme.border_radius = 5
-    theme.border_color_active = theme.random_accent_color()
+    theme.border_color_active = theme.colors.random_accent_color()
     theme.border_color_normal = theme.colors.surface
     theme.border_color_urgent = nil
     theme.border_color_new = theme.border_color_normal
-    theme.border_color_floating_active = theme.random_accent_color()
+    theme.border_color_floating_active = theme.colors.random_accent_color()
     theme.border_color_floating_normal = theme.colors.surface
     theme.border_color_floating_urgent = nil
     theme.border_color_floating_new = theme.border_color_floating_normal
@@ -491,7 +490,7 @@ local function tabbed()
     theme.tabbar_size = 40 -- size of the tabbar
     theme.tabbar_position = "top" -- position of the tabbar
     theme.tabbar_bg_normal = theme.colors.background
-    theme.tabbar_bg_focus = theme.random_accent_color()
+    theme.tabbar_bg_focus = theme.colors.random_accent_color()
     theme.tabbar_fg_normal = theme.colors.on_background
     theme.tabbar_fg_focus = theme.colors.background
     theme.tabbar_disable = false

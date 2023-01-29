@@ -87,7 +87,7 @@ local function get_draw(pos, color)
 end
 
 local function start()
-    local on_color = helpers.color.hex_to_rgb(beautiful.random_accent_color())
+    local on_color = helpers.color.hex_to_rgb(beautiful.colors.random_accent_color())
     local off_color = helpers.color.hex_to_rgb(beautiful.colors.on_background)
 
     local widget = wibox.widget
@@ -698,7 +698,7 @@ end
 --  Time
 -- =============================================================================
 local function time()
-    local accent_color = beautiful.random_accent_color()
+    local accent_color = beautiful.colors.random_accent_color()
     local clock = wibox.widget
     {
         widget = wibox.widget.textclock,

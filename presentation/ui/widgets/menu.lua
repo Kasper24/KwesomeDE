@@ -301,7 +301,7 @@ function menu.button(args)
             widget = twidget,
             font = args.icon.font,
             size =  args.icon_size,
-            color = beautiful.random_accent_color(),
+            color = beautiful.colors.random_accent_color(),
             text = args.icon.icon,
         }
     elseif args.image ~= nil then
@@ -361,7 +361,7 @@ function menu.checkbox_button(args)
     args.font = args.font or beautiful.font_name
     args.text = args.text or ""
     args.text_size = args.text_size or 12
-    args.color = args.checkbox_color or beautiful.random_accent_color()
+    args.color = args.checkbox_color or beautiful.colors.random_accent_color()
     args.on_by_default = args.on_by_default or nil
     args.on_press = args.on_press or nil
 
@@ -373,7 +373,7 @@ function menu.checkbox_button(args)
             widget = twidget,
             font = args.icon.font,
             size =  args.icon_size,
-            color = beautiful.random_accent_color(),
+            color = beautiful.colors.random_accent_color(),
             text = args.icon.icon,
         }
     elseif args.image ~= nil then

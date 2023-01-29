@@ -168,7 +168,7 @@ local function new(args)
     local icon = wibox.widget
     {
         widget = widgets.text,
-        color = beautiful.random_accent_color(),
+        color = beautiful.colors.random_accent_color(),
         size = 85,
         font = icon_map["01d"].font
     }
@@ -236,7 +236,7 @@ local function new(args)
         layout = wibox.layout.flex.horizontal,
     }
 
-    local graph_accent_color = beautiful.random_accent_color()
+    local graph_accent_color = beautiful.colors.random_accent_color()
 
     local hourly_forecast_graph = wibox.widget
     {

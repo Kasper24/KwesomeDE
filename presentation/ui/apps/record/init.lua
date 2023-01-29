@@ -53,7 +53,7 @@ local window = [[ lua -e "
 "
 ]]
 
-local accent_color = beautiful.random_accent_color()
+local accent_color = beautiful.colors.random_accent_color()
 
 local function resolution()
     local title = wibox.widget
@@ -116,7 +116,7 @@ local function fps()
         bar_height = 5,
         bar_shape = helpers.ui.rrect(beautiful.border_radius),
         bar_color = beautiful.colors.surface,
-        bar_active_color = beautiful.random_accent_color(),
+        bar_active_color = beautiful.colors.random_accent_color(),
         handle_width = dpi(15),
         handle_color = beautiful.colors.on_background,
         handle_shape = gshape.circle,
@@ -329,7 +329,7 @@ local function main(self)
         widget = widgets.button.text.normal,
         forced_width = dpi(50),
         size = 15,
-        bg = beautiful.random_accent_color(),
+        bg = beautiful.colors.random_accent_color(),
         text_bg = beautiful.colors.background,
         text = record_daemon:get_is_recording() and "Stop" or "Record",
         animate_size = false,

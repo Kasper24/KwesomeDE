@@ -48,7 +48,7 @@ local function date_widget(date, is_current, is_another_month)
 		forced_width = dpi(35),
 		forced_height = dpi(35),
 		shape = gshape.circle,
-		bg = is_current and beautiful.random_accent_color() or beautiful.colors.transparent,
+		bg = is_current and beautiful.colors.random_accent_color() or beautiful.colors.transparent,
 		wibox.widget
 		{
 			widget = twidget,

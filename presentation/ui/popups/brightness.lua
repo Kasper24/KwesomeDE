@@ -49,7 +49,7 @@ local function new()
             type = "linear",
             from = {0, 0},
             to = {200, 50},
-            stops = {{0, beautiful.random_accent_color()}, {0.50, beautiful.random_accent_color()}}
+            stops = {{0, beautiful.colors.random_accent_color()}, {0.50, beautiful.colors.random_accent_color()}}
         },
     }
 

@@ -389,7 +389,7 @@ local function new(args)
     args.icon_color = args.icon_color or beautiful.colors.on_background or "#FFFFFF"
     args.prompt_color = args.prompt_color or beautiful.colors.on_background or "#FFFFFF"
     args.text_color = args.text_color or beautiful.colors.on_background or "#FFFFFF"
-    args.cursor_color = args.cursor_color or beautiful.random_accent_color() or "#FF0000"
+    args.cursor_color = args.cursor_color or beautiful.colors.random_accent_color() or "#FF0000"
 
     args.always_on = args.always_on ~= nil and args.always_on or false
     args.reset_on_stop = args.reset_on_stop ~= nil and args.reset_on_stop or false

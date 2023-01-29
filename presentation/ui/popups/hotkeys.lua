@@ -279,9 +279,9 @@ function widget.new(args)
             nil or self.fg
         self.shape = args.shape or helpers.ui.rrect(beautiful.border_radius) or beautiful.hotkeys_shape
         self.modifiers_fg = args.modifiers_fg or
-            beautiful.random_accent_color() or beautiful.bg_minimize or "#555555"
+            beautiful.colors.random_accent_color() or beautiful.bg_minimize or "#555555"
         self.label_bg = args.label_bg or
-        beautiful.random_accent_color() or self.fg
+        beautiful.colors.random_accent_color() or self.fg
         self.label_fg = args.label_fg or
             beautiful.colors.surface or self.bg
         self.opacity = args.opacity or

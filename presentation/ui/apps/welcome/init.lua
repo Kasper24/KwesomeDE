@@ -56,7 +56,7 @@ local window = [[ lua -e "
 "
 ]]
 
-local accent_color = beautiful.random_accent_color()
+local accent_color = beautiful.colors.random_accent_color()
 
 function welcome:show()
     helpers.client.run_or_raise_with_shell({class = "awesome-app-welcome"}, false, window)

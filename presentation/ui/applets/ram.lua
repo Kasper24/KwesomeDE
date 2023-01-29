@@ -68,9 +68,9 @@ local function new()
             forced_width = 400,
             colors =
             {
-              beautiful.random_accent_color(),
+              beautiful.colors.random_accent_color(),
               beautiful.colors.surface,
-              beautiful.random_accent_color(),
+              beautiful.colors.random_accent_color(),
             }
         }
     }

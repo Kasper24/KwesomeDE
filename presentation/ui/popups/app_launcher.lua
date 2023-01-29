@@ -48,7 +48,7 @@ local function new()
         apps_per_row =  apps_per_row,
         apps_per_column = 1,
         app_spacing = app_spacing,
-        app_selected_color = beautiful.random_accent_color(),
+        app_selected_color = beautiful.colors.random_accent_color(),
         app_normal_color = beautiful.colors.background,
         app_shape = helpers.ui.rrect(beautiful.bor1der_radius),
         app_name_font = beautiful.font_name .. 14,

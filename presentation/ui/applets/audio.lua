@@ -293,8 +293,8 @@ local function device_widget(args)
 end
 
 local function applications()
-    local sink_inputs_accent_color = beautiful.random_accent_color()
-    local sources_outputs_accent_color = beautiful.random_accent_color()
+    local sink_inputs_accent_color = beautiful.colors.random_accent_color()
+    local sources_outputs_accent_color = beautiful.colors.random_accent_color()
 
     local sink_inputs_header = wibox.widget
     {
@@ -397,8 +397,8 @@ local function applications()
 end
 
 local function devices()
-    local sinks_accent_color = beautiful.random_accent_color()
-    local sources_accent_color = beautiful.random_accent_color()
+    local sinks_accent_color = beautiful.colors.random_accent_color()
+    local sources_accent_color = beautiful.colors.random_accent_color()
 
     local sinks_header = wibox.widget
     {
@@ -510,7 +510,7 @@ local function devices()
 end
 
 local function widget()
-    local accent_color = beautiful.random_accent_color()
+    local accent_color = beautiful.colors.random_accent_color()
 
     local _applications = applications()
     local _devices = devices()

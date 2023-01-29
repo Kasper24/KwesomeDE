@@ -199,7 +199,7 @@ local function new()
         widget = widgets.text,
         halign = "left",
         bold = true,
-        color = beautiful.random_accent_color(),
+        color = beautiful.colors.random_accent_color(),
         text = "Bluetooth"
     }
 
@@ -265,7 +265,7 @@ local function new()
         color = beautiful.colors.surface
     }
 
-    local accent_color = beautiful.random_accent_color()
+    local accent_color = beautiful.colors.random_accent_color()
 
     bluetooth_daemon:connect_signal("new_device", function(self, device, path)
         layout:add(device_widget(device, path, layout, accent_color))

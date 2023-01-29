@@ -115,7 +115,7 @@ function power:toggle()
 end
 
 local function button(icon, text, on_release)
-    local accent_color = beautiful.random_accent_color()
+    local accent_color = beautiful.colors.random_accent_color()
 
     local text = wibox.widget
     {

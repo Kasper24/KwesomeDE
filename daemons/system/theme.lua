@@ -408,8 +408,8 @@ local function sun_wallpaper(screen)
                     from  = { 0, 0      },
                     to    = { 0, height },
                     stops = {
-                        { 0, beautiful.random_accent_color() },
-                        { 1, beautiful.random_accent_color() }
+                        { 0, beautiful.colors.random_accent_color() },
+                        { 1, beautiful.colors.random_accent_color() }
                     }
                 })
                 cr:arc(width/2, height/2, height*.35, 0, math.pi*2)
@@ -419,7 +419,7 @@ local function sun_wallpaper(screen)
                 local lines = width/8
                 cr:reset_clip()
                 cr:set_line_width(0.5)
-                cr:set_source(gcolor(beautiful.random_accent_color()))
+                cr:set_source(gcolor(beautiful.colors.random_accent_color()))
 
                 for i=1, lines do
                     cr:move_to((-width) + i* math.sin(i * (math.pi/(lines*2)))*30, height)
@@ -454,13 +454,13 @@ local function binary_wallpaper(screen)
     {
         screen = screen,
         bg = beautiful.colors.background,
-        fg = beautiful.random_accent_color(),
+        fg = beautiful.colors.random_accent_color(),
         widget = wibox.widget
         {
             widget = wibox.layout.stack,
             {
                 widget = wibox.container.background,
-                fg = beautiful.random_accent_color(),
+                fg = beautiful.colors.random_accent_color(),
                 {
                     widget = wibox.widget.textbox,
                     align  = "center",

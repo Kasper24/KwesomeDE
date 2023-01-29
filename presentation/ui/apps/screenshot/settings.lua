@@ -10,7 +10,7 @@ local screenshot_daemon = require("daemons.system.screenshot")
 local dpi = beautiful.xresources.apply_dpi
 local settings = { mt = {} }
 
-local accent_color = beautiful.random_accent_color()
+local accent_color = beautiful.colors.random_accent_color()
 
 local function show_cursor()
     local checkbox = widgets.checkbox

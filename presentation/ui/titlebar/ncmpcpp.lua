@@ -21,7 +21,7 @@ function ncmppcpp.tabs_titlebar(c)
     local playlist_editor  = nil
     local lyrics  = nil
 
-    local accent_color = beautiful.random_accent_color()
+    local accent_color = beautiful.colors.random_accent_color()
 
     current_playlist = wibox.widget
     {

@@ -18,7 +18,7 @@ local math = math
 
 local playerctl = { }
 
-local accent_color = beautiful.random_accent_color()
+local accent_color = beautiful.colors.random_accent_color()
 
 function playerctl.art(halign, valign, size, default_icon_size, daemon)
     local playerctl_daemon = daemon or general_playerctl_daemon

@@ -177,7 +177,7 @@ naughty.connect_signal("request::display", function(n)
                 type = "linear",
                 from = {0, 0},
                 to = {400, 400},
-                stops = {{0, beautiful.random_accent_color()}, {0.2, beautiful.random_accent_color()}, {0.4, beautiful.random_accent_color()}, {0.6, beautiful.random_accent_color()}, {0.8, beautiful.random_accent_color()}}
+                stops = {{0, beautiful.colors.random_accent_color()}, {0.2, beautiful.colors.random_accent_color()}, {0.4, beautiful.colors.random_accent_color()}, {0.6, beautiful.colors.random_accent_color()}, {0.8, beautiful.colors.random_accent_color()}}
             }
         },
         dismiss
@@ -202,7 +202,7 @@ naughty.connect_signal("request::display", function(n)
         {
             widget = widgets.text,
             size = 30,
-            color = beautiful.random_accent_color(),
+            color = beautiful.colors.random_accent_color(),
             font = n.font_icon.font,
             text = n.font_icon.icon
         }

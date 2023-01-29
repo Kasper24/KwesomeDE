@@ -48,7 +48,7 @@ local function button(icon, text, on_release, on_by_default)
 end
 
 local function new(self, layout)
-    local accent_color = beautiful.random_accent_color()
+    local accent_color = beautiful.colors.random_accent_color()
 
     local selection_button = nil
     local screen_button = nil

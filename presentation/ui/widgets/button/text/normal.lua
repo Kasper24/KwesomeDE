@@ -93,7 +93,7 @@ local function new()
 	wp.size = widget.text_widget:get_size()
 
 	-- Setup default values
-	wp.text_normal_bg = beautiful.random_accent_color()
+	wp.text_normal_bg = beautiful.colors.random_accent_color()
 	wp.text_hover_bg = helpers.color.button_color(wp.text_bg, 0.1)
 	wp.text_press_bg = helpers.color.button_color(wp.text_bg, 0.2)
 	wp.animate_size = true
@@ -109,7 +109,6 @@ local function new()
 		end
 	}
 
-	-- TODO check how to get size
 	widget.size_animation = helpers.animation:new
 	{
 		pos = wp.size,
