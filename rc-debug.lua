@@ -3,6 +3,8 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 
+DEBUG = true
+
 local helpers = require("helpers")
 local capi = { awesome = awesome}
 
