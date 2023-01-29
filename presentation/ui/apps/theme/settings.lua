@@ -71,8 +71,9 @@ local function picom_slider(key, max, divide_by, round)
     local slider = wibox.widget
     {
         widget = widgets.slider,
+        forced_width = dpi(420),
         forced_height = dpi(20),
-        value = picom_daemon["get_" .. key](picom_daemon) * 100,
+        value = picom_daemon["get_" .. key](picom_daemon) * divide_by,
         maximum = max or 100,
         bar_height = 5,
         bar_shape = helpers.ui.rrect(beautiful.border_radius),
@@ -83,19 +84,32 @@ local function picom_slider(key, max, divide_by, round)
         handle_shape = gshape.circle,
     }
 
+    local value_text = wibox.widget
+    {
+        widget = widgets.text,
+        size = 15,
+        text = picom_daemon["get_" .. key](picom_daemon) * divide_by
+    }
+
     slider:connect_signal("property::value", function(self, value, instant)
         local value = value / (divide_by or 1)
         if round == true then
             value = math.floor(value)
         end
+        value_text:set_text(value)
         picom_daemon["set_" .. key](picom_daemon, value)
     end)
 
     return wibox.widget
     {
-        layout = wibox.layout.fixed.horizontal,
+        layout = wibox.layout.align.horizontal,
         name,
-        slider
+        {
+            widget = wibox.container.margin,
+            margins = { right = dpi(15) },
+            slider
+        },
+        value_text
     }
 end
 
