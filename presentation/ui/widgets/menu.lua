@@ -137,7 +137,7 @@ function menu:add(widget, index)
         widget:get_children_by_id("button")[1].menu = self
     end
 
-    local height_without_dpi = gmath.round(widget.forced_height * 96 / beautiful.xresources.get_dpi())
+    local height_without_dpi = math.ceil(widget.forced_height * 96 / beautiful.xresources.get_dpi())
     self.menu_height = self.menu_height + height_without_dpi
 
     if index == nil then
