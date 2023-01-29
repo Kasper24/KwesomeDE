@@ -22,20 +22,25 @@ local recent_places_daemon = require("daemons.system.recent_places")
 
 local instance = nil
 
-local function recent_places_sub_menu()
+local function recent_places_sub_menu(recent_places)
     local menu = widgets.menu{}
 
-    recent_places_daemon:connect_signal("update", function(self, recent_places)
-        for _, place in ipairs(recent_places) do
-            menu:add(widgets.menu.button
-            {
-                text = place.title,
-                on_press = function() awful.spawn("xdg-open " .. place.path, false) end
-            })
-        end
-    end)
+    for _, place in ipairs(recent_places) do
+        menu:add(widgets.menu.button
+        {
+            text = place.title,
+            on_press = function() awful.spawn("xdg-open " .. place.path, false) end
+        })
+    end
 
-    return menu
+    local button = widgets.menu.sub_menu_button
+    {
+        icon = beautiful.icons.folder_open,
+        text = "Recent Places",
+        sub_menu = menu
+    }
+
+    return button
 end
 
 local function tag_sub_menu()
@@ -108,7 +113,7 @@ local function layout_sub_menu()
 end
 
 local function widget()
-    return widgets.menu
+    local menu = widgets.menu
     {
         widgets.menu.button
         {
@@ -167,13 +172,6 @@ local function widget()
             sub_menu = layout_sub_menu()
         },
         widgets.menu.separator(),
-        widgets.menu.sub_menu_button
-        {
-            icon = beautiful.icons.folder_open,
-            text = "Recent Places",
-            sub_menu = recent_places_sub_menu()
-        },
-        widgets.menu.separator(),
         widgets.menu.button
         {
             icon = beautiful.icons.gear,
@@ -200,6 +198,22 @@ local function widget()
             on_press = function() power_popup:show() end
         }
     }
+
+    local added_recent_places_menu = false
+
+    recent_places_daemon:connect_signal("update", function(self, recent_places)
+        if added_recent_places_menu == true then
+            menu:remove_widget(12)
+            menu:remove_widget(13)
+        end
+
+        menu:add(widgets.menu.separator(), 12)
+        menu:add(recent_places_sub_menu(recent_places), 13)
+
+        added_recent_places_menu = true
+    end)
+
+    return menu
 end
 
 if not instance then

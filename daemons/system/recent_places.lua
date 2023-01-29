@@ -50,15 +50,6 @@ local function new()
 
     get_places(ret)
 
-    local watcher = helpers.inotify:watch(path,
-    {
-        helpers.inotify.Events.modify
-    })
-
-    watcher:connect_signal("event", function(_, __, __)
-        get_places(ret)
-    end)
-
     return ret
 end
 

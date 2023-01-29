@@ -124,7 +124,7 @@ function menu:toggle(args)
     end
 end
 
-function menu:add(widget)
+function menu:add(widget, index)
     if widget.sub_menu then
         widget.sub_menu.parent_menu = self
     end
@@ -135,11 +135,14 @@ function menu:add(widget)
 
     self.menu_height = self.menu_height + widget.forced_height
 
-    self.widget:add(widget)
+    if index == nil then
+        self.widget:add(widget)
+    else
+        self.widget:insert(index, widget)
+    end
 end
 
 function menu:remove(index)
-    print(self.widget.children[index].forced_height)
     self.menu_height = self.menu_height - self.widget.children[index].forced_height
     self.widget:remove(index)
 end
