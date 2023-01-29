@@ -84,7 +84,6 @@ end
 
 local function icons()
     local font_awesome_6_solid_font_name = "Font Awesome 6 Pro Solid "
-    local font_awesome_6_regular_font_name = "Font Awesome 6 Pro Regular "
     local font_awesome_6_brands_font_name = "Font Awesome 6 Brands "
     local nerd_font_name = "Nerd Font Mono "
 

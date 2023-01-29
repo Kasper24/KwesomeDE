@@ -4,11 +4,8 @@
 -------------------------------------------
 
 local gtable = require("gears.table")
-local wibox = require("wibox")
-local beautiful = require("beautiful")
 local ebnwidget = require("presentation.ui.widgets.button.elevated.normal")
 local helpers = require("helpers")
-local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 
 local elevated_button_state = { mt = {} }

@@ -4,12 +4,9 @@
 -------------------------------------------
 
 local gtable = require("gears.table")
-local twidget = require("presentation.ui.widgets.text")
 local tbnwidget = require("presentation.ui.widgets.button.text.normal")
-local beautiful = require("beautiful")
 local helpers = require("helpers")
 local setmetatable = setmetatable
-local math = math
 
 local text_button_state = { mt = {} }
 
