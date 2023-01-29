@@ -57,11 +57,7 @@ function playerctl.art(halign, valign, size, default_icon_size, daemon)
             stack:raise_widget(icon)
         else
             local app_font_icon = beautiful.get_font_icon_for_app_name(player_name)
-            if app_font_icon ~= nil then
-                default_icon:set_text(app_font_icon.icon)
-            else
-                default_icon:set_icon(beautiful.icons.spotify)
-            end
+            default_icon:set_icon(app_font_icon or beautiful.icons.spotify)
             stack:raise_widget(default_icon)
         end
     end)
