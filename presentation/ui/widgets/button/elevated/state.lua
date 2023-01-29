@@ -132,7 +132,7 @@ local function new()
 				end
 			end
 
-			widget:emit_signal("_private::on_press", self, lx, ly, button, mods, find_widgets_result)
+			widget:emit_signal("event", "press")
 		elseif button == 3 and wp.on_secondary_press ~= nil then
 			widget:emit_signal("event", "secondary_press")
 			wp.on_secondary_press(self, lx, ly, button, mods, find_widgets_result)
