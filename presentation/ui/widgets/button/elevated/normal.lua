@@ -95,6 +95,14 @@ function elevated_button_normal:set_normal_bg(normal_bg)
 	self:effect(true)
 end
 
+function elevated_button_normal:set_normal_shape(normal_shape)
+	local wp = self._private
+	wp.normal_shape = normal_shape
+	wp.hover_shape = normal_shape
+	wp.press_shape = normal_shape
+	self:effect(true)
+end
+
 local function new(is_state)
 	local widget = wibox.container.background()
 	gtable.crush(widget, elevated_button_normal, true)
@@ -237,29 +245,33 @@ local function new(is_state)
 
 	widget:effect(true)
 
-	theme_daemon:connect_signal("colorscheme::changed", function(self, old_colorscheme, new_colorscheme)
-		for index, color in pairs(old_colorscheme) do
-			if color == wp.normal_bg then
-				wp.normal_bg = new_colorscheme[index]
-				wp.hover_bg = helpers.color.button_color(wp.normal_bg, 0.1)
-				wp.press_bg = helpers.color.button_color(wp.normal_bg, 0.2)
-				widget:effect(true)
-			elseif color == wp.on_normal_bg then
-				wp.on_normal_bg = new_colorscheme[index]
-				wp.on_hover_bg = helpers.color.button_color(wp.on_normal_bg, 0.1)
-				wp.on_press_bg = helpers.color.button_color(wp.on_normal_bg, 0.2)
-				widget:effect(true)
-			elseif color == wp.text_normal_bg then
-				wp.text_normal_bg = new_colorscheme[index]
-				wp.text_hover_bg = helpers.color.button_color(wp.text_normal_bg, 0.1)
-				wp.text_press_bg = helpers.color.button_color(wp.text_normal_bg, 0.2)
-				widget:text_effect(true)
-			elseif color == wp.text_on_normal_bg then
-				wp.text_on_normal_bg = new_colorscheme[index]
-				wp.text_on_hover_bg = helpers.color.button_color(wp.text_on_normal_bg, 0.1)
-				wp.text_on_press_bg = helpers.color.button_color(wp.text_on_normal_bg, 0.2)
-				widget:text_effect(true)
-			end
+	awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+		wp.normal_bg = old_colorscheme_to_new_map[wp.normal_bg]
+		wp.hover_bg = helpers.color.button_color(wp.normal_bg, 0.1)
+		wp.press_bg = helpers.color.button_color(wp.normal_bg, 0.2)
+		widget:effect(true)
+
+		if wp.on_normal_bg ~= nil then
+			wp.on_normal_bg =
+				old_colorscheme_to_new_map[wp.on_normal_bg] or
+				helpers.color.button_color(wp.normal_bg, 0.2)
+			wp.on_hover_bg = helpers.color.button_color(wp.on_normal_bg, 0.1)
+			wp.on_press_bg = helpers.color.button_color(wp.on_normal_bg, 0.2)
+			widget:effect(true)
+		end
+		if wp.text_normal_bg ~= nil then
+			wp.text_normal_bg = old_colorscheme_to_new_map[wp.text_normal_bg]
+			wp.text_hover_bg = helpers.color.button_color(wp.text_normal_bg, 0.1)
+			wp.text_press_bg = helpers.color.button_color(wp.text_normal_bg, 0.2)
+			widget:text_effect(true)
+		end
+		if wp.text_on_normal_bg ~= nil then
+			wp.text_on_normal_bg =
+				old_colorscheme_to_new_map[wp.text_on_normal_bg] or
+				helpers.color.button_color(wp.text_normal_bg, 0.2)
+			wp.text_on_hover_bg = helpers.color.button_color(wp.text_on_normal_bg, 0.1)
+			wp.text_on_press_bg = helpers.color.button_color(wp.text_on_normal_bg, 0.2)
+			widget:text_effect(true)
 		end
 	end)
 

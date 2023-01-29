@@ -550,9 +550,14 @@ end
 
 function theme:set_colorscheme()
     local old_colorscheme = self._private.colorscheme
-    self._private.colorscheme = self._private.colors[self._private.selected_wallpaper]
+    local new_coloscheme = self._private.colors[self._private.selected_wallpaper]
+    local old_colorscheme_to_new_map = {}
+    for index, color in pairs(old_colorscheme) do
+        old_colorscheme_to_new_map[color] = new_coloscheme[index]
+    end
+    awesome.emit_signal("colorscheme::changed", old_colorscheme_to_new_map, new_coloscheme)
     beautiful.init(helpers.filesystem.get_awesome_config_dir("presentation") .. "theme/theme.lua")
-    self:emit_signal("colorscheme::changed", old_colorscheme, self._private.colorscheme)
+    self._private.colorscheme = new_coloscheme
 
     -- Help me this without saving
     if DEBUG ~= true then
