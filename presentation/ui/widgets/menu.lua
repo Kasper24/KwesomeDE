@@ -81,6 +81,8 @@ function menu:hide(hide_parents)
     -- No animation for hiding
     self.widget.forced_height = 1
     self.visible = false
+    -- Set the anim back to starting position
+    self.animation:set({duration = 0.01, target = 1})
 
     -- Hides all child menus
     self:hide_children_menus()
@@ -179,7 +181,7 @@ function menu.menu(widgets, width)
     -- -- Setup animations
 	widget.animation = helpers.animation:new
 	{
-		pos = 0,
+		pos = 1,
 		easing = helpers.animation.easing.outInCirc,
 		duration = 0.4,
 		update = function(self, pos)
