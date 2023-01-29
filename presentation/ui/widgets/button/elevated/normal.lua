@@ -6,6 +6,7 @@
 local gtable = require("gears.table")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
+local theme_daemon = require("daemons.system.theme")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
@@ -235,6 +236,32 @@ local function new(is_state)
 	end
 
 	widget:effect(true)
+
+	theme_daemon:connect_signal("colorscheme::changed", function(self, old_colorscheme, new_colorscheme)
+		for index, color in pairs(old_colorscheme) do
+			if color == wp.normal_bg then
+				wp.normal_bg = new_colorscheme[index]
+				wp.hover_bg = helpers.color.button_color(wp.normal_bg, 0.1)
+				wp.press_bg = helpers.color.button_color(wp.normal_bg, 0.2)
+				widget:effect(true)
+			elseif color == wp.on_normal_bg then
+				wp.on_normal_bg = new_colorscheme[index]
+				wp.on_hover_bg = helpers.color.button_color(wp.on_normal_bg, 0.1)
+				wp.on_press_bg = helpers.color.button_color(wp.on_normal_bg, 0.2)
+				widget:effect(true)
+			elseif color == wp.text_normal_bg then
+				wp.text_normal_bg = new_colorscheme[index]
+				wp.text_hover_bg = helpers.color.button_color(wp.text_normal_bg, 0.1)
+				wp.text_press_bg = helpers.color.button_color(wp.text_normal_bg, 0.2)
+				widget:text_effect(true)
+			elseif color == wp.text_on_normal_bg then
+				wp.text_on_normal_bg = new_colorscheme[index]
+				wp.text_on_hover_bg = helpers.color.button_color(wp.text_on_normal_bg, 0.1)
+				wp.text_on_press_bg = helpers.color.button_color(wp.text_on_normal_bg, 0.2)
+				widget:text_effect(true)
+			end
+		end
+	end)
 
 	return widget
 end

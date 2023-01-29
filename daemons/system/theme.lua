@@ -549,9 +549,11 @@ function theme:set_wallpaper(type)
 end
 
 function theme:set_colorscheme()
+    local old_colorscheme = self._private.colorscheme
     self._private.colorscheme = self._private.colors[self._private.selected_wallpaper]
     beautiful.init(helpers.filesystem.get_awesome_config_dir("presentation") .. "theme/theme.lua")
-    capi.awesome.emit_signal("wallpaper_changed")
+    self:emit_signal("colorscheme::changed", old_colorscheme, self._private.colorscheme)
+
     -- Help me this without saving
     if DEBUG ~= true then
         helpers.settings:set_value("theme-colorscheme", self._private.colorscheme)
@@ -646,9 +648,16 @@ local function new()
     local wallpaper = helpers.settings:get_value("theme-wallpaper")
     ret._private.wallpaper = wallpaper:gsub("~", os.getenv("HOME"))
     ret._private.wallpaper_type = helpers.settings:get_value("theme-wallpaper-type")
-    ret._private.colorscheme = helpers.settings:get_value("theme-colorscheme")
     ret._private.command_after_generation = helpers.settings:get_value("theme-command-after-generation")
     ret._private.color = helpers.settings:get_value("theme-color")
+
+    local colorscheme_from_gsettings = helpers.settings:get_value("theme-colorscheme")
+    local colorscheme = {}
+    for index, color in colorscheme_from_gsettings:pairs() do
+        table.insert(colorscheme, color)
+    end
+    ret._private.colorscheme = colorscheme
+
 
     ret._private.images = {}
     ret._private.selected_wallpaper = nil
