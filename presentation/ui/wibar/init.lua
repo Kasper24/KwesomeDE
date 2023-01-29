@@ -92,8 +92,7 @@ local function start()
 
     local widget = wibox.widget
     {
-
-        forced_width = dpi(60),
+        forced_width = dpi(45),
 		forced_height = dpi(60),
 		draw = get_draw(0, off_color),
 		fit = function(_, _, _, height) return height, height end,
