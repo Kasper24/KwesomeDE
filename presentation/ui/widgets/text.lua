@@ -35,6 +35,11 @@ local function generate_markup(self)
 		italic_end = "</i>"
 	end
 
+	self._private.font = self._private.font or beautiful.font_name
+	self._private.size = self._private.size or 20
+	self._private.color = self._private.color or beautiful.colors.on_background
+	self._private.text = self._private.text or ""
+
 	-- Need to unescape in a case the text was escaped by other code before
 	self._private.text = gstring.xml_unescape(tostring(self._private.text))
 	self._private.text = gstring.xml_escape(tostring(self._private.text))
@@ -67,11 +72,14 @@ local function build_properties(prototype, prop_names)
 end
 
 function text:set_icon(icon)
-	self._private.icon = icon
-	self._private.font = icon.font
-	self._private.size = icon.size or self._private.size
-	self._private.color = icon.color
-	self._private.text = icon.icon
+	local wp = self._private
+
+	wp.icon = icon
+	wp.font = wp.font or icon.font
+	wp.size = wp.size or icon.size or 20
+	wp.color = wp.color or icon.color
+	wp.text = wp.text or icon.icon
+
 	self:emit_signal("widget::redraw_needed")
 	self:emit_signal("property::icon", icon)
 end
@@ -85,11 +93,7 @@ local function new()
 	-- Setup default values
 	wp.bold = false
 	wp.italic = false
-	wp.size = 20
-	wp.color = beautiful.colors.on_background
-	wp.text = ""
 	wp.icon = nil
-	wp.font = beautiful.font_name
 
 	widget:connect_signal("widget::redraw_needed", function()
 		generate_markup(widget)
