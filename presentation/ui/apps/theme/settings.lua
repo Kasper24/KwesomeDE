@@ -88,7 +88,7 @@ local function picom_slider(key, max, divide_by, round)
     {
         widget = widgets.text,
         size = 15,
-        text = picom_daemon["get_" .. key](picom_daemon) * divide_by
+        text = picom_daemon["get_" .. key](picom_daemon)
     }
 
     slider:connect_signal("property::value", function(self, value, instant)
