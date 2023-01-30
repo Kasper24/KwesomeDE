@@ -117,32 +117,30 @@ end
 local function button(icon, text, on_release)
     local accent_color = beautiful.colors.random_accent_color()
 
-    local text = wibox.widget
-    {
-        widget = widgets.text,
-        halign = "center",
-        size = 15,
-        text = text,
-    }
-
     local button =  wibox.widget
     {
         widget = widgets.button.text.normal,
         forced_height = dpi(120),
         forced_width = dpi(120),
         normal_bg = beautiful.colors.background,
-        text_normal_bg = beautiful.colors.on_background,
-        -- text_hover_bg = accent_color,
-        -- text_press_bg = helpers.color.lighten(accent_color, 0.2),
-        border_width = dpi(0),
+        text_normal_bg = accent_color,
+        normal_border_width = dpi(0),
         hover_border_width = dpi(10),
         press_border_width = dpi(10),
-        border_color = beautiful.colors.background,
-        -- hover_border_color = accent_color,
-        -- press_border_color = helpers.color.lighten(accent_color, 0.2),
+        normal_border_color = accent_color,
+        hover_border_color = accent_color,
+        press_border_color = accent_color,
         icon = icon,
         size = 40,
         on_release = on_release
+    }
+
+    local text = wibox.widget
+    {
+        widget = widgets.text,
+        halign = "center",
+        size = 15,
+        text = text,
     }
 
     return wibox.widget
