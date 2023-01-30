@@ -43,6 +43,13 @@ function text_button_state:set_text_on_normal_bg(text_on_normal_bg)
 	self:text_effect(true)
 end
 
+function text_button_state:set_icon(icon)
+	self.text_widget:set_icon(icon)
+	self:set_text_normal_bg(icon.color)
+    self:set_text_on_normal_bg(icon.color)
+	self.orginal_size = self.text_widget:get_size()
+end
+
 local function new()
 	local widget = tbnwidget{true}
 	gtable.crush(widget, text_button_state, true)
