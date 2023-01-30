@@ -124,7 +124,7 @@ local function new(is_state)
 	{
 		pos = widget.text_widget:get_size(),
 		easing = helpers.animation.easing.linear,
-		duration = 0.2,
+		duration = 0.125,
 		update = function(self, pos)
 			widget.text_widget:set_size(pos)
 		end
