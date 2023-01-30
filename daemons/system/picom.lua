@@ -25,6 +25,10 @@ local properties =
 }
 
 function picom:turn_on(save, skip_check)
+    if DEBUG == true then
+        return
+    end
+
     local function turn_on()
         local p = self._private
 
@@ -51,6 +55,10 @@ function picom:turn_on(save, skip_check)
 end
 
 function picom:turn_off(save)
+    if DEBUG == true then
+        return
+    end
+
     awful.spawn("pkill -f 'picom --experimental-backends'", false)
     if save == true then
         helpers.settings:set_value("picom", false)
