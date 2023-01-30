@@ -32,7 +32,7 @@ local animation = { }
 
 local instance = nil
 
-local ANIMATION_FRAME_DELAY = 5
+local ANIMATION_FRAME_DELAY = 16.6
 
 local function micro_to_milli(micro)
     return micro / 1000
