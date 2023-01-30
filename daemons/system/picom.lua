@@ -24,33 +24,21 @@ local properties =
     "shadow-radius", "shadow-opacity", "shadow-offset-x", "shadow-offset-y"
 }
 
-function picom:turn_on(save, skip_check)
+function picom:turn_on(save)
     if DEBUG == true then
         return
     end
 
-    local function turn_on()
-        local p = self._private
+    local p = self._private
 
-        local cmd = string.format("picom --experimental-backends --config %s ", CONFIG_PATH)
-        for _, prop in ipairs(properties) do
-            cmd = cmd .. string.format("--%s %s ", prop, p[prop])
-        end
-        awful.spawn(cmd, false)
-
-        if save == true then
-            helpers.settings:set_value("picom", true)
-        end
+    local cmd = string.format("picom --experimental-backends --config %s ", CONFIG_PATH)
+    for _, prop in ipairs(properties) do
+        cmd = cmd .. string.format("--%s %s ", prop, p[prop])
     end
+    awful.spawn(cmd, false)
 
-    if skip_check ~= true then
-        helpers.run.is_running("picom",  function(is_running)
-            if is_running == false then
-                turn_on()
-            end
-        end)
-    else
-        turn_on()
+    if save == true then
+        helpers.settings:set_value("picom", true)
     end
 end
 
@@ -83,19 +71,10 @@ local function build_properties(prototype)
                     self._private[prop] = value
                     helpers.settings:set_value("picom-" .. prop, value)
 
-
                     helpers.run.is_running("picom", function(is_running)
                         if is_running == true then
                             awful.spawn.easy_async("pkill -f 'picom --experimental-backends'", function()
-                                gtimer {
-                                    timeout = 0.3,
-                                    call_now = false,
-                                    autostart = true,
-                                    single_shot = true,
-                                    callback = function()
-                                        self:turn_on(false, true)
-                                    end
-                                }
+                                self._private.refresh_timer:again()
                             end)
                         end
                     end)
@@ -121,6 +100,16 @@ local function new()
     for _, prop in ipairs(properties) do
         ret._private[prop] = helpers.settings:get_value("picom-" .. prop)
     end
+
+    ret._private.refresh_timer = gtimer
+    {
+        timeout = 1,
+        autostart = false,
+        single_shot = true,
+        callback = function()
+            ret:turn_on(false)
+        end
+    }
 
     gtimer.delayed_call(function()
         if helpers.settings:get_value("picom") == true then
