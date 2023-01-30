@@ -9,7 +9,6 @@ local ebwidget = require("presentation.ui.widgets.button.elevated")
 local beautiful = require("beautiful")
 local helpers = require("helpers")
 local setmetatable = setmetatable
-local math = math
 
 local text_button_normal = { mt = {} }
 
@@ -65,9 +64,11 @@ end
 function text_button_normal:text_effect(instant)
 	local wp = self._private
 	local on_prefix = wp.state and "on_" or ""
-	local bg = wp["text_" .. on_prefix .. wp.mode .. "_bg"]
+	local key = "text_" .. on_prefix .. wp.mode .. "_"
+	local bg = wp[key .. "bg"] or wp.defaults[key .. "bg"]
 
 	if instant == true then
+		self.color_animation.pos = helpers.color.hex_to_rgb(bg)
 		self.text_widget:set_color(bg)
 	else
 		self.color_animation:set(helpers.color.hex_to_rgb(bg))
@@ -77,15 +78,18 @@ end
 function text_button_normal:set_text_normal_bg(text_normal_bg)
 	local wp = self._private
 	wp.text_normal_bg = text_normal_bg
-	wp.text_hover_bg = helpers.color.button_color(text_normal_bg, 0.1)
-	wp.text_press_bg = helpers.color.button_color(text_normal_bg, 0.2)
-	self:text_effect( true)
+	wp.defaults.text_hover_bg = helpers.color.button_color(text_normal_bg, 0.1)
+	wp.defaults.text_press_bg = helpers.color.button_color(text_normal_bg, 0.2)
+	self:text_effect(true)
 end
 
 function text_button_normal:set_icon(icon)
 	self.text_widget:set_icon(icon)
-	self:set_text_normal_bg(icon.color)
 	self.orginal_size = self.text_widget:get_size()
+
+	if self._private.text_normal_bg == nil then
+        self:set_text_normal_bg(icon.color)
+    end
 end
 
 function text_button_normal:set_size(size)
@@ -103,15 +107,13 @@ local function new(is_state)
 	local wp = widget._private
 
 	-- Setup default values
-	wp.text_normal_bg = beautiful.colors.random_accent_color()
-	wp.text_hover_bg = helpers.color.button_color(wp.text_bg, 0.1)
-	wp.text_press_bg = helpers.color.button_color(wp.text_bg, 0.2)
-	wp.animate_size = true
+	wp.defaults.text_normal_bg = beautiful.colors.random_accent_color()
+	wp.defaults.text_hover_bg = helpers.color.button_color(wp.defaults.text_normal_bg, 0.1)
+	wp.defaults.text_press_bg = helpers.color.button_color(wp.defaults.text_normal_bg, 0.2)
 
 	-- Setup animations
 	widget.color_animation = helpers.animation:new
 	{
-		pos = helpers.color.hex_to_rgb(wp.text_normal_bg),
 		easing = helpers.animation.easing.linear,
 		duration = 0.2,
 		update = function(self, pos)

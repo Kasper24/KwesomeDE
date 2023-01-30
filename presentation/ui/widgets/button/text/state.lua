@@ -38,25 +38,30 @@ end
 function text_button_state:set_text_normal_bg(text_normal_bg)
 	local wp = self._private
 	wp.text_normal_bg = text_normal_bg
-	wp.text_hover_bg = helpers.color.button_color(text_normal_bg, 0.1)
-	wp.text_press_bg = helpers.color.button_color(text_normal_bg, 0.2)
-    self:set_text_on_normal_bg(text_normal_bg)
-	self:text_effect( true)
+	wp.defaults.text_hover_bg = helpers.color.button_color(text_normal_bg, 0.1)
+	wp.defaults.text_press_bg = helpers.color.button_color(text_normal_bg, 0.2)
+	self:text_effect(true)
+
+    if self._private.text_on_normal_bg == nil then
+        self:set_text_on_normal_bg(helpers.color.button_color(text_normal_bg, 0.2))
+    end
 end
 
 function text_button_state:set_text_on_normal_bg(text_on_normal_bg)
 	local wp = self._private
 	wp.text_on_normal_bg = text_on_normal_bg
-	wp.text_on_hover_bg = helpers.color.button_color(text_on_normal_bg, 0.1)
-	wp.text_on_press_bg = helpers.color.button_color(text_on_normal_bg, 0.2)
+	wp.defaults.text_on_hover_bg = helpers.color.button_color(text_on_normal_bg, 0.1)
+	wp.defaults.text_on_press_bg = helpers.color.button_color(text_on_normal_bg, 0.2)
 	self:text_effect(true)
 end
 
 function text_button_state:set_icon(icon)
-	self.text_widget:set_icon(icon)
-	self:set_text_normal_bg(icon.color)
-    self:set_text_on_normal_bg(icon.color)
-	self.orginal_size = self.text_widget:get_size()
+    self.text_widget:set_icon(icon)
+    self.orginal_size = self.text_widget:get_size()
+
+    if self._private.text_normal_bg == nil then
+        self:set_text_normal_bg(icon.color)
+    end
 end
 
 local function new()
@@ -66,9 +71,9 @@ local function new()
 	local wp = widget._private
 
 	-- Setup default values
-	wp.text_on_normal_bg = helpers.color.button_color(wp.text_normal_bg, 0.2)
-	wp.text_on_hover_bg = helpers.color.button_color(wp.text_on_normal_bg, 0.1)
-	wp.text_on_press_bg = helpers.color.button_color(wp.text_on_normal_bg, 0.2)
+	wp.defaults.text_on_normal_bg = helpers.color.button_color(wp.defaults.text_normal_bg, 0.2)
+	wp.defaults.text_on_hover_bg = helpers.color.button_color(wp.defaults.text_on_normal_bg, 0.1)
+	wp.defaults.text_on_press_bg = helpers.color.button_color(wp.defaults.text_on_normal_bg, 0.2)
 
 	widget:text_effect(true)
 

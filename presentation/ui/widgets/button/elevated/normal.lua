@@ -49,15 +49,22 @@ end
 function elevated_button_normal:effect(instant)
 	local wp = self._private
 	local on_prefix = wp.state and "on_" or ""
-	local bg = wp[on_prefix .. wp.mode .. "_bg"]
-	local shape = wp[on_prefix .. wp.mode .. "_shape"]
-	local border_width = wp[on_prefix .. wp.mode .. "_border_width"]
-	local border_color = wp[on_prefix .. wp.mode .. "_border_color"]
+	local key = on_prefix .. wp.mode .. "_"
+
+	local bg = wp[key .. "bg"] or wp.defaults[key .. "bg"]
+	local shape = wp[key .. "shape"] or wp.defaults[key .. "shape"]
+	local border_width = wp[key .. "border_width"] or wp.defaults[key .. "border_width"]
+	local border_color = wp[key .. "border_color"] or wp.defaults[key .. "border_color"]
 
 	if instant == true then
 		self.bg = bg
 		self.border_width = border_width
 		self.border_color = border_color
+		self.animation.pos = {
+			color = helpers.color.hex_to_rgb(bg),
+			border_width = border_width,
+			border_color = helpers.color.hex_to_rgb(border_color)
+		}
 	else
 		self.animation:set{
 			color = helpers.color.hex_to_rgb(bg),
@@ -90,32 +97,32 @@ end
 function elevated_button_normal:set_normal_bg(normal_bg)
 	local wp = self._private
 	wp.normal_bg = normal_bg
-	wp.hover_bg = helpers.color.button_color(normal_bg, 0.1)
-	wp.press_bg = helpers.color.button_color(normal_bg, 0.2)
+	wp.defaults.hover_bg = helpers.color.button_color(normal_bg, 0.1)
+	wp.defaults.press_bg = helpers.color.button_color(normal_bg, 0.2)
 	self:effect(true)
 end
 
 function elevated_button_normal:set_normal_shape(normal_shape)
 	local wp = self._private
 	wp.normal_shape = normal_shape
-	wp.hover_shape = normal_shape
-	wp.press_shape = normal_shape
+	wp.defaults.hover_shape = normal_shape
+	wp.defaults.press_shape = normal_shape
 	self:effect(true)
 end
 
 function elevated_button_normal:set_normal_border_width(normal_border_width)
 	local wp = self._private
 	wp.normal_border_width = normal_border_width
-	wp.hover_border_width = normal_border_width
-	wp.press_border_width = normal_border_width
+	wp.defaults.hover_border_width = normal_border_width
+	wp.defaults.press_border_width = normal_border_width
 	self:effect(true)
 end
 
 function elevated_button_normal:set_normal_border_color(normal_border_color)
 	local wp = self._private
 	wp.normal_border_color = normal_border_color
-	wp.hover_border_color = normal_border_color
-	wp.press_border_color = normal_border_color
+	wp.defaults.hover_border_color = normal_border_color
+	wp.defaults.press_border_color = normal_border_color
 	self:effect(true)
 end
 
@@ -126,22 +133,24 @@ local function new(is_state)
 	local wp = widget._private
 	wp.mode = "normal"
 
+	wp.defaults = {}
+
 	-- Setup default values
-	wp.normal_bg = beautiful.colors.background
-	wp.hover_bg = helpers.color.button_color(wp.normal_bg, 0.1)
-	wp.press_bg = helpers.color.button_color(wp.normal_bg, 0.2)
+	wp.defaults.normal_bg = beautiful.colors.background
+	wp.defaults.hover_bg = helpers.color.button_color(wp.defaults.normal_bg, 0.1)
+	wp.defaults.press_bg = helpers.color.button_color(wp.defaults.normal_bg, 0.2)
 
-	wp.normal_shape = helpers.ui.rrect(beautiful.border_radius)
-	wp.hover_shape = wp.normal_shape
-	wp.press_shape = wp.normal_shape
+	wp.defaults.normal_shape = helpers.ui.rrect(beautiful.border_radius)
+	wp.defaults.hover_shape = wp.defaults.normal_shape
+	wp.defaults.press_shape = wp.defaults.normal_shape
 
-	wp.normal_border_width = 0
-	wp.hover_border_width = wp.normal_border_width
-	wp.press_border_width = wp.normal_border_width
+	wp.defaults.normal_border_width = 0
+	wp.defaults.hover_border_width = wp.defaults.normal_border_width
+	wp.defaults.press_border_width = wp.defaults.normal_border_width
 
-	wp.normal_border_color = beautiful.colors.transparent
-	wp.hover_border_color = wp.normal_border_color
-	wp.press_border_color = wp.normal_border_color
+	wp.defaults.normal_border_color = beautiful.colors.transparent
+	wp.defaults.hover_border_color = wp.defaults.normal_border_color
+	wp.defaults.press_border_color = wp.defaults.normal_border_color
 
     wp.on_hover = nil
     wp.on_leave = nil
@@ -158,12 +167,6 @@ local function new(is_state)
 	-- Color/Border animations
 	widget.animation = helpers.animation:new
 	{
-		pos =
-		{
-			color = helpers.color.hex_to_rgb(wp.normal_bg),
-			border_width = wp.normal_border_width,
-			border_color =  helpers.color.hex_to_rgb(wp.normal_border_color)
-		},
 		easing = helpers.animation.easing.linear,
 		duration = 0.2,
 		update = function(self, pos)
@@ -262,7 +265,9 @@ local function new(is_state)
 	widget:effect(true)
 
 	awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
-		wp.normal_bg = old_colorscheme_to_new_map[wp.normal_bg]
+		wp.normal_bg =
+			old_colorscheme_to_new_map[wp.normal_bg] or
+			old_colorscheme_to_new_map[wp.defaults.normal_bg]
 		wp.hover_bg = helpers.color.button_color(wp.normal_bg, 0.1)
 		wp.press_bg = helpers.color.button_color(wp.normal_bg, 0.2)
 		widget:effect(true)
@@ -270,13 +275,16 @@ local function new(is_state)
 		if wp.on_normal_bg ~= nil then
 			wp.on_normal_bg =
 				old_colorscheme_to_new_map[wp.on_normal_bg] or
+				old_colorscheme_to_new_map[wp.defaults.on_normal_bg] or
 				helpers.color.button_color(wp.normal_bg, 0.2)
 			wp.on_hover_bg = helpers.color.button_color(wp.on_normal_bg, 0.1)
 			wp.on_press_bg = helpers.color.button_color(wp.on_normal_bg, 0.2)
 			widget:effect(true)
 		end
 		if wp.text_normal_bg ~= nil then
-			wp.text_normal_bg = old_colorscheme_to_new_map[wp.text_normal_bg]
+			wp.text_normal_bg =
+				old_colorscheme_to_new_map[wp.text_normal_bg] or
+				old_colorscheme_to_new_map[wp.defaults.text_normal_bg]
 			wp.text_hover_bg = helpers.color.button_color(wp.text_normal_bg, 0.1)
 			wp.text_press_bg = helpers.color.button_color(wp.text_normal_bg, 0.2)
 			widget:text_effect(true)
@@ -284,6 +292,7 @@ local function new(is_state)
 		if wp.text_on_normal_bg ~= nil then
 			wp.text_on_normal_bg =
 				old_colorscheme_to_new_map[wp.text_on_normal_bg] or
+				old_colorscheme_to_new_map[wp.defaults.text_on_normal_bg] or
 				helpers.color.button_color(wp.text_normal_bg, 0.2)
 			wp.text_on_hover_bg = helpers.color.button_color(wp.text_on_normal_bg, 0.1)
 			wp.text_on_press_bg = helpers.color.button_color(wp.text_on_normal_bg, 0.2)
