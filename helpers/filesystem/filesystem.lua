@@ -82,6 +82,8 @@ function filesystem.iterate_contents(dir, iteratee, options, cb)
         options = {}
     end
 
+    options = options or {}
+
     local attributes = options.attributes or "standard::type"
 
     local priority = GLib.PRIORITY_DEFAULT

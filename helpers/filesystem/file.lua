@@ -557,6 +557,9 @@ function File:copy(dest_path, options, cb)
         dest = file.new_for_path(dest_path)
     end
 
+    cb = cb or function() end
+    options = options or {}
+
     if not options.recursive then
         return _file_copy_impl(self, dest, options, cb)
     end
@@ -579,7 +582,7 @@ function File:copy(dest_path, options, cb)
                 return cb(err)
             end
 
-            local filesystem = require("lgi-async-extra.filesystem")
+            local filesystem = require("helpers.filesystem.filesystem")
             local path = self:get_path()
 
             local function iteratee(info, cb)
