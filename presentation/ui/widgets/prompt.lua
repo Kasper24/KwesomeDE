@@ -15,7 +15,7 @@ local beautiful = require("beautiful")
 local tostring = tostring
 local ipairs = ipairs
 local string = string
-local capi = { awesome = awesome, tag = tag }
+local capi = { awesome = awesome, tag = tag, client = client }
 
 local prompt  = { mt = {} }
 
@@ -424,7 +424,7 @@ local function new(args)
         end
     end)
 
-    capi.awesome.connect_signal("client::pressed", function()
+    capi.client.connect_signal("button::press", function()
         if args.always_on == false and ret.can_stop == true then
             ret:stop()
         end

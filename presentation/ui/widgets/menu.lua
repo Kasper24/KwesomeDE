@@ -16,7 +16,7 @@ local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 local ipairs = ipairs
-local capi = { awesome = awesome, tag = tag, mouse = mouse }
+local capi = { awesome = awesome, tag = tag, client = client, mouse = mouse }
 
 local menu = { mt = {} }
 
@@ -195,7 +195,7 @@ function menu.menu(widgets, width)
         end
     end)
 
-    capi.awesome.connect_signal("client::pressed", function()
+    capi.client.connect_signal("button::press", function()
         if widget.can_hide == true then
             widget:hide(true)
         end
