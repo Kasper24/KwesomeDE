@@ -86,6 +86,12 @@ end
 function text_button_normal:set_icon(icon)
 	self.text_widget:set_icon(icon)
 	self:set_text_normal_bg(icon.color)
+	self.orginal_size = self.text_widget:get_size()
+end
+
+function text_button_normal:set_size(size)
+	self.text_widget:set_size(size)
+	self.orginal_size = self.text_widget:get_size()
 end
 
 local function new(is_state)
@@ -124,24 +130,21 @@ local function new(is_state)
 		end
 	}
 
+	local first_run = true
+
 	widget:connect_signal("event", function(self, event)
+		if first_run == true then
+			widget.size_animation.pos = widget.orginal_size
+			first_run = false
+		end
+
 		self:text_effect()
 
-		if event == "press" or event == "secondary_press" then
-			if wp.animate_size == true then
-				widget.orginal_size = widget.text_widget:get_size()
+		if wp.animate_size == true then
+			if event == "press" or event == "secondary_press" then
 				widget.size_animation:set(math.max(12, widget.orginal_size - 20))
-			end
-		elseif event == "release" or event == "secondary_release" then
-			if wp.animate_size == true then
-				if widget.size_animation.state == true then
-					widget.size_animation.ended:subscribe(function()
-						widget.size_animation:set(widget.orginal_size)
-						widget.size_animation.ended:unsubscribe()
-					end)
-				else
-					widget.size_animation:set(widget.orginal_size)
-				end
+			elseif event == "release" or event == "secondary_release" then
+				widget.size_animation:set(widget.orginal_size)
 			end
 		end
 	end)
