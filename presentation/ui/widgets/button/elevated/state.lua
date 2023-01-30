@@ -142,16 +142,18 @@ local function new()
 
 	widget:connect_signal("button::release", function(self, lx, ly, button, mods, find_widgets_result)
 		if button == 1 then
-			if wp.on_turn_on ~= nil or wp.on_turn_off ~= nil or wp.on_press then
-				wp.mode = "normal"
-				self:effect()
-				widget:emit_signal("event", "release")
-			end
+			wp.mode = "normal"
+			self:effect()
+			widget:emit_signal("event", "release")
 
 			if wp.on_release ~= nil then
 				wp.on_release(self, lx, ly, button, mods, find_widgets_result)
 			end
 		elseif button == 3 then
+			wp.mode = "normal"
+			self:effect()
+			widget:emit_signal("event", "release")
+
 			if wp.on_secondary_release ~= nil then
 				widget:emit_signal("event", "secondary_release")
 				wp.on_secondary_release(self, lx, ly, button, mods, find_widgets_result)
