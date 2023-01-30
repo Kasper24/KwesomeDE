@@ -13,7 +13,7 @@ local capi = { awesome = awesome }
 local picom = { }
 local instance = nil
 
-local UPDATE_INTERVAL = 5
+local UPDATE_INTERVAL = 1
 local CONFIG_PATH = helpers.filesystem.get_awesome_config_dir("config") .. "picom.conf"
 
 local properties =
@@ -74,6 +74,7 @@ local function build_properties(prototype)
                     helpers.run.is_running("picom", function(is_running)
                         if is_running == true then
                             awful.spawn.easy_async("pkill -f 'picom --experimental-backends'", function()
+                                self._private.refreshing = true
                                 self._private.refresh_timer:again()
                             end)
                         end
@@ -108,6 +109,7 @@ local function new()
         single_shot = true,
         callback = function()
             ret:turn_on(false)
+            ret._private.refreshing = false
         end
     }
 
@@ -118,12 +120,18 @@ local function new()
             ret:turn_off()
         end
 
-        gtimer { timeout = UPDATE_INTERVAL, autostart = true, call_now = true, callback = function()
-            if ret._private.state ~= capi.awesome.composite_manager_running then
-                ret:emit_signal("state", capi.awesome.composite_manager_running)
-                ret._private.state = capi.awesome.composite_manager_running
+        gtimer
+        {
+            timeout = UPDATE_INTERVAL,
+            autostart = true,
+            call_now = true,
+            callback = function()
+                if ret._private.state ~= capi.awesome.composite_manager_running and not ret._private.refreshing then
+                    ret:emit_signal("state", capi.awesome.composite_manager_running)
+                    ret._private.state = capi.awesome.composite_manager_running
+                end
             end
-        end}
+        }
     end)
 
     return ret
