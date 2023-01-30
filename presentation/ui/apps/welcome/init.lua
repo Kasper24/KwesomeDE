@@ -127,7 +127,7 @@ For more information visit the following links.]],
         text_normal_bg = accent_color,
         text = "Github...",
         on_press = function()
-            awful.spawn("xdg-open ")
+            awful.spawn("xdg-open ", false)
         end,
     }
 
@@ -140,7 +140,7 @@ For more information visit the following links.]],
         text_normal_bg = accent_color,
         text = "Reddit...",
         on_press = function()
-            awful.spawn("xdg-open ")
+            awful.spawn("xdg-open ", false)
         end,
     }
 
@@ -153,7 +153,7 @@ For more information visit the following links.]],
         text_normal_bg = accent_color,
         text = "Awesome...",
         on_press = function()
-            awful.spawn("xdg-open https://awesomewm.org/apidoc/")
+            awful.spawn("xdg-open https://awesomewm.org/apidoc/", false)
         end,
     }
 

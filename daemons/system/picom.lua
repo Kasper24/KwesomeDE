@@ -32,7 +32,7 @@ function picom:turn_on(save, skip_check)
         for _, prop in ipairs(properties) do
             cmd = cmd .. string.format("--%s %s ", prop, p[prop])
         end
-        awful.spawn(cmd)
+        awful.spawn(cmd, false)
 
         if save == true then
             helpers.settings:set_value("picom", true)

@@ -123,7 +123,7 @@ org.gnome.desktop.interface gtk-theme 'FlatColor'
             local file = helpers.file.new_for_path(path)
             file:write('Net/ThemeName "FlatColor" \n', function(error)
                 if error == nil then
-                    awful.spawn(string.format("timeout 0.2s xsettingsd -c %s", path))
+                    awful.spawn(string.format("timeout 0.2s xsettingsd -c %s", path), false)
                 end
             end)
         end
@@ -133,7 +133,7 @@ end
 
 local function on_finished_generating(self)
     if self._private.command_after_generation ~= nil then
-        awful.spawn.with_shell(self._private.command_after_generation, false)
+        awful.spawn.with_shell(self._private.command_after_generation)
     end
 
     reload_gtk()
@@ -253,7 +253,7 @@ local function generate_templates(self)
 end
 
 local function install_gtk_theme()
-    awful.spawn(string.format("cp -r %s %s", GTK_THEME_PATH, INSTALLED_GTK_THEME_PATH))
+    awful.spawn(string.format("cp -r %s %s", GTK_THEME_PATH, INSTALLED_GTK_THEME_PATH), false)
 end
 
 local function generate_colorscheme(self, wallpaper, reset, light)

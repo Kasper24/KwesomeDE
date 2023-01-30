@@ -66,7 +66,7 @@ function inotify:watch(path, events)
     end})
 
     function ret:stop()
-        awful.spawn("kill -9 " .. pid)
+        awful.spawn("kill -9 " .. pid, false)
     end
 
     return ret
@@ -76,7 +76,7 @@ local function new()
     local ret = gobject{}
     gtable.crush(ret, inotify, true)
 
-    awful.spawn("pkill -f inotifywait")
+    awful.spawn("pkill -f inotifywait", false)
 
     return ret
 end
