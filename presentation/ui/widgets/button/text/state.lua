@@ -35,6 +35,15 @@ local function build_properties(prototype, prop_names)
     end
 end
 
+function text_button_state:set_text_normal_bg(text_normal_bg)
+	local wp = self._private
+	wp.text_normal_bg = text_normal_bg
+	wp.text_hover_bg = helpers.color.button_color(text_normal_bg, 0.1)
+	wp.text_press_bg = helpers.color.button_color(text_normal_bg, 0.2)
+    self:set_text_on_normal_bg(text_normal_bg)
+	self:text_effect( true)
+end
+
 function text_button_state:set_text_on_normal_bg(text_on_normal_bg)
 	local wp = self._private
 	wp.text_on_normal_bg = text_on_normal_bg

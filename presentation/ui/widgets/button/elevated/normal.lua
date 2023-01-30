@@ -103,6 +103,22 @@ function elevated_button_normal:set_normal_shape(normal_shape)
 	self:effect(true)
 end
 
+function elevated_button_normal:set_normal_border_width(normal_border_width)
+	local wp = self._private
+	wp.normal_border_width = normal_border_width
+	wp.hover_border_width = normal_border_width
+	wp.press_border_width = normal_border_width
+	self:effect(true)
+end
+
+function elevated_button_normal:set_normal_border_color(normal_border_color)
+	local wp = self._private
+	wp.normal_border_color = normal_border_color
+	wp.hover_border_color = normal_border_color
+	wp.press_border_color = normal_border_color
+	self:effect(true)
+end
+
 local function new(is_state)
 	local widget = wibox.container.background()
 	gtable.crush(widget, elevated_button_normal, true)
