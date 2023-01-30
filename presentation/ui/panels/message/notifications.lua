@@ -73,6 +73,7 @@ local function notification_widget(notification, on_removed)
             step = 50,
             {
                 widget = widgets.text,
+                size = 15,
                 text = gstring.xml_unescape(notification.message)
             }
         }
@@ -179,6 +180,7 @@ local function notification_group(notification)
         icon = wibox.widget
         {
             widget = widgets.text,
+            halign = "left",
             icon = notification.app_font_icon,
             size = 30,
         }
@@ -187,29 +189,28 @@ local function notification_group(notification)
     local title = wibox.widget
     {
         widget = widgets.text,
+        halign = "left",
         text = notification.app_name:gsub("^%l", string.upper)
     }
 
     local widget = nil
     local button = wibox.widget
     {
-        widget = wibox.container.place,
+        widget = widgets.button.elevated.state,
+        forced_width = dpi(600),
         halign = "left",
+        on_turn_on = function()
+            widget.height = dpi(500000000)
+        end,
+        on_turn_off = function()
+            widget.height = dpi(70)
+        end,
+        child =
         {
-            widget = widgets.button.elevated.state,
-            on_turn_on = function()
-                widget.height = dpi(500000000)
-            end,
-            on_turn_off = function()
-                widget.height = dpi(70)
-            end,
-            child =
-            {
-                layout = wibox.layout.fixed.horizontal,
-                spacing = dpi(15),
-                icon,
-                title,
-            }
+            layout = wibox.layout.fixed.horizontal,
+            spacing = dpi(15),
+            icon,
+            title,
         }
     }
 

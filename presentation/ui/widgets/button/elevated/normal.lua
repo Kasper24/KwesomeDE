@@ -15,7 +15,7 @@ local elevated_button_normal = { mt = {} }
 
 local properties =
 {
-	-- "forced_width", "forced_height",
+	"halign", "valign",
 	"normal_bg", "hover_bg", "press_bg",
 	"normal_shape", "hover_shape", "press_shape",
 	"normal_border_width", "hover_border_width", "press_border_width",
@@ -72,8 +72,8 @@ function elevated_button_normal:set_child(child)
 	local child_widget = wibox.widget
 	{
 		widget = wibox.container.place,
-		halign = "center",
-		valign = "center",
+		halign = self._private.halign or "center",
+		valign = self._private.valign or "center",
 		{
 			widget = wibox.container.margin,
 			margins = dpi(10),
