@@ -130,7 +130,6 @@ org.gnome.desktop.interface gtk-theme 'FlatColor'
     end)
 end
 
-
 local function on_finished_generating(self)
     if self._private.command_after_generation ~= nil then
         awful.spawn.with_shell(self._private.command_after_generation)
@@ -172,9 +171,9 @@ end
 
 local function generate_templates(self)
     helpers.filesystem.iterate_contents(BASE_TEMPLATES_PATH, function(file)
-        local template_name = file:get_name()
-        if template_name:match(".base") ~= nil then
-            local file = helpers.file.new_for_path(template_name)
+        local name = file:get_name()
+        if name:match(".base") ~= nil then
+            local file = helpers.file.new_for_path(name)
             file:read(function(error, content)
                 if error == nil then
                     local lines = {}
@@ -531,7 +530,9 @@ function theme:set_wallpaper(type)
         self:save_colorscheme()
         self._private.wallpaper = self._private.selected_wallpaper
         helpers.settings:set_value("theme-wallpaper", self._private.wallpaper)
-        awful.spawn.with_shell(string.format("cp %s %s", self._private.wallpaper, BACKGROUND_PATH))
+
+        local file = helpers.file.new_for_path(self._private.wallpaper)
+        file:copy(BACKGROUND_PATH)
     elseif type == "tiled" then
     elseif type == "color" then
         self._private.color = self._private.selected_color
