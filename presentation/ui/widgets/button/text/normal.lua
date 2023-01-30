@@ -142,7 +142,7 @@ local function new(is_state)
 
 		if wp.animate_size == true then
 			if event == "press" or event == "secondary_press" then
-				widget.size_animation:set(math.max(12, widget.orginal_size - 20))
+				widget.size_animation:set(widget.orginal_size / 1.5)
 			elseif event == "release" or event == "secondary_release" then
 				widget.size_animation:set(widget.orginal_size)
 			end
