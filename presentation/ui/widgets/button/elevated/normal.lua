@@ -119,7 +119,7 @@ local function new(is_state)
 	wp.hover_shape = wp.normal_shape
 	wp.press_shape = wp.normal_shape
 
-	wp.normal_border_width = nil
+	wp.normal_border_width = 0
 	wp.hover_border_width = wp.normal_border_width
 	wp.press_border_width = wp.normal_border_width
 
