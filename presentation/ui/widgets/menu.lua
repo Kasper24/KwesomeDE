@@ -82,7 +82,7 @@ function menu:hide(hide_parents)
     self.widget.forced_height = 1
     self.visible = false
     -- Set the anim back to starting position
-    self.animation:set({duration = 0.01, target = 1})
+    self.animation.pos = 1
 
     -- Hides all child menus
     self:hide_children_menus()
