@@ -132,7 +132,6 @@ local function new(self, layout)
         bg = accent_color,
         text_normal_bg = beautiful.colors.background,
         text = "Screenshot",
-        animate_size = false,
         on_release = function()
             screenshot_daemon:screenshot()
         end

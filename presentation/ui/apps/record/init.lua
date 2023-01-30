@@ -332,7 +332,6 @@ local function main(self)
         normal_bg = beautiful.colors.random_accent_color(),
         text_normal_bg = beautiful.colors.background,
         text = record_daemon:get_is_recording() and "Stop" or "Record",
-        animate_size = false,
         on_release = function()
             record_daemon:toggle_video()
         end

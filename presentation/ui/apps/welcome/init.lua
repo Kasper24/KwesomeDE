@@ -122,7 +122,6 @@ For more information visit the following links.]],
     {
         widget = widgets.button.text.normal,
         forced_width = dpi(300),
-        animate_size = false,
         size = 13,
         text_normal_bg = accent_color,
         text = "Github...",
@@ -135,7 +134,6 @@ For more information visit the following links.]],
     {
         widget = widgets.button.text.normal,
         forced_width = dpi(300),
-        animate_size = false,
         size = 13,
         text_normal_bg = accent_color,
         text = "Reddit...",
@@ -148,7 +146,6 @@ For more information visit the following links.]],
     {
         widget = widgets.button.text.normal,
         forced_width = dpi(300),
-        animate_size = false,
         size = 13,
         text_normal_bg = accent_color,
         text = "Awesome...",
@@ -160,7 +157,6 @@ For more information visit the following links.]],
     local finish_button = wibox.widget
     {
         widget = widgets.button.text.normal,
-        animate_size = false,
         text_normal_bg = accent_color,
         size = 13,
         text = "Finish",
@@ -321,7 +317,6 @@ local function weather_page(on_next_pressed, on_previous_pressed)
     local back_button = wibox.widget
     {
         widget = widgets.button.text.normal,
-        animate_size = false,
         text_normal_bg = accent_color,
         size = 13,
         text = "Back",
@@ -333,7 +328,6 @@ local function weather_page(on_next_pressed, on_previous_pressed)
     local next_button = wibox.widget
     {
         widget = widgets.button.text.normal,
-        animate_size = false,
         text_normal_bg = accent_color,
         size = 13,
         text = "Next",
@@ -510,7 +504,6 @@ local function gitlab_page(on_next_pressed, on_previous_pressed)
     local back_button = wibox.widget
     {
         widget = widgets.button.text.normal,
-        animate_size = false,
         text_normal_bg = accent_color,
         size = 13,
         text = "Back",
@@ -522,7 +515,6 @@ local function gitlab_page(on_next_pressed, on_previous_pressed)
     local next_button = wibox.widget
     {
         widget = widgets.button.text.normal,
-        animate_size = false,
         text_normal_bg = accent_color,
         size = 13,
         text = "Next",
@@ -630,7 +622,6 @@ local function github_page(on_next_pressed, on_previous_pressed)
     local back_button = wibox.widget
     {
         widget = widgets.button.text.normal,
-        animate_size = false,
         text_normal_bg = accent_color,
         size = 13,
         text = "Back",
@@ -642,7 +633,6 @@ local function github_page(on_next_pressed, on_previous_pressed)
     local next_button = wibox.widget
     {
         widget = widgets.button.text.normal,
-        animate_size = false,
         text_normal_bg = accent_color,
         size = 13,
         text = "Next",
@@ -765,7 +755,6 @@ local function email_page(on_next_pressed, on_previous_pressed)
     local back_button = wibox.widget
     {
         widget = widgets.button.text.normal,
-        animate_size = false,
         text_normal_bg = accent_color,
         size = 13,
         text = "Back",
@@ -777,7 +766,6 @@ local function email_page(on_next_pressed, on_previous_pressed)
     local next_button = wibox.widget
     {
         widget = widgets.button.text.normal,
-        animate_size = false,
         text_normal_bg = accent_color,
         size = 13,
         text = "Next",
@@ -886,7 +874,6 @@ local function password_page(on_next_pressed, on_previous_pressed)
     local back_button = wibox.widget
     {
         widget = widgets.button.text.normal,
-        animate_size = false,
         text_normal_bg = accent_color,
         size = 13,
         text = "Back",
@@ -898,7 +885,6 @@ local function password_page(on_next_pressed, on_previous_pressed)
     local next_button = wibox.widget
     {
         widget = widgets.button.text.normal,
-        animate_size = false,
         text_normal_bg = accent_color,
         size = 13,
         text = "Next",
@@ -1002,7 +988,6 @@ local function welcome_page(on_next_pressed, on_previous_pressed)
     local quit_button = wibox.widget
     {
         widget = widgets.button.text.normal,
-        animate_size = false,
         text_normal_bg = accent_color,
         size = 13,
         text = "Quit",
@@ -1014,7 +999,6 @@ local function welcome_page(on_next_pressed, on_previous_pressed)
     local next_button = wibox.widget
     {
         widget = widgets.button.text.normal,
-        animate_size = false,
         text_normal_bg = accent_color,
         size = 13,
         text = "Next",

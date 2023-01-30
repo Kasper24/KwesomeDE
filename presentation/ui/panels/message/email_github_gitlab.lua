@@ -457,7 +457,6 @@ local function github()
         text_normal_bg = beautiful.colors.on_background,
         text_on_normal_bg = beautiful.colors.on_accent,
         text = "Activity",
-        animate_size = false,
         on_release = function()
             activity_button:turn_on()
             pr_button:turn_off()
@@ -473,7 +472,6 @@ local function github()
         text_normal_bg = beautiful.colors.on_background,
         text_on_normal_bg = beautiful.colors.on_accent,
         text = "PR",
-        animate_size = false,
         on_release = function()
             activity_button:turn_off()
             pr_button:turn_on()
@@ -684,7 +682,6 @@ local function new()
         text_normal_bg = beautiful.colors.on_background,
         text_on_normal_bg = beautiful.colors.on_accent,
         text = "Email",
-        animate_size = false,
         on_release = function()
             email_button:turn_on()
             github_button:turn_off()
@@ -701,7 +698,6 @@ local function new()
         text_normal_bg = beautiful.colors.on_background,
         text_on_normal_bg = beautiful.colors.on_accent,
         text = "Github",
-        animate_size = false,
         on_release = function()
             email_button:turn_off()
             github_button:turn_on()
@@ -718,7 +714,6 @@ local function new()
         text_normal_bg = beautiful.colors.on_background,
         text_on_normal_bg = beautiful.colors.on_accent,
         text = "Gitlab",
-        animate_size = false,
         on_release = function()
             email_button:turn_off()
             github_button:turn_off()

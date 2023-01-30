@@ -121,7 +121,6 @@ local function new()
 	ret.month = wibox.widget
 	{
 		widget = tbwidget.normal,
-		animate_size = false,
 		text = os.date("%B %Y"),
 		on_release = function()
 			ret:set_date_current()

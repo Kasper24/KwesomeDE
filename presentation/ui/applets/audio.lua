@@ -535,7 +535,6 @@ local function widget()
         text_normal_bg = beautiful.colors.on_background,
         text_on_normal_bg = beautiful.colors.on_accent,
         text = "Devices",
-        animate_size = false,
         on_release = function()
             devices_button:turn_on()
             applications_button:turn_off()
@@ -551,7 +550,6 @@ local function widget()
         text_normal_bg = beautiful.colors.on_background,
         text_on_normal_bg = beautiful.colors.on_accent,
         text = "Applications",
-        animate_size = false,
         on_release = function()
             devices_button:turn_off()
             applications_button:turn_on()

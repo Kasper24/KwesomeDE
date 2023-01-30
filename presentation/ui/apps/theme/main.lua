@@ -19,7 +19,6 @@ local function wallpaper_widget(wallpaper)
     {
         widget = widgets.button.text.state,
         forced_height = dpi(40),
-        animate_size = false,
         halign = "left",
         text_normal_bg = beautiful.colors.on_background,
         size = 12,
@@ -180,7 +179,6 @@ local function image_tab(self)
     local light_dark = wibox.widget
     {
         widget = widgets.button.text.normal,
-        animate_size = false,
         normal_bg = beautiful.colors.surface,
         text_normal_bg = beautiful.colors.on_surface,
         size = 15,
@@ -193,7 +191,6 @@ local function image_tab(self)
     local reset_colorscheme = wibox.widget
     {
         widget = widgets.button.text.normal,
-        animate_size = false,
         normal_bg = beautiful.colors.surface,
         text_normal_bg = beautiful.colors.on_surface,
         size = 15,
@@ -206,7 +203,6 @@ local function image_tab(self)
     local save_colorscheme = wibox.widget
     {
         widget = widgets.button.text.normal,
-        animate_size = false,
         normal_bg = beautiful.colors.surface,
         text_normal_bg = beautiful.colors.on_surface,
         size = 15,
@@ -219,7 +215,6 @@ local function image_tab(self)
     local set_wallpaper = wibox.widget
     {
         widget = widgets.button.text.normal,
-        animate_size = false,
         normal_bg = beautiful.colors.surface,
         text_normal_bg = beautiful.colors.on_surface,
         size = 15,
@@ -232,7 +227,6 @@ local function image_tab(self)
     local set_colorscheme = wibox.widget
     {
         widget = widgets.button.text.normal,
-        animate_size = false,
         normal_bg = beautiful.colors.surface,
         text_normal_bg = beautiful.colors.on_surface,
         size = 15,
@@ -245,7 +239,6 @@ local function image_tab(self)
     local set_both = wibox.widget
     {
         widget = widgets.button.text.normal,
-        animate_size = false,
         normal_bg = beautiful.colors.surface,
         text_normal_bg = beautiful.colors.on_surface,
         size = 15,
@@ -357,7 +350,6 @@ local function digital_sun_tab()
     local set = wibox.widget
     {
         widget = widgets.button.text.normal,
-        animate_size = false,
         normal_bg = beautiful.colors.surface,
         text_normal_bg = beautiful.colors.on_surface,
         size = 15,
@@ -520,7 +512,6 @@ local function new(self, layout)
         text_normal_bg = beautiful.colors.on_background,
         text_on_normal_bg = beautiful.colors.on_accent,
         text = "Image",
-        animate_size = false,
         on_release = function()
             _image_button:turn_on()
             _tiled_button:turn_off()
@@ -539,7 +530,6 @@ local function new(self, layout)
         text_normal_bg = beautiful.colors.on_background,
         text_on_normal_bg = beautiful.colors.on_accent,
         text = "Tiled",
-        animate_size = false,
         on_release = function()
             _image_button:turn_off()
             _tiled_button:turn_on()
@@ -558,7 +548,6 @@ local function new(self, layout)
         text_normal_bg = beautiful.colors.on_background,
         text_on_normal_bg = beautiful.colors.on_accent,
         text = "Color",
-        animate_size = false,
         on_release = function()
             _image_button:turn_off()
             _tiled_button:turn_off()
@@ -577,7 +566,6 @@ local function new(self, layout)
         text_normal_bg = beautiful.colors.on_background,
         text_on_normal_bg = beautiful.colors.on_accent,
         text = "Digital Sun",
-        animate_size = false,
         on_release = function()
             _image_button:turn_off()
             _tiled_button:turn_off()
@@ -596,7 +584,6 @@ local function new(self, layout)
         text_normal_bg = beautiful.colors.on_background,
         text_on_normal_bg = beautiful.colors.on_accent,
         text = "Binary",
-        animate_size = false,
         on_release = function()
             _image_button:turn_off()
             _tiled_button:turn_off()

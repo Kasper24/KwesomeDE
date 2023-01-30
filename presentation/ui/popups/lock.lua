@@ -148,7 +148,6 @@ local function widget(self)
     local unlock_button = wibox.widget
     {
         widget = widgets.button.text.normal,
-        animate_size = false,
         text = "Unlock",
         on_release = function()
             system_daemon:unlock(self._private.prompt:get_text())
@@ -158,7 +157,6 @@ local function widget(self)
     local shutdown_button = wibox.widget
     {
         widget = widgets.button.text.normal,
-        animate_size = false,
         icon = beautiful.icons.poweroff,
         size = 40,
         on_release = function()
@@ -169,7 +167,6 @@ local function widget(self)
     local restart_button = wibox.widget
     {
         widget = widgets.button.text.normal,
-        animate_size = false,
         icon = beautiful.icons.reboot,
         size = 40,
         on_release = function()
@@ -180,7 +177,6 @@ local function widget(self)
     local suspend_button = wibox.widget
     {
         widget = widgets.button.text.normal,
-        animate_size = false,
         icon = beautiful.icons.suspend,
         size = 40,
         on_release = function()
@@ -191,7 +187,6 @@ local function widget(self)
     local exit_button = wibox.widget
     {
         widget = widgets.button.text.normal,
-        animate_size = false,
         icon = beautiful.icons.exit,
         size = 40,
         on_release = function()

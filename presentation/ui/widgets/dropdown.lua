@@ -53,7 +53,6 @@ local function new(args)
     dropdown_button = wibox.widget
     {
         widget = tbwidget.state,
-        animate_size = false,
         halign = "left",
         text = args.prompt .. args.initial_value,
         text_normal_bg = beautiful.colors.on_background,

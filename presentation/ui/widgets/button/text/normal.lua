@@ -15,8 +15,7 @@ local text_button_normal = { mt = {} }
 
 local properties =
 {
-	"text_bg", "text_hover_bg", "text_press_bg",
-	"animate_size",
+	"text_bg", "text_hover_bg", "text_press_bg"
 }
 
 local text_properties =
@@ -140,7 +139,7 @@ local function new(is_state)
 
 		self:text_effect()
 
-		if wp.animate_size == true then
+		if widget.text_widget._private.icon then
 			if event == "press" or event == "secondary_press" then
 				widget.size_animation:set(widget.orginal_size / 1.5)
 			elseif event == "release" or event == "secondary_release" then

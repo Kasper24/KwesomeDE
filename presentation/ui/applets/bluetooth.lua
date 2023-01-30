@@ -64,7 +64,6 @@ local function device_widget(device, path, layout, accent_color)
     local cancel = wibox.widget
     {
         widget = widgets.button.text.normal,
-        animate_size = false,
         normal_bg = beautiful.colors.surface,
         text_normal_bg = beautiful.colors.on_surface,
         size = 12,
