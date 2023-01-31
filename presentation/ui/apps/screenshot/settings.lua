@@ -13,10 +13,11 @@ local settings = { mt = {} }
 local accent_color = beautiful.colors.random_accent_color()
 
 local function show_cursor()
-    local checkbox = widgets.checkbox
+    local checkbox = wibox.widget
     {
-        on_by_default = screenshot_daemon:get_show_cursor(),
-        text_bg = accent_color,
+        widget = widgets.checkbox,
+        state = screenshot_daemon:get_show_cursor(),
+        color = accent_color,
         on_turn_on = function()
             screenshot_daemon:set_show_cursor(true)
         end,

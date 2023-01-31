@@ -133,10 +133,11 @@ local function widget(self)
         end
     }
 
-    local toggle_password_obscure_button = widgets.checkbox
+    local toggle_password_obscure_button = wibox.widget
     {
-        text_bg = beautiful.colors.on_background,
-        on_by_default = true,
+        widget = widgets.checkbox,
+        state = true,
+        color = beautiful.colors.on_background,
         on_turn_on = function()
             self._private.prompt:set_obscure(true)
         end,

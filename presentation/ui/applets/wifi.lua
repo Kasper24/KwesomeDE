@@ -69,9 +69,11 @@ local function access_point_widget(layout, access_point, accent_color)
         icon = beautiful.icons.lock.icon,
     }
 
-    local toggle_password_obscure_button = widgets.checkbox
+    local toggle_password_obscure_button = wibox.widget
     {
-        on_by_default = true,
+        widget = widgets.checkbox,
+        state = true,
+        color = accent_color,
         on_turn_on = function()
             prompt:set_obscure(true)
         end,
@@ -93,10 +95,11 @@ local function access_point_widget(layout, access_point, accent_color)
         color = beautiful.colors.on_surface,
     }
 
-    local auto_connect_checkbox = widgets.checkbox
+    local auto_connect_checkbox = wibox.widget
     {
-        valign = "center",
-        on_by_default = true
+        widget = widgets.checkbox,
+        state = true,
+        color = accent_color,
     }
 
     local auto_connect_text = wibox.widget
@@ -130,7 +133,7 @@ local function access_point_widget(layout, access_point, accent_color)
         size = 12,
         text = network_daemon:is_access_point_active(access_point) == true and "Disconnect" or "Connect",
         on_press = function()
-            network_daemon:toggle_access_point(access_point, prompt:get_text(), auto_connect_checkbox:get_value())
+            network_daemon:toggle_access_point(access_point, prompt:get_text(), auto_connect_checkbox:get_state())
         end
     }
 
