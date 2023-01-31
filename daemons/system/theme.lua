@@ -87,10 +87,12 @@ local function generate_sequences(colors)
     file:write(string)
 
     -- Backwards compatibility with wal/wpgtk
-    file:copy(WAL_CACHE_PATH .. "sequences")
+    local file = helpers.file.new_for_path(WAL_CACHE_PATH .. "sequences")
+    file:write(string)
 
     for index = 0, 9 do
-        file:copy("/dev/pts/" .. index)
+        local file = helpers.file.new_for_path("/dev/pts/" .. index)
+        file:write(string)
     end
 end
 
@@ -170,6 +172,16 @@ local function replace_template_colors(color, color_name, line)
 end
 
 local function generate_templates(self)
+    local on_finished_generating_timer = gtimer {
+        timeout = 2,
+        call_now = false,
+        single_shot = true,
+        autostart = false,
+        callback = function()
+            on_finished_generating(self)
+        end
+    }
+
     helpers.filesystem.iterate_contents(BASE_TEMPLATES_PATH, function(file)
         local name = file:get_name()
         if name:match(".base") ~= nil then
@@ -237,18 +249,20 @@ local function generate_templates(self)
                     file:write(output)
 
                     -- Backwards compatibility with wal/wpgtk
-                    file:copy(WAL_CACHE_PATH .. name)
+                    local file = helpers.file.new_for_path(WAL_CACHE_PATH .. name)
+                    file:write(output)
 
                     -- Save to addiontal location specified in the template file
                     if copy_to ~= nil then
                         copy_to = copy_to:gsub("~", os.getenv("HOME"))
-                        file:copy(copy_to)
+                        local file = helpers.file.new_for_path(copy_to)
+                        file:write(output)
                     end
                 end
             end)
         end
     end, {recursive = true}, function()
-        on_finished_generating(self)
+        on_finished_generating_timer:again()
     end)
 end
 
@@ -533,7 +547,7 @@ function theme:set_wallpaper(type)
         helpers.settings:set_value("theme-wallpaper", self._private.wallpaper)
 
         local file = helpers.file.new_for_path(self._private.wallpaper)
-        file:copy(BACKGROUND_PATH)
+        file:copy(BACKGROUND_PATH, {overwrite = true})
     elseif type == "tiled" then
     elseif type == "color" then
         self._private.color = self._private.selected_color
