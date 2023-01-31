@@ -561,13 +561,10 @@ function theme:set_colorscheme()
     beautiful.init(helpers.filesystem.get_awesome_config_dir("presentation") .. "theme/theme.lua")
     self._private.colorscheme = new_coloscheme
 
-    -- Help me this without saving
-    if DEBUG ~= true then
-        helpers.settings:set_value("theme-colorscheme", self._private.colorscheme)
-        install_gtk_theme()
-        generate_templates(self)
-        generate_sequences(self._private.colorscheme)
-    end
+    helpers.settings:set_value("theme-colorscheme", self._private.colorscheme)
+    install_gtk_theme()
+    generate_templates(self)
+    generate_sequences(self._private.colorscheme)
 end
 
 function theme:select_wallpaper(wallpaper)
