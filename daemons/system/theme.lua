@@ -173,7 +173,8 @@ local function generate_templates(self)
     helpers.filesystem.iterate_contents(BASE_TEMPLATES_PATH, function(file)
         local name = file:get_name()
         if name:match(".base") ~= nil then
-            local file = helpers.file.new_for_path(name)
+            local template_path = BASE_TEMPLATES_PATH .. name
+            local file = helpers.file.new_for_path(template_path)
             file:read(function(error, content)
                 if error == nil then
                     local lines = {}
