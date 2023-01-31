@@ -919,7 +919,7 @@ awful.keyboard.append_global_keybindings
         group = "media",
         description = "screenshot widget",
         on_press = function()
-            screenshot_widget:toggle()
+            screenshot_widget:show()
         end,
     },
 

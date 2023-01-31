@@ -150,13 +150,13 @@ local function widget()
         {
             icon = beautiful.icons.camera_retro,
             text = "Screenshot",
-            on_press = function() screenshot_app:toggle() end
+            on_press = function() screenshot_app:show() end
         },
         widgets.menu.button
         {
             icon = beautiful.icons.video,
             text = "Record",
-            on_press = function() record_app:toggle() end
+            on_press = function() record_app:show() end
         },
         widgets.menu.separator(),
         widgets.menu.sub_menu_button
@@ -182,7 +182,7 @@ local function widget()
         {
             icon = beautiful.icons.spraycan,
             text = "Theme",
-            on_press = function() theme_app:toggle() end
+            on_press = function() theme_app:show() end
         },
         widgets.menu.separator(),
         widgets.menu.button
