@@ -270,32 +270,29 @@ local function new(is_state)
 			old_colorscheme_to_new_map[wp.defaults.normal_bg]
 		wp.hover_bg = helpers.color.button_color(wp.normal_bg, 0.1)
 		wp.press_bg = helpers.color.button_color(wp.normal_bg, 0.2)
-		widget:effect(true)
 
-		if wp.on_normal_bg ~= nil then
-			wp.on_normal_bg =
-				old_colorscheme_to_new_map[wp.on_normal_bg] or
-				old_colorscheme_to_new_map[wp.defaults.on_normal_bg] or
-				helpers.color.button_color(wp.normal_bg, 0.2)
-			wp.on_hover_bg = helpers.color.button_color(wp.on_normal_bg, 0.1)
-			wp.on_press_bg = helpers.color.button_color(wp.on_normal_bg, 0.2)
-			widget:effect(true)
-		end
-		if wp.text_normal_bg ~= nil then
-			wp.text_normal_bg =
-				old_colorscheme_to_new_map[wp.text_normal_bg] or
-				old_colorscheme_to_new_map[wp.defaults.text_normal_bg]
-			wp.text_hover_bg = helpers.color.button_color(wp.text_normal_bg, 0.1)
-			wp.text_press_bg = helpers.color.button_color(wp.text_normal_bg, 0.2)
-			widget:text_effect(true)
-		end
-		if wp.text_on_normal_bg ~= nil then
-			wp.text_on_normal_bg =
-				old_colorscheme_to_new_map[wp.text_on_normal_bg] or
-				old_colorscheme_to_new_map[wp.defaults.text_on_normal_bg] or
-				helpers.color.button_color(wp.text_normal_bg, 0.2)
-			wp.text_on_hover_bg = helpers.color.button_color(wp.text_on_normal_bg, 0.1)
-			wp.text_on_press_bg = helpers.color.button_color(wp.text_on_normal_bg, 0.2)
+		wp.on_normal_bg =
+			old_colorscheme_to_new_map[wp.on_normal_bg] or
+			old_colorscheme_to_new_map[wp.defaults.on_normal_bg] or
+			helpers.color.button_color(wp.normal_bg, 0.2)
+		wp.on_hover_bg = helpers.color.button_color(wp.on_normal_bg, 0.1)
+		wp.on_press_bg = helpers.color.button_color(wp.on_normal_bg, 0.2)
+
+		wp.text_normal_bg =
+			old_colorscheme_to_new_map[wp.text_normal_bg] or
+			old_colorscheme_to_new_map[wp.defaults.text_normal_bg]
+		wp.text_hover_bg = helpers.color.button_color(wp.text_normal_bg, 0.1)
+		wp.text_press_bg = helpers.color.button_color(wp.text_normal_bg, 0.2)
+
+		wp.text_on_normal_bg =
+			old_colorscheme_to_new_map[wp.text_on_normal_bg] or
+			old_colorscheme_to_new_map[wp.defaults.text_on_normal_bg] or
+			helpers.color.button_color(wp.text_normal_bg, 0.2)
+		wp.text_on_hover_bg = helpers.color.button_color(wp.text_on_normal_bg, 0.1)
+		wp.text_on_press_bg = helpers.color.button_color(wp.text_on_normal_bg, 0.2)
+
+		widget:effect(true)
+		if widget.text_effect ~= nil then
 			widget:text_effect(true)
 		end
 	end)

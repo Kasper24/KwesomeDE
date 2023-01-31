@@ -571,6 +571,9 @@ function theme:set_colorscheme()
     for index, color in pairs(old_colorscheme) do
         old_colorscheme_to_new_map[color] = new_coloscheme[index]
     end
+    old_colorscheme_to_new_map["#FFFFFF"] = "#FFFFFF"
+    old_colorscheme_to_new_map["#000000"] = "#000000"
+
     awesome.emit_signal("colorscheme::changed", old_colorscheme_to_new_map, new_coloscheme)
     beautiful.init(helpers.filesystem.get_awesome_config_dir("presentation") .. "theme/theme.lua")
     self._private.colorscheme = new_coloscheme

@@ -84,7 +84,7 @@ function text:set_icon(icon)
 	self:emit_signal("property::icon", icon)
 end
 
-local function new()
+local function new(hot_reload)
 	local widget = wibox.widget.textbox()
 	gtable.crush(widget, text, true)
 
@@ -97,6 +97,13 @@ local function new()
 	widget:connect_signal("widget::redraw_needed", function()
 		generate_markup(widget)
 	end)
+
+	if hot_reload ~= false then
+		awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+			wp.color = old_colorscheme_to_new_map[wp.color]
+			generate_markup(widget)
+		end)
+	end
 
 	return widget
 end
