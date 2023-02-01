@@ -3,7 +3,6 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 
-local gtimer = require("gears.timer")
 local wibox = require("wibox")
 local widgets = require("presentation.ui.widgets")
 local beautiful = require("beautiful")
@@ -363,11 +362,7 @@ local function digital_sun_tab()
     {
         layout = wibox.layout.fixed.vertical,
         wibox.widget {
-            forced_width = dpi(20),
-            forced_height = dpi(250),
-            fit = function(_, width, height)
-                return width, height
-            end,
+            forced_height = dpi(850),
             draw = function(_, _, cr, width, height)
                 cr:set_source(gcolor {
                     type  = 'linear',
