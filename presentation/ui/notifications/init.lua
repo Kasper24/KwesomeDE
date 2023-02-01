@@ -202,9 +202,7 @@ naughty.connect_signal("request::display", function(n)
         {
             widget = widgets.text,
             size = 30,
-            color = beautiful.colors.random_accent_color(),
-            font = n.font_icon.font,
-            text = n.font_icon.icon
+            icon = n.font_icon
         }
     end
 
