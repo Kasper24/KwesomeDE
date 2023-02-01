@@ -69,6 +69,7 @@ local function new(client)
         mwidget.sub_menu_button
         {
             text = "Maximize",
+            arrow_color = client.font_icon.color,
             sub_menu = maximize_menu
         },
         client_checkbox_button(client, "minimized", "Minimize"),
@@ -82,6 +83,7 @@ local function new(client)
         mwidget.sub_menu_button
         {
             text = "Layer",
+            arrow_color = client.font_icon.color,
             sub_menu = layer_menu
         },
         mwidget.button

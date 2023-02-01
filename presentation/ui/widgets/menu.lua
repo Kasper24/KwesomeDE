@@ -234,6 +234,11 @@ function menu.sub_menu_button(args)
         icon = args.icon,
     } or nil
 
+    local arrow_color = args.arrow_color or beautiful.icons.chevron.right.color
+    if args.icon then
+        arrow_color = args.icon.color
+    end
+
     local widget = wibox.widget
     {
         widget = wibox.container.margin,
@@ -269,6 +274,7 @@ function menu.sub_menu_button(args)
                 {
                     widget = twidget,
                     icon = beautiful.icons.chevron.right,
+                    color = arrow_color,
                     size = 12,
                 },
             }
