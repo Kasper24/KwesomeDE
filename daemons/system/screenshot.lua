@@ -22,26 +22,13 @@ function screenshot:get_show_cursor()
     return self._private.show_cursor
 end
 
+function screenshot:set_delay(delay)
+    self._private.delay = delay
+    helpers.settings:set_value("screenshot-delay", self._private.delay)
+end
+
 function screenshot:get_delay()
     return self._private.delay
-end
-
-function screenshot:increase_delay()
-    self._private.delay = self._private.delay + 1
-    helpers.settings:set_value("screenshot-delay", self._private.delay)
-    return self:get_delay()
-end
-
-function screenshot:decrease_delay()
-    if self._private.delay > 0 then
-        self._private.delay = self._private.delay - 1
-        helpers.settings:set_value("screenshot-delay", self._private.delay)
-    end
-    return self:get_delay()
-end
-
-function screenshot:get_folder()
-    return self._private.folder
 end
 
 function screenshot:set_folder()
@@ -54,6 +41,10 @@ function screenshot:set_folder()
             end
         end
     end)
+end
+
+function screenshot:get_folder()
+    return self._private.folder
 end
 
 function screenshot:set_screenshot_method(screenshot_method)

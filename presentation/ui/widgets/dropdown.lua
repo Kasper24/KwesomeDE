@@ -54,6 +54,7 @@ local function new(args)
     {
         widget = tbwidget.state,
         halign = "left",
+        size = 12,
         text = args.prompt .. args.initial_value,
         text_normal_bg = beautiful.colors.on_background,
         on_press = function()

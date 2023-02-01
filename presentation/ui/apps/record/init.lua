@@ -53,8 +53,6 @@ local window = [[ lua -e "
 "
 ]]
 
-local accent_color = beautiful.colors.random_accent_color()
-
 local function resolution()
     local title = wibox.widget
     {
@@ -85,6 +83,7 @@ local function resolution()
     return wibox.widget
     {
         layout = wibox.layout.fixed.horizontal,
+        forced_height = dpi(35),
         spacing = dpi(15),
         title,
         dropdown
@@ -110,7 +109,6 @@ local function fps()
     {
         widget = widgets.slider,
         forced_width = dpi(150),
-        forced_height = dpi(20),
         value = record_daemon:get_fps(),
         maximum = 360,
         bar_height = 5,
@@ -132,6 +130,7 @@ local function fps()
     return wibox.widget
     {
         layout = wibox.layout.fixed.horizontal,
+        forced_height = dpi(35),
         spacing = dpi(15),
         title,
         slider,
@@ -154,38 +153,36 @@ local function delay()
         text = record_daemon:get_delay(),
     }
 
-    local plus_button = wibox.widget
+    local slider = wibox.widget
     {
-        widget = widgets.button.text.normal,
-        forced_width = dpi(50),
-        forced_height = dpi(50),
-        text_normal_bg = accent_color,
-        icon = beautiful.icons.circle.plus,
-        on_release = function()
-            value_text:set_text(record_daemon:increase_delay())
-        end
+        widget = widgets.slider,
+        forced_width = dpi(150),
+        value = record_daemon:get_delay(),
+        maximum = 100,
+        bar_height = 5,
+        bar_shape = helpers.ui.rrect(beautiful.border_radius),
+        bar_color = beautiful.colors.surface,
+        bar_active_color = beautiful.colors.random_accent_color(),
+        handle_width = dpi(15),
+        handle_color = beautiful.colors.on_background,
+        handle_shape = gshape.circle,
     }
 
-    local minus_button = wibox.widget
-    {
-        widget = widgets.button.text.normal,
-        forced_width = dpi(50),
-        forced_height = dpi(50),
-        text_normal_bg = accent_color,
-        icon = beautiful.icons.circle.minus,
-        on_release = function()
-            value_text:set_text(record_daemon:decrease_delay())
+    slider:connect_signal("property::value", function(self, value, instant)
+        if instant == false then
+            record_daemon:set_delay(value)
+            value_text:set_text(value)
         end
-    }
+    end)
 
     return wibox.widget
     {
         layout = wibox.layout.fixed.horizontal,
+        forced_height = dpi(35),
         spacing = dpi(15),
         title,
-        minus_button,
-        value_text,
-        plus_button,
+        slider,
+        value_text
     }
 end
 
@@ -225,6 +222,7 @@ local function audio_source()
     return wibox.widget
     {
         layout = wibox.layout.fixed.horizontal,
+        forced_height = dpi(35),
         spacing = dpi(15),
         title,
         dropdown
@@ -250,7 +248,6 @@ local function folder()
     local set_folder_button  = wibox.widget
     {
         widget = widgets.button.text.normal,
-        text_normal_bg = accent_color,
         size = 15,
         text = "...",
         on_press = function()
@@ -265,6 +262,7 @@ local function folder()
     return wibox.widget
     {
         layout = wibox.layout.fixed.horizontal,
+        forced_height = dpi(35),
         spacing = dpi(15),
         title,
         folder_text,
@@ -298,6 +296,7 @@ local function format()
     return wibox.widget
     {
         layout = wibox.layout.fixed.horizontal,
+        forced_height = dpi(35),
         spacing = dpi(15),
         title,
         dropdown
@@ -422,12 +421,12 @@ local function new()
 
                 -- Settings placement in properties doesn't work
                 c.x = (c.screen.geometry.width / 2) - (dpi(550) / 2)
-                c.y = (c.screen.geometry.height / 2) - (dpi(520) / 2)
+                c.y = (c.screen.geometry.height / 2) - (dpi(435) / 2)
 
                 awful.titlebar(c,
                 {
                     position = "top",
-                    size = dpi(520),
+                    size = dpi(435),
                     bg = beautiful.colors.background
                 }) : setup
                 {

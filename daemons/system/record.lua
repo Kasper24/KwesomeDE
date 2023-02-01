@@ -32,22 +32,13 @@ function record:get_fps()
     return self._private.fps
 end
 
+function record:set_delay(delay)
+    self._private.delay = delay
+    helpers.settings:set_value("record-delay", self._private.delay)
+end
+
 function record:get_delay()
     return self._private.delay
-end
-
-function record:increase_delay()
-    self._private.delay = self._private.delay + 1
-    helpers.settings:set_value("record-delay", self._private.delay)
-    return self:get_delay()
-end
-
-function record:decrease_delay()
-    if self._private.delay > 0 then
-        self._private.delay = self._private.delay - 1
-        helpers.settings:set_value("record-delay", self._private.delay)
-    end
-    return self:get_delay()
 end
 
 function record:get_folder()

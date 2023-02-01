@@ -3,10 +3,12 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 
+local gshape = require("gears.shape")
 local wibox = require("wibox")
 local widgets = require("presentation.ui.widgets")
 local beautiful = require("beautiful")
 local screenshot_daemon = require("daemons.system.screenshot")
+local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local settings = { mt = {} }
 
@@ -37,6 +39,7 @@ local function show_cursor()
     return wibox.widget
     {
         layout = wibox.layout.fixed.horizontal,
+        forced_height = dpi(35),
         spacing = dpi(5),
         text,
         checkbox,
@@ -58,42 +61,36 @@ local function delay()
         text = screenshot_daemon:get_delay(),
     }
 
-    local plus_button = wibox.widget
+    local slider = wibox.widget
     {
-        widget = widgets.button.text.normal,
-        forced_width = dpi(50),
-        forced_height = dpi(50),
-        text_normal_bg = accent_color,
-        icon = beautiful.icons.circle.plus,
-        on_release = function()
-            value_text:set_text(screenshot_daemon:increase_delay())
-        end
+        widget = widgets.slider,
+        forced_width = dpi(150),
+        value = screenshot_daemon:get_delay(),
+        maximum = 100,
+        bar_height = 5,
+        bar_shape = helpers.ui.rrect(beautiful.border_radius),
+        bar_color = beautiful.colors.surface,
+        bar_active_color = beautiful.colors.random_accent_color(),
+        handle_width = dpi(15),
+        handle_color = beautiful.colors.on_background,
+        handle_shape = gshape.circle,
     }
 
-    local minus_button = wibox.widget
-    {
-        widget = widgets.button.text.normal,
-        forced_width = dpi(50),
-        forced_height = dpi(50),
-        text_normal_bg = accent_color,
-        icon = beautiful.icons.circle.minus,
-        on_release = function()
-            value_text:set_text(screenshot_daemon:decrease_delay())
+    slider:connect_signal("property::value", function(self, value, instant)
+        if instant == false then
+            screenshot_daemon:set_delay(value)
+            value_text:set_text(value)
         end
-    }
+    end)
 
     return wibox.widget
     {
         layout = wibox.layout.fixed.horizontal,
+        forced_height = dpi(35),
         spacing = dpi(15),
         title,
-        {
-            layout = wibox.layout.fixed.horizontal,
-            spacing = dpi(15),
-            minus_button,
-            value_text,
-            plus_button,
-        }
+        slider,
+        value_text
     }
 end
 
@@ -108,7 +105,7 @@ local function folder()
     local folder_text  = wibox.widget
     {
         widget = widgets.text,
-        forced_width = dpi(350),
+        forced_width = dpi(220),
         size = 12,
         text = screenshot_daemon:get_folder(),
     }
@@ -116,7 +113,6 @@ local function folder()
     local set_folder_button  = wibox.widget
     {
         widget = widgets.button.text.normal,
-        text_normal_bg = accent_color,
         size = 15,
         text = "...",
         on_press = function()
@@ -131,6 +127,7 @@ local function folder()
     return wibox.widget
     {
         layout = wibox.layout.fixed.horizontal,
+        forced_height = dpi(35),
         spacing = dpi(15),
         title,
         folder_text,

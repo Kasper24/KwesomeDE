@@ -129,7 +129,7 @@ local function new(self, layout)
         widget = widgets.button.text.normal,
         forced_width = dpi(50),
         size = 15,
-        bg = accent_color,
+        normal_bg = accent_color,
         text_normal_bg = beautiful.colors.background,
         text = "Screenshot",
         on_release = function()
