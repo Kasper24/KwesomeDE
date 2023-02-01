@@ -66,12 +66,10 @@ local function new()
         local file = helpers.file.new_for_path(DATA_PATH)
         file:read(function(error, content)
             if error == nil then
-                local data = helpers.json.decode(content)
-                if data ~= nil then
-                    old_data = {}
-                    for _, email in ipairs(data) do
-                        old_data[email.id] = email.id
-                    end
+                local data = helpers.json.decode(content) or {}
+                old_data = {}
+                for _, email in ipairs(data) do
+                    old_data[email.id] = email.id
                 end
             end
 
@@ -80,11 +78,9 @@ local function new()
                 parser:parse(stdout)
 
                 if handler.root and handler.root.feed then
-                    if old_data ~= nil then
-                        for _, email in ipairs(handler.root.feed.entry) do
-                            if old_data[email.id] == nil then
-                                ret:emit_signal("new_email", email)
-                            end
+                    for _, email in ipairs(handler.root.feed.entry) do
+                        if old_data[email.id] == nil then
+                            ret:emit_signal("new_email", email)
                         end
                     end
 

@@ -18,7 +18,7 @@ local PATH = helpers.filesystem.get_cache_dir("gitlab/created_prs")
 local AVATARS_PATH = PATH .. "avatars/"
 local DATA_PATH = PATH .. "data.json"
 
-local UPDATE_INTERVAL = 60 * 3 -- 5 mins
+local UPDATE_INTERVAL = 10
 
 function gitlab:set_host(host)
     self._private.host = host
@@ -53,7 +53,8 @@ function gitlab:refresh()
             end
 
             for index, pr in ipairs(data) do
-                if old_data ~= nil and old_data[pr.id] == nil then
+                if old_data[pr.id] == nil then
+                    print(pr.id)
                     self:emit_signal("new_pr", pr)
                 end
 
@@ -85,12 +86,10 @@ function gitlab:refresh()
             end
         end,
         function(old_content)
-            local data = helpers.json.decode(old_content)
-            if data ~= nil then
-                old_data = {}
-                for _, pr in ipairs(data) do
-                    old_data[pr.id] = pr.id
-                end
+            local data = helpers.json.decode(old_content) or {}
+            old_data = {}
+            for _, pr in ipairs(data) do
+                old_data[pr.id] = pr.id
             end
         end
     )

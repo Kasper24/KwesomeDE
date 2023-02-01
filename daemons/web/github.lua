@@ -48,7 +48,7 @@ local function github_events(self)
             for index, event in ipairs(data) do
                 local path_to_avatar = avatars_path .. event.actor.id
 
-                if old_data ~= nil and old_data[event.id] == nil then
+                if old_data[event.id] == nil then
                     self:emit_signal("new_event", event, path_to_avatar)
                 end
 
@@ -80,12 +80,10 @@ local function github_events(self)
             end
         end,
         function(old_content)
-            local data = helpers.json.decode(old_content)
-            if data ~= nil then
-                old_data = {}
-                for _, event in ipairs(data) do
-                    old_data[event.id] = event.id
-                end
+            local data = helpers.json.decode(old_content) or {}
+            old_data = {}
+            for _, event in ipairs(data) do
+                old_data[event.id] = event.id
             end
         end
     )
@@ -111,7 +109,7 @@ local function github_prs(self)
             end
 
             for index, pr in ipairs(data.items) do
-                if old_data ~= nil and old_data[pr.id] == nil then
+                if old_data[pr.id] == nil then
                     self:emit_signal("new_pr", pr)
                 end
 
@@ -142,12 +140,10 @@ local function github_prs(self)
             end
         end,
         function(old_content)
-            local data = helpers.json.decode(old_content)
-            if data ~= nil then
-                old_data = {}
-                for _, pr in ipairs(data.items) do
-                    old_data[pr.id] = pr.id
-                end
+            local data = helpers.json.decode(old_content) or {}
+            old_data = {}
+            for _, pr in ipairs(data.items) do
+                old_data[pr.id] = pr.id
             end
         end
     )
