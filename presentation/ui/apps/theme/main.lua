@@ -3,6 +3,7 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 
+local gcolor = require("gears.color")
 local wibox = require("wibox")
 local widgets = require("presentation.ui.widgets")
 local beautiful = require("beautiful")
@@ -344,8 +345,6 @@ local function image_tab(self)
 end
 
 local function digital_sun_tab()
-    local gcolor = require("gears.color")
-
     local set = wibox.widget
     {
         widget = widgets.button.text.normal,
@@ -420,6 +419,64 @@ local function digital_sun_tab()
     }
 end
 
+local function binary_tab()
+    local function binary()
+        local ret = {}
+        for _= 1, 30 do
+            for _= 1, 100 do
+                table.insert(ret, math.random() > 0.5 and 1 or 0)
+            end
+            table.insert(ret, "\n")
+        end
+
+        return table.concat(ret)
+    end
+
+    local set = wibox.widget
+    {
+        widget = widgets.button.text.normal,
+        normal_bg = beautiful.colors.surface,
+        text_normal_bg = beautiful.colors.on_surface,
+        size = 15,
+        text = "Set",
+        on_press = function()
+            theme_daemon:set_wallpaper("binary")
+        end
+    }
+
+    return wibox.widget
+    {
+        layout = wibox.layout.fixed.vertical,
+        {
+            widget = wibox.container.background,
+            forced_height = dpi(850),
+            bg = beautiful.colors.background,
+            fg = beautiful.colors.random_accent_color(),
+            {
+                widget = wibox.layout.stack,
+                {
+                    widget = wibox.container.background,
+                    fg = beautiful.colors.random_accent_color(),
+                    {
+                        widget = wibox.widget.textbox,
+                        halign  = "center",
+                        valign = "center",
+                        markup = "<tt><b>[SYSTEM FAILURE]</b></tt>",
+                    }
+                },
+                {
+                    widget = wibox.widget.textbox,
+                    halign  = "center",
+                    valign = "center",
+                    wrap = "word",
+                    text = binary(),
+                },
+            },
+        },
+        set,
+    }
+end
+
 local function wip_tab()
     return wibox.widget
     {
@@ -463,7 +520,7 @@ local function new(self, layout)
     local _tiled_tab = wip_tab()
     local _color_tab = wip_tab()
     local _digital_sun_tab = digital_sun_tab()
-    local _binary_tab = wip_tab()
+    local _binary_tab = binary_tab()
 
     local title = wibox.widget
     {

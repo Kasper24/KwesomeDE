@@ -454,8 +454,8 @@ end
 local function binary_wallpaper(screen)
     local function binary()
         local ret = {}
-        for _= 1, 15 do
-            for _= 1, 57 do
+        for _= 1, 30 do
+            for _= 1, 100 do
                 table.insert(ret, math.random() > 0.5 and 1 or 0)
             end
             table.insert(ret, "\n")
@@ -477,13 +477,15 @@ local function binary_wallpaper(screen)
                 fg = beautiful.colors.random_accent_color(),
                 {
                     widget = wibox.widget.textbox,
-                    align  = "center",
+                    halign  = "center",
                     valign = "center",
                     markup = "<tt><b>[SYSTEM FAILURE]</b></tt>",
                 },
             },
             {
                 widget = wibox.widget.textbox,
+                halign  = "center",
+                valign = "center",
                 wrap = "word",
                 text = binary(),
             },
