@@ -39,6 +39,7 @@ local gtable = require("gears.table")
 local beautiful = require("beautiful")
 local base = require("wibox.widget.base")
 local shape = require("gears.shape")
+local helpers = require("helpers")
 local capi = {
     mouse        = mouse,
     mousegrabber = mousegrabber,
@@ -567,8 +568,10 @@ local function move_handle(self, width, x, _)
     self:set_value(math.floor((x*interval)/width))
 end
 
-local function mouse_press(self, x, y, button_id, _, geo)
-    if button_id ~= 1 then return end
+local function mouse_press(self, x, y, button_id, mods, geo)
+    if helpers.table.contains(mods, "Mod4") or button_id ~= 1 then
+        return
+    end
 
     local matrix_from_device = geo.hierarchy:get_matrix_from_device()
 
