@@ -956,6 +956,7 @@ awful.mouse.append_global_mousebindings
         capi.awesome.emit_signal("root::pressed", 1)
     end),
     awful.button({"Any"}, 3, function()
+        main_menu:toggle()
         capi.awesome.emit_signal("root::pressed", 3)
     end)
 })
@@ -1155,9 +1156,3 @@ awful.keygrabber
         layout_switcher:hide()
     end
 }
-
-capi.awesome.connect_signal("root::pressed", function(button)
-    if button == 3 then
-        main_menu:toggle()
-    end
-end)

@@ -73,35 +73,10 @@ function menu:hide_children_menus()
     end
 end
 
-function menu:hide(hide_parents)
-    if self.visible == false then
-        return
-    end
-
-    -- No animation for hiding
-    self.widget.forced_height = 1
-    self.visible = false
-    -- Set the anim back to starting position
-    self.animation.pos = 1
-
-    -- Hides all child menus
-    self:hide_children_menus()
-
-    if hide_parents == true then
-        self:hide_parents_menus()
-    end
-end
-
 function menu:show(args)
     if self.visible == true then
         return
     end
-
-    self.can_hide = false
-
-    gtimer { timeout = 0.1, autostart = true, call_now = false, single_shot = true, callback = function()
-        self.can_hide = true
-    end }
 
     -- Hide sub menus belonging to the menu of self
     if self.parent_menu ~= nil then
@@ -116,9 +91,36 @@ function menu:show(args)
     self:set_pos(args)
     self.animation:set(self.menu_height)
     self.visible = true
+    self._private.can_hide = false
+
+    gtimer {
+        timeout = 0.05,
+        autostart = true,
+        call_now = false,
+        single_shot = true,
+        callback = function()
+            self._private.can_hide = true
+        end
+    }
 
     capi.awesome.emit_signal("menu::toggled_on", self)
 end
+
+function menu:hide(hide_parents)
+    if self.visible == false then
+        return
+    end
+
+    self.animation.pos = 1
+    self.widget.forced_height = 1
+    self.visible = false
+
+    self:hide_children_menus()
+    if hide_parents == true then
+        self:hide_parents_menus()
+    end
+end
+
 
 function menu:toggle(args)
     if self.visible == true then
@@ -190,13 +192,13 @@ function menu.menu(widgets, width)
 	}
 
     capi.awesome.connect_signal("root::pressed", function()
-        if widget.can_hide == true then
+        if widget._private.can_hide == true then
             widget:hide(true)
         end
     end)
 
     capi.client.connect_signal("button::press", function()
-        if widget.can_hide == true then
+        if widget._private.can_hide == true then
             widget:hide(true)
         end
     end)
@@ -225,6 +227,7 @@ function menu.sub_menu_button(args)
     args.icon = args.icon or nil
     args.text = args.text or ""
     args.sub_menu = args.sub_menu or nil
+    args.arrow_color = args.arrow_color or nil
 
     local icon = args.icon ~= nil
     and wibox.widget
