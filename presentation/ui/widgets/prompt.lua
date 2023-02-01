@@ -19,6 +19,13 @@ local capi = { awesome = awesome, tag = tag, client = client }
 
 local prompt  = { mt = {} }
 
+local properties =
+{
+    "icon_font", "icon", "font", "prompt", "text",
+    "icon_color", "prompt_color", "text_color", "cursor_color",
+    "always_on", "reset_on_stop", "obscure",
+    "keypressed_callback", "changed_callback", "done_callback"
+}
 
 local function is_word_char(c)
     if string.find(c, "[{[(,.:;_-+=@/ ]") then
@@ -61,47 +68,49 @@ local function have_multibyte_char_at(text, position)
 end
 
 local function update_markup(self, show_cursor)
-    local icon_color = gcolor.ensure_pango_color(self.icon_color)
-    local prompt_color = gcolor.ensure_pango_color(self.prompt_color)
-    local text_color = gcolor.ensure_pango_color(self.text_color)
-    local cursor_color = gcolor.ensure_pango_color(self.cursor_color)
+    local wp = self._private
 
-    local text = tostring(self.text) or ""
-    if self.obscure == true then
+    local icon_color = gcolor.ensure_pango_color(wp.icon_color)
+    local prompt_color = gcolor.ensure_pango_color(wp.prompt_color)
+    local text_color = gcolor.ensure_pango_color(wp.text_color)
+    local cursor_color = gcolor.ensure_pango_color(wp.cursor_color)
+
+    local text = tostring(wp.text) or ""
+    if wp.obscure == true then
         text = text:gsub(".", "*")
     end
 
     if show_cursor == true then
         local char, spacer, text_start, text_end
 
-        if #text < self._private.cur_pos then
+        if #text < wp.cur_pos then
             char = " "
             spacer = ""
             text_start = gstring.xml_escape(text)
             text_end = ""
         else
             local offset = 0
-            if have_multibyte_char_at(text, self._private.cur_pos) then
+            if have_multibyte_char_at(text, wp.cur_pos) then
                 offset = 1
             end
-            char = gstring.xml_escape(text:sub(self._private.cur_pos, self._private.cur_pos + offset))
+            char = gstring.xml_escape(text:sub(wp.cur_pos, wp.cur_pos + offset))
             spacer = " "
-            text_start = gstring.xml_escape(text:sub(1, self._private.cur_pos - 1))
-            text_end = gstring.xml_escape(text:sub(self._private.cur_pos + 1 + offset))
+            text_start = gstring.xml_escape(text:sub(1, wp.cur_pos - 1))
+            text_end = gstring.xml_escape(text:sub(wp.cur_pos + 1 + offset))
         end
 
-        if self.icon ~= nil then
-            self.textbox:set_markup(string.format(
+        if wp.icon ~= nil then
+            self._private.child:set_markup(string.format(
                 '<span font_desc="%s" foreground="%s">%s  </span>' ..
                 '<span foreground="%s">%s</span>' ..
                 '<span foreground="%s">%s</span>' ..
                 '<span background="%s">%s</span>' ..
                 '<span foreground="%s">%s%s</span>',
-                self.icon_font,
+                wp.icon_font,
                 icon_color,
-                self.icon,
+                wp.icon,
                 prompt_color,
-                self.prompt,
+                wp.prompt,
                 text_color,
                 text_start,
                 cursor_color,
@@ -111,13 +120,13 @@ local function update_markup(self, show_cursor)
                 spacer
             ))
         else
-            self.textbox:set_markup(string.format(
+            self._private.child:set_markup(string.format(
                 '<span foreground="%s">%s</span>' ..
                 '<span foreground="%s">%s</span>' ..
                 '<span background="%s">%s</span>' ..
                 '<span foreground="%s">%s%s</span>',
                 prompt_color,
-                self.prompt,
+                wp.prompt,
                 text_color,
                 text_start,
                 cursor_color,
@@ -128,25 +137,25 @@ local function update_markup(self, show_cursor)
             ))
         end
     else
-        if self.icon  ~= nil then
-            self.textbox:set_markup(string.format(
+        if wp.icon  ~= nil then
+            self._private.child:set_markup(string.format(
                 '<span font_desc="%s" foreground="%s">%s  </span>' ..
                 '<span foreground="%s">%s</span>' ..
                 '<span foreground="%s">%s</span>',
-                self.icon_font,
+                wp.icon_font,
                 icon_color,
-                self.icon,
+                wp.icon,
                 prompt_color,
-                self.prompt,
+                wp.prompt,
                 text_color,
                 gstring.xml_escape(text)
             ))
         else
-            self.textbox:set_markup(string.format(
+            self._private.child:set_markup(string.format(
                 '<span foreground="%s">%s</span>' ..
                 '<span foreground="%s">%s</span>',
                 prompt_color,
-                self.prompt,
+                wp.prompt,
                 text_color,
                 gstring.xml_escape(text)
             ))
@@ -155,6 +164,8 @@ local function update_markup(self, show_cursor)
 end
 
 local function paste(self)
+    local wp = self._private
+
     awful.spawn.easy_async_with_shell("xclip -selection clipboard -o", function(stdout)
         if stdout ~= nil then
             local n = stdout:find("\n")
@@ -162,45 +173,79 @@ local function paste(self)
                 stdout = stdout:sub(1, n - 1)
             end
 
-            self.text = self.text:sub(1, self._private.cur_pos - 1) .. stdout .. self.text:sub(self._private.cur_pos)
-            self._private.cur_pos = self._private.cur_pos + #stdout
+            wp.text = wp.text:sub(1, wp.cur_pos - 1) .. stdout .. self.text:sub(wp.cur_pos)
+            wp.cur_pos = wp.cur_pos + #stdout
             update_markup(self, true)
         end
     end)
 end
 
+local function build_properties(prototype, prop_names)
+    for _, prop in ipairs(prop_names) do
+        if not prototype["set_" .. prop] then
+            prototype["set_" .. prop] = function(self, value)
+                if self._private[prop] ~= value then
+                    self._private[prop] = value
+                    self:emit_signal("widget::redraw_needed")
+                    self:emit_signal("property::"..prop, value)
+                    update_markup(self, false)
+                end
+                return self
+            end
+        end
+        if not prototype["get_" .. prop] then
+            prototype["get_" .. prop] = function(self)
+                return self._private[prop]
+            end
+        end
+    end
+end
+
 function prompt:toggle_obscure()
-    self:set_obscure(not self.obscure)
+    self:set_obscure(not self._private.obscure)
 end
 
 function prompt:set_obscure(value)
-    self.obscure = value
+    self._private.obscure = value
     update_markup(self, true)
 end
 
 function prompt:get_text()
-    return self.text
+    return self._private.text
+end
+
+function prompt:set_text(text)
+    self._private.text = text
+    self._private.cur_pos = #text + 1
+    update_markup(self, true)
+end
+
+function prompt:set_prompt(prompt)
+    self._private.prompt = prompt
+    update_markup(self, true)
 end
 
 function prompt:start()
-    self._private.is_running = true
+    local wp = self._private
+
+    wp.is_running = true
     self.can_stop = false
     capi.awesome.emit_signal("prompt::toggled_on", self)
-    self.widget:turn_on()
+    self:turn_on()
     update_markup(self, true)
 
     gtimer { timeout = 0.1, autostart = true, call_now = false, single_shot = true, callback = function()
         self.can_stop = true
     end }
 
-    self._private.grabber = awful.keygrabber.run(function(modifiers, key, event)
+    wp.grabber = awful.keygrabber.run(function(modifiers, key, event)
         -- Convert index array to hash table
         local mod = {}
         for _, v in ipairs(modifiers) do mod[v] = true end
 
         if event ~= "press" then
-            if self.keyreleased_callback then
-                self.keyreleased_callback(mod, key, self.text)
+            if wp.keyreleased_callback then
+                wp.keyreleased_callback(mod, key, wp.text)
             end
             return
         end
@@ -209,20 +254,20 @@ function prompt:start()
         -- the first result then return from the function. Treat the
         -- second and third results as a new command and new prompt
         -- to be set (if provided)
-        if self.keypressed_callback then
+        if wp.keypressed_callback then
             local user_catched, new_command, new_prompt =
-            self.keypressed_callback(mod, key, self.text)
+            wp.keypressed_callback(mod, key, wp.text)
             if new_command or new_prompt then
                 if new_command then
-                    self.text = new_command
+                    wp.text = new_command
                 end
                 if new_prompt then
-                    self.prompt = new_prompt
+                    wp.prompt = new_prompt
                 end
             end
             if user_catched then
-                if self.changed_callback then
-                    self.changed_callback(self.text)
+                if wp.changed_callback then
+                    wp.changed_callback(wp.text)
                 end
                 return
             end
@@ -233,71 +278,71 @@ function prompt:start()
             if key == "v" then
                 paste(self)
             elseif key == "a" then
-                self._private.cur_pos = 1
+                wp.cur_pos = 1
             elseif key == "b" then
-                if self._private.cur_pos > 1 then
-                    self._private.cur_pos = self._private.cur_pos - 1
-                    if have_multibyte_char_at(self.text, self._private.cur_pos) then
-                        self._private.cur_pos = self._private.cur_pos - 1
+                if wp.cur_pos > 1 then
+                    wp.cur_pos = wp.cur_pos - 1
+                    if have_multibyte_char_at(wp.text, wp.cur_pos) then
+                        wp.cur_pos = wp.cur_pos - 1
                     end
                 end
             elseif key == "d" then
-                if self._private.cur_pos <= #self.text then
-                    self.text = self.text:sub(1, self._private.cur_pos - 1) .. self.text:sub(self._private.cur_pos + 1)
+                if wp.cur_pos <= #wp.text then
+                    wp.text = wp.text:sub(1, wp.cur_pos - 1) .. wp.text:sub(wp.cur_pos + 1)
                 end
             elseif key == "e" then
-                self._private.cur_pos = #self.text + 1
+                wp.cur_pos = #wp.text + 1
             elseif key == "f" then
-                if self._private.cur_pos <= #self.text then
-                    if have_multibyte_char_at(self.text, self._private.cur_pos) then
-                        self._private.cur_pos = self._private.cur_pos + 2
+                if wp.cur_pos <= #wp.text then
+                    if have_multibyte_char_at(wp.text, wp.cur_pos) then
+                        wp.cur_pos = wp.cur_pos + 2
                     else
-                        self._private.cur_pos = self._private.cur_pos + 1
+                        wp.cur_pos = wp.cur_pos + 1
                     end
                 end
             elseif key == "h" then
-                if self._private.cur_pos > 1 then
+                if wp.cur_pos > 1 then
                     local offset = 0
-                    if have_multibyte_char_at(self.text, self._private.cur_pos - 1) then
+                    if have_multibyte_char_at(wp.text, wp.cur_pos - 1) then
                         offset = 1
                     end
-                    self.text = self.text:sub(1, self._private.cur_pos - 2 - offset) .. self.text:sub(self._private.cur_pos)
-                    self._private.cur_pos = self._private.cur_pos - 1 - offset
+                    wp.text = wp.text:sub(1, wp.cur_pos - 2 - offset) .. wp.text:sub(wp.cur_pos)
+                    wp.cur_pos = wp.cur_pos - 1 - offset
                 end
             elseif key == "k" then
-                self.text = self.text:sub(1, self._private.cur_pos - 1)
+                wp.text = wp.text:sub(1, wp.cur_pos - 1)
             elseif key == "u" then
-                self.text = self.text:sub(self._private.cur_pos, #self.text)
-                self._private.cur_pos = 1
+                wp.text = wp.text:sub(wp.cur_pos, #wp.text)
+                wp.cur_pos = 1
             elseif key == "w" or key == "BackSpace" then
                 local wstart = 1
                 local wend = 1
                 local cword_start_pos = 1
                 local cword_end_pos = 1
-                while wend < self._private.cur_pos do
-                    wend = self.text:find("[{[(,.:;_-+=@/ ]", wstart)
-                    if not wend then wend = #self.text + 1 end
-                    if self._private.cur_pos >= wstart and self._private.cur_pos <= wend + 1 then
+                while wend < wp.cur_pos do
+                    wend = wp.text:find("[{[(,.:;_-+=@/ ]", wstart)
+                    if not wend then wend = #wp.text + 1 end
+                    if wp.cur_pos >= wstart and wp.cur_pos <= wend + 1 then
                         cword_start_pos = wstart
-                        cword_end_pos = self._private.cur_pos - 1
+                        cword_end_pos = wp.cur_pos - 1
                         break
                     end
                     wstart = wend + 1
                 end
-                self.text = self.text:sub(1, cword_start_pos - 1) .. self.text:sub(cword_end_pos + 1)
-                self._private.cur_pos = cword_start_pos
+                wp.text = wp.text:sub(1, cword_start_pos - 1) .. wp.text:sub(cword_end_pos + 1)
+                wp.cur_pos = cword_start_pos
             end
         elseif mod.Mod1 or mod.Mod3 then
             if key == "b" then
-                self._private.cur_pos = cword_start(self.text, self._private.cur_pos)
+                wp.cur_pos = cword_start(wp.text, wp.cur_pos)
             elseif key == "f" then
-                self._private.cur_pos = cword_end(self.text, self._private.cur_pos)
+                wp.cur_pos = cword_end(wp.text, wp.cur_pos)
             elseif key == "d" then
-                self.text = self.text:sub(1, self._private.cur_pos - 1) .. self.text:sub(cword_end(self.text, self._private.cur_pos))
+                wp.text = wp.text:sub(1, wp.cur_pos - 1) .. wp.text:sub(cword_end(wp.text, wp.cur_pos))
             elseif key == "BackSpace" then
-                local wstart = cword_start(self.text, self._private.cur_pos)
-                self.text = self.text:sub(1, wstart - 1) .. self.text:sub(self._private.cur_pos)
-                self._private.cur_pos = wstart
+                local wstart = cword_start(wp.text, wp.cur_pos)
+                wp.text = wp.text:sub(1, wstart - 1) .. wp.text:sub(wp.cur_pos)
+                wp.cur_pos = wstart
             end
         else
             if key == "Escape" then
@@ -309,59 +354,61 @@ function prompt:start()
             elseif mod.Shift and key == "Insert" then
                 paste(self)
             elseif key == "Home" then
-                self._private.cur_pos = 1
+                wp.cur_pos = 1
             elseif key == "End" then
-                self._private.cur_pos = #self.text + 1
+                wp.cur_pos = #wp.text + 1
             elseif key == "BackSpace" then
-                if self._private.cur_pos > 1 then
+                if wp.cur_pos > 1 then
                     local offset = 0
-                    if have_multibyte_char_at(self.text, self._private.cur_pos - 1) then
+                    if have_multibyte_char_at(wp.text, wp.cur_pos - 1) then
                         offset = 1
                     end
-                    self.text = self.text:sub(1, self._private.cur_pos - 2 - offset) .. self.text:sub(self._private.cur_pos)
-                    self._private.cur_pos = self._private.cur_pos - 1 - offset
+                    wp.text = wp.text:sub(1, wp.cur_pos - 2 - offset) .. wp.text:sub(wp.cur_pos)
+                    wp.cur_pos = wp.cur_pos - 1 - offset
                 end
             elseif key == "Delete" then
-                self.text = self.text:sub(1, self._private.cur_pos - 1) .. self.text:sub(self._private.cur_pos + 1)
+                wp.text = wp.text:sub(1, wp.cur_pos - 1) .. wp.text:sub(wp.cur_pos + 1)
             elseif key == "Left" then
-                self._private.cur_pos = self._private.cur_pos - 1
+                wp.cur_pos = wp.cur_pos - 1
             elseif key == "Right" then
-                self._private.cur_pos = self._private.cur_pos + 1
+                wp.cur_pos = wp.cur_pos + 1
             else
                 -- wlen() is UTF-8 aware but #key is not,
                 -- so check that we have one UTF-8 char but advance the cursor of # position
                 if key:wlen() == 1 then
-                    self.text = self.text:sub(1, self._private.cur_pos - 1) .. key .. self.text:sub(self._private.cur_pos)
-                    self._private.cur_pos = self._private.cur_pos + #key
+                    wp.text = wp.text:sub(1, wp.cur_pos - 1) .. key .. wp.text:sub(wp.cur_pos)
+                    wp.cur_pos = wp.cur_pos + #key
                 end
             end
-            if self._private.cur_pos < 1 then
-                self._private.cur_pos = 1
-            elseif self._private.cur_pos > #self.text + 1 then
-                self._private.cur_pos = #self.text + 1
+            if wp.cur_pos < 1 then
+                wp.cur_pos = 1
+            elseif wp.cur_pos > #wp.text + 1 then
+                wp.cur_pos = #wp.text + 1
             end
         end
 
         update_markup(self, true)
 
-        if self.changed_callback then
-            self.changed_callback(self.text)
+        if wp.changed_callback then
+            wp.changed_callback(wp.text)
         end
     end)
 end
 
 function prompt:stop()
-    self._private.is_running = false
+    local wp = self._private
 
-    if self.reset_on_stop == true or self._private.cur_pos == nil then
-        self._private.cur_pos = self.text:wlen() + 1
+    wp.is_running = false
+
+    if self.reset_on_stop == true or wp.cur_pos == nil then
+        wp.cur_pos = wp.text:wlen() + 1
     end
     if self.reset_on_stop == true then
-        self.text = "" self.text = ""
+        wp.text = "" wp.text = ""
     end
 
-    self.widget:turn_off()
-    awful.keygrabber.stop(self._private.grabber)
+    self:turn_off()
+    awful.keygrabber.stop(wp.grabber)
     update_markup(self, false)
 
     if self.done_callback then
@@ -378,75 +425,72 @@ function prompt:toggle()
 end
 
 local function new(args)
-    args = args or {}
+    local widget = ebwidget.state(args)
+	gtable.crush(widget, prompt, true)
 
-    args.icon_font = args.icon_font or beautiful.font
-    args.icon = args.icon or nil
-    args.font = args.font or beautiful.prompt_font or beautiful.font
-    args.prompt = args.prompt or ""
-    args.text = tostring(args.text or "")
+    widget:set_child(wibox.widget.textbox())
 
-    args.icon_color = args.icon_color or beautiful.colors.on_background or "#FFFFFF"
-    args.prompt_color = args.prompt_color or beautiful.colors.on_background or "#FFFFFF"
-    args.text_color = args.text_color or beautiful.colors.on_background or "#FFFFFF"
-    args.cursor_color = args.cursor_color or beautiful.colors.random_accent_color() or "#FF0000"
+    local wp = widget._private
 
-    args.always_on = args.always_on ~= nil and args.always_on or false
-    args.reset_on_stop = args.reset_on_stop ~= nil and args.reset_on_stop or false
-    args.obscure = args.obscure ~= nil and args.obscure or false
-    args.keypressed_callback = args.keypressed_callback or nil
-    args.changed_callback = args.changed_callback or nil
-    args.done_callback = args.done_callback or nil
+    wp.icon_font = beautiful.font
+    wp.icon = nil
+    wp.font = beautiful.font
+    wp.prompt = ""
+    wp.text = ""
 
-    local ret = gobject{}
-    ret._private = {}
-    ret._private.cur_pos = #args.text + 1 or 1
+    wp.icon_color = beautiful.colors.on_background or "#FFFFFF"
+    wp.prompt_color = beautiful.colors.on_background or "#FFFFFF"
+    wp.text_color = beautiful.colors.on_background or "#FFFFFF"
+    wp.cursor_color = "#FF0000"
 
-    gtable.crush(ret, prompt)
-    gtable.crush(ret, args)
+    wp.always_on = false
+    wp.reset_on_stop = false
+    wp.obscure = false
+    wp.keypressed_callback = nil
+    wp.changed_callback = nil
+    wp.done_callback = nil
 
-    args.child = wibox.widget.textbox()
-    args.halign = args.halign or "left"
-    args.on_press = function()
-        if args.always_on == false then
-            ret:toggle()
-        end
-    end
+    wp.cur_pos = #wp.text + 1 or 1
 
-    ret.widget = ebwidget.state(args)
-    ret.textbox = args.child
+    -- args.on_press = function()
+    --     if args.always_on == false then
+    --         ret:toggle()
+    --     end
+    -- end
 
-    update_markup(ret, false)
+    update_markup(widget, false)
 
     capi.awesome.connect_signal("root::pressed", function()
-        if args.always_on == false and ret.can_stop == true then
-            ret:stop()
+        if wp.always_on == false and wp.can_stop == true then
+            widget:stop()
         end
     end)
 
     capi.client.connect_signal("button::press", function()
-        if args.always_on == false and ret.can_stop == true then
-            ret:stop()
+        if wp.always_on == false and wp.can_stop == true then
+            widget:stop()
         end
     end)
 
     capi.tag.connect_signal("property::selected", function()
-        if args.always_on == false then
-            ret:stop()
+        if wp.always_on == false then
+            widget:stop()
         end
     end)
 
     capi.awesome.connect_signal("prompt::toggled_on", function(prompt)
-        if args.always_on == false and  prompt ~= ret then
-            ret:stop()
+        if wp.always_on == false and  prompt ~= widget then
+            widget:stop()
         end
     end)
 
-    return ret
+    return widget
 end
 
 function prompt.mt:__call(...)
     return new(...)
 end
+
+build_properties(prompt, properties)
 
 return setmetatable(prompt, prompt.mt)

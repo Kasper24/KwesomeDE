@@ -13,7 +13,7 @@ local client_menu = { mt = {} }
 local function client_checkbox_button(client, property, text, on_press)
     local button = mwidget.checkbox_button
     {
-        checkbox_color = client.font_icon.color,
+        color = client.font_icon.color,
         text = text,
         on_press = function()
             client[property] = not client[property]

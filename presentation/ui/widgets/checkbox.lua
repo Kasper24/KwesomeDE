@@ -38,6 +38,13 @@ local function build_properties(prototype, prop_names)
     end
 end
 
+function checkbox:set_color(color)
+    local wp = self._private
+    wp.color = color
+    wp.ball_animation.pos.color = helpers.color.hex_to_rgb(color)
+    wp.ball_indicator.bg = color
+end
+
 function checkbox:turn_on()
     local wp = self._private
 

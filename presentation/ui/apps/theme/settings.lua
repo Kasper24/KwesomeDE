@@ -35,8 +35,9 @@ local function command_after_generation()
         text = "Command after generation: "
     }
 
-    local prompt = widgets.prompt
+    local prompt = wibox.widget
     {
+        widget = widgets.prompt,
         forced_width = dpi(600),
         forced_height = dpi(50),
         reset_on_stop = false,

@@ -117,8 +117,9 @@ local function widget(self)
         font = beautiful.font_name .. 30,
     }
 
-    self._private.prompt = widgets.prompt
+    self._private.prompt = wibox.widget
     {
+        widget = widgets.prompt,
         forced_width = dpi(450),
         forced_height = dpi(50),
         reset_on_stop = true,

@@ -59,16 +59,17 @@ local function access_point_widget(layout, access_point, accent_color)
         size = 20,
     }
 
-    local prompt = widgets.prompt
+    local prompt = wibox.widget
     {
+        widget = widgets.prompt,
         forced_width = dpi(450),
         forced_height = dpi(50),
+        halign = "left",
         obscure = true,
         text = access_point.password,
         icon_font = beautiful.icons.lock.font,
         icon = beautiful.icons.lock.icon,
     }
-
     local toggle_password_obscure_button = wibox.widget
     {
         widget = widgets.checkbox,
@@ -212,7 +213,7 @@ local function access_point_widget(layout, access_point, accent_color)
                 {
                     layout = wibox.layout.fixed.horizontal,
                     spacing = dpi(15),
-                    prompt.widget,
+                    prompt,
                     toggle_password_obscure_button
                 },
                 {

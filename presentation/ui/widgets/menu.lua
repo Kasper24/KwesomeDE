@@ -223,17 +223,15 @@ function menu.sub_menu_button(args)
     args = args or {}
 
     args.icon = args.icon or nil
-    args.icon_size = args.icon_size or 12
     args.text = args.text or ""
-    args.text_size = args.text_size or 12
     args.sub_menu = args.sub_menu or nil
 
     local icon = args.icon ~= nil
     and wibox.widget
     {
         widget = twidget,
+        size = args.icon.size or 12,
         icon = args.icon,
-        size =  args.icon_size,
     } or nil
 
     local widget = wibox.widget
@@ -263,7 +261,7 @@ function menu.sub_menu_button(args)
                     icon,
                     {
                         widget = twidget,
-                        size = args.text_size,
+                        size = 12,
                         text = args.text,
                     },
                 },
@@ -284,10 +282,8 @@ function menu.button(args)
     args = args or {}
 
     args.icon = args.icon or nil
-    args.icon_size = args.icon_size or 12
     args.image = args.image
     args.text = args.text or ""
-    args.text_size = args.text_size or 12
     args.on_press = args.on_press or nil
 
     local icon = nil
@@ -296,10 +292,8 @@ function menu.button(args)
         icon = wibox.widget
         {
             widget = twidget,
-            font = args.icon.font,
-            size =  args.icon_size,
-            color = beautiful.colors.random_accent_color(),
-            text = args.icon.icon,
+            size = args.icon.size or 12,
+            icon = args.icon,
         }
     elseif args.image ~= nil then
         icon = wibox.widget
@@ -312,7 +306,7 @@ function menu.button(args)
     local text_widget = wibox.widget
     {
         widget = twidget,
-        size = args.text_size,
+        size = 12,
         text = args.text,
     }
 
@@ -353,12 +347,9 @@ function menu.checkbox_button(args)
     args = args or {}
 
     args.icon = args.icon or nil
-    args.icon_size = args.icon_size or 12
     args.image = args.image
-    args.font = args.font or beautiful.font_name
     args.text = args.text or ""
-    args.text_size = args.text_size or 12
-    args.color = args.checkbox_color or beautiful.colors.random_accent_color()
+    args.color = args.color or beautiful.colors.random_accent_color()
     args.on_by_default = args.on_by_default or nil
     args.on_press = args.on_press or nil
 
@@ -368,10 +359,8 @@ function menu.checkbox_button(args)
         icon = wibox.widget
         {
             widget = twidget,
-            font = args.icon.font,
-            size =  args.icon_size,
-            color = beautiful.colors.random_accent_color(),
-            text = args.icon.icon,
+            size = args.icon.size or 12,
+            text = args.icon,
         }
     elseif args.image ~= nil then
         icon = wibox.widget
@@ -381,7 +370,8 @@ function menu.checkbox_button(args)
         }
     end
 
-    local checkbox = cbwidget{args}
+    local checkbox = cbwidget{}
+    checkbox:set_color(args.color)
 
     local widget = wibox.widget
     {
@@ -411,8 +401,7 @@ function menu.checkbox_button(args)
                         icon,
                         {
                             widget = twidget,
-                            font = args.font,
-                            size = args.text_size,
+                            size = 12,
                             text = args.text,
                         },
                     },

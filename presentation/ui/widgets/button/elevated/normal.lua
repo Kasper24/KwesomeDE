@@ -87,6 +87,7 @@ function elevated_button_normal:set_child(child)
 			child
 		}
 	}
+	self._private.child = child
 	self:set_widget(child_widget)
 end
 

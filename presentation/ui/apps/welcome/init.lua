@@ -258,8 +258,9 @@ local function weather_page(on_next_pressed, on_previous_pressed)
         text = "4. Copy the generated key and paste it in the prompt below",
     }
 
-    local api_key_prompt = widgets.prompt
+    local api_key_prompt = wibox.widget
     {
+        widget = widgets.prompt,
         forced_width = dpi(250),
         forced_height = dpi(50),
         reset_on_stop = false,
@@ -271,8 +272,9 @@ local function weather_page(on_next_pressed, on_previous_pressed)
         text_color = beautiful.colors.on_background,
     }
 
-    local coordinate_x_prompt = widgets.prompt
+    local coordinate_x_prompt = wibox.widget
     {
+        widget = widgets.prompt,
         forced_width = dpi(250),
         forced_height = dpi(50),
         reset_on_stop = false,
@@ -284,8 +286,9 @@ local function weather_page(on_next_pressed, on_previous_pressed)
         text_color = beautiful.colors.on_background,
     }
 
-    local coordinate_y_prompt = widgets.prompt
+    local coordinate_y_prompt = wibox.widget
     {
+        widget = widgets.prompt,
         forced_width = dpi(250),
         forced_height = dpi(50),
         reset_on_stop = false,
@@ -475,8 +478,9 @@ local function gitlab_page(on_next_pressed, on_previous_pressed)
         text = "5. Press Create personal access token.",
     }
 
-    local host_prompt = widgets.prompt
+    local host_prompt = wibox.widget
     {
+        widget = widgets.prompt,
         forced_width = dpi(300),
         forced_height = dpi(50),
         reset_on_stop = false,
@@ -488,8 +492,9 @@ local function gitlab_page(on_next_pressed, on_previous_pressed)
         text_color = beautiful.colors.on_background,
     }
 
-    local access_token_prompt = widgets.prompt
+    local access_token_prompt = wibox.widget
     {
+        widget = widgets.prompt,
         forced_width = dpi(300),
         forced_height = dpi(50),
         reset_on_stop = false,
@@ -606,8 +611,9 @@ local function github_page(on_next_pressed, on_previous_pressed)
         text = "Please fill your GitHub username in order for the GitHub panel info to show.",
     }
 
-    local username_prompt = widgets.prompt
+    local username_prompt = wibox.widget
     {
+        widget = widgets.prompt,
         forced_width = dpi(300),
         forced_height = dpi(50),
         reset_on_stop = false,
@@ -713,8 +719,9 @@ local function email_page(on_next_pressed, on_previous_pressed)
         text = "Please fill your email info in order for the email panel info to show.",
     }
 
-    local machine_prompt = widgets.prompt
+    local machine_prompt = wibox.widget
     {
+        widget = widgets.prompt,
         forced_width = dpi(300),
         forced_height = dpi(50),
         reset_on_stop = false,
@@ -726,8 +733,9 @@ local function email_page(on_next_pressed, on_previous_pressed)
         text_color = beautiful.colors.on_background,
     }
 
-    local login_prompt = widgets.prompt
+    local login_prompt = wibox.widget
     {
+        widget = widgets.prompt,
         forced_width = dpi(300),
         forced_height = dpi(50),
         reset_on_stop = false,
@@ -739,8 +747,9 @@ local function email_page(on_next_pressed, on_previous_pressed)
         text_color = beautiful.colors.on_background,
     }
 
-    local password_prompt = widgets.prompt
+    local password_prompt = wibox.widget
     {
+        widget = widgets.prompt,
         forced_width = dpi(300),
         forced_height = dpi(50),
         reset_on_stop = false,
@@ -858,8 +867,9 @@ local function password_page(on_next_pressed, on_previous_pressed)
         text = "Please pick a password for the lock screen.",
     }
 
-    local password_prompt = widgets.prompt
+    local password_prompt = wibox.widget
     {
+        widget = widgets.prompt,
         forced_width = dpi(300),
         forced_height = dpi(50),
         reset_on_stop = false,
