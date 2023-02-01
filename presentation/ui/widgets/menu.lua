@@ -230,7 +230,7 @@ function menu.sub_menu_button(args)
     and wibox.widget
     {
         widget = twidget,
-        size = args.icon.size or 12,
+        size = (args.icon.size or 20) / 1.5,
         icon = args.icon,
     } or nil
 
@@ -292,7 +292,7 @@ function menu.button(args)
         icon = wibox.widget
         {
             widget = twidget,
-            size = args.icon.size or 12,
+            size = (args.icon.size or 20) / 1.5,
             icon = args.icon,
         }
     elseif args.image ~= nil then
@@ -359,7 +359,7 @@ function menu.checkbox_button(args)
         icon = wibox.widget
         {
             widget = twidget,
-            size = args.icon.size or 12,
+            size = (args.icon.size or 20) / 1.5,
             text = args.icon,
         }
     elseif args.image ~= nil then
