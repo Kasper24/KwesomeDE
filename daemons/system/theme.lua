@@ -556,7 +556,7 @@ function theme:set_wallpaper(type)
     elseif type == "binary" then
     end
 
-    self._private.type = type
+    self._private.wallpaper_type = type
     helpers.settings:set_value("theme-wallpaper-type", type)
 
     for s in capi.screen do
