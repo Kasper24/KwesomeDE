@@ -21,7 +21,13 @@ local properties =
 	"active-opacity", "inactive-opacity",
     "fade-delta", "fade-in-step", "fade-out-step",
 	"corner-radius", "blur-strength",
-    "shadow-radius", "shadow-opacity", "shadow-offset-x", "shadow-offset-y"
+    "shadow-radius", "shadow-opacity", "shadow-offset-x", "shadow-offset-y",
+    "animation-stiffness", "animation-dampening", "animation-window-mass"
+}
+
+local bool_properties =
+{
+    "animations", "shadow", "fading", "animation-clamping"
 }
 
 function picom:turn_on(save)
@@ -29,11 +35,14 @@ function picom:turn_on(save)
         return
     end
 
-    local p = self._private
-
     local cmd = string.format("picom --experimental-backends --config %s ", CONFIG_PATH)
     for _, prop in ipairs(properties) do
-        cmd = cmd .. string.format("--%s %s ", prop, p[prop])
+        cmd = cmd .. string.format("--%s %s ", prop, self._private[prop])
+    end
+    for _, prop in ipairs(bool_properties) do
+        if self._private[prop] == true then
+            cmd = cmd .. string.format("--%s ", prop)
+        end
     end
     awful.spawn(cmd, false)
 
@@ -63,7 +72,7 @@ function picom:toggle(save)
     end)
 end
 
-local function build_properties(prototype)
+local function build_properties(prototype, properties)
     for _, prop in ipairs(properties) do
         if not prototype["set_" .. prop] then
             prototype["set_" .. prop] = function(self, value)
@@ -99,6 +108,9 @@ local function new()
     ret._private.state = -1
 
     for _, prop in ipairs(properties) do
+        ret._private[prop] = helpers.settings:get_value("picom-" .. prop)
+    end
+    for _, prop in ipairs(bool_properties) do
         ret._private[prop] = helpers.settings:get_value("picom-" .. prop)
     end
 
@@ -138,6 +150,7 @@ local function new()
 end
 
 build_properties(picom, properties)
+build_properties(picom, bool_properties)
 
 if not instance then
     instance = new()

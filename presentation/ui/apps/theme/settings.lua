@@ -15,6 +15,8 @@ local setmetatable = setmetatable
 
 local settings = { mt = {} }
 
+local accent_color = beautiful.colors.random_accent_color()
+
 local function separator()
     return wibox.widget
     {
@@ -59,6 +61,39 @@ local function command_after_generation()
     }
 end
 
+local function picom_checkbox(key)
+    local display_name = key:gsub("(%l)(%w*)", function(a,b) return string.upper(a)..b end)
+    display_name = display_name:gsub("-", " ")  .. ": "
+
+    local name = wibox.widget
+    {
+        widget = widgets.text,
+        size = 15,
+        text = display_name
+    }
+
+    local checkbox = wibox.widget
+    {
+        widget = widgets.checkbox,
+        state = picom_daemon["get_" .. key](picom_daemon),
+        color = accent_color,
+        on_turn_on = function()
+            picom_daemon["set_" .. key](picom_daemon, true)
+        end,
+        on_turn_off = function()
+            picom_daemon["set_" .. key](picom_daemon, false)
+        end
+    }
+
+    return wibox.widget
+    {
+        layout = wibox.layout.fixed.horizontal,
+        spacing = dpi(15),
+        name,
+        checkbox
+    }
+end
+
 local function picom_slider(key, max, divide_by, round)
     local display_name = key:gsub("(%l)(%w*)", function(a,b) return string.upper(a)..b end)
     display_name = display_name:gsub("-", " ")  .. ": "
@@ -66,6 +101,7 @@ local function picom_slider(key, max, divide_by, round)
     local name = wibox.widget
     {
         widget = widgets.text,
+        size = 15,
         text = display_name
     }
 
@@ -79,7 +115,7 @@ local function picom_slider(key, max, divide_by, round)
         bar_height = 5,
         bar_shape = helpers.ui.rrect(beautiful.border_radius),
         bar_color = beautiful.colors.surface,
-        bar_active_color = beautiful.colors.random_accent_color(),
+        bar_active_color = accent_color,
         handle_width = dpi(15),
         handle_color = beautiful.colors.on_background,
         handle_shape = gshape.circle,
@@ -148,7 +184,14 @@ local function new(layout)
             widget = wibox.container.margin,
             margins = { left = dpi(25), right = dpi(25) },
             {
-                layout = wibox.layout.fixed.vertical,
+                layout = widgets.overflow.vertical,
+                scrollbar_widget =
+                {
+                    widget = wibox.widget.separator,
+                    shape = helpers.ui.rrect(beautiful.border_radius),
+                },
+                scrollbar_width = dpi(10),
+                step = 50,
                 spacing = dpi(15),
                 separator(),
                 command_after_generation(),
@@ -159,18 +202,25 @@ local function new(layout)
                 picom_slider("corner-radius", 100, 1, true),
                 picom_slider("blur-strength", 20, 1, true),
                 separator(),
+                picom_slider("animation-stiffness", 1000, 1, true),
+                picom_slider("animation-dampening", 200, 1, true),
+                picom_slider("animation-window-mass", 100, 1, true),
+                picom_checkbox("animations"),
+                picom_checkbox("animation-clamping"),
+                separator(),
                 picom_slider("shadow-radius", 100, 1, true),
                 picom_slider("shadow-opacity", 100, 100, false),
                 picom_slider("shadow-offset-x", 100, 1, true),
                 picom_slider("shadow-offset-y", 100, 1, true),
+                picom_checkbox("shadow"),
                 separator(),
                 picom_slider("fade-delta", 100, 1, true),
                 picom_slider("fade-in-step", 100, 100, false),
                 picom_slider("fade-out-step", 100, 100, false),
+                picom_checkbox("fading"),
             }
         }
     }
-
 end
 
 function settings.mt:__call(layout)

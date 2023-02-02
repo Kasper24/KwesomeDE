@@ -56,14 +56,6 @@
       </description>
     </key>
 
-    <key name="picom" type="b">
-      <default>true</default>
-      <summary>Picom</summary>
-      <description>
-        Enable or disable picom
-      </description>
-    </key>
-
     <key name="redshift" type="b">
       <default>false</default>
       <summary>Redshift</summary>
@@ -226,6 +218,72 @@
       <summary>Favorite apps</summary>
       <description>
         Your most loved apps
+      </description>
+    </key>
+
+    <key name="picom" type="b">
+      <default>true</default>
+      <summary>Picom</summary>
+      <description>
+        Enable or disable picom
+      </description>
+    </key>
+
+    <key name="picom-shadow" type="b">
+      <default>true</default>
+      <summary>Picom shadow</summary>
+      <description>
+        Enable or disable picom shadows
+      </description>
+    </key>
+
+
+    <key name="picom-fading" type="b">
+      <default>true</default>
+      <summary>Picom fading</summary>
+      <description>
+        Enable or disable picom fading
+      </description>
+    </key>
+
+
+    <key name="picom-animations" type="b">
+      <default>false</default>
+      <summary>Picom animations</summary>
+      <description>
+        Enable or disable picom animations
+      </description>
+    </key>
+
+    <key name="picom-animation-stiffness" type="s">
+      <default>"200"</default>
+      <summary>Picom animation stiffness</summary>
+      <description>
+        Stiffness (a.k.a. tension) parameter for spring-based animation
+      </description>
+    </key>
+
+    <key name="picom-animation-dampening" type="s">
+      <default>"25"</default>
+      <summary>Picom animation dampening</summary>
+      <description>
+        Dampening (a.k.a. friction) parameter for spring-based animation
+      </description>
+    </key>
+
+    <key name="picom-animation-window-mass" type="s">
+      <default>"1"</default>
+      <summary>Picom animation window mass</summary>
+      <description>
+        Mass parameter for spring-based animation
+      </description>
+    </key>
+
+   <key name="picom-animation-clamping" type="b">
+      <default>true</default>
+      <summary>Picom animation clamping</summary>
+      <description>
+        Whether to clamp animations
       </description>
     </key>
 
