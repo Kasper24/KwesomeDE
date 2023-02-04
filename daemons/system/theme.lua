@@ -52,49 +52,97 @@ local PICTURES_MIMETYPES = {
     ["image/webp"] = "lximage" -- webp
 }
 
-local function generate_sequences(colors)
-    local function set_special(index, color, alpha)
-        if (index == 11 or index == 708) and alpha ~= 100 then
-            return string.format("\27]%s;[%s]%s\27\\", index, alpha, color)
-        end
-
-        return string.format("\27]%s;%s\27\\", index, color)
+local function generate_colorscheme(self, wallpaper, reset, light)
+    if self._private.colors[wallpaper] ~= nil and reset ~= true then
+        self:emit_signal("colorscheme::generated", self._private.colors[wallpaper])
+        self:emit_signal("wallpaper::selected", wallpaper)
+        return
     end
 
-    local function set_color(index, color)
-        return string.format("\27]4;%s;%s\27\\", index, color)
+    self:emit_signal("colorscheme::generating")
+
+    local color_count = 16
+
+    local function imagemagick()
+        local colors = {}
+        local cmd = string.format("magick %s -resize 25%% -colors %d -unique-colors txt:-", wallpaper, color_count)
+        awful.spawn.easy_async_with_shell(cmd, function(stdout)
+            for line in stdout:gmatch("[^\r\n]+") do
+                local hex = line:match("#(.*) s")
+                if hex ~= nil then
+                    hex = "#" .. string.sub(hex, 1, 6)
+                    table.insert(colors, hex)
+                end
+            end
+
+            if #colors < 16 then
+                if color_count < 37 then
+                    print("Imagemagick couldn't generate a palette. Trying a larger palette size " .. color_count)
+                    color_count = color_count + 1
+                    imagemagick()
+                    return
+                else
+                    print("Imagemagick couldn't generate a suitable palette.")
+                    self:emit_signal("colorscheme::failed_to_generate", wallpaper)
+                    return
+                end
+            end
+
+            for index = 2, 9 do
+                colors[index] = colors[index + 7]
+            end
+
+            for index = 10, 15 do
+                colors[index] = colors[index - 8]
+            end
+
+            if light == true then
+                local color1 = colors[1]
+                local color8 = colors[8]
+
+                for _, color in ipairs(colors) do
+                    color = helpers.color.pywal_saturate_color(color, 0.5)
+                end
+
+                colors[1] = helpers.color.pywal_lighten(colors[16], 0.5)
+                colors[8] = color1
+                colors[9] = helpers.color.pywal_darken(colors[16], 0.3)
+                colors[16] = colors[8]
+            else
+                if string.sub(colors[1], 2, 2) ~= "0" then
+                    colors[1] = helpers.color.pywal_darken(colors[1], 0.4)
+                end
+                colors[8] = helpers.color.pywal_blend(colors[8], "#EEEEEE")
+                colors[9] = helpers.color.pywal_darken(colors[8], 0.3)
+                colors[16] = colors[8]
+            end
+
+            local added_sat = light == true and 0.5 or 0.3
+            local sign = light == true and -1 or 1
+
+            for index = 10, 15 do
+                local color = color_libary.color {
+                    hex = colors[index - 8]
+                }
+                colors[index] = helpers.color.pywal_alter_brightness(colors[index - 8], sign * color.l * 0.3, added_sat)
+            end
+
+            colors[9] = helpers.color.pywal_alter_brightness(colors[1], sign * 0.098039216)
+            colors[16] = helpers.color.pywal_alter_brightness(colors[8], sign * 0.098039216)
+
+            self:emit_signal("colorscheme::generated", colors)
+            self:emit_signal("wallpaper::selected", wallpaper)
+
+            self._private.colors[wallpaper] = colors
+
+            local file = helpers.file.new_for_path(COLORSCHEME_DATA_PATH)
+            file:write(helpers.json.encode(self._private.colors, {
+                indent = true
+            }))
+        end)
     end
 
-    local sequences = {}
-
-    for index, color in ipairs(colors) do
-        table.insert(sequences, set_color(index - 1, color))
-    end
-
-    table.insert(sequences, set_special(10, colors[16]))
-    table.insert(sequences, set_special(11, colors[1], 0))
-    table.insert(sequences, set_special(12, colors[16]))
-    table.insert(sequences, set_special(13, colors[16]))
-    table.insert(sequences, set_special(17, colors[16]))
-    table.insert(sequences, set_special(19, colors[1]))
-    table.insert(sequences, set_color(232, colors[1]))
-    table.insert(sequences, set_color(256, colors[16]))
-    table.insert(sequences, set_color(257, colors[1]))
-    table.insert(sequences, set_special(708, colors[1], 0))
-
-    local string = table.concat(sequences)
-
-    local file = helpers.file.new_for_path(GENERATED_TEMPLATES_PATH .. "sequences")
-    file:write(string)
-
-    -- Backwards compatibility with wal/wpgtk
-    local file = helpers.file.new_for_path(WAL_CACHE_PATH .. "sequences")
-    file:write(string)
-
-    for index = 0, 9 do
-        local file = helpers.file.new_for_path("/dev/pts/" .. index)
-        file:write(string)
-    end
+    imagemagick()
 end
 
 local function reload_gtk()
@@ -133,12 +181,74 @@ org.gnome.desktop.interface gtk-theme 'FlatColor'
     end)
 end
 
+local function reload_awesome_colorscheme(self)
+    local old_colorscheme = self._private.colorscheme
+    local new_colorscheme = self._private.colors[self._private.selected_wallpaper]
+    local old_colorscheme_to_new_map = {}
+    for index, color in pairs(old_colorscheme) do
+        old_colorscheme_to_new_map[color] = new_colorscheme[index]
+    end
+    old_colorscheme_to_new_map["#FFFFFF"] = "#FFFFFF"
+    old_colorscheme_to_new_map["#000000"] = "#000000"
+
+    capi.awesome.emit_signal("colorscheme::changed", old_colorscheme_to_new_map, new_colorscheme)
+    beautiful.init(helpers.filesystem.get_awesome_config_dir("ui") .. "theme.lua")
+    self._private.colorscheme = new_colorscheme
+    helpers.settings:set_value("theme-colorscheme", self._private.colorscheme)
+end
+
 local function on_finished_generating(self)
     if self._private.command_after_generation ~= nil then
         awful.spawn.with_shell(self._private.command_after_generation)
     end
 
     reload_gtk()
+end
+
+local function generate_sequences(self)
+    local function set_special(index, color, alpha)
+        if (index == 11 or index == 708) and alpha ~= 100 then
+            return string.format("\27]%s;[%s]%s\27\\", index, alpha, color)
+        end
+
+        return string.format("\27]%s;%s\27\\", index, color)
+    end
+
+    local function set_color(index, color)
+        return string.format("\27]4;%s;%s\27\\", index, color)
+    end
+
+    local colors = self._private.colors[self._private.selected_wallpaper]
+    local sequences = {}
+
+    for index, color in ipairs(colors) do
+        table.insert(sequences, set_color(index - 1, color))
+    end
+
+    table.insert(sequences, set_special(10, colors[16]))
+    table.insert(sequences, set_special(11, colors[1], 0))
+    table.insert(sequences, set_special(12, colors[16]))
+    table.insert(sequences, set_special(13, colors[16]))
+    table.insert(sequences, set_special(17, colors[16]))
+    table.insert(sequences, set_special(19, colors[1]))
+    table.insert(sequences, set_color(232, colors[1]))
+    table.insert(sequences, set_color(256, colors[16]))
+    table.insert(sequences, set_color(257, colors[1]))
+    table.insert(sequences, set_special(708, colors[1], 0))
+
+    local string = table.concat(sequences)
+
+    local file = helpers.file.new_for_path(GENERATED_TEMPLATES_PATH .. "sequences")
+    file:write(string)
+
+    -- Backwards compatibility with wal/wpgtk
+    local file = helpers.file.new_for_path(WAL_CACHE_PATH .. "sequences")
+    file:write(string)
+
+    for index = 0, 9 do
+        local file = helpers.file.new_for_path("/dev/pts/" .. index)
+        file:write(string)
+    end
 end
 
 local function replace_template_colors(color, color_name, line)
@@ -271,99 +381,6 @@ end
 
 local function install_gtk_theme()
     awful.spawn(string.format("cp -r %s %s", GTK_THEME_PATH, INSTALLED_GTK_THEME_PATH), false)
-end
-
-local function generate_colorscheme(self, wallpaper, reset, light)
-    if self._private.colors[wallpaper] ~= nil and reset ~= true then
-        self:emit_signal("colorscheme::generated", self._private.colors[wallpaper])
-        self:emit_signal("wallpaper::selected", wallpaper)
-        return
-    end
-
-    self:emit_signal("colorscheme::generating")
-
-    local color_count = 16
-
-    local function imagemagick()
-        local colors = {}
-        local cmd = string.format("magick %s -resize 25%% -colors %d -unique-colors txt:-", wallpaper, color_count)
-        awful.spawn.easy_async_with_shell(cmd, function(stdout)
-            for line in stdout:gmatch("[^\r\n]+") do
-                local hex = line:match("#(.*) s")
-                if hex ~= nil then
-                    hex = "#" .. string.sub(hex, 1, 6)
-                    table.insert(colors, hex)
-                end
-            end
-
-            if #colors < 16 then
-                if color_count < 37 then
-                    print("Imagemagick couldn't generate a palette. Trying a larger palette size " .. color_count)
-                    color_count = color_count + 1
-                    imagemagick()
-                    return
-                else
-                    print("Imagemagick couldn't generate a suitable palette.")
-                    self:emit_signal("colorscheme::failed_to_generate", wallpaper)
-                    return
-                end
-            end
-
-            for index = 2, 9 do
-                colors[index] = colors[index + 7]
-            end
-
-            for index = 10, 15 do
-                colors[index] = colors[index - 8]
-            end
-
-            if light == true then
-                local color1 = colors[1]
-                local color8 = colors[8]
-
-                for _, color in ipairs(colors) do
-                    color = helpers.color.pywal_saturate_color(color, 0.5)
-                end
-
-                colors[1] = helpers.color.pywal_lighten(colors[16], 0.5)
-                colors[8] = color1
-                colors[9] = helpers.color.pywal_darken(colors[16], 0.3)
-                colors[16] = colors[8]
-            else
-                if string.sub(colors[1], 2, 2) ~= "0" then
-                    colors[1] = helpers.color.pywal_darken(colors[1], 0.4)
-                end
-                colors[8] = helpers.color.pywal_blend(colors[8], "#EEEEEE")
-                colors[9] = helpers.color.pywal_darken(colors[8], 0.3)
-                colors[16] = colors[8]
-            end
-
-            local added_sat = light == true and 0.5 or 0.3
-            local sign = light == true and -1 or 1
-
-            for index = 10, 15 do
-                local color = color_libary.color {
-                    hex = colors[index - 8]
-                }
-                colors[index] = helpers.color.pywal_alter_brightness(colors[index - 8], sign * color.l * 0.3, added_sat)
-            end
-
-            colors[9] = helpers.color.pywal_alter_brightness(colors[1], sign * 0.098039216)
-            colors[16] = helpers.color.pywal_alter_brightness(colors[8], sign * 0.098039216)
-
-            self:emit_signal("colorscheme::generated", colors)
-            self:emit_signal("wallpaper::selected", wallpaper)
-
-            self._private.colors[wallpaper] = colors
-
-            local file = helpers.file.new_for_path(COLORSCHEME_DATA_PATH)
-            file:write(helpers.json.encode(self._private.colors, {
-                indent = true
-            }))
-        end)
-    end
-
-    imagemagick()
 end
 
 local function image_wallpaper(self, screen)
@@ -557,23 +574,10 @@ function theme:set_wallpaper(type)
 end
 
 function theme:set_colorscheme()
-    local old_colorscheme = self._private.colorscheme
-    local new_colorscheme = self._private.colors[self._private.selected_wallpaper]
-    local old_colorscheme_to_new_map = {}
-    for index, color in pairs(old_colorscheme) do
-        old_colorscheme_to_new_map[color] = new_colorscheme[index]
-    end
-    old_colorscheme_to_new_map["#FFFFFF"] = "#FFFFFF"
-    old_colorscheme_to_new_map["#000000"] = "#000000"
-
-    awesome.emit_signal("colorscheme::changed", old_colorscheme_to_new_map, new_colorscheme)
-    beautiful.init(helpers.filesystem.get_awesome_config_dir("ui") .. "theme.lua")
-    self._private.colorscheme = new_colorscheme
-    helpers.settings:set_value("theme-colorscheme", self._private.colorscheme)
-
+    reload_awesome_colorscheme(self)
     install_gtk_theme()
     generate_templates(self)
-    generate_sequences(self._private.colorscheme)
+    generate_sequences(self)
 end
 
 function theme:select_wallpaper(wallpaper)
