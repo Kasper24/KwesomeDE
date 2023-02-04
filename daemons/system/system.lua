@@ -64,6 +64,7 @@ function system:unlock(password)
         else
             self:emit_signal("wrong_password")
         end
+    end
 end
 
 local function new()

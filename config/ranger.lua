@@ -2,7 +2,7 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-local hotkeys_popup = require("presentation.ui.popups.hotkeys")
+local hotkeys_popup = require("ui.popups.hotkeys")
 local pairs = pairs
 
 local ranger_keys = {

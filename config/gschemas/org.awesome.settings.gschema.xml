@@ -17,7 +17,7 @@
     </key>
 
     <key name="theme-wallpaper" type="s">
-      <default>"~/.config/awesome/presentation/assets/wallpapers/wallpaperflare.com_wallpaper_2.jpg"</default>
+      <default>"~/.config/awesome/ui/assets/wallpapers/wallpaperflare.com_wallpaper_2.jpg"</default>
       <summary>Theme wallpaper</summary>
       <description>
         Image wallpaper path

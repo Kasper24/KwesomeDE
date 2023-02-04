@@ -26,7 +26,7 @@ end
 
 local beautiful = require("beautiful")
 local helpers = require("helpers")
-beautiful.init(helpers.filesystem.get_awesome_config_dir("presentation") .. "theme/theme.lua")
+beautiful.init(helpers.filesystem.get_awesome_config_dir("ui") .. "theme.lua")
 
 require("config")
-require("presentation")
+require("ui")

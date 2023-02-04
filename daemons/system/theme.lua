@@ -139,8 +139,6 @@ local function on_finished_generating(self)
     end
 
     reload_gtk()
-    beautiful.init(helpers.filesystem.get_awesome_config_dir("presentation") .. "theme/theme.lua")
-    capi.awesome.emit_signal("wallpaper_changed")
 end
 
 local function replace_template_colors(color, color_name, line)
@@ -569,10 +567,10 @@ function theme:set_colorscheme()
     old_colorscheme_to_new_map["#000000"] = "#000000"
 
     awesome.emit_signal("colorscheme::changed", old_colorscheme_to_new_map, new_coloscheme)
-    beautiful.init(helpers.filesystem.get_awesome_config_dir("presentation") .. "theme/theme.lua")
+    beautiful.init(helpers.filesystem.get_awesome_config_dir("ui") .. "theme.lua")
     self._private.colorscheme = new_coloscheme
-
     helpers.settings:set_value("theme-colorscheme", self._private.colorscheme)
+
     install_gtk_theme()
     generate_templates(self)
     generate_sequences(self._private.colorscheme)
