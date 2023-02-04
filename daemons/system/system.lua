@@ -17,9 +17,6 @@ local instance = nil
 
 local UPDATE_INTERVAL = 60
 
-local LUA_PAM_PATH = helpers.filesystem.get_awesome_config_dir("external/liblua_pam") .. "?.so;"
-package.cpath = package.cpath .. ';' .. LUA_PAM_PATH
-
 function system:set_password(password)
     self._private.password = password
     helpers.settings:set_value("password", self._private.password)
@@ -56,30 +53,17 @@ function system:lock()
 end
 
 function system:unlock(password)
-    if self._private.is_pam_installed == true then
-        local pam = require(LUA_PAM_PATH)
-        local result
-        pam.auth_current_user(password)
+    if self._private.password == nil then
+        notification_daemon:unblock_on_unlocked()
+        self:emit_signal("unlock")
+    else
+        local result = password == self._private.password
         if result == true then
             notification_daemon:unblock_on_unlocked()
             self:emit_signal("unlock")
         else
             self:emit_signal("wrong_password")
         end
-    else
-        if self._private.password == nil then
-            notification_daemon:unblock_on_unlocked()
-            self:emit_signal("unlock")
-        else
-            local result = password == self._private.password
-            if result == true then
-                notification_daemon:unblock_on_unlocked()
-                self:emit_signal("unlock")
-            else
-                self:emit_signal("wrong_password")
-            end
-        end
-    end
 end
 
 local function new()
@@ -88,12 +72,6 @@ local function new()
 
     ret._private = {}
     ret._private.password = helpers.settings:get_value("password")
-
-    if package.loaded["liblua_pam"] then
-        ret._private.is_pam_installed = true
-    else
-        ret._private.is_pam_installed = false
-    end
 
     gtimer {
         timeout = UPDATE_INTERVAL,
