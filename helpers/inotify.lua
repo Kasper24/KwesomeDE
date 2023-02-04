@@ -9,6 +9,9 @@ local hstring = require("helpers.string")
 local string = string
 local ipairs = ipairs
 local type = type
+local capi = {
+    awesome = awesome
+}
 
 local inotify = {}
 local instance = nil
@@ -69,14 +72,16 @@ function inotify:watch(path, events)
         awful.spawn("kill -9 " .. pid, false)
     end
 
+    capi.awesome.connect_signal("exit", function()
+        ret:stop()
+    end)
+
     return ret
 end
 
 local function new()
     local ret = gobject {}
     gtable.crush(ret, inotify, true)
-
-    awful.spawn("pkill -f inotifywait", false)
 
     return ret
 end
