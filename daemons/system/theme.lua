@@ -558,17 +558,17 @@ end
 
 function theme:set_colorscheme()
     local old_colorscheme = self._private.colorscheme
-    local new_coloscheme = self._private.colors[self._private.selected_wallpaper]
+    local new_colorscheme = self._private.colors[self._private.selected_wallpaper]
     local old_colorscheme_to_new_map = {}
     for index, color in pairs(old_colorscheme) do
-        old_colorscheme_to_new_map[color] = new_coloscheme[index]
+        old_colorscheme_to_new_map[color] = new_colorscheme[index]
     end
     old_colorscheme_to_new_map["#FFFFFF"] = "#FFFFFF"
     old_colorscheme_to_new_map["#000000"] = "#000000"
 
-    awesome.emit_signal("colorscheme::changed", old_colorscheme_to_new_map, new_coloscheme)
+    awesome.emit_signal("colorscheme::changed", old_colorscheme_to_new_map, new_colorscheme)
     beautiful.init(helpers.filesystem.get_awesome_config_dir("ui") .. "theme.lua")
-    self._private.colorscheme = new_coloscheme
+    self._private.colorscheme = new_colorscheme
     helpers.settings:set_value("theme-colorscheme", self._private.colorscheme)
 
     install_gtk_theme()
