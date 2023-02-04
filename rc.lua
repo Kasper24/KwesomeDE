@@ -19,14 +19,14 @@ gtimer({
 	end,
 })
 
+if DEBUG ~= true then
+	local persistent_daemon = require("daemons.system.persistent")
+	persistent_daemon:enable()
+end
+
 local beautiful = require("beautiful")
 local helpers = require("helpers")
 beautiful.init(helpers.filesystem.get_awesome_config_dir("presentation") .. "theme/theme.lua")
 
 require("config")
 require("presentation")
-
-if DEBUG ~= true then
-	local persistent_daemon = require("daemons.system.persistent")
-	persistent_daemon:enable()
-end
