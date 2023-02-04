@@ -14,6 +14,9 @@ local dpi = beautiful.xresources.apply_dpi
 local tonumber = tonumber
 local ipairs = ipairs
 local math = math
+local capi = {
+    awesome = awesome
+}
 
 local disk = {}
 local instance = nil
@@ -128,10 +131,10 @@ local function new()
     end)
 
     ret.widget = awful.popup {
-        bg = beautiful.colors.background,
         ontop = true,
         visible = false,
         shape = helpers.ui.rrect(beautiful.border_radius),
+        bg = beautiful.colors.background,
         widget = {
             widget = wibox.container.margin,
             margins = dpi(25),
@@ -144,6 +147,10 @@ local function new()
             }
         }
     }
+
+    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+        ret.bg = old_colorscheme_to_new_map[beautiful.colors.background]
+    end)
 
     return ret
 end

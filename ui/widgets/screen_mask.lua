@@ -7,6 +7,9 @@ local wibox = require("wibox")
 local theme_daemon = require("daemons.system.theme")
 local beautiful = require("beautiful")
 local setmetatable = setmetatable
+local capi = {
+    awesome = awesome
+}
 
 local screen_mask = {
     mt = {}
@@ -41,14 +44,20 @@ function screen_mask.background(screen)
 end
 
 function screen_mask.color(screen)
-    return awful.popup {
+    local popup = awful.popup {
         type = "splash",
         screen = screen,
         placement = awful.placement.maximize,
         visible = false,
         ontop = true,
-        bg = beautiful.colors.background_with_opacity()
+        bg = beautiful.colors.background_with_opacity
     }
+
+    capi.awesome.connect_signal("colorscheme::changed", function( old_colorscheme_to_new_map)
+        popup.bg = old_colorscheme_to_new_map[beautiful.colors.background]
+    end)
+
+    return popup
 end
 
 function screen_mask.mt:__call(...)

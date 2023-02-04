@@ -13,6 +13,9 @@ local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local ipairs = ipairs
 local math = math
+local capi = {
+    awesome = awesome
+}
 
 local cpu = {}
 local instance = nil
@@ -223,18 +226,22 @@ local function new()
     end)
 
     ret.widget = awful.popup {
-        bg = beautiful.colors.background,
         ontop = true,
         visible = false,
         shape = helpers.ui.rrect(beautiful.border_radius),
         minimum_width = dpi(600),
         maximum_width = dpi(600),
+        bg = beautiful.colors.background,
         widget = {
             widget = wibox.container.margin,
             margins = dpi(25),
             scrollbox
         }
     }
+
+    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+        ret.bg = old_colorscheme_to_new_map[beautiful.colors.background]
+    end)
 
     return ret
 end

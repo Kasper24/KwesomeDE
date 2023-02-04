@@ -227,6 +227,10 @@ function menu.menu(widgets, width)
         widget:add(menu_widget)
     end
 
+    capi.awesome.connect_signal("colorscheme::changed", function( old_colorscheme_to_new_map)
+        widget.bg = old_colorscheme_to_new_map[beautiful.colors.background]
+    end)
+
     return widget
 end
 

@@ -8,6 +8,7 @@ local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
 local capi = {
+    awesome = awesome,
     screen = screen
 }
 
@@ -26,6 +27,7 @@ capi.screen.connect_signal("request::desktop_decoration", function(s)
         maximum_height = dpi(65),
         minimum_width = s.geometry.width,
         maximum_width = s.geometry.width,
+        bg = beautiful.colors.background,
         widget = {
             layout = wibox.layout.align.horizontal,
             expand = "outside",
@@ -52,4 +54,8 @@ capi.screen.connect_signal("request::desktop_decoration", function(s)
     s.top_wibar:struts{
         top = dpi(65)
     }
+
+    capi.awesome.connect_signal("colorscheme::changed", function( old_colorscheme_to_new_map)
+        s.left_wibar.bg = old_colorscheme_to_new_map[beautiful.colors.background]
+    end)
 end)

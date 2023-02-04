@@ -11,6 +11,9 @@ local ram_daemon = require("daemons.hardware.ram")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local math = math
+local capi = {
+    awesome = awesome
+}
 
 local ram = {}
 local instance = nil
@@ -59,6 +62,7 @@ local function new()
             y = -dpi(400)
         },
         shape = helpers.ui.rrect(beautiful.border_radius),
+        bg = beautiful.colors.background,
         widget = {
             widget = wibox.widget.piechart,
             forced_height = 200,
@@ -67,6 +71,10 @@ local function new()
                       beautiful.colors.random_accent_color()}
         }
     }
+
+    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+        ret.widget.bg = old_colorscheme_to_new_map[beautiful.colors.background]
+    end)
 
     return ret
 end

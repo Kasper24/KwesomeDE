@@ -16,6 +16,11 @@ local theme = {}
 local function colors()
     local colors = theme_daemon:get_colorscheme()
 
+    local function color_with_opacity(color, opacity)
+        opacity = opacity or 0.9
+        return color .. string.format("%x", math.floor(opacity * 255))
+    end
+
     theme.colors = {
         red = colors[2],
         bright_red = colors[10],
@@ -36,6 +41,7 @@ local function colors()
         bright_cyan = colors[15],
 
         background = colors[1],
+        background_with_opacity = color_with_opacity(colors[1]),
         surface = colors[9],
         error = colors[2],
         transparent = "#00000000",
@@ -45,7 +51,6 @@ local function colors()
         on_error = colors[1],
         on_accent = helpers.color.is_dark(colors[1]) and colors[1] or colors[8]
     }
-
     function theme.colors.random_accent_color()
         local color_1 = color_libary.color {
             hex = theme.colors.bright_red
@@ -64,11 +69,6 @@ local function colors()
 
         local i = math.random(1, #accents)
         return accents[i]
-    end
-
-    function theme.colors.background_with_opacity(opacity)
-        opacity = opacity or 0.9
-        return theme.colors.background .. string.format("%x", math.floor(opacity * 255))
     end
 end
 

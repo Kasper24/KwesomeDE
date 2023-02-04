@@ -12,6 +12,9 @@ local beautiful = require("beautiful")
 local pactl_daemon = require("daemons.hardware.pactl")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
+local capi = {
+    awesome = awesome
+}
 
 local audio = {}
 local instance = nil
@@ -534,21 +537,23 @@ local function new()
     local ret = gobject {}
     gtable.crush(ret, audio, true)
 
-    ret._private = {}
-
     ret.widget = awful.popup {
-        bg = beautiful.colors.background,
         ontop = true,
         visible = false,
         minimum_width = dpi(600),
         maximum_width = dpi(600),
         shape = helpers.ui.rrect(beautiful.border_radius),
+        bg = beautiful.colors.background,
         widget = {
             widget = wibox.container.margin,
             margins = dpi(25),
             widget()
         }
     }
+
+    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+        ret.bg = old_colorscheme_to_new_map[beautiful.colors.background]
+    end)
 
     return ret
 end

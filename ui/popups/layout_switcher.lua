@@ -9,26 +9,29 @@ local wibox = require("wibox")
 local beautiful = require("beautiful")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
+local capi = {
+    awesome = awesome
+}
 
 local layout_switcher = {}
 local instance = nil
 
 function layout_switcher:cycle_layouts(increase)
-    local ll = self._private.layout_list
+    local ll = self.layout_list
     local increase = increase and 1 or -1
     awful.layout.set(gtable.cycle_value(ll.layouts, ll.current_layout, increase), nil)
 end
 
 function layout_switcher:show()
-    self._private.widget.visible = true
+    self.widget.visible = true
 end
 
 function layout_switcher:hide()
-    self._private.widget.visible = false
+    self.widget.visible = false
 end
 
 function layout_switcher:toggle()
-    if self._private.widget.visible == true then
+    if self.widget.visible == true then
         self:hide()
     else
         self:show()
@@ -37,12 +40,9 @@ end
 
 local function new()
     local ret = gobject {}
-    ret._private = {}
-
     gtable.crush(ret, layout_switcher)
 
-    ret._private = {}
-    ret._private.layout_list = awful.widget.layoutlist {
+    ret.layout_list = awful.widget.layoutlist {
         source = awful.widget.layoutlist.source.default_layouts,
         base_layout = wibox.widget {
             layout = wibox.layout.grid.vertical,
@@ -67,7 +67,7 @@ local function new()
         }
     }
 
-    ret._private.widget = awful.popup {
+    ret.widget = awful.popup {
         placement = awful.placement.centered,
         ontop = true,
         visible = false,
@@ -76,9 +76,13 @@ local function new()
         widget = wibox.widget {
             widget = wibox.container.margin,
             margins = dpi(25),
-            ret._private.layout_list
+            ret.layout_list
         }
     }
+
+    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+        ret.bg = old_colorscheme_to_new_map[beautiful.colors.background]
+    end)
 
     return ret
 end

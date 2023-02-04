@@ -211,7 +211,7 @@ local function new()
         visible = false,
         ontop = true,
         placement = awful.placement.maximize,
-        bg = beautiful.colors.background_with_opacity(),
+        bg = beautiful.colors.background_with_opacity,
         widget = widget(ret)
     }
 

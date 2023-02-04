@@ -10,10 +10,8 @@ local beautiful = require("beautiful")
 local widgets = require("ui.widgets")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
-local pairs = pairs
-local table = table
 local capi = {
-    root = root,
+    awesome = awesome,
     client = client
 }
 
@@ -113,20 +111,15 @@ local function clients_widget(self)
     end
 
     return wibox.widget {
-        widget = wibox.container.background,
-        shape = helpers.ui.rrect(beautiful.border_radius),
-        bg = beautiful.colors.background_with_opacity(),
-        {
-            widget = wibox.container.margin,
-            margins = dpi(15),
-            clients_layout
-        }
+        widget = wibox.container.margin,
+        margins = dpi(15),
+        clients_layout
     }
 end
 
 function window_switcher:select_client(client)
     self._private.selected_client = client
-    self._private.widget.widget = clients_widget(self)
+    self.widget.widget = clients_widget(self)
 end
 
 function window_switcher:cycle_clients(increase)
@@ -146,8 +139,8 @@ function window_switcher:show(set_selected_client, keygrabber)
         self._private.selected_client = capi.client.focus
     end
 
-    self._private.widget.widget = clients_widget(self)
-    self._private.widget.visible = true
+    self.widget.widget = clients_widget(self)
+    self.widget.visible = true
 end
 
 function window_switcher:hide(focus)
@@ -157,14 +150,14 @@ function window_switcher:hide(focus)
 
     awful.keygrabber.stop(self._private.keygrabber)
 
-    self._private.widget.visible = false
-    self._private.widget.widget = nil
+    self.widget.visible = false
+    self.widget.widget = nil
 
     collectgarbage("collect")
 end
 
 function window_switcher:toggle(keygrabber)
-    if self._private.widget.visible == true then
+    if self.widget.visible == true then
         self:hide()
     else
         self:show(true, keygrabber)
@@ -178,29 +171,34 @@ local function new()
     ret._private = {}
     ret._private.sorted_clients = {}
 
-    ret._private.widget = awful.popup {
+    ret.widget = awful.popup {
         type = 'dropdown_menu',
         placement = awful.placement.centered,
         visible = false,
         ontop = true,
-        bg = "#00000000",
+        shape = helpers.ui.rrect(beautiful.border_radius),
+        bg = beautiful.colors.background_with_opacity,
         widget = wibox.container.background -- A dummy widget to make awful.popup not scream
     }
 
     capi.client.connect_signal("manage", function()
-        if ret._private.widget.visible == true then
+        if ret.widget.visible == true then
             ret:show()
         end
     end)
 
     capi.client.connect_signal("unmanage", function(client)
-        if ret._private.widget.visible == true then
+        if ret.widget.visible == true then
             if client == ret._private.selected_client then
                 ret:cycle_clients(true)
             end
 
             ret:show(false)
         end
+    end)
+
+    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+        ret.bg = old_colorscheme_to_new_map[beautiful.colors.background]
     end)
 
     return ret

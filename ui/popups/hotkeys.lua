@@ -46,6 +46,7 @@
 -- @popupmod awful.hotkeys_popup.widget
 ---------------------------------------------------------------------------
 local capi = {
+    awesome = awesome,
     screen = screen,
     client = client
 }
@@ -595,6 +596,10 @@ function widget.new(args)
             minimum_height = wibox_height,
             screen = s
         }
+
+        capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+            mypopup.bg = old_colorscheme_to_new_map[beautiful.colors.background]
+        end)
 
         local widget_obj = {
             current_page = 1,

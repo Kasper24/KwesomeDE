@@ -15,6 +15,7 @@ local dpi = beautiful.xresources.apply_dpi
 local collectgarbage = collectgarbage
 local ipairs = ipairs
 local capi = {
+    awesome = awesome,
     client = client,
     tag = tag
 }
@@ -75,39 +76,33 @@ function tag_preview:show(t, args)
             args.coords.y = args.coords.y + args.offset.y
         end
 
-        self._private.widget.x = args.coords.x
-        self._private.widget.y = args.coords.y
+        self.widget.x = args.coords.x
+        self.widget.y = args.coords.y
     end
 
     save_tag_thumbnail(t)
 
     local widget = wibox.widget {
-        widget = wibox.container.background,
-        shape = helpers.ui.rrect(beautiful.border_radius),
-        border_width = dpi(5),
-        border_color = beautiful.colors.background,
-        {
-            widget = wibox.widget.imagebox,
-            forced_width = dpi(300),
-            forced_height = dpi(150),
-            horizontal_fit_policy = "fit",
-            vertical_fit_policy = "fit",
-            image = t.thumbnail or theme_daemon:get_wallpaper()
-        }
+        widget = wibox.widget.imagebox,
+        forced_width = dpi(300),
+        forced_height = dpi(150),
+        horizontal_fit_policy = "fit",
+        vertical_fit_policy = "fit",
+        image = t.thumbnail or theme_daemon:get_wallpaper()
     }
 
-    self._private.widget.widget = widget
-    self._private.widget.visible = true
+    self.widget.widget = widget
+    self.widget.visible = true
 end
 
 function tag_preview:hide()
-    self._private.widget.visible = false
-    self._private.widget.widget = nil
+    self.widget.visible = false
+    self.widget.widget = nil
     collectgarbage("collect")
 end
 
 function tag_preview:toggle(t, args)
-    if self._private.widget.visible == true then
+    if self.widget.visible == true then
         self:hide()
     else
         self:show(t, args)
@@ -123,11 +118,14 @@ local function new(args)
     gtable.crush(ret, tag_preview)
     gtable.crush(ret, args)
 
-    ret._private.widget = awful.popup {
+    ret.widget = awful.popup {
         type = 'dropdown_menu',
         visible = false,
         ontop = true,
-        bg = "#00000000",
+        shape = helpers.ui.rrect(beautiful.border_radius),
+        bg = beautiful.colors.background,
+        border_width = dpi(5),
+        border_color = beautiful.colors.background,
         widget = wibox.container.background -- A dummy widget to make awful.popup not scream
     }
 
@@ -154,6 +152,10 @@ local function new(args)
                 save_tag_thumbnail(t)
             end
         }
+    end)
+
+    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+        ret.bg = old_colorscheme_to_new_map[beautiful.colors.background]
     end)
 
     return ret

@@ -11,6 +11,7 @@ local beautiful = require("beautiful")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local capi = {
+    awesome = awesome,
     screen = screen
 }
 
@@ -98,6 +99,10 @@ local function new()
             }
         }
     }
+
+    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+        ret.bg = old_colorscheme_to_new_map[beautiful.colors.background]
+    end)
 
     return ret
 end

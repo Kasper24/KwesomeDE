@@ -10,6 +10,9 @@ local beautiful = require("beautiful")
 local keyboard_layout_daemon = require("daemons.system.keyboard_layout")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
+local capi = {
+    awesome = awesome
+}
 
 local instance = nil
 
@@ -54,8 +57,6 @@ local function new()
         minimum_height = dpi(200),
         shape = helpers.ui.rrect(beautiful.border_radius),
         bg = beautiful.colors.background,
-        border_width = 0,
-        border_color = beautiful.border_color_active,
         widget = {
             widget = wibox.container.place,
             halign = "center",
@@ -81,6 +82,10 @@ local function new()
             end
         end
         show = true
+    end)
+
+    capi.awesome.connect_signal("colorscheme::changed", function( old_colorscheme_to_new_map)
+        ret.bg = old_colorscheme_to_new_map[beautiful.colors.background]
     end)
 
     return ret

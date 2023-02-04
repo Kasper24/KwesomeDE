@@ -14,6 +14,7 @@ local dpi = beautiful.xresources.apply_dpi
 local collectgarbage = collectgarbage
 local ipairs = ipairs
 local capi = {
+    awesome = awesome,
     client = client,
     tag = tag
 }
@@ -47,22 +48,6 @@ local function get_widget_geometry(wibox, widget)
     return _get_widget_geometry(wibox._drawable._widget_hierarchy, widget)
 end
 
-local function get_client_content_as_imagebox(c)
-    local ss = awful.screenshot {
-        client = c
-    }
-
-    ss:refresh()
-    local ib = ss.content_widget
-    ib.valign = "center"
-    ib.halign = "center"
-    ib.horizontal_fit_policy = "fit"
-    ib.vertical_fit_policy = "fit"
-    ib.resize = true
-
-    return ib
-end
-
 function task_preview:show(c, args)
     args = args or {}
 
@@ -80,8 +65,8 @@ function task_preview:show(c, args)
             args.coords.y = args.coords.y + args.offset.y
         end
 
-        self._private.widget.x = args.coords.x
-        self._private.widget.y = args.coords.y
+        self.widget.x = args.coords.x
+        self.widget.y = args.coords.y
     end
 
     local font_icon = beautiful.get_font_icon_for_app_name(c.class)
@@ -92,70 +77,61 @@ function task_preview:show(c, args)
         width = dpi(300),
         height = dpi(150),
         {
-            widget = wibox.container.background,
-            bg = beautiful.colors.background,
+            widget = wibox.container.margin,
+            margins = dpi(15),
             {
-                widget = wibox.container.margin,
-                margins = dpi(15),
+                layout = wibox.layout.fixed.vertical,
+                spacing = dpi(15),
                 {
-                    layout = wibox.layout.fixed.vertical,
-                    spacing = dpi(15),
+                    layout = wibox.layout.fixed.horizontal,
+                    spacing = dpi(10),
                     {
-                        layout = wibox.layout.fixed.horizontal,
-                        spacing = dpi(10),
-                        {
-                            widget = widgets.text,
-                            halign = "center",
-                            valign = "center",
-                            icon = font_icon
-                        },
-                        {
-                            widget = widgets.text,
-                            forced_height = dpi(30),
-                            halign = "center",
-                            valign = "center",
-                            size = 15,
-                            text = c.name
-                        }
+                        widget = widgets.text,
+                        halign = "center",
+                        valign = "center",
+                        icon = font_icon
                     },
-                    widgets.client_thumbnail(c)
-                }
+                    {
+                        widget = widgets.text,
+                        forced_height = dpi(30),
+                        halign = "center",
+                        valign = "center",
+                        size = 15,
+                        text = c.name
+                    }
+                },
+                widgets.client_thumbnail(c)
             }
         }
     }
 
-    self._private.widget.widget = widget
-    self._private.widget.visible = true
+    self.widget.widget = widget
+    self.widget.visible = true
 end
 
 function task_preview:hide()
-    self._private.widget.visible = false
-    self._private.widget.widget = nil
+    self.widget.visible = false
+    self.widget.widget = nil
     collectgarbage("collect")
 end
 
 function task_preview:toggle(c, args)
-    if self._private.widget.visible == true then
+    if self.widget.visible == true then
         self:hide()
     else
         self:show(c, args)
     end
 end
 
-local function new(args)
-    args = args or {}
-
+local function new()
     local ret = gobject {}
-    ret._private = {}
-
     gtable.crush(ret, task_preview)
-    gtable.crush(ret, args)
 
-    ret._private.widget = awful.popup {
+    ret.widget = awful.popup {
         type = 'dropdown_menu',
         visible = false,
         ontop = true,
-        bg = "#00000000",
+        bg = beautiful.colors.background,
         shape = function(cr, width, height)
             gshape.infobubble(cr, width, height, nil, nil, dpi(27))
         end,
@@ -172,6 +148,10 @@ local function new(args)
         if c.fullscreen then
             ret:hide()
         end
+    end)
+
+    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+        ret.bg = old_colorscheme_to_new_map[beautiful.colors.background]
     end)
 
     return ret

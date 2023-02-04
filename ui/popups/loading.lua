@@ -63,7 +63,7 @@ capi.screen.connect_signal("request::desktop_decoration", function(s)
         type = "splash",
         ontop = true,
         placement = awful.placement.maximize,
-        bg = beautiful.colors.background_with_opacity(),
+        bg = beautiful.colors.background_with_opacity,
         widget = {
             widget = wibox.container.place,
             halign = "center",
@@ -97,4 +97,9 @@ capi.screen.connect_signal("request::desktop_decoration", function(s)
             end
         }
     end
+
+
+    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+        s.loading_popup.bg = old_colorscheme_to_new_map[beautiful.colors.background]
+    end)
 end)
