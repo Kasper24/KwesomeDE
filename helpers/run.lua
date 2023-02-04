@@ -42,7 +42,7 @@ function _run.is_pid_running(pid, callback)
 end
 
 local AWESOME_SENSIBLE_TERMINAL_PATH = debug.getinfo(1).source:match("@?(.*/)") ..
-                                           "../external/awesome-sensible-terminal"
+                                           "../scripts/awesome-sensible-terminal"
 
 function _run.exec_terminal_app(command)
     awful.spawn.with_shell(AWESOME_SENSIBLE_TERMINAL_PATH .. " -e " .. command)
