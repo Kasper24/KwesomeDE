@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
@@ -13,9 +12,11 @@ local network_daemon = require("daemons.hardware.network")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local pairs = pairs
-local capi = { awesome = awesome }
+local capi = {
+    awesome = awesome
+}
 
-local wifi = { }
+local wifi = {}
 local instance = nil
 
 function wifi:show(next_to)
@@ -42,25 +43,21 @@ local function access_point_widget(layout, access_point, accent_color)
     local widget = nil
     local anim = nil
 
-    local wifi_icon = wibox.widget
-    {
+    local wifi_icon = wibox.widget {
         widget = widgets.text,
         halign = "left",
-        icon =  access_point.strength > 66 and beautiful.icons.network.wifi_high or
-                access_point.strength > 33 and beautiful.icons.network.wifi_medium or
-                    beautiful.icons.network.wifi_low,
-        size = 25,
+        icon = access_point.strength > 66 and beautiful.icons.network.wifi_high or access_point.strength > 33 and
+            beautiful.icons.network.wifi_medium or beautiful.icons.network.wifi_low,
+        size = 25
     }
 
-    local lock_icon = wibox.widget
-    {
+    local lock_icon = wibox.widget {
         widget = widgets.text,
         icon = beautiful.icons.lock,
-        size = 20,
+        size = 20
     }
 
-    local prompt = wibox.widget
-    {
+    local prompt = wibox.widget {
         widget = widgets.prompt,
         forced_width = dpi(450),
         forced_height = dpi(50),
@@ -68,10 +65,9 @@ local function access_point_widget(layout, access_point, accent_color)
         obscure = true,
         text = access_point.password,
         icon_font = beautiful.icons.lock.font,
-        icon = beautiful.icons.lock.icon,
+        icon = beautiful.icons.lock.icon
     }
-    local toggle_password_obscure_button = wibox.widget
-    {
+    local toggle_password_obscure_button = wibox.widget {
         widget = widgets.checkbox,
         state = true,
         color = accent_color,
@@ -83,37 +79,32 @@ local function access_point_widget(layout, access_point, accent_color)
         end
     }
 
-    local name = wibox.widget
-    {
+    local name = wibox.widget {
         widget = widgets.text,
         forced_width = dpi(600),
         forced_height = dpi(30),
         halign = "left",
         size = 12,
-        text =  network_daemon:is_access_point_active(access_point)
-                and access_point.ssid .. " - Activated"
-                or access_point.ssid,
-        color = beautiful.colors.on_surface,
+        text = network_daemon:is_access_point_active(access_point) and access_point.ssid .. " - Activated" or
+            access_point.ssid,
+        color = beautiful.colors.on_surface
     }
 
-    local auto_connect_checkbox = wibox.widget
-    {
+    local auto_connect_checkbox = wibox.widget {
         widget = widgets.checkbox,
         state = true,
-        color = accent_color,
+        color = accent_color
     }
 
-    local auto_connect_text = wibox.widget
-    {
+    local auto_connect_text = wibox.widget {
         widget = widgets.text,
         valign = "center",
         size = 12,
         color = beautiful.colors.on_surface,
-        text =  "Auto Connect: "
+        text = "Auto Connect: "
     }
 
-    local cancel = wibox.widget
-    {
+    local cancel = wibox.widget {
         widget = widgets.button.text.normal,
         normal_bg = beautiful.colors.surface,
         text_normal_bg = beautiful.colors.on_surface,
@@ -126,8 +117,7 @@ local function access_point_widget(layout, access_point, accent_color)
         end
     }
 
-    local connect_or_disconnect = wibox.widget
-    {
+    local connect_or_disconnect = wibox.widget {
         widget = widgets.button.text.normal,
         normal_bg = beautiful.colors.surface,
         text_normal_bg = beautiful.colors.on_surface,
@@ -138,16 +128,14 @@ local function access_point_widget(layout, access_point, accent_color)
         end
     }
 
-    local spinning_circle = widgets.spinning_circle
-    {
+    local spinning_circle = widgets.spinning_circle {
         forced_width = dpi(25),
         forced_height = dpi(25),
         thickness = dpi(10)
     }
     spinning_circle:abort()
 
-    local connect_or_disconnect_stack = wibox.widget
-    {
+    local connect_or_disconnect_stack = wibox.widget {
         widget = wibox.layout.stack,
         top_only = true,
         connect_or_disconnect,
@@ -183,8 +171,7 @@ local function access_point_widget(layout, access_point, accent_color)
         connect_or_disconnect_stack:raise_widget(connect_or_disconnect)
     end)
 
-    widget = wibox.widget
-    {
+    widget = wibox.widget {
         widget = wibox.container.constraint,
         mode = "exact",
         height = dpi(65),
@@ -199,8 +186,7 @@ local function access_point_widget(layout, access_point, accent_color)
                     self:turn_on()
                 end
             end,
-            child =
-            {
+            child = {
                 layout = wibox.layout.fixed.vertical,
                 spacing = dpi(15),
                 {
@@ -219,7 +205,7 @@ local function access_point_widget(layout, access_point, accent_color)
                 {
                     layout = wibox.layout.fixed.horizontal,
                     auto_connect_text,
-                    auto_connect_checkbox,
+                    auto_connect_checkbox
                 },
                 {
                     layout = wibox.layout.flex.horizontal,
@@ -231,14 +217,13 @@ local function access_point_widget(layout, access_point, accent_color)
         }
     }
 
-    anim = helpers.animation:new
-    {
+    anim = helpers.animation:new{
         pos = dpi(65),
         duration = 0.2,
         easing = helpers.animation.easing.linear,
         update = function(self, pos)
             widget.height = pos
-        end,
+        end
     }
 
     capi.awesome.connect_signal("access_point_widget::expanded", function(toggled_on_widget)
@@ -253,15 +238,14 @@ local function access_point_widget(layout, access_point, accent_color)
 end
 
 local function new()
-    local ret = gobject{}
+    local ret = gobject {}
     gtable.crush(ret, wifi, true)
 
     ret._private = {}
 
     local accent_color = beautiful.colors.random_accent_color()
 
-    local header = wibox.widget
-    {
+    local header = wibox.widget {
         widget = widgets.text,
         halign = "left",
         bold = true,
@@ -269,8 +253,7 @@ local function new()
         text = "Wi-Fi"
     }
 
-    local rescan = wibox.widget
-    {
+    local rescan = wibox.widget {
         widget = widgets.button.text.normal,
         text_normal_bg = beautiful.colors.on_background,
         icon = beautiful.icons.arrow_rotate_right,
@@ -280,8 +263,7 @@ local function new()
         end
     }
 
-    local settings = wibox.widget
-    {
+    local settings = wibox.widget {
         widget = widgets.button.text.normal,
         text_normal_bg = beautiful.colors.on_background,
         icon = beautiful.icons.gear,
@@ -291,38 +273,33 @@ local function new()
         end
     }
 
-    local layout = wibox.widget
-    {
+    local layout = wibox.widget {
         layout = widgets.overflow.vertical,
         forced_height = dpi(600),
         spacing = dpi(15),
-        scrollbar_widget =
-        {
+        scrollbar_widget = {
             widget = wibox.widget.separator,
-            shape = helpers.ui.rrect(beautiful.border_radius),
+            shape = helpers.ui.rrect(beautiful.border_radius)
         },
         scrollbar_width = dpi(10),
-        step = 50,
+        step = 50
     }
 
-    local no_wifi = wibox.widget
-    {
+    local no_wifi = wibox.widget {
         widget = widgets.text,
         halign = "center",
         icon = beautiful.icons.network.wifi_off,
-        size = 100,
+        size = 100
     }
 
-    local stack = wibox.widget
-    {
+    local stack = wibox.widget {
         layout = wibox.layout.stack,
         top_only = true,
         layout,
         no_wifi
     }
 
-    local seperator = wibox.widget
-    {
+    local seperator = wibox.widget {
         widget = wibox.widget.separator,
         forced_width = dpi(1),
         forced_height = dpi(1),
@@ -349,16 +326,14 @@ local function new()
         end
     end)
 
-    ret.widget = awful.popup
-    {
+    ret.widget = awful.popup {
         bg = beautiful.colors.background,
         ontop = true,
         visible = false,
         minimum_width = dpi(600),
         maximum_width = dpi(600),
         shape = helpers.ui.rrect(beautiful.border_radius),
-        widget =
-        {
+        widget = {
             widget = wibox.container.margin,
             margins = dpi(25),
             {

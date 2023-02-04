@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
@@ -16,7 +15,7 @@ local tonumber = tonumber
 local ipairs = ipairs
 local math = math
 
-local disk = { }
+local disk = {}
 local instance = nil
 
 function disk:show(next_to)
@@ -40,8 +39,7 @@ function disk:toggle(next_to)
 end
 
 local function separator()
-    return wibox.widget
-    {
+    return wibox.widget {
         widget = wibox.widget.separator,
         forced_width = dpi(1),
         forced_height = dpi(1),
@@ -52,19 +50,15 @@ local function separator()
 end
 
 local function new()
-    local ret = gobject{}
+    local ret = gobject {}
     gtable.crush(ret, disk, true)
 
     local accent_color = beautiful.colors.random_accent_color()
-    local gradient_colors =
-    {
-        {0, beautiful.colors.random_accent_color()},
-        {0.33, beautiful.colors.random_accent_color()},
-        {0.66, beautiful.colors.random_accent_color()}
-    }
+    local gradient_colors = {{0, beautiful.colors.random_accent_color()},
+                             {0.33, beautiful.colors.random_accent_color()},
+                             {0.66, beautiful.colors.random_accent_color()}}
 
-    local header = wibox.widget
-    {
+    local header = wibox.widget {
         layout = wibox.layout.fixed.horizontal,
         {
             widget = widgets.text,
@@ -83,8 +77,7 @@ local function new()
         }
     }
 
-    local layout = wibox.widget
-    {
+    local layout = wibox.widget {
         layout = wibox.layout.fixed.vertical,
         spacing = dpi(15)
     }
@@ -93,8 +86,7 @@ local function new()
         layout:reset()
 
         for _, entry in ipairs(disks) do
-            local widget = wibox.widget
-            {
+            local widget = wibox.widget {
                 layout = wibox.layout.fixed.horizontal,
                 spacing = dpi(15),
                 {
@@ -102,7 +94,7 @@ local function new()
                     forced_width = dpi(150),
                     halign = "left",
                     size = 12,
-                    text = entry.mount,
+                    text = entry.mount
                 },
                 {
                     widget = wibox.widget.progressbar,
@@ -115,37 +107,32 @@ local function new()
                     max_value = 100,
                     value = tonumber(entry.perc),
                     background_color = beautiful.colors.surface,
-                    color =
-                    {
+                    color = {
                         type = "linear",
                         from = {0, 0},
                         to = {300, 300},
                         stops = gradient_colors
-                    },
+                    }
                 },
                 {
                     widget = widgets.text,
                     halign = "left",
                     size = 12,
-                    text = math.floor(entry.used / 1024 / 1024)
-                        .. "/"
-                        .. math.floor(entry.size / 1024 / 1024) .. "GB("
-                        .. math.floor(entry.perc) .. "%)"
-                },
+                    text = math.floor(entry.used / 1024 / 1024) .. "/" .. math.floor(entry.size / 1024 / 1024) .. "GB(" ..
+                        math.floor(entry.perc) .. "%)"
+                }
             }
 
             layout:add(widget)
         end
     end)
 
-    ret.widget = awful.popup
-    {
+    ret.widget = awful.popup {
         bg = beautiful.colors.background,
         ontop = true,
         visible = false,
         shape = helpers.ui.rrect(beautiful.border_radius),
-        widget =
-        {
+        widget = {
             widget = wibox.container.margin,
             margins = dpi(25),
             {
@@ -154,7 +141,7 @@ local function new()
                 header,
                 separator(),
                 layout
-            },
+            }
         }
     }
 

@@ -17,8 +17,7 @@ function _layout.resize_padding(amt)
     local r = s.padding.right
     local t = s.padding.top
     local b = s.padding.bottom
-    s.padding =
-    {
+    s.padding = {
         left = l + amt,
         right = r + amt,
         top = t + amt,

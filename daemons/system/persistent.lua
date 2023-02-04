@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
@@ -15,9 +14,14 @@ local string = string
 local ipairs = ipairs
 local pairs = pairs
 local table = table
-local capi = { awesome = awesome, root = root, screen = screen, client = client }
+local capi = {
+    awesome = awesome,
+    root = root,
+    screen = screen,
+    client = client
+}
 
-local persistent = { }
+local persistent = {}
 local instance = nil
 
 local PATH = helpers.filesystem.get_cache_dir("persistent")
@@ -33,15 +37,12 @@ end
 
 local function reapply_clients(self)
     for index, client in ipairs(capi.client.get()) do
-        local pid =  tostring(client.pid)
+        local pid = tostring(client.pid)
         if self.restored_settings.clients[pid] ~= nil then
             -- Properties
-            local properties =
-            {
-                "hidden", "minimized", "above", "ontop", "below", "fullscreen",
-                "maximized", "maximized_horizontal", "maximized_vertical", "sticky",
-                "floating", "x", "y", "width", "height"
-            }
+            local properties = {"hidden", "minimized", "above", "ontop", "below", "fullscreen", "maximized",
+                                "maximized_horizontal", "maximized_vertical", "sticky", "floating", "x", "y", "width",
+                                "height"}
             for _, property in ipairs(properties) do
                 client[property] = self.restored_settings.clients[pid][property]
             end
@@ -115,12 +116,9 @@ end
 local function save_clients(self)
     self.settings.clients = {}
 
-    local properties =
-    {
-        "hidden", "minimized", "above", "ontop", "below", "fullscreen",
-        "maximized", "maximized_horizontal", "maximized_vertical", "sticky",
-        "floating", "x", "y", "width", "height", "class"
-    }
+    local properties = {"hidden", "minimized", "above", "ontop", "below", "fullscreen", "maximized",
+                        "maximized_horizontal", "maximized_vertical", "sticky", "floating", "x", "y", "width", "height",
+                        "class"}
 
     for _, client in ipairs(capi.client.get()) do
         local pid = tostring(client.pid)
@@ -247,11 +245,13 @@ function persistent:save(args)
     if args.save_tags == true then
         save_tags(self)
     end
-    if args.save_clients ==  true then
+    if args.save_clients == true then
         save_clients(self)
     end
 
-    local json_settings = helpers.json.encode(self.settings, { indent = true })
+    local json_settings = helpers.json.encode(self.settings, {
+        indent = true
+    })
     awful.spawn.with_shell(string.format("mkdir -p %s && echo '%s' > %s", PATH, json_settings, DATA_PATH))
 end
 
@@ -269,7 +269,7 @@ function persistent:restore(args)
                 if args.restore_tags == true then
                     restore_tags(self, args)
                 end
-                if args.restore_clients ==  true then
+                if args.restore_clients == true then
                     restore_clients(self, args)
                 end
             end
@@ -297,13 +297,13 @@ function persistent:enable(args)
             single_shot = true,
             callback = function()
                 self:restore(args)
-            end,
+            end
         }
     end)
 end
 
 local function new()
-    local ret = gobject{}
+    local ret = gobject {}
     gtable.crush(ret, persistent, true)
 
     ret.settings = {}

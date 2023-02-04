@@ -2,38 +2,36 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local wibox = require("wibox")
 local twidget = require("presentation.ui.widgets.text")
 
 local setmetatable = setmetatable
 
-local spacer = { }
+local spacer = {}
 
 function spacer.text(amount)
     local str = ""
-    for i = 1, amount do str = str .. " " end
+    for i = 1, amount do
+        str = str .. " "
+    end
 
-    return wibox.widget
-    {
+    return wibox.widget {
         widget = twidget,
-        text = str,
+        text = str
     }
 end
 
 function spacer.horizontal(amount)
-    return wibox.widget
-    {
+    return wibox.widget {
         layout = wibox.layout.fixed.horizontal,
-        forced_width = amount,
+        forced_width = amount
     }
 end
 
 function spacer.vertical(amount)
-    return wibox.widget
-    {
+    return wibox.widget {
         layout = wibox.layout.fixed.vertical,
-        forced_height = amount,
+        forced_height = amount
     }
 end
 

@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local gstring = require("gears.string")
 local gtimer = require("gears.timer")
 local wibox = require("wibox")
@@ -16,34 +15,33 @@ local setmetatable = setmetatable
 local ipairs = ipairs
 local os = os
 
-local notifications = { mt = {} }
+local notifications = {
+    mt = {}
+}
 
 local function notification_widget(notification, on_removed)
     local icon = nil
     if notification.font_icon == nil then
-        icon = wibox.widget
-        {
+        icon = wibox.widget {
             widget = wibox.widget.imagebox,
             forced_width = dpi(40),
             forced_height = dpi(40),
             halign = "left",
             valign = "top",
             clip_shape = helpers.ui.rrect(beautiful.border_radius),
-            image = notification.icon,
+            image = notification.icon
         }
     else
-        icon = wibox.widget
-        {
+        icon = wibox.widget {
             widget = widgets.text,
             halign = "left",
             valign = "top",
             icon = notification.font_icon,
-            size = 30,
+            size = 30
         }
     end
 
-    local title = wibox.widget
-    {
+    local title = wibox.widget {
         widget = wibox.container.place,
         halign = "left",
         {
@@ -56,18 +54,16 @@ local function notification_widget(notification, on_removed)
         }
     }
 
-    local message = wibox.widget
-    {
+    local message = wibox.widget {
         widget = wibox.container.place,
         halign = "left",
         {
             layout = widgets.overflow.vertical,
             forced_width = dpi(1000),
             spacing = dpi(10),
-            scrollbar_widget =
-            {
+            scrollbar_widget = {
                 widget = wibox.widget.separator,
-                shape = helpers.ui.rrect(beautiful.border_radius),
+                shape = helpers.ui.rrect(beautiful.border_radius)
             },
             scrollbar_width = dpi(10),
             step = 50,
@@ -79,25 +75,23 @@ local function notification_widget(notification, on_removed)
         }
     }
 
-    local time = wibox.widget
-    {
+    local time = wibox.widget {
         widget = widgets.text,
         halign = "left",
         valign = "top",
         size = 12,
-        text = helpers.string.to_time_ago(os.difftime(os.time(os.date("*t")), helpers.string.parse_date(notification.time)))
+        text = helpers.string.to_time_ago(os.difftime(os.time(os.date("*t")),
+            helpers.string.parse_date(notification.time)))
     }
 
-    local actions = wibox.widget
-    {
+    local actions = wibox.widget {
         layout = wibox.layout.fixed.horizontal,
         spacing = dpi(15)
     }
 
     if notification.actions ~= nil then
         for _, action in ipairs(notification.actions) do
-            local button = wibox.widget
-            {
+            local button = wibox.widget {
                 widget = widgets.button.text.normal,
                 -- forced_height = dpi(40),
                 size = 12,
@@ -113,13 +107,15 @@ local function notification_widget(notification, on_removed)
     end
 
     local widget = nil
-    local dismiss = wibox.widget
-    {
+    local dismiss = wibox.widget {
         widget = wibox.container.place,
         valign = "top",
         {
             widget = wibox.container.margin,
-            margins = { left = dpi(10), bottom = dpi(10) },
+            margins = {
+                left = dpi(10),
+                bottom = dpi(10)
+            },
             {
                 widget = widgets.button.text.normal,
                 forced_width = dpi(40),
@@ -133,8 +129,7 @@ local function notification_widget(notification, on_removed)
         }
     }
 
-    widget = wibox.widget
-    {
+    widget = wibox.widget {
         widget = wibox.container.margin,
         margins = dpi(10),
         {
@@ -142,7 +137,9 @@ local function notification_widget(notification, on_removed)
             icon,
             {
                 widget = wibox.container.margin,
-                margins = { left = dpi(15) },
+                margins = {
+                    left = dpi(15)
+                },
                 {
                     layout = wibox.layout.fixed.vertical,
                     spacing = dpi(5),
@@ -157,7 +154,8 @@ local function notification_widget(notification, on_removed)
     }
 
     function widget.update_time_ago()
-        time.markup = helpers.string.to_time_ago(os.difftime(os.time(os.date("*t")), helpers.string.parse_date(notification.time)))
+        time.markup = helpers.string.to_time_ago(os.difftime(os.time(os.date("*t")),
+            helpers.string.parse_date(notification.time)))
     end
 
     return widget
@@ -166,36 +164,32 @@ end
 local function notification_group(notification)
     local icon = nil
     if notification.app_font_icon == nil then
-        icon = wibox.widget
-        {
+        icon = wibox.widget {
             widget = wibox.widget.imagebox,
             forced_width = dpi(40),
             forced_height = dpi(40),
             halign = "left",
             valign = "top",
             clip_shape = helpers.ui.rrect(beautiful.border_radius),
-            image = notification.app_icon,
+            image = notification.app_icon
         }
     else
-        icon = wibox.widget
-        {
+        icon = wibox.widget {
             widget = widgets.text,
             halign = "left",
             icon = notification.app_font_icon,
-            size = 30,
+            size = 30
         }
     end
 
-    local title = wibox.widget
-    {
+    local title = wibox.widget {
         widget = widgets.text,
         halign = "left",
         text = notification.app_name:gsub("^%l", string.upper)
     }
 
     local widget = nil
-    local button = wibox.widget
-    {
+    local button = wibox.widget {
         widget = widgets.button.elevated.state,
         forced_width = dpi(600),
         halign = "left",
@@ -205,17 +199,15 @@ local function notification_group(notification)
         on_turn_off = function()
             widget.height = dpi(70)
         end,
-        child =
-        {
+        child = {
             layout = wibox.layout.fixed.horizontal,
             spacing = dpi(15),
             icon,
-            title,
+            title
         }
     }
 
-    local seperator = wibox.widget
-    {
+    local seperator = wibox.widget {
         widget = wibox.widget.separator,
         forced_width = dpi(1),
         forced_height = dpi(1),
@@ -224,14 +216,12 @@ local function notification_group(notification)
         color = beautiful.colors.surface
     }
 
-    local layout = wibox.widget
-    {
+    local layout = wibox.widget {
         layout = wibox.layout.fixed.vertical,
         spacing = dpi(20)
     }
 
-    widget = wibox.widget
-    {
+    widget = wibox.widget {
         widget = wibox.container.constraint,
         strategy = "max",
         height = dpi(70),
@@ -245,19 +235,20 @@ local function notification_group(notification)
         }
     }
 
-    return { widget = widget, layout = layout }
+    return {
+        widget = widget,
+        layout = layout
+    }
 end
 
 local function new()
-    local header = wibox.widget
-    {
+    local header = wibox.widget {
         widget = widgets.text,
         bold = true,
         text = "Notifications"
     }
 
-    local clear_notifications = wibox.widget
-    {
+    local clear_notifications = wibox.widget {
         widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
@@ -267,10 +258,11 @@ local function new()
         end
     }
 
-    local empty_notifications = wibox.widget
-    {
+    local empty_notifications = wibox.widget {
         widget = wibox.container.margin,
-        margins = { top = dpi(250) },
+        margins = {
+            top = dpi(250)
+        },
         {
             layout = wibox.layout.fixed.vertical,
             spacing = dpi(15),
@@ -278,43 +270,40 @@ local function new()
                 widget = widgets.text,
                 halign = "center",
                 icon = beautiful.icons.bell,
-                size = 50,
+                size = 50
             },
             {
                 widget = widgets.text,
                 halign = "center",
                 size = 15,
                 text = "No Notifications"
-            },
+            }
         }
     }
 
-    local scrollbox = wibox.widget
-    {
+    local scrollbox = wibox.widget {
         layout = widgets.overflow.vertical,
         spacing = dpi(20),
-        scrollbar_widget =
-        {
+        scrollbar_widget = {
             widget = wibox.widget.separator,
-            shape = helpers.ui.rrect(beautiful.border_radius),
+            shape = helpers.ui.rrect(beautiful.border_radius)
         },
         scrollbar_width = dpi(10),
-        step = 50,
+        step = 50
     }
 
-    local spinning_circle = wibox.widget
-    {
+    local spinning_circle = wibox.widget {
         widget = wibox.container.margin,
-        margins = { top = dpi(250)},
-        widgets.spinning_circle
-        {
+        margins = {
+            top = dpi(250)
+        },
+        widgets.spinning_circle {
             forced_width = dpi(50),
             forced_height = dpi(50)
         }
     }
 
-    local stack = wibox.widget
-    {
+    local stack = wibox.widget {
         layout = wibox.layout.stack,
         top_only = true,
         spinning_circle,
@@ -330,14 +319,15 @@ local function new()
                 notification_groups[notification.app_name] = notification_group(notification)
                 scrollbox:insert(1, notification_groups[notification.app_name].widget)
             end
-            notification_groups[notification.app_name].layout:insert(1, notification_widget(notification, function(widget)
-                notification_groups[notification.app_name].layout:remove_widgets(widget)
+            notification_groups[notification.app_name].layout:insert(1,
+                notification_widget(notification, function(widget)
+                    notification_groups[notification.app_name].layout:remove_widgets(widget)
 
-                if #notification_groups[notification.app_name].layout.children == 0 then
-                    scrollbox:remove_widgets(notification_groups[notification.app_name].widget)
-                    notification_groups[notification.app_name] = nil
-                end
-            end))
+                    if #notification_groups[notification.app_name].layout.children == 0 then
+                        scrollbox:remove_widgets(notification_groups[notification.app_name].widget)
+                        notification_groups[notification.app_name] = nil
+                    end
+                end))
 
             scrollbox:remove_widgets(notification_groups[notification.app_name].widget)
             scrollbox:insert(1, notification_groups[notification.app_name].widget)
@@ -357,16 +347,20 @@ local function new()
         collectgarbage("collect")
     end)
 
-    gtimer { timeout = 60, call_now = false, autostart = true, callback = function()
-        for _, widget in ipairs(scrollbox.all_children) do
-            if widget.update_time_ago then
-                widget:update_time_ago()
+    gtimer {
+        timeout = 60,
+        call_now = false,
+        autostart = true,
+        callback = function()
+            for _, widget in ipairs(scrollbox.all_children) do
+                if widget.update_time_ago then
+                    widget:update_time_ago()
+                end
             end
         end
-    end }
+    }
 
-    return wibox.widget
-    {
+    return wibox.widget {
         layout = wibox.layout.fixed.vertical,
         forced_height = dpi(600),
         spacing = dpi(10),
@@ -375,7 +369,7 @@ local function new()
             expand = "none",
             header,
             nil,
-            clear_notifications,
+            clear_notifications
         },
         stack
     }

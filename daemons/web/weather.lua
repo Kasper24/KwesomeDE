@@ -2,14 +2,13 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local helpers = require("helpers")
 local string = string
 
-local weather = { }
+local weather = {}
 local instance = nil
 
 local path = helpers.filesystem.get_cache_dir("weather")
@@ -54,35 +53,29 @@ function weather:get_coordinate_y()
 end
 
 function weather:refresh()
-    local link = string.format("https://api.openweathermap.org/data/2.5/onecall?lat=%s&lon=%s&appid=%s&units=%s&exclude=minutely&lang=en",
-        self._private.coordinate_x,
-        self._private.coordinate_y,
-        self._private.api_key,
-        self._private.unit)
+    local link = string.format(
+        "https://api.openweathermap.org/data/2.5/onecall?lat=%s&lon=%s&appid=%s&units=%s&exclude=minutely&lang=en",
+        self._private.coordinate_x, self._private.coordinate_y, self._private.api_key, self._private.unit)
 
-    helpers.filesystem.remote_watch(
-        DATA_PATH,
-        link,
-        UPDATE_INTERVAL,
-        function(content)
-            if content == nil or content == false then
-                self:emit_signal("error")
-                return
-            end
+    helpers.filesystem.remote_watch(DATA_PATH, link, UPDATE_INTERVAL, function(content)
+        if content == nil or content == false then
+            self:emit_signal("error")
+            return
+        end
 
-            local data = helpers.json.decode(content)
-            if data == nil then
-                self:emit_signal("error")
-                return
-            end
+        local data = helpers.json.decode(content)
+        if data == nil then
+            self:emit_signal("error")
+            return
+        end
 
-            self:emit_signal("weather", data, self._private.unit)
+        self:emit_signal("weather", data, self._private.unit)
     end)
 
 end
 
 local function new()
-    local ret = gobject{}
+    local ret = gobject {}
     gtable.crush(ret, weather, true)
 
     ret._private = {}

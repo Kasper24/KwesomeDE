@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local awful = require("awful")
 local wibox = require("wibox")
 local widgets = require("presentation.ui.widgets")
@@ -18,13 +17,12 @@ function ncmppcpp.tabs_titlebar(c)
     local local_files = nil
     local search = nil
     local libary = nil
-    local playlist_editor  = nil
-    local lyrics  = nil
+    local playlist_editor = nil
+    local lyrics = nil
 
     local accent_color = beautiful.colors.random_accent_color()
 
-    current_playlist = wibox.widget
-    {
+    current_playlist = wibox.widget {
         widget = widgets.button.text.state,
         on_by_default = true,
         halign = "left",
@@ -43,8 +41,7 @@ function ncmppcpp.tabs_titlebar(c)
         end
     }
 
-    local_files = wibox.widget
-    {
+    local_files = wibox.widget {
         widget = widgets.button.text.state,
         halign = "left",
         on_normal_bg = accent_color,
@@ -62,8 +59,7 @@ function ncmppcpp.tabs_titlebar(c)
         end
     }
 
-    search = wibox.widget
-    {
+    search = wibox.widget {
         widget = widgets.button.text.state,
         halign = "left",
         on_normal_bg = accent_color,
@@ -81,8 +77,7 @@ function ncmppcpp.tabs_titlebar(c)
         end
     }
 
-    libary = wibox.widget
-    {
+    libary = wibox.widget {
         widget = widgets.button.text.state,
         halign = "left",
         on_normal_bg = accent_color,
@@ -100,8 +95,7 @@ function ncmppcpp.tabs_titlebar(c)
         end
     }
 
-    playlist_editor = wibox.widget
-    {
+    playlist_editor = wibox.widget {
         widget = widgets.button.text.state,
         halign = "left",
         on_normal_bg = accent_color,
@@ -119,8 +113,7 @@ function ncmppcpp.tabs_titlebar(c)
         end
     }
 
-    lyrics = wibox.widget
-    {
+    lyrics = wibox.widget {
         widget = widgets.button.text.state,
         halign = "left",
         on_normal_bg = accent_color,
@@ -138,30 +131,29 @@ function ncmppcpp.tabs_titlebar(c)
         end
     }
 
-    awful.titlebar(c,
-    {
+    awful.titlebar(c, {
         position = "left",
         size = dpi(230),
         bg = beautiful.colors.background
-    }) : setup
-    {
+    }):setup{
         widget = wibox.container.margin,
-        margins = { left = dpi(15), top = dpi(25) },
+        margins = {
+            left = dpi(15),
+            top = dpi(25)
+        },
         {
             layout = wibox.layout.fixed.vertical,
             spacing = dpi(15),
             {
                 layout = wibox.layout.fixed.horizontal,
                 spacing = dpi(15),
-                wibox.widget
-                {
+                wibox.widget {
                     widget = widgets.text,
                     size = 50,
                     icon = beautiful.icons.list_music,
-                    color = accent_color,
+                    color = accent_color
                 },
-                wibox.widget
-                {
+                wibox.widget {
                     widget = widgets.text,
                     size = 25,
                     text = "Mopidy"
@@ -186,20 +178,17 @@ function ncmppcpp.tabs_titlebar(c)
 end
 
 function ncmppcpp.media_controls_titlebar(c)
-    local playerctl_daemon = bling.signal.playerctl.lib
-    {
+    local playerctl_daemon = bling.signal.playerctl.lib {
         update_on_activity = true,
-        player = { "mopidy", "%any" },
+        player = {"mopidy", "%any"},
         debounce_delay = 1
     }
 
-    awful.titlebar(c,
-    {
+    awful.titlebar(c, {
         position = "bottom",
         size = dpi(100),
         bg = beautiful.colors.background
-    }) : setup
-    {
+    }):setup{
         layout = wibox.layout.align.horizontal,
         expand = "inside",
         {
@@ -217,9 +206,9 @@ function ncmppcpp.media_controls_titlebar(c)
                         layout = wibox.layout.fixed.vertical,
                         spacing = dpi(5),
                         widgets.playerctl.title(150, "left", playerctl_daemon),
-                        widgets.playerctl.artist(150, "left", playerctl_daemon),
+                        widgets.playerctl.artist(150, "left", playerctl_daemon)
                     }
-                },
+                }
             }
         },
         {

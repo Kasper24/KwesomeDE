@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local lgi = require("lgi")
 local awful = require("awful")
 local gobject = require("gears.object")
@@ -13,9 +12,11 @@ local beautiful = require("beautiful")
 local bluetooth_daemon = require("daemons.hardware.bluetooth")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
-local capi = { awesome = awesome }
+local capi = {
+    awesome = awesome
+}
 
-local bluetooth = { }
+local bluetooth = {}
 local instance = nil
 
 function bluetooth:show(next_to)
@@ -42,27 +43,24 @@ local function device_widget(device, path, layout, accent_color)
     local widget = nil
     local anim = nil
 
-    local device_icon = wibox.widget
-    {
+    local device_icon = wibox.widget {
         widget = wibox.widget.imagebox,
         forced_width = dpi(50),
         forced_height = dpi(50),
         image = helpers.icon_theme:get_icon_path(device.Icon or "bluetooth")
     }
 
-    local name = wibox.widget
-    {
+    local name = wibox.widget {
         widget = widgets.text,
         forced_width = dpi(600),
         forced_height = dpi(30),
         halign = "left",
         size = 12,
         text = device.Name,
-        color = beautiful.colors.on_surface,
+        color = beautiful.colors.on_surface
     }
 
-    local cancel = wibox.widget
-    {
+    local cancel = wibox.widget {
         widget = widgets.button.text.normal,
         normal_bg = beautiful.colors.surface,
         text_normal_bg = beautiful.colors.on_surface,
@@ -74,8 +72,7 @@ local function device_widget(device, path, layout, accent_color)
         end
     }
 
-    local connect_or_disconnect = wibox.widget
-    {
+    local connect_or_disconnect = wibox.widget {
         widget = widgets.button.text.normal,
         normal_bg = beautiful.colors.surface,
         text_normal_bg = beautiful.colors.on_surface,
@@ -90,8 +87,7 @@ local function device_widget(device, path, layout, accent_color)
         end
     }
 
-    local trust_or_untrust = wibox.widget
-    {
+    local trust_or_untrust = wibox.widget {
         widget = widgets.button.text.normal,
         normal_bg = beautiful.colors.surface,
         text_normal_bg = beautiful.colors.on_surface,
@@ -100,12 +96,14 @@ local function device_widget(device, path, layout, accent_color)
         on_press = function()
             local is_trusted = device.Trusted
             device:Set("org.bluez.Device1", "Trusted", lgi.GLib.Variant("b", not is_trusted))
-            device.Trusted = {signature = "b", value = not is_trusted}
+            device.Trusted = {
+                signature = "b",
+                value = not is_trusted
+            }
         end
     }
 
-    local pair_or_unpair = wibox.widget
-    {
+    local pair_or_unpair = wibox.widget {
         widget = widgets.button.text.normal,
         normal_bg = beautiful.colors.surface,
         text_normal_bg = beautiful.colors.on_surface,
@@ -120,8 +118,7 @@ local function device_widget(device, path, layout, accent_color)
         end
     }
 
-    widget = wibox.widget
-    {
+    widget = wibox.widget {
         widget = wibox.container.constraint,
         mode = "exact",
         height = dpi(60),
@@ -142,7 +139,7 @@ local function device_widget(device, path, layout, accent_color)
                     layout = wibox.layout.fixed.horizontal,
                     spacing = dpi(15),
                     device_icon,
-                    name,
+                    name
                 },
                 {
                     layout = wibox.layout.flex.horizontal,
@@ -156,14 +153,13 @@ local function device_widget(device, path, layout, accent_color)
         }
     }
 
-    anim = helpers.animation:new
-    {
+    anim = helpers.animation:new{
         pos = dpi(60),
         duration = 0.2,
         easing = helpers.animation.easing.linear,
         update = function(self, pos)
             widget.height = pos
-        end,
+        end
     }
 
     bluetooth_daemon:connect_signal(path .. "_removed", function(self)
@@ -176,7 +172,6 @@ local function device_widget(device, path, layout, accent_color)
         pair_or_unpair.text = device.Paired and "Unpair" or "Pair"
     end)
 
-
     capi.awesome.connect_signal("bluetooth_device_widget::expanded", function(toggled_on_widget)
         if toggled_on_widget ~= widget then
             widget:get_children_by_id("button")[1]:turn_off()
@@ -188,13 +183,12 @@ local function device_widget(device, path, layout, accent_color)
 end
 
 local function new()
-    local ret = gobject{}
+    local ret = gobject {}
     gtable.crush(ret, bluetooth, true)
 
     ret._private = {}
 
-    local header = wibox.widget
-    {
+    local header = wibox.widget {
         widget = widgets.text,
         halign = "left",
         bold = true,
@@ -202,8 +196,7 @@ local function new()
         text = "Bluetooth"
     }
 
-    local scan = wibox.widget
-    {
+    local scan = wibox.widget {
         widget = widgets.button.text.normal,
         text_normal_bg = beautiful.colors.on_background,
         icon = beautiful.icons.arrow_rotate_right,
@@ -213,8 +206,7 @@ local function new()
         end
     }
 
-    local settings = wibox.widget
-    {
+    local settings = wibox.widget {
         widget = widgets.button.text.normal,
         text_normal_bg = beautiful.colors.on_background,
         icon = beautiful.icons.gear,
@@ -224,38 +216,33 @@ local function new()
         end
     }
 
-    local layout = wibox.widget
-    {
+    local layout = wibox.widget {
         layout = widgets.overflow.vertical,
         forced_height = dpi(600),
         spacing = dpi(15),
-        scrollbar_widget =
-        {
+        scrollbar_widget = {
             widget = wibox.widget.separator,
-            shape = helpers.ui.rrect(beautiful.border_radius),
+            shape = helpers.ui.rrect(beautiful.border_radius)
         },
         scrollbar_width = dpi(10),
-        step = 50,
+        step = 50
     }
 
-    local no_bluetooth = wibox.widget
-    {
+    local no_bluetooth = wibox.widget {
         widget = widgets.text,
         halign = "center",
         icon = beautiful.icons.bluetooth.off,
-        size = 100,
+        size = 100
     }
 
-    local stack = wibox.widget
-    {
+    local stack = wibox.widget {
         layout = wibox.layout.stack,
         top_only = true,
         layout,
         no_bluetooth
     }
 
-    local seperator = wibox.widget
-    {
+    local seperator = wibox.widget {
         widget = wibox.widget.separator,
         forced_width = dpi(1),
         forced_height = dpi(1),
@@ -277,16 +264,14 @@ local function new()
         end
     end)
 
-    ret.widget = awful.popup
-    {
+    ret.widget = awful.popup {
         bg = beautiful.colors.background,
         ontop = true,
         visible = false,
         minimum_width = dpi(600),
         maximum_width = dpi(600),
         shape = helpers.ui.rrect(beautiful.border_radius),
-        widget =
-        {
+        widget = {
             widget = wibox.container.margin,
             margins = dpi(25),
             {

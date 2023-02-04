@@ -4,14 +4,15 @@
 -- @module filesystem
 -- @license GPL v3.0
 ---------------------------------------------------------------------------
-
 local async = require("helpers.async")
 local lgi = require("lgi")
 local GLib = lgi.GLib
 local Gio = lgi.Gio
 local File = require("helpers.filesystem.file")
 local gtimer = require("gears.timer")
-local capi = { awesome = awesome }
+local capi = {
+    awesome = awesome
+}
 
 local filesystem = {}
 
@@ -24,7 +25,6 @@ local function file_arg(arg)
         return arg
     end
 end
-
 
 --- Creates a directory at the given path.
 --
@@ -40,7 +40,8 @@ function filesystem.make_directory(path, cb)
     local f = file_arg(path)
 
     if cb == nil then
-        cb = function() end
+        cb = function()
+        end
     end
 
     f:make_directory_async(GLib.PRIORITY_DEFAULT, nil, function(_, token)
@@ -48,7 +49,6 @@ function filesystem.make_directory(path, cb)
         cb(err)
     end)
 end
-
 
 --- Iterates the contents of a directory.
 --
@@ -90,7 +90,8 @@ function filesystem.iterate_contents(dir, iteratee, options, cb)
     local BUFFER_SIZE = 50
     local f = file_arg(dir)
 
-    local outer_cb = cb or function() end
+    local outer_cb = cb or function()
+    end
 
     async.dag({
         enumerator = function(_, cb)
@@ -99,7 +100,7 @@ function filesystem.iterate_contents(dir, iteratee, options, cb)
                 cb(err, enumerator)
             end)
         end,
-        iterate = { "enumerator", function(results, cb)
+        iterate = {"enumerator", function(results, cb)
             local enumerator = table.unpack(results.enumerator)
 
             -- `next_files_async` reports errors in a two-step system. In the event of an error,
@@ -148,7 +149,7 @@ function filesystem.iterate_contents(dir, iteratee, options, cb)
             async.do_while(iterate, check, function(err)
                 cb(err)
             end)
-        end },
+        end}
     }, function(err, results)
         local enumerator = table.unpack(results.enumerator)
 
@@ -164,7 +165,6 @@ function filesystem.iterate_contents(dir, iteratee, options, cb)
         end)
     end)
 end
-
 
 --- Lists the contents of a directory.
 --
@@ -196,7 +196,7 @@ function filesystem.list_contents(dir, attributes, cb)
                 cb(err, enumerator)
             end)
         end,
-        list = { "enumerator", function(results, cb)
+        list = {"enumerator", function(results, cb)
             local enumerator = table.unpack(results.enumerator)
             local list = {}
 
@@ -225,7 +225,7 @@ function filesystem.list_contents(dir, attributes, cb)
             async.do_while(iterate, check, function(err)
                 cb(err, list)
             end)
-        end },
+        end}
     }, function(err, results)
         local enumerator = table.unpack(results.enumerator)
         local list = results.list and table.unpack(results.list)
@@ -243,7 +243,6 @@ function filesystem.list_contents(dir, attributes, cb)
     end)
 end
 
-
 --- Recursively removes a directory and its contents.
 --
 -- @since 0.2.0
@@ -257,7 +256,8 @@ function filesystem.remove_directory(dir, cb)
     local BUFFER_SIZE = 50
 
     if cb == nil then
-        cb = function() end
+        cb = function()
+        end
     end
 
     async.dag({
@@ -267,7 +267,7 @@ function filesystem.remove_directory(dir, cb)
                 cb(err, enumerator)
             end)
         end,
-        iterate = { "enumerator", function(results, cb)
+        iterate = {"enumerator", function(results, cb)
             local enumerator = table.unpack(results.enumerator)
 
             local function iterate(cb_iterate)
@@ -300,13 +300,13 @@ function filesystem.remove_directory(dir, cb)
             end
 
             async.do_while(iterate, check, cb)
-        end },
-        delete = { "iterate", function(_, cb)
+        end},
+        delete = {"iterate", function(_, cb)
             f:delete_async(priority, nil, function(_, token)
                 local _, err = f:delete_finish(token)
                 cb(err)
             end)
-        end },
+        end}
     }, function(err, results)
         local enumerator = table.unpack(results.enumerator)
 
@@ -338,8 +338,7 @@ function filesystem.remote_watch(path, uri, interval, callback, old_content_call
     end
 
     local timer
-    timer = gtimer
-    {
+    timer = gtimer {
         timeout = interval,
         call_now = true,
         autostart = true,
@@ -381,8 +380,7 @@ function filesystem.remote_watch(path, uri, interval, callback, old_content_call
 end
 
 function filesystem.get_config_dir(sub_folder)
-    return (os.getenv("XDG_CONFIG_HOME") or os.getenv("HOME") .. "/.config/")
-     .. sub_folder .. "/"
+    return (os.getenv("XDG_CONFIG_HOME") or os.getenv("HOME") .. "/.config/") .. sub_folder .. "/"
 end
 
 function filesystem.get_awesome_config_dir(sub_folder)
@@ -390,13 +388,11 @@ function filesystem.get_awesome_config_dir(sub_folder)
 end
 
 function filesystem.get_cache_dir(sub_folder)
-    return (os.getenv("XDG_CACHE_HOME") or os.getenv("HOME") .. "/.cache")
-    .. "/awesome/" .. sub_folder .. "/"
+    return (os.getenv("XDG_CACHE_HOME") or os.getenv("HOME") .. "/.cache") .. "/awesome/" .. sub_folder .. "/"
 end
 
 function filesystem.get_xdg_cache_home(sub_folder)
-    return (os.getenv("XDG_CACHE_HOME") or os.getenv("HOME") .. "/.cache")
-    .. "/" .. sub_folder .. "/"
+    return (os.getenv("XDG_CACHE_HOME") or os.getenv("HOME") .. "/.cache") .. "/" .. sub_folder .. "/"
 end
 
 return filesystem

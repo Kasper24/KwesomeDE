@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
@@ -15,7 +14,7 @@ local dpi = beautiful.xresources.apply_dpi
 local ipairs = ipairs
 local math = math
 
-local cpu = { }
+local cpu = {}
 local instance = nil
 
 function cpu:show(next_to)
@@ -41,8 +40,7 @@ function cpu:toggle(next_to)
 end
 
 local function separator()
-    return wibox.widget
-    {
+    return wibox.widget {
         widget = wibox.widget.separator,
         forced_width = dpi(1),
         forced_height = dpi(1),
@@ -53,38 +51,32 @@ local function separator()
 end
 
 local function new()
-    local ret = gobject{}
+    local ret = gobject {}
     gtable.crush(ret, cpu, true)
 
-    local scrollbox = wibox.widget
-    {
+    local scrollbox = wibox.widget {
         layout = widgets.overflow.vertical,
         forced_height = dpi(600),
         spacing = dpi(15),
-        scrollbar_widget =
-        {
+        scrollbar_widget = {
             widget = wibox.widget.separator,
-            shape = helpers.ui.rrect(beautiful.border_radius),
+            shape = helpers.ui.rrect(beautiful.border_radius)
         },
         scrollbar_width = dpi(10),
-        step = 50,
+        step = 50
     }
 
     local accent_color = beautiful.colors.random_accent_color()
-    local gradient_colors =
-    {
-        {0, beautiful.colors.random_accent_color()},
-        {0.33, beautiful.colors.random_accent_color()},
-        {0.66, beautiful.colors.random_accent_color()}
-    }
+    local gradient_colors = {{0, beautiful.colors.random_accent_color()},
+                             {0.33, beautiful.colors.random_accent_color()},
+                             {0.66, beautiful.colors.random_accent_color()}}
 
     cpu_daemon:connect_signal("update::full", function(self, cpus, processes)
         scrollbox:reset()
 
         if #cpus > 0 then
-            local header = wibox.widget
-            {
-                layout  = wibox.layout.fixed.horizontal,
+            local header = wibox.widget {
+                layout = wibox.layout.fixed.horizontal,
                 spacing = dpi(15),
                 {
                     widget = widgets.text,
@@ -101,7 +93,7 @@ local function new()
                     bold = true,
                     color = accent_color,
                     text = "Usage"
-                },
+                }
             }
 
             scrollbox:add(header)
@@ -109,21 +101,20 @@ local function new()
         end
 
         for index, cpu in ipairs(cpus) do
-            local widget = wibox.widget
-            {
-                layout  = wibox.layout.fixed.horizontal,
+            local widget = wibox.widget {
+                layout = wibox.layout.fixed.horizontal,
                 spacing = dpi(15),
                 {
                     widget = widgets.text,
                     forced_width = dpi(70),
                     halign = "left",
-                    text = cpu.name,
+                    text = cpu.name
                 },
                 {
                     widget = widgets.text,
                     forced_width = dpi(60),
                     halign = "left",
-                    text = math.floor(cpu.diff_usage) .. "%",
+                    text = math.floor(cpu.diff_usage) .. "%"
                 },
                 {
                     widget = wibox.widget.progressbar,
@@ -136,23 +127,21 @@ local function new()
                     max_value = 100,
                     value = cpu.diff_usage,
                     background_color = beautiful.colors.surface,
-                    color =
-                    {
+                    color = {
                         type = "linear",
                         from = {0, 0},
                         to = {300, 300},
                         stops = gradient_colors
-                    },
-                },
+                    }
+                }
             }
 
             scrollbox:add(widget)
         end
 
         if #processes > 0 then
-            local header = wibox.widget
-            {
-                layout  = wibox.layout.fixed.horizontal,
+            local header = wibox.widget {
+                layout = wibox.layout.fixed.horizontal,
                 {
                     widget = widgets.text,
                     forced_width = dpi(110),
@@ -184,7 +173,7 @@ local function new()
                     bold = true,
                     color = accent_color,
                     text = "%MEM"
-                },
+                }
             }
 
             scrollbox:add(separator())
@@ -193,32 +182,31 @@ local function new()
         end
 
         for index, process in ipairs(processes) do
-            local widget = wibox.widget
-            {
-                layout  = wibox.layout.fixed.horizontal,
+            local widget = wibox.widget {
+                layout = wibox.layout.fixed.horizontal,
                 {
                     widget = widgets.text,
                     forced_width = dpi(110),
                     halign = "left",
-                    text = process.pid,
+                    text = process.pid
                 },
                 {
                     widget = widgets.text,
                     forced_width = dpi(210),
                     halign = "left",
-                    text = process.comm,
+                    text = process.comm
                 },
                 {
                     widget = widgets.text,
                     forced_width = dpi(80),
                     halign = "left",
-                    text = process.cpu,
+                    text = process.cpu
                 },
                 {
                     widget = widgets.text,
                     forced_width = dpi(80),
                     halign = "left",
-                    text = process.mem,
+                    text = process.mem
                 },
                 {
                     widget = widgets.button.text.normal,
@@ -234,16 +222,14 @@ local function new()
         end
     end)
 
-    ret.widget = awful.popup
-    {
+    ret.widget = awful.popup {
         bg = beautiful.colors.background,
         ontop = true,
         visible = false,
         shape = helpers.ui.rrect(beautiful.border_radius),
         minimum_width = dpi(600),
         maximum_width = dpi(600),
-        widget =
-        {
+        widget = {
             widget = wibox.container.margin,
             margins = dpi(25),
             scrollbox

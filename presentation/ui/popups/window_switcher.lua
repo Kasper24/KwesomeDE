@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
@@ -13,13 +12,18 @@ local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local pairs = pairs
 local table = table
-local capi = { root = root, client = client }
+local capi = {
+    root = root,
+    client = client
+}
 
-local window_switcher  = { }
+local window_switcher = {}
 local instance = nil
 
 local function focus_client(client)
-    local is_valid = pcall(function() return client.valid end) and client.valid
+    local is_valid = pcall(function()
+        return client.valid
+    end) and client.valid
     if client == nil or not is_valid then
         return
     end
@@ -41,8 +45,7 @@ local function client_widget(self, client)
     local font_icon = beautiful.get_font_icon_for_app_name(client.class)
     local is_selected = client == self._private.selected_client
 
-    local widget = wibox.widget
-    {
+    local widget = wibox.widget {
         widget = wibox.container.constraint,
         mode = "max",
         width = dpi(300),
@@ -59,8 +62,7 @@ local function client_widget(self, client)
                 self:select_client(client)
                 self:hide()
             end,
-            child =
-            {
+            child = {
                 widget = wibox.container.margin,
                 margins = dpi(15),
                 {
@@ -72,8 +74,8 @@ local function client_widget(self, client)
                         {
                             widget = widgets.text,
                             halign = "center",
-                            valign ="center",
-                            icon = font_icon,
+                            valign = "center",
+                            icon = font_icon
                         },
                         {
                             widget = widgets.text,
@@ -94,8 +96,7 @@ local function client_widget(self, client)
 end
 
 local function clients_widget(self)
-    local clients_layout = wibox.widget
-    {
+    local clients_layout = wibox.widget {
         layout = wibox.layout.fixed.horizontal,
         spacing = dpi(15)
     }
@@ -111,8 +112,7 @@ local function clients_widget(self)
         end
     end
 
-    return wibox.widget
-    {
+    return wibox.widget {
         widget = wibox.container.background,
         shape = helpers.ui.rrect(beautiful.border_radius),
         bg = beautiful.colors.background_with_opacity(),
@@ -130,11 +130,7 @@ function window_switcher:select_client(client)
 end
 
 function window_switcher:cycle_clients(increase)
-    local client = gtable.cycle_value(
-        capi.client.get(),
-        self._private.selected_client,
-        (increase and 1 or -1)
-    )
+    local client = gtable.cycle_value(capi.client.get(), self._private.selected_client, (increase and 1 or -1))
     self:select_client(client)
 end
 
@@ -176,20 +172,19 @@ function window_switcher:toggle(keygrabber)
 end
 
 local function new()
-    local ret = gobject{}
+    local ret = gobject {}
     gtable.crush(ret, window_switcher)
 
     ret._private = {}
     ret._private.sorted_clients = {}
 
-    ret._private.widget = awful.popup
-    {
+    ret._private.widget = awful.popup {
         type = 'dropdown_menu',
         placement = awful.placement.centered,
         visible = false,
         ontop = true,
         bg = "#00000000",
-        widget = wibox.container.background, -- A dummy widget to make awful.popup not scream
+        widget = wibox.container.background -- A dummy widget to make awful.popup not scream
     }
 
     capi.client.connect_signal("manage", function()

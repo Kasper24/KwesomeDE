@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
@@ -13,7 +12,7 @@ local screenshot_daemon = require("daemons.system.screenshot")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 
-local screenshot = { }
+local screenshot = {}
 local instance = nil
 
 local path = ...
@@ -52,7 +51,9 @@ local window = [[ lua -e "
 ]]
 
 function screenshot:show()
-    helpers.client.run_or_raise_with_shell({class = "awesome-app-screenshot"}, false, window)
+    helpers.client.run_or_raise_with_shell({
+        class = "awesome-app-screenshot"
+    }, false, window)
     self._private.visible = true
 end
 
@@ -72,7 +73,7 @@ function screenshot:toggle()
 end
 
 local function new()
-    local ret = gobject{}
+    local ret = gobject {}
     gtable.crush(ret, screenshot, true)
 
     ret._private = {}
@@ -83,10 +84,16 @@ local function new()
     stack:add(require(path .. ".settings")(stack))
 
     ruled.client.connect_signal("request::rules", function()
-        ruled.client.append_rule
-        {
-            rule = { class = "awesome-app-screenshot" },
-            properties = { floating = true, width = dpi(420), height = 1, placement = awful.placement.centered },
+        ruled.client.append_rule {
+            rule = {
+                class = "awesome-app-screenshot"
+            },
+            properties = {
+                floating = true,
+                width = dpi(420),
+                height = 1,
+                placement = awful.placement.centered
+            },
             callback = function(c)
                 ret._private.client = c
 
@@ -103,13 +110,11 @@ local function new()
                 c.x = (c.screen.geometry.width / 2) - (dpi(550) / 2)
                 c.y = (c.screen.geometry.height / 2) - (dpi(280) / 2)
 
-                awful.titlebar(c,
-                {
+                awful.titlebar(c, {
                     position = "top",
                     size = dpi(280),
                     bg = beautiful.colors.background
-                }) : setup
-                {
+                }):setup{
                     widget = stack
                 }
             end

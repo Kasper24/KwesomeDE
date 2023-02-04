@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local gshape = require("gears.shape")
 local wibox = require("wibox")
 local widgets = require("presentation.ui.widgets")
@@ -13,13 +12,14 @@ local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 
-local settings = { mt = {} }
+local settings = {
+    mt = {}
+}
 
 local accent_color = beautiful.colors.random_accent_color()
 
 local function separator()
-    return wibox.widget
-    {
+    return wibox.widget {
         widget = wibox.widget.separator,
         forced_width = dpi(1),
         forced_height = dpi(1),
@@ -30,15 +30,13 @@ local function separator()
 end
 
 local function command_after_generation()
-    local title = wibox.widget
-    {
+    local title = wibox.widget {
         widget = widgets.text,
         -- size = 15,
         text = "Command after generation: "
     }
 
-    local prompt = wibox.widget
-    {
+    local prompt = wibox.widget {
         widget = widgets.prompt,
         forced_width = dpi(600),
         forced_height = dpi(50),
@@ -53,8 +51,7 @@ local function command_after_generation()
         end
     }
 
-    return wibox.widget
-    {
+    return wibox.widget {
         layout = wibox.layout.fixed.horizontal,
         title,
         prompt.widget
@@ -62,18 +59,18 @@ local function command_after_generation()
 end
 
 local function picom_checkbox(key)
-    local display_name = key:gsub("(%l)(%w*)", function(a,b) return string.upper(a)..b end)
-    display_name = display_name:gsub("-", " ")  .. ": "
+    local display_name = key:gsub("(%l)(%w*)", function(a, b)
+        return string.upper(a) .. b
+    end)
+    display_name = display_name:gsub("-", " ") .. ": "
 
-    local name = wibox.widget
-    {
+    local name = wibox.widget {
         widget = widgets.text,
         size = 15,
         text = display_name
     }
 
-    local checkbox = wibox.widget
-    {
+    local checkbox = wibox.widget {
         widget = widgets.checkbox,
         state = picom_daemon["get_" .. key](picom_daemon),
         color = accent_color,
@@ -85,8 +82,7 @@ local function picom_checkbox(key)
         end
     }
 
-    return wibox.widget
-    {
+    return wibox.widget {
         layout = wibox.layout.fixed.horizontal,
         spacing = dpi(15),
         name,
@@ -95,18 +91,18 @@ local function picom_checkbox(key)
 end
 
 local function picom_slider(key, max, divide_by, round)
-    local display_name = key:gsub("(%l)(%w*)", function(a,b) return string.upper(a)..b end)
-    display_name = display_name:gsub("-", " ")  .. ": "
+    local display_name = key:gsub("(%l)(%w*)", function(a, b)
+        return string.upper(a) .. b
+    end)
+    display_name = display_name:gsub("-", " ") .. ": "
 
-    local name = wibox.widget
-    {
+    local name = wibox.widget {
         widget = widgets.text,
         size = 15,
         text = display_name
     }
 
-    local slider = wibox.widget
-    {
+    local slider = wibox.widget {
         widget = widgets.slider,
         forced_width = dpi(420),
         forced_height = dpi(20),
@@ -118,11 +114,10 @@ local function picom_slider(key, max, divide_by, round)
         bar_active_color = accent_color,
         handle_width = dpi(15),
         handle_color = beautiful.colors.on_background,
-        handle_shape = gshape.circle,
+        handle_shape = gshape.circle
     }
 
-    local value_text = wibox.widget
-    {
+    local value_text = wibox.widget {
         widget = widgets.text,
         size = 15,
         text = picom_daemon["get_" .. key](picom_daemon)
@@ -137,13 +132,14 @@ local function picom_slider(key, max, divide_by, round)
         picom_daemon["set_" .. key](picom_daemon, value)
     end)
 
-    return wibox.widget
-    {
+    return wibox.widget {
         layout = wibox.layout.align.horizontal,
         name,
         {
             widget = wibox.container.margin,
-            margins = { right = dpi(15) },
+            margins = {
+                right = dpi(15)
+            },
             slider
         },
         value_text
@@ -151,8 +147,7 @@ local function picom_slider(key, max, divide_by, round)
 end
 
 local function new(layout)
-    local back_button = wibox.widget
-    {
+    local back_button = wibox.widget {
         widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
@@ -162,16 +157,14 @@ local function new(layout)
         end
     }
 
-    local settings_text = wibox.widget
-    {
+    local settings_text = wibox.widget {
         widget = widgets.text,
         bold = true,
         size = 15,
-        text = "Settings",
+        text = "Settings"
     }
 
-    return wibox.widget
-    {
+    return wibox.widget {
         layout = wibox.layout.fixed.vertical,
         spacing = dpi(15),
         {
@@ -182,13 +175,15 @@ local function new(layout)
         },
         {
             widget = wibox.container.margin,
-            margins = { left = dpi(25), right = dpi(25) },
+            margins = {
+                left = dpi(25),
+                right = dpi(25)
+            },
             {
                 layout = widgets.overflow.vertical,
-                scrollbar_widget =
-                {
+                scrollbar_widget = {
                     widget = wibox.widget.separator,
-                    shape = helpers.ui.rrect(beautiful.border_radius),
+                    shape = helpers.ui.rrect(beautiful.border_radius)
                 },
                 scrollbar_width = dpi(10),
                 step = 50,
@@ -217,7 +212,7 @@ local function new(layout)
                 picom_slider("fade-delta", 100, 1, true),
                 picom_slider("fade-in-step", 100, 100, false),
                 picom_slider("fade-out-step", 100, 100, false),
-                picom_checkbox("fading"),
+                picom_checkbox("fading")
             }
         }
     }

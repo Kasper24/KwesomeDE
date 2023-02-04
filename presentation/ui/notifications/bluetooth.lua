@@ -2,40 +2,23 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local beautiful = require("beautiful")
 local naughty = require("naughty")
 local bluetooth_daemon = require("daemons.hardware.bluetooth")
 local helpers = require("helpers")
 
-local bluetooth_icons =
-{
-    "bluetooth",
-    "bluetooth-48",
-    "bluetooth-radio",
-    "gnome-bluetooth",
-    "preferences-bluetooth"
-}
+local bluetooth_icons = {"bluetooth", "bluetooth-48", "bluetooth-radio", "gnome-bluetooth", "preferences-bluetooth"}
 
 bluetooth_daemon:connect_signal("state", function(self, state)
     if helpers.misc.should_show_notification() == true then
         local text = state == true and "Enabled" or "Disabled"
         local font_icon = state == true and beautiful.icons.bluetooth.on or beautiful.icons.bluetooth.off
-        local icons = state == true and bluetooth_icons
-        or
-        {
-            "bluetooth-inactive",
-            "blueman-disabled",
-            "bluetooth",
-            "bluetooth-48",
-            "bluetooth-radio",
-            "gnome-bluetooth",
-            "preferences-bluetooth"
-        }
+        local icons = state == true and bluetooth_icons or
+                          {"bluetooth-inactive", "blueman-disabled", "bluetooth", "bluetooth-48", "bluetooth-radio",
+                           "gnome-bluetooth", "preferences-bluetooth"}
         local category = state == true and "device.added" or "device.removed"
 
-        naughty.notification
-        {
+        naughty.notification {
             app_font_icon = beautiful.icons.bluetooth.on,
             app_icon = bluetooth_icons,
             app_name = "Bluetooth",
@@ -61,8 +44,7 @@ bluetooth_daemon:connect_signal("device_event", function(self, event, device)
         category = device.Connected == true and "device.added" or "device.removed"
     end
 
-    naughty.notification
-    {
+    naughty.notification {
         app_font_icon = beautiful.icons.bluetooth.on,
         app_icon = bluetooth_icons,
         app_name = "Bluetooth",

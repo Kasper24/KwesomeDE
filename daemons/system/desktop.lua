@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local Gio = require("lgi").Gio
 local awful = require("awful")
 local gobject = require("gears.object")
@@ -11,9 +10,11 @@ local helpers = require("helpers")
 local ipairs = ipairs
 local pairs = pairs
 local os = os
-local capi = { screen = screen }
+local capi = {
+    screen = screen
+}
 
-local desktop = { }
+local desktop = {}
 local instance = nil
 
 local grid = {}
@@ -23,8 +24,7 @@ local DATA_PATH = helpers.filesystem.get_cache_dir("desktop") .. "data.json"
 local DESKTOP_PATH = "/home/" .. os.getenv("USER") .. "/Desktop"
 
 local function get_grid_pos_from_real_pos(self, pos)
-    return
-    {
+    return {
         x = pos.x / self._private.cell_size,
         y = pos.y / self._private.cell_size
     }
@@ -34,12 +34,14 @@ function desktop:ask_for_new_position(widget, path)
     local new_x = helpers.misc.round_by_factor(widget.x, self._private.cell_size)
     local new_y = helpers.misc.round_by_factor(widget.y, self._private.cell_size)
 
-    local new_grid_pos = get_grid_pos_from_real_pos(self, {x = new_x, y = new_y})
+    local new_grid_pos = get_grid_pos_from_real_pos(self, {
+        x = new_x,
+        y = new_y
+    })
 
-    if  (new_x >= awful.screen.focused().left_wibar.maximum_width) and
+    if (new_x >= awful.screen.focused().left_wibar.maximum_width) and
         (new_y >= awful.screen.focused().top_wibar.maximum_height) and
-        (grid[new_grid_pos.x][new_grid_pos.y].empty == true)
-    then
+        (grid[new_grid_pos.x][new_grid_pos.y].empty == true) then
         local old_grid_pos = get_grid_pos_from_real_pos(self, widget.pos_before_move)
         grid[old_grid_pos.x][old_grid_pos.y].empty = true
         grid[new_grid_pos.x][new_grid_pos.y].empty = false
@@ -48,16 +50,16 @@ function desktop:ask_for_new_position(widget, path)
         desktop_icons[path].y = new_grid_pos.y
 
         local file = helpers.file.new_for_path(path)
-        file:write(helpers.json.encode(desktop_icons, { indent = true }))
+        file:write(helpers.json.encode(desktop_icons, {
+            indent = true
+        }))
 
-        return
-        {
+        return {
             x = new_x,
             y = new_y
         }
     else
-        return
-        {
+        return {
             x = widget.pos_before_move.x,
             y = widget.pos_before_move.y
         }
@@ -76,22 +78,20 @@ end
 
 local function on_desktop_icon_added(self, pos, path, name, mimetype)
     grid[pos.x][pos.y].empty = false
-    desktop_icons[path] = { x = pos.x, y = pos.y }
-    self:emit_signal(
-        "new",
-        {
-            x = pos.x * self._private.cell_size,
-            y = pos.y * self._private.cell_size
-        },
-        path,
-        name,
-        mimetype
-    )
+    desktop_icons[path] = {
+        x = pos.x,
+        y = pos.y
+    }
+    self:emit_signal("new", {
+        x = pos.x * self._private.cell_size,
+        y = pos.y * self._private.cell_size
+    }, path, name, mimetype)
 
     local file = helpers.file.new_for_path(path)
-    file:write(helpers.json.encode(desktop_icons, { indent = true }))
+    file:write(helpers.json.encode(desktop_icons, {
+        indent = true
+    }))
 end
-
 
 local function on_desktop_icon_removed(self, path)
     self:emit_signal(path .. "_removed")
@@ -100,27 +100,25 @@ local function on_desktop_icon_removed(self, path)
 
     desktop_icons[path] = nil
     local file = helpers.file.new_for_path(path)
-    file:write(helpers.json.encode(desktop_icons, { indent = true }))
+    file:write(helpers.json.encode(desktop_icons, {
+        indent = true
+    }))
 end
 
 local function watch_desktop_directory(self)
     local watcher = helpers.inotify:watch(DESKTOP_PATH,
-    {
-        helpers.inotify.Events.create,
-        helpers.inotify.Events.delete,
-        helpers.inotify.Events.moved_from,
-        helpers.inotify.Events.moved_to,
-    })
+        {helpers.inotify.Events.create, helpers.inotify.Events.delete, helpers.inotify.Events.moved_from,
+         helpers.inotify.Events.moved_to})
 
     watcher:connect_signal("event", function(_, event, path, file)
-        if  event == helpers.inotify.Events.create or event == helpers.inotify.Events.moved_to then
+        if event == helpers.inotify.Events.create or event == helpers.inotify.Events.moved_to then
             local mimetype = Gio.content_type_guess(path)
             on_desktop_icon_added(self, get_position_for_new_desktop_file(), path, file, mimetype)
-        elseif event == helpers.inotify.Events.create .. ",isdir" or event == helpers.inotify.Events.moved_to .. ",isdir" then
+        elseif event == helpers.inotify.Events.create .. ",isdir" or event == helpers.inotify.Events.moved_to ..
+            ",isdir" then
             on_desktop_icon_added(self, get_position_for_new_desktop_file(), path, file, "folder")
-        elseif  event == helpers.inotify.Events.delete or event == helpers.inotify.Events.moved_from  or
-                event == helpers.inotify.Events.delete ..",isdir" or event == helpers.inotify.Events.moved_from ..",isdir"
-        then
+        elseif event == helpers.inotify.Events.delete or event == helpers.inotify.Events.moved_from or event ==
+            helpers.inotify.Events.delete .. ",isdir" or event == helpers.inotify.Events.moved_from .. ",isdir" then
             on_desktop_icon_removed(self, path)
         end
     end)
@@ -160,16 +158,20 @@ end
 local function generate_grid()
     local rows = (capi.screen.primary.geometry.width - 100) / 100
     local columns = (capi.screen.primary.geometry.height - 100) / 100
-    for i = 1, rows  do
+    for i = 1, rows do
         grid[i] = {}
         for j = 1, columns do
-            grid[i][j] = { x = i, y = j, empty = true }
+            grid[i][j] = {
+                x = i,
+                y = j,
+                empty = true
+            }
         end
     end
 end
 
 local function new()
-    local ret = gobject{}
+    local ret = gobject {}
     gtable.crush(ret, desktop, true)
 
     ret._private = {}

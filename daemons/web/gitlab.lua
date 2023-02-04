@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
@@ -10,7 +9,7 @@ local helpers = require("helpers")
 local string = string
 local ipairs = ipairs
 
-local gitlab = { }
+local gitlab = {}
 local instance = nil
 
 local link = "%s/api/v4/merge_requests?private_token=%s"
@@ -41,11 +40,8 @@ end
 function gitlab:refresh()
     local old_data = nil
 
-    helpers.filesystem.remote_watch(
-        DATA_PATH,
-        string.format(link, self._private.host, self._private.access_token),
-        UPDATE_INTERVAL,
-        function(content)
+    helpers.filesystem.remote_watch(DATA_PATH, string.format(link, self._private.host, self._private.access_token),
+        UPDATE_INTERVAL, function(content)
             local data = helpers.json.decode(content)
             if data == nil then
                 self:emit_signal("error")
@@ -84,19 +80,17 @@ function gitlab:refresh()
                     end
                 end)
             end
-        end,
-        function(old_content)
+        end, function(old_content)
             local data = helpers.json.decode(old_content) or {}
             old_data = {}
             for _, pr in ipairs(data) do
                 old_data[pr.id] = pr.id
             end
-        end
-    )
+        end)
 end
 
 local function new()
-    local ret = gobject{}
+    local ret = gobject {}
     gtable.crush(ret, gitlab, true)
 
     ret._private = {}

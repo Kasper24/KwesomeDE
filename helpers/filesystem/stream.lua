@@ -4,14 +4,12 @@
 -- @module stream
 -- @license GPL v3.0
 ---------------------------------------------------------------------------
-
 local async = require("helpers.async")
 local lgi = require("lgi")
 local Gio = lgi.Gio
 local GLib = lgi.GLib
 
 local stream = {}
-
 
 --- Constructors
 -- @section constructors
@@ -29,7 +27,6 @@ function stream.new_dummy_input()
     return Gio.MemoryInputStream.new()
 end
 
-
 --- Creates a dummy output stream.
 --
 -- Gio currently supports asynchronous splicing only between IOStreams, which combine both an input and output stream.
@@ -42,7 +39,6 @@ end
 function stream.new_dummy_output()
     return Gio.MemoryOutputStream.new()
 end
-
 
 --- Combines an input and output stream into a single IOStream.
 --
@@ -59,10 +55,8 @@ function stream.to_io_stream(input_stream, output_stream)
     return Gio.SimpleIOStream.new(input_stream, output_stream)
 end
 
-
 --- Utilities
 -- @section utilities
-
 
 --- Reads the entire stream into memory.
 --

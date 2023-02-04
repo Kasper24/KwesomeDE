@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
@@ -20,7 +19,7 @@ local theme_app = require("presentation.ui.apps.theme")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 
-local welcome = { }
+local welcome = {}
 local instance = nil
 
 local window = [[ lua -e "
@@ -59,7 +58,9 @@ local window = [[ lua -e "
 local accent_color = beautiful.colors.random_accent_color()
 
 function welcome:show()
-    helpers.client.run_or_raise_with_shell({class = "awesome-app-welcome"}, false, window)
+    helpers.client.run_or_raise_with_shell({
+        class = "awesome-app-welcome"
+    }, false, window)
     self._private.visible = true
 end
 
@@ -83,8 +84,7 @@ function welcome:toggle()
 end
 
 local function indicator(active)
-    return wibox.widget
-    {
+    return wibox.widget {
         widget = wibox.container.background,
         forced_width = dpi(20),
         shape = gshape.circle,
@@ -93,33 +93,29 @@ local function indicator(active)
 end
 
 local function last_page(on_next_pressed)
-    local icon = wibox.widget
-    {
+    local icon = wibox.widget {
         widget = widgets.text,
         halign = "center",
         icon = beautiful.icons.circle_check,
-        size = 120,
+        size = 120
     }
 
-    local title = wibox.widget
-    {
+    local title = wibox.widget {
         widget = widgets.text,
         halign = "center",
         size = 30,
         text = "Congratulations"
     }
 
-    local description = wibox.widget
-    {
+    local description = wibox.widget {
         widget = widgets.text,
         halign = "center",
         size = 13,
         text = [[Your system is now ready to be used!
-For more information visit the following links.]],
+For more information visit the following links.]]
     }
 
-    local github_link = wibox.widget
-    {
+    local github_link = wibox.widget {
         widget = widgets.button.text.normal,
         forced_width = dpi(300),
         size = 13,
@@ -127,11 +123,10 @@ For more information visit the following links.]],
         text = "Github...",
         on_press = function()
             awful.spawn("xdg-open ", false)
-        end,
+        end
     }
 
-    local reddit_link = wibox.widget
-    {
+    local reddit_link = wibox.widget {
         widget = widgets.button.text.normal,
         forced_width = dpi(300),
         size = 13,
@@ -139,11 +134,10 @@ For more information visit the following links.]],
         text = "Reddit...",
         on_press = function()
             awful.spawn("xdg-open ", false)
-        end,
+        end
     }
 
-    local awesome_link = wibox.widget
-    {
+    local awesome_link = wibox.widget {
         widget = widgets.button.text.normal,
         forced_width = dpi(300),
         size = 13,
@@ -151,11 +145,10 @@ For more information visit the following links.]],
         text = "Awesome...",
         on_press = function()
             awful.spawn("xdg-open https://awesomewm.org/apidoc/", false)
-        end,
+        end
     }
 
-    local finish_button = wibox.widget
-    {
+    local finish_button = wibox.widget {
         widget = widgets.button.text.normal,
         text_normal_bg = accent_color,
         size = 13,
@@ -163,11 +156,10 @@ For more information visit the following links.]],
         on_press = function()
             on_next_pressed()
             helpers.settings:set_value("initial", false)
-        end,
+        end
     }
 
-    return wibox.widget
-    {
+    return wibox.widget {
         widget = wibox.container.margin,
         margins = dpi(15),
         {
@@ -182,19 +174,19 @@ For more information visit the following links.]],
                     widget = wibox.container.place,
                     halign = "center",
                     valign = "center",
-                    github_link,
+                    github_link
                 },
                 {
                     widget = wibox.container.place,
                     halign = "center",
                     valign = "center",
-                    reddit_link,
+                    reddit_link
                 },
                 {
                     widget = wibox.container.place,
                     halign = "center",
                     valign = "center",
-                    awesome_link,
+                    awesome_link
                 }
             },
             nil,
@@ -204,24 +196,21 @@ For more information visit the following links.]],
 end
 
 local function weather_page(on_next_pressed, on_previous_pressed)
-    local icon = wibox.widget
-    {
+    local icon = wibox.widget {
         widget = widgets.text,
         halign = "center",
         icon = beautiful.icons.clouds,
-        size = 120,
+        size = 120
     }
 
-    local title = wibox.widget
-    {
+    local title = wibox.widget {
         widget = widgets.text,
         halign = "center",
         size = 30,
         text = "Weather"
     }
 
-    local sign_up_open_weather_map = wibox.widget
-    {
+    local sign_up_open_weather_map = wibox.widget {
         widget = widgets.button.text.normal,
         size = 13,
         text_normal_bg = beautiful.colors.on_background,
@@ -231,8 +220,7 @@ local function weather_page(on_next_pressed, on_previous_pressed)
         end
     }
 
-    local visit_the_api_key_tab = wibox.widget
-    {
+    local visit_the_api_key_tab = wibox.widget {
         widget = widgets.button.text.normal,
         size = 13,
         text_normal_bg = beautiful.colors.on_background,
@@ -242,24 +230,21 @@ local function weather_page(on_next_pressed, on_previous_pressed)
         end
     }
 
-    local generate_key = wibox.widget
-    {
+    local generate_key = wibox.widget {
         widget = widgets.button.text.normal,
         size = 13,
         text_normal_bg = beautiful.colors.on_background,
-        text = "3. Select a name for your key and click generate",
+        text = "3. Select a name for your key and click generate"
     }
 
-    local copy_and_paste_key = wibox.widget
-    {
+    local copy_and_paste_key = wibox.widget {
         widget = widgets.button.text.normal,
         size = 13,
         text_normal_bg = beautiful.colors.on_background,
-        text = "4. Copy the generated key and paste it in the prompt below",
+        text = "4. Copy the generated key and paste it in the prompt below"
     }
 
-    local api_key_prompt = wibox.widget
-    {
+    local api_key_prompt = wibox.widget {
         widget = widgets.prompt,
         forced_width = dpi(250),
         forced_height = dpi(50),
@@ -269,11 +254,10 @@ local function weather_page(on_next_pressed, on_previous_pressed)
         icon_font = beautiful.icons.lock.font,
         icon = beautiful.icons.lock.icon,
         icon_color = beautiful.colors.on_background,
-        text_color = beautiful.colors.on_background,
+        text_color = beautiful.colors.on_background
     }
 
-    local coordinate_x_prompt = wibox.widget
-    {
+    local coordinate_x_prompt = wibox.widget {
         widget = widgets.prompt,
         forced_width = dpi(250),
         forced_height = dpi(50),
@@ -283,11 +267,10 @@ local function weather_page(on_next_pressed, on_previous_pressed)
         icon_font = beautiful.icons.location_dot.font,
         icon = beautiful.icons.location_dot.icon,
         icon_color = beautiful.colors.on_background,
-        text_color = beautiful.colors.on_background,
+        text_color = beautiful.colors.on_background
     }
 
-    local coordinate_y_prompt = wibox.widget
-    {
+    local coordinate_y_prompt = wibox.widget {
         widget = widgets.prompt,
         forced_width = dpi(250),
         forced_height = dpi(50),
@@ -297,39 +280,35 @@ local function weather_page(on_next_pressed, on_previous_pressed)
         icon_font = beautiful.icons.location_dot.font,
         icon = beautiful.icons.location_dot.icon,
         icon_color = beautiful.colors.on_background,
-        fg_cursor = beautiful.colors.on_background,
+        fg_cursor = beautiful.colors.on_background
     }
 
-    local unit_dropdown = widgets.dropdown
-    {
+    local unit_dropdown = widgets.dropdown {
         forced_width = dpi(250),
         forced_height = dpi(50),
         prompt = "Unit: ",
         initial_value = weather_daemon:get_unit(),
-        values =
-        {
+        values = {
             ["metric"] = "metric",
             ["imperial"] = "imperial",
-            ["standard"] = "standard",
+            ["standard"] = "standard"
         },
         on_value_selected = function(value)
 
         end
     }
 
-    local back_button = wibox.widget
-    {
+    local back_button = wibox.widget {
         widget = widgets.button.text.normal,
         text_normal_bg = accent_color,
         size = 13,
         text = "Back",
         on_press = function()
             on_previous_pressed()
-        end,
+        end
     }
 
-    local next_button = wibox.widget
-    {
+    local next_button = wibox.widget {
         widget = widgets.button.text.normal,
         text_normal_bg = accent_color,
         size = 13,
@@ -341,11 +320,10 @@ local function weather_page(on_next_pressed, on_previous_pressed)
             weather_daemon:set_coordinate_y(coordinate_y_prompt:get_text())
             weather_daemon:refresh()
             on_next_pressed()
-        end,
+        end
     }
 
-    return wibox.widget
-    {
+    return wibox.widget {
         widget = wibox.container.margin,
         margins = dpi(15),
         {
@@ -366,19 +344,19 @@ local function weather_page(on_next_pressed, on_previous_pressed)
                         widget = wibox.container.place,
                         halign = "center",
                         valign = "center",
-                        api_key_prompt.widget,
+                        api_key_prompt.widget
                     },
                     {
                         widget = wibox.container.place,
                         halign = "center",
                         valign = "center",
-                        coordinate_x_prompt.widget,
+                        coordinate_x_prompt.widget
                     },
                     {
                         widget = wibox.container.place,
                         halign = "center",
                         valign = "center",
-                        coordinate_y_prompt.widget,
+                        coordinate_y_prompt.widget
                     },
                     {
                         widget = wibox.container.place,
@@ -386,7 +364,7 @@ local function weather_page(on_next_pressed, on_previous_pressed)
                         valign = "center",
                         unit_dropdown
                     }
-                },
+                }
             },
             nil,
             {
@@ -395,7 +373,10 @@ local function weather_page(on_next_pressed, on_previous_pressed)
                 back_button,
                 {
                     widget = wibox.container.margin,
-                    margins = { left = dpi(20), right = dpi(20) },
+                    margins = {
+                        left = dpi(20),
+                        right = dpi(20)
+                    },
                     {
                         layout = wibox.layout.fixed.horizontal,
                         spacing = dpi(30),
@@ -405,35 +386,32 @@ local function weather_page(on_next_pressed, on_previous_pressed)
                         indicator(false),
                         indicator(false),
                         indicator(true),
-                        indicator(false),
+                        indicator(false)
                     }
                 },
                 next_button
-            },
+            }
         }
     }
 end
 
 local function gitlab_page(on_next_pressed, on_previous_pressed)
-    local icon = wibox.widget
-    {
+    local icon = wibox.widget {
         widget = widgets.text,
         halign = "center",
         size = 120,
         icon = beautiful.icons.gitlab,
-        size = 120,
+        size = 120
     }
 
-    local title = wibox.widget
-    {
+    local title = wibox.widget {
         widget = widgets.text,
         halign = "center",
         size = 30,
         text = "Gitlab"
     }
 
-    local login_on_gitlab = wibox.widget
-    {
+    local login_on_gitlab = wibox.widget {
         widget = widgets.button.text.normal,
         size = 13,
         text_normal_bg = beautiful.colors.on_background,
@@ -443,8 +421,7 @@ local function gitlab_page(on_next_pressed, on_previous_pressed)
         end
     }
 
-    local visit_access_tokens_tab = wibox.widget
-    {
+    local visit_access_tokens_tab = wibox.widget {
         widget = widgets.button.text.normal,
         size = 13,
         text_normal_bg = beautiful.colors.on_background,
@@ -454,32 +431,28 @@ local function gitlab_page(on_next_pressed, on_previous_pressed)
         end
     }
 
-    local enter_a_name_and_date = wibox.widget
-    {
+    local enter_a_name_and_date = wibox.widget {
         widget = widgets.button.text.normal,
         size = 13,
         text_normal_bg = beautiful.colors.on_background,
-        text = "3. Enter a name and optional expiry date for the token.",
+        text = "3. Enter a name and optional expiry date for the token."
     }
 
-    local select_the_desired_scopes = wibox.widget
-    {
+    local select_the_desired_scopes = wibox.widget {
         widget = widgets.button.text.normal,
         size = 13,
         text_normal_bg = beautiful.colors.on_background,
-        text = "4. Select the desired scopes.",
+        text = "4. Select the desired scopes."
     }
 
-    local press_create_access_token = wibox.widget
-    {
+    local press_create_access_token = wibox.widget {
         widget = widgets.button.text.normal,
         size = 13,
         text_normal_bg = beautiful.colors.on_background,
-        text = "5. Press Create personal access token.",
+        text = "5. Press Create personal access token."
     }
 
-    local host_prompt = wibox.widget
-    {
+    local host_prompt = wibox.widget {
         widget = widgets.prompt,
         forced_width = dpi(300),
         forced_height = dpi(50),
@@ -489,11 +462,10 @@ local function gitlab_page(on_next_pressed, on_previous_pressed)
         icon_font = beautiful.icons.server.font,
         icon = beautiful.icons.server.icon,
         icon_color = beautiful.colors.on_background,
-        text_color = beautiful.colors.on_background,
+        text_color = beautiful.colors.on_background
     }
 
-    local access_token_prompt = wibox.widget
-    {
+    local access_token_prompt = wibox.widget {
         widget = widgets.prompt,
         forced_width = dpi(300),
         forced_height = dpi(50),
@@ -503,22 +475,20 @@ local function gitlab_page(on_next_pressed, on_previous_pressed)
         icon_font = beautiful.icons.lock.font,
         icon = beautiful.icons.lock.icon,
         icon_color = beautiful.colors.on_background,
-        text_color = beautiful.colors.on_background,
+        text_color = beautiful.colors.on_background
     }
 
-    local back_button = wibox.widget
-    {
+    local back_button = wibox.widget {
         widget = widgets.button.text.normal,
         text_normal_bg = accent_color,
         size = 13,
         text = "Back",
         on_press = function()
             on_previous_pressed()
-        end,
+        end
     }
 
-    local next_button = wibox.widget
-    {
+    local next_button = wibox.widget {
         widget = widgets.button.text.normal,
         text_normal_bg = accent_color,
         size = 13,
@@ -528,11 +498,10 @@ local function gitlab_page(on_next_pressed, on_previous_pressed)
             gitlab_daemon:set_host(host_prompt:get_text())
             gitlab_daemon:refresh()
             on_next_pressed()
-        end,
+        end
     }
 
-    return wibox.widget
-    {
+    return wibox.widget {
         widget = wibox.container.margin,
         margins = dpi(15),
         {
@@ -551,13 +520,13 @@ local function gitlab_page(on_next_pressed, on_previous_pressed)
                     widget = wibox.container.place,
                     halign = "center",
                     valign = "center",
-                    access_token_prompt.widget,
+                    access_token_prompt.widget
                 },
                 {
                     widget = wibox.container.place,
                     halign = "center",
                     valign = "center",
-                    host_prompt.widget,
+                    host_prompt.widget
                 }
             },
             nil,
@@ -567,7 +536,10 @@ local function gitlab_page(on_next_pressed, on_previous_pressed)
                 back_button,
                 {
                     widget = wibox.container.margin,
-                    margins = { left = dpi(20), right = dpi(20) },
+                    margins = {
+                        left = dpi(20),
+                        right = dpi(20)
+                    },
                     {
                         layout = wibox.layout.fixed.horizontal,
                         spacing = dpi(30),
@@ -577,42 +549,38 @@ local function gitlab_page(on_next_pressed, on_previous_pressed)
                         indicator(false),
                         indicator(true),
                         indicator(false),
-                        indicator(false),
+                        indicator(false)
                     }
                 },
                 next_button
-            },
+            }
         }
     }
 end
 
 local function github_page(on_next_pressed, on_previous_pressed)
-    local icon = wibox.widget
-    {
+    local icon = wibox.widget {
         widget = widgets.text,
         halign = "center",
         icon = beautiful.icons.github,
-        size = 120,
+        size = 120
     }
 
-    local title = wibox.widget
-    {
+    local title = wibox.widget {
         widget = widgets.text,
         halign = "center",
         size = 30,
         text = "Github"
     }
 
-    local description = wibox.widget
-    {
+    local description = wibox.widget {
         widget = widgets.text,
         halign = "center",
         size = 13,
-        text = "Please fill your GitHub username in order for the GitHub panel info to show.",
+        text = "Please fill your GitHub username in order for the GitHub panel info to show."
     }
 
-    local username_prompt = wibox.widget
-    {
+    local username_prompt = wibox.widget {
         widget = widgets.prompt,
         forced_width = dpi(300),
         forced_height = dpi(50),
@@ -622,22 +590,20 @@ local function github_page(on_next_pressed, on_previous_pressed)
         icon_font = beautiful.icons.user.font,
         icon = beautiful.icons.user.icon,
         icon_color = beautiful.colors.on_background,
-        text_color = beautiful.colors.on_background,
+        text_color = beautiful.colors.on_background
     }
 
-    local back_button = wibox.widget
-    {
+    local back_button = wibox.widget {
         widget = widgets.button.text.normal,
         text_normal_bg = accent_color,
         size = 13,
         text = "Back",
         on_press = function()
             on_previous_pressed()
-        end,
+        end
     }
 
-    local next_button = wibox.widget
-    {
+    local next_button = wibox.widget {
         widget = widgets.button.text.normal,
         text_normal_bg = accent_color,
         size = 13,
@@ -646,11 +612,10 @@ local function github_page(on_next_pressed, on_previous_pressed)
             github_daemon:set_username(username_prompt:get_text())
             github_daemon:refresh()
             on_next_pressed()
-        end,
+        end
     }
 
-    return wibox.widget
-    {
+    return wibox.widget {
         widget = wibox.container.margin,
         margins = dpi(15),
         {
@@ -665,154 +630,7 @@ local function github_page(on_next_pressed, on_previous_pressed)
                     widget = wibox.container.place,
                     halign = "center",
                     valign = "center",
-                    username_prompt.widget,
-                },
-            },
-            nil,
-            {
-                layout = wibox.layout.align.horizontal,
-                expand = "outside",
-                back_button,
-                {
-                    widget = wibox.container.margin,
-                    margins = { left = dpi(20), right = dpi(20) },
-                    {
-                        layout = wibox.layout.fixed.horizontal,
-                        spacing = dpi(30),
-                        indicator(false),
-                        indicator(false),
-                        indicator(false),
-                        indicator(true),
-                        indicator(false),
-                        indicator(false),
-                        indicator(false),
-                    }
-                },
-                next_button
-            },
-        }
-    }
-end
-
-local function email_page(on_next_pressed, on_previous_pressed)
-    local icon = wibox.widget
-    {
-        widget = widgets.text,
-        halign = "center",
-        icon = beautiful.icons.envelope,
-        size = 120
-    }
-
-    local title = wibox.widget
-    {
-        widget = widgets.text,
-        halign = "center",
-        size = 30,
-        text = "Email"
-    }
-
-    local description = wibox.widget
-    {
-        widget = widgets.text,
-        halign = "center",
-        size = 13,
-        text = "Please fill your email info in order for the email panel info to show.",
-    }
-
-    local machine_prompt = wibox.widget
-    {
-        widget = widgets.prompt,
-        forced_width = dpi(300),
-        forced_height = dpi(50),
-        reset_on_stop = false,
-        prompt = "Machine: ",
-        text = email_daemon:get_machine() or "mail.google.com",
-        icon_font = beautiful.icons.server.font,
-        icon = beautiful.icons.server.icon,
-        icon_color = beautiful.colors.on_background,
-        text_color = beautiful.colors.on_background,
-    }
-
-    local login_prompt = wibox.widget
-    {
-        widget = widgets.prompt,
-        forced_width = dpi(300),
-        forced_height = dpi(50),
-        reset_on_stop = false,
-        prompt = "Login: ",
-        text = email_daemon:get_login() or "",
-        icon_font = beautiful.icons.user.font,
-        icon = beautiful.icons.user.icon,
-        icon_color = beautiful.colors.on_background,
-        text_color = beautiful.colors.on_background,
-    }
-
-    local password_prompt = wibox.widget
-    {
-        widget = widgets.prompt,
-        forced_width = dpi(300),
-        forced_height = dpi(50),
-        reset_on_stop = false,
-        prompt = "Password: ",
-        text = email_daemon:get_password() or "",
-        icon_font = beautiful.icons.lock.font,
-        icon = beautiful.icons.lock.icon,
-        icon_color = beautiful.colors.on_background,
-        text_color = beautiful.colors.on_background,
-    }
-
-    local back_button = wibox.widget
-    {
-        widget = widgets.button.text.normal,
-        text_normal_bg = accent_color,
-        size = 13,
-        text = "Back",
-        on_press = function()
-            on_previous_pressed()
-        end,
-    }
-
-    local next_button = wibox.widget
-    {
-        widget = widgets.button.text.normal,
-        text_normal_bg = accent_color,
-        size = 13,
-        text = "Next",
-        on_press = function()
-            email_daemon:update_net_rc(machine_prompt:get_text(), login_prompt:get_text(), password_prompt:get_text())
-            on_next_pressed()
-        end,
-    }
-
-    return wibox.widget
-    {
-        widget = wibox.container.margin,
-        margins = dpi(15),
-        {
-            layout = wibox.layout.align.vertical,
-            {
-                layout = wibox.layout.fixed.vertical,
-                spacing = dpi(20),
-                icon,
-                title,
-                description,
-                {
-                    widget = wibox.container.place,
-                    halign = "center",
-                    valign = "center",
-                    machine_prompt.widget,
-                },
-                {
-                    widget = wibox.container.place,
-                    halign = "center",
-                    valign = "center",
-                    login_prompt.widget,
-                },
-                {
-                    widget = wibox.container.place,
-                    halign = "center",
-                    valign = "center",
-                    password_prompt.widget,
+                    username_prompt.widget
                 }
             },
             nil,
@@ -822,90 +640,111 @@ local function email_page(on_next_pressed, on_previous_pressed)
                 back_button,
                 {
                     widget = wibox.container.margin,
-                    margins = { left = dpi(20), right = dpi(20) },
+                    margins = {
+                        left = dpi(20),
+                        right = dpi(20)
+                    },
                     {
                         layout = wibox.layout.fixed.horizontal,
                         spacing = dpi(30),
                         indicator(false),
                         indicator(false),
+                        indicator(false),
                         indicator(true),
                         indicator(false),
                         indicator(false),
-                        indicator(false),
-                        indicator(false),
+                        indicator(false)
                     }
                 },
                 next_button
-            },
+            }
         }
     }
 end
 
-local function password_page(on_next_pressed, on_previous_pressed)
-    local icon = wibox.widget
-    {
+local function email_page(on_next_pressed, on_previous_pressed)
+    local icon = wibox.widget {
         widget = widgets.text,
         halign = "center",
-        size = 120,
-        icon = beautiful.icons.lock,
-        size = 120,
+        icon = beautiful.icons.envelope,
+        size = 120
     }
 
-    local title = wibox.widget
-    {
+    local title = wibox.widget {
         widget = widgets.text,
         halign = "center",
         size = 30,
-        text = "Password"
+        text = "Email"
     }
 
-    local description = wibox.widget
-    {
+    local description = wibox.widget {
         widget = widgets.text,
         halign = "center",
         size = 13,
-        text = "Please pick a password for the lock screen.",
+        text = "Please fill your email info in order for the email panel info to show."
     }
 
-    local password_prompt = wibox.widget
-    {
+    local machine_prompt = wibox.widget {
+        widget = widgets.prompt,
+        forced_width = dpi(300),
+        forced_height = dpi(50),
+        reset_on_stop = false,
+        prompt = "Machine: ",
+        text = email_daemon:get_machine() or "mail.google.com",
+        icon_font = beautiful.icons.server.font,
+        icon = beautiful.icons.server.icon,
+        icon_color = beautiful.colors.on_background,
+        text_color = beautiful.colors.on_background
+    }
+
+    local login_prompt = wibox.widget {
+        widget = widgets.prompt,
+        forced_width = dpi(300),
+        forced_height = dpi(50),
+        reset_on_stop = false,
+        prompt = "Login: ",
+        text = email_daemon:get_login() or "",
+        icon_font = beautiful.icons.user.font,
+        icon = beautiful.icons.user.icon,
+        icon_color = beautiful.colors.on_background,
+        text_color = beautiful.colors.on_background
+    }
+
+    local password_prompt = wibox.widget {
         widget = widgets.prompt,
         forced_width = dpi(300),
         forced_height = dpi(50),
         reset_on_stop = false,
         prompt = "Password: ",
-        text = system_daemon:get_password() or "",
+        text = email_daemon:get_password() or "",
         icon_font = beautiful.icons.lock.font,
         icon = beautiful.icons.lock.icon,
         icon_color = beautiful.colors.on_background,
-        text_color = beautiful.colors.on_background,
+        text_color = beautiful.colors.on_background
     }
 
-    local back_button = wibox.widget
-    {
+    local back_button = wibox.widget {
         widget = widgets.button.text.normal,
         text_normal_bg = accent_color,
         size = 13,
         text = "Back",
         on_press = function()
             on_previous_pressed()
-        end,
+        end
     }
 
-    local next_button = wibox.widget
-    {
+    local next_button = wibox.widget {
         widget = widgets.button.text.normal,
         text_normal_bg = accent_color,
         size = 13,
         text = "Next",
         on_press = function()
-            system_daemon:set_password(password_prompt:get_text())
+            email_daemon:update_net_rc(machine_prompt:get_text(), login_prompt:get_text(), password_prompt:get_text())
             on_next_pressed()
-        end,
+        end
     }
 
-    return wibox.widget
-    {
+    return wibox.widget {
         widget = wibox.container.margin,
         margins = dpi(15),
         {
@@ -920,8 +759,20 @@ local function password_page(on_next_pressed, on_previous_pressed)
                     widget = wibox.container.place,
                     halign = "center",
                     valign = "center",
-                    password_prompt.widget,
+                    machine_prompt.widget
                 },
+                {
+                    widget = wibox.container.place,
+                    halign = "center",
+                    valign = "center",
+                    login_prompt.widget
+                },
+                {
+                    widget = wibox.container.place,
+                    halign = "center",
+                    valign = "center",
+                    password_prompt.widget
+                }
             },
             nil,
             {
@@ -930,7 +781,114 @@ local function password_page(on_next_pressed, on_previous_pressed)
                 back_button,
                 {
                     widget = wibox.container.margin,
-                    margins = { left = dpi(20), right = dpi(20) },
+                    margins = {
+                        left = dpi(20),
+                        right = dpi(20)
+                    },
+                    {
+                        layout = wibox.layout.fixed.horizontal,
+                        spacing = dpi(30),
+                        indicator(false),
+                        indicator(false),
+                        indicator(true),
+                        indicator(false),
+                        indicator(false),
+                        indicator(false),
+                        indicator(false)
+                    }
+                },
+                next_button
+            }
+        }
+    }
+end
+
+local function password_page(on_next_pressed, on_previous_pressed)
+    local icon = wibox.widget {
+        widget = widgets.text,
+        halign = "center",
+        size = 120,
+        icon = beautiful.icons.lock,
+        size = 120
+    }
+
+    local title = wibox.widget {
+        widget = widgets.text,
+        halign = "center",
+        size = 30,
+        text = "Password"
+    }
+
+    local description = wibox.widget {
+        widget = widgets.text,
+        halign = "center",
+        size = 13,
+        text = "Please pick a password for the lock screen."
+    }
+
+    local password_prompt = wibox.widget {
+        widget = widgets.prompt,
+        forced_width = dpi(300),
+        forced_height = dpi(50),
+        reset_on_stop = false,
+        prompt = "Password: ",
+        text = system_daemon:get_password() or "",
+        icon_font = beautiful.icons.lock.font,
+        icon = beautiful.icons.lock.icon,
+        icon_color = beautiful.colors.on_background,
+        text_color = beautiful.colors.on_background
+    }
+
+    local back_button = wibox.widget {
+        widget = widgets.button.text.normal,
+        text_normal_bg = accent_color,
+        size = 13,
+        text = "Back",
+        on_press = function()
+            on_previous_pressed()
+        end
+    }
+
+    local next_button = wibox.widget {
+        widget = widgets.button.text.normal,
+        text_normal_bg = accent_color,
+        size = 13,
+        text = "Next",
+        on_press = function()
+            system_daemon:set_password(password_prompt:get_text())
+            on_next_pressed()
+        end
+    }
+
+    return wibox.widget {
+        widget = wibox.container.margin,
+        margins = dpi(15),
+        {
+            layout = wibox.layout.align.vertical,
+            {
+                layout = wibox.layout.fixed.vertical,
+                spacing = dpi(20),
+                icon,
+                title,
+                description,
+                {
+                    widget = wibox.container.place,
+                    halign = "center",
+                    valign = "center",
+                    password_prompt.widget
+                }
+            },
+            nil,
+            {
+                layout = wibox.layout.align.horizontal,
+                expand = "outside",
+                back_button,
+                {
+                    widget = wibox.container.margin,
+                    margins = {
+                        left = dpi(20),
+                        right = dpi(20)
+                    },
                     {
                         layout = wibox.layout.fixed.horizontal,
                         spacing = dpi(30),
@@ -940,19 +898,18 @@ local function password_page(on_next_pressed, on_previous_pressed)
                         indicator(false),
                         indicator(false),
                         indicator(false),
-                        indicator(false),
+                        indicator(false)
                     }
                 },
                 next_button
-            },
+            }
         }
     }
 end
 
 local function welcome_page(on_next_pressed, on_previous_pressed)
     local function picture(value)
-        return wibox.widget
-        {
+        return wibox.widget {
             widget = wibox.widget.imagebox,
             forced_width = dpi(260),
             forced_height = dpi(100),
@@ -962,25 +919,22 @@ local function welcome_page(on_next_pressed, on_previous_pressed)
         }
     end
 
-    local icon = wibox.widget
-    {
+    local icon = wibox.widget {
         widget = wibox.widget.imagebox,
         halign = "center",
         forced_height = dpi(140),
         forced_width = dpi(140),
-        image = beautiful.profile_icon,
+        image = beautiful.profile_icon
     }
 
-    local title = wibox.widget
-    {
+    local title = wibox.widget {
         widget = widgets.text,
         halign = "center",
         size = 25,
         text = "Hi " .. os.getenv("USER"):upper() .. ", Welcome to KwesomeDE!"
     }
 
-    local pictures = wibox.widget
-    {
+    local pictures = wibox.widget {
         layout = wibox.layout.grid,
         forced_num_rows = 4,
         forced_num_cols = 2,
@@ -992,33 +946,30 @@ local function welcome_page(on_next_pressed, on_previous_pressed)
         picture(5),
         picture(6),
         picture(7),
-        picture(8),
+        picture(8)
     }
 
-    local quit_button = wibox.widget
-    {
+    local quit_button = wibox.widget {
         widget = widgets.button.text.normal,
         text_normal_bg = accent_color,
         size = 13,
         text = "Quit",
         on_press = function()
             on_previous_pressed()
-        end,
+        end
     }
 
-    local next_button = wibox.widget
-    {
+    local next_button = wibox.widget {
         widget = widgets.button.text.normal,
         text_normal_bg = accent_color,
         size = 13,
         text = "Next",
         on_press = function()
             on_next_pressed()
-        end,
+        end
     }
 
-    return wibox.widget
-    {
+    return wibox.widget {
         widget = wibox.container.margin,
         margins = dpi(15),
         {
@@ -1037,7 +988,10 @@ local function welcome_page(on_next_pressed, on_previous_pressed)
                 quit_button,
                 {
                     widget = wibox.container.margin,
-                    margins = { left = dpi(20), right = dpi(20) },
+                    margins = {
+                        left = dpi(20),
+                        right = dpi(20)
+                    },
                     {
                         layout = wibox.layout.fixed.horizontal,
                         spacing = dpi(30),
@@ -1047,11 +1001,11 @@ local function welcome_page(on_next_pressed, on_previous_pressed)
                         indicator(false),
                         indicator(false),
                         indicator(false),
-                        indicator(false),
+                        indicator(false)
                     }
                 },
                 next_button
-            },
+            }
         }
     }
 end
@@ -1068,43 +1022,37 @@ local function widget(self)
 
     _welcome_page = welcome_page(function()
         stack:raise_widget(_password_page)
-    end,
-    function()
+    end, function()
         self:hide()
     end)
 
     _password_page = password_page(function()
         stack:raise_widget(_email_page)
-    end,
-    function()
+    end, function()
         stack:raise_widget(_welcome_page)
     end)
 
     _email_page = email_page(function()
         stack:raise_widget(_github_page)
-    end,
-    function()
+    end, function()
         stack:raise_widget(_password_page)
     end)
 
     _github_page = github_page(function()
         stack:raise_widget(_gitlab_page)
-    end,
-    function()
+    end, function()
         stack:raise_widget(_email_page)
     end)
 
     _gitlab_page = gitlab_page(function()
         stack:raise_widget(_weather_page)
-    end,
-    function()
+    end, function()
         stack:raise_widget(_github_page)
     end)
 
     _weather_page = weather_page(function()
         stack:raise_widget(_last_page)
-    end,
-    function()
+    end, function()
         stack:raise_widget(_gitlab_page)
     end)
 
@@ -1112,8 +1060,7 @@ local function widget(self)
         self:hide()
     end)
 
-    stack = wibox.widget
-    {
+    stack = wibox.widget {
         layout = wibox.layout.stack,
         top_only = true,
         _welcome_page,
@@ -1129,16 +1076,22 @@ local function widget(self)
 end
 
 local function new()
-    local ret = gobject{}
+    local ret = gobject {}
     gtable.crush(ret, welcome, true)
 
     ret._private = {}
 
     ruled.client.connect_signal("request::rules", function()
-        ruled.client.append_rule
-        {
-            rule = { class = "awesome-app-welcome" },
-            properties = { floating = true, width = dpi(550), height = 1, placement = awful.placement.centered },
+        ruled.client.append_rule {
+            rule = {
+                class = "awesome-app-welcome"
+            },
+            properties = {
+                floating = true,
+                width = dpi(550),
+                height = 1,
+                placement = awful.placement.centered
+            },
             callback = function(c)
                 ret._private.client = c
 
@@ -1155,13 +1108,11 @@ local function new()
                 c.x = (c.screen.geometry.width / 2) - (dpi(550) / 2)
                 c.y = (c.screen.geometry.height / 2) - (dpi(780) / 2)
 
-                awful.titlebar(c,
-                {
+                awful.titlebar(c, {
                     position = "top",
                     size = dpi(780),
                     bg = beautiful.colors.background
-                }) : setup
-                {
+                }):setup{
                     widget = widget(ret)
                 }
             end

@@ -12,30 +12,24 @@
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-]]
-
----  @submodule dbus_proxy
-
+]] ---  @submodule dbus_proxy
 local Gio = require("lgi").Gio
 
 -- Private table
 local _Bus = {}
-setmetatable(_Bus,
-             {
-               __index = function(tbl, key)
-                 local v
-                 if key == "SESSION" or key == "SYSTEM" then
-                   v = Gio.bus_get_sync(Gio.BusType[key])
-                 else
-                   -- Pulseaudio example:
-                   -- key = "unix:path=/run/user/1000/pulse/dbus-socket"
-                   v = Gio.DBusConnection.new_for_address_sync(
-                     key,
-                     Gio.DBusConnectionFlags.NONE)
-                 end
-                 rawset(tbl, key, v)
-                 return v
-               end
+setmetatable(_Bus, {
+    __index = function(tbl, key)
+        local v
+        if key == "SESSION" or key == "SYSTEM" then
+            v = Gio.bus_get_sync(Gio.BusType[key])
+        else
+            -- Pulseaudio example:
+            -- key = "unix:path=/run/user/1000/pulse/dbus-socket"
+            v = Gio.DBusConnection.new_for_address_sync(key, Gio.DBusConnectionFlags.NONE)
+        end
+        rawset(tbl, key, v)
+        return v
+    end
 })
 
 --[[-- Available connections to the DBus daemon. Fields on this table
@@ -66,8 +60,11 @@ invalid2 = Bus.this_will_not_work
 assert(nil == invalid2)
 ]]
 local Bus = {}
-setmetatable(Bus,
-             {__index = _Bus,
-              __newindex = function() error("Cannot set values", 2) end})
+setmetatable(Bus, {
+    __index = _Bus,
+    __newindex = function()
+        error("Cannot set values", 2)
+    end
+})
 
 return Bus

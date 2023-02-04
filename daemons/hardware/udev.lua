@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local GUdev = require("lgi").GUdev
 local awful = require("awful")
 local gobject = require("gears.object")
@@ -13,7 +12,7 @@ local string = string
 local ipairs = ipairs
 local pairs = pairs
 
-local udev = { }
+local udev = {}
 local instance = nil
 
 local function check_usb_device(self)
@@ -25,11 +24,12 @@ local function check_usb_device(self)
             local vendor = device:get_property("ID_VENDOR"):gsub("_", " ")
             local name = device:get_property("ID_MODEL"):gsub("_", " ")
             if name ~= nil and vendor ~= nil then
-                local device = { name = name, vendor = vendor}
+                local device = {
+                    name = name,
+                    vendor = vendor
+                }
                 new_devices[device.name] = device
-                if helpers.table.length(self._private.usb_devices) > 0 and
-                    self._private.usb_devices[device.name] == nil
-                then
+                if helpers.table.length(self._private.usb_devices) > 0 and self._private.usb_devices[device.name] == nil then
                     self:emit_signal("usb::added", device)
                 end
             end
@@ -53,16 +53,15 @@ local function check_block_devices(self)
             if partition ~= "tmpfs" and partition ~= "gvfsd-fuse" then
                 local device = {}
                 device.mount_point = line:match('TARGET="(.*)" SOURCE')
-                device.name = string.sub(device.mount_point,
-                                helpers.string.find_last(device.mount_point, "/") + 1, #device.mount_point)
+                device.name = string.sub(device.mount_point, helpers.string.find_last(device.mount_point, "/") + 1,
+                    #device.mount_point)
                 device.partition = line:match('SOURCE="(.*)" FSTYPE')
                 device.fs_type = line:match('FSTYPE="(.*)" OPTIONS')
                 device.options = line:match('OPTIONS=(.*)')
                 new_devices[device.mount_point] = device
 
                 if helpers.table.length(self._private.block_devices) > 0 and
-                    self._private.block_devices[device.mount_point] == nil
-                then
+                    self._private.block_devices[device.mount_point] == nil then
                     self:emit_signal("block::added", device)
                 end
             end
@@ -79,7 +78,7 @@ local function check_block_devices(self)
 end
 
 local function new()
-    local ret = gobject{}
+    local ret = gobject {}
     gtable.crush(ret, udev, true)
 
     ret._private = {}
@@ -87,8 +86,7 @@ local function new()
     ret._private.usb_devices = {}
     ret._private.block_devices = {}
 
-    local emit_timer = gtimer
-    {
+    local emit_timer = gtimer {
         timeout = 0.5,
         autostart = false,
         single_shot = true,
@@ -100,9 +98,11 @@ local function new()
     }
 
     awful.spawn.easy_async("pkill -f 'udevadm monitor'", function()
-        awful.spawn.with_line_callback("udevadm monitor", {stdout = function(_)
-            emit_timer:again()
-        end})
+        awful.spawn.with_line_callback("udevadm monitor", {
+            stdout = function(_)
+                emit_timer:again()
+            end
+        })
     end)
 
     return ret

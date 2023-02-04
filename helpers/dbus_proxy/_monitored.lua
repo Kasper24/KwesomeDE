@@ -12,10 +12,7 @@
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-]]
-
----  @submodule dbus_proxy
-
+]] ---  @submodule dbus_proxy
 local table = table
 
 local lgi = require("lgi")
@@ -27,79 +24,85 @@ local Proxy = require("helpers.dbus_proxy._proxy")
 local monitored = {}
 
 local function make_disconnected(name)
-  local o = {name = name}
+    local o = {
+        name = name
+    }
 
-  local function disconnected_error()
-    error(name .. " disconnected", 2)
-  end
+    local function disconnected_error()
+        error(name .. " disconnected", 2)
+    end
 
-  setmetatable(
-    o,
-    {
-      __call = disconnected_error,
-      __newindex = disconnected_error,
-      __index = disconnected_error
-  })
-  return o
+    setmetatable(o, {
+        __call = disconnected_error,
+        __newindex = disconnected_error,
+        __index = disconnected_error
+    })
+    return o
 end
 
 local function make_callbacks(managed, cb)
 
-  local function name_appeared_callback()
-    -- (bus, name, name_owner) passed as params, but we don't use them
-    local proxy_obj = Proxy:new(managed._get_opts())
-    rawset(managed, "is_connected", true)
-    rawset(managed, "proxy", proxy_obj)
-    setmetatable(managed, {__index = proxy_obj})
-    if cb then
-        cb(managed, true)
+    local function name_appeared_callback()
+        -- (bus, name, name_owner) passed as params, but we don't use them
+        local proxy_obj = Proxy:new(managed._get_opts())
+        rawset(managed, "is_connected", true)
+        rawset(managed, "proxy", proxy_obj)
+        setmetatable(managed, {
+            __index = proxy_obj
+        })
+        if cb then
+            cb(managed, true)
+        end
     end
-  end
 
-  local function name_vanished_callback()
-    -- (bus, name) passed as params, but we don't use them
-    local proxy_obj = managed._get_disconnected_proxy()
-    rawset(managed, "is_connected", false)
-    rawset(managed, "proxy", proxy_obj)
-    setmetatable(managed, {__index = proxy_obj})
-    if cb then
-        cb(managed, false)
+    local function name_vanished_callback()
+        -- (bus, name) passed as params, but we don't use them
+        local proxy_obj = managed._get_disconnected_proxy()
+        rawset(managed, "is_connected", false)
+        rawset(managed, "proxy", proxy_obj)
+        setmetatable(managed, {
+            __index = proxy_obj
+        })
+        if cb then
+            cb(managed, false)
+        end
     end
-  end
 
-  return name_appeared_callback, name_vanished_callback
+    return name_appeared_callback, name_vanished_callback
 
 end
 
 local function validate_opts(params)
 
-  local opts = params or {}
+    local opts = params or {}
 
-  local absent_keys = {bus = false,
-                       interface = false,
-                       name = false,
-                       path = false}
+    local absent_keys = {
+        bus = false,
+        interface = false,
+        name = false,
+        path = false
+    }
 
-  for k, _ in pairs(absent_keys) do
-    if opts[k] ~= nil then
-      absent_keys[k] = true
+    for k, _ in pairs(absent_keys) do
+        if opts[k] ~= nil then
+            absent_keys[k] = true
+        end
     end
-  end
 
-  local result = {}
-  local i = 1
-  for k, v in pairs(absent_keys) do
-    if v == false then
-      result[i] = k
-      i = i + 1
+    local result = {}
+    local i = 1
+    for k, v in pairs(absent_keys) do
+        if v == false then
+            result[i] = k
+            i = i + 1
+        end
     end
-  end
 
-  local msg = table.concat(result, ", ")
+    local msg = table.concat(result, ", ")
 
-  if msg ~= "" then
-    error("Missing required DBus options: " .. msg, 2)
-  end
+    if msg ~= "" then
+        error("Missing required DBus options: " .. msg, 2)
+    end
 
 end
 
@@ -155,28 +158,26 @@ end
 ]]
 function monitored.new(opts, cb)
 
-  validate_opts(opts)
+    validate_opts(opts)
 
-  local disconnected_proxy = make_disconnected(opts.name)
+    local disconnected_proxy = make_disconnected(opts.name)
 
-  local out = {
-    name = opts.name,
-    _get_opts = function () return opts end,
-    _get_disconnected_proxy = function () return disconnected_proxy  end
-  }
+    local out = {
+        name = opts.name,
+        _get_opts = function()
+            return opts
+        end,
+        _get_disconnected_proxy = function()
+            return disconnected_proxy
+        end
+    }
 
-  local name_appeared_callback, name_vanished_callback = make_callbacks(out, cb)
+    local name_appeared_callback, name_vanished_callback = make_callbacks(out, cb)
 
-  Gio.bus_watch_name_on_connection(
-    opts.bus,
-    opts.name,
-    opts.watcher_flags or Gio.BusNameWatcherFlags.NONE,
-    GObject.Closure(name_appeared_callback),
-    GObject.Closure(name_vanished_callback),
-    out
-  )
+    Gio.bus_watch_name_on_connection(opts.bus, opts.name, opts.watcher_flags or Gio.BusNameWatcherFlags.NONE,
+        GObject.Closure(name_appeared_callback), GObject.Closure(name_vanished_callback), out)
 
-  return out
+    return out
 
 end
 

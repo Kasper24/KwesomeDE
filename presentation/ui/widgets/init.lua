@@ -2,9 +2,7 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
-return
-{
+return {
     battery_icon = require(... .. ".battery_icon"),
     button = require(... .. ".button"),
     calendar = require(... .. ".calendar"),

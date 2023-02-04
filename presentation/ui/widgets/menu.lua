@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local awful = require("awful")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
@@ -16,9 +15,16 @@ local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 local ipairs = ipairs
-local capi = { awesome = awesome, tag = tag, client = client, mouse = mouse }
+local capi = {
+    awesome = awesome,
+    tag = tag,
+    client = client,
+    mouse = mouse
+}
 
-local menu = { mt = {} }
+local menu = {
+    mt = {}
+}
 
 function menu:set_pos(args)
     args = args or {}
@@ -26,10 +32,17 @@ function menu:set_pos(args)
     local coords = args.coords
     local wibox = args.wibox
     local widget = args.widget
-    local offset = args.offset or { x = 0, y = 0 }
+    local offset = args.offset or {
+        x = 0,
+        y = 0
+    }
 
-    if offset.x == nil then offset.x = 0 end
-    if offset.y == nil then offset.y = 0 end
+    if offset.x == nil then
+        offset.x = 0
+    end
+    if offset.y == nil then
+        offset.y = 0
+    end
 
     local screen_workarea = awful.screen.focused().workarea
     local screen_w = screen_workarea.x + screen_workarea.width
@@ -121,7 +134,6 @@ function menu:hide(hide_parents)
     end
 end
 
-
 function menu:toggle(args)
     if self.visible == true then
         self:hide()
@@ -160,14 +172,12 @@ function menu:reset()
 end
 
 function menu.menu(widgets, width)
-    local menu_container = wibox.widget
-    {
+    local menu_container = wibox.widget {
         layout = wibox.layout.fixed.vertical,
-        forced_height = 0,
+        forced_height = 0
     }
 
-    local widget = awful.popup
-    {
+    local widget = awful.popup {
         x = 32500,
         type = "menu",
         visible = false,
@@ -178,18 +188,17 @@ function menu.menu(widgets, width)
         bg = beautiful.colors.background,
         widget = menu_container
     }
-	gtable.crush(widget, menu, true)
+    gtable.crush(widget, menu, true)
 
     -- -- Setup animations
-	widget.animation = helpers.animation:new
-	{
-		pos = 1,
-		easing = helpers.animation.easing.outInCirc,
-		duration = 0.4,
-		update = function(self, pos)
-			menu_container.forced_height = dpi(pos)
-		end
-	}
+    widget.animation = helpers.animation:new{
+        pos = 1,
+        easing = helpers.animation.easing.outInCirc,
+        duration = 0.4,
+        update = function(self, pos)
+            menu_container.forced_height = dpi(pos)
+        end
+    }
 
     capi.awesome.connect_signal("root::pressed", function()
         if widget._private.can_hide == true then
@@ -229,12 +238,10 @@ function menu.sub_menu_button(args)
     args.sub_menu = args.sub_menu or nil
     args.arrow_color = args.arrow_color or nil
 
-    local icon = args.icon ~= nil
-    and wibox.widget
-    {
+    local icon = args.icon ~= nil and wibox.widget {
         widget = twidget,
         size = (args.icon.size or 20) / 1.5,
-        icon = args.icon,
+        icon = args.icon
     } or nil
 
     local arrow_color = args.arrow_color or beautiful.icons.chevron.right.color
@@ -242,8 +249,7 @@ function menu.sub_menu_button(args)
         arrow_color = args.icon.color
     end
 
-    local widget = wibox.widget
-    {
+    local widget = wibox.widget {
         widget = wibox.container.margin,
         forced_height = dpi(45),
         sub_menu = args.sub_menu,
@@ -256,11 +262,15 @@ function menu.sub_menu_button(args)
                 local coords = helpers.ui.get_widget_geometry(self.menu, self)
                 coords.x = coords.x + self.menu.x + self.menu.width
                 coords.y = coords.y + self.menu.y
-                args.sub_menu:show{coords = coords, offset = { x = -5 }}
+                args.sub_menu:show{
+                    coords = coords,
+                    offset = {
+                        x = -5
+                    }
+                }
                 self:turn_on()
             end,
-            child =
-            {
+            child = {
                 layout = wibox.layout.align.horizontal,
                 forced_width = dpi(270),
                 {
@@ -270,16 +280,16 @@ function menu.sub_menu_button(args)
                     {
                         widget = twidget,
                         size = 12,
-                        text = args.text,
-                    },
+                        text = args.text
+                    }
                 },
                 nil,
                 {
                     widget = twidget,
                     icon = beautiful.icons.chevron.right,
                     color = arrow_color,
-                    size = 12,
-                },
+                    size = 12
+                }
             }
         }
     }
@@ -298,29 +308,25 @@ function menu.button(args)
     local icon = nil
 
     if args.icon ~= nil then
-        icon = wibox.widget
-        {
+        icon = wibox.widget {
             widget = twidget,
             size = (args.icon.size or 20) / 1.5,
-            icon = args.icon,
+            icon = args.icon
         }
     elseif args.image ~= nil then
-        icon = wibox.widget
-        {
+        icon = wibox.widget {
             widget = wibox.widget.imagebox,
-            image = args.image,
+            image = args.image
         }
     end
 
-    local text_widget = wibox.widget
-    {
+    local text_widget = wibox.widget {
         widget = twidget,
         size = 12,
-        text = args.text,
+        text = args.text
     }
 
-    return wibox.widget
-    {
+    return wibox.widget {
         widget = wibox.container.margin,
         forced_height = dpi(45),
         margins = dpi(5),
@@ -335,8 +341,7 @@ function menu.button(args)
             on_hover = function(self)
                 self.menu:hide_children_menus()
             end,
-            child =
-            {
+            child = {
                 layout = wibox.layout.align.horizontal,
                 forced_width = dpi(270),
                 {
@@ -345,7 +350,7 @@ function menu.button(args)
                     icon,
                     text_widget
                 },
-                nil,
+                nil
             }
         }
     }
@@ -365,25 +370,22 @@ function menu.checkbox_button(args)
     local icon = nil
 
     if args.icon ~= nil then
-        icon = wibox.widget
-        {
+        icon = wibox.widget {
             widget = twidget,
             size = (args.icon.size or 20) / 1.5,
-            text = args.icon,
+            text = args.icon
         }
     elseif args.image ~= nil then
-        icon = wibox.widget
-        {
+        icon = wibox.widget {
             widget = wibox.widget.imagebox,
-            image = args.image,
+            image = args.image
         }
     end
 
-    local checkbox = cbwidget{}
+    local checkbox = cbwidget {}
     checkbox:set_color(args.color)
 
-    local widget = wibox.widget
-    {
+    local widget = wibox.widget {
         widget = wibox.container.margin,
         forced_height = dpi(45),
         margins = dpi(5),
@@ -400,8 +402,7 @@ function menu.checkbox_button(args)
                 on_hover = function(self)
                     self.menu:hide_children_menus()
                 end,
-                child =
-                {
+                child = {
                     layout = wibox.layout.fixed.horizontal,
                     {
                         layout = wibox.layout.fixed.horizontal,
@@ -411,8 +412,8 @@ function menu.checkbox_button(args)
                         {
                             widget = twidget,
                             size = 12,
-                            text = args.text,
-                        },
+                            text = args.text
+                        }
                     },
                     checkbox
                 }
@@ -432,8 +433,7 @@ function menu.checkbox_button(args)
 end
 
 function menu.separator()
-    return wibox.widget
-    {
+    return wibox.widget {
         widget = wibox.container.margin,
         forced_height = dpi(15),
         margins = dpi(5),

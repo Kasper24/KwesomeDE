@@ -2,14 +2,13 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local Gio = require("lgi").Gio
 local GLib = require("lgi").GLib
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local tostring = tostring
 
-local settings = { }
+local settings = {}
 local instance = nil
 
 function settings:set_value(key, value)
@@ -24,7 +23,7 @@ function settings:get_value(key)
 end
 
 local function new()
-    local ret = gobject{}
+    local ret = gobject {}
     gtable.crush(ret, settings, true)
 
     local SettingsSchemaSource = Gio.SettingsSchemaSource

@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
@@ -14,24 +13,33 @@ local widgets = require("presentation.ui.widgets")
 local dpi = beautiful.xresources.apply_dpi
 local collectgarbage = collectgarbage
 local ipairs = ipairs
-local capi = { client = client, tag = tag }
+local capi = {
+    client = client,
+    tag = tag
+}
 
-local task_preview  = { }
+local task_preview = {}
 local instance = nil
 
 local function _get_widget_geometry(_hierarchy, widget)
     local width, height = _hierarchy:get_size()
     if _hierarchy:get_widget() == widget then
         -- Get the extents of this widget in the device space
-        local x, y, w, h = gmatrix.transform_rectangle(
-            _hierarchy:get_matrix_to_device(),
-            0, 0, width, height)
-        return { x = x, y = y, width = w, height = h, hierarchy = _hierarchy }
+        local x, y, w, h = gmatrix.transform_rectangle(_hierarchy:get_matrix_to_device(), 0, 0, width, height)
+        return {
+            x = x,
+            y = y,
+            width = w,
+            height = h,
+            hierarchy = _hierarchy
+        }
     end
 
     for _, child in ipairs(_hierarchy:get_children()) do
         local ret = _get_widget_geometry(child, widget)
-        if ret then return ret end
+        if ret then
+            return ret
+        end
     end
 end
 
@@ -41,7 +49,7 @@ end
 
 local function get_client_content_as_imagebox(c)
     local ss = awful.screenshot {
-        client = c,
+        client = c
     }
 
     ss:refresh()
@@ -78,8 +86,7 @@ function task_preview:show(c, args)
 
     local font_icon = beautiful.get_font_icon_for_app_name(c.class)
 
-    local widget = wibox.widget
-    {
+    local widget = wibox.widget {
         widget = wibox.container.constraint,
         mode = "max",
         width = dpi(300),
@@ -99,8 +106,8 @@ function task_preview:show(c, args)
                         {
                             widget = widgets.text,
                             halign = "center",
-                            valign ="center",
-                            icon = font_icon,
+                            valign = "center",
+                            icon = font_icon
                         },
                         {
                             widget = widgets.text,
@@ -109,7 +116,7 @@ function task_preview:show(c, args)
                             valign = "center",
                             size = 15,
                             text = c.name
-                        },
+                        }
                     },
                     widgets.client_thumbnail(c)
                 }
@@ -138,14 +145,13 @@ end
 local function new(args)
     args = args or {}
 
-    local ret = gobject{}
+    local ret = gobject {}
     ret._private = {}
 
     gtable.crush(ret, task_preview)
     gtable.crush(ret, args)
 
-    ret._private.widget = awful.popup
-    {
+    ret._private.widget = awful.popup {
         type = 'dropdown_menu',
         visible = false,
         ontop = true,
@@ -153,7 +159,7 @@ local function new(args)
         shape = function(cr, width, height)
             gshape.infobubble(cr, width, height, nil, nil, dpi(27))
         end,
-        widget = wibox.container.background, -- A dummy widget to make awful.popup not scream
+        widget = wibox.container.background -- A dummy widget to make awful.popup not scream
     }
 
     capi.client.connect_signal("property::fullscreen", function(c)

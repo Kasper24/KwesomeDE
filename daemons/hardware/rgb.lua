@@ -2,14 +2,13 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local beautiful = require("beautiful")
 local helpers = require("helpers")
 
-local rgb = { }
+local rgb = {}
 local instance = nil
 
 local script = [[python3 - <<END
@@ -89,7 +88,7 @@ function rgb:sync_colors_script(new_colors)
 end
 
 local function new()
-    local ret = gobject{}
+    local ret = gobject {}
     gtable.crush(ret, rgb, true)
     ret._private = {}
 

@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local wibox = require("wibox")
 local widgets = require("presentation.ui.widgets")
 local screenshot_popup = require("presentation.ui.apps.screenshot")
@@ -22,13 +21,14 @@ local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 
-local system_control = { mt = {} }
+local system_control = {
+    mt = {}
+}
 
 local function arrow_button(icon, text, on_icon_release, on_arrow_release)
     local accent_color = beautiful.colors.random_accent_color()
 
-    local icon = wibox.widget
-    {
+    local icon = wibox.widget {
         widget = widgets.button.text.state,
         forced_width = dpi(75),
         forced_height = dpi(90),
@@ -41,8 +41,7 @@ local function arrow_button(icon, text, on_icon_release, on_arrow_release)
         on_release = on_icon_release
     }
 
-    local arrow = wibox.widget
-    {
+    local arrow = wibox.widget {
         widget = widgets.button.text.state,
         forced_width = dpi(75),
         forced_height = dpi(90),
@@ -55,24 +54,21 @@ local function arrow_button(icon, text, on_icon_release, on_arrow_release)
         on_release = on_arrow_release
     }
 
-    local button = wibox.widget
-    {
+    local button = wibox.widget {
         layout = wibox.layout.fixed.horizontal,
         spacing = dpi(1),
         icon,
         arrow
     }
 
-    local name = wibox.widget
-    {
+    local name = wibox.widget {
         widget = widgets.text,
         halign = "center",
         size = 15,
         text = text
     }
 
-    return wibox.widget
-    {
+    return wibox.widget {
         layout = wibox.layout.fixed.vertical,
         forced_height = dpi(130),
         spacing = dpi(15),
@@ -94,8 +90,7 @@ end
 local function button(icon, text, on_release)
     local accent_color = beautiful.colors.random_accent_color()
 
-    local icon = wibox.widget
-    {
+    local icon = wibox.widget {
         widget = widgets.button.text.state,
         forced_width = dpi(150),
         forced_height = dpi(90),
@@ -107,16 +102,14 @@ local function button(icon, text, on_release)
         on_release = on_release
     }
 
-    local name = wibox.widget
-    {
+    local name = wibox.widget {
         widget = widgets.text,
         halign = "center",
         size = 15,
         text = text
     }
 
-    return wibox.widget
-    {
+    return wibox.widget {
         layout = wibox.layout.fixed.vertical,
         forced_height = dpi(130),
         spacing = dpi(15),
@@ -134,8 +127,7 @@ local function button(icon, text, on_release)
 end
 
 local function quick_action(icon, text, on_release)
-    local icon = wibox.widget
-    {
+    local icon = wibox.widget {
         widget = widgets.button.text.normal,
         forced_width = dpi(150),
         forced_height = dpi(90),
@@ -144,16 +136,14 @@ local function quick_action(icon, text, on_release)
         on_release = on_release
     }
 
-    local name = wibox.widget
-    {
+    local name = wibox.widget {
         widget = widgets.text,
         halign = "center",
         size = 15,
         text = text
     }
 
-    return wibox.widget
-    {
+    return wibox.widget {
         layout = wibox.layout.fixed.vertical,
         forced_height = dpi(130),
         spacing = dpi(15),
@@ -163,17 +153,11 @@ local function quick_action(icon, text, on_release)
 end
 
 local function wifi(action_panel)
-    local widget = arrow_button
-    (
-        beautiful.icons.network.wifi_high,
-        "Wi-Fi",
-        function()
-            network_daemon:toggle_wireless_state()
-        end,
-        function()
-            wifi_popup:toggle(action_panel.widget)
-        end
-    )
+    local widget = arrow_button(beautiful.icons.network.wifi_high, "Wi-Fi", function()
+        network_daemon:toggle_wireless_state()
+    end, function()
+        wifi_popup:toggle(action_panel.widget)
+    end)
 
     network_daemon:connect_signal("wireless_state", function(self, state)
         if state == true then
@@ -191,17 +175,11 @@ local function wifi(action_panel)
 end
 
 local function bluetooth(action_panel)
-    local widget = arrow_button
-    (
-        beautiful.icons.bluetooth.on,
-        "Bluetoooth",
-        function()
-            bluetooth_daemon:toggle()
-        end,
-        function()
-            bluetooth_popup:toggle(action_panel.widget)
-        end
-    )
+    local widget = arrow_button(beautiful.icons.bluetooth.on, "Bluetoooth", function()
+        bluetooth_daemon:toggle()
+    end, function()
+        bluetooth_popup:toggle(action_panel.widget)
+    end)
 
     bluetooth_daemon:connect_signal("state", function(self, state)
         if state == true then
@@ -215,14 +193,9 @@ local function bluetooth(action_panel)
 end
 
 local function airplane_mode()
-    local widget = button
-    (
-        beautiful.icons.airplane.on,
-        "Airplane Mode",
-        function()
-            radio_daemon:toggle()
-        end
-    )
+    local widget = button(beautiful.icons.airplane.on, "Airplane Mode", function()
+        radio_daemon:toggle()
+    end)
 
     radio_daemon:connect_signal("state", function(self, state)
         if state == true then
@@ -236,14 +209,9 @@ local function airplane_mode()
 end
 
 local function blue_light()
-    local widget =  button
-    (
-        beautiful.icons.lightbulb.on,
-        "Blue Light",
-        function()
-            redshift_daemon:toggle()
-        end
-    )
+    local widget = button(beautiful.icons.lightbulb.on, "Blue Light", function()
+        redshift_daemon:toggle()
+    end)
 
     redshift_daemon:connect_signal("update", function(self, state)
         if state == true then
@@ -257,14 +225,9 @@ local function blue_light()
 end
 
 local function compositor()
-    local widget =  button
-    (
-        beautiful.icons.spraycan,
-        "Compositor",
-        function()
-            picom_daemon:toggle(true)
-        end
-    )
+    local widget = button(beautiful.icons.spraycan, "Compositor", function()
+        picom_daemon:toggle(true)
+    end)
 
     picom_daemon:connect_signal("state", function(self, state)
         if state == true then
@@ -278,14 +241,9 @@ local function compositor()
 end
 
 local function dont_disturb()
-    local widget = button
-    (
-        beautiful.icons.suspend,
-        "Don't Disturb",
-        function()
-            notifications_daemon:toggle()
-        end
-    )
+    local widget = button(beautiful.icons.suspend, "Don't Disturb", function()
+        notifications_daemon:toggle()
+    end)
 
     notifications_daemon:connect_signal("state", function(self, state)
         if state == true then
@@ -299,27 +257,17 @@ local function dont_disturb()
 end
 
 local function screenshot()
-    local widget = quick_action
-    (
-        beautiful.icons.camera_retro,
-        "Screenshot",
-        function()
-            screenshot_popup:show()
-        end
-    )
+    local widget = quick_action(beautiful.icons.camera_retro, "Screenshot", function()
+        screenshot_popup:show()
+    end)
 
     return widget
 end
 
 local function microphone()
-    local widget = button
-    (
-        beautiful.icons.microphone.on,
-        "Microphone",
-        function()
-            pactl_daemon:source_toggle_mute()
-        end
-    )
+    local widget = button(beautiful.icons.microphone.on, "Microphone", function()
+        pactl_daemon:source_toggle_mute()
+    end)
 
     pactl_daemon:connect_signal("default_sources_updated", function(self, device)
         if device.mute == false then
@@ -333,18 +281,13 @@ local function microphone()
 end
 
 local function record()
-    local widget = button
-    (
-        beautiful.icons.video,
-        "Record",
-        function()
-            if record_daemon:get_is_recording() == false then
-                record_popup:show()
-            else
-                record_daemon:stop_video()
-            end
+    local widget = button(beautiful.icons.video, "Record", function()
+        if record_daemon:get_is_recording() == false then
+            record_popup:show()
+        else
+            record_daemon:stop_video()
         end
-    )
+    end)
 
     record_daemon:connect_signal("started", function()
         widget:turn_on("Stop")
@@ -358,9 +301,8 @@ local function record()
 end
 
 local function new(action_panel)
-    return wibox.widget
-    {
-        layout =  wibox.layout.fixed.vertical,
+    return wibox.widget {
+        layout = wibox.layout.fixed.vertical,
         forced_height = dpi(450),
         spacing = dpi(30),
         {

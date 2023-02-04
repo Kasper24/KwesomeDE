@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
@@ -12,10 +11,10 @@ local wibox = require("wibox")
 local naughty = require("naughty")
 local helpers = require("helpers")
 local ipairs = ipairs
-local table  = table
+local table = table
 local os = os
 
-local notifications = { }
+local notifications = {}
 local instance = nil
 
 local PATH = helpers.filesystem.get_cache_dir("notifications")
@@ -38,23 +37,21 @@ local function save_notification(self, notification)
         icon = icon_path,
         title = gstring.xml_unescape(notification.title),
         message = gstring.xml_unescape(notification.message),
-        time = notification.time,
+        time = notification.time
     })
 
-    wibox.widget.draw_to_svg_file(wibox.widget
-    {
+    wibox.widget.draw_to_svg_file(wibox.widget {
         widget = wibox.widget.imagebox,
         forced_width = 35,
         forced_height = 35,
-        image = notification.icon,
+        image = notification.icon
     }, icon_path, 35, 35)
 
-    wibox.widget.draw_to_svg_file(wibox.widget
-    {
+    wibox.widget.draw_to_svg_file(wibox.widget {
         widget = wibox.widget.imagebox,
         forced_width = 35,
         forced_height = 35,
-        image = notification.app_icon,
+        image = notification.app_icon
     }, app_icon_path, 35, 35)
 
     self._private.save_timer:again()
@@ -150,19 +147,20 @@ function notifications:toggle()
 end
 
 local function new()
-    local ret = gobject{}
+    local ret = gobject {}
     gtable.crush(ret, notifications, true)
 
     ret._private = {}
     ret._private.notifications = {}
-    ret._private.save_timer = gtimer
-    {
+    ret._private.save_timer = gtimer {
         timeout = 1,
         autostart = false,
         single_shot = true,
         callback = function()
             local file = helpers.file.new_for_path(DATA_PATH)
-            file:write(helpers.json.encode(ret._private.notifications, { indent = true }))
+            file:write(helpers.json.encode(ret._private.notifications, {
+                indent = true
+            }))
         end
     }
 

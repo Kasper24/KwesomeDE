@@ -1,7 +1,10 @@
 local awful = require("awful")
 local gtimer = require("gears.timer")
 local tostring = tostring
-local capi = { mouse = mouse, root = root }
+local capi = {
+    mouse = mouse,
+    root = root
+}
 
 local _input = {}
 

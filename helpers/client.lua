@@ -8,12 +8,18 @@ local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
 local math = math
 local pairs = pairs
-local capi = { root = root, client = client, mouse = mouse }
+local capi = {
+    root = root,
+    client = client,
+    mouse = mouse
+}
 
 local _client = {}
 
 function _client.find(rule)
-    local function matcher(c) return awful.rules.match(c, rule) end
+    local function matcher(c)
+        return awful.rules.match(c, rule)
+    end
     local clients = client.get()
     local findex = gtable.hasitem(clients, client.focus) or 1
     local start = gmath.cycle(#clients, findex + 1)
@@ -86,7 +92,11 @@ end
 -- instead of following it.
 -- Rofi has access to the X window id of the client.
 function _client.rofi_move_client_here(window)
-    local win = function(c) return awful.rules.match(c, {window = window}) end
+    local win = function(c)
+        return awful.rules.match(c, {
+            window = window
+        })
+    end
 
     for c in awful.client.iterate(win) do
         c.minimized = false
@@ -102,8 +112,7 @@ function _client.resize_dwim(c, direction)
     local floating_resize_amount = dpi(20)
     local tiling_resize_factor = 0.05
 
-    if awful.layout.get(capi.mouse.screen) == awful.layout.suit.floating or
-        (c and c.floating) then
+    if awful.layout.get(capi.mouse.screen) == awful.layout.suit.floating or (c and c.floating) then
         if direction == "up" then
             c:relative_move(0, 0, 0, -floating_resize_amount)
         elseif direction == "down" then
@@ -130,21 +139,31 @@ end
 function _client.move_to_edge(c, direction)
     local workarea = awful.screen.focused().workarea
     if direction == "up" then
-        c:geometry({nil, y = workarea.y + beautiful.useless_gap * 2, nil, nil})
+        c:geometry({
+            nil,
+            y = workarea.y + beautiful.useless_gap * 2,
+            nil,
+            nil
+        })
     elseif direction == "down" then
         c:geometry({
             nil,
-            y = workarea.height + workarea.y - c:geometry().height -
-                beautiful.useless_gap * 2 - beautiful.border_width * 2,
+            y = workarea.height + workarea.y - c:geometry().height - beautiful.useless_gap * 2 - beautiful.border_width *
+                2,
             nil,
             nil
         })
     elseif direction == "left" then
-        c:geometry({x = workarea.x + beautiful.useless_gap * 2, nil, nil, nil})
+        c:geometry({
+            x = workarea.x + beautiful.useless_gap * 2,
+            nil,
+            nil,
+            nil
+        })
     elseif direction == "right" then
         c:geometry({
-            x = workarea.width + workarea.x - c:geometry().width -
-                beautiful.useless_gap * 2 - beautiful.border_width * 2,
+            x = workarea.width + workarea.x - c:geometry().width - beautiful.useless_gap * 2 - beautiful.border_width *
+                2,
             nil,
             nil,
             nil
@@ -157,8 +176,7 @@ end
 -- Swap by index if maximized
 -- Else swap client by direction
 function _client.move_client_dwim(c, direction)
-    if c.floating or
-        (awful.layout.get(capi.mouse.screen) == awful.layout.suit.floating) then
+    if c.floating or (awful.layout.get(capi.mouse.screen) == awful.layout.suit.floating) then
         _client.move_to_edge(c, direction)
     elseif awful.layout.get(capi.mouse.screen) == awful.layout.suit.max then
         if direction == "up" or direction == "left" then
@@ -179,8 +197,7 @@ function _client.float_and_edge_snap(c, direction)
     local workarea = awful.screen.focused().workarea
     if direction == "up" then
         local axis = "horizontally"
-        local f = awful.placement.scale + awful.placement.top +
-                      (axis and awful.placement["maximize_" .. axis] or nil)
+        local f = awful.placement.scale + awful.placement.top + (axis and awful.placement["maximize_" .. axis] or nil)
         local geo = f(capi.client.focus, {
             honor_padding = true,
             honor_workarea = true,
@@ -197,8 +214,7 @@ function _client.float_and_edge_snap(c, direction)
         })
     elseif direction == "left" then
         local axis = "vertically"
-        local f = awful.placement.scale + awful.placement.left +
-                      (axis and awful.placement["maximize_" .. axis] or nil)
+        local f = awful.placement.scale + awful.placement.left + (axis and awful.placement["maximize_" .. axis] or nil)
         local geo = f(client.focus, {
             honor_padding = true,
             honor_workarea = true,
@@ -206,8 +222,7 @@ function _client.float_and_edge_snap(c, direction)
         })
     elseif direction == "right" then
         local axis = "vertically"
-        local f = awful.placement.scale + awful.placement.right +
-                      (axis and awful.placement["maximize_" .. axis] or nil)
+        local f = awful.placement.scale + awful.placement.right + (axis and awful.placement["maximize_" .. axis] or nil)
         local geo = f(capi.client.focus, {
             honor_padding = true,
             honor_workarea = true,
@@ -217,7 +232,9 @@ function _client.float_and_edge_snap(c, direction)
 end
 
 function _client.run_or_raise(match, move, spawn_cmd, spawn_args)
-    local matcher = function(c) return awful.rules.match(c, match) end
+    local matcher = function(c)
+        return awful.rules.match(c, match)
+    end
 
     -- Find and raise
     local found = false
@@ -239,11 +256,15 @@ function _client.run_or_raise(match, move, spawn_cmd, spawn_args)
     end
 
     -- Spawn if not found
-    if not found then awful.spawn(spawn_cmd, spawn_args) end
+    if not found then
+        awful.spawn(spawn_cmd, spawn_args)
+    end
 end
 
 function _client.run_or_raise_with_shell(match, move, spawn_cmd)
-    local matcher = function(c) return awful.rules.match(c, match) end
+    local matcher = function(c)
+        return awful.rules.match(c, match)
+    end
 
     -- Find and raise
     local found = false
@@ -265,13 +286,18 @@ function _client.run_or_raise_with_shell(match, move, spawn_cmd)
     end
 
     -- Spawn if not found
-    if not found then awful.spawn.with_shell(spawn_cmd) end
+    if not found then
+        awful.spawn.with_shell(spawn_cmd)
+    end
 end
 
 function _client.float_and_resize(c, width, height)
     c.width = width
     c.height = height
-    awful.placement.centered(c, {honor_workarea = true, honor_padding = true})
+    awful.placement.centered(c, {
+        honor_workarea = true,
+        honor_padding = true
+    })
     awful.client.property.set(c, "floating_geometry", c:geometry())
     c.floating = true
     c:raise()
@@ -281,12 +307,19 @@ function _client.floating_client_placement(c)
     -- If the layout is floating or there are no other visible
     -- clients, center client
     if awful.layout.get(capi.mouse.screen) ~= awful.layout.suit.floating or #capi.mouse.screen.clients == 1 then
-        return awful.placement.centered(c,{honor_padding = true, honor_workarea=true})
+        return awful.placement.centered(c, {
+            honor_padding = true,
+            honor_workarea = true
+        })
     end
 
     -- Else use this placement
     local p = awful.placement.no_overlap + awful.placement.no_offscreen
-    return p(c, {honor_padding = true, honor_workarea=true, margins = beautiful.useless_gap * 2})
+    return p(c, {
+        honor_padding = true,
+        honor_workarea = true,
+        margins = beautiful.useless_gap * 2
+    })
 end
 
 function _client.get_dominant_color(client)
@@ -303,15 +336,11 @@ function _client.get_dominant_color(client)
     local x_lim = math.floor(cgeo.width / 2)
     for x_pos = 0, x_lim, 2 do
         for y_pos = 0, 8, 1 do
-            pb = Gdk.pixbuf_get_from_surface(
-                     content, x_offset + x_pos, y_offset + y_pos, 1, 1)
+            pb = Gdk.pixbuf_get_from_surface(content, x_offset + x_pos, y_offset + y_pos, 1, 1)
             bytes = pb:get_pixels()
-            color = "#" ..
-                        bytes:gsub(
-                            ".",
-                            function(c)
-                        return ("%02x"):format(c:byte())
-                    end)
+            color = "#" .. bytes:gsub(".", function(c)
+                return ("%02x"):format(c:byte())
+            end)
             if not tally[color] then
                 tally[color] = 1
             else

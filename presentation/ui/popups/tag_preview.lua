@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
@@ -15,24 +14,33 @@ local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local collectgarbage = collectgarbage
 local ipairs = ipairs
-local capi = { client = client, tag = tag }
+local capi = {
+    client = client,
+    tag = tag
+}
 
-local tag_preview  = { }
+local tag_preview = {}
 local instance = nil
 
 local function _get_widget_geometry(_hierarchy, widget)
     local width, height = _hierarchy:get_size()
     if _hierarchy:get_widget() == widget then
         -- Get the extents of this widget in the device space
-        local x, y, w, h = gmatrix.transform_rectangle(
-            _hierarchy:get_matrix_to_device(),
-            0, 0, width, height)
-        return { x = x, y = y, width = w, height = h, hierarchy = _hierarchy }
+        local x, y, w, h = gmatrix.transform_rectangle(_hierarchy:get_matrix_to_device(), 0, 0, width, height)
+        return {
+            x = x,
+            y = y,
+            width = w,
+            height = h,
+            hierarchy = _hierarchy
+        }
     end
 
     for _, child in ipairs(_hierarchy:get_children()) do
         local ret = _get_widget_geometry(child, widget)
-        if ret then return ret end
+        if ret then
+            return ret
+        end
     end
 end
 
@@ -43,7 +51,7 @@ end
 local function save_tag_thumbnail(tag)
     if tag.selected == true then
         local screenshot = awful.screenshot {
-            screen = awful.screen.focused(),
+            screen = awful.screen.focused()
         }
         screenshot:refresh()
         tag.thumbnail = screenshot.surface
@@ -73,8 +81,7 @@ function tag_preview:show(t, args)
 
     save_tag_thumbnail(t)
 
-    local widget = wibox.widget
-    {
+    local widget = wibox.widget {
         widget = wibox.container.background,
         shape = helpers.ui.rrect(beautiful.border_radius),
         border_width = dpi(5),
@@ -85,7 +92,7 @@ function tag_preview:show(t, args)
             forced_height = dpi(150),
             horizontal_fit_policy = "fit",
             vertical_fit_policy = "fit",
-            image = t.thumbnail or theme_daemon:get_wallpaper(),
+            image = t.thumbnail or theme_daemon:get_wallpaper()
         }
     }
 
@@ -110,19 +117,18 @@ end
 local function new(args)
     args = args or {}
 
-    local ret = gobject{}
+    local ret = gobject {}
     ret._private = {}
 
     gtable.crush(ret, tag_preview)
     gtable.crush(ret, args)
 
-    ret._private.widget = awful.popup
-    {
+    ret._private.widget = awful.popup {
         type = 'dropdown_menu',
         visible = false,
         ontop = true,
         bg = "#00000000",
-        widget = wibox.container.background, -- A dummy widget to make awful.popup not scream
+        widget = wibox.container.background -- A dummy widget to make awful.popup not scream
     }
 
     capi.client.connect_signal("property::fullscreen", function(c)
@@ -146,7 +152,7 @@ local function new(args)
             single_shot = true,
             callback = function()
                 save_tag_thumbnail(t)
-            end,
+            end
         }
     end)
 

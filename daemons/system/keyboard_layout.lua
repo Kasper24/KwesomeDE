@@ -2,17 +2,16 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local string = string
 
-local keyboard_layout = { }
+local keyboard_layout = {}
 local instance = nil
 
 local function new()
-    local ret = gobject{}
+    local ret = gobject {}
     gtable.crush(ret, keyboard_layout, true)
 
     local dummy_keyboardlayout_widget = awful.widget.keyboardlayout()

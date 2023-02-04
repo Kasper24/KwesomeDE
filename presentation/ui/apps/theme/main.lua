@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local gcolor = require("gears.color")
 local wibox = require("wibox")
 local widgets = require("presentation.ui.widgets")
@@ -12,11 +11,12 @@ local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 
-local main = { mt = {} }
+local main = {
+    mt = {}
+}
 
 local function wallpaper_widget(wallpaper)
-    local button = wibox.widget
-    {
+    local button = wibox.widget {
         widget = widgets.button.text.state,
         forced_height = dpi(40),
         halign = "left",
@@ -40,25 +40,22 @@ local function wallpaper_widget(wallpaper)
 end
 
 local function color_button(index)
-    local background = wibox.widget
-    {
+    local background = wibox.widget {
         widget = wibox.container.background,
         forced_width = dpi(200),
         forced_height = dpi(40),
         bg = "#FFFFFF"
     }
 
-    local color_text = wibox.widget
-    {
+    local color_text = wibox.widget {
         widget = widgets.text,
         halign = "center",
         size = 12,
         color = beautiful.colors.background,
-        text = "#FFFFFF",
+        text = "#FFFFFF"
     }
 
-    local color_button = wibox.widget
-    {
+    local color_button = wibox.widget {
         layout = wibox.layout.fixed.vertical,
         spacing = dpi(15),
         {
@@ -72,8 +69,7 @@ local function color_button(index)
             on_press = function()
                 theme_daemon:edit_color(index)
             end,
-            child =
-            {
+            child = {
                 layout = wibox.layout.stack,
                 background,
                 color_text
@@ -107,27 +103,26 @@ local function color_button(index)
 end
 
 local function image_tab(self)
-    local wallpaper_image = wibox.widget
-    {
+    local wallpaper_image = wibox.widget {
         widget = wibox.widget.imagebox,
         forced_height = dpi(300),
         horizontal_fit_policy = "fit",
-        vertical_fit_policy = "fit",
+        vertical_fit_policy = "fit"
     }
 
-    local colors = wibox.widget
-    {
+    local colors = wibox.widget {
         widget = wibox.layout.grid,
         spacing = dpi(15),
         forced_num_rows = 2,
         forced_num_cols = 8,
-        expand = true,
+        expand = true
     }
 
-    local empty_wallpapers = wibox.widget
-    {
+    local empty_wallpapers = wibox.widget {
         widget = wibox.container.margin,
-        margins = { top = dpi(250) },
+        margins = {
+            top = dpi(250)
+        },
         {
             layout = wibox.layout.fixed.vertical,
             spacing = dpi(15),
@@ -142,17 +137,15 @@ local function image_tab(self)
                 halign = "center",
                 size = 15,
                 text = "It's empty out here ):"
-            },
+            }
         }
     }
 
-    local spinning_circle = wibox.widget
-    {
+    local spinning_circle = wibox.widget {
         widget = wibox.container.place,
         halign = "center",
         valign = "center",
-        widgets.spinning_circle
-        {
+        widgets.spinning_circle {
             forced_width = dpi(250),
             forced_height = dpi(250),
             thickness = dpi(30)
@@ -161,23 +154,20 @@ local function image_tab(self)
 
     spinning_circle.children[1]:abort()
 
-    local wallpapers_layout = wibox.widget
-    {
+    local wallpapers_layout = wibox.widget {
         layout = widgets.overflow.vertical,
         forced_height = dpi(250),
         spacing = dpi(3),
-        scrollbar_widget =
-        {
+        scrollbar_widget = {
             widget = wibox.widget.separator,
             shape = helpers.ui.rrect(beautiful.border_radius),
             color = beautiful.colors.on_background
         },
         scrollbar_width = dpi(3),
-        step = 43,
+        step = 43
     }
 
-    local light_dark = wibox.widget
-    {
+    local light_dark = wibox.widget {
         widget = widgets.button.text.normal,
         normal_bg = beautiful.colors.surface,
         text_normal_bg = beautiful.colors.on_surface,
@@ -188,8 +178,7 @@ local function image_tab(self)
         end
     }
 
-    local reset_colorscheme = wibox.widget
-    {
+    local reset_colorscheme = wibox.widget {
         widget = widgets.button.text.normal,
         normal_bg = beautiful.colors.surface,
         text_normal_bg = beautiful.colors.on_surface,
@@ -200,8 +189,7 @@ local function image_tab(self)
         end
     }
 
-    local save_colorscheme = wibox.widget
-    {
+    local save_colorscheme = wibox.widget {
         widget = widgets.button.text.normal,
         normal_bg = beautiful.colors.surface,
         text_normal_bg = beautiful.colors.on_surface,
@@ -212,8 +200,7 @@ local function image_tab(self)
         end
     }
 
-    local set_wallpaper = wibox.widget
-    {
+    local set_wallpaper = wibox.widget {
         widget = widgets.button.text.normal,
         normal_bg = beautiful.colors.surface,
         text_normal_bg = beautiful.colors.on_surface,
@@ -224,8 +211,7 @@ local function image_tab(self)
         end
     }
 
-    local set_colorscheme = wibox.widget
-    {
+    local set_colorscheme = wibox.widget {
         widget = widgets.button.text.normal,
         normal_bg = beautiful.colors.surface,
         text_normal_bg = beautiful.colors.on_surface,
@@ -236,8 +222,7 @@ local function image_tab(self)
         end
     }
 
-    local set_both = wibox.widget
-    {
+    local set_both = wibox.widget {
         widget = widgets.button.text.normal,
         normal_bg = beautiful.colors.surface,
         text_normal_bg = beautiful.colors.on_surface,
@@ -249,8 +234,7 @@ local function image_tab(self)
         end
     }
 
-    local widget = wibox.widget
-    {
+    local widget = wibox.widget {
         layout = wibox.layout.fixed.vertical,
         spacing = dpi(15),
         wallpaper_image,
@@ -268,11 +252,10 @@ local function image_tab(self)
             set_wallpaper,
             set_colorscheme,
             set_both
-        },
+        }
     }
 
-    local stack = wibox.widget
-    {
+    local stack = wibox.widget {
         layout = wibox.layout.stack,
         top_only = true,
         empty_wallpapers,
@@ -345,8 +328,7 @@ local function image_tab(self)
 end
 
 local function digital_sun_tab()
-    local set = wibox.widget
-    {
+    local set = wibox.widget {
         widget = widgets.button.text.normal,
         normal_bg = beautiful.colors.surface,
         text_normal_bg = beautiful.colors.on_surface,
@@ -357,73 +339,66 @@ local function digital_sun_tab()
         end
     }
 
-    return wibox.widget
-    {
+    return wibox.widget {
         layout = wibox.layout.fixed.vertical,
         wibox.widget {
             forced_height = dpi(850),
             draw = function(_, _, cr, width, height)
                 cr:set_source(gcolor {
-                    type  = 'linear',
-                    from  = { 0, 0      },
-                    to    = { 0, height },
-                    stops = {
-                        { 0   , beautiful.colors.background },
-                        { 0.75, beautiful.colors.surface },
-                        { 1   , beautiful.colors.background }
-                    }
+                    type = 'linear',
+                    from = {0, 0},
+                    to = {0, height},
+                    stops = {{0, beautiful.colors.background}, {0.75, beautiful.colors.surface},
+                             {1, beautiful.colors.background}}
                 })
                 cr:paint()
                 -- Clip the first 33% of the screen
-                cr:rectangle(0,0, width, height/3)
+                cr:rectangle(0, 0, width, height / 3)
 
                 -- Clip-out some increasingly large sections of add the sun "bars"
-                for i=0, 6 do
-                    cr:rectangle(0, height*.28 + i*(height*.055 + i/2), width, height*.055)
+                for i = 0, 6 do
+                    cr:rectangle(0, height * .28 + i * (height * .055 + i / 2), width, height * .055)
                 end
                 cr:clip()
 
-             -- Draw the sun
+                -- Draw the sun
                 cr:set_source(gcolor {
-                    type  = 'linear' ,
-                    from  = { 0, 0      },
-                    to    = { 0, height },
-                    stops = {
-                        { 0, beautiful.colors.random_accent_color() },
-                        { 1, beautiful.colors.random_accent_color() }
-                    }
+                    type = 'linear',
+                    from = {0, 0},
+                    to = {0, height},
+                    stops = {{0, beautiful.colors.random_accent_color()}, {1, beautiful.colors.random_accent_color()}}
                 })
-                cr:arc(width/2, height/2, height*.35, 0, math.pi*2)
+                cr:arc(width / 2, height / 2, height * .35, 0, math.pi * 2)
                 cr:fill()
 
                 -- Draw the grid
-                local lines = width/8
+                local lines = width / 8
                 cr:reset_clip()
                 cr:set_line_width(0.5)
                 cr:set_source(gcolor(beautiful.colors.random_accent_color()))
 
-                for i=1, lines do
-                    cr:move_to((-width) + i* math.sin(i * (math.pi/(lines*2)))*30, height)
-                    cr:line_to(width/4 + i*((width/2)/lines), height*0.75 + 2)
+                for i = 1, lines do
+                    cr:move_to((-width) + i * math.sin(i * (math.pi / (lines * 2))) * 30, height)
+                    cr:line_to(width / 4 + i * ((width / 2) / lines), height * 0.75 + 2)
                     cr:stroke()
                 end
 
-                for i=1, 5 do
-                    cr:move_to(0, height*0.75 + i*10 + i*2)
-                    cr:line_to(width, height*0.75 + i*10 + i*2)
+                for i = 1, 5 do
+                    cr:move_to(0, height * 0.75 + i * 10 + i * 2)
+                    cr:line_to(width, height * 0.75 + i * 10 + i * 2)
                     cr:stroke()
                 end
             end
         },
-        set,
+        set
     }
 end
 
 local function binary_tab()
     local function binary()
         local ret = {}
-        for _= 1, 30 do
-            for _= 1, 100 do
+        for _ = 1, 30 do
+            for _ = 1, 100 do
                 table.insert(ret, math.random() > 0.5 and 1 or 0)
             end
             table.insert(ret, "\n")
@@ -432,8 +407,7 @@ local function binary_tab()
         return table.concat(ret)
     end
 
-    local set = wibox.widget
-    {
+    local set = wibox.widget {
         widget = widgets.button.text.normal,
         normal_bg = beautiful.colors.surface,
         text_normal_bg = beautiful.colors.on_surface,
@@ -444,8 +418,7 @@ local function binary_tab()
         end
     }
 
-    return wibox.widget
-    {
+    return wibox.widget {
         layout = wibox.layout.fixed.vertical,
         {
             widget = wibox.container.background,
@@ -459,27 +432,26 @@ local function binary_tab()
                     fg = beautiful.colors.random_accent_color(),
                     {
                         widget = wibox.widget.textbox,
-                        halign  = "center",
+                        halign = "center",
                         valign = "center",
-                        markup = "<tt><b>[SYSTEM FAILURE]</b></tt>",
+                        markup = "<tt><b>[SYSTEM FAILURE]</b></tt>"
                     }
                 },
                 {
                     widget = wibox.widget.textbox,
-                    halign  = "center",
+                    halign = "center",
                     valign = "center",
                     wrap = "word",
-                    text = binary(),
-                },
-            },
+                    text = binary()
+                }
+            }
         },
-        set,
+        set
     }
 end
 
 local function wip_tab()
-    return wibox.widget
-    {
+    return wibox.widget {
         widget = wibox.container.place,
         forced_width = dpi(500),
         forced_height = dpi(500),
@@ -493,14 +465,14 @@ local function wip_tab()
                 halign = "center",
                 valign = "center",
                 icon = beautiful.icons.hammer,
-                size = 120,
+                size = 120
             },
             {
                 widget = widgets.text,
                 halign = "center",
                 valign = "center",
                 size = 50,
-                text = "WIP",
+                text = "WIP"
             }
         }
     }
@@ -522,16 +494,14 @@ local function new(self, layout)
     local _digital_sun_tab = digital_sun_tab()
     local _binary_tab = binary_tab()
 
-    local title = wibox.widget
-    {
+    local title = wibox.widget {
         widget = widgets.text,
         bold = true,
         size = 15,
         text = "Theme Manager"
     }
 
-    local settings_button = wibox.widget
-    {
+    local settings_button = wibox.widget {
         widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
@@ -543,8 +513,7 @@ local function new(self, layout)
         end
     }
 
-    local close_button = wibox.widget
-    {
+    local close_button = wibox.widget {
         widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
@@ -555,8 +524,7 @@ local function new(self, layout)
         end
     }
 
-    _image_button = wibox.widget
-    {
+    _image_button = wibox.widget {
         widget = widgets.button.text.state,
         on_by_default = true,
         size = 15,
@@ -574,8 +542,7 @@ local function new(self, layout)
         end
     }
 
-    _tiled_button = wibox.widget
-    {
+    _tiled_button = wibox.widget {
         widget = widgets.button.text.state,
         size = 15,
         on_normal_bg = accent_color,
@@ -592,8 +559,7 @@ local function new(self, layout)
         end
     }
 
-    _color_button = wibox.widget
-    {
+    _color_button = wibox.widget {
         widget = widgets.button.text.state,
         size = 15,
         on_normal_bg = accent_color,
@@ -610,8 +576,7 @@ local function new(self, layout)
         end
     }
 
-    _digital_sun_button = wibox.widget
-    {
+    _digital_sun_button = wibox.widget {
         widget = widgets.button.text.state,
         size = 15,
         on_normal_bg = accent_color,
@@ -628,8 +593,7 @@ local function new(self, layout)
         end
     }
 
-    _binary_button = wibox.widget
-    {
+    _binary_button = wibox.widget {
         widget = widgets.button.text.state,
         size = 15,
         on_normal_bg = accent_color,
@@ -646,8 +610,7 @@ local function new(self, layout)
         end
     }
 
-    _stack = wibox.widget
-    {
+    _stack = wibox.widget {
         layout = wibox.layout.stack,
         top_only = true,
         _image_tab,
@@ -657,8 +620,7 @@ local function new(self, layout)
         _binary_tab
     }
 
-    return wibox.widget
-    {
+    return wibox.widget {
         layout = wibox.layout.fixed.vertical,
         spacing = dpi(15),
         {

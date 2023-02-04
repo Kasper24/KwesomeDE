@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
@@ -15,17 +14,19 @@ local beautiful = require("beautiful")
 local tostring = tostring
 local ipairs = ipairs
 local string = string
-local capi = { awesome = awesome, tag = tag, client = client }
-
-local prompt  = { mt = {} }
-
-local properties =
-{
-    "icon_font", "icon", "font", "prompt", "text",
-    "icon_color", "prompt_color", "text_color", "cursor_color",
-    "always_on", "reset_on_stop", "obscure",
-    "keypressed_callback", "changed_callback", "done_callback"
+local capi = {
+    awesome = awesome,
+    tag = tag,
+    client = client
 }
+
+local prompt = {
+    mt = {}
+}
+
+local properties = {"icon_font", "icon", "font", "prompt", "text", "icon_color", "prompt_color", "text_color",
+                    "cursor_color", "always_on", "reset_on_stop", "obscure", "keypressed_callback", "changed_callback",
+                    "done_callback"}
 
 local function is_word_char(c)
     if string.find(c, "[{[(,.:;_-+=@/ ]") then
@@ -57,7 +58,7 @@ local function cword_end(s, pos)
     while i <= #s and not is_word_char(s:sub(i, i)) do
         i = i + 1
     end
-    while i <= #s and  is_word_char(s:sub(i, i)) do
+    while i <= #s and is_word_char(s:sub(i, i)) do
         i = i + 1
     end
     return i
@@ -100,65 +101,30 @@ local function update_markup(self, show_cursor)
         end
 
         if wp.icon ~= nil then
-            self._private.child:set_markup(string.format(
-                '<span font_desc="%s" foreground="%s">%s  </span>' ..
-                '<span foreground="%s">%s</span>' ..
-                '<span foreground="%s">%s</span>' ..
-                '<span background="%s">%s</span>' ..
-                '<span foreground="%s">%s%s</span>',
-                wp.icon_font,
-                icon_color,
-                wp.icon,
-                prompt_color,
-                wp.prompt,
-                text_color,
-                text_start,
-                cursor_color,
-                char,
-                text_color,
-                text_end,
-                spacer
-            ))
+            self._private.child:set_markup(string.format('<span font_desc="%s" foreground="%s">%s  </span>' ..
+                                                             '<span foreground="%s">%s</span>' ..
+                                                             '<span foreground="%s">%s</span>' ..
+                                                             '<span background="%s">%s</span>' ..
+                                                             '<span foreground="%s">%s%s</span>', wp.icon_font,
+                icon_color, wp.icon, prompt_color, wp.prompt, text_color, text_start, cursor_color, char, text_color,
+                text_end, spacer))
         else
-            self._private.child:set_markup(string.format(
-                '<span foreground="%s">%s</span>' ..
-                '<span foreground="%s">%s</span>' ..
-                '<span background="%s">%s</span>' ..
-                '<span foreground="%s">%s%s</span>',
-                prompt_color,
-                wp.prompt,
-                text_color,
-                text_start,
-                cursor_color,
-                char,
-                text_color,
-                text_end,
-                spacer
-            ))
+            self._private.child:set_markup(string.format('<span foreground="%s">%s</span>' ..
+                                                             '<span foreground="%s">%s</span>' ..
+                                                             '<span background="%s">%s</span>' ..
+                                                             '<span foreground="%s">%s%s</span>', prompt_color,
+                wp.prompt, text_color, text_start, cursor_color, char, text_color, text_end, spacer))
         end
     else
-        if wp.icon  ~= nil then
-            self._private.child:set_markup(string.format(
-                '<span font_desc="%s" foreground="%s">%s  </span>' ..
-                '<span foreground="%s">%s</span>' ..
-                '<span foreground="%s">%s</span>',
-                wp.icon_font,
-                icon_color,
-                wp.icon,
-                prompt_color,
-                wp.prompt,
-                text_color,
-                gstring.xml_escape(text)
-            ))
+        if wp.icon ~= nil then
+            self._private.child:set_markup(string.format('<span font_desc="%s" foreground="%s">%s  </span>' ..
+                                                             '<span foreground="%s">%s</span>' ..
+                                                             '<span foreground="%s">%s</span>', wp.icon_font,
+                icon_color, wp.icon, prompt_color, wp.prompt, text_color, gstring.xml_escape(text)))
         else
-            self._private.child:set_markup(string.format(
-                '<span foreground="%s">%s</span>' ..
-                '<span foreground="%s">%s</span>',
-                prompt_color,
-                wp.prompt,
-                text_color,
-                gstring.xml_escape(text)
-            ))
+            self._private.child:set_markup(string.format('<span foreground="%s">%s</span>' ..
+                                                             '<span foreground="%s">%s</span>', prompt_color, wp.prompt,
+                text_color, gstring.xml_escape(text)))
         end
     end
 end
@@ -187,7 +153,7 @@ local function build_properties(prototype, prop_names)
                 if self._private[prop] ~= value then
                     self._private[prop] = value
                     self:emit_signal("widget::redraw_needed")
-                    self:emit_signal("property::"..prop, value)
+                    self:emit_signal("property::" .. prop, value)
                     update_markup(self, false)
                 end
                 return self
@@ -234,14 +200,22 @@ function prompt:start()
     self:turn_on()
     update_markup(self, true)
 
-    gtimer { timeout = 0.1, autostart = true, call_now = false, single_shot = true, callback = function()
-        self.can_stop = true
-    end }
+    gtimer {
+        timeout = 0.1,
+        autostart = true,
+        call_now = false,
+        single_shot = true,
+        callback = function()
+            self.can_stop = true
+        end
+    }
 
     wp.grabber = awful.keygrabber.run(function(modifiers, key, event)
         -- Convert index array to hash table
         local mod = {}
-        for _, v in ipairs(modifiers) do mod[v] = true end
+        for _, v in ipairs(modifiers) do
+            mod[v] = true
+        end
 
         if event ~= "press" then
             if wp.keyreleased_callback then
@@ -255,8 +229,7 @@ function prompt:start()
         -- second and third results as a new command and new prompt
         -- to be set (if provided)
         if wp.keypressed_callback then
-            local user_catched, new_command, new_prompt =
-            wp.keypressed_callback(mod, key, wp.text)
+            local user_catched, new_command, new_prompt = wp.keypressed_callback(mod, key, wp.text)
             if new_command or new_prompt then
                 if new_command then
                     wp.text = new_command
@@ -321,7 +294,9 @@ function prompt:start()
                 local cword_end_pos = 1
                 while wend < wp.cur_pos do
                     wend = wp.text:find("[{[(,.:;_-+=@/ ]", wstart)
-                    if not wend then wend = #wp.text + 1 end
+                    if not wend then
+                        wend = #wp.text + 1
+                    end
                     if wp.cur_pos >= wstart and wp.cur_pos <= wend + 1 then
                         cword_start_pos = wstart
                         cword_end_pos = wp.cur_pos - 1
@@ -350,7 +325,7 @@ function prompt:start()
                     self:stop()
                     return
                 end
-            -- Typin cases
+                -- Typin cases
             elseif mod.Shift and key == "Insert" then
                 paste(self)
             elseif key == "Home" then
@@ -404,7 +379,8 @@ function prompt:stop()
         wp.cur_pos = wp.text:wlen() + 1
     end
     if self.reset_on_stop == true then
-        wp.text = "" wp.text = ""
+        wp.text = ""
+        wp.text = ""
     end
 
     self:turn_off()
@@ -426,7 +402,7 @@ end
 
 local function new(args)
     local widget = ebwidget.state(args)
-	gtable.crush(widget, prompt, true)
+    gtable.crush(widget, prompt, true)
 
     widget:set_child(wibox.widget.textbox())
 
@@ -479,7 +455,7 @@ local function new(args)
     end)
 
     capi.awesome.connect_signal("prompt::toggled_on", function(prompt)
-        if wp.always_on == false and  prompt ~= widget then
+        if wp.always_on == false and prompt ~= widget then
             widget:stop()
         end
     end)

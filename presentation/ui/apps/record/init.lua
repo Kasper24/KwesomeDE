@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
@@ -17,7 +16,7 @@ local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local pairs = pairs
 
-local record = { }
+local record = {}
 local instance = nil
 
 local window = [[ lua -e "
@@ -54,18 +53,15 @@ local window = [[ lua -e "
 ]]
 
 local function resolution()
-    local title = wibox.widget
-    {
+    local title = wibox.widget {
         widget = widgets.text,
         size = 15,
         text = "Resolution:"
     }
 
-    local dropdown = widgets.dropdown
-    {
+    local dropdown = widgets.dropdown {
         initial_value = record_daemon:get_resolution(),
-        values =
-        {
+        values = {
             ["7680x4320"] = "7680x4320",
             ["3440x1440"] = "3440x1440",
             ["2560x1440"] = "2560x1440",
@@ -73,15 +69,14 @@ local function resolution()
             ["1920x1080"] = "1920x1080",
             ["1600x900"] = "1600x900",
             ["1280x720"] = "1280x720",
-            ["640x480"] = "640x480",
+            ["640x480"] = "640x480"
         },
         on_value_selected = function(value)
             record_daemon:set_resolution(value)
         end
     }
 
-    return wibox.widget
-    {
+    return wibox.widget {
         layout = wibox.layout.fixed.horizontal,
         forced_height = dpi(35),
         spacing = dpi(15),
@@ -91,22 +86,19 @@ local function resolution()
 end
 
 local function fps()
-    local title = wibox.widget
-    {
+    local title = wibox.widget {
         widget = widgets.text,
         size = 15,
         text = "FPS:"
     }
 
-    local value_text = wibox.widget
-    {
+    local value_text = wibox.widget {
         widget = widgets.text,
         size = 15,
-        text = record_daemon:get_fps(),
+        text = record_daemon:get_fps()
     }
 
-    local slider = wibox.widget
-    {
+    local slider = wibox.widget {
         widget = widgets.slider,
         forced_width = dpi(150),
         value = record_daemon:get_fps(),
@@ -117,7 +109,7 @@ local function fps()
         bar_active_color = beautiful.colors.random_accent_color(),
         handle_width = dpi(15),
         handle_color = beautiful.colors.on_background,
-        handle_shape = gshape.circle,
+        handle_shape = gshape.circle
     }
 
     slider:connect_signal("property::value", function(self, value, instant)
@@ -127,8 +119,7 @@ local function fps()
         end
     end)
 
-    return wibox.widget
-    {
+    return wibox.widget {
         layout = wibox.layout.fixed.horizontal,
         forced_height = dpi(35),
         spacing = dpi(15),
@@ -139,22 +130,19 @@ local function fps()
 end
 
 local function delay()
-    local title = wibox.widget
-    {
+    local title = wibox.widget {
         widget = widgets.text,
         size = 15,
         text = "Delay:"
     }
 
-    local value_text = wibox.widget
-    {
+    local value_text = wibox.widget {
         widget = widgets.text,
         size = 15,
-        text = record_daemon:get_delay(),
+        text = record_daemon:get_delay()
     }
 
-    local slider = wibox.widget
-    {
+    local slider = wibox.widget {
         widget = widgets.slider,
         forced_width = dpi(150),
         value = record_daemon:get_delay(),
@@ -165,7 +153,7 @@ local function delay()
         bar_active_color = beautiful.colors.random_accent_color(),
         handle_width = dpi(15),
         handle_color = beautiful.colors.on_background,
-        handle_shape = gshape.circle,
+        handle_shape = gshape.circle
     }
 
     slider:connect_signal("property::value", function(self, value, instant)
@@ -175,8 +163,7 @@ local function delay()
         end
     end)
 
-    return wibox.widget
-    {
+    return wibox.widget {
         layout = wibox.layout.fixed.horizontal,
         forced_height = dpi(35),
         spacing = dpi(15),
@@ -187,15 +174,13 @@ local function delay()
 end
 
 local function audio_source()
-    local title = wibox.widget
-    {
+    local title = wibox.widget {
         widget = widgets.text,
         size = 15,
         text = "Audio Source:"
     }
 
-    local dropdown = widgets.dropdown
-    {
+    local dropdown = widgets.dropdown {
         forced_height = dpi(40),
         menu_width = dpi(700),
         on_value_selected = function(value)
@@ -219,8 +204,7 @@ local function audio_source()
         end
     end
 
-    return wibox.widget
-    {
+    return wibox.widget {
         layout = wibox.layout.fixed.horizontal,
         forced_height = dpi(35),
         spacing = dpi(15),
@@ -230,71 +214,63 @@ local function audio_source()
 end
 
 local function folder()
-    local title = wibox.widget
-    {
+    local title = wibox.widget {
         widget = widgets.text,
         size = 15,
         text = "Folder: "
     }
 
-    local folder_text  = wibox.widget
-    {
+    local folder_text = wibox.widget {
         widget = widgets.text,
         forced_width = dpi(350),
         size = 12,
-        text = record_daemon:get_folder(),
+        text = record_daemon:get_folder()
     }
 
-    local set_folder_button  = wibox.widget
-    {
+    local set_folder_button = wibox.widget {
         widget = widgets.button.text.normal,
         size = 15,
         text = "...",
         on_press = function()
             record_daemon:set_folder()
-        end,
+        end
     }
 
     record_daemon:connect_signal("folder::updated", function(self, folder)
         folder_text.text = folder
     end)
 
-    return wibox.widget
-    {
+    return wibox.widget {
         layout = wibox.layout.fixed.horizontal,
         forced_height = dpi(35),
         spacing = dpi(15),
         title,
         folder_text,
-        set_folder_button,
+        set_folder_button
     }
 end
 
 local function format()
-    local title = wibox.widget
-    {
+    local title = wibox.widget {
         widget = widgets.text,
         size = 15,
         text = "Format:"
     }
 
-    local dropdown = widgets.dropdown
-    {
+    local dropdown = widgets.dropdown {
         initial_value = record_daemon:get_format(),
-        values =
-        {
+        values = {
             ["mp4"] = "mp4",
             ["mov"] = "mov",
             ["webm"] = "webm",
-            ["flac"] = "flac",
+            ["flac"] = "flac"
         },
         on_value_selected = function(value)
             record_daemon:set_format(value)
         end
     }
 
-    return wibox.widget
-    {
+    return wibox.widget {
         layout = wibox.layout.fixed.horizontal,
         forced_height = dpi(35),
         spacing = dpi(15),
@@ -304,16 +280,14 @@ local function format()
 end
 
 local function main(self)
-    local title = wibox.widget
-    {
+    local title = wibox.widget {
         widget = widgets.text,
         bold = true,
         size = 15,
-        text = "Record",
+        text = "Record"
     }
 
-    local close_button = wibox.widget
-    {
+    local close_button = wibox.widget {
         widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
@@ -323,8 +297,7 @@ local function main(self)
         end
     }
 
-    local record_button = wibox.widget
-    {
+    local record_button = wibox.widget {
         widget = widgets.button.text.normal,
         forced_width = dpi(50),
         size = 15,
@@ -344,8 +317,7 @@ local function main(self)
         record_button.text = "Record"
     end)
 
-    return wibox.widget
-    {
+    return wibox.widget {
         widget = wibox.container.margin,
         margins = dpi(15),
         {
@@ -377,7 +349,9 @@ local function main(self)
 end
 
 function record:show()
-    helpers.client.run_or_raise_with_shell({class = "awesome-app-record"}, false, window)
+    helpers.client.run_or_raise_with_shell({
+        class = "awesome-app-record"
+    }, false, window)
     self._private.visible = true
 end
 
@@ -397,16 +371,22 @@ function record:toggle()
 end
 
 local function new()
-    local ret = gobject{}
+    local ret = gobject {}
     gtable.crush(ret, record, true)
 
     ret._private = {}
 
     ruled.client.connect_signal("request::rules", function()
-        ruled.client.append_rule
-        {
-            rule = { class = "awesome-app-record" },
-            properties = { floating = true, width = dpi(550), height = 1, placement = awful.placement.centered },
+        ruled.client.append_rule {
+            rule = {
+                class = "awesome-app-record"
+            },
+            properties = {
+                floating = true,
+                width = dpi(550),
+                height = 1,
+                placement = awful.placement.centered
+            },
             callback = function(c)
                 ret._private.client = c
 
@@ -423,13 +403,11 @@ local function new()
                 c.x = (c.screen.geometry.width / 2) - (dpi(550) / 2)
                 c.y = (c.screen.geometry.height / 2) - (dpi(435) / 2)
 
-                awful.titlebar(c,
-                {
+                awful.titlebar(c, {
                     position = "top",
                     size = dpi(435),
                     bg = beautiful.colors.background
-                }) : setup
-                {
+                }):setup{
                     widget = main(ret)
                 }
             end

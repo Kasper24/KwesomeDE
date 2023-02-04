@@ -12,9 +12,7 @@
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-]]
-
---[[--
+]] --[[--
   Simple API around GLib's GIO:GDBusProxy built on top of lgi.
 
   @license Apache License, version 2.0
@@ -22,16 +20,14 @@
   @copyright (2017) Stefano Mazzucco
   @copyright (2018 - 2020) Stefano Mazzucco and contributors
   @module dbus_proxy
-]]
-
-local Bus = require(... .. "._bus")
+]] local Bus = require(... .. "._bus")
 local Proxy = require(... .. "._proxy")
 local variant = require(... .. "._variant")
 local monitored = require(... .. "._monitored")
 
 return {
-  Proxy = Proxy,
-  Bus = Bus,
-  variant = variant,
-  monitored = monitored,
+    Proxy = Proxy,
+    Bus = Bus,
+    variant = variant,
+    monitored = monitored
 }

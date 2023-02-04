@@ -2,25 +2,18 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local beautiful = require("beautiful")
 local naughty = require("naughty")
 local github_daemon = require("daemons.web.github")
 
-local icons =
-{
-    "github",
-    "appimagekit-github-desktop",
-    "io.github.shiftey.Desktop",
-    "folder-github",
-    "folder-Github",
-}
+local icons = {"github", "appimagekit-github-desktop", "io.github.shiftey.Desktop", "folder-github", "folder-Github"}
 
 local function generate_action_string(event)
     if (event.type == "PullRequestEvent") then
         return event.payload.action .. " a pull request in"
     elseif (event.type == "PullRequestReviewCommentEvent") then
-        return event.payload.action == "created" and "commented in pull request" or event.payload.action .. " a comment in"
+        return event.payload.action == "created" and "commented in pull request" or event.payload.action ..
+                   " a comment in"
     elseif (event.type == "IssuesEvent") then
         return event.payload.action .. " an issue in"
     elseif (event.type == "IssueCommentEvent") then
@@ -37,21 +30,19 @@ local function generate_action_string(event)
 end
 
 github_daemon:connect_signal("new_event", function(self, event, avatar_path)
-    naughty.notification
-    {
+    naughty.notification {
         app_font_icon = beautiful.icons.github,
         app_icon = icons,
         app_name = "Github",
         icon = avatar_path,
         title = "New Event",
-        text = event.actor.display_login  .. " " .. generate_action_string(event) .. " " .. event.repo.name,
+        text = event.actor.display_login .. " " .. generate_action_string(event) .. " " .. event.repo.name,
         category = "email.arrived"
     }
 end)
 
 github_daemon:connect_signal("new_pr", function(self, pr)
-    naughty.notification
-    {
+    naughty.notification {
         app_font_icon = beautiful.icons.github,
         app_icon = icons,
         app_name = "Github",

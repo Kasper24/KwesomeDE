@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local gshape = require("gears.shape")
 local wibox = require("wibox")
 local widgets = require("presentation.ui.widgets")
@@ -10,13 +9,14 @@ local beautiful = require("beautiful")
 local screenshot_daemon = require("daemons.system.screenshot")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
-local settings = { mt = {} }
+local settings = {
+    mt = {}
+}
 
 local accent_color = beautiful.colors.random_accent_color()
 
 local function show_cursor()
-    local checkbox = wibox.widget
-    {
+    local checkbox = wibox.widget {
         widget = widgets.checkbox,
         state = screenshot_daemon:get_show_cursor(),
         color = accent_color,
@@ -28,41 +28,36 @@ local function show_cursor()
         end
     }
 
-    local text = wibox.widget
-    {
+    local text = wibox.widget {
         widget = widgets.text,
         valign = "center",
         size = 15,
         text = "Show Cursor: "
     }
 
-    return wibox.widget
-    {
+    return wibox.widget {
         layout = wibox.layout.fixed.horizontal,
         forced_height = dpi(35),
         spacing = dpi(5),
         text,
-        checkbox,
+        checkbox
     }
 end
 
 local function delay()
-    local title = wibox.widget
-    {
+    local title = wibox.widget {
         widget = widgets.text,
         size = 15,
         text = "Delay:"
     }
 
-    local value_text = wibox.widget
-    {
+    local value_text = wibox.widget {
         widget = widgets.text,
         size = 15,
-        text = screenshot_daemon:get_delay(),
+        text = screenshot_daemon:get_delay()
     }
 
-    local slider = wibox.widget
-    {
+    local slider = wibox.widget {
         widget = widgets.slider,
         forced_width = dpi(150),
         value = screenshot_daemon:get_delay(),
@@ -73,7 +68,7 @@ local function delay()
         bar_active_color = beautiful.colors.random_accent_color(),
         handle_width = dpi(15),
         handle_color = beautiful.colors.on_background,
-        handle_shape = gshape.circle,
+        handle_shape = gshape.circle
     }
 
     slider:connect_signal("property::value", function(self, value, instant)
@@ -83,8 +78,7 @@ local function delay()
         end
     end)
 
-    return wibox.widget
-    {
+    return wibox.widget {
         layout = wibox.layout.fixed.horizontal,
         forced_height = dpi(35),
         spacing = dpi(15),
@@ -95,49 +89,44 @@ local function delay()
 end
 
 local function folder()
-    local title = wibox.widget
-    {
+    local title = wibox.widget {
         widget = widgets.text,
         size = 15,
         text = "Folder:"
     }
 
-    local folder_text  = wibox.widget
-    {
+    local folder_text = wibox.widget {
         widget = widgets.text,
         forced_width = dpi(220),
         size = 12,
-        text = screenshot_daemon:get_folder(),
+        text = screenshot_daemon:get_folder()
     }
 
-    local set_folder_button  = wibox.widget
-    {
+    local set_folder_button = wibox.widget {
         widget = widgets.button.text.normal,
         size = 15,
         text = "...",
         on_press = function()
             screenshot_daemon:set_folder()
-        end,
+        end
     }
 
     screenshot_daemon:connect_signal("folder::updated", function(self, folder)
         folder_text.text = folder
     end)
 
-    return wibox.widget
-    {
+    return wibox.widget {
         layout = wibox.layout.fixed.horizontal,
         forced_height = dpi(35),
         spacing = dpi(15),
         title,
         folder_text,
-        set_folder_button,
+        set_folder_button
     }
 end
 
 local function new(layout)
-    local back_button = wibox.widget
-    {
+    local back_button = wibox.widget {
         widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
@@ -147,16 +136,14 @@ local function new(layout)
         end
     }
 
-    local settings_text = wibox.widget
-    {
+    local settings_text = wibox.widget {
         widget = widgets.text,
         bold = true,
         size = 15,
-        text = "Settings",
+        text = "Settings"
     }
 
-    return wibox.widget
-    {
+    return wibox.widget {
         widget = wibox.container.margin,
         margins = dpi(23),
         {

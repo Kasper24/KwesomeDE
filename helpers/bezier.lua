@@ -5,7 +5,6 @@
 -- @copyright 2021 Alex Belykh
 -- @submodule gears.math
 ---------------------------------------------------------------------------
-
 local table_insert = table.insert
 
 local bezier = {}
@@ -25,8 +24,8 @@ function bezier.curve_evaluate_at(c, t)
     local from = c
     local tmp = {nil, nil, nil, nil}
     while #from > 1 do
-        for i = 1, #from-1 do
-            tmp[i] = from[i]*(1-t) + from[i+1]*t
+        for i = 1, #from - 1 do
+            tmp[i] = from[i] * (1 - t) + from[i + 1] * t
         end
         tmp[#from] = nil
         from = tmp
@@ -54,8 +53,8 @@ function bezier.curve_split_at(c, t)
     while #from > 0 do
         table_insert(coefs_left, from[1])
         table_insert(coefs_right, 1, from[#from])
-        for i = 1, #from-1 do
-            tmp[i] = from[i]*(1-t) + from[i+1]*t
+        for i = 1, #from - 1 do
+            tmp[i] = from[i] * (1 - t) + from[i + 1] * t
         end
         tmp[#from] = nil
         from = tmp
@@ -85,18 +84,18 @@ function bezier.curve_derivative(c, n)
         return c
     end
     local c_len = #c
-    if c_len < n+1 then
+    if c_len < n + 1 then
         return {}
     end
 
     local from = c
     local tmp = {}
 
-    for l = c_len-1, c_len-n, -1 do
+    for l = c_len - 1, c_len - n, -1 do
         for i = 1, l do
-            tmp[i] = (from[i+1] - from[i])*l
+            tmp[i] = (from[i + 1] - from[i]) * l
         end
-        tmp[l+1] = nil
+        tmp[l + 1] = nil
         from = tmp
     end
 
@@ -106,7 +105,7 @@ end
 -- This is used instead of plain 0 to try and be compatible
 -- with objects that implement their own arithmetic via metatables.
 local function get_zero(c, zero)
-    return c and c*0 or zero
+    return c and c * 0 or zero
 end
 
 --- Compute the value of the n-th derivative of a Bézier curve
@@ -150,7 +149,7 @@ function bezier.curve_derivative_at_zero(c, zero)
     if l < 2 then
         return get_zero(c[1], zero)
     end
-    return (c[2]-c[1])*(l-1)
+    return (c[2] - c[1]) * (l - 1)
 end
 
 --- Compute the value of the 1-st derivative of a Bézier curve at t=1.
@@ -169,7 +168,7 @@ function bezier.curve_derivative_at_one(c, zero)
     if l < 2 then
         return get_zero(c[1], zero)
     end
-    return (c[l]-c[l-1])*(l-1)
+    return (c[l] - c[l - 1]) * (l - 1)
 end
 
 --- Get the (n+1)-th degree Bézier curve, that has the same shape as
@@ -187,11 +186,11 @@ function bezier.curve_elevate_degree(c)
     local ret = {c[1]}
     local len = #c
 
-    for i = 1, len-1 do
-        ret[i+1] = (i*c[i] + (len-i)*c[i+1])/len
+    for i = 1, len - 1 do
+        ret[i + 1] = (i * c[i] + (len - i) * c[i + 1]) / len
     end
 
-    ret[len+1] = c[len]
+    ret[len + 1] = c[len]
     return ret
 end
 
@@ -226,17 +225,17 @@ function bezier.cubic_through_points(p0, p1, p2, p3)
         return p0, p0, p0, p0
     end
     if not p2 then
-        local c1 = (2*p0+p1)/3
-        local c2 = (2*p1+p0)/3
+        local c1 = (2 * p0 + p1) / 3
+        local c2 = (2 * p1 + p0) / 3
         return p0, c1, c2, p1
     end
     if not p3 then
-        local c1 = (4*p1 - p2)/3
-        local c2 = (4*p1 - p0)/3
+        local c1 = (4 * p1 - p2) / 3
+        local c2 = (4 * p1 - p0) / 3
         return p0, c1, c2, p2
     end
-    local c1 = (-5*p0 + 18*p1 - 9*p2 + 2*p3)/6
-    local c2 = (-5*p3 + 18*p2 - 9*p1 + 2*p0)/6
+    local c1 = (-5 * p0 + 18 * p1 - 9 * p2 + 2 * p3) / 6
+    local c2 = (-5 * p3 + 18 * p2 - 9 * p1 + 2 * p0) / 6
     return p0, c1, c2, p3
 end
 
@@ -256,8 +255,8 @@ end
 -- @staticfct gears.math.bezier.cubic_from_points_and_derivatives
 -- @see wibox.widget.graph.step_hook
 function bezier.cubic_from_points_and_derivatives(d0, p0, p3, d3)
-    local c1 = p0 + d0/3
-    local c2 = p3 - d3/3
+    local c1 = p0 + d0 / 3
+    local c2 = p3 - d3 / 3
     return p0, c1, c2, p3
 end
 
@@ -282,8 +281,8 @@ end
 -- @staticfct gears.math.bezier.cubic_from_derivative_and_points_min_stretch
 -- @see wibox.widget.graph.step_hook
 function bezier.cubic_from_derivative_and_points_min_stretch(d0, p0, p3)
-    local c1 = p0 + d0/3
-    local c2 = (2*p0 - c1 + 3*p3) / 4
+    local c1 = p0 + d0 / 3
+    local c2 = (2 * p0 - c1 + 3 * p3) / 4
     return p0, c1, c2, p3
 end
 
@@ -307,7 +306,7 @@ end
 -- @staticfct gears.math.bezier.cubic_from_derivative_and_points_min_strain
 -- @see wibox.widget.graph.step_hook
 function bezier.cubic_from_derivative_and_points_min_strain(d, p0, p3)
-    local c1 = p0 + d/3
+    local c1 = p0 + d / 3
     local c2 = (c1 + p3) / 2
     return p0, c1, c2, p3
 end
@@ -333,7 +332,7 @@ end
 -- @staticfct gears.math.bezier.cubic_from_derivative_and_points_min_jerk
 -- @see wibox.widget.graph.step_hook
 function bezier.cubic_from_derivative_and_points_min_jerk(d, p0, p3)
-    local c1 = p0 + d/3
+    local c1 = p0 + d / 3
     local c2 = c1 + (p3 - p0) / 3
     return p0, c1, c2, p3
 end

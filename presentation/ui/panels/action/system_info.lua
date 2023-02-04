@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local wibox = require("wibox")
 local widgets = require("presentation.ui.widgets")
 local cpu_popup = require("presentation.ui.applets.cpu")
@@ -22,13 +21,14 @@ local setmetatable = setmetatable
 local tostring = tostring
 local ipairs = ipairs
 
-local system_info = { mt = {} }
+local system_info = {
+    mt = {}
+}
 
 local function arc_widget(icon, on_release, on_scroll_up, on_scroll_down)
     local icon_widget = nil
     if on_release ~= nil then
-        icon_widget = wibox.widget
-        {
+        icon_widget = wibox.widget {
             widget = widgets.button.text.normal,
             halign = "center",
             valign = "center",
@@ -48,51 +48,46 @@ local function arc_widget(icon, on_release, on_scroll_up, on_scroll_down)
                 if on_scroll_down ~= nil then
                     on_scroll_down()
                 end
-            end,
+            end
         }
     else
-        icon_widget = wibox.widget
-        {
+        icon_widget = wibox.widget {
             widget = widgets.text,
             halign = "center",
             valign = "center",
             icon = icon,
-            size = 30,
+            size = 30
         }
     end
 
-    local arc = wibox.widget
-    {
+    local arc = wibox.widget {
         widget = wibox.container.arcchart,
         forced_width = dpi(90),
-        forced_height =  dpi(90),
+        forced_height = dpi(90),
         max_value = 100,
         min_value = 0,
         value = 0,
         thickness = dpi(7),
         rounded_edge = true,
         bg = beautiful.colors.surface,
-        colors =
-        {
-            {
-                type = "linear",
-                from = {0, 0},
-                to = {400, 400},
-                stops = {{0, beautiful.colors.random_accent_color()}, {0.2, beautiful.colors.random_accent_color()}, {0.4, beautiful.colors.random_accent_color()}, {0.6, beautiful.colors.random_accent_color()}, {0.8, beautiful.colors.random_accent_color()}}
-            }
-        },
+        colors = {{
+            type = "linear",
+            from = {0, 0},
+            to = {400, 400},
+            stops = {{0, beautiful.colors.random_accent_color()}, {0.2, beautiful.colors.random_accent_color()},
+                     {0.4, beautiful.colors.random_accent_color()}, {0.6, beautiful.colors.random_accent_color()},
+                     {0.8, beautiful.colors.random_accent_color()}}
+        }},
         icon_widget
     }
 
-    local value_text = wibox.widget
-    {
+    local value_text = wibox.widget {
         widget = widgets.text,
         halign = "center",
         text = "0%"
     }
 
-    local widget = wibox.widget
-    {
+    local widget = wibox.widget {
         layout = wibox.layout.fixed.vertical,
         spacing = dpi(15),
         arc,
@@ -128,12 +123,12 @@ local function ram(action_panel)
         ram_popup:toggle(action_panel.widget)
     end)
 
-    ram_daemon:connect_signal("update", function(self, total, used, free, shared, buff_cache,
-        available, total_swap, used_swap, free_swap)
+    ram_daemon:connect_signal("update",
+        function(self, total, used, free, shared, buff_cache, available, total_swap, used_swap, free_swap)
 
-        local used_ram_percentage = math.floor((used / total) * 100)
-        arc:set_value(used_ram_percentage)
-    end)
+            local used_ram_percentage = math.floor((used / total) * 100)
+            arc:set_value(used_ram_percentage)
+        end)
 
     return arc
 end
@@ -194,11 +189,9 @@ end
 local function audio(action_panel)
     local arc = arc_widget(beautiful.icons.volume.off, function()
         audio_popup:toggle(action_panel.widget)
-    end,
-    function()
+    end, function()
         pactl_daemon:sink_volume_up(nil, 5)
-    end,
-    function()
+    end, function()
         pactl_daemon:sink_volume_down(nil, 5)
     end)
 
@@ -220,9 +213,8 @@ local function audio(action_panel)
 end
 
 local function new(action_panel)
-    return wibox.widget
-    {
-        layout =  wibox.layout.fixed.vertical,
+    return wibox.widget {
+        layout = wibox.layout.fixed.vertical,
         forced_height = dpi(300),
         spacing = dpi(30),
         {
@@ -237,7 +229,7 @@ local function new(action_panel)
             spacing = dpi(30),
             temperature(),
             brightness(),
-            audio(action_panel),
+            audio(action_panel)
         }
     }
 end

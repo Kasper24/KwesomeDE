@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local lgi = require("lgi")
 local NM = lgi.NM
 local awful = require("awful")
@@ -16,11 +15,10 @@ local string = string
 local table = table
 local math = math
 
-local network = { }
+local network = {}
 local instance = nil
 
-network.NMState =
-{
+network.NMState = {
     UNKNOWN = 0, -- Networking state is unknown. This indicates a daemon error that
     -- makes it unable to reasonably assess the state. In such event the applications
     -- are expected to assume Internet connectivity might be present and not disable
@@ -42,26 +40,24 @@ network.NMState =
     -- This means a default route is available, but the Internet connectivity check
     -- (see "Connectivity" property) did not succeed. The graphical shell
     -- should indicate limited network connectivity.
-    CONNECTED_GLOBAL = 70, -- There is global IPv4 and/or IPv6 Internet connectivity
+    CONNECTED_GLOBAL = 70 -- There is global IPv4 and/or IPv6 Internet connectivity
     -- This means the Internet connectivity check succeeded, the graphical shell should
     -- indicate full network connectivity.
 }
 
-network.DeviceType =
-{
+network.DeviceType = {
     ETHERNET = 1,
     WIFI = 2
 }
 
-network.DeviceState =
-{
+network.DeviceState = {
     UNKNOWN = 0, -- the device's state is unknown
     UNMANAGED = 10, -- the device is recognized, but not managed by NetworkManager
-    UNAVAILABLE = 20, --the device is managed by NetworkManager,
-    --but is not available for use. Reasons may include the wireless switched off,
-    --missing firmware, no ethernet carrier, missing supplicant or modem manager, etc.
+    UNAVAILABLE = 20, -- the device is managed by NetworkManager,
+    -- but is not available for use. Reasons may include the wireless switched off,
+    -- missing firmware, no ethernet carrier, missing supplicant or modem manager, etc.
     DISCONNECTED = 30, -- the device can be activated,
-    --but is currently idle and not connected to a network.
+    -- but is currently idle and not connected to a network.
     PREPARE = 40, -- the device is preparing the connection to the network.
     -- This may include operations like changing the MAC address,
     -- setting physical link properties, and anything else required
@@ -89,8 +85,7 @@ network.DeviceState =
 }
 
 function network.device_state_to_string(state)
-    local device_state_to_string =
-    {
+    local device_state_to_string = {
         [0] = "Unknown",
         [10] = "Unmanaged",
         [20] = "Unavailable",
@@ -112,24 +107,24 @@ end
 local function flags_to_security(flags, wpa_flags, rsn_flags)
     local str = ""
     if flags == 1 and wpa_flags == 0 and rsn_flags == 0 then
-      str = str .. " WEP"
+        str = str .. " WEP"
     end
     if wpa_flags ~= 0 then
-      str = str .. " WPA1"
+        str = str .. " WPA1"
     end
     if not rsn_flags ~= 0 then
-      str = str .. " WPA2"
+        str = str .. " WPA2"
     end
     if wpa_flags == 512 or rsn_flags == 512 then
-      str = str .. " 802.1X"
+        str = str .. " 802.1X"
     end
 
-    return (str:gsub( "^%s", ""))
+    return (str:gsub("^%s", ""))
 end
 
 local function generate_uuid()
-    local template ='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
-    local uuid = string.gsub(template, '[xy]', function (c)
+    local template = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
+    local uuid = string.gsub(template, '[xy]', function(c)
         local v = (c == 'x') and math.random(0, 0xf) or math.random(8, 0xb)
         return string.format('%x', v)
     end)
@@ -137,28 +132,24 @@ local function generate_uuid()
 end
 
 local function create_profile(access_point, password, auto_connect)
-    local s_con =
-    {
+    local s_con = {
         -- ["interface-name"] = lgi.GLib.Variant("s", access_point.device_interface),
         ["uuid"] = lgi.GLib.Variant("s", generate_uuid()),
-        ["id"] =  lgi.GLib.Variant("s", access_point.ssid),
+        ["id"] = lgi.GLib.Variant("s", access_point.ssid),
         ["type"] = lgi.GLib.Variant("s", "802-11-wireless"),
-        ["autoconnect"] = lgi.GLib.Variant("b", auto_connect),
+        ["autoconnect"] = lgi.GLib.Variant("b", auto_connect)
     }
 
-    local s_ip4 =
-    {
+    local s_ip4 = {
         ["method"] = lgi.GLib.Variant("s", "auto")
     }
 
-    local s_ip6 =
-    {
-        ["method"] = lgi.GLib.Variant("s", "auto"),
+    local s_ip6 = {
+        ["method"] = lgi.GLib.Variant("s", "auto")
     }
 
-    local s_wifi =
-    {
-        ["mode"] = lgi.GLib.Variant("s", "infrastructure"),
+    local s_wifi = {
+        ["mode"] = lgi.GLib.Variant("s", "infrastructure")
     }
 
     local s_wsec = {}
@@ -174,8 +165,7 @@ local function create_profile(access_point, password, auto_connect)
         end
     end
 
-    return
-    {
+    return {
         ["connection"] = s_con,
         ["ipv4"] = s_ip4,
         ["ipv6"] = s_ip6,
@@ -185,7 +175,7 @@ local function create_profile(access_point, password, auto_connect)
 end
 
 local function on_wifi_device_state_changed(self, proxy, new_state, old_state, reason)
-    local active_access_point_proxy = dbus_proxy.Proxy:new {
+    local active_access_point_proxy = dbus_proxy.Proxy:new{
         bus = dbus_proxy.Bus.SYSTEM,
         name = "org.freedesktop.NetworkManager",
         interface = "org.freedesktop.NetworkManager.AccessPoint",
@@ -204,7 +194,7 @@ local function get_access_point_connections(self, ssid)
 
     local connections = self._private.settings_proxy:ListConnections()
     for _, connection_path in ipairs(connections) do
-        local connection_proxy = dbus_proxy.Proxy:new {
+        local connection_proxy = dbus_proxy.Proxy:new{
             bus = dbus_proxy.Bus.SYSTEM,
             name = "org.freedesktop.NetworkManager",
             interface = "org.freedesktop.NetworkManager.Settings.Connection",
@@ -222,7 +212,7 @@ end
 local function get_wifi_proxy(self)
     local devices = self._private.client_proxy:GetDevices()
     for _, device_path in ipairs(devices) do
-        local device_proxy = dbus_proxy.Proxy:new {
+        local device_proxy = dbus_proxy.Proxy:new{
             bus = dbus_proxy.Bus.SYSTEM,
             name = "org.freedesktop.NetworkManager",
             interface = "org.freedesktop.NetworkManager.Device",
@@ -231,7 +221,7 @@ local function get_wifi_proxy(self)
 
         if device_proxy.DeviceType == network.DeviceType.WIFI then
             self._private.device_proxy = device_proxy
-            self._private.wifi_proxy = dbus_proxy.Proxy:new {
+            self._private.wifi_proxy = dbus_proxy.Proxy:new{
                 bus = dbus_proxy.Bus.SYSTEM,
                 name = "org.freedesktop.NetworkManager",
                 interface = "org.freedesktop.NetworkManager.Device.Wireless",
@@ -258,7 +248,7 @@ function network:scan_access_points()
 
         local access_points = self._private.wifi_proxy:GetAccessPoints()
         for _, access_point_path in ipairs(access_points) do
-            local access_point_proxy = dbus_proxy.Proxy:new {
+            local access_point_proxy = dbus_proxy.Proxy:new{
                 bus = dbus_proxy.Bus.SYSTEM,
                 name = "org.freedesktop.NetworkManager",
                 interface = "org.freedesktop.NetworkManager.AccessPoint",
@@ -274,7 +264,8 @@ function network:scan_access_points()
 
             if access_point_proxy.Ssid ~= nil then
                 local ssid = NM.utils_ssid_to_utf8(access_point_proxy.Ssid)
-                local security = flags_to_security(access_point_proxy.Flags, access_point_proxy.WpaFlags, access_point_proxy.RsnFlags)
+                local security = flags_to_security(access_point_proxy.Flags, access_point_proxy.WpaFlags,
+                    access_point_proxy.RsnFlags)
                 local password = ""
                 local connections = get_access_point_connections(self, ssid)
 
@@ -296,7 +287,7 @@ function network:scan_access_points()
                     path = access_point_path,
                     hw_address = access_point_proxy.HwAddress,
                     device_interface = self._private.device_proxy.Interface,
-                    device_proxy_path = self._private.device_proxy.object_path,
+                    device_proxy_path = self._private.device_proxy.object_path
                 })
             end
         end
@@ -306,7 +297,9 @@ function network:scan_access_points()
         end)
 
         self:emit_signal("scan_access_points::success", self._private.access_points)
-    end, {call_id = "my-id"}, {})
+    end, {
+        call_id = "my-id"
+    }, {})
 end
 
 function network:connect_to_access_point(access_point, password, auto_connect)
@@ -318,16 +311,19 @@ function network:connect_to_access_point(access_point, password, auto_connect)
         -- AddAndActivateConnectionAsync doesn't actually verify that the profile is valid
         -- The NetworkManager libary has methods to verify manually, but they are not exposed to DBus
         -- so instead I'm using the 2 seperate methods
-        self._private.client_proxy:AddAndActivateConnectionAsync(function(proxy, context, success, failure)
-            if failure ~= nil then
-                -- print("Failed to activate connection: ", failure)
-                -- print("Failed to activate connection error code: ", failure.code)
-                self:emit_signal("activate_access_point::failed", tostring(failure), tostring(failure.code))
-                return
-            end
+        self._private.client_proxy:AddAndActivateConnectionAsync(
+            function(proxy, context, success, failure)
+                if failure ~= nil then
+                    -- print("Failed to activate connection: ", failure)
+                    -- print("Failed to activate connection error code: ", failure.code)
+                    self:emit_signal("activate_access_point::failed", tostring(failure), tostring(failure.code))
+                    return
+                end
 
-            self:emit_signal("activate_access_point::success", access_point.ssid)
-        end, {call_id = "my-id"}, profile, access_point.device_proxy_path, access_point.path)
+                self:emit_signal("activate_access_point::success", access_point.ssid)
+            end, {
+                call_id = "my-id"
+            }, profile, access_point.device_proxy_path, access_point.path)
     else
         connections[1]:Update(profile)
         self._private.client_proxy:ActivateConnectionAsync(function(proxy, context, success, failure)
@@ -340,7 +336,9 @@ function network:connect_to_access_point(access_point, password, auto_connect)
 
             self:emit_signal("activate_access_point::success", access_point.ssid)
 
-        end, {call_id = "my-id"}, connections[1].object_path, access_point.device_proxy_path, access_point.path)
+        end, {
+            call_id = "my-id"
+        }, connections[1].object_path, access_point.device_proxy_path, access_point.path)
     end
 end
 
@@ -367,7 +365,10 @@ function network:toggle_wireless_state()
     end
 
     self._private.client_proxy:Set("org.freedesktop.NetworkManager", "WirelessEnabled", lgi.GLib.Variant("b", enable))
-    self._private.client_proxy.WirelessEnabled = {signature = "b", value = enable}
+    self._private.client_proxy.WirelessEnabled = {
+        signature = "b",
+        value = enable
+    }
 end
 
 function network:set_network_state(state)
@@ -379,27 +380,27 @@ function network:open_settings()
 end
 
 local function new()
-    local ret = gobject{}
+    local ret = gobject {}
     gtable.crush(ret, network, true)
 
     ret._private = {}
     ret._private.access_points = {}
 
-    ret._private.client_proxy = dbus_proxy.Proxy:new {
+    ret._private.client_proxy = dbus_proxy.Proxy:new{
         bus = dbus_proxy.Bus.SYSTEM,
         name = "org.freedesktop.NetworkManager",
         interface = "org.freedesktop.NetworkManager",
         path = "/org/freedesktop/NetworkManager"
     }
 
-    ret._private.settings_proxy = dbus_proxy.Proxy:new {
+    ret._private.settings_proxy = dbus_proxy.Proxy:new{
         bus = dbus_proxy.Bus.SYSTEM,
         name = "org.freedesktop.NetworkManager",
         interface = "org.freedesktop.NetworkManager.Settings",
         path = "/org/freedesktop/NetworkManager/Settings"
     }
 
-    local client_properties_proxy = dbus_proxy.Proxy:new {
+    local client_properties_proxy = dbus_proxy.Proxy:new{
         bus = dbus_proxy.Bus.SYSTEM,
         name = "org.freedesktop.NetworkManager",
         interface = "org.freedesktop.DBus.Properties",
@@ -412,9 +413,15 @@ local function new()
             ret:emit_signal("wireless_state", data.WirelessEnabled)
 
             if data.WirelessEnabled == true then
-                gtimer { timeout = 5, autostart = true, call_now = false, single_shot = true, callback = function()
-                    ret:scan_access_points()
-                end }
+                gtimer {
+                    timeout = 5,
+                    autostart = true,
+                    call_now = false,
+                    single_shot = true,
+                    callback = function()
+                        ret:scan_access_points()
+                    end
+                }
             end
         end
     end)
@@ -423,11 +430,11 @@ local function new()
     ret:scan_access_points()
 
     gtimer.delayed_call(function()
-        ret:emit_signal("wireless_state", ret._private.client_proxy.WirelessEnabled )
+        ret:emit_signal("wireless_state", ret._private.client_proxy.WirelessEnabled)
 
         local active_access_point = ret._private.wifi_proxy.ActiveAccessPoint
         if ret._private.device_proxy.State == network.DeviceState.ACTIVATED and active_access_point ~= "/" then
-            local active_access_point_proxy = dbus_proxy.Proxy:new {
+            local active_access_point_proxy = dbus_proxy.Proxy:new{
                 bus = dbus_proxy.Bus.SYSTEM,
                 name = "org.freedesktop.NetworkManager",
                 interface = "org.freedesktop.NetworkManager.AccessPoint",

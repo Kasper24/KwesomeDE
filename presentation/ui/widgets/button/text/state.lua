@@ -2,18 +2,16 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local gtable = require("gears.table")
 local tbnwidget = require("presentation.ui.widgets.button.text.normal")
 local helpers = require("helpers")
 local setmetatable = setmetatable
 
-local text_button_state = { mt = {} }
-
-local properties =
-{
-	"text_on_normal_bg", "text_on_hover_bg", "text_on_press_bg",
+local text_button_state = {
+    mt = {}
 }
+
+local properties = {"text_on_normal_bg", "text_on_hover_bg", "text_on_press_bg"}
 
 local function build_properties(prototype, prop_names)
     for _, prop in ipairs(prop_names) do
@@ -22,7 +20,7 @@ local function build_properties(prototype, prop_names)
                 if self._private[prop] ~= value then
                     self._private[prop] = value
                     self:emit_signal("widget::redraw_needed")
-                    self:emit_signal("property::"..prop, value)
+                    self:emit_signal("property::" .. prop, value)
                 end
                 return self
             end
@@ -36,11 +34,11 @@ local function build_properties(prototype, prop_names)
 end
 
 function text_button_state:set_text_normal_bg(text_normal_bg)
-	local wp = self._private
-	wp.text_normal_bg = text_normal_bg
-	wp.defaults.text_hover_bg = helpers.color.button_color(text_normal_bg, 0.1)
-	wp.defaults.text_press_bg = helpers.color.button_color(text_normal_bg, 0.2)
-	self:text_effect(true)
+    local wp = self._private
+    wp.text_normal_bg = text_normal_bg
+    wp.defaults.text_hover_bg = helpers.color.button_color(text_normal_bg, 0.1)
+    wp.defaults.text_press_bg = helpers.color.button_color(text_normal_bg, 0.2)
+    self:text_effect(true)
 
     if self._private.text_on_normal_bg == nil then
         self:set_text_on_normal_bg(helpers.color.button_color(text_normal_bg, 0.2))
@@ -48,11 +46,11 @@ function text_button_state:set_text_normal_bg(text_normal_bg)
 end
 
 function text_button_state:set_text_on_normal_bg(text_on_normal_bg)
-	local wp = self._private
-	wp.text_on_normal_bg = text_on_normal_bg
-	wp.defaults.text_on_hover_bg = helpers.color.button_color(text_on_normal_bg, 0.1)
-	wp.defaults.text_on_press_bg = helpers.color.button_color(text_on_normal_bg, 0.2)
-	self:text_effect(true)
+    local wp = self._private
+    wp.text_on_normal_bg = text_on_normal_bg
+    wp.defaults.text_on_hover_bg = helpers.color.button_color(text_on_normal_bg, 0.1)
+    wp.defaults.text_on_press_bg = helpers.color.button_color(text_on_normal_bg, 0.2)
+    self:text_effect(true)
 end
 
 function text_button_state:set_icon(icon)
@@ -65,19 +63,19 @@ function text_button_state:set_icon(icon)
 end
 
 local function new()
-	local widget = tbnwidget{true}
-	gtable.crush(widget, text_button_state, true)
+    local widget = tbnwidget {true}
+    gtable.crush(widget, text_button_state, true)
 
-	local wp = widget._private
+    local wp = widget._private
 
-	-- Setup default values
-	wp.defaults.text_on_normal_bg = helpers.color.button_color(wp.defaults.text_normal_bg, 0.2)
-	wp.defaults.text_on_hover_bg = helpers.color.button_color(wp.defaults.text_on_normal_bg, 0.1)
-	wp.defaults.text_on_press_bg = helpers.color.button_color(wp.defaults.text_on_normal_bg, 0.2)
+    -- Setup default values
+    wp.defaults.text_on_normal_bg = helpers.color.button_color(wp.defaults.text_normal_bg, 0.2)
+    wp.defaults.text_on_hover_bg = helpers.color.button_color(wp.defaults.text_on_normal_bg, 0.1)
+    wp.defaults.text_on_press_bg = helpers.color.button_color(wp.defaults.text_on_normal_bg, 0.2)
 
-	widget:text_effect(true)
+    widget:text_effect(true)
 
-	return widget
+    return widget
 end
 
 function text_button_state.mt:__call(...)

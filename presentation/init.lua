@@ -20,7 +20,9 @@ local audio_popup = require(... .. ".ui.applets.audio")
 local wifi_popup = require(... .. ".ui.applets.wifi")
 local bluetooth_popup = require(... .. ".ui.applets.bluetooth")
 
-local capi = { client = client }
+local capi = {
+    client = client
+}
 
 capi.client.connect_signal("property::fullscreen", function(c)
     if c.fullscreen then

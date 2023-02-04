@@ -2,7 +2,9 @@ local gshape = require("gears.shape")
 local gmatrix = require("gears.matrix")
 local ipairs = ipairs
 local table = table
-local capi = { mouse = mouse }
+local capi = {
+    mouse = mouse
+}
 
 local _ui = {}
 
@@ -66,15 +68,21 @@ local function _get_widget_geometry(_hierarchy, widget)
     local width, height = _hierarchy:get_size()
     if _hierarchy:get_widget() == widget then
         -- Get the extents of this widget in the device space
-        local x, y, w, h = gmatrix.transform_rectangle(
-            _hierarchy:get_matrix_to_device(),
-            0, 0, width, height)
-        return { x = x, y = y, width = w, height = h, hierarchy = _hierarchy }
+        local x, y, w, h = gmatrix.transform_rectangle(_hierarchy:get_matrix_to_device(), 0, 0, width, height)
+        return {
+            x = x,
+            y = y,
+            width = w,
+            height = h,
+            hierarchy = _hierarchy
+        }
     end
 
     for _, child in ipairs(_hierarchy:get_children()) do
         local ret = _get_widget_geometry(child, widget)
-        if ret then return ret end
+        if ret then
+            return ret
+        end
     end
 end
 

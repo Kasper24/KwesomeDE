@@ -2,14 +2,13 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local helpers = require("helpers")
 local string = string
 
-local favorites = { }
+local favorites = {}
 local instance = nil
 
 function favorites:add_favorite(client)
@@ -43,7 +42,7 @@ function favorites:get_favorites()
 end
 
 local function new()
-    local ret = gobject{}
+    local ret = gobject {}
     gtable.crush(ret, favorites, true)
 
     ret._private = {}

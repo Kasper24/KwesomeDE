@@ -13,13 +13,13 @@
 -- @module async
 -- @license GPL v3.0
 ---------------------------------------------------------------------------
-
 local util = require("helpers.async.internal.util")
-local pack = table.pack or function(...) return {...} end
+local pack = table.pack or function(...)
+    return {...}
+end
 local unpack = table.unpack or unpack
 
 local async = {}
-
 
 --- Wraps a function such that it can only ever be called once.
 --
@@ -31,7 +31,8 @@ local async = {}
 -- @treturn function The wrapped function or a noop.
 function async.once(fn)
     if not fn then
-        fn = function() end
+        fn = function()
+        end
     end
 
     local ran = false
@@ -43,7 +44,6 @@ function async.once(fn)
         -- TODO: Decide if we want to throw/log an error when `ran == true`
     end
 end
-
 
 --- Turns an asynchronous function into a blocking operation.
 --
@@ -70,7 +70,6 @@ function async.wrap_sync(fn)
         return unpack(ret)
     end
 end
-
 
 --- Executes a list of asynchronous functions in series.
 --
@@ -127,7 +126,6 @@ function async.waterfall(tasks, final_callback)
     _continue()
 end
 
-
 --- Runs all tasks in parallel and collects the results.
 --
 -- If any task produces an error, `final_callback` will be called immediately
@@ -171,7 +169,6 @@ function async.all(tasks, final_callback)
         end)
     end
 end
-
 
 --- Resolves a DAG (Directed Acyclic Graph) of asynchronous dependencies.
 --
@@ -304,7 +301,6 @@ function async.dag(tasks, final_callback)
     _check_pending(tasks)
 end
 
-
 --- Repeatedly calls `test` and `iteratee` until stopped.
 --
 -- `iteratee` is called repeatedly. It is passed a callback
@@ -365,7 +361,6 @@ function async.do_while(iteratee, test, final_callback)
     iteratee(_test)
 end
 
-
 --- Wrap a function with arguments for use as callback.
 --
 -- This may be used to wrap a function or table method as a callback, providing a (partial)
@@ -389,7 +384,7 @@ function async.callback(object, fn, ...)
     return function(...)
         local inner = pack(...)
         -- Merge, then unpack both argument lists to provide a single var arg.
-        local args = { object }
+        local args = {object}
         util.append(args, outer)
         util.append(args, inner)
         return fn(unpack(args))

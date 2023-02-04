@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local awful = require("awful")
 local gtimer = require("gears.timer")
 local wibox = require("wibox")
@@ -17,25 +16,22 @@ local instance = nil
 local function new()
     local ret = {}
 
-    local icon = wibox.widget
-    {
+    local icon = wibox.widget {
         widget = widgets.text,
         halign = "center",
         valign = "bottom",
         icon = beautiful.icons.brightness,
-        size = 30,
+        size = 30
     }
 
-    local text = wibox.widget
-    {
+    local text = wibox.widget {
         widget = widgets.text,
         halign = "center",
         valign = "bottom",
         size = 15
     }
 
-    local slider = wibox.widget
-    {
+    local slider = wibox.widget {
         widget = wibox.widget.progressbar,
         forced_width = dpi(150),
         forced_height = dpi(30),
@@ -44,43 +40,37 @@ local function new()
         value = 0,
         max_value = 100,
         background_color = beautiful.colors.surface,
-        color =
-        {
+        color = {
             type = "linear",
             from = {0, 0},
             to = {200, 50},
             stops = {{0, beautiful.colors.random_accent_color()}, {0.50, beautiful.colors.random_accent_color()}}
-        },
+        }
     }
 
-    local hide_timer = gtimer
-    {
+    local hide_timer = gtimer {
         timeout = 1,
         callback = function()
             ret.widget.visible = false
         end
     }
 
-    local anim = helpers.animation:new
-    {
+    local anim = helpers.animation:new{
         duration = 0.2,
         easing = helpers.animation.easing.linear,
         update = function(self, pos)
             slider.value = pos
-        end,
+        end
     }
 
-    ret.widget = awful.popup
-    {
+    ret.widget = awful.popup {
         type = "notification",
         screen = awful.screen.focused(),
         visible = false,
         ontop = true,
         placement = function(c)
-            awful.placement.centered(c,
-            {
-                offset =
-                {
+            awful.placement.centered(c, {
+                offset = {
                     y = 300
                 }
             })
@@ -91,8 +81,7 @@ local function new()
         bg = beautiful.colors.background,
         border_width = 0,
         border_color = beautiful.border_color_active,
-        widget =
-        {
+        widget = {
             widget = wibox.container.place,
             halign = "center",
             valign = "center",
@@ -102,7 +91,7 @@ local function new()
                 icon,
                 text,
                 slider
-            },
+            }
         }
     }
 

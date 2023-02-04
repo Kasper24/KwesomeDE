@@ -12,10 +12,7 @@
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-]]
-
----  @submodule dbus_proxy
-
+]] ---  @submodule dbus_proxy
 local VariantType = require("lgi").GLib.VariantType
 
 local variant = {}
@@ -55,37 +52,37 @@ stripped3 = variant.strip(v3)
 ]]
 function variant.strip(v)
 
-  if not tostring(v):find("GLib%.Variant$") then
-    if type(v) == "table" and #v > 0 then
-      -- Strip the 'n' field from pure arrays.
-      -- This is found in nested tuples.
-      v.n = nil
-    end
-    return v
-  end
-
-  if v:is_container() and not v:is_of_type(VariantType.VARIANT) then
-    local out = {}
-    local n_children = v:n_children()
-    local idx = 0
-
-    local is_dict = v:is_of_type(VariantType.DICTIONARY)
-    while idx < n_children do
-      local val = v:get_child_value(idx)
-      idx = idx + 1
-      if is_dict then
-        local key = val[1]
-        local value = variant.strip(val[2])
-        out[key] = variant.strip(value)
-      else
-        out[idx] = variant.strip(val)
-      end
+    if not tostring(v):find("GLib%.Variant$") then
+        if type(v) == "table" and #v > 0 then
+            -- Strip the 'n' field from pure arrays.
+            -- This is found in nested tuples.
+            v.n = nil
+        end
+        return v
     end
 
-    return out
-  else
-    return variant.strip(v.value)
-  end
+    if v:is_container() and not v:is_of_type(VariantType.VARIANT) then
+        local out = {}
+        local n_children = v:n_children()
+        local idx = 0
+
+        local is_dict = v:is_of_type(VariantType.DICTIONARY)
+        while idx < n_children do
+            local val = v:get_child_value(idx)
+            idx = idx + 1
+            if is_dict then
+                local key = val[1]
+                local value = variant.strip(val[2])
+                out[key] = variant.strip(value)
+            else
+                out[idx] = variant.strip(val)
+            end
+        end
+
+        return out
+    else
+        return variant.strip(v.value)
+    end
 
 end
 

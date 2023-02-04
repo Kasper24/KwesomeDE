@@ -2,14 +2,13 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local helpers = require("helpers")
 
-local redshift = { }
+local redshift = {}
 local instance = nil
 
 local UPDATE_INTERVAL = 1
@@ -59,7 +58,7 @@ function redshift:toggle()
 end
 
 local function new()
-    local ret = gobject{}
+    local ret = gobject {}
     gtable.crush(ret, redshift, true)
 
     ret._private = {}
@@ -72,18 +71,23 @@ local function new()
             -- ret:turn_off()
         end
 
-        gtimer { timeout = UPDATE_INTERVAL, autostart = true, call_now = true, callback = function()
-            helpers.run.is_running("redshift", function(is_running)
-                if is_running == true and state ~= true then
-                    ret:emit_signal("update", true)
-                    ret._private.state = true
-                end
-                if is_running == false and state ~= false then
-                    ret:emit_signal("update", false)
-                    ret._private.state = false
-                end
-            end)
-        end}
+        gtimer {
+            timeout = UPDATE_INTERVAL,
+            autostart = true,
+            call_now = true,
+            callback = function()
+                helpers.run.is_running("redshift", function(is_running)
+                    if is_running == true and state ~= true then
+                        ret:emit_signal("update", true)
+                        ret._private.state = true
+                    end
+                    if is_running == false and state ~= false then
+                        ret:emit_signal("update", false)
+                        ret._private.state = false
+                    end
+                end)
+            end
+        }
     end)
 
     return ret

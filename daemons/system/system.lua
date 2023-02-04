@@ -2,16 +2,17 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local notification_daemon = require("daemons.system.notifications")
 local helpers = require("helpers")
-local capi = { awesome = awesome }
+local capi = {
+    awesome = awesome
+}
 
-local system = { }
+local system = {}
 local instance = nil
 
 local UPDATE_INTERVAL = 60
@@ -57,7 +58,8 @@ end
 function system:unlock(password)
     if self._private.is_pam_installed == true then
         local pam = require(LUA_PAM_PATH)
-        local result pam.auth_current_user(password)
+        local result
+        pam.auth_current_user(password)
         if result == true then
             notification_daemon:unblock_on_unlocked()
             self:emit_signal("unlock")
@@ -81,7 +83,7 @@ function system:unlock(password)
 end
 
 local function new()
-    local ret = gobject{}
+    local ret = gobject {}
     gtable.crush(ret, system, true)
 
     ret._private = {}
@@ -93,16 +95,21 @@ local function new()
         ret._private.is_pam_installed = false
     end
 
-    gtimer { timeout = UPDATE_INTERVAL, autostart = true, call_now = true, callback = function()
-        awful.spawn.easy_async("neofetch packages", function(packages_count)
-            packages_count = helpers.string.trim(packages_count:gsub("packages", ""))
+    gtimer {
+        timeout = UPDATE_INTERVAL,
+        autostart = true,
+        call_now = true,
+        callback = function()
+            awful.spawn.easy_async("neofetch packages", function(packages_count)
+                packages_count = helpers.string.trim(packages_count:gsub("packages", ""))
 
-            awful.spawn.easy_async("neofetch uptime", function(uptime)
-                uptime = uptime:gsub("time", "")
-                ret:emit_signal("update", packages_count, uptime)
+                awful.spawn.easy_async("neofetch uptime", function(uptime)
+                    uptime = uptime:gsub("time", "")
+                    ret:emit_signal("update", packages_count, uptime)
+                end)
             end)
-        end)
-    end}
+        end
+    }
 
     return ret
 end

@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
@@ -10,7 +9,7 @@ local gtimer = require("gears.timer")
 local helpers = require("helpers")
 local os = os
 
-local screenshot = { }
+local screenshot = {}
 local instance = nil
 
 function screenshot:set_show_cursor(state)
@@ -70,7 +69,8 @@ function screenshot:screenshot()
             file:exists(function(error, exists)
                 if error == nil then
                     if exists == true then
-                        awful.spawn("xclip -selection clipboard -t image/png -i " .. self._private.folder .. file_name, false)
+                        awful.spawn("xclip -selection clipboard -t image/png -i " .. self._private.folder .. file_name,
+                            false)
                         self:emit_signal("ended", self._private.screenshot_method, self._private.folder, file_name)
                     else
                         self:emit_signal("error::create_file", stderr)
@@ -105,15 +105,14 @@ function screenshot:screenshot()
 end
 
 local function new()
-    local ret = gobject{}
+    local ret = gobject {}
     gtable.crush(ret, screenshot, true)
 
     ret._private = {}
     ret._private.screenshot_method = "selection"
     ret._private.delay = helpers.settings:get_value("screenshot-delay")
     ret._private.show_cursor = helpers.settings:get_value("screenshot-show-cursor")
-    ret._private.folder =
-        helpers.settings:get_value("screenshot-folder"):gsub("~", os.getenv("HOME"))
+    ret._private.folder = helpers.settings:get_value("screenshot-folder"):gsub("~", os.getenv("HOME"))
 
     return ret
 end

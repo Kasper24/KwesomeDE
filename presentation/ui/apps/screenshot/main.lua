@@ -2,33 +2,31 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local wibox = require("wibox")
 local widgets = require("presentation.ui.widgets")
 local beautiful = require("beautiful")
 local screenshot_daemon = require("daemons.system.screenshot")
 local dpi = beautiful.xresources.apply_dpi
 
-local main = { mt = {} }
+local main = {
+    mt = {}
+}
 
 local function button(icon, text, on_release, on_by_default)
-    local icon = wibox.widget
-    {
+    local icon = wibox.widget {
         widget = widgets.text,
         halign = "center",
         icon = icon
     }
 
-    local text = wibox.widget
-    {
+    local text = wibox.widget {
         widget = widgets.text,
         halign = "center",
         size = 12,
         text = text
     }
 
-    return wibox.widget
-    {
+    return wibox.widget {
         widget = widgets.button.elevated.state,
         on_by_default = on_by_default,
         forced_width = dpi(120),
@@ -37,8 +35,7 @@ local function button(icon, text, on_release, on_by_default)
         on_release = function(self)
             on_release(self)
         end,
-        child = wibox.widget
-        {
+        child = wibox.widget {
             layout = wibox.layout.fixed.vertical,
             spacing = dpi(15),
             icon,
@@ -54,53 +51,35 @@ local function new(self, layout)
     local screen_button = nil
     local window_button = nil
 
-    selection_button = button
-    (
-        beautiful.icons.scissors,
-        "Selection",
-        function()
-            screenshot_daemon:set_screenshot_method("selection")
-            selection_button:turn_on()
-            screen_button:turn_off()
-            window_button:turn_off()
-        end,
-        true
-    )
+    selection_button = button(beautiful.icons.scissors, "Selection", function()
+        screenshot_daemon:set_screenshot_method("selection")
+        selection_button:turn_on()
+        screen_button:turn_off()
+        window_button:turn_off()
+    end, true)
 
-    screen_button = button
-    (
-        beautiful.icons.computer,
-        "Screen",
-        function()
-            screenshot_daemon:set_screenshot_method("screen")
-            selection_button:turn_off()
-            screen_button:turn_on()
-            window_button:turn_off()
-        end
-    )
+    screen_button = button(beautiful.icons.computer, "Screen", function()
+        screenshot_daemon:set_screenshot_method("screen")
+        selection_button:turn_off()
+        screen_button:turn_on()
+        window_button:turn_off()
+    end)
 
-    window_button = button
-    (
-        beautiful.icons.window,
-        "Window",
-        function()
-            screenshot_daemon:set_screenshot_method("window")
-            selection_button:turn_off()
-            screen_button:turn_off()
-            window_button:turn_on()
-        end
-    )
+    window_button = button(beautiful.icons.window, "Window", function()
+        screenshot_daemon:set_screenshot_method("window")
+        selection_button:turn_off()
+        screen_button:turn_off()
+        window_button:turn_on()
+    end)
 
-    local title = wibox.widget
-    {
+    local title = wibox.widget {
         widget = widgets.text,
         bold = true,
         size = 15,
-        text = "Screenshot",
+        text = "Screenshot"
     }
 
-    local settings_button = wibox.widget
-    {
+    local settings_button = wibox.widget {
         widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
@@ -112,8 +91,7 @@ local function new(self, layout)
         end
     }
 
-    local close_button = wibox.widget
-    {
+    local close_button = wibox.widget {
         widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
@@ -124,8 +102,7 @@ local function new(self, layout)
         end
     }
 
-    local screenshot_button = wibox.widget
-    {
+    local screenshot_button = wibox.widget {
         widget = widgets.button.text.normal,
         forced_width = dpi(50),
         size = 15,
@@ -137,8 +114,7 @@ local function new(self, layout)
         end
     }
 
-    return wibox.widget
-    {
+    return wibox.widget {
         widget = wibox.container.margin,
         margins = dpi(15),
         {

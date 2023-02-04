@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
@@ -11,7 +10,7 @@ local bluetooth_daemon = require("daemons.hardware.bluetooth")
 local network_daemon = require("daemons.hardware.network")
 local helpers = require("helpers")
 
-local radio = { }
+local radio = {}
 local instance = nil
 
 function radio:toggle()
@@ -39,7 +38,7 @@ function radio:turn_off()
 end
 
 local function new()
-    local ret = gobject{}
+    local ret = gobject {}
     gtable.crush(ret, radio, true)
 
     ret._private = {}

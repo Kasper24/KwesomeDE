@@ -30,7 +30,6 @@
 -- @module file
 -- @license GPL v3.0
 ---------------------------------------------------------------------------
-
 local async = require("helpers.async")
 local lgi = require("lgi")
 local Gio = lgi.Gio
@@ -40,16 +39,17 @@ local awful = require("awful")
 
 local stream_utils = require("helpers.filesystem.stream")
 
-
 -- Class marker
-local FILE_CLASS_MARKER = setmetatable({}, { __newindex = function() end, __tostring = "File" })
-
+local FILE_CLASS_MARKER = setmetatable({}, {
+    __newindex = function()
+    end,
+    __tostring = "File"
+})
 
 local File = {
-    class = FILE_CLASS_MARKER,
+    class = FILE_CLASS_MARKER
 }
 local file = {}
-
 
 --- Constructors
 -- @section constructors
@@ -66,12 +66,13 @@ function file.new_for_path(path)
     local ret = {
         _private = {
             f = f,
-            path = path,
+            path = path
         }
     }
-    return setmetatable(ret, { __index = File  })
+    return setmetatable(ret, {
+        __index = File
+    })
 end
-
 
 --- Create a file handle for the given remote URI.
 --
@@ -85,12 +86,13 @@ function file.new_for_uri(uri)
     local ret = {
         _private = {
             f = f,
-            path = uri,
+            path = uri
         }
     }
-    return setmetatable(ret, { __index = File  })
+    return setmetatable(ret, {
+        __index = File
+    })
 end
-
 
 --- Create a new file in a directory preferred for temporary storage.
 --
@@ -118,12 +120,13 @@ function file.new_tmp(template)
     local ret = {
         _private = {
             f = f,
-            template = template,
+            template = template
         }
     }
-    return setmetatable(ret, { __index = File  }), stream, err
+    return setmetatable(ret, {
+        __index = File
+    }), stream, err
 end
-
 
 --- Static functions
 -- @section static_functions
@@ -140,9 +143,7 @@ function file.is_instance(f)
     return type(f) == "table" and f.class == FILE_CLASS_MARKER
 end
 
-
 --- @type file
-
 
 --- Creates a final callback to pass results and clean up the file stream.
 --
@@ -181,7 +182,6 @@ local function clean_up_stream(result_index, stream_index, cb)
     end
 end
 
-
 --- Get the file's path name.
 --
 -- The path is guaranteed to be absolute, by may contain unresolved symlinks.
@@ -219,7 +219,6 @@ function File:read_stream(cb)
     end)
 end
 
-
 --- Open a write stream.
 --
 -- Write operations are buffered, so the stream needs to be flushed (or closed)
@@ -250,30 +249,17 @@ function File:write_stream(mode, cb)
     end
 
     if mode == "append" then
-        f:append_to_async(
-            Gio.FileCreateFlags.NONE,
-            priority,
-            nil,
-            function(_, token)
-                local stream, err = f:append_to_finish(token)
-                cb(err, stream)
-            end
-        )
+        f:append_to_async(Gio.FileCreateFlags.NONE, priority, nil, function(_, token)
+            local stream, err = f:append_to_finish(token)
+            cb(err, stream)
+        end)
     else
-        f:replace_async(
-            nil,
-            false,
-            Gio.FileCreateFlags.NONE,
-            priority,
-            nil,
-            function(_, token)
-                local stream, err = f:replace_finish(token)
-                cb(err, stream)
-            end
-        )
+        f:replace_async(nil, false, Gio.FileCreateFlags.NONE, priority, nil, function(_, token)
+            local stream, err = f:replace_finish(token)
+            cb(err, stream)
+        end)
     end
 end
-
 
 --- Write the data to the opened file.
 --
@@ -300,21 +286,22 @@ function File:write(data, mode, cb)
 
         -- Stop it from complaing since I don't always need a cb
         if cb == nil then
-            cb = function() end
+            cb = function()
+            end
         end
 
         async.dag({
             stream = function(_, cb_inner)
                 self:write_stream(mode, cb_inner)
             end,
-            write = { "stream", function(results, cb_inner)
+            write = {"stream", function(results, cb_inner)
                 local stream = table.unpack(results.stream)
 
                 stream:write_all_async(data, priority, nil, function(_, token)
                     local _, _, err = stream:write_all_finish(token)
                     cb_inner(err)
                 end)
-            end },
+            end}
         }, clean_up_stream(nil, cb))
     end)
 end
@@ -338,17 +325,16 @@ function File:read_bytes(size, cb)
         stream = function(_, cb_inner)
             self:read_stream(cb_inner)
         end,
-        bytes = { "stream", function(results, cb_inner)
+        bytes = {"stream", function(results, cb_inner)
             local stream = table.unpack(results.stream)
 
             stream:read_bytes_async(size, priority, nil, function(_, token)
                 local bytes, err = stream:read_bytes_finish(token)
                 cb_inner(err, bytes)
             end)
-        end },
+        end}
     }, clean_up_stream("bytes", cb))
 end
-
 
 --- Read the entire file's content into memory.
 --
@@ -369,10 +355,10 @@ function File:read_string(cb)
         stream = function(_, cb_inner)
             self:read_stream(cb_inner)
         end,
-        string = { "stream", function(results, cb_inner)
+        string = {"stream", function(results, cb_inner)
             local stream = table.unpack(results.stream)
             stream_utils.read_string(stream, cb_inner)
-        end },
+        end}
     }, clean_up_stream("string", cb))
 end
 
@@ -407,7 +393,7 @@ function File:read_line(cb)
         stream = function(_, cb_inner)
             self:read_stream(cb_inner)
         end,
-        line = { "stream", function(results, cb_inner)
+        line = {"stream", function(results, cb_inner)
             local stream = table.unpack(results.stream)
             stream = Gio.DataInputStream.new(stream)
 
@@ -415,10 +401,9 @@ function File:read_line(cb)
                 local line, _, err = stream:read_line_finish(token)
                 cb_inner(err, line)
             end)
-        end },
+        end}
     }, clean_up_stream("line", cb))
 end
-
 
 --- Asynchronously iterate over the file line by line.
 --
@@ -445,7 +430,7 @@ function File:iterate_lines(iteratee, cb)
         stream = function(_, cb_inner)
             self:read_stream(cb_inner)
         end,
-        lines = { "stream", function(results, cb_inner)
+        lines = {"stream", function(results, cb_inner)
             local stream = table.unpack(results.stream)
             stream = Gio.DataInputStream.new(stream)
 
@@ -472,10 +457,9 @@ function File:iterate_lines(iteratee, cb)
             async.do_while(read_line, check, function(err)
                 cb_inner(err)
             end)
-        end },
+        end}
     }, clean_up_stream(nil, cb))
 end
-
 
 --- Move the file to a new location.
 --
@@ -488,16 +472,16 @@ end
 -- @tparam function cb
 -- @treturn[opt] GLib.Error
 function File:move(path, cb)
-    async.waterfall({
-        function(cb)
-            self:copy(path, { recursive = true }, cb)
-        end,
-        function(cb)
-            self:delete(cb)
-        end
-    }, function(err) cb(err) end)
+    async.waterfall({function(cb)
+        self:copy(path, {
+            recursive = true
+        }, cb)
+    end, function(cb)
+        self:delete(cb)
+    end}, function(err)
+        cb(err)
+    end)
 end
-
 
 local function _file_copy_impl(self, dest, options, cb)
     async.dag({
@@ -508,38 +492,32 @@ local function _file_copy_impl(self, dest, options, cb)
 
             dest:exists(function(err, exists)
                 if not err and exists then
-                    err = GLib.Error(
-                        Gio.IOErrorEnum,
-                        Gio.IOErrorEnum.EXISTS,
-                        "Destination exists already"
-                    )
+                    err = GLib.Error(Gio.IOErrorEnum, Gio.IOErrorEnum.EXISTS, "Destination exists already")
                 end
 
                 cb(err)
             end)
         end,
-        out_stream = { "check_overwrite", function(_, cb)
+        out_stream = {"check_overwrite", function(_, cb)
             dest:write_stream("replace", cb)
-        end },
-        in_stream = { "check_overwrite", function(_, cb)
+        end},
+        in_stream = {"check_overwrite", function(_, cb)
             self:read_stream(cb)
-        end },
-        splice = { "out_stream", "in_stream", function(results, cb)
+        end},
+        splice = {"out_stream", "in_stream", function(results, cb)
             local in_stream = table.unpack(results.in_stream)
             local out_stream = table.unpack(results.out_stream)
-            local flags = {
-                Gio.OutputStreamSpliceFlags.CLOSE_SOURCE,
-                Gio.OutputStreamSpliceFlags.CLOSE_TARGET
-            }
+            local flags = {Gio.OutputStreamSpliceFlags.CLOSE_SOURCE, Gio.OutputStreamSpliceFlags.CLOSE_TARGET}
 
             out_stream:splice_async(in_stream, flags, GLib.PRIORITY_DEFAULT, nil, function(_, token)
                 local _, err = out_stream:splice_finish(token)
                 cb(err)
             end)
-        end },
-    }, function(err) cb(err) end)
+        end}
+    }, function(err)
+        cb(err)
+    end)
 end
-
 
 --- Copies the file to a new location.
 --
@@ -557,7 +535,8 @@ function File:copy(dest_path, options, cb)
         dest = file.new_for_path(dest_path)
     end
 
-    cb = cb or function() end
+    cb = cb or function()
+    end
     options = options or {}
 
     if not options.recursive then
@@ -568,17 +547,14 @@ function File:copy(dest_path, options, cb)
         file_type = function(_, cb)
             self:type(cb)
         end,
-        copy = { "file_type", function(results, cb)
+        copy = {"file_type", function(results, cb)
             local file_type = table.unpack(results.file_type)
 
             if file_type ~= Gio.FileType.DIRECTORY then
                 return _file_copy_impl(self, dest, options, cb)
             elseif not options.recursive then
-                local err = GLib.Error(
-                    Gio.IOErrorEnum,
-                    Gio.IOErrorEnum.IS_DIRECTORY,
-                    "Directories can only be copied recursively"
-                )
+                local err = GLib.Error(Gio.IOErrorEnum, Gio.IOErrorEnum.IS_DIRECTORY,
+                    "Directories can only be copied recursively")
                 return cb(err)
             end
 
@@ -587,17 +563,16 @@ function File:copy(dest_path, options, cb)
 
             local function iteratee(info, cb)
                 local child = file.new_for_path(string.format("%s/%s", path, info:get_name()))
-                local child_dest = file.new_for_path(
-                    string.format("%s/%s", dest_path, info:get_name())
-                )
+                local child_dest = file.new_for_path(string.format("%s/%s", dest_path, info:get_name()))
                 child:copy(child_dest, options, cb)
             end
 
             filesystem.iterate_contents(path, iteratee, cb)
-        end },
-    }, function(err) cb(err) end)
+        end}
+    }, function(err)
+        cb(err)
+    end)
 end
-
 
 --- Delete the file.
 --
@@ -620,7 +595,6 @@ function File:delete(cb)
     end)
 end
 
-
 --- Move the file to trash.
 --
 -- Support for this depends on the platform and file system. If unsupported
@@ -638,7 +612,6 @@ function File:trash(cb)
         cb(err)
     end)
 end
-
 
 --- Query file information.
 --
@@ -668,7 +641,6 @@ function File:query_info(attribute, cb)
     end)
 end
 
-
 --- Check if the file exists.
 --
 -- Keep in mind that checking for existence before reading or writing a file is
@@ -684,7 +656,7 @@ end
 -- @treturn[opt] GLib.Error
 -- @treturn boolean `true` if the file exists at its specified location.
 function File:exists(cb)
-    self:query_info("standard::type", function (err)
+    self:query_info("standard::type", function(err)
         if err then
             -- An error of "not found" is actually an expected outcome, so
             -- we hide the error.
@@ -699,7 +671,6 @@ function File:exists(cb)
     end)
 end
 
-
 --- Query the size of the file.
 --
 -- Note that due to limitations in GLib, this will return `0` for files
@@ -710,12 +681,11 @@ end
 -- @treturn[opt] GLib.Error
 -- @treturn[opt] number
 function File:size(cb)
-    self:query_info("standard::size", function (err, info)
+    self:query_info("standard::size", function(err, info)
         -- For some reason, the bindings return a float for a byte size
         cb(err, info and math.floor(info:get_size()))
     end)
 end
-
 
 --- Query the type of the file.
 --
@@ -739,11 +709,10 @@ end
 -- @treturn[opt] GLib.Error
 -- @treturn[opt] Gio.FileType
 function File:type(cb)
-    self:query_info("standard::type", function (err, info)
+    self:query_info("standard::type", function(err, info)
         cb(err, info and Gio.FileType[info:get_file_type()])
     end)
 end
-
 
 --- Creates an empty file.
 --

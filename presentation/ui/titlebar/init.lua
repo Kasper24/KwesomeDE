@@ -2,21 +2,21 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local awful = require("awful")
 local wibox = require("wibox")
 local widgets = require("presentation.ui.widgets")
 local beautiful = require("beautiful")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
-local capi = { client = client }
+local capi = {
+    client = client
+}
 
 capi.client.connect_signal("request::titlebars", function(c)
-    local color  = helpers.client.get_dominant_color(c)
+    local color = helpers.client.get_dominant_color(c)
 
     -- No clue why by minimizng only works if I do it via on_release?
-    local minimize = wibox.widget
-    {
+    local minimize = wibox.widget {
         widget = widgets.button.text.normal,
         forced_width = dpi(40),
         forced_height = dpi(40),
@@ -29,8 +29,7 @@ capi.client.connect_signal("request::titlebars", function(c)
         end
     }
 
-    local maximize = wibox.widget
-    {
+    local maximize = wibox.widget {
         widget = widgets.button.text.normal,
         forced_width = dpi(40),
         forced_height = dpi(40),
@@ -44,8 +43,7 @@ capi.client.connect_signal("request::titlebars", function(c)
         end
     }
 
-    local close = wibox.widget
-    {
+    local close = wibox.widget {
         widget = widgets.button.text.normal,
         forced_width = dpi(40),
         forced_height = dpi(40),
@@ -72,8 +70,7 @@ capi.client.connect_signal("request::titlebars", function(c)
 
     local menu = widgets.client_menu(c)
 
-    awful.titlebar(c,
-    {
+    awful.titlebar(c, {
         position = "top",
         size = dpi(35),
         bg_normal = color,
@@ -83,81 +80,71 @@ capi.client.connect_signal("request::titlebars", function(c)
         fg_focus = color,
         fg_urgent = color,
         font = beautiful.font_name .. 12
-    }) : setup
-    {
+    }):setup{
         layout = wibox.layout.align.horizontal,
         nil,
         {
             widget = awful.titlebar.widget.titlewidget(c),
             align = "center",
             font = beautiful.font_name .. 12,
-            buttons =
-            {
-                -- Move client
-                awful.button
-                {
-                    modifiers = {  },
-                    button = 1,
-                    on_press = function()
-                        c.maximized = false
-                        c:activate { context = "mouse_click", action = "mouse_move"  }
-                    end,
-                },
-
-                -- Kill client
-                awful.button
-                {
-                    modifiers = {  },
-                    button = 2,
-                    on_press = function()
-                        c:kill()
-                    end,
-                },
-
-                -- Resize client
-                awful.button
-                {
-                    modifiers = {  },
-                    button = 3,
-                    on_press = function()
-                        helpers.input.tap_or_drag
-                        {on_tap = function()
+            buttons = { -- Move client
+            awful.button {
+                modifiers = {},
+                button = 1,
+                on_press = function()
+                    c.maximized = false
+                    c:activate{
+                        context = "mouse_click",
+                        action = "mouse_move"
+                    }
+                end
+            }, -- Kill client
+            awful.button {
+                modifiers = {},
+                button = 2,
+                on_press = function()
+                    c:kill()
+                end
+            }, -- Resize client
+            awful.button {
+                modifiers = {},
+                button = 3,
+                on_press = function()
+                    helpers.input.tap_or_drag {
+                        on_tap = function()
                             menu:toggle{}
                         end,
                         on_drag = function()
                             c.maximized = false
-                            c:activate { context = "mouse_click", action = "mouse_resize"}
-                        end}
-                    end,
-                },
-
-                -- Side button up
-                awful.button
-                {
-                    modifiers = {  },
-                    button = 9,
-                    on_press = function()
-                        c.floating = not c.floating
-                    end,
-                },
-
-                -- Side button down
-                awful.button
-                {
-                    modifiers = {  },
-                    button = 8,
-                    on_press = function()
-                        c.ontop = not c.ontop
-                    end,
-                }
-            }
+                            c:activate{
+                                context = "mouse_click",
+                                action = "mouse_resize"
+                            }
+                        end
+                    }
+                end
+            }, -- Side button up
+            awful.button {
+                modifiers = {},
+                button = 9,
+                on_press = function()
+                    c.floating = not c.floating
+                end
+            }, -- Side button down
+            awful.button {
+                modifiers = {},
+                button = 8,
+                on_press = function()
+                    c.ontop = not c.ontop
+                end
+            }}
         },
         {
             layout = wibox.layout.fixed.horizontal,
             minimize,
             maximize,
             close,
-            widgets.spacer.horizontal(dpi(5)),
+            widgets.spacer.horizontal(dpi(5))
         }
     }
 end)

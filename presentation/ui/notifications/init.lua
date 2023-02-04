@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local awful = require("awful")
 local ruled = require("ruled")
 local wibox = require("wibox")
@@ -35,7 +34,8 @@ local function play_sound(n)
         awful.spawn("canberra-gtk-play -i service-login", false)
     elseif n.category == "device.removed" or n.category == "network.disconnected" then
         awful.spawn("canberra-gtk-play -i service-logout", false)
-    elseif n.category == "device.error" or n.category == "im.error" or n.category == "network.error" or n.category == "transfer.error" then
+    elseif n.category == "device.error" or n.category == "im.error" or n.category == "network.error" or n.category ==
+        "transfer.error" then
         awful.spawn("canberra-gtk-play -i dialog-warning", false)
     elseif n.category == "email.arrived" then
         awful.spawn("canberra-gtk-play -i message", false)
@@ -45,30 +45,28 @@ local function play_sound(n)
 end
 
 ruled.notification.connect_signal("request::rules", function()
-    ruled.notification.append_rule
-    {
+    ruled.notification.append_rule {
         rule = {},
-        properties =
-        {
+        properties = {
             screen = awful.screen.preferred,
             position = "top_right",
             implicit_timeout = 5,
             resident = true
         }
     }
-    ruled.notification.append_rule
-    {
-        rule = { app_name = "networkmanager-dmenu" },
-        properties =
-        {
+    ruled.notification.append_rule {
+        rule = {
+            app_name = "networkmanager-dmenu"
+        },
+        properties = {
             icon = helpers.icon_theme:get_icon_path("networkmanager")
         }
     }
-    ruled.notification.append_rule
-    {
-        rule = { app_name = "blueman" },
-        properties =
-        {
+    ruled.notification.append_rule {
+        rule = {
+            app_name = "blueman"
+        },
+        properties = {
             icon = helpers.icon_theme:get_icon_path("blueman-device")
         }
     }
@@ -120,8 +118,7 @@ naughty.connect_signal("request::display", function(n)
 
     local app_icon = nil
     if n.app_font_icon == nil then
-        app_icon = wibox.widget
-        {
+        app_icon = wibox.widget {
             widget = wibox.container.constraint,
             strategy = "max",
             height = dpi(20),
@@ -135,23 +132,20 @@ naughty.connect_signal("request::display", function(n)
             }
         }
     else
-        app_icon = wibox.widget
-        {
+        app_icon = wibox.widget {
             widget = widgets.text,
             icon = n.app_font_icon,
-            size = n.app_font_icon.size or 20,
+            size = n.app_font_icon.size or 20
         }
     end
 
-    local app_name = wibox.widget
-    {
+    local app_name = wibox.widget {
         widget = widgets.text,
         size = 12,
         text = n.app_name:gsub("^%l", string.upper)
     }
 
-    local dismiss = wibox.widget
-    {
+    local dismiss = wibox.widget {
         widget = widgets.button.text.normal,
         icon = beautiful.icons.xmark,
         size = 12,
@@ -160,33 +154,30 @@ naughty.connect_signal("request::display", function(n)
         end
     }
 
-    local timeout_arc = wibox.widget
-    {
+    local timeout_arc = wibox.widget {
         widget = wibox.container.arcchart,
         forced_width = dpi(45),
-        forced_height =  dpi(45),
+        forced_height = dpi(45),
         max_value = 100,
         min_value = 0,
         value = 0,
         thickness = dpi(7),
         rounded_edge = true,
         bg = beautiful.colors.surface,
-        colors =
-        {
-            {
-                type = "linear",
-                from = {0, 0},
-                to = {400, 400},
-                stops = {{0, beautiful.colors.random_accent_color()}, {0.2, beautiful.colors.random_accent_color()}, {0.4, beautiful.colors.random_accent_color()}, {0.6, beautiful.colors.random_accent_color()}, {0.8, beautiful.colors.random_accent_color()}}
-            }
-        },
+        colors = {{
+            type = "linear",
+            from = {0, 0},
+            to = {400, 400},
+            stops = {{0, beautiful.colors.random_accent_color()}, {0.2, beautiful.colors.random_accent_color()},
+                     {0.4, beautiful.colors.random_accent_color()}, {0.6, beautiful.colors.random_accent_color()},
+                     {0.8, beautiful.colors.random_accent_color()}}
+        }},
         dismiss
     }
 
     local icon = nil
     if n.font_icon == nil then
-        icon = wibox.widget
-        {
+        icon = wibox.widget {
             widget = wibox.container.constraint,
             strategy = "max",
             height = dpi(40),
@@ -198,16 +189,14 @@ naughty.connect_signal("request::display", function(n)
             }
         }
     else
-        icon = wibox.widget
-        {
+        icon = wibox.widget {
             widget = widgets.text,
             size = 30,
             icon = n.font_icon
         }
     end
 
-    local title = wibox.widget
-    {
+    local title = wibox.widget {
         widget = wibox.container.scroll.horizontal,
         step_function = wibox.container.scroll.step_functions.waiting_nonlinear_back_and_forth,
         speed = 50,
@@ -215,7 +204,7 @@ naughty.connect_signal("request::display", function(n)
             widget = widgets.text,
             size = 15,
             bold = true,
-            text = n.title,
+            text = n.title
         }
     }
 
@@ -224,31 +213,27 @@ naughty.connect_signal("request::display", function(n)
         colors = {{0, beautiful.colors.red}, {1, beautiful.colors.bright_red}}
     end
 
-    local urgency_color = wibox.widget
-    {
+    local urgency_color = wibox.widget {
         widget = wibox.container.background,
         forced_height = dpi(10),
         shape = helpers.ui.rrect(beautiful.border_radius),
-        bg =
-        {
+        bg = {
             type = "linear",
             from = {0, 0},
             to = {120, 120},
             stops = colors
-        },
+        }
     }
 
-    local message = wibox.widget
-    {
+    local message = wibox.widget {
         widget = wibox.container.constraint,
         strategy = "max",
         height = dpi(60),
         {
             layout = widgets.overflow.vertical,
-            scrollbar_widget =
-            {
+            scrollbar_widget = {
                 widget = wibox.widget.separator,
-                shape = helpers.ui.rrect(beautiful.border_radius),
+                shape = helpers.ui.rrect(beautiful.border_radius)
             },
             scrollbar_width = dpi(10),
             scroll_speed = 3,
@@ -260,15 +245,13 @@ naughty.connect_signal("request::display", function(n)
         }
     }
 
-    local actions = wibox.widget
-    {
+    local actions = wibox.widget {
         layout = wibox.layout.fixed.horizontal,
         spacing = dpi(15)
     }
 
     for _, action in ipairs(n.actions) do
-        local button = wibox.widget
-        {
+        local button = wibox.widget {
             widget = widgets.button.text.normal,
             size = 12,
             text_normal_bg = beautiful.colors.on_background,
@@ -280,8 +263,7 @@ naughty.connect_signal("request::display", function(n)
         actions:add(button)
     end
 
-    local widget = naughty.layout.box
-    {
+    local widget = naughty.layout.box {
         notification = n,
         type = "notification",
         cursor = beautiful.hover_cursor,
@@ -292,8 +274,7 @@ naughty.connect_signal("request::display", function(n)
         shape = helpers.ui.rrect(beautiful.border_radius),
         bg = beautiful.colors.background,
         border_width = 0,
-        widget_template =
-        {
+        widget_template = {
             widget = wibox.container.background,
             {
                 widget = wibox.container.margin,
@@ -307,7 +288,7 @@ naughty.connect_signal("request::display", function(n)
                             layout = wibox.layout.fixed.horizontal,
                             spacing = dpi(15),
                             app_icon,
-                            app_name,
+                            app_name
                         },
                         nil,
                         timeout_arc
@@ -316,7 +297,7 @@ naughty.connect_signal("request::display", function(n)
                         layout = wibox.layout.fixed.horizontal,
                         spacing = dpi(15),
                         icon,
-                        title,
+                        title
                     },
                     urgency_color,
                     message,
@@ -329,8 +310,7 @@ naughty.connect_signal("request::display", function(n)
     -- Don't destroy the notification on click
     widget.buttons = {}
 
-    local anim = helpers.animation:new
-    {
+    local anim = helpers.animation:new{
         duration = n.timeout,
         target = 100,
         easing = helpers.animation.easing.linear,
@@ -357,7 +337,7 @@ naughty.connect_signal("request::display", function(n)
     local notification_height = widget.height + beautiful.notification_spacing
     local total_notifications_height = (#naughty.active) * notification_height
 
-    if total_notifications_height > n.screen.workarea.height  then
+    if total_notifications_height > n.screen.workarea.height then
         get_oldest_notification():destroy(naughty.notification_closed_reason.too_many_on_screen)
     end
 

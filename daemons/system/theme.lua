@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local lgi = require("lgi")
 local Gdk = lgi.require("Gdk", "3.0")
 local Gio = require("lgi").Gio
@@ -20,9 +19,13 @@ local ipairs = ipairs
 local pairs = pairs
 local table = table
 local os = os
-local capi = { awesome = awesome, screen = screen, client = client }
+local capi = {
+    awesome = awesome,
+    screen = screen,
+    client = client
+}
 
-local theme = { }
+local theme = {}
 local instance = nil
 
 local COLORSCHEME_DATA_PATH = helpers.filesystem.get_cache_dir("colorschemes") .. "data.json"
@@ -33,10 +36,9 @@ local INSTALLED_GTK_THEME_PATH = os.getenv("HOME") .. "/.local/share/themes/"
 local BASE_TEMPLATES_PATH = helpers.filesystem.get_awesome_config_dir("config/templates")
 local BACKGROUND_PATH = helpers.filesystem.get_cache_dir("") .. "wallpaper"
 local GENERATED_TEMPLATES_PATH = helpers.filesystem.get_cache_dir("templates")
-local WAL_CACHE_PATH =  helpers.filesystem.get_xdg_cache_home("wal")
+local WAL_CACHE_PATH = helpers.filesystem.get_xdg_cache_home("wal")
 
-local PICTURES_MIMETYPES =
-{
+local PICTURES_MIMETYPES = {
     ["application/pdf"] = "lximage", -- AI
     ["image/x-ms-bmp"] = "lximage", -- BMP
     ["application/postscript"] = "lximage", -- EPS
@@ -48,7 +50,7 @@ local PICTURES_MIMETYPES =
     ["image/vnd.adobe.photoshop"] = "lximage", -- PSD
     ["image/svg+xml"] = "lximage", -- SVG
     ["image/tiff"] = "lximage", -- TIFF
-    ["image/webp"] = "lximage", -- webp
+    ["image/webp"] = "lximage" -- webp
 }
 
 local function generate_sequences(colors)
@@ -143,7 +145,9 @@ local function on_finished_generating(self)
 end
 
 local function replace_template_colors(color, color_name, line)
-    color = color_libary.color { hex = color }
+    color = color_libary.color {
+        hex = color
+    }
 
     if line:match("{" .. color_name .. ".rgba}") then
         local string = string.format("%s, %s, %s, %s", color.r, color.g, color.b, color.a)
@@ -261,7 +265,9 @@ local function generate_templates(self)
                 end
             end)
         end
-    end, {recursive = true}, function()
+    end, {
+        recursive = true
+    }, function()
         on_finished_generating_timer:again()
     end)
 end
@@ -288,7 +294,7 @@ local function generate_colorscheme(self, wallpaper, reset, light)
             for line in stdout:gmatch("[^\r\n]+") do
                 local hex = line:match("#(.*) s")
                 if hex ~= nil then
-                    hex = "#" .. string.sub (hex, 1, 6)
+                    hex = "#" .. string.sub(hex, 1, 6)
                     table.insert(colors, hex)
                 end
             end
@@ -336,10 +342,12 @@ local function generate_colorscheme(self, wallpaper, reset, light)
             end
 
             local added_sat = light == true and 0.5 or 0.3
-            local sign =  light == true and -1 or 1
+            local sign = light == true and -1 or 1
 
             for index = 10, 15 do
-                local color = color_libary.color { hex = colors[index - 8] }
+                local color = color_libary.color {
+                    hex = colors[index - 8]
+                }
                 colors[index] = helpers.color.pywal_alter_brightness(colors[index - 8], sign * color.l * 0.3, added_sat)
             end
 
@@ -352,7 +360,9 @@ local function generate_colorscheme(self, wallpaper, reset, light)
             self._private.colors[wallpaper] = colors
 
             local file = helpers.file.new_for_path(COLORSCHEME_DATA_PATH)
-            file:write(helpers.json.encode(self._private.colors, { indent = true }))
+            file:write(helpers.json.encode(self._private.colors, {
+                indent = true
+            }))
         end)
     end
 
@@ -360,11 +370,9 @@ local function generate_colorscheme(self, wallpaper, reset, light)
 end
 
 local function image_wallpaper(self, screen)
-    awful.wallpaper
-    {
+    awful.wallpaper {
         screen = screen,
-        widget =
-        {
+        widget = {
             widget = wibox.widget.imagebox,
             resize = true,
             horizontal_fit_policy = "fit",
@@ -375,11 +383,9 @@ local function image_wallpaper(self, screen)
 end
 
 local function color_wallpaper(self, screen)
-    awful.wallpaper
-    {
+    awful.wallpaper {
         screen = screen,
-        widget =
-        {
+        widget = {
             widget = wibox.container.background,
             bg = self._private.color
         }
@@ -387,63 +393,55 @@ local function color_wallpaper(self, screen)
 end
 
 local function sun_wallpaper(screen)
-    awful.wallpaper
-    {
+    awful.wallpaper {
         screen = screen,
-        widget = wibox.widget
-        {
+        widget = wibox.widget {
             fit = function(_, width, height)
                 return width, height
             end,
             draw = function(_, _, cr, width, height)
                 cr:set_source(gcolor {
-                    type  = 'linear',
-                    from  = { 0, 0      },
-                    to    = { 0, height },
-                    stops = {
-                        { 0   , beautiful.colors.background },
-                        { 0.75, beautiful.colors.surface },
-                        { 1   , beautiful.colors.background }
-                    }
+                    type = 'linear',
+                    from = {0, 0},
+                    to = {0, height},
+                    stops = {{0, beautiful.colors.background}, {0.75, beautiful.colors.surface},
+                             {1, beautiful.colors.background}}
                 })
                 cr:paint()
                 -- Clip the first 33% of the screen
-                cr:rectangle(0,0, width, height/3)
+                cr:rectangle(0, 0, width, height / 3)
 
                 -- Clip-out some increasingly large sections of add the sun "bars"
-                for i=0, 6 do
-                    cr:rectangle(0, height*.28 + i*(height*.055 + i/2), width, height*.055)
+                for i = 0, 6 do
+                    cr:rectangle(0, height * .28 + i * (height * .055 + i / 2), width, height * .055)
                 end
                 cr:clip()
 
-             -- Draw the sun
+                -- Draw the sun
                 cr:set_source(gcolor {
-                    type  = 'linear' ,
-                    from  = { 0, 0      },
-                    to    = { 0, height },
-                    stops = {
-                        { 0, beautiful.colors.random_accent_color() },
-                        { 1, beautiful.colors.random_accent_color() }
-                    }
+                    type = 'linear',
+                    from = {0, 0},
+                    to = {0, height},
+                    stops = {{0, beautiful.colors.random_accent_color()}, {1, beautiful.colors.random_accent_color()}}
                 })
-                cr:arc(width/2, height/2, height*.35, 0, math.pi*2)
+                cr:arc(width / 2, height / 2, height * .35, 0, math.pi * 2)
                 cr:fill()
 
                 -- Draw the grid
-                local lines = width/8
+                local lines = width / 8
                 cr:reset_clip()
                 cr:set_line_width(0.5)
                 cr:set_source(gcolor(beautiful.colors.random_accent_color()))
 
-                for i=1, lines do
-                    cr:move_to((-width) + i* math.sin(i * (math.pi/(lines*2)))*30, height)
-                    cr:line_to(width/4 + i*((width/2)/lines), height*0.75 + 2)
+                for i = 1, lines do
+                    cr:move_to((-width) + i * math.sin(i * (math.pi / (lines * 2))) * 30, height)
+                    cr:line_to(width / 4 + i * ((width / 2) / lines), height * 0.75 + 2)
                     cr:stroke()
                 end
 
-                for i=1, 5 do
-                    cr:move_to(0, height*0.75 + i*10 + i*2)
-                    cr:line_to(width, height*0.75 + i*10 + i*2)
+                for i = 1, 5 do
+                    cr:move_to(0, height * 0.75 + i * 10 + i * 2)
+                    cr:line_to(width, height * 0.75 + i * 10 + i * 2)
                     cr:stroke()
                 end
             end
@@ -454,8 +452,8 @@ end
 local function binary_wallpaper(screen)
     local function binary()
         local ret = {}
-        for _= 1, 30 do
-            for _= 1, 100 do
+        for _ = 1, 30 do
+            for _ = 1, 100 do
                 table.insert(ret, math.random() > 0.5 and 1 or 0)
             end
             table.insert(ret, "\n")
@@ -464,32 +462,30 @@ local function binary_wallpaper(screen)
         return table.concat(ret)
     end
 
-    awful.wallpaper
-    {
+    awful.wallpaper {
         screen = screen,
         bg = beautiful.colors.background,
         fg = beautiful.colors.random_accent_color(),
-        widget = wibox.widget
-        {
+        widget = wibox.widget {
             widget = wibox.layout.stack,
             {
                 widget = wibox.container.background,
                 fg = beautiful.colors.random_accent_color(),
                 {
                     widget = wibox.widget.textbox,
-                    halign  = "center",
+                    halign = "center",
                     valign = "center",
-                    markup = "<tt><b>[SYSTEM FAILURE]</b></tt>",
-                },
+                    markup = "<tt><b>[SYSTEM FAILURE]</b></tt>"
+                }
             },
             {
                 widget = wibox.widget.textbox,
-                halign  = "center",
+                halign = "center",
                 valign = "center",
                 wrap = "word",
-                text = binary(),
-            },
-        },
+                text = binary()
+            }
+        }
     }
 end
 
@@ -498,8 +494,7 @@ local function scan_for_wallpapers(self)
 
     -- Make sure Awesome doesn't work too hard adding widgets
     -- if there are more changes coming soon
-    local emit_signal_timer = gtimer
-    {
+    local emit_signal_timer = gtimer {
         timeout = 0.5,
         autostart = false,
         single_shot = true,
@@ -530,12 +525,8 @@ end
 
 local function watch_wallpaper_changes(self)
     local wallpaper_watcher = helpers.inotify:watch(WALLPAPERS_PATH,
-    {
-        helpers.inotify.Events.create,
-        helpers.inotify.Events.delete,
-        helpers.inotify.Events.moved_from,
-        helpers.inotify.Events.moved_to,
-    })
+        {helpers.inotify.Events.create, helpers.inotify.Events.delete, helpers.inotify.Events.moved_from,
+         helpers.inotify.Events.moved_to})
 
     wallpaper_watcher:connect_signal("event", function()
         scan_for_wallpapers(self)
@@ -549,7 +540,9 @@ function theme:set_wallpaper(type)
         helpers.settings:set_value("theme-wallpaper", self._private.wallpaper)
 
         local file = helpers.file.new_for_path(self._private.wallpaper)
-        file:copy(BACKGROUND_PATH, {overwrite = true})
+        file:copy(BACKGROUND_PATH, {
+            overwrite = true
+        })
     elseif type == "tiled" then
     elseif type == "color" then
         self._private.color = self._private.selected_color
@@ -593,7 +586,9 @@ end
 
 function theme:save_colorscheme()
     local file = helpers.file.new_for_path(COLORSCHEME_DATA_PATH)
-    file:write(helpers.json.encode(self._private.colors, { indent = true }))
+    file:write(helpers.json.encode(self._private.colors, {
+        indent = true
+    }))
 end
 
 function theme:reset_colorscheme()
@@ -656,7 +651,7 @@ function theme:get_wallpaper_index()
 end
 
 local function new()
-    local ret = gobject{}
+    local ret = gobject {}
     gtable.crush(ret, theme, true)
 
     ret._private = {}

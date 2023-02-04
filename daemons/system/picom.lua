@@ -2,33 +2,26 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local helpers = require("helpers")
-local capi = { awesome = awesome }
+local capi = {
+    awesome = awesome
+}
 
-local picom = { }
+local picom = {}
 local instance = nil
 
 local UPDATE_INTERVAL = 1
 local CONFIG_PATH = helpers.filesystem.get_awesome_config_dir("config") .. "picom.conf"
 
-local properties =
-{
-	"active-opacity", "inactive-opacity",
-    "fade-delta", "fade-in-step", "fade-out-step",
-	"corner-radius", "blur-strength",
-    "shadow-radius", "shadow-opacity", "shadow-offset-x", "shadow-offset-y",
-    "animation-stiffness", "animation-dampening", "animation-window-mass"
-}
+local properties = {"active-opacity", "inactive-opacity", "fade-delta", "fade-in-step", "fade-out-step",
+                    "corner-radius", "blur-strength", "shadow-radius", "shadow-opacity", "shadow-offset-x",
+                    "shadow-offset-y", "animation-stiffness", "animation-dampening", "animation-window-mass"}
 
-local bool_properties =
-{
-    "animations", "shadow", "fading", "animation-clamping"
-}
+local bool_properties = {"animations", "shadow", "fading", "animation-clamping"}
 
 function picom:turn_on(save)
     if DEBUG == true then
@@ -101,7 +94,7 @@ local function build_properties(prototype, properties)
 end
 
 local function new()
-    local ret = gobject{}
+    local ret = gobject {}
     gtable.crush(ret, picom, true)
 
     ret._private = {}
@@ -114,8 +107,7 @@ local function new()
         ret._private[prop] = helpers.settings:get_value("picom-" .. prop)
     end
 
-    ret._private.refresh_timer = gtimer
-    {
+    ret._private.refresh_timer = gtimer {
         timeout = 1,
         autostart = false,
         single_shot = true,
@@ -132,8 +124,7 @@ local function new()
             ret:turn_off()
         end
 
-        gtimer
-        {
+        gtimer {
             timeout = UPDATE_INTERVAL,
             autostart = true,
             call_now = true,

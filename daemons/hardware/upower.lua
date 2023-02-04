@@ -2,18 +2,16 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local UPower = require('lgi').require('UPowerGlib')
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 
-local upower = { }
+local upower = {}
 local instance = nil
 
-
 local function new()
-    local ret = gobject{}
+    local ret = gobject {}
     gtable.crush(ret, upower, true)
 
     ret._private = {}

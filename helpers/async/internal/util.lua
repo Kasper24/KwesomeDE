@@ -1,6 +1,5 @@
 local module = {}
 
-
 --- Returns a subsection of a list.
 --
 -- This returns the subsection and its length.
@@ -28,7 +27,6 @@ function module.slice(list, first, last)
     return result, count
 end
 
-
 --- Tests if all elements of a list matches the predicate.
 --
 -- This only takes integer indices of the provided table into account (`ipairs` semantics).
@@ -48,7 +46,6 @@ function module.all(list, predicate)
 
     return true
 end
-
 
 --- Append items from the source table to the target table.
 --

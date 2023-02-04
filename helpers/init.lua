@@ -1,5 +1,4 @@
-return
-{
+return {
     animation = require(... .. ".animation"),
     async = require(... .. ".async"),
     dbus_proxy = require(... .. ".dbus_proxy"),

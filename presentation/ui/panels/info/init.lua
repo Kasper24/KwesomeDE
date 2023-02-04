@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
@@ -11,7 +10,7 @@ local wibox = require("wibox")
 local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
 
-local info_panel = { }
+local info_panel = {}
 local instance = nil
 
 local path = ...
@@ -38,11 +37,10 @@ function info_panel:toggle()
 end
 
 local function new()
-    local ret = gobject{}
+    local ret = gobject {}
     gtable.crush(ret, info_panel, true)
 
-    ret.widget = awful.popup
-    {
+    ret.widget = awful.popup {
         type = "dock",
         visible = false,
         ontop = true,
@@ -51,8 +49,7 @@ local function new()
         minimum_height = dpi(600),
         maximum_height = dpi(600),
         placement = function(widget)
-            awful.placement.top(widget,
-            {
+            awful.placement.top(widget, {
                 honor_workarea = true,
                 honor_padding = true,
                 attach = true
@@ -62,8 +59,7 @@ local function new()
             gshape.infobubble(cr, width, height, nil, nil, dpi(360))
         end,
         bg = beautiful.colors.background,
-        widget =
-        {
+        widget = {
             widget = wibox.container.margin,
             margins = dpi(25),
             {

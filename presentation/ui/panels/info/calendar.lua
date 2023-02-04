@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local wibox = require("wibox")
 local widgets = require("presentation.ui.widgets")
 local beautiful = require("beautiful")
@@ -10,18 +9,18 @@ local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 
-local calendar = { mt = {} }
+local calendar = {
+    mt = {}
+}
 
 local function new()
-    local hour = wibox.widget
-    {
+    local hour = wibox.widget {
         widget = wibox.widget.textclock,
         format = "%H",
-        font = beautiful.font_name .. 50,
+        font = beautiful.font_name .. 50
     }
 
-    local seperator = wibox.widget
-    {
+    local seperator = wibox.widget {
         widget = wibox.container.place,
         valign = "center",
         {
@@ -32,34 +31,32 @@ local function new()
                 forced_width = dpi(10),
                 forced_height = dpi(10),
                 shape = helpers.ui.rrect(2),
-                bg = beautiful.colors.random_accent_color(),
+                bg = beautiful.colors.random_accent_color()
             },
             {
                 widget = wibox.container.background,
                 forced_width = dpi(10),
                 forced_height = dpi(10),
                 shape = helpers.ui.rrect(2),
-                bg = beautiful.colors.random_accent_color(),
+                bg = beautiful.colors.random_accent_color()
             },
             {
                 widget = wibox.container.background,
                 forced_width = dpi(10),
                 forced_height = dpi(10),
                 shape = helpers.ui.rrect(2),
-                bg = beautiful.colors.random_accent_color(),
+                bg = beautiful.colors.random_accent_color()
             }
         }
     }
 
-    local minute = wibox.widget
-    {
+    local minute = wibox.widget {
         widget = wibox.widget.textclock,
         format = "%M",
-        font = beautiful.font_name .. 50,
+        font = beautiful.font_name .. 50
     }
 
-    local time = wibox.widget
-    {
+    local time = wibox.widget {
         widget = wibox.container.place,
         halign = "center",
         {
@@ -71,13 +68,12 @@ local function new()
         }
     }
 
-    local date = wibox.widget
-    {
+    local date = wibox.widget {
         widget = wibox.widget.textclock,
         format = "%A, %b, %d",
         align = "center",
         valign = "center",
-        font = beautiful.font_name .. 20,
+        font = beautiful.font_name .. 20
     }
 
     date.markup = helpers.ui.colorize_text(date.text, beautiful.colors.random_accent_color())
@@ -85,15 +81,14 @@ local function new()
         date.markup = helpers.ui.colorize_text(date.text, beautiful.colors.random_accent_color())
     end)
 
-    return wibox.widget
-    {
+    return wibox.widget {
         layout = wibox.layout.fixed.vertical,
         spacing = dpi(25),
         {
             layout = wibox.layout.fixed.vertical,
             spacing = dpi(5),
             time,
-            date,
+            date
         },
         widgets.calendar()
     }

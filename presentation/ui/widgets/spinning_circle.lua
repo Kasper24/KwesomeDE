@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local gtable = require("gears.table")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
@@ -10,7 +9,9 @@ local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 
-local spinning_circle = { mt = {} }
+local spinning_circle = {
+    mt = {}
+}
 
 function spinning_circle:start()
     self._private.anim:start()
@@ -27,31 +28,28 @@ local function new(args)
     args.forced_height = args.forced_height or nil
     args.thickness = args.thickness or dpi(30)
 
-    local widget = wibox.widget
-    {
+    local widget = wibox.widget {
         widget = wibox.container.arcchart,
         forced_width = args.forced_width,
-        forced_height =  args.forced_height,
+        forced_height = args.forced_height,
         max_value = 100,
         min_value = 0,
         value = 30,
         thickness = args.thickness,
         rounded_edge = true,
         bg = beautiful.colors.surface,
-        colors =
-        {
-            {
-                type = "linear",
-                from = {0, 0},
-                to = {400, 400},
-                stops = {{0, beautiful.colors.random_accent_color()}, {0.2, beautiful.colors.random_accent_color()}, {0.4, beautiful.colors.random_accent_color()}, {0.6, beautiful.colors.random_accent_color()}, {0.8, beautiful.colors.random_accent_color()}}
-            }
-        },
+        colors = {{
+            type = "linear",
+            from = {0, 0},
+            to = {400, 400},
+            stops = {{0, beautiful.colors.random_accent_color()}, {0.2, beautiful.colors.random_accent_color()},
+                     {0.4, beautiful.colors.random_accent_color()}, {0.6, beautiful.colors.random_accent_color()},
+                     {0.8, beautiful.colors.random_accent_color()}}
+        }}
     }
     gtable.crush(widget, spinning_circle, true)
 
-    widget._private.anim = helpers.animation:new
-    {
+    widget._private.anim = helpers.animation:new{
         target = 100,
         duration = 10,
         easing = helpers.animation.easing.linear,

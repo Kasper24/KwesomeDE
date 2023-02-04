@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
@@ -12,7 +11,7 @@ local xml = require("helpers.xml")
 local handler = require("helpers.xml.tree")
 local ipairs = ipairs
 
-local email = { }
+local email = {}
 local instance = nil
 
 local PATH = helpers.filesystem.get_cache_dir("email")
@@ -43,7 +42,7 @@ function email:get_password()
 end
 
 local function new()
-    local ret = gobject{}
+    local ret = gobject {}
     gtable.crush(ret, email, true)
 
     ret._private = {}
@@ -61,38 +60,45 @@ local function new()
         end
     end)
 
-    gtimer { timeout = UPDATE_INTERVAL, autostart = true, call_now = true, callback = function()
-        local old_data = nil
-        local file = helpers.file.new_for_path(DATA_PATH)
-        file:read(function(error, content)
-            if error == nil then
-                local data = helpers.json.decode(content) or {}
-                old_data = {}
-                for _, email in ipairs(data) do
-                    old_data[email.id] = email.id
-                end
-            end
-
-            awful.spawn.easy_async("curl -fsn https://mail.google.com/mail/feed/atom?alt=json", function(stdout)
-                local parser = xml.parser(handler)
-                parser:parse(stdout)
-
-                if handler.root and handler.root.feed then
-                    for _, email in ipairs(handler.root.feed.entry) do
-                        if old_data[email.id] == nil then
-                            ret:emit_signal("new_email", email)
-                        end
+    gtimer {
+        timeout = UPDATE_INTERVAL,
+        autostart = true,
+        call_now = true,
+        callback = function()
+            local old_data = nil
+            local file = helpers.file.new_for_path(DATA_PATH)
+            file:read(function(error, content)
+                if error == nil then
+                    local data = helpers.json.decode(content) or {}
+                    old_data = {}
+                    for _, email in ipairs(data) do
+                        old_data[email.id] = email.id
                     end
-
-                    file:write(helpers.json.encode(handler.root.feed.entry, { indent = true }))
-
-                    ret:emit_signal("emails", handler.root.feed.entry, handler.root.feed.fullcount)
-                else
-                    ret:emit_signal("error")
                 end
+
+                awful.spawn.easy_async("curl -fsn https://mail.google.com/mail/feed/atom?alt=json", function(stdout)
+                    local parser = xml.parser(handler)
+                    parser:parse(stdout)
+
+                    if handler.root and handler.root.feed then
+                        for _, email in ipairs(handler.root.feed.entry) do
+                            if old_data[email.id] == nil then
+                                ret:emit_signal("new_email", email)
+                            end
+                        end
+
+                        file:write(helpers.json.encode(handler.root.feed.entry, {
+                            indent = true
+                        }))
+
+                        ret:emit_signal("emails", handler.root.feed.entry, handler.root.feed.fullcount)
+                    else
+                        ret:emit_signal("error")
+                    end
+                end)
             end)
-        end)
-    end}
+        end
+    }
 
     return ret
 end

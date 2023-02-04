@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
@@ -11,7 +10,7 @@ local helpers = require("helpers")
 local string = string
 local os = os
 
-local record = { }
+local record = {}
 local instance = nil
 
 function record:set_resolution(resolution)
@@ -89,8 +88,10 @@ end
 function record:start_video()
     local function record()
         self._private.file_name = os.date("%d-%m-%Y-%H:%M:%S") .. "." .. self._private.format
-        local command = string.format("ffmpeg -video_size %s -framerate %d -f x11grab -i :0.0+0,0 -f pulse -i %s %s%s -c:v libx264 -profile:v main",
-                self._private.resolution, self._private.fps, self._private.audio_source, self._private.folder, self._private.file_name)
+        local command = string.format(
+            "ffmpeg -video_size %s -framerate %d -f x11grab -i :0.0+0,0 -f pulse -i %s %s%s -c:v libx264 -profile:v main",
+            self._private.resolution, self._private.fps, self._private.audio_source, self._private.folder,
+            self._private.file_name)
         awful.spawn(command, false)
         self._private.is_recording = true
         self:emit_signal("started")
@@ -133,7 +134,7 @@ function record:get_is_recording()
 end
 
 local function new()
-    local ret = gobject{}
+    local ret = gobject {}
     gtable.crush(ret, record, true)
 
     ret._private = {}
@@ -141,8 +142,7 @@ local function new()
     ret._private.resolution = helpers.settings:get_value("record-resolution")
     ret._private.fps = helpers.settings:get_value("record-fps")
     ret._private.delay = helpers.settings:get_value("record-delay")
-    ret._private.folder =
-        helpers.settings:get_value("record-folder"):gsub("~", os.getenv("HOME"))
+    ret._private.folder = helpers.settings:get_value("record-folder"):gsub("~", os.getenv("HOME"))
     ret._private.format = helpers.settings:get_value("record-format")
 
     ret._private.is_recording = false

@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local GLib = require("lgi").GLib
 local gobject = require("gears.object")
 local gtable = require("gears.table")
@@ -12,23 +11,52 @@ local ipairs = ipairs
 local table = table
 local pairs = pairs
 
-local animation_manager = { }
-animation_manager.easing =
-{
-    linear    = "linear",
-    inQuad    = "inQuad",    outQuad    = "outQuad",    inOutQuad    = "inOutQuad",    outInQuad    = "outInQuad",
-    inCubic   = "inCubic",   outCubic   = "outCubic",   inOutCubic   = "inOutCubic",   outInCubic   = "outInCubic",
-    inQuart   = "inQuart",   outQuart   = "outQuart",   inOutQuart   = "inOutQuart",   outInQuart   = "outInQuart",
-    inQuint   = "inQuint",   outQuint   = "outQuint",   inOutQuint   = "inOutQuint",   outInQuint   = "outInQuint",
-    inSine    = "inSine",    outSine    = "outSine",    inOutSine    = "inOutSine",    outInSine    = "outInSine",
-    inExpo    = "inExpo",    outExpo    = "outExpo",    inOutExpo    = "inOutExpo",    outInExpo    = "outInExpo",
-    inCirc    = "inCirc",    outCirc    = "outCirc",    inOutCirc    = "inOutCirc",    outInCirc    = "outInCirc",
-    inElastic = "inElastic", outElastic = "outElastic", inOutElastic = "inOutElastic", outInElastic = "outInElastic",
-    inBack    = "inBack",    outBack    = "outBack",    inOutBack    = "inOutBack",    outInBack    = "outInBack",
-    inBounce  = "inBounce",  outBounce  = "outBounce",  inOutBounce  = "inOutBounce",  outInBounce  = "outInBounce"
+local animation_manager = {}
+animation_manager.easing = {
+    linear = "linear",
+    inQuad = "inQuad",
+    outQuad = "outQuad",
+    inOutQuad = "inOutQuad",
+    outInQuad = "outInQuad",
+    inCubic = "inCubic",
+    outCubic = "outCubic",
+    inOutCubic = "inOutCubic",
+    outInCubic = "outInCubic",
+    inQuart = "inQuart",
+    outQuart = "outQuart",
+    inOutQuart = "inOutQuart",
+    outInQuart = "outInQuart",
+    inQuint = "inQuint",
+    outQuint = "outQuint",
+    inOutQuint = "inOutQuint",
+    outInQuint = "outInQuint",
+    inSine = "inSine",
+    outSine = "outSine",
+    inOutSine = "inOutSine",
+    outInSine = "outInSine",
+    inExpo = "inExpo",
+    outExpo = "outExpo",
+    inOutExpo = "inOutExpo",
+    outInExpo = "outInExpo",
+    inCirc = "inCirc",
+    outCirc = "outCirc",
+    inOutCirc = "inOutCirc",
+    outInCirc = "outInCirc",
+    inElastic = "inElastic",
+    outElastic = "outElastic",
+    inOutElastic = "inOutElastic",
+    outInElastic = "outInElastic",
+    inBack = "inBack",
+    outBack = "outBack",
+    inOutBack = "inOutBack",
+    outInBack = "outInBack",
+    inBounce = "inBounce",
+    outBounce = "outBounce",
+    inOutBounce = "inOutBounce",
+    outInBounce = "outInBounce"
 }
 
-local animation = { }
+local animation = {}
 
 local instance = nil
 
@@ -63,8 +91,7 @@ function animation:start(args)
     duration = self._private.anim_manager._private.instant == true and 0.01 or duration
 
     if self.tween == nil or self.reset_on_stop == true then
-        self.tween = tween.new
-        {
+        self.tween = tween.new {
             initial = initial,
             subject = subject,
             target = target,
@@ -147,58 +174,53 @@ function animation_manager:new(args)
 end
 
 local function new()
-    local ret = gobject{}
+    local ret = gobject {}
     gtable.crush(ret, animation_manager, true)
 
     ret._private = {}
     ret._private.animations = {}
     ret._private.instant = false
 
-    GLib.timeout_add
-    (
-        GLib.PRIORITY_DEFAULT,
-        ANIMATION_FRAME_DELAY,
-        function()
-            for index, animation in ipairs(ret._private.animations) do
-                if animation.state == true then
-                    -- compute delta time
-                    local time = GLib.get_monotonic_time()
-                    local delta = time - animation.last_elapsed
-                    animation.last_elapsed = time
+    GLib.timeout_add(GLib.PRIORITY_DEFAULT, ANIMATION_FRAME_DELAY, function()
+        for index, animation in ipairs(ret._private.animations) do
+            if animation.state == true then
+                -- compute delta time
+                local time = GLib.get_monotonic_time()
+                local delta = time - animation.last_elapsed
+                animation.last_elapsed = time
 
-                    -- If pos is true, the animation has ended
-                    local pos = animation.tween:update(delta)
-                    if pos == true then
-                        -- Loop the animation, don't end it.
-                        -- Useful for widgets like the spinning cicle
-                        if animation.loop == true then
-                            animation.tween:reset()
-                        else
-                            -- Snap to end
-                            animation.pos = animation.tween.target
-                            animation:fire(animation.pos)
-                            animation:emit_signal("update", animation.pos)
-
-                            animation.state = false
-                            animation.ended:fire(pos)
-                            table.remove(ret._private.animations, index)
-                            animation:emit_signal("ended", animation.pos)
-                        end
-                    -- Animation in process, keep updating
+                -- If pos is true, the animation has ended
+                local pos = animation.tween:update(delta)
+                if pos == true then
+                    -- Loop the animation, don't end it.
+                    -- Useful for widgets like the spinning cicle
+                    if animation.loop == true then
+                        animation.tween:reset()
                     else
-                        animation.pos = pos
+                        -- Snap to end
+                        animation.pos = animation.tween.target
                         animation:fire(animation.pos)
                         animation:emit_signal("update", animation.pos)
-                    end
-                else
-                    table.remove(ret._private.animations, index)
-                end
-            end
 
-            -- call again the function after cooldown
-            return true
+                        animation.state = false
+                        animation.ended:fire(pos)
+                        table.remove(ret._private.animations, index)
+                        animation:emit_signal("ended", animation.pos)
+                    end
+                    -- Animation in process, keep updating
+                else
+                    animation.pos = pos
+                    animation:fire(animation.pos)
+                    animation:emit_signal("update", animation.pos)
+                end
+            else
+                table.remove(ret._private.animations, index)
+            end
         end
-    )
+
+        -- call again the function after cooldown
+        return true
+    end)
 
     return ret
 end

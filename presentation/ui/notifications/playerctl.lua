@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local beautiful = require("beautiful")
 local naughty = require("naughty")
 local playerctl_daemon = require("daemons.system.playerctl")
@@ -19,9 +18,15 @@ playerctl_daemon:connect_signal("metadata", function(self, title, artist, album_
     local font_icon = album_path == "" and beautiful.icons.youtube or nil
     local app_name = album_path ~= "" and nil or player_name
 
-    local previous = naughty.action { name = "Previous" }
-    local play_pause = naughty.action {  name = "Play/Pause" }
-    local next = naughty.action { name = "Next" }
+    local previous = naughty.action {
+        name = "Previous"
+    }
+    local play_pause = naughty.action {
+        name = "Play/Pause"
+    }
+    local next = naughty.action {
+        name = "Next"
+    }
 
     previous:connect_signal("invoked", function()
         playerctl_daemon:previous()
@@ -35,14 +40,13 @@ playerctl_daemon:connect_signal("metadata", function(self, title, artist, album_
         playerctl_daemon:next()
     end)
 
-    naughty.notification
-    {
+    naughty.notification {
         app_font_icon = app_font_icon,
         app_name = app_name,
         font_icon = font_icon,
         icon = icon,
         title = title,
         text = text,
-        actions = { previous, play_pause, next }
+        actions = {previous, play_pause, next}
     }
 end)

@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
@@ -14,7 +13,7 @@ local pactl_daemon = require("daemons.hardware.pactl")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 
-local audio = { }
+local audio = {}
 local instance = nil
 
 function audio:show(next_to)
@@ -38,8 +37,7 @@ function audio:toggle(next_to)
 end
 
 local function separator()
-    return wibox.widget
-    {
+    return wibox.widget {
         widget = wibox.widget.separator,
         forced_width = dpi(1),
         forced_height = dpi(1),
@@ -50,7 +48,7 @@ local function separator()
 end
 
 local function application_widget(args)
-    args = args or{}
+    args = args or {}
 
     args.type = args.type or ""
     args.application = args.application or nil
@@ -61,39 +59,30 @@ local function application_widget(args)
     local icon = nil
     local font_icon = beautiful.get_font_icon_for_app_name(args.application.name)
     if font_icon == nil then
-        icon = wibox.widget
-        {
+        icon = wibox.widget {
             widget = wibox.widget.imagebox,
             halign = "center",
             valign = "center",
             forced_height = dpi(25),
             forced_width = dpi(25),
-            image = helpers.icon_theme:choose_icon
-            {
-                args.application.name,
-                "gnome-audio",
-                "org.pulseaudio.pavucontrol"
-            }
+            image = helpers.icon_theme:choose_icon{args.application.name, "gnome-audio", "org.pulseaudio.pavucontrol"}
         }
     else
-        icon = wibox.widget
-        {
+        icon = wibox.widget {
             widget = widgets.text,
             size = font_icon.size or 15,
-            icon = font_icon,
+            icon = font_icon
         }
     end
 
-    local name = wibox.widget
-    {
+    local name = wibox.widget {
         widget = widgets.text,
         halign = "left",
         size = 15,
         text = args.application.name
     }
 
-    local mute = wibox.widget
-    {
+    local mute = wibox.widget {
         widget = widgets.button.text.state,
         on_by_default = args.application.mute,
         text_normal_bg = args.accent_color,
@@ -107,8 +96,7 @@ local function application_widget(args)
         end
     }
 
-    local slider = wibox.widget
-    {
+    local slider = wibox.widget {
         widget = widgets.slider,
         forced_height = dpi(20),
         value = args.application.volume,
@@ -119,13 +107,14 @@ local function application_widget(args)
         bar_active_color = args.accent_color,
         handle_width = dpi(15),
         handle_color = beautiful.colors.on_background,
-        handle_shape = gshape.circle,
+        handle_shape = gshape.circle
     }
 
-    local widget = wibox.widget
-    {
+    local widget = wibox.widget {
         widget = wibox.container.margin,
-        margins = { right = dpi(10) },
+        margins = {
+            right = dpi(10)
+        },
         {
             layout = wibox.layout.fixed.vertical,
             forced_height = dpi(80),
@@ -136,10 +125,10 @@ local function application_widget(args)
                     layout = wibox.layout.fixed.horizontal,
                     spacing = dpi(15),
                     icon,
-                    name,
+                    name
                 },
                 nil,
-                mute,
+                mute
             },
             slider
         }
@@ -150,13 +139,8 @@ local function application_widget(args)
     end)
 
     pactl_daemon:connect_signal(args.type .. "::" .. args.application.id .. "::icon_name", function(self, icon_name)
-        icon.image = helpers.icon_theme:choose_icon
-        {
-            icon_name,
-            args.application.name,
-            "gnome-audio",
-            "org.pulseaudio.pavucontrol"
-        }
+        icon.image = helpers.icon_theme:choose_icon{icon_name, args.application.name, "gnome-audio",
+                                                    "org.pulseaudio.pavucontrol"}
     end)
 
     pactl_daemon:connect_signal(args.type .. "::" .. args.application.id .. "::updated", function(self, application)
@@ -189,8 +173,7 @@ local function device_widget(args)
     args.on_removed_cb = args.on_removed_cb or nil
     args.accent_color = args.accent_color or nil
 
-    local name = wibox.widget
-    {
+    local name = wibox.widget {
         widget = widgets.text,
         forced_width = dpi(440),
         halign = "left",
@@ -198,8 +181,7 @@ local function device_widget(args)
         text = args.device.description
     }
 
-    local mute = wibox.widget
-    {
+    local mute = wibox.widget {
         widget = widgets.button.text.state,
         on_by_default = args.device.mute,
         text_normal_bg = args.accent_color,
@@ -212,8 +194,7 @@ local function device_widget(args)
         end
     }
 
-    local default = wibox.widget
-    {
+    local default = wibox.widget {
         widget = widgets.button.text.state,
         on_by_default = args.device.default,
         text_normal_bg = args.accent_color,
@@ -226,8 +207,7 @@ local function device_widget(args)
         end
     }
 
-    local slider = wibox.widget
-    {
+    local slider = wibox.widget {
         widget = widgets.slider,
         forced_height = dpi(20),
         value = args.device.volume,
@@ -238,13 +218,14 @@ local function device_widget(args)
         bar_active_color = args.accent_color,
         handle_width = dpi(15),
         handle_color = beautiful.colors.on_background,
-        handle_shape = gshape.circle,
+        handle_shape = gshape.circle
     }
 
-    local widget = wibox.widget
-    {
+    local widget = wibox.widget {
         widget = wibox.container.margin,
-        margins = { right = dpi(10) },
+        margins = {
+            right = dpi(10)
+        },
         {
             layout = wibox.layout.fixed.vertical,
             forced_height = dpi(80),
@@ -296,8 +277,7 @@ local function applications()
     local sink_inputs_accent_color = beautiful.colors.random_accent_color()
     local sources_outputs_accent_color = beautiful.colors.random_accent_color()
 
-    local sink_inputs_header = wibox.widget
-    {
+    local sink_inputs_header = wibox.widget {
         widget = widgets.text,
         halign = "left",
         bold = true,
@@ -305,45 +285,39 @@ local function applications()
         text = "Sink Inputs"
     }
 
-    local sinks_inputs_layout = wibox.widget
-    {
+    local sinks_inputs_layout = wibox.widget {
         layout = widgets.overflow.vertical,
         forced_height = dpi(300),
         spacing = dpi(15),
-        scrollbar_widget =
-        {
+        scrollbar_widget = {
             widget = wibox.widget.separator,
-            shape = helpers.ui.rrect(beautiful.border_radius),
+            shape = helpers.ui.rrect(beautiful.border_radius)
         },
         scrollbar_width = dpi(10),
-        step = 50,
+        step = 50
     }
 
-    local source_outputs_header = widgets.text
-    {
+    local source_outputs_header = widgets.text {
         halign = "left",
         bold = true,
         color = sources_outputs_accent_color,
         text = "Source Outputs"
     }
 
-    local source_outputs_layout = wibox.widget
-    {
+    local source_outputs_layout = wibox.widget {
         layout = widgets.overflow.vertical,
         forced_height = dpi(300),
         spacing = dpi(15),
-        scrollbar_widget =
-        {
+        scrollbar_widget = {
             widget = wibox.widget.separator,
-            shape = helpers.ui.rrect(beautiful.border_radius),
+            shape = helpers.ui.rrect(beautiful.border_radius)
         },
         scrollbar_width = dpi(10),
-        step = 50,
+        step = 50
     }
 
     pactl_daemon:connect_signal("sink_inputs::added", function(self, sink_input)
-        sinks_inputs_layout:add(application_widget
-        {
+        sinks_inputs_layout:add(application_widget {
             type = "sink_inputs",
             application = sink_input,
             on_mute_press = function()
@@ -359,8 +333,7 @@ local function applications()
     end)
 
     pactl_daemon:connect_signal("source_outputs::added", function(self, source_output)
-        source_outputs_layout:add(application_widget
-        {
+        source_outputs_layout:add(application_widget {
             type = "source_output",
             application = source_output,
             on_mute_press = function()
@@ -375,8 +348,7 @@ local function applications()
         })
     end)
 
-    return wibox.widget
-    {
+    return wibox.widget {
         layout = wibox.layout.fixed.vertical,
         spacing = dpi(30),
         {
@@ -384,7 +356,7 @@ local function applications()
             spacing = dpi(15),
             sink_inputs_header,
             separator(),
-            sinks_inputs_layout,
+            sinks_inputs_layout
         },
         {
             layout = wibox.layout.fixed.vertical,
@@ -392,7 +364,7 @@ local function applications()
             source_outputs_header,
             separator(),
             source_outputs_layout
-        },
+        }
     }
 end
 
@@ -400,8 +372,7 @@ local function devices()
     local sinks_accent_color = beautiful.colors.random_accent_color()
     local sources_accent_color = beautiful.colors.random_accent_color()
 
-    local sinks_header = wibox.widget
-    {
+    local sinks_header = wibox.widget {
         widget = widgets.text,
         halign = "left",
         bold = true,
@@ -409,22 +380,19 @@ local function devices()
         text = "Sinks"
     }
 
-    local sinks_layout = wibox.widget
-    {
+    local sinks_layout = wibox.widget {
         layout = widgets.overflow.vertical,
         forced_height = dpi(300),
         spacing = dpi(15),
-        scrollbar_widget =
-        {
+        scrollbar_widget = {
             widget = wibox.widget.separator,
-            shape = helpers.ui.rrect(beautiful.border_radius),
+            shape = helpers.ui.rrect(beautiful.border_radius)
         },
         scrollbar_width = dpi(10),
-        step = 50,
+        step = 50
     }
 
-    local sources_header = wibox.widget
-    {
+    local sources_header = wibox.widget {
         widget = widgets.text,
         halign = "left",
         bold = true,
@@ -432,23 +400,20 @@ local function devices()
         text = "Sources"
     }
 
-    local sources_layout = wibox.widget
-    {
+    local sources_layout = wibox.widget {
         layout = widgets.overflow.vertical,
         forced_height = dpi(300),
         spacing = dpi(15),
-        scrollbar_widget =
-        {
+        scrollbar_widget = {
             widget = wibox.widget.separator,
-            shape = helpers.ui.rrect(beautiful.border_radius),
+            shape = helpers.ui.rrect(beautiful.border_radius)
         },
         scrollbar_width = dpi(10),
-        step = 50,
+        step = 50
     }
 
     pactl_daemon:connect_signal("sinks::added", function(self, sink)
-        sinks_layout:add(device_widget
-        {
+        sinks_layout:add(device_widget {
             type = "sinks",
             device = sink,
             on_mute_press = function()
@@ -468,8 +433,7 @@ local function devices()
     end)
 
     pactl_daemon:connect_signal("sources::added", function(self, source)
-        sources_layout:add(device_widget
-        {
+        sources_layout:add(device_widget {
             type = "sources",
             device = source,
             on_mute_press = function()
@@ -488,8 +452,7 @@ local function devices()
         })
     end)
 
-    return wibox.widget
-    {
+    return wibox.widget {
         layout = wibox.layout.fixed.vertical,
         spacing = dpi(30),
         {
@@ -497,7 +460,7 @@ local function devices()
             spacing = dpi(15),
             sinks_header,
             separator(),
-            sinks_layout,
+            sinks_layout
         },
         {
             layout = wibox.layout.fixed.vertical,
@@ -505,7 +468,7 @@ local function devices()
             sources_header,
             separator(),
             sources_layout
-        },
+        }
     }
 end
 
@@ -515,19 +478,17 @@ local function widget()
     local _applications = applications()
     local _devices = devices()
 
-    local content = wibox.widget
-    {
+    local content = wibox.widget {
         layout = wibox.layout.stack,
         top_only = true,
         _devices,
-        _applications,
+        _applications
     }
 
     local devices_button = nil
     local applications_button = nil
 
-    devices_button = wibox.widget
-    {
+    devices_button = wibox.widget {
         widget = widgets.button.text.state,
         on_by_default = true,
         size = 15,
@@ -542,8 +503,7 @@ local function widget()
         end
     }
 
-    applications_button = wibox.widget
-    {
+    applications_button = wibox.widget {
         widget = widgets.button.text.state,
         size = 15,
         on_normal_bg = accent_color,
@@ -557,36 +517,33 @@ local function widget()
         end
     }
 
-    return wibox.widget
-    {
+    return wibox.widget {
         layout = wibox.layout.fixed.vertical,
         spacing = dpi(10),
         {
             layout = wibox.layout.flex.horizontal,
             spacing = dpi(10),
             devices_button,
-            applications_button,
+            applications_button
         },
         content
     }
 end
 
 local function new()
-    local ret = gobject{}
+    local ret = gobject {}
     gtable.crush(ret, audio, true)
 
     ret._private = {}
 
-    ret.widget = awful.popup
-    {
+    ret.widget = awful.popup {
         bg = beautiful.colors.background,
         ontop = true,
         visible = false,
         minimum_width = dpi(600),
         maximum_width = dpi(600),
         shape = helpers.ui.rrect(beautiful.border_radius),
-        widget =
-        {
+        widget = {
             widget = wibox.container.margin,
             margins = dpi(25),
             widget()

@@ -2,13 +2,12 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gstring = require("gears.string")
 
-local fortune = { }
+local fortune = {}
 local instance = nil
 
 function fortune:new()
@@ -22,7 +21,7 @@ function fortune:new()
 end
 
 local function new()
-    local ret = gobject{}
+    local ret = gobject {}
     gtable.crush(ret, fortune, true)
 
     ret:new()

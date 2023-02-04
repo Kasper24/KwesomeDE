@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local lgi = require("lgi")
 local Gio = lgi.Gio
 local Gtk = lgi.require("Gtk", "3.0")
@@ -10,11 +9,10 @@ local gobject = require("gears.object")
 local gtable = require("gears.table")
 local ipairs = ipairs
 
-local icon_theme = { }
+local icon_theme = {}
 local instance = nil
 
-local name_lookup =
-{
+local name_lookup = {
     ["jetbrains-studio"] = "android-studio"
 }
 
@@ -63,7 +61,7 @@ local function get_icon_by_class(self, client, apps)
         class_3 = class_3:match("(.-)%.") or class_3
         class_3 = class_3:match("(.-)%s+") or class_3
 
-        local possible_icon_names = { class, class_3, class_2, class_1 }
+        local possible_icon_names = {class, class_3, class_2, class_1}
         for _, app in ipairs(apps) do
             local id = app:get_id():lower()
             for _, possible_icon_name in ipairs(possible_icon_names) do
@@ -78,11 +76,9 @@ end
 function icon_theme:get_client_icon_path(client)
     local apps = Gio.AppInfo.get_all()
 
-    return  get_icon_by_pid_command(self, client, apps) or
-            get_icon_by_icon_name(self, client, apps) or
-            get_icon_by_class(self, client, apps) or
-            client.icon or
-            self:choose_icon({"window", "window-manager", "xfwm4-default", "window_list" })
+    return get_icon_by_pid_command(self, client, apps) or get_icon_by_icon_name(self, client, apps) or
+               get_icon_by_class(self, client, apps) or client.icon or
+               self:choose_icon({"window", "window-manager", "xfwm4-default", "window_list"})
 end
 
 function icon_theme:choose_icon(icons_names)
@@ -126,7 +122,7 @@ function icon_theme:get_icon_path(icon_name)
 end
 
 local function new()
-    local ret = gobject{}
+    local ret = gobject {}
     gtable.crush(ret, icon_theme, true)
 
     ret.gtk_theme = Gtk.IconTheme.get_default()

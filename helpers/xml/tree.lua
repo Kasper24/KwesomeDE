@@ -1,7 +1,9 @@
 local function init()
     local obj = {
         root = {},
-        options = {noreduce = {}}
+        options = {
+            noreduce = {}
+        }
     }
 
     obj._stack = {obj.root}
@@ -53,15 +55,15 @@ end
 --
 --  This code is freely distributable under the terms of the [MIT license](LICENSE).
 --
---@author Paul Chakravarti (paulc@passtheaardvark.com)
---@author Manoel Campos da Silva Filho
+-- @author Paul Chakravarti (paulc@passtheaardvark.com)
+-- @author Manoel Campos da Silva Filho
 local tree = init()
 
 ---Instantiates a new handler object.
---Each instance can handle a single XML.
---By using such a constructor, you can parse
---multiple XML files in the same application.
---@return the handler instance
+-- Each instance can handle a single XML.
+-- By using such a constructor, you can parse
+-- multiple XML files in the same application.
+-- @return the handler instance
 function tree:new()
     local obj = init()
 
@@ -74,17 +76,15 @@ end
 --- Recursively removes redundant vectors for nodes
 -- with single child elements
 function tree:reduce(node, key, parent)
-    for k,v in pairs(node) do
+    for k, v in pairs(node) do
         if type(v) == 'table' then
-            self:reduce(v,k,node)
+            self:reduce(v, k, node)
         end
     end
-    if #node == 1 and not self.options.noreduce[key] and
-        node._attr == nil then
+    if #node == 1 and not self.options.noreduce[key] and node._attr == nil then
         parent[key] = node[1]
     end
 end
-
 
 --- If an object is not an array,
 -- creates an empty array and insert that object as the 1st element.
@@ -104,7 +104,7 @@ end
 -- @return the same object if it's already an array or a new array with the object
 --         as the 1st element.
 local function convertObjectToArray(obj)
-    --#obj == 0 verifies if the field is not an array
+    -- #obj == 0 verifies if the field is not an array
     if #obj == 0 then
         local array = {}
         table.insert(array, obj)
@@ -121,10 +121,10 @@ end
 function tree:starttag(tag)
     local node = {}
     if self.parseAttributes == true then
-        node._attr=tag.attrs
+        node._attr = tag.attrs
     end
 
-    --Table in the stack representing the tag being processed
+    -- Table in the stack representing the tag being processed
     local current = self._stack[#self._stack]
 
     if current[tag.name] then
@@ -143,11 +143,11 @@ end
 -- where name is the name of the tag and attrs
 -- is a table containing the atributtes of the tag
 function tree:endtag(tag, s)
-    --Table in the stack representing the tag being processed
-    --Table in the stack representing the containing tag of the current tag
-    local prev = self._stack[#self._stack-1]
+    -- Table in the stack representing the tag being processed
+    -- Table in the stack representing the containing tag of the current tag
+    local prev = self._stack[#self._stack - 1]
     if not prev[tag.name] then
-        error("XML Error - Unmatched Tag ["..s..":"..tag.name.."]\n")
+        error("XML Error - Unmatched Tag [" .. s .. ":" .. tag.name .. "]\n")
     end
     if prev == self.root then
         -- Once parsing complete, recursively reduce tree

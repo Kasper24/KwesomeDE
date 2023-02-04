@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local awful = require("awful")
 local gtimer = require("gears.timer")
 local wibox = require("wibox")
@@ -17,42 +16,36 @@ local instance = nil
 local function new()
     local ret = {}
 
-    local icon = wibox.widget
-    {
+    local icon = wibox.widget {
         widget = widgets.text,
         halign = "center",
         valign = "bottom",
         icon = beautiful.icons.keyboard,
-        size = 30,
+        size = 30
     }
 
-    local text = wibox.widget
-    {
+    local text = wibox.widget {
         widget = widgets.text,
         halign = "center",
         valign = "bottom",
         size = 15
     }
 
-    local hide_timer = gtimer
-    {
+    local hide_timer = gtimer {
         timeout = 1,
         callback = function()
             ret.widget.visible = false
         end
     }
 
-    ret.widget = awful.popup
-    {
+    ret.widget = awful.popup {
         type = "notification",
         screen = awful.screen.focused(),
         visible = false,
         ontop = true,
         placement = function(c)
-            awful.placement.centered(c,
-            {
-                offset =
-                {
+            awful.placement.centered(c, {
+                offset = {
                     y = 300
                 }
             })
@@ -63,8 +56,7 @@ local function new()
         bg = beautiful.colors.background,
         border_width = 0,
         border_color = beautiful.border_color_active,
-        widget =
-        {
+        widget = {
             widget = wibox.container.place,
             halign = "center",
             valign = "center",
@@ -73,7 +65,7 @@ local function new()
                 spacing = dpi(30),
                 icon,
                 text
-            },
+            }
         }
     }
 

@@ -2,28 +2,27 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local wibox = require("wibox")
 local twidget = require("presentation.ui.widgets.text")
 local beautiful = require("beautiful")
 local upower_daemon = require("daemons.hardware.upower")
 local setmetatable = setmetatable
 
-local battery_icon = { mt = {} }
+local battery_icon = {
+    mt = {}
+}
 
-local UPower_States =
-{
+local UPower_States = {
     Unknown = 0,
     Charging = 1,
     Discharging = 2,
     Empty = 3,
     Fully_charged = 4,
     Pending_charge = 5,
-    Pending_discharge = 6,
+    Pending_discharge = 6
 }
 
-local Battery_States =
-{
+local Battery_States = {
     Low = 0,
     Medium = 1,
     High = 2,
@@ -34,12 +33,11 @@ local Battery_States =
 local battery_state = nil
 
 local function new()
-    local widget = wibox.widget
-    {
+    local widget = wibox.widget {
         widget = twidget,
         halign = "center",
         icon = beautiful.icons.battery.full,
-        size = 17,
+        size = 17
     }
 
     upower_daemon:connect_signal("battery::update", function(self, device)
@@ -58,7 +56,8 @@ local function new()
                 widget:set_icon(beautiful.icons.battery.three_quarter)
                 battery_state = Battery_States.High
             end
-        elseif device.state == UPower_States.Fully_charged and device.percentage > 90 and battery_state ~= Battery_States.Full then
+        elseif device.state == UPower_States.Fully_charged and device.percentage > 90 and battery_state ~=
+            Battery_States.Full then
             widget:set_icon(beautiful.icons.battery.full)
             battery_state = Battery_States.Full
         elseif device.state == UPower_States.Charging and battery_state ~= Battery_States.Charging then
@@ -67,7 +66,7 @@ local function new()
         end
     end)
 
-	return widget
+    return widget
 end
 
 function battery_icon.mt:__call(...)

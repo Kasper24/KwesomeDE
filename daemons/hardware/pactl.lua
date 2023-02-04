@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
@@ -12,7 +11,7 @@ local tonumber = tonumber
 local string = string
 local pairs = pairs
 
-local pactl = { }
+local pactl = {}
 local instance = nil
 
 function pactl:set_default_sink(sink)
@@ -132,15 +131,12 @@ local function on_default_device_changed(self)
 end
 
 local function get_devices(self)
-    awful.spawn.easy_async_with_shell(
-        [[pactl list sinks | grep "Sink #\|Name:\|Description:\|Mute:\|Volume: ";
-        pactl list sources | grep "Source #\|Name:\|Description:\|Mute:\|Volume:"]],
-    function(stdout)
+    awful.spawn.easy_async_with_shell([[pactl list sinks | grep "Sink #\|Name:\|Description:\|Mute:\|Volume: ";
+        pactl list sources | grep "Source #\|Name:\|Description:\|Mute:\|Volume:"]], function(stdout)
         local device = {}
         for line in stdout:gmatch("[^\r\n]+") do
-            if line:match("Sink") or line:match("Source")then
-                device =
-                {
+            if line:match("Sink") or line:match("Source") then
+                device = {
                     id = line:match("#(%d+)"),
                     type = line:match("Sink") and "sinks" or "sources",
                     default = false
@@ -169,39 +165,37 @@ local function get_applications(self)
     awful.spawn.easy_async_with_shell(
         [[pactl list sink-inputs | grep "Sink Input #\|application.name = \|application.icon_name = \|Mute:\|Volume: ";
         pactl list source-outputs | grep "Source Input #\|application.name = \|application.icon_name = \|Mute:\|Volume: "]],
-    function(stdout)
+        function(stdout)
 
-        local application = {}
-        for line in stdout:gmatch("[^\r\n]+") do
-            if line:match("Sink Input") or line:match("Source Output") then
-                application =
-                {
-                    id = line:match("#(%d+)"),
-                    type = line:match("Sink Input") and "sink_inputs" or "source_outputs",
-                }
-            elseif line:match("Mute") then
-                application.mute = line:match(": (.*)") == "yes" and true or false
-            elseif line:match("Volume") then
-                application.volume = tonumber(line:match("(%d+)%%"))
-            elseif line:match("application.name") then
-                application.name = line:match(" = (.*)"):gsub('"', "")
+            local application = {}
+            for line in stdout:gmatch("[^\r\n]+") do
+                if line:match("Sink Input") or line:match("Source Output") then
+                    application = {
+                        id = line:match("#(%d+)"),
+                        type = line:match("Sink Input") and "sink_inputs" or "source_outputs"
+                    }
+                elseif line:match("Mute") then
+                    application.mute = line:match(": (.*)") == "yes" and true or false
+                elseif line:match("Volume") then
+                    application.volume = tonumber(line:match("(%d+)%%"))
+                elseif line:match("application.name") then
+                    application.name = line:match(" = (.*)"):gsub('"', "")
 
-                local old_application_copy = self._private[application.type][application.id]
-                if old_application_copy == nil then
-                    self:emit_signal(application.type .. "::added", application)
-                elseif (application.volume ~= old_application_copy.volume) or
-                       (application.mute ~= old_application_copy.mute)
-                then
-                    self:emit_signal(application.type .. "::" .. application.id .. "::updated", application)
+                    local old_application_copy = self._private[application.type][application.id]
+                    if old_application_copy == nil then
+                        self:emit_signal(application.type .. "::added", application)
+                    elseif (application.volume ~= old_application_copy.volume) or
+                        (application.mute ~= old_application_copy.mute) then
+                        self:emit_signal(application.type .. "::" .. application.id .. "::updated", application)
+                    end
+
+                    self._private[application.type][application.id] = application
+                elseif line:match("application.icon_name") then
+                    application.icon_name = line:match(" = (.*)"):gsub('"', "")
+                    self:emit_signal(application.type .. "::" .. application.id .. "::icon_name", application.icon_name)
                 end
-
-                self._private[application.type][application.id] = application
-            elseif line:match("application.icon_name") then
-                application.icon_name = line:match(" = (.*)"):gsub('"', "")
-                self:emit_signal(application.type .. "::" .. application.id .. "::icon_name", application.icon_name)
             end
-        end
-    end)
+        end)
 end
 
 local function on_object_removed(self, type, id)
@@ -217,9 +211,8 @@ local function on_device_updated(self, type, id)
 
     local type_no_s = type:sub(1, -2)
 
-    awful.spawn.easy_async_with_shell(string.format("pactl get-%s-volume %s; pactl get-%s-mute %s",
-        type_no_s, id, type_no_s, id),
-    function(stdout)
+    awful.spawn.easy_async_with_shell(string.format("pactl get-%s-volume %s; pactl get-%s-mute %s", type_no_s, id,
+        type_no_s, id), function(stdout)
         local was_there_any_change = false
 
         for line in stdout:gmatch("[^\r\n]+") do
@@ -241,14 +234,14 @@ local function on_device_updated(self, type, id)
         if was_there_any_change == true then
             self:emit_signal(type .. "::" .. id .. "::updated", self._private[type][id])
             if self._private[type][id].default == true then
-                self:emit_signal("default_" .. type  .. "_updated", self._private[type][id])
+                self:emit_signal("default_" .. type .. "_updated", self._private[type][id])
             end
         end
     end)
 end
 
 local function new()
-    local ret = gobject{}
+    local ret = gobject {}
     gtable.crush(ret, pactl, true)
 
     ret._private = {}
@@ -257,50 +250,59 @@ local function new()
     ret._private.sink_inputs = {}
     ret._private.source_outputs = {}
 
-    gtimer { timeout = 5, autostart = true, call_now = false, single_shot = true, callback = function()
-        get_devices(ret)
-        get_applications(ret)
+    gtimer {
+        timeout = 5,
+        autostart = true,
+        call_now = false,
+        single_shot = true,
+        callback = function()
+            get_devices(ret)
+            get_applications(ret)
 
-        awful.spawn.easy_async("pkill -f 'pactl subscribe'", function()
-            awful.spawn.with_line_callback("pactl subscribe", {stdout = function(line)
-                ---------------------------------------------------------------------------------------------------------
-                -- Devices
-                ---------------------------------------------------------------------------------------------------------
-                if line:match("Event 'new' on sink #") or line:match("Event 'new' on source #") then
-                    get_devices(ret)
-                elseif line:match("Event 'change' on server") then
-                    on_default_device_changed(ret)
-                elseif line:match("Event 'change' on sink #") then
-                    local id = line:match("Event 'change' on sink #(.*)")
-                    on_device_updated(ret, "sinks", id)
-                elseif line:match("Event 'change' on source #") then
-                    local id = line:match("Event 'change' on source #(.*)")
-                    on_device_updated(ret, "sources", id)
-                elseif line:match("Event 'remove' on sink #") then
-                    local id = line:match("Event 'remove' on sink #(.*)")
-                    on_object_removed(ret, "sinks", id)
-                elseif line:match("Event 'remove' on source #") then
-                    local id = line:match("Event 'remove' on source #(.*)")
-                    on_object_removed(ret, "sources", id)
-                ---------------------------------------------------------------------------------------------------------
-                -- Applications
-                ---------------------------------------------------------------------------------------------------------
-                elseif line:match("Event 'new' on sink%-input #") or line:match("Event 'new' on source%-input #") then
-                    get_applications(ret)
-                elseif line:match("Event 'change' on sink%-input #") then
-                    get_applications(ret)
-                elseif line:match("Event 'change' on source%-output #") then
-                    get_applications(ret)
-                elseif line:match("Event 'remove' on sink%-input #") then
-                    local id = line:match("Event 'remove' on sink%-input #(.*)")
-                    on_object_removed(ret, "sink_inputs", id)
-                elseif line:match("Event 'remove' on source%-output #") then
-                    local id = line:match("Event 'remove' on source%-output #(.*)")
-                    on_object_removed(ret, "source_outputs", id)
-                end
-            end})
-        end)
-    end }
+            awful.spawn.easy_async("pkill -f 'pactl subscribe'", function()
+                awful.spawn.with_line_callback("pactl subscribe", {
+                    stdout = function(line)
+                        ---------------------------------------------------------------------------------------------------------
+                        -- Devices
+                        ---------------------------------------------------------------------------------------------------------
+                        if line:match("Event 'new' on sink #") or line:match("Event 'new' on source #") then
+                            get_devices(ret)
+                        elseif line:match("Event 'change' on server") then
+                            on_default_device_changed(ret)
+                        elseif line:match("Event 'change' on sink #") then
+                            local id = line:match("Event 'change' on sink #(.*)")
+                            on_device_updated(ret, "sinks", id)
+                        elseif line:match("Event 'change' on source #") then
+                            local id = line:match("Event 'change' on source #(.*)")
+                            on_device_updated(ret, "sources", id)
+                        elseif line:match("Event 'remove' on sink #") then
+                            local id = line:match("Event 'remove' on sink #(.*)")
+                            on_object_removed(ret, "sinks", id)
+                        elseif line:match("Event 'remove' on source #") then
+                            local id = line:match("Event 'remove' on source #(.*)")
+                            on_object_removed(ret, "sources", id)
+                            ---------------------------------------------------------------------------------------------------------
+                            -- Applications
+                            ---------------------------------------------------------------------------------------------------------
+                        elseif line:match("Event 'new' on sink%-input #") or
+                            line:match("Event 'new' on source%-input #") then
+                            get_applications(ret)
+                        elseif line:match("Event 'change' on sink%-input #") then
+                            get_applications(ret)
+                        elseif line:match("Event 'change' on source%-output #") then
+                            get_applications(ret)
+                        elseif line:match("Event 'remove' on sink%-input #") then
+                            local id = line:match("Event 'remove' on sink%-input #(.*)")
+                            on_object_removed(ret, "sink_inputs", id)
+                        elseif line:match("Event 'remove' on source%-output #") then
+                            local id = line:match("Event 'remove' on source%-output #(.*)")
+                            on_object_removed(ret, "source_outputs", id)
+                        end
+                    end
+                })
+            end)
+        end
+    }
 
     return ret
 end

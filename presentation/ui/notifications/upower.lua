@@ -2,24 +2,21 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local beautiful = require("beautiful")
 local naughty = require("naughty")
 local upower_daemon = require("daemons.hardware.upower")
 
-local UPower_States =
-{
+local UPower_States = {
     Unknown = 0,
     Charging = 1,
     Discharging = 2,
     Empty = 3,
     Fully_charged = 4,
     Pending_charge = 5,
-    Pending_discharge = 6,
+    Pending_discharge = 6
 }
 
-local Battery_States =
-{
+local Battery_States = {
     Low = 0,
     Medium = 1,
     High = 2,
@@ -31,8 +28,7 @@ local battery_state = -1
 local function notification(title, device, device_state)
     if device.state == UPower_States.Discharging then
         if device.percentage < 25 and device_state ~= Battery_States.Low then
-            naughty.notification
-            {
+            naughty.notification {
                 app_font_icon = beautiful.icons.car_battery,
                 app_icon = "battery",
                 app_name = "UPower",
@@ -44,8 +40,7 @@ local function notification(title, device, device_state)
         end
 
         if device.percentage > 50 and device_state ~= Battery_States.Medium then
-            naughty.notification
-            {
+            naughty.notification {
                 app_font_icon = beautiful.icons.car_battery,
                 app_icon = "battery",
                 app_name = "UPower",
@@ -57,8 +52,7 @@ local function notification(title, device, device_state)
         end
 
         if device.percentage > 75 and device_state ~= Battery_States.High then
-            naughty.notification
-            {
+            naughty.notification {
                 app_font_icon = beautiful.icons.car_battery,
                 app_icon = "battery",
                 app_name = "UPower",
@@ -68,9 +62,9 @@ local function notification(title, device, device_state)
             }
             device_state = Battery_States.High
         end
-    elseif device.state == UPower_States.Fully_charged and device.percentage > 90 and device_state ~= Battery_States.Full then
-        naughty.notification
-        {
+    elseif device.state == UPower_States.Fully_charged and device.percentage > 90 and device_state ~=
+        Battery_States.Full then
+        naughty.notification {
             app_font_icon = beautiful.icons.car_battery,
             app_icon = "battery",
             app_name = "UPower",
@@ -80,8 +74,7 @@ local function notification(title, device, device_state)
         }
         device_state = Battery_States.Full
     elseif device.state == UPower_States.Charging and device_state ~= Battery_States.Charging then
-        naughty.notification
-        {
+        naughty.notification {
             app_font_icon = beautiful.icons.car_battery,
             app_icon = "battery",
             app_name = "UPower",

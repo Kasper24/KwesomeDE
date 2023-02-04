@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
@@ -15,9 +14,11 @@ local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local collectgarbage = collectgarbage
 local os = os
-local capi = { screen = screen }
+local capi = {
+    screen = screen
+}
 
-local lock = { }
+local lock = {}
 local instance = nil
 
 function lock:show()
@@ -58,8 +59,7 @@ function lock:toggle()
 end
 
 local function widget(self)
-    local background = wibox.widget
-    {
+    local background = wibox.widget {
         widget = wibox.widget.imagebox,
         resize = true,
         horizontal_fit_policy = "fit",
@@ -67,58 +67,51 @@ local function widget(self)
         image = theme_daemon:get_wallpaper()
     }
 
-    local blur = wibox.widget
-    {
+    local blur = wibox.widget {
         widget = wibox.container.background,
-        bg = beautiful.colors.background_with_opacity(),
+        bg = beautiful.colors.background_with_opacity()
     }
 
-    local picture = wibox.widget
-    {
+    local picture = wibox.widget {
         widget = wibox.widget.imagebox,
         halign = "center",
         clip_shape = helpers.ui.rrect(beautiful.border_radius),
         forced_height = dpi(180),
         forced_width = dpi(180),
-        image = beautiful.profile_icon,
+        image = beautiful.profile_icon
     }
 
-    local name = wibox.widget
-    {
+    local name = wibox.widget {
         widget = widgets.text,
         halign = "center",
         color = beautiful.colors.on_background,
         text = os.getenv("USER"):upper()
     }
 
-    local user = wibox.widget
-    {
+    local user = wibox.widget {
         layout = wibox.layout.fixed.vertical,
         spacing = dpi(15),
         picture,
         name
     }
 
-    local clock = wibox.widget
-    {
+    local clock = wibox.widget {
         widget = wibox.widget.textclock,
         align = "center",
         valign = "center",
         format = "%H:%M",
-        font = beautiful.font_name .. 60,
+        font = beautiful.font_name .. 60
     }
 
-    local date = wibox.widget
-    {
+    local date = wibox.widget {
         widget = wibox.widget.textclock,
         align = "center",
         valign = "center",
         format = "%d" .. helpers.string.day_ordinal_number() .. " of %B, %A",
-        font = beautiful.font_name .. 30,
+        font = beautiful.font_name .. 30
     }
 
-    self._private.prompt = wibox.widget
-    {
+    self._private.prompt = wibox.widget {
         widget = widgets.prompt,
         forced_width = dpi(450),
         forced_height = dpi(50),
@@ -134,8 +127,7 @@ local function widget(self)
         end
     }
 
-    local toggle_password_obscure_button = wibox.widget
-    {
+    local toggle_password_obscure_button = wibox.widget {
         widget = widgets.checkbox,
         state = true,
         color = beautiful.colors.on_background,
@@ -147,17 +139,15 @@ local function widget(self)
         end
     }
 
-    local unlock_button = wibox.widget
-    {
+    local unlock_button = wibox.widget {
         widget = widgets.button.text.normal,
         text = "Unlock",
         on_release = function()
             system_daemon:unlock(self._private.prompt:get_text())
-        end,
+        end
     }
 
-    local shutdown_button = wibox.widget
-    {
+    local shutdown_button = wibox.widget {
         widget = widgets.button.text.normal,
         icon = beautiful.icons.poweroff,
         size = 40,
@@ -166,8 +156,7 @@ local function widget(self)
         end
     }
 
-    local restart_button = wibox.widget
-    {
+    local restart_button = wibox.widget {
         widget = widgets.button.text.normal,
         icon = beautiful.icons.reboot,
         size = 40,
@@ -176,8 +165,7 @@ local function widget(self)
         end
     }
 
-    local suspend_button = wibox.widget
-    {
+    local suspend_button = wibox.widget {
         widget = widgets.button.text.normal,
         icon = beautiful.icons.suspend,
         size = 40,
@@ -186,8 +174,7 @@ local function widget(self)
         end
     }
 
-    local exit_button = wibox.widget
-    {
+    local exit_button = wibox.widget {
         widget = widgets.button.text.normal,
         icon = beautiful.icons.exit,
         size = 40,
@@ -196,8 +183,7 @@ local function widget(self)
         end
     }
 
-    return wibox.widget
-    {
+    return wibox.widget {
         widget = wibox.layout.stack,
         background,
         blur,
@@ -222,7 +208,10 @@ local function widget(self)
         },
         {
             widget = wibox.container.margin,
-            margins = { bottom = dpi(30), right = dpi(30) },
+            margins = {
+                bottom = dpi(30),
+                right = dpi(30)
+            },
             {
                 widget = wibox.container.place,
                 halign = "right",
@@ -241,14 +230,13 @@ local function widget(self)
 end
 
 local function new()
-    local ret = gobject{}
+    local ret = gobject {}
     gtable.crush(ret, lock, true)
 
     ret._private = {}
     ret._private.grabber = nil
 
-    ret.widget = awful.popup
-    {
+    ret.widget = awful.popup {
         type = "splash",
         visible = false,
         ontop = true,

@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 ---------------------------------------------------------------------------
 --- A graph widget.
 --
@@ -15,13 +14,12 @@
 --
 -- To display the graph vertically, use a `wibox.container.rotate` widget.
 --
---@DOC_wibox_widget_defaults_graph_EXAMPLE@
+-- @DOC_wibox_widget_defaults_graph_EXAMPLE@
 -- @author Julien Danjou &lt;julien@danjou.info&gt;
 -- @copyright 2009 Julien Danjou
 -- @widgetmod wibox.widget.graph
 -- @supermodule wibox.widget.base
 ---------------------------------------------------------------------------
-
 local setmetatable = setmetatable
 local ipairs = ipairs
 local math = math
@@ -35,11 +33,13 @@ local gtable = require("gears.table")
 local base = require("wibox.widget.base")
 local beautiful = require("beautiful")
 
-local graph = { mt = {} }
+local graph = {
+    mt = {}
+}
 
 --- Set the graph border_width.
 --
---@DOC_wibox_widget_graph_border_width_EXAMPLE@
+-- @DOC_wibox_widget_graph_border_width_EXAMPLE@
 --
 -- @property border_width
 -- @tparam number border_width
@@ -48,7 +48,7 @@ local graph = { mt = {} }
 
 --- Set the graph border color.
 --
---@DOC_wibox_widget_graph_border_color_EXAMPLE@
+-- @DOC_wibox_widget_graph_border_color_EXAMPLE@
 --
 -- @property border_color
 -- @tparam gears.color border_color The border color to set.
@@ -60,7 +60,7 @@ local graph = { mt = {} }
 --
 -- This color is used, when `group_colors` isn't set.
 --
---@DOC_wibox_widget_graph_color_EXAMPLE@
+-- @DOC_wibox_widget_graph_color_EXAMPLE@
 --
 -- @property color
 -- @tparam color color The graph color.
@@ -70,7 +70,7 @@ local graph = { mt = {} }
 
 --- Set the graph background color.
 --
---@DOC_wibox_widget_graph_background_color_EXAMPLE@
+-- @DOC_wibox_widget_graph_background_color_EXAMPLE@
 --
 -- @property background_color
 -- @tparam gears.color background_color The graph background color.
@@ -163,7 +163,7 @@ local graph = { mt = {} }
 
 --- Set the width or the individual steps.
 --
---@DOC_wibox_widget_graph_step_EXAMPLE@
+-- @DOC_wibox_widget_graph_step_EXAMPLE@
 --
 -- @property step_width
 -- @tparam[opt=1] number step_width
@@ -171,7 +171,7 @@ local graph = { mt = {} }
 
 --- Set the spacing between the steps.
 --
---@DOC_wibox_widget_graph_step_spacing_EXAMPLE@
+-- @DOC_wibox_widget_graph_step_spacing_EXAMPLE@
 --
 -- @property step_spacing
 -- @tparam[opt=0] number step_spacing
@@ -181,7 +181,7 @@ local graph = { mt = {} }
 --
 -- If `step_hook` property is also set, this property is ignored.
 --
---@DOC_wibox_widget_graph_step_shape_EXAMPLE@
+-- @DOC_wibox_widget_graph_step_shape_EXAMPLE@
 --
 -- @property step_shape
 -- @tparam[opt=rectangle] gears.shape|function step_shape
@@ -376,46 +376,41 @@ local graph = { mt = {} }
 -- @beautiful beautiful.graph_border_color
 -- @param color
 
-local properties = { "width", "height", "border_color", "stack",
-                     "stack_colors", "color", "background_color",
-                     "max_value", "scale", "min_value", "step_shape",
-                     "step_spacing", "step_width", "border_width",
-                     "clamp_bars", "baseline_value",
-                     "capacity", "nan_color", "nan_indication",
-                     "group_start", "group_finish", "step_hook",
-                     "group_colors",
-}
+local properties = {"width", "height", "border_color", "stack", "stack_colors", "color", "background_color",
+                    "max_value", "scale", "min_value", "step_shape", "step_spacing", "step_width", "border_width",
+                    "clamp_bars", "baseline_value", "capacity", "nan_color", "nan_indication", "group_start",
+                    "group_finish", "step_hook", "group_colors"}
 
 -- This is what the properties are set to on widget construction.
 local prop_defaults = {
-    baseline_value   = 0,
-    clamp_bars       = true,
-    nan_indication   = true,
-    step_width       = 1,
-    step_spacing     = 0,
+    baseline_value = 0,
+    clamp_bars = true,
+    nan_indication = true,
+    step_width = 1,
+    step_spacing = 0
 
--- These aren't very useful to set, and the docs don't distinguish between
--- "defaults to" (equals to in a fresh instance) and
--- "falls back to" (is assumed to be equal to, when nil) anyway.
---  scale          = false,
---  stack          = false,
+    -- These aren't very useful to set, and the docs don't distinguish between
+    -- "defaults to" (equals to in a fresh instance) and
+    -- "falls back to" (is assumed to be equal to, when nil) anyway.
+    --  scale          = false,
+    --  stack          = false,
 }
 
 -- This is what the properties are assumed to be in the code, when unset/falsy.
 local prop_fallbacks = {
--- This one might become beautiful-themed in the future, so we can't set it
--- in the constructor.
-    border_width     = 0,
+    -- This one might become beautiful-themed in the future, so we can't set it
+    -- in the constructor.
+    border_width = 0
 
--- These are better left unreplaced in code, because they're used only in one
--- place and the intent is more clear when the numbers are directly visible.
---  min_value        = 0,
---  max_value        = 1,
+    -- These are better left unreplaced in code, because they're used only in one
+    -- place and the intent is more clear when the numbers are directly visible.
+    --  min_value        = 0,
+    --  max_value        = 1,
 
--- This one is set later. It's not in `prop_defaults`, because I don't
--- want to make it accessible through the getter, lest the user somehow mutates
--- the Cairo pattern and breaks NaN indication for all other graphs.
---  nan_color        = make_fallback_nan_color()
+    -- This one is set later. It's not in `prop_defaults`, because I don't
+    -- want to make it accessible through the getter, lest the user somehow mutates
+    -- the Cairo pattern and breaks NaN indication for all other graphs.
+    --  nan_color        = make_fallback_nan_color()
 }
 
 -- All property defaults are also necessarily fallbacks.
@@ -444,7 +439,7 @@ local function build_properties(prototype, prop_names)
                 if self._private[prop] ~= value then
                     self._private[prop] = value
                     self:emit_signal("widget::redraw_needed")
-                    self:emit_signal("property::"..prop, value)
+                    self:emit_signal("property::" .. prop, value)
                 end
                 return self
             end
@@ -461,14 +456,10 @@ end
 local function build_fallback_nan_color()
     local clr = color.create_pattern_uncached({
         ["type"] = "linear",
-        from = {0, 0}, to = {4, 4},
-        stops={
-            {0, "#000000"},
-            {0.25, "#000000"}, {0.25, "#ffff00"},
-            {0.50, "#ffff00"}, {0.50, "#000000"},
-            {0.75, "#000000"}, {0.75, "#ffff00"},
-            {1, "#ffff00"},
-        },
+        from = {0, 0},
+        to = {4, 4},
+        stops = {{0, "#000000"}, {0.25, "#000000"}, {0.25, "#ffff00"}, {0.50, "#ffff00"}, {0.50, "#000000"},
+                 {0.75, "#000000"}, {0.75, "#ffff00"}, {1, "#ffff00"}}
     })
     clr:set_extend("REPEAT")
     return clr
@@ -561,7 +552,7 @@ local function graph_preprocess_values(self, values, drawn_values_num)
     -- drawn_values[c][i] = sum [1,c] of values[c][i]
     local drawn_values = {}
 
-    local nan = 0/0
+    local nan = 0 / 0
 
     -- Add stacked values up to get values we need to render
     for group_idx, group_values in ipairs(values) do
@@ -592,7 +583,7 @@ local function graph_preprocess_values(self, values, drawn_values_num)
     -- In a stacked graph it's sufficient to examine only the last summed row
     -- to determine the max_value, since all values are necessarily >= 0
     -- and the min_value should be always at most 0
-    local scaling_values = { {0}, summed_values }
+    local scaling_values = {{0}, summed_values}
 
     return drawn_values, scaling_values
 end
@@ -611,7 +602,7 @@ local function graph_map_value_to_widget_coordinates(self, value, min_value, max
         -- Drawing bars up from the lower edge of the widget
         return height * (1 - value)
     end
-    return value --NaN
+    return value -- NaN
 end
 
 local function graph_choose_coordinate_system(self, scaling_values, drawn_values_num, height)
@@ -648,9 +639,7 @@ local function graph_choose_coordinate_system(self, scaling_values, drawn_values
     -- It defaults to the usual zero axis
     local baseline_value = self._private.baseline_value or prop_fallbacks.baseline_value
     -- Let's map it into widget coordinates
-    local baseline_y = graph_map_value_to_widget_coordinates(
-        self, baseline_value, min_value, max_value, height
-    )
+    local baseline_y = graph_map_value_to_widget_coordinates(self, baseline_value, min_value, max_value, height)
 
     return min_value, max_value, baseline_y
 end
@@ -663,7 +652,7 @@ local function default_group_start_impl(cr, group_idx, options)
     return options._graph._private.group_start
 end
 
-local function default_group_finish_impl(cr, _group_idx, _options) --luacheck: ignore 212/_.*
+local function default_group_finish_impl(cr, _group_idx, _options) -- luacheck: ignore 212/_.*
     cr:fill()
 end
 
@@ -696,9 +685,8 @@ local function graph_draw_values(self, context, cr, width, height, drawn_values_
     -- all drawn values need to be examined to determine proper scaling
     scaling_values = scaling_values or drawn_values
 
-    local min_value, max_value, baseline_y = graph_choose_coordinate_system(
-        self, scaling_values, drawn_values_num, height
-    )
+    local min_value, max_value, baseline_y = graph_choose_coordinate_system(self, scaling_values, drawn_values_num,
+        height)
 
     --- A bag of potentially useful things passed into user's draw callbacks.
     --
@@ -723,8 +711,10 @@ local function graph_draw_values(self, context, cr, width, height, drawn_values_
         _width = width,
         _height = height,
         _group_idx = nil, -- will be set later
-        _graph = self,
-    }, {__index = context})
+        _graph = self
+    }, {
+        __index = context
+    })
 
     -- The user callback to call before drawing each data group
     local group_start = self._private.group_start
@@ -769,7 +759,7 @@ local function graph_draw_values(self, context, cr, width, height, drawn_values_
                 local not_nan = value_y == value_y
 
                 -- The coordinate of the i-th bar's left edge
-                local x = (i-1)*(step_width + step_spacing) + offset_x
+                local x = (i - 1) * (step_width + step_spacing) + offset_x
 
                 local base_y = baseline_y
                 if prev_y then
@@ -811,7 +801,7 @@ end
 
 function graph:draw(context, cr, width, height)
     local border_width = self._private.border_width or prop_fallbacks.border_width
-    local drawn_values_num = self:compute_drawn_values_num(width-2*border_width)
+    local drawn_values_num = self:compute_drawn_values_num(width - 2 * border_width)
 
     -- Track our usage to help us guess the necessary values array capacity
     graph_gather_drawn_values_num_stats(self, drawn_values_num)
@@ -829,8 +819,8 @@ function graph:draw(context, cr, width, height)
             cr:translate(border_width, border_width)
         end
 
-        local values_width = width - 2*border_width
-        local values_height = height - 2*border_width
+        local values_width = width - 2 * border_width
+        local values_height = height - 2 * border_width
 
         graph_draw_values(self, context, cr, values_width, values_height, drawn_values_num)
 
@@ -841,7 +831,7 @@ function graph:draw(context, cr, width, height)
     -- Draw the border last so that it overlaps already drawn values
     if border_width > 0 then
         cr:set_line_width(border_width)
-        cr:rectangle(border_width/2, border_width/2, width - border_width, height - border_width)
+        cr:rectangle(border_width / 2, border_width / 2, width - border_width, height - border_width)
         cr:set_source(color(self._private.border_color or prop_fallbacks.border_color))
         cr:stroke()
     end
@@ -893,7 +883,7 @@ local function guess_capacity(self)
 
     -- Calculate an appropriate capacity from drawn values num
     -- with some wiggle room for widget resizes
-    return math.ceil(ldwn/64 + 1)*64
+    return math.ceil(ldwn / 64 + 1) * 64
 end
 
 --- Add a value to the graph.
@@ -914,14 +904,14 @@ end
 -- @tparam[opt=NaN] number value The value to be added to a graph's data group.
 -- @tparam[opt=1] integer group The index of the data group.
 function graph:add_value(value, group)
-    value = value or (0/0) -- default to NaN
+    value = value or (0 / 0) -- default to NaN
     group = group or 1
 
     local values = self._private.values
     if not values[group] then
         -- Ensure that there are no gaps in the values array,
         -- so that ipairs() can reach all data groups.
-        for i = #values+1, group do
+        for i = #values + 1, group do
             values[i] = {}
         end
         -- If the above loop hasn't set it, then
@@ -1003,7 +993,9 @@ end
 -- @renamedin 5.0 forced_height
 -- @propemits true false
 function graph:set_height(height)
-    gdebug.deprecate("Use a `wibox.container.constraint` widget or `forced_height`", {deprecated_in=5})
+    gdebug.deprecate("Use a `wibox.container.constraint` widget or `forced_height`", {
+        deprecated_in = 5
+    })
     if awesome.api_level <= 5 then
         if height >= 5 then
             -- this sends "layout_changed" for us
@@ -1016,7 +1008,9 @@ function graph:set_height(height)
 end
 
 function graph:get_height()
-    gdebug.deprecate("Use `forced_height`", {deprecated_in=5})
+    gdebug.deprecate("Use `forced_height`", {
+        deprecated_in = 5
+    })
     return awesome.api_level <= 5 and self._private.forced_height or nil
 end
 
@@ -1030,7 +1024,9 @@ end
 -- @renamedin 5.0 forced_width
 -- @propemits true false
 function graph:set_width(width)
-    gdebug.deprecate("Use a `wibox.container.constraint` widget or `forced_width`", {deprecated_in=5})
+    gdebug.deprecate("Use a `wibox.container.constraint` widget or `forced_width`", {
+        deprecated_in = 5
+    })
     if awesome.api_level <= 5 then
         if width >= 5 then
             -- this sends "layout_changed" for us
@@ -1043,7 +1039,9 @@ function graph:set_width(width)
 end
 
 function graph:get_width()
-    gdebug.deprecate("Use `forced_width`", {deprecated_in=5})
+    gdebug.deprecate("Use `forced_width`", {
+        deprecated_in = 5
+    })
     return awesome.api_level <= 5 and self._private.forced_width or nil
 end
 
@@ -1056,7 +1054,9 @@ end
 -- @tparam table colors A table with colors for data groups.
 -- @see group_colors
 function graph:set_stack_colors(colors)
-    gdebug.deprecate("Use `group_colors`", {deprecated_in=5})
+    gdebug.deprecate("Use `group_colors`", {
+        deprecated_in = 5
+    })
     if awesome.api_level <= 5 then
         if self._private.group_colors ~= colors then
             -- this sends "redraw_needed" for us
@@ -1069,10 +1069,11 @@ function graph:set_stack_colors(colors)
 end
 
 function graph:get_stack_colors()
-    gdebug.deprecate("Use `group_colors`", {deprecated_in=5})
+    gdebug.deprecate("Use `group_colors`", {
+        deprecated_in = 5
+    })
     return awesome.api_level <= 5 and self._private.group_colors or nil
 end
-
 
 --- Create a graph widget.
 --
@@ -1082,22 +1083,25 @@ end
 function graph.new(args)
     args = args or {}
 
-    local _graph = base.make_widget(nil, nil, {enable_properties = true})
+    local _graph = base.make_widget(nil, nil, {
+        enable_properties = true
+    })
 
     if args.width or args.height then
-        gdebug.deprecate(
-            "`args.width` and `args.height` are deprecated. "..
-            "Use a `wibox.container.constraint` widget "..
-            "or `forced_width`/`forced_height`",
-            {deprecated_in=5, raw=true}
-        )
+        gdebug.deprecate("`args.width` and `args.height` are deprecated. " ..
+                             "Use a `wibox.container.constraint` widget " .. "or `forced_width`/`forced_height`", {
+            deprecated_in = 5,
+            raw = true
+        })
     end
 
     if awesome.api_level <= 5 then
         local width = args.width or 100
         local height = args.height or 20
 
-        if width < 5 or height < 5 then return end
+        if width < 5 or height < 5 then
+            return
+        end
 
         _graph._private.forced_width = width
         _graph._private.forced_height = height
@@ -1105,7 +1109,7 @@ function graph.new(args)
 
     -- Set initial values for properties.
     gtable.crush(_graph._private, prop_defaults, true)
-    _graph._private.values    = {}
+    _graph._private.values = {}
     -- Copy methods and properties over
     gtable.crush(_graph, graph, true)
     -- Except those, which don't belong in the widget instance

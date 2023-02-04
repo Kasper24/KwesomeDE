@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local gshape = require("gears.shape")
 local wibox = require("wibox")
 local twidget = require("presentation.ui.widgets.text")
@@ -16,15 +15,14 @@ local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 local math = math
 
-local playerctl = { }
+local playerctl = {}
 
 local accent_color = beautiful.colors.random_accent_color()
 
 function playerctl.art(halign, valign, size, default_icon_size, daemon)
     local playerctl_daemon = daemon or general_playerctl_daemon
 
-    local icon = wibox.widget
-    {
+    local icon = wibox.widget {
         widget = wibox.widget.imagebox,
         halign = halign or "left",
         valign = valign or "top",
@@ -32,17 +30,15 @@ function playerctl.art(halign, valign, size, default_icon_size, daemon)
         image = helpers.icon_theme:get_icon_path("spotify")
     }
 
-    local default_icon = wibox.widget
-    {
+    local default_icon = wibox.widget {
         widget = twidget,
         halign = halign or "left",
         valign = valign or "center",
         icon = beautiful.icons.spotify,
-        size = default_icon_size or 150,
+        size = default_icon_size or 150
     }
 
-    local stack = wibox.widget
-    {
+    local stack = wibox.widget {
         layout = wibox.layout.stack,
         forced_width = size or dpi(200),
         forced_height = size or dpi(200),
@@ -73,8 +69,7 @@ end
 function playerctl.title_artist(daemon)
     local playerctl_daemon = daemon or general_playerctl_daemon
 
-    local widget = wibox.widget
-    {
+    local widget = wibox.widget {
         widget = twidget,
         halign = "center",
         forced_width = dpi(70),
@@ -101,8 +96,7 @@ end
 function playerctl.player_name(halign, daemon)
     local playerctl_daemon = daemon or general_playerctl_daemon
 
-    local widget = wibox.widget
-    {
+    local widget = wibox.widget {
         widget = twidget,
         halign = halign or "center",
         size = 12,
@@ -122,8 +116,7 @@ end
 function playerctl.title(width, halign, daemon)
     local playerctl_daemon = daemon or general_playerctl_daemon
 
-    local widget = wibox.widget
-    {
+    local widget = wibox.widget {
         widget = twidget,
         forced_width = width or dpi(70),
         forced_height = dpi(20),
@@ -150,8 +143,7 @@ end
 function playerctl.artist(width, halign, daemon)
     local playerctl_daemon = daemon or general_playerctl_daemon
 
-    local widget = wibox.widget
-    {
+    local widget = wibox.widget {
         widget = twidget,
         forced_width = width or dpi(70),
         forced_height = dpi(20),
@@ -176,95 +168,154 @@ function playerctl.artist(width, halign, daemon)
 end
 
 local function create_point_maker()
-	local self = {}
-	self.height = 0
+    local self = {}
+    self.height = 0
 
-	local margin_x = 0.23
-	local margin_y = 0.21
-	local margin_yf = 0.15
-	local width = 0.18
+    local margin_x = 0.23
+    local margin_y = 0.21
+    local margin_yf = 0.15
+    local width = 0.18
 
-	--top slope, bottom slope, bottom y-int, top y-int
-	local tm, bm, bb, tb
+    -- top slope, bottom slope, bottom y-int, top y-int
+    local tm, bm, bb, tb
 
-	--bottom left final, top left final, middle right, top middle final, bottom middle final
-	local blf, tlf, mf, tmf, bmf
+    -- bottom left final, top left final, middle right, top middle final, bottom middle final
+    local blf, tlf, mf, tmf, bmf
 
-	function self:set_height(height)
-		if height == self.height then return end --short circuit
-		self.height = height
+    function self:set_height(height)
+        if height == self.height then
+            return
+        end -- short circuit
+        self.height = height
 
-		blf = {x=margin_x*height, y=(1-margin_yf)*height}
-		tlf = {x=margin_x*height, y=margin_yf*height}
+        blf = {
+            x = margin_x * height,
+            y = (1 - margin_yf) * height
+        }
+        tlf = {
+            x = margin_x * height,
+            y = margin_yf * height
+        }
 
-		--middle, not slope
-		mf = {x=(1-margin_x)*height, y=height/2}
+        -- middle, not slope
+        mf = {
+            x = (1 - margin_x) * height,
+            y = height / 2
+        }
 
-		tm = (tlf.y-mf.y)/(tlf.x-mf.x)
-		bm = (blf.y-mf.y)/(blf.x-mf.x)
-		tb = tlf.y-tlf.x*tm
-		bb = blf.y-blf.x*bm
+        tm = (tlf.y - mf.y) / (tlf.x - mf.x)
+        bm = (blf.y - mf.y) / (blf.x - mf.x)
+        tb = tlf.y - tlf.x * tm
+        bb = blf.y - blf.x * bm
 
-		--middle, not slope
-		tmf = {x=(margin_x+width)*height, y=tm*(margin_x+width)*height+tb}
-		bmf = {x=(margin_x+width)*height, y=bm*(margin_x+width)*height+bb}
+        -- middle, not slope
+        tmf = {
+            x = (margin_x + width) * height,
+            y = tm * (margin_x + width) * height + tb
+        }
+        bmf = {
+            x = (margin_x + width) * height,
+            y = bm * (margin_x + width) * height + bb
+        }
 
-		--points look like this
-		--p1-p2  p5-p6
-		--|   |  |   |
-		--p4_p3  p8_p7
-		self.p1 = {x=margin_x*height, y=margin_y*height}
-		self.p2 = {x=(margin_x+width)*height, y=margin_y*height}
-		self.p3 = {x=(margin_x+width)*height, y=(1-margin_y)*height}
-		self.p4 = {x=margin_x*height, y=(1-margin_y)*height}
+        -- points look like this
+        -- p1-p2  p5-p6
+        -- |   |  |   |
+        -- p4_p3  p8_p7
+        self.p1 = {
+            x = margin_x * height,
+            y = margin_y * height
+        }
+        self.p2 = {
+            x = (margin_x + width) * height,
+            y = margin_y * height
+        }
+        self.p3 = {
+            x = (margin_x + width) * height,
+            y = (1 - margin_y) * height
+        }
+        self.p4 = {
+            x = margin_x * height,
+            y = (1 - margin_y) * height
+        }
 
-		self.p5 = {x=(1-margin_x-width)*height, y=margin_y*height}
-		self.p6 = {x=(1-margin_x)*height, y=margin_y*height}
-		self.p7 = {x=(1-margin_x)*height, y=(1-margin_y)*height}
-		self.p8 = {x=(1-margin_x-width)*height, y=(1-margin_y)*height}
+        self.p5 = {
+            x = (1 - margin_x - width) * height,
+            y = margin_y * height
+        }
+        self.p6 = {
+            x = (1 - margin_x) * height,
+            y = margin_y * height
+        }
+        self.p7 = {
+            x = (1 - margin_x) * height,
+            y = (1 - margin_y) * height
+        }
+        self.p8 = {
+            x = (1 - margin_x - width) * height,
+            y = (1 - margin_y) * height
+        }
 
-		self.p1d = {y=self.p1.y-tlf.y}
-		self.p2d = {y=self.p2.y-tmf.y}
-		self.p3d = {y=self.p4.y-bmf.y}
-		self.p4d = {y=self.p3.y-blf.y}
+        self.p1d = {
+            y = self.p1.y - tlf.y
+        }
+        self.p2d = {
+            y = self.p2.y - tmf.y
+        }
+        self.p3d = {
+            y = self.p4.y - bmf.y
+        }
+        self.p4d = {
+            y = self.p3.y - blf.y
+        }
 
-		self.p5d = {x=self.p5.x-tmf.x, y=self.p5.y-tmf.y} --x moves
-		self.p6d = {y=self.p6.y-mf.y}
-		self.p7d = {y=self.p7.y-mf.y}
-		self.p8d = {x=self.p8.x-bmf.x, y=self.p7.y-bmf.y} --x moves
+        self.p5d = {
+            x = self.p5.x - tmf.x,
+            y = self.p5.y - tmf.y
+        } -- x moves
+        self.p6d = {
+            y = self.p6.y - mf.y
+        }
+        self.p7d = {
+            y = self.p7.y - mf.y
+        }
+        self.p8d = {
+            x = self.p8.x - bmf.x,
+            y = self.p7.y - bmf.y
+        } -- x moves
 
-	end
+    end
 
-	return self
+    return self
 end
 
 local function get_draw(pos, pm)
-	return function(_, _, cr, _, height)
-		pm:set_height(height)
+    return function(_, _, cr, _, height)
+        pm:set_height(height)
 
-		-- cr:set_source_rgb(1.0, 1.0, 1.0)
+        -- cr:set_source_rgb(1.0, 1.0, 1.0)
         cr:set_source(require("gears.color")(beautiful.colors.background))
 
-		if pos == 1 then
-			cr:move_to(pm.p1.x, pm.p1.y-pm.p1d.y)
-			cr:line_to(pm.p6.x, pm.p6.y-pm.p6d.y)
-			cr:line_to(pm.p4.x, pm.p4.y-pm.p4d.y)
-			cr:fill()
-			return
-		end
+        if pos == 1 then
+            cr:move_to(pm.p1.x, pm.p1.y - pm.p1d.y)
+            cr:line_to(pm.p6.x, pm.p6.y - pm.p6d.y)
+            cr:line_to(pm.p4.x, pm.p4.y - pm.p4d.y)
+            cr:fill()
+            return
+        end
 
-		cr:move_to(pm.p1.x, pm.p1.y-pm.p1d.y*pos)
-		cr:line_to(pm.p2.x, pm.p2.y-pm.p2d.y*pos)
-		cr:line_to(pm.p3.x, pm.p3.y-pm.p3d.y*pos)
-		cr:line_to(pm.p4.x, pm.p4.y-pm.p4d.y*pos)
-		cr:fill()
+        cr:move_to(pm.p1.x, pm.p1.y - pm.p1d.y * pos)
+        cr:line_to(pm.p2.x, pm.p2.y - pm.p2d.y * pos)
+        cr:line_to(pm.p3.x, pm.p3.y - pm.p3d.y * pos)
+        cr:line_to(pm.p4.x, pm.p4.y - pm.p4d.y * pos)
+        cr:fill()
 
-		cr:move_to(pm.p5.x-pm.p5d.x*pos, pm.p5.y-pm.p5d.y*pos)
-		cr:line_to(pm.p6.x, pm.p6.y-pm.p6d.y*pos)
-		cr:line_to(pm.p7.x, pm.p7.y-pm.p7d.y*pos)
-		cr:line_to(pm.p8.x-pm.p8d.x*pos, pm.p8.y-pm.p8d.y*pos)
-		cr:fill()
-	end
+        cr:move_to(pm.p5.x - pm.p5d.x * pos, pm.p5.y - pm.p5d.y * pos)
+        cr:line_to(pm.p6.x, pm.p6.y - pm.p6d.y * pos)
+        cr:line_to(pm.p7.x, pm.p7.y - pm.p7d.y * pos)
+        cr:line_to(pm.p8.x - pm.p8d.x * pos, pm.p8.y - pm.p8d.y * pos)
+        cr:fill()
+    end
 end
 
 function playerctl.play(daemon)
@@ -272,17 +323,17 @@ function playerctl.play(daemon)
 
     local point_maker = create_point_maker()
 
-	local widget = wibox.widget
-    {
+    local widget = wibox.widget {
         widget = wibox.widget.make_base_widget,
-		forced_width = dpi(25),
-		forced_height = dpi(25),
-        fit = function(_, _, _, height) return height, height end,
-		draw = get_draw(0, point_maker),
-	}
+        forced_width = dpi(25),
+        forced_height = dpi(25),
+        fit = function(_, _, _, height)
+            return height, height
+        end,
+        draw = get_draw(0, point_maker)
+    }
 
-    local button = wibox.widget
-    {
+    local button = wibox.widget {
         widget = ebwidget.normal,
         normal_shape = gshape.circle,
         normal_bg = accent_color,
@@ -292,15 +343,14 @@ function playerctl.play(daemon)
         child = widget
     }
 
-    local play_pause_animation = helpers.animation:new
-    {
-		duration = 0.2,
+    local play_pause_animation = helpers.animation:new{
+        duration = 0.2,
         easing = helpers.animation.easing.linear,
-		update = function(self, pos)
-			widget.draw = get_draw(pos, point_maker)
-			widget:emit_signal("widget::redraw_needed")
-		end
-	}
+        update = function(self, pos)
+            widget.draw = get_draw(pos, point_maker)
+            widget:emit_signal("widget::redraw_needed")
+        end
+    }
 
     playerctl_daemon:connect_signal("playback_status", function(self, playing)
         if playing then
@@ -320,8 +370,7 @@ end
 function playerctl.previous(width, height, daemon)
     local playerctl_daemon = daemon or general_playerctl_daemon
 
-    return wibox.widget
-    {
+    return wibox.widget {
         widget = tbwidget.normal,
         forced_width = width or dpi(50),
         forced_height = height or dpi(50),
@@ -338,8 +387,7 @@ end
 function playerctl.next(width, height, daemon)
     local playerctl_daemon = daemon or general_playerctl_daemon
 
-    return wibox.widget
-    {
+    return wibox.widget {
         widget = tbwidget.normal,
         forced_width = width or dpi(50),
         forced_height = height or dpi(50),
@@ -356,8 +404,7 @@ end
 function playerctl.loop(width, height, daemon)
     local playerctl_daemon = daemon or general_playerctl_daemon
 
-    local widget = wibox.widget
-    {
+    local widget = wibox.widget {
         widget = tbwidget.state,
         forced_width = width or dpi(50),
         forced_height = height or dpi(50),
@@ -384,8 +431,7 @@ end
 function playerctl.shuffle(width, height, daemon)
     local playerctl_daemon = daemon or general_playerctl_daemon
 
-    local widget = wibox.widget
-    {
+    local widget = wibox.widget {
         widget = tbwidget.state,
         forced_width = width or dpi(50),
         forced_height = height or dpi(50),
@@ -412,8 +458,7 @@ end
 function playerctl.previous_play_next(daemon)
     local playerctl_daemon = daemon or general_playerctl_daemon
 
-    return wibox.widget
-    {
+    return wibox.widget {
         widget = wibox.container.place,
         halign = "center",
         {
@@ -421,7 +466,7 @@ function playerctl.previous_play_next(daemon)
             spacing = dpi(15),
             playerctl.previous(nil, nil, playerctl_daemon),
             playerctl.play(nil, nil, playerctl_daemon),
-            playerctl.next(nil, nil, playerctl_daemon),
+            playerctl.next(nil, nil, playerctl_daemon)
         }
     }
 end
@@ -429,8 +474,7 @@ end
 function playerctl.loop_previous_play_next_shuffle(daemon)
     local playerctl_daemon = daemon or general_playerctl_daemon
 
-    return wibox.widget
-    {
+    return wibox.widget {
         widget = wibox.container.place,
         halign = "center",
         {
@@ -448,8 +492,7 @@ end
 function playerctl.slider(width, daemon)
     local playerctl_daemon = daemon or general_playerctl_daemon
 
-    local widget = swidget
-    {
+    local widget = swidget {
         forced_width = width or dpi(200),
         value = 0,
         maximum = 1,
@@ -459,7 +502,7 @@ function playerctl.slider(width, daemon)
         bar_active_color = beautiful.colors.on_background,
         handle_width = dpi(2),
         handle_color = beautiful.colors.surface,
-        handle_shape = gshape.circle,
+        handle_shape = gshape.circle
     }
 
     widget:connect_signal("mouse::enter", function()
@@ -520,8 +563,7 @@ end
 function playerctl.position(daemon)
     local playerctl_daemon = daemon or general_playerctl_daemon
 
-    local widget = wibox.widget
-    {
+    local widget = wibox.widget {
         widget = twidget,
         size = 12,
         color = beautiful.colors.on_background,
@@ -529,16 +571,16 @@ function playerctl.position(daemon)
     }
 
     playerctl_daemon:connect_signal("position", function(self, position, length)
-        local hours = string.format("%02.f", math.floor(position/3600));
-        local mins = string.format("%02.f", math.floor(position/60 - (hours*60)));
-        local secs = string.format("%02.f", math.floor(position - hours*3600 - mins *60));
+        local hours = string.format("%02.f", math.floor(position / 3600));
+        local mins = string.format("%02.f", math.floor(position / 60 - (hours * 60)));
+        local secs = string.format("%02.f", math.floor(position - hours * 3600 - mins * 60));
         widget.text = mins .. ":" .. secs
     end)
 
     playerctl_daemon:connect_signal("seeked", function(self, position, player_name)
-        local hours = string.format("%02.f", math.floor(position/3600));
-        local mins = string.format("%02.f", math.floor(position/60 - (hours*60)));
-        local secs = string.format("%02.f", math.floor(position - hours*3600 - mins *60));
+        local hours = string.format("%02.f", math.floor(position / 3600));
+        local mins = string.format("%02.f", math.floor(position / 60 - (hours * 60)));
+        local secs = string.format("%02.f", math.floor(position - hours * 3600 - mins * 60));
         widget.text = mins .. ":" .. secs
     end)
 
@@ -556,8 +598,7 @@ end
 function playerctl.length(daemon)
     local playerctl_daemon = daemon or general_playerctl_daemon
 
-    local widget = wibox.widget
-    {
+    local widget = wibox.widget {
         widget = twidget,
         size = 12,
         color = beautiful.colors.on_background,
@@ -566,9 +607,9 @@ function playerctl.length(daemon)
 
     playerctl_daemon:connect_signal("position", function(self, position, length)
         if length > 0 then
-            local hours = string.format("%02.f", math.floor(length/3600));
-            local mins = string.format("%02.f", math.floor(length/60 - (hours*60)));
-            local secs = string.format("%02.f", math.floor(length - hours*3600 - mins *60));
+            local hours = string.format("%02.f", math.floor(length / 3600));
+            local mins = string.format("%02.f", math.floor(length / 60 - (hours * 60)));
+            local secs = string.format("%02.f", math.floor(length - hours * 3600 - mins * 60));
             widget.text = mins .. ":" .. secs
         else
             widget.text = "00:00"
@@ -589,15 +630,14 @@ end
 function playerctl.position_slider_length(slider_width, daemon)
     local playerctl_daemon = daemon or general_playerctl_daemon
 
-    return wibox.widget
-    {
+    return wibox.widget {
         layout = wibox.layout.fixed.horizontal,
         spacing = dpi(15),
         playerctl.position(playerctl_daemon),
         {
             widget = wibox.container.place,
             valign = "center",
-            playerctl.slider(slider_width, playerctl_daemon),
+            playerctl.slider(slider_width, playerctl_daemon)
         },
         playerctl.length(playerctl_daemon)
     }
@@ -606,16 +646,14 @@ end
 function playerctl.volume(width, daemon)
     local playerctl_daemon = daemon or general_playerctl_daemon
 
-    local icon = wibox.widget
-    {
+    local icon = wibox.widget {
         widget = twidget,
         icon = beautiful.icons.volume.normal,
         size = 12,
         color = accent_color
     }
 
-    local widget = swidget
-    {
+    local widget = swidget {
         forced_width = width or dpi(50),
         value = 100,
         maximum = 100,
@@ -625,7 +663,7 @@ function playerctl.volume(width, daemon)
         bar_active_color = beautiful.colors.on_background,
         handle_width = dpi(2),
         handle_color = beautiful.colors.surface,
-        handle_shape = gshape.circle,
+        handle_shape = gshape.circle
     }
 
     widget:connect_signal("mouse::enter", function()
@@ -673,8 +711,7 @@ function playerctl.volume(width, daemon)
         -- widget:disconnect_signal("property::value", set_position)
     end)
 
-    return wibox.widget
-    {
+    return wibox.widget {
         layout = wibox.layout.fixed.horizontal,
         spacing = dpi(15),
         icon,

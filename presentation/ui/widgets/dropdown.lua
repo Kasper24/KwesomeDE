@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local gtable = require("gears.table")
 local wibox = require("wibox")
 local wmenu = require("presentation.ui.widgets.menu")
@@ -11,15 +10,16 @@ local beautiful = require("beautiful")
 local setmetatable = setmetatable
 local pairs = pairs
 
-local dropdown = { mt = {} }
+local dropdown = {
+    mt = {}
+}
 
 function dropdown:remove(index)
     self.menu:remove(index)
 end
 
 function dropdown:add(key, value)
-    return self.menu:add(wmenu.button
-    {
+    return self.menu:add(wmenu.button {
         text = key,
         on_press = function()
             self.on_value_selected(value)
@@ -50,8 +50,7 @@ local function new(args)
 
     local menu = wmenu({}, args.menu_width)
 
-    dropdown_button = wibox.widget
-    {
+    dropdown_button = wibox.widget {
         widget = tbwidget.state,
         halign = "left",
         size = 12,
@@ -66,8 +65,7 @@ local function new(args)
     gtable.crush(dropdown_button, args)
 
     for key, value in pairs(args.values) do
-        menu:add(wmenu.button
-        {
+        menu:add(wmenu.button {
             text = key,
             on_press = function()
                 args.on_value_selected(value)

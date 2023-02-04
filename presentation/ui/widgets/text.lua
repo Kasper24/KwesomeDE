@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local gtable = require("gears.table")
 local gstring = require("gears.string")
 local wibox = require("wibox")
@@ -12,43 +11,39 @@ local setmetatable = setmetatable
 local tostring = tostring
 local string = string
 
-local text = { mt = {} }
-
-local properties =
-{
-	"bold", "italic", "size",
-	"color", "text", "icon"
+local text = {
+    mt = {}
 }
 
+local properties = {"bold", "italic", "size", "color", "text", "icon"}
+
 local function generate_markup(self)
-	local bold_start = ""
-	local bold_end = ""
-	local italic_start = ""
-	local italic_end = ""
+    local bold_start = ""
+    local bold_end = ""
+    local italic_start = ""
+    local italic_end = ""
 
-	if self._private.bold == true then
-		bold_start = "<b>"
-		bold_end = "</b>"
-	end
-	if self._private.italic == true then
-		italic_start = "<i>"
-		italic_end = "</i>"
-	end
+    if self._private.bold == true then
+        bold_start = "<b>"
+        bold_end = "</b>"
+    end
+    if self._private.italic == true then
+        italic_start = "<i>"
+        italic_end = "</i>"
+    end
 
-	local font = self._private.font or beautiful.font_name
-	local size = self._private.size or 20
-	local color = self._private.color or beautiful.colors.on_background
-	local text = self._private.text or ""
+    local font = self._private.font or beautiful.font_name
+    local size = self._private.size or 20
+    local color = self._private.color or beautiful.colors.on_background
+    local text = self._private.text or ""
 
-	-- Need to unescape in a case the text was escaped by other code before
-	text = gstring.xml_unescape(tostring(text))
-	text = gstring.xml_escape(tostring(text))
+    -- Need to unescape in a case the text was escaped by other code before
+    text = gstring.xml_unescape(tostring(text))
+    text = gstring.xml_escape(tostring(text))
 
-	size = math.ceil(size * 1024)
-	self.markup = string.format("<span font_family='%s' font_size='%s'>", font, size) ..
-		bold_start .. italic_start ..
-		helpers.ui.colorize_text(text, color) ..
-		italic_end .. bold_end .. "</span>"
+    size = math.ceil(size * 1024)
+    self.markup = string.format("<span font_family='%s' font_size='%s'>", font, size) .. bold_start .. italic_start ..
+                      helpers.ui.colorize_text(text, color) .. italic_end .. bold_end .. "</span>"
 end
 
 local function build_properties(prototype, prop_names)
@@ -58,7 +53,7 @@ local function build_properties(prototype, prop_names)
                 if self._private[prop] ~= value then
                     self._private[prop] = value
                     self:emit_signal("widget::redraw_needed")
-                    self:emit_signal("property::"..prop, value)
+                    self:emit_signal("property::" .. prop, value)
                 end
                 return self
             end
@@ -72,40 +67,40 @@ local function build_properties(prototype, prop_names)
 end
 
 function text:set_icon(icon)
-	local wp = self._private
+    local wp = self._private
 
-	wp.icon = icon
-	wp.font = wp.font or icon.font
-	wp.size = wp.size or icon.size or 20
-	wp.color = wp.color or icon.color
-	wp.text = icon.icon
+    wp.icon = icon
+    wp.font = wp.font or icon.font
+    wp.size = wp.size or icon.size or 20
+    wp.color = wp.color or icon.color
+    wp.text = icon.icon
 
-	self:emit_signal("widget::redraw_needed")
-	self:emit_signal("property::icon", icon)
+    self:emit_signal("widget::redraw_needed")
+    self:emit_signal("property::icon", icon)
 end
 
 local function new(hot_reload)
-	local widget = wibox.widget.textbox()
-	gtable.crush(widget, text, true)
+    local widget = wibox.widget.textbox()
+    gtable.crush(widget, text, true)
 
-	local wp = widget._private
+    local wp = widget._private
 
-	-- Setup default values
-	wp.bold = false
-	wp.italic = false
+    -- Setup default values
+    wp.bold = false
+    wp.italic = false
 
-	widget:connect_signal("widget::redraw_needed", function()
-		generate_markup(widget)
-	end)
+    widget:connect_signal("widget::redraw_needed", function()
+        generate_markup(widget)
+    end)
 
-	if hot_reload ~= false then
-		awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
-			wp.color = old_colorscheme_to_new_map[wp.color]
-			generate_markup(widget)
-		end)
-	end
+    if hot_reload ~= false then
+        awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+            wp.color = old_colorscheme_to_new_map[wp.color]
+            generate_markup(widget)
+        end)
+    end
 
-	return widget
+    return widget
 end
 
 function text.mt:__call(...)

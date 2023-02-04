@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
@@ -12,13 +11,14 @@ local beautiful = require("beautiful")
 local desktop_daemon = require("daemons.system.desktop")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
-local capi = { mousegrabber = mousegrabber }
+local capi = {
+    mousegrabber = mousegrabber
+}
 
-local desktop = { }
+local desktop = {}
 local instance = nil
 
-local mimetype_to_image_lookup_table =
-{
+local mimetype_to_image_lookup_table = {
     -- Image
     ["application/pdf"] = "lximage", -- AI
     ["image/x-ms-bmp"] = "lximage", -- BMP
@@ -102,7 +102,7 @@ local mimetype_to_image_lookup_table =
     ["application/octet-stream"] = "ao-app", -- Unrecognized Binary
 
     -- Folder
-    ["folder"] = "folder", -- Folder
+    ["folder"] = "folder" -- Folder
 }
 
 local function on_drag_start(button, widget)
@@ -110,7 +110,10 @@ local function on_drag_start(button, widget)
 
     widget.dragging = true
 
-    widget.pos_before_move = { x = widget.x, y = widget.y }
+    widget.pos_before_move = {
+        x = widget.x,
+        y = widget.y
+    }
     widget.ontop = true
 
     capi.mousegrabber.run(function(mouse)
@@ -138,50 +141,43 @@ local function on_drag_end(widget, path)
 end
 
 local function desktop_icon(self, pos, path, name, mimetype)
-    local menu = widgets.menu
-    {
-        widgets.menu.button
-        {
-            icon = beautiful.icons.launcher,
-            text = "Launch",
-            on_press = function() awful.spawn("xdg-open " .. path, false) end
-        },
-        widgets.menu.button
-        {
-            icon = beautiful.icons.trash,
-            text = "Move to Trash",
-            on_press = function() awful.spawn("trash-put " .. path, false) end
-        },
-        widgets.menu.button
-        {
-            icon = beautiful.icons.xmark_fw,
-            text = "Delete",
-            on_press = function()
-                local file = helpers.file.new_for_path(path)
-                file:delete()
-            end
-        }
-    }
+    local menu = widgets.menu {widgets.menu.button {
+        icon = beautiful.icons.launcher,
+        text = "Launch",
+        on_press = function()
+            awful.spawn("xdg-open " .. path, false)
+        end
+    }, widgets.menu.button {
+        icon = beautiful.icons.trash,
+        text = "Move to Trash",
+        on_press = function()
+            awful.spawn("trash-put " .. path, false)
+        end
+    }, widgets.menu.button {
+        icon = beautiful.icons.xmark_fw,
+        text = "Delete",
+        on_press = function()
+            local file = helpers.file.new_for_path(path)
+            file:delete()
+        end
+    }}
 
     local widget
-    widget = awful.popup
-    {
+    widget = awful.popup {
         type = "desktop",
         visible = true,
         ontop = false,
         x = pos.x,
         y = pos.y,
         bg = beautiful.colors.transparent,
-        widget = widgets.button.elevated.state
-        {
+        widget = widgets.button.elevated.state {
             normal_bg = beautiful.colors.transparent,
             forced_width = dpi(100),
             forced_height = dpi(100),
             on_press = function(self)
                 helpers.input.single_double_tap(function()
                     on_drag_start(self, widget)
-                end,
-                function()
+                end, function()
                     awful.spawn("xdg-open " .. path, false)
                 end)
             end,
@@ -192,8 +188,7 @@ local function desktop_icon(self, pos, path, name, mimetype)
             on_secondary_press = function()
                 menu:toggle{}
             end,
-            child = wibox.widget
-            {
+            child = wibox.widget {
                 layout = wibox.layout.fixed.vertical,
                 spacing = dpi(15),
                 {
@@ -202,13 +197,14 @@ local function desktop_icon(self, pos, path, name, mimetype)
                     forced_width = dpi(40),
                     halign = "center",
                     clip_shape = helpers.ui.rrect(beautiful.border_radius),
-                    image = helpers.icon_theme:get_icon_path(mimetype_to_image_lookup_table[mimetype] or "org.gnome.gedit"),
+                    image = helpers.icon_theme:get_icon_path(
+                        mimetype_to_image_lookup_table[mimetype] or "org.gnome.gedit")
                 },
                 {
                     widget = widgets.text,
                     size = 15,
                     halign = "center",
-                    text = name,
+                    text = name
                 }
             }
         }
@@ -223,7 +219,7 @@ local function desktop_icon(self, pos, path, name, mimetype)
 end
 
 local function new()
-    local ret = gobject{}
+    local ret = gobject {}
     gtable.crush(ret, desktop, true)
 
     desktop_daemon:connect_signal("new", desktop_icon)

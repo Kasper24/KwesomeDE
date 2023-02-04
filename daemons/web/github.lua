@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
@@ -10,7 +9,7 @@ local helpers = require("helpers")
 local string = string
 local ipairs = ipairs
 
-local github = { }
+local github = {}
 local instance = nil
 
 local UPDATE_INTERVAL = 60 * 3 -- 5 mins
@@ -33,10 +32,7 @@ local function github_events(self)
 
     local old_data = nil
 
-    helpers.filesystem.remote_watch(
-        DATA_PATH,
-        string.format(link, self._private.username),
-        UPDATE_INTERVAL,
+    helpers.filesystem.remote_watch(DATA_PATH, string.format(link, self._private.username), UPDATE_INTERVAL,
         function(content)
             local data = helpers.json.decode(content)
 
@@ -78,15 +74,13 @@ local function github_events(self)
                     end
                 end)
             end
-        end,
-        function(old_content)
+        end, function(old_content)
             local data = helpers.json.decode(old_content) or {}
             old_data = {}
             for _, event in ipairs(data) do
                 old_data[event.id] = event.id
             end
-        end
-    )
+        end)
 end
 
 local function github_prs(self)
@@ -97,56 +91,50 @@ local function github_prs(self)
     local link = "https://api.github.com/search/issues?q=author%3A" .. self._private.username .. "+type%3Apr"
     local old_data = nil
 
-    helpers.filesystem.remote_watch(
-        DATA_PATH,
-        link,
-        UPDATE_INTERVAL,
-        function(content)
-            local data = helpers.json.decode(content)
-            if data == nil then
-                self:emit_signal("prs::error")
-                return
-            end
-
-            for index, pr in ipairs(data.items) do
-                if old_data[pr.id] == nil then
-                    self:emit_signal("new_pr", pr)
-                end
-
-                local is_downloading = false
-                local path_to_avatar = avatars_path .. pr.user.id
-                local file = helpers.file.new_for_path(path_to_avatar)
-                file:exists(function(error, exists)
-                    if error == nil then
-                        if exists == false then
-                            is_downloading = true
-
-                            local remote_file = helpers.file.new_for_uri(pr.user.avatar_url)
-                            remote_file:read(function(error, content)
-                                if error == nil then
-                                    file:write(content, function(error)
-                                        is_downloading = false
-                                        if index == #data.items then
-                                            self:emit_signal("prs", data.items, avatars_path)
-                                        end
-                                    end)
-                                end
-                            end)
-                        elseif index == #data.items and is_downloading == false then
-                            self:emit_signal("prs", data.items, avatars_path)
-                        end
-                    end
-                end)
-            end
-        end,
-        function(old_content)
-            local data = helpers.json.decode(old_content) or {}
-            old_data = {}
-            for _, pr in ipairs(data.items) do
-                old_data[pr.id] = pr.id
-            end
+    helpers.filesystem.remote_watch(DATA_PATH, link, UPDATE_INTERVAL, function(content)
+        local data = helpers.json.decode(content)
+        if data == nil then
+            self:emit_signal("prs::error")
+            return
         end
-    )
+
+        for index, pr in ipairs(data.items) do
+            if old_data[pr.id] == nil then
+                self:emit_signal("new_pr", pr)
+            end
+
+            local is_downloading = false
+            local path_to_avatar = avatars_path .. pr.user.id
+            local file = helpers.file.new_for_path(path_to_avatar)
+            file:exists(function(error, exists)
+                if error == nil then
+                    if exists == false then
+                        is_downloading = true
+
+                        local remote_file = helpers.file.new_for_uri(pr.user.avatar_url)
+                        remote_file:read(function(error, content)
+                            if error == nil then
+                                file:write(content, function(error)
+                                    is_downloading = false
+                                    if index == #data.items then
+                                        self:emit_signal("prs", data.items, avatars_path)
+                                    end
+                                end)
+                            end
+                        end)
+                    elseif index == #data.items and is_downloading == false then
+                        self:emit_signal("prs", data.items, avatars_path)
+                    end
+                end
+            end)
+        end
+    end, function(old_content)
+        local data = helpers.json.decode(old_content) or {}
+        old_data = {}
+        for _, pr in ipairs(data.items) do
+            old_data[pr.id] = pr.id
+        end
+    end)
 end
 
 local function github_contributions(self)
@@ -154,13 +142,10 @@ local function github_contributions(self)
     local path = PATH .. "contributions/"
     local DATA_PATH = path .. "data.json"
 
-    helpers.filesystem.remote_watch(
-        DATA_PATH,
-        string.format(link, self._private.username),
-        UPDATE_INTERVAL,
+    helpers.filesystem.remote_watch(DATA_PATH, string.format(link, self._private.username), UPDATE_INTERVAL,
         function(content)
             self:emit_signal("contributions", content)
-    end)
+        end)
 end
 
 function github:refresh()
@@ -170,7 +155,7 @@ function github:refresh()
 end
 
 local function new()
-    local ret = gobject{}
+    local ret = gobject {}
     gtable.crush(ret, github, true)
 
     ret._private = {}
