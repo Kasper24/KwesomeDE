@@ -31,7 +31,6 @@ local instance = nil
 local COLORSCHEME_DATA_PATH = helpers.filesystem.get_cache_dir("colorschemes") .. "data.json"
 local WALLPAPERS_PATH = helpers.filesystem.get_awesome_config_dir("presentation/assets/wallpapers")
 local GTK_THEME_PATH = helpers.filesystem.get_awesome_config_dir("config/FlatColor")
-local GTK_3_CONFIG_PATH = helpers.filesystem.get_config_dir("gtk-3.0") .. "settings.ini"
 local INSTALLED_GTK_THEME_PATH = os.getenv("HOME") .. "/.local/share/themes/"
 local BASE_TEMPLATES_PATH = helpers.filesystem.get_awesome_config_dir("config/templates")
 local BACKGROUND_PATH = helpers.filesystem.get_cache_dir("") .. "wallpaper"
