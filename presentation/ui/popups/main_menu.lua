@@ -5,7 +5,7 @@
 local awful = require("awful")
 local widgets = require("presentation.ui.widgets")
 local action_panel = require("presentation.ui.panels.action")
-local message_panel = require("presentation.ui.panels.message")
+local notification_panel = require("presentation.ui.panels.notification")
 local info_panel = require("presentation.ui.panels.info")
 local app_launcher = require("presentation.ui.popups.app_launcher")
 local screenshot_app = require("presentation.ui.apps.screenshot")
@@ -128,9 +128,9 @@ local function widget()
         end
     }, widgets.menu.button {
         icon = beautiful.icons.message,
-        text = "Message Panel",
+        text = "Notification Panel",
         on_press = function()
-            message_panel:toggle()
+            notification_panel:toggle()
         end
     }, widgets.menu.button {
         icon = beautiful.icons.calendar,

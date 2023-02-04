@@ -6,8 +6,8 @@ local wibox = require("wibox")
 local widgets = require("presentation.ui.widgets")
 local screenshot_popup = require("presentation.ui.apps.screenshot")
 local record_popup = require("presentation.ui.apps.record")
-local wifi_popup = require("presentation.ui.applets.wifi")
-local bluetooth_popup = require("presentation.ui.applets.bluetooth")
+local wifi_popup = require("presentation.ui.panels.action.dashboard.wifi")
+local bluetooth_popup = require("presentation.ui.panels.action.dashboard.bluetooth")
 local beautiful = require("beautiful")
 local radio_daemon = require("daemons.hardware.radio")
 local network_daemon = require("daemons.hardware.network")
@@ -21,7 +21,7 @@ local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 
-local system_control = {
+local dashboard = {
     mt = {}
 }
 
@@ -329,8 +329,8 @@ local function new(action_panel)
     }
 end
 
-function system_control.mt:__call(action_panel)
+function dashboard.mt:__call(action_panel)
     return new(action_panel)
 end
 
-return setmetatable(system_control, system_control.mt)
+return setmetatable(dashboard, dashboard.mt)

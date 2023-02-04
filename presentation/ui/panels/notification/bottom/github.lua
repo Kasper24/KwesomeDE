@@ -6,19 +6,16 @@ local awful = require("awful")
 local wibox = require("wibox")
 local widgets = require("presentation.ui.widgets")
 local beautiful = require("beautiful")
-local email_daemon = require("daemons.web.email")
 local github_daemon = require("daemons.web.github")
-local gitlab_daemon = require("daemons.web.gitlab")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local collectgarbage = collectgarbage
 local setmetatable = setmetatable
-local tostring = tostring
 local string = string
 local ipairs = ipairs
 local os = os
 
-local email_github_gitlab = {
+local github = {
     mt = {}
 }
 
@@ -115,83 +112,6 @@ local function widget()
     }
 
     return spinning_circle, missing_credentials_text, error_icon, scrollbox
-end
-
-local function email()
-    local spinning_circle, _, error_icon, scrollbox = widget()
-
-    local widget = wibox.widget {
-        layout = wibox.layout.stack,
-        top_only = true,
-        spinning_circle,
-        error_icon,
-        scrollbox
-    }
-
-    email_daemon:connect_signal("error", function()
-        spinning_circle.children[1]:abort()
-        widget:raise_widget(error_icon)
-    end)
-
-    email_daemon:connect_signal("emails", function(self, emails)
-        spinning_circle.children[1]:abort()
-        scrollbox:reset()
-        collectgarbage("collect")
-        widget:raise_widget(scrollbox)
-
-        for index, email in ipairs(emails) do
-            local widget = wibox.widget {
-                widget = wibox.container.constraint,
-                height = dpi(500),
-                {
-                    widget = wibox.container.place,
-                    halign = "left",
-                    {
-                        widget = widgets.button.elevated.normal,
-                        on_release = function()
-                            email_daemon:open(email)
-                        end,
-                        child = wibox.widget {
-                            layout = wibox.layout.fixed.vertical,
-                            spacing = dpi(5),
-                            {
-                                widget = widgets.text,
-                                halign = "left",
-                                size = 12,
-                                text = "From: " .. email.author.name
-                            },
-                            {
-                                widget = widgets.text,
-                                halign = "left",
-                                size = 12,
-                                text = "Date: " .. email.modified
-                            },
-                            {
-                                widget = widgets.text,
-                                halign = "left",
-                                size = 12,
-                                text = "Subject: " .. tostring(email.title)
-                            },
-                            {
-                                widget = widgets.text,
-                                halign = "left",
-                                size = 12,
-                                text = "Summary: " .. tostring(email.summary)
-                            }
-                        }
-                    }
-                }
-            }
-            scrollbox:add(widget)
-
-            -- Make it scroll all the way down
-            if index == #emails then
-                scrollbox:add(widgets.spacer.vertical(20))
-            end
-        end
-    end)
-
-    return widget
 end
 
 local function github_activity()
@@ -418,7 +338,7 @@ local function github_pr()
     return widget
 end
 
-local function github()
+local function new()
     local accent_color = beautiful.colors.random_accent_color()
 
     local activity = github_activity()
@@ -482,231 +402,8 @@ local function github()
     }
 end
 
-local function gitlab()
-    local spinning_circle, missing_credentials_text, error_icon, scrollbox = widget()
-
-    local widget = wibox.widget {
-        layout = wibox.layout.stack,
-        top_only = true,
-        spinning_circle,
-        missing_credentials_text,
-        error_icon,
-        scrollbox
-    }
-
-    gitlab_daemon:connect_signal("error", function()
-        spinning_circle.children[1]:abort()
-        widget:raise_widget(error_icon)
-    end)
-
-    gitlab_daemon:connect_signal("missing_credentials", function()
-        spinning_circle.children[1]:abort()
-        widget:raise_widget(missing_credentials_text)
-    end)
-
-    gitlab_daemon:connect_signal("update", function(self, prs, path_to_avatars)
-        spinning_circle.children[1]:abort()
-        scrollbox:reset()
-        collectgarbage("collect")
-        widget:raise_widget(scrollbox)
-
-        for index, pr in ipairs(prs) do
-            local avatar = wibox.widget {
-                widget = widgets.button.elevated.normal,
-                forced_width = dpi(60),
-                forced_height = dpi(60),
-                on_release = function()
-                    awful.spawn("xdg-open " .. pr.author.web_url, false)
-                end,
-                child = wibox.widget {
-                    widget = wibox.widget.imagebox,
-                    clip_shape = helpers.ui.rrect(beautiful.border_radius),
-                    image = path_to_avatars .. pr.author.id
-                }
-            }
-
-            local title = wibox.widget {
-                widget = widgets.text,
-                size = 12,
-                bold = true,
-                text = pr.title
-            }
-
-            local from_branch_to_branch = wibox.widget {
-                widget = widgets.text,
-                size = 12,
-                text = pr.source_branch .. " -> " .. pr.target_branch
-            }
-
-            local name_time = wibox.widget {
-                layout = wibox.layout.fixed.horizontal,
-                spacing = dpi(10),
-                {
-                    widget = widgets.text,
-                    size = 12,
-                    text = pr.author.name
-                },
-                {
-                    widget = widgets.text,
-                    size = 12,
-                    text = helpers.string.to_time_ago(os.difftime(os.time(os.date("!*t")),
-                        helpers.string.parse_date(pr.created_at)))
-                }
-            }
-
-            local approves = wibox.widget {
-                layout = wibox.layout.fixed.horizontal,
-                spacing = dpi(10),
-                {
-                    widget = widgets.text,
-                    icon = beautiful.icons.check,
-                    size = 15
-                },
-                {
-                    widget = widgets.text,
-                    size = 12,
-                    text = pr.upvotes
-                }
-            }
-
-            local comments = wibox.widget {
-                layout = wibox.layout.fixed.horizontal,
-                spacing = dpi(10),
-                {
-                    widget = widgets.text,
-                    icon = beautiful.icons.message,
-                    size = 15
-                },
-                {
-                    widget = widgets.text,
-                    size = 12,
-                    text = pr.user_notes_count
-                }
-            }
-
-            local button = wibox.widget {
-                widget = widgets.button.elevated.normal,
-                on_release = function()
-                    awful.spawn("xdg-open " .. pr.web_url, false)
-                end,
-                child = wibox.widget {
-                    layout = wibox.layout.fixed.horizontal,
-                    {
-                        layout = wibox.layout.flex.vertical,
-                        forced_width = dpi(360),
-                        title,
-                        from_branch_to_branch,
-                        name_time
-                    },
-                    {
-                        layout = wibox.layout.flex.vertical,
-                        approves,
-                        comments
-                    }
-                }
-            }
-
-            local widget = wibox.widget {
-                layout = wibox.layout.fixed.horizontal,
-                forced_width = dpi(1000),
-                spacing = dpi(5),
-                avatar,
-                button
-            }
-
-            scrollbox:add(widget)
-
-            -- Make it scroll all the way down
-            if index == #prs then
-                scrollbox:add(widgets.spacer.vertical(20))
-            end
-        end
-    end)
-
-    return widget
-end
-
-local function new()
-    local accent_color = beautiful.colors.random_accent_color()
-
-    local email = email()
-    local github = github()
-    local gitlab = gitlab()
-
-    local content = wibox.widget {
-        layout = wibox.layout.stack,
-        top_only = true,
-        email,
-        github,
-        gitlab
-    }
-
-    local email_button = nil
-    local github_button = nil
-    local gitlab_button = nil
-
-    email_button = wibox.widget {
-        widget = widgets.button.text.state,
-        on_by_default = true,
-        size = 15,
-        on_normal_bg = accent_color,
-        text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = beautiful.colors.on_accent,
-        text = "Email",
-        on_release = function()
-            email_button:turn_on()
-            github_button:turn_off()
-            gitlab_button:turn_off()
-            content:raise_widget(email)
-        end
-    }
-
-    github_button = wibox.widget {
-        widget = widgets.button.text.state,
-        size = 15,
-        on_normal_bg = accent_color,
-        text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = beautiful.colors.on_accent,
-        text = "Github",
-        on_release = function()
-            email_button:turn_off()
-            github_button:turn_on()
-            gitlab_button:turn_off()
-            content:raise_widget(github)
-        end
-    }
-
-    gitlab_button = wibox.widget {
-        widget = widgets.button.text.state,
-        size = 15,
-        on_normal_bg = accent_color,
-        text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = beautiful.colors.on_accent,
-        text = "Gitlab",
-        on_release = function()
-            email_button:turn_off()
-            github_button:turn_off()
-            gitlab_button:turn_on()
-            content:raise_widget(gitlab)
-        end
-    }
-
-    return wibox.widget {
-        layout = wibox.layout.fixed.vertical,
-        spacing = dpi(10),
-        {
-            layout = wibox.layout.flex.horizontal,
-            spacing = dpi(10),
-            email_button,
-            github_button,
-            gitlab_button
-        },
-        content
-    }
-end
-
-function email_github_gitlab.mt:__call()
+function github.mt:__call()
     return new()
 end
 
-return setmetatable(email_github_gitlab, email_github_gitlab.mt)
+return setmetatable(github, github.mt)

@@ -8,7 +8,7 @@ local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 
-local playerctl = {
+local media = {
     mt = {}
 }
 
@@ -49,8 +49,8 @@ local function new()
     }
 end
 
-function playerctl.mt:__call()
+function media.mt:__call()
     return new()
 end
 
-return setmetatable(playerctl, playerctl.mt)
+return setmetatable(media, media.mt)

@@ -4,10 +4,10 @@
 -------------------------------------------
 local wibox = require("wibox")
 local widgets = require("presentation.ui.widgets")
-local cpu_popup = require("presentation.ui.applets.cpu")
-local ram_popup = require("presentation.ui.applets.ram")
-local disk_popup = require("presentation.ui.applets.disk")
-local audio_popup = require("presentation.ui.applets.audio")
+local cpu_popup = require("presentation.ui.panels.action.info.cpu")
+local ram_popup = require("presentation.ui.panels.action.info.ram")
+local disk_popup = require("presentation.ui.panels.action.info.disk")
+local audio_popup = require("presentation.ui.panels.action.info.audio")
 local beautiful = require("beautiful")
 local cpu_daemon = require("daemons.hardware.cpu")
 local ram_daemon = require("daemons.hardware.ram")
@@ -15,13 +15,12 @@ local disk_daemon = require("daemons.hardware.disk")
 local temperature_daemon = require("daemons.hardware.temperature")
 local pactl_daemon = require("daemons.hardware.pactl")
 local brightness_daemon = require("daemons.system.brightness")
-local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 local tostring = tostring
 local ipairs = ipairs
 
-local system_info = {
+local info = {
     mt = {}
 }
 
@@ -234,8 +233,8 @@ local function new(action_panel)
     }
 end
 
-function system_info.mt:__call(action_panel)
+function info.mt:__call(action_panel)
     return new(action_panel)
 end
 
-return setmetatable(system_info, system_info.mt)
+return setmetatable(info, info.mt)

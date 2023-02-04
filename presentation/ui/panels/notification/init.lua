@@ -13,12 +13,12 @@ local capi = {
     screen = screen
 }
 
-local message_panel = {}
+local notification_panel = {}
 local instance = nil
 
 local path = ...
-local notifications = require(path .. ".notifications")
-local email_github_gitlab = require(path .. ".email_github_gitlab")
+local top = require(path .. ".top")
+local bottom = require(path .. ".bottom")
 
 local function separator()
     return wibox.widget {
@@ -31,7 +31,7 @@ local function separator()
     }
 end
 
-function message_panel:show()
+function notification_panel:show()
     self.widget.screen = awful.screen.focused()
     self.widget.minimum_height = awful.screen.focused().workarea.height
     self.widget.maximum_height = awful.screen.focused().workarea.height
@@ -39,12 +39,12 @@ function message_panel:show()
     self:emit_signal("visibility", true)
 end
 
-function message_panel:hide()
+function notification_panel:hide()
     self.widget.visible = false
     self:emit_signal("visibility", false)
 end
 
-function message_panel:toggle()
+function notification_panel:toggle()
     if self.widget.visible == false then
         self:show()
     else
@@ -54,7 +54,7 @@ end
 
 local function new()
     local ret = gobject {}
-    gtable.crush(ret, message_panel, true)
+    gtable.crush(ret, notification_panel, true)
 
     ret.widget = awful.popup {
         type = "dock",
@@ -79,9 +79,9 @@ local function new()
             {
                 layout = wibox.layout.fixed.vertical,
                 spacing = dpi(30),
-                notifications,
+                top,
                 separator(),
-                email_github_gitlab
+                bottom
             }
         }
     }

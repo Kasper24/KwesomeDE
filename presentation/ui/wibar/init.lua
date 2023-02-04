@@ -8,7 +8,7 @@ local wibox = require("wibox")
 local widgets = require("presentation.ui.widgets")
 local action_panel = require("presentation.ui.panels.action")
 local info_panel = require("presentation.ui.panels.info")
-local message_panel = require("presentation.ui.panels.message")
+local notification_panel = require("presentation.ui.panels.notification")
 local app_launcher = require("presentation.ui.popups.app_launcher")
 local task_preview = require("presentation.ui.popups.task_preview")
 local tag_preview = require("presentation.ui.popups.tag_preview")
@@ -735,12 +735,12 @@ local function messages_button()
             forced_height = dpi(50),
             icon = beautiful.icons.envelope,
             on_release = function()
-                message_panel:toggle()
+                notification_panel:toggle()
             end
         }
     }
 
-    message_panel:connect_signal("visibility", function(self, visibility)
+    notification_panel:connect_signal("visibility", function(self, visibility)
         if visibility == true then
             widget:get_children_by_id("button")[1]:turn_on()
         else

@@ -15,7 +15,7 @@ local setmetatable = setmetatable
 local ipairs = ipairs
 local os = os
 
-local notifications = {
+local top = {
     mt = {}
 }
 
@@ -375,8 +375,8 @@ local function new()
     }
 end
 
-function notifications.mt:__call()
+function top.mt:__call()
     return new()
 end
 
-return setmetatable(notifications, notifications.mt)
+return setmetatable(top, top.mt)
