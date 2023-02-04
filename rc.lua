@@ -10,14 +10,14 @@ local collectgarbage = collectgarbage
 
 collectgarbage("setpause", 110)
 collectgarbage("setstepmul", 1000)
-gtimer({
+gtimer{
 	timeout = 5,
 	autostart = true,
 	call_now = true,
 	callback = function()
 		collectgarbage("collect")
 	end,
-})
+}
 
 if DEBUG ~= true then
 	local persistent_daemon = require("daemons.system.persistent")
