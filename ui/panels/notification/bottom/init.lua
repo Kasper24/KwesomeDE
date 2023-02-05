@@ -36,8 +36,9 @@ local function new()
     local github_button = nil
     local gitlab_button = nil
 
-    email_button = widgets.button.text.state
+    email_button = wibox.widget
     {
+        widget = widgets.button.text.state,
         on_by_default = true,
         size = 15,
         on_normal_bg = accent_color,
@@ -53,8 +54,9 @@ local function new()
         end
     }
 
-    github_button = widgets.button.text.state
+    github_button = wibox.widget
     {
+        widget = widgets.button.text.state,
         size = 15,
         on_normal_bg = accent_color,
         text_normal_bg = beautiful.colors.on_background,
@@ -69,8 +71,9 @@ local function new()
         end
     }
 
-    gitlab_button = widgets.button.text.state
+    gitlab_button = wibox.widget
     {
+        widget = widgets.button.text.state,
         size = 15,
         on_normal_bg = accent_color,
         text_normal_bg = beautiful.colors.on_background,
