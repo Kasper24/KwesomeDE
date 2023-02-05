@@ -8,6 +8,9 @@ local app_launcher = require("ui.popups.app_launcher")
 local beautiful = require("beautiful")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
+local capi = {
+    awesome = awesome
+}
 
 local start = {
     mt = {}
@@ -73,13 +76,13 @@ local function draw(pos, color)
 end
 
 local function new()
-    local on_color = helpers.color.hex_to_rgb(beautiful.colors.random_accent_color())
-    local off_color = helpers.color.hex_to_rgb(beautiful.colors.on_background)
+    local on_color = beautiful.colors.random_accent_color()
+    local off_color = beautiful.colors.on_background
 
     local widget = wibox.widget {
         forced_width = dpi(45),
         forced_height = dpi(60),
-        draw = draw(0, off_color),
+        draw = draw(0, helpers.color.hex_to_rgb(off_color)),
         fit = function(_, _, _, height)
             return height, height
         end,
@@ -97,7 +100,7 @@ local function new()
     local animation = helpers.animation:new{
         pos = {
             height = 0,
-            color = off_color
+            color = helpers.color.hex_to_rgb(off_color)
         },
         easing = helpers.animation.easing.linear,
         duration = 0.2,
@@ -111,14 +114,21 @@ local function new()
         if visibility == true then
             animation:set{
                 height = 1,
-                color = on_color
+                color = helpers.color.hex_to_rgb(on_color)
             }
         else
             animation:set{
                 height = 0,
-                color = off_color
+                color = helpers.color.hex_to_rgb(off_color)
             }
         end
+    end)
+
+    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+        on_color = old_colorscheme_to_new_map[on_color]
+        off_color = old_colorscheme_to_new_map[off_color]
+        local color = animation.pos.height == 1 and on_color or off_color
+        widget.draw = draw(animation.pos.height, helpers.color.hex_to_rgb(color))
     end)
 
     return button

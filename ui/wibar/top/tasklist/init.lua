@@ -13,6 +13,7 @@ local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local ipairs = ipairs
 local capi = {
+    awesome = awesome,
     client = client
 }
 
@@ -219,6 +220,11 @@ local function client_task(favorites_layout, task_list, client)
 
     client.current_task_list = task_list
     client.current_task_widget = widget
+
+    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+        indicator:get_children_by_id("background")[1].bg =
+            old_colorscheme_to_new_map[client.font_icon.color]
+    end)
 end
 
 local function new(s)

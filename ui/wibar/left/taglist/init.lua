@@ -9,6 +9,9 @@ local tag_preview = require("ui.popups.tag_preview")
 local beautiful = require("beautiful")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
+local capi =  {
+    awesome = awesome
+}
 
 local taglist = {
     mt = {}
@@ -72,6 +75,7 @@ local function tag_widget(self, tag, index)
         valign = "center",
         {
             widget = wibox.container.background,
+            id = "background",
             forced_width = dpi(5),
             shape = helpers.ui.rrect(beautiful.border_radius),
             bg = TAGLIST_ICONS[index].color
@@ -91,6 +95,11 @@ local function tag_widget(self, tag, index)
             indicator.children[1].forced_height = pos
         end
     }
+
+    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+        indicator:get_children_by_id("background")[1].bg =
+            old_colorscheme_to_new_map[TAGLIST_ICONS[index].color]
+    end)
 
     self:set_widget(stack)
 end

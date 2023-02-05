@@ -38,6 +38,7 @@ local base = require("wibox.widget.base")
 local shape = require("gears.shape")
 local helpers = require("helpers")
 local capi = {
+    awesome = awesome,
     mouse = mouse,
     mousegrabber = mousegrabber,
     root = root
@@ -587,6 +588,13 @@ local function new(args)
     gtable.crush(ret, slider, true)
 
     ret:connect_signal("button::press", mouse_press)
+
+    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+        local wp = ret._private
+        wp.bar_color = old_colorscheme_to_new_map[wp.bar_color]
+        wp.bar_active_color = old_colorscheme_to_new_map[wp.bar_active_color]
+        wp.handle_color = old_colorscheme_to_new_map[wp.handle_color]
+    end)
 
     return ret
 end
