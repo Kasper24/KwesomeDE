@@ -288,8 +288,8 @@ local function image_tab(self)
         stack:raise_widget(widget)
 
         if self._private.visible and first_time then
-            wallpapers_layout:set_scroll_factor(0)
-            wallpapers_layout:scroll(theme_daemon:get_wallpaper_index())
+            -- wallpapers_layout:set_scroll_factor(0)
+            -- wallpapers_layout:scroll(theme_daemon:get_wallpaper_index())
             first_time = false
         end
     end)
@@ -319,8 +319,8 @@ local function image_tab(self)
 
     self:connect_signal("visible", function(self, visible)
         if visible == true then
-            wallpapers_layout:set_scroll_factor(0)
-            wallpapers_layout:scroll(theme_daemon:get_wallpaper_index())
+            -- wallpapers_layout:set_scroll_factor(0)
+            -- wallpapers_layout:scroll(theme_daemon:get_wallpaper_index())
         end
     end)
 

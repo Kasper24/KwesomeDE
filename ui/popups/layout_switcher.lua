@@ -7,11 +7,9 @@ local gobject = require("gears.object")
 local gtable = require("gears.table")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
+local widgets = require("ui.widgets")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
-local capi = {
-    awesome = awesome
-}
 
 local layout_switcher = {}
 local instance = nil
@@ -67,7 +65,7 @@ local function new()
         }
     }
 
-    ret.widget = awful.popup {
+    ret.widget = widgets.popup {
         placement = awful.placement.centered,
         ontop = true,
         visible = false,
@@ -79,11 +77,6 @@ local function new()
             ret.layout_list
         }
     }
-
-    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
-        ret.bg = old_colorscheme_to_new_map[beautiful.colors.background]
-        ret.widget.bg = old_colorscheme_to_new_map[beautiful.colors.background]
-    end)
 
     return ret
 end

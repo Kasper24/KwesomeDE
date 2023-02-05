@@ -10,9 +10,6 @@ local beautiful = require("beautiful")
 local pactl_daemon = require("daemons.hardware.pactl")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
-local capi = {
-    awesome = awesome
-}
 
 local instance = nil
 
@@ -65,7 +62,7 @@ local function new()
         end
     }
 
-    ret.widget = awful.popup {
+    ret.widget = widgets.popup {
         type = "notification",
         screen = awful.screen.focused(),
         visible = false,
@@ -121,11 +118,6 @@ local function new()
             anim:set(device.volume / 100)
             show = true
         end
-    end)
-
-    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
-        ret.bg = old_colorscheme_to_new_map[beautiful.colors.background]
-        ret.widget.bg = old_colorscheme_to_new_map[beautiful.colors.background]
     end)
 
     return ret

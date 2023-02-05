@@ -11,7 +11,6 @@ local beautiful = require("beautiful")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local capi = {
-    awesome = awesome,
     screen = screen
 }
 
@@ -60,7 +59,7 @@ local function new()
     local ret = gobject {}
     gtable.crush(ret, action_panel, true)
 
-    ret.widget = awful.popup {
+    ret.widget = widgets.popup {
         type = "dock",
         visible = false,
         ontop = true,
@@ -99,11 +98,6 @@ local function new()
             }
         }
     }
-
-    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
-        ret.bg = old_colorscheme_to_new_map[beautiful.colors.background]
-        ret.widget.bg = old_colorscheme_to_new_map[beautiful.colors.background]
-    end)
 
     return ret
 end

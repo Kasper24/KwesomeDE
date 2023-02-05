@@ -10,9 +10,6 @@ local beautiful = require("beautiful")
 local keyboard_layout_daemon = require("daemons.system.keyboard_layout")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
-local capi = {
-    awesome = awesome
-}
 
 local instance = nil
 
@@ -41,7 +38,7 @@ local function new()
         end
     }
 
-    ret.widget = awful.popup {
+    ret.widget = widgets.popup {
         type = "notification",
         screen = awful.screen.focused(),
         visible = false,
@@ -82,11 +79,6 @@ local function new()
             end
         end
         show = true
-    end)
-
-    capi.awesome.connect_signal("colorscheme::changed", function( old_colorscheme_to_new_map)
-        ret.bg = old_colorscheme_to_new_map[beautiful.colors.background]
-        ret.widget.bg = old_colorscheme_to_new_map[beautiful.colors.background]
     end)
 
     return ret

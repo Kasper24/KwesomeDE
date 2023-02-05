@@ -7,13 +7,11 @@ local gobject = require("gears.object")
 local gtable = require("gears.table")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
+local widgets = require("ui.widgets")
 local ram_daemon = require("daemons.hardware.ram")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local math = math
-local capi = {
-    awesome = awesome
-}
 
 local ram = {}
 local instance = nil
@@ -55,7 +53,7 @@ local function new()
                  {"buff_cache " .. getPercentage(buff_cache, total, total_swap), buff_cache}}
         end)
 
-    ret.widget = awful.popup {
+    ret.widget = widgets.popup {
         ontop = true,
         visible = false,
         offset = {
@@ -71,11 +69,6 @@ local function new()
                       beautiful.colors.random_accent_color()}
         }
     }
-
-    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
-        ret.widget.bg = old_colorscheme_to_new_map[beautiful.colors.background]
-        ret.widget.bg = old_colorscheme_to_new_map[beautiful.colors.background]
-    end)
 
     return ret
 end

@@ -11,7 +11,6 @@ local widgets = require("ui.widgets")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local capi = {
-    awesome = awesome,
     client = client
 }
 
@@ -171,7 +170,7 @@ local function new()
     ret._private = {}
     ret._private.sorted_clients = {}
 
-    ret.widget = awful.popup {
+    ret.widget = widgets.popup {
         type = 'dropdown_menu',
         placement = awful.placement.centered,
         visible = false,
@@ -195,11 +194,6 @@ local function new()
 
             ret:show(false)
         end
-    end)
-
-    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
-        ret.bg = old_colorscheme_to_new_map[beautiful.colors.background]
-        ret.widget.bg = old_colorscheme_to_new_map[beautiful.colors.background]
     end)
 
     return ret

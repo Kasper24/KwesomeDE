@@ -15,7 +15,6 @@ local dpi = beautiful.xresources.apply_dpi
 local collectgarbage = collectgarbage
 local os = os
 local capi = {
-    awesome = awesome,
     screen = screen
 }
 
@@ -69,7 +68,7 @@ local function widget(self)
     }
 
     local blur = wibox.widget {
-        widget = wibox.container.background,
+        widget = widgets.background,
         bg = beautiful.colors.background_with_opacity
     }
 

@@ -10,6 +10,9 @@ local helpers = require("helpers")
 local setmetatable = setmetatable
 local tostring = tostring
 local string = string
+local capi = {
+    awesome = awesome
+}
 
 local text = {
     mt = {}
@@ -94,7 +97,7 @@ local function new(hot_reload)
     end)
 
     if hot_reload ~= false then
-        awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+        capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
             wp.color = old_colorscheme_to_new_map[wp.color]
             generate_markup(widget)
         end)

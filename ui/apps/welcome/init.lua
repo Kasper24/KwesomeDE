@@ -85,7 +85,7 @@ end
 
 local function indicator(active)
     return wibox.widget {
-        widget = wibox.container.background,
+        widget = widgets.background,
         forced_width = dpi(20),
         shape = gshape.circle,
         bg = active and accent_color or helpers.color.lighten(beautiful.colors.surface, 0.2)

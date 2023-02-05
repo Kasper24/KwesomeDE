@@ -14,7 +14,6 @@ local dpi = beautiful.xresources.apply_dpi
 local collectgarbage = collectgarbage
 local ipairs = ipairs
 local capi = {
-    awesome = awesome,
     client = client,
     tag = tag
 }
@@ -127,7 +126,7 @@ local function new()
     local ret = gobject {}
     gtable.crush(ret, task_preview)
 
-    ret.widget = awful.popup {
+    ret.widget = widgets.popup {
         type = 'dropdown_menu',
         visible = false,
         ontop = true,
@@ -148,11 +147,6 @@ local function new()
         if c.fullscreen then
             ret:hide()
         end
-    end)
-
-    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
-        ret.bg = old_colorscheme_to_new_map[beautiful.colors.background]
-        ret.widget.bg = old_colorscheme_to_new_map[beautiful.colors.background]
     end)
 
     return ret

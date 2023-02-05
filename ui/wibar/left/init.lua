@@ -5,6 +5,7 @@
 local awful = require("awful")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
+local widgets = require("ui.widgets")
 local dpi = beautiful.xresources.apply_dpi
 local capi = {
     awesome = awesome,
@@ -15,7 +16,7 @@ local path = ...
 local taglist = require(path .. ".taglist")
 
 capi.screen.connect_signal("request::desktop_decoration", function(s)
-    s.left_wibar = awful.popup {
+    s.left_wibar = widgets.popup {
         screen = s,
         type = "dock",
         y = dpi(65),
@@ -32,9 +33,4 @@ capi.screen.connect_signal("request::desktop_decoration", function(s)
     s.left_wibar:struts{
         left = dpi(65)
     }
-
-    capi.awesome.connect_signal("colorscheme::changed", function( old_colorscheme_to_new_map)
-        s.left_wibar.bg = old_colorscheme_to_new_map[beautiful.colors.background]
-        s.left_wibar.widget.bg = old_colorscheme_to_new_map[beautiful.colors.background]
-    end)
 end)

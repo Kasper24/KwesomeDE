@@ -22,17 +22,12 @@ local playerctl = {
 
 local function new()
     local picture = wibox.widget {
-        widget = wibox.container.background,
-        shape = helpers.ui.rrect(beautiful.border_radius),
-        bg = beautiful.colors.surface,
-        {
-            widget = wibox.widget.imagebox,
-            forced_height = dpi(150),
-            forced_width = dpi(150),
-            valign = "center",
-            clip_shape = helpers.ui.rrect(beautiful.border_radius),
-            image = beautiful.profile_icon
-        }
+        widget = wibox.widget.imagebox,
+        forced_height = dpi(150),
+        forced_width = dpi(150),
+        valign = "center",
+        clip_shape = helpers.ui.rrect(beautiful.border_radius),
+        image = beautiful.profile_icon
     }
 
     local name = wibox.widget {

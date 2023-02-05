@@ -12,9 +12,6 @@ local beautiful = require("beautiful")
 local pactl_daemon = require("daemons.hardware.pactl")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
-local capi = {
-    awesome = awesome
-}
 
 local audio = {}
 local instance = nil
@@ -537,7 +534,7 @@ local function new()
     local ret = gobject {}
     gtable.crush(ret, audio, true)
 
-    ret.widget = awful.popup {
+    ret.widget = widgets.popup {
         ontop = true,
         visible = false,
         minimum_width = dpi(600),
@@ -550,11 +547,6 @@ local function new()
             widget()
         }
     }
-
-    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
-        ret.bg = old_colorscheme_to_new_map[beautiful.colors.background]
-        ret.widget.bg = old_colorscheme_to_new_map[beautiful.colors.background]
-    end)
 
     return ret
 end

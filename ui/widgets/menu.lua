@@ -5,11 +5,11 @@
 local awful = require("awful")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
-local gmath = require("gears.math")
 local wibox = require("wibox")
 local ebwidget = require("ui.widgets.button.elevated")
 local twidget = require("ui.widgets.text")
 local cbwidget = require("ui.widgets.checkbox")
+local pwidget = require("ui.widgets.popup")
 local beautiful = require("beautiful")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
@@ -177,7 +177,7 @@ function menu.menu(widgets, width)
         forced_height = 0
     }
 
-    local widget = awful.popup {
+    local widget = pwidget {
         x = 32500,
         type = "menu",
         visible = false,
@@ -226,11 +226,6 @@ function menu.menu(widgets, width)
     for _, menu_widget in ipairs(widgets) do
         widget:add(menu_widget)
     end
-
-    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
-        widget.bg = old_colorscheme_to_new_map[beautiful.colors.background]
-        widget.widget.bg = old_colorscheme_to_new_map[beautiful.colors.background]
-    end)
 
     return widget
 end

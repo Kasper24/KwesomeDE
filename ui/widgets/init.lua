@@ -3,8 +3,9 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 return {
-    battery_icon = require(... .. ".battery_icon"),
     button = require(... .. ".button"),
+    background = require(... .. ".background"),
+    battery_icon = require(... .. ".battery_icon"),
     calendar = require(... .. ".calendar"),
     checkbox = require(... .. ".checkbox"),
     client_menu = require(... .. ".client_menu"),
@@ -14,6 +15,7 @@ return {
     menu = require(... .. ".menu"),
     overflow = require(... .. ".overflow"),
     playerctl = require(... .. ".playerctl"),
+    popup = require(... .. ".popup"),
     prompt = require(... .. ".prompt"),
     screen_mask = require(... .. ".screen_mask"),
     slider = require(... .. ".slider"),

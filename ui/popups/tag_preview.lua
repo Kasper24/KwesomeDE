@@ -9,13 +9,13 @@ local gmatrix = require("gears.matrix")
 local gtimer = require("gears.timer")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
+local widgets = require("ui.widgets")
 local theme_daemon = require("daemons.system.theme")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local collectgarbage = collectgarbage
 local ipairs = ipairs
 local capi = {
-    awesome = awesome,
     client = client,
     tag = tag
 }
@@ -118,14 +118,12 @@ local function new(args)
     gtable.crush(ret, tag_preview)
     gtable.crush(ret, args)
 
-    ret.widget = awful.popup {
+    ret.widget = widgets.popup {
         type = 'dropdown_menu',
         visible = false,
         ontop = true,
         shape = helpers.ui.rrect(beautiful.border_radius),
         bg = beautiful.colors.background,
-        border_width = dpi(5),
-        border_color = beautiful.colors.background,
         widget = wibox.container.background -- A dummy widget to make awful.popup not scream
     }
 
@@ -152,11 +150,6 @@ local function new(args)
                 save_tag_thumbnail(t)
             end
         }
-    end)
-
-    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
-        ret.bg = old_colorscheme_to_new_map[beautiful.colors.background]
-        ret.widget.bg = old_colorscheme_to_new_map[beautiful.colors.background]
     end)
 
     return ret

@@ -8,6 +8,9 @@ local beautiful = require("beautiful")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
+local capi = {
+    awesome = awesome
+}
 
 local calendar = {
     mt = {}
@@ -19,29 +22,34 @@ local function new()
         format = "%H",
         font = beautiful.font_name .. 50
     }
+    local hour_accent_color = beautiful.colors.on_background
+    hour.markup = helpers.ui.colorize_text(hour.text, hour_accent_color)
+    hour:connect_signal("widget::redraw_needed", function()
+        hour.markup = helpers.ui.colorize_text(hour.text, hour_accent_color)
+    end)
 
-    local seperator = wibox.widget {
+    local dots = wibox.widget {
         widget = wibox.container.place,
         valign = "center",
         {
             layout = wibox.layout.fixed.vertical,
             spacing = dpi(15),
             {
-                widget = wibox.container.background,
+                widget = widgets.background,
                 forced_width = dpi(10),
                 forced_height = dpi(10),
                 shape = helpers.ui.rrect(2),
                 bg = beautiful.colors.random_accent_color()
             },
             {
-                widget = wibox.container.background,
+                widget = widgets.background,
                 forced_width = dpi(10),
                 forced_height = dpi(10),
                 shape = helpers.ui.rrect(2),
                 bg = beautiful.colors.random_accent_color()
             },
             {
-                widget = wibox.container.background,
+                widget = widgets.background,
                 forced_width = dpi(10),
                 forced_height = dpi(10),
                 shape = helpers.ui.rrect(2),
@@ -55,6 +63,11 @@ local function new()
         format = "%M",
         font = beautiful.font_name .. 50
     }
+    local minute_accent_color = beautiful.colors.on_background
+    minute.markup = helpers.ui.colorize_text(minute.text, minute_accent_color)
+    minute:connect_signal("widget::redraw_needed", function()
+        minute.markup = helpers.ui.colorize_text(minute.text, minute_accent_color)
+    end)
 
     local time = wibox.widget {
         widget = wibox.container.place,
@@ -63,7 +76,7 @@ local function new()
             layout = wibox.layout.fixed.horizontal,
             spacing = dpi(15),
             hour,
-            seperator,
+            dots,
             minute
         }
     }
@@ -76,9 +89,19 @@ local function new()
         font = beautiful.font_name .. 20
     }
 
-    date.markup = helpers.ui.colorize_text(date.text, beautiful.colors.random_accent_color())
+    local date_accent_color = beautiful.colors.random_accent_color()
+    date.markup = helpers.ui.colorize_text(date.text, date_accent_color)
     date:connect_signal("widget::redraw_needed", function()
-        date.markup = helpers.ui.colorize_text(date.text, beautiful.colors.random_accent_color())
+        date.markup = helpers.ui.colorize_text(date.text, date_accent_color)
+    end)
+
+    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+        hour_accent_color = old_colorscheme_to_new_map[hour_accent_color]
+        minute_accent_color = old_colorscheme_to_new_map[minute_accent_color]
+        date_accent_color = old_colorscheme_to_new_map[date_accent_color]
+        hour:emit_signal("widget::redraw_needed")
+        minute:emit_signal("widget::redraw_needed")
+        date:emit_signal("widget::redraw_needed")
     end)
 
     return wibox.widget {

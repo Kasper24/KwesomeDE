@@ -8,7 +8,9 @@ local info_panel = require("ui.panels.info")
 local beautiful = require("beautiful")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
-
+local capi = {
+    awesome = awesome
+}
 
 local time = {
     mt = {}
@@ -27,6 +29,11 @@ local function new()
     clock.markup = helpers.ui.colorize_text(clock.text, accent_color)
     clock:connect_signal("widget::redraw_needed", function()
         clock.markup = helpers.ui.colorize_text(clock.text, accent_color)
+    end)
+
+    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+        accent_color = old_colorscheme_to_new_map[accent_color]
+        clock:emit_signal("widget::redraw_needed")
     end)
 
     local widget = wibox.widget {

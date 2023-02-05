@@ -264,7 +264,7 @@ local function new()
         end
     end)
 
-    ret.widget = awful.popup {
+    ret.widget = widgets.popup {
         ontop = true,
         visible = false,
         minimum_width = dpi(600),
@@ -293,11 +293,6 @@ local function new()
             }
         }
     }
-
-    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
-        ret.bg = old_colorscheme_to_new_map[beautiful.colors.background]
-        ret.widget.bg = old_colorscheme_to_new_map[beautiful.colors.background]
-    end)
 
     return ret
 end
