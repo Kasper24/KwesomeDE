@@ -3,20 +3,22 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 local awful = require("awful")
+local wibox = require("wibox")
 local beautiful = require("beautiful")
+local widgets = require("ui.widgets")
 local bling = require("external.bling")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
+local capi = {
+    awesome = awesome
+}
 
 local instance = nil
 
 local function new()
-    local app_spacing = dpi(25)
-    local app_height = dpi(75)
-    local space_per_app = app_spacing + app_height
-    local apps_per_row = screen.primary.geometry.height / dpi(space_per_app)
+    local app_on_accent_color = beautiful.colors.random_accent_color()
 
-    return bling.widget.app_launcher {
+    local app_launcher = bling.widget.app_launcher {
         placement = function(widget)
             awful.placement.top_left(widget, {
                 honor_workarea = true,
@@ -24,10 +26,7 @@ local function new()
                 attach = true
             })
         end,
-        app_show_icon = false,
-        skip_names = {"avahi", "Hardware Local", "networkmanager_dmenu"},
         type = "menu",
-        terminal = "kitty",
         background = beautiful.colors.background,
         prompt_height = dpi(50),
         prompt_margins = dpi(25),
@@ -37,20 +36,41 @@ local function new()
         prompt_icon_color = beautiful.colors.on_background,
         prompt_text_color = beautiful.colors.on_background,
         prompt_cursor_color = beautiful.colors.on_background,
-        app_default_icon = beautiful.profile_icon,
-        app_width = dpi(400),
-        app_height = app_height,
-        app_name_halign = "left",
+        expand_apps = true,
         apps_spacing = dpi(15),
-        apps_per_row = apps_per_row,
-        apps_per_column = 1,
-        app_spacing = app_spacing,
-        app_selected_color = beautiful.colors.random_accent_color(),
-        app_normal_color = beautiful.colors.background,
-        app_shape = helpers.ui.rrect(beautiful.bor1der_radius),
-        app_name_font = beautiful.font_name .. 14
-        -- apps_margin = { left = dpi(40), right  = dpi(40), bottom = dpi(30) }
+        apps_per_row = 5,
+        apps_per_column = 4,
+        apps_margin = { left = dpi(40), right  = dpi(40), bottom = dpi(30) },
+        app_template = function(app)
+            local button = wibox.widget {
+                widget = widgets.button.text.state,
+                forced_width = dpi(200),
+                forced_height = dpi(60),
+                id = "button",
+                size = 12,
+                on_normal_bg = app_on_accent_color,
+                text_normal_bg = beautiful.colors.on_background,
+                text_on_normal_bg = beautiful.colors.on_accent,
+                text = app.name
+            }
+
+            button:connect_signal("selected", function()
+                button:turn_on()
+            end)
+
+            button:connect_signal("unselected", function()
+                button:turn_off()
+            end)
+
+            return button
+        end,
     }
+
+    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+        app_launcher._private.widget.bg = old_colorscheme_to_new_map[beautiful.colors.background]
+    end)
+
+    return app_launcher
 end
 
 if not instance then
