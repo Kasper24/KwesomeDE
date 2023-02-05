@@ -599,6 +599,7 @@ function widget.new(args)
 
         capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
             mypopup.bg = old_colorscheme_to_new_map[beautiful.colors.background]
+            mypopup.widget.bg = old_colorscheme_to_new_map[beautiful.colors.background]
         end)
 
         local widget_obj = {

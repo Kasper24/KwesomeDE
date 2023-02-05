@@ -57,5 +57,6 @@ capi.screen.connect_signal("request::desktop_decoration", function(s)
 
     capi.awesome.connect_signal("colorscheme::changed", function( old_colorscheme_to_new_map)
         s.top_wibar.bg = old_colorscheme_to_new_map[beautiful.colors.background]
+        s.top_wibar.widget.bg = old_colorscheme_to_new_map[beautiful.colors.background]
     end)
 end)
