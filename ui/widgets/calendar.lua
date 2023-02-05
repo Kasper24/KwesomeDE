@@ -29,6 +29,7 @@ local function day_name_widget(name)
         halign = "center",
         size = 15,
         bold = true,
+        color = beautiful.colors.on_background,
         text = name
     }
 end
@@ -38,9 +39,9 @@ local function date_widget(self, date, is_current, is_another_month)
     local text_color = beautiful.colors.on_background
     if is_current == true then
         bg = self._private.current_date_accent_color
-        text_color = beautiful.colors.on_accent
+        text_color = beautiful.colors.background
     elseif is_another_month == true then
-        text_color = helpers.color.darken(beautiful.colors.on_background, 0.2)
+        text_color = beautiful.colors.surface
     end
 
     local widget = wibox.widget {
@@ -49,7 +50,7 @@ local function date_widget(self, date, is_current, is_another_month)
         forced_height = dpi(35),
         shape = gshape.circle,
         bg = bg,
-        wibox.widget {
+        {
             widget = twidget,
             halign = "center",
             size = 15,
