@@ -190,9 +190,9 @@ local function reload_awesome_colorscheme(self)
     old_colorscheme_to_new_map["#FFFFFF"] = "#FFFFFF"
     old_colorscheme_to_new_map["#000000"] = "#000000"
 
-    capi.awesome.emit_signal("colorscheme::changed", old_colorscheme_to_new_map, new_colorscheme)
-    beautiful.init(helpers.filesystem.get_awesome_config_dir("ui") .. "theme.lua")
     self._private.colorscheme = new_colorscheme
+    beautiful.init(helpers.filesystem.get_awesome_config_dir("ui") .. "theme.lua")
+    capi.awesome.emit_signal("colorscheme::changed", old_colorscheme_to_new_map, new_colorscheme)
     helpers.settings:set_value("theme-colorscheme", self._private.colorscheme)
 end
 
