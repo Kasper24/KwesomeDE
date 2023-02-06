@@ -3,7 +3,6 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 local lgi = require("lgi")
-local Gdk = lgi.require("Gdk", "3.0")
 local Gio = require("lgi").Gio
 local awful = require("awful")
 local gobject = require("gears.object")
@@ -301,7 +300,7 @@ local function generate_templates(self)
             file:read(function(error, content)
                 if error == nil then
                     local lines = {}
-                    local copy_to = nil
+                    local copy_to = {}
 
                     if content ~= nil then
                         for line in content:gmatch("[^\r\n$]+") do
@@ -313,7 +312,8 @@ local function generate_templates(self)
                             end
 
                             if line:match("copy_to=") then
-                                copy_to = line:gsub("copy_to=", "")
+                                local path = line:gsub("copy_to=", "")
+                                table.insert(copy_to, path)
                                 line = ""
                             end
 
@@ -364,9 +364,10 @@ local function generate_templates(self)
                     file:write(output)
 
                     -- Save to addiontal location specified in the template file
-                    if copy_to ~= nil then
-                        copy_to = copy_to:gsub("~", os.getenv("HOME"))
-                        local file = helpers.file.new_for_path(copy_to)
+                    for _, path in ipairs(copy_to) do
+                        path = path:gsub("~", os.getenv("HOME"))
+                        local file = helpers.file.new_for_path(path)
+                        print(path)
                         file:write(output)
                     end
                 end
