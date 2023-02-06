@@ -11,6 +11,9 @@ local beautiful = require("beautiful")
 local screenshot_daemon = require("daemons.system.screenshot")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
+local capi = {
+    awesome = awesome
+}
 
 local screenshot = {}
 local instance = nil
@@ -110,13 +113,16 @@ local function new()
                 c.x = (c.screen.geometry.width / 2) - (dpi(550) / 2)
                 c.y = (c.screen.geometry.height / 2) - (dpi(280) / 2)
 
-                awful.titlebar(c, {
+                local titlebar = awful.titlebar(c, {
                     position = "top",
                     size = dpi(280),
                     bg = beautiful.colors.background
-                }):setup{
-                    widget = stack
-                }
+                })
+                titlebar:setup{widget = stack}
+
+                capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+                    titlebar:set_bg(beautiful.colors.background)
+                end)
             end
         }
     end)

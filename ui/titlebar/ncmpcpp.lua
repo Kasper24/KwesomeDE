@@ -9,6 +9,9 @@ local beautiful = require("beautiful")
 local bling = require("external.bling")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
+local capi = {
+    awesome = awesome
+}
 
 local ncmppcpp = {}
 
@@ -131,11 +134,12 @@ function ncmppcpp.tabs_titlebar(c)
         end
     }
 
-    awful.titlebar(c, {
+    local titlebar =awful.titlebar(c, {
         position = "left",
         size = dpi(230),
         bg = beautiful.colors.background
-    }):setup{
+    })
+    titlebar:setup{
         widget = wibox.container.margin,
         margins = {
             left = dpi(15),
@@ -175,6 +179,10 @@ function ncmppcpp.tabs_titlebar(c)
             lyrics
         }
     }
+
+    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+        titlebar:set_bg(beautiful.colors.background)
+    end)
 end
 
 function ncmppcpp.media_controls_titlebar(c)
@@ -184,11 +192,12 @@ function ncmppcpp.media_controls_titlebar(c)
         debounce_delay = 1
     }
 
-    awful.titlebar(c, {
+    local titlebar = awful.titlebar(c, {
         position = "bottom",
         size = dpi(100),
         bg = beautiful.colors.background
-    }):setup{
+    })
+    titlebar:setup{
         layout = wibox.layout.align.horizontal,
         expand = "inside",
         {
@@ -227,6 +236,10 @@ function ncmppcpp.media_controls_titlebar(c)
             widgets.spacer.horizontal(30)
         }
     }
+
+    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+        titlebar:set_bg(beautiful.colors.background)
+    end)
 end
 
 return ncmppcpp

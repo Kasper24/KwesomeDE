@@ -9,6 +9,7 @@ local beautiful = require("beautiful")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local capi = {
+    awesome = awesome,
     client = client
 }
 
@@ -70,17 +71,13 @@ capi.client.connect_signal("request::titlebars", function(c)
 
     local menu = widgets.client_menu(c)
 
-    awful.titlebar(c, {
+    local titlebar = awful.titlebar(c, {
         position = "top",
         size = dpi(35),
-        bg_normal = color,
-        bg_focus = color,
-        bg_urgent = color,
-        fg_normal = color,
-        fg_focus = color,
-        fg_urgent = color,
+        bg = color,
         font = beautiful.font_name .. 12
-    }):setup{
+    })
+    titlebar:setup{
         layout = wibox.layout.align.horizontal,
         nil,
         {
@@ -147,4 +144,12 @@ capi.client.connect_signal("request::titlebars", function(c)
             widgets.spacer.horizontal(dpi(5))
         }
     }
+
+    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+        local color = helpers.client.get_dominant_color(c)
+        titlebar:set_bg(color)
+        minimize:set_normal_bg(color)
+        maximize:set_normal_bg(color)
+        close:set_normal_bg(color)
+    end)
 end)
