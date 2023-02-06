@@ -158,17 +158,13 @@ local function uvi_index_color(uvi)
     return string.format("<span weight='bold' foreground='%s'>%s</span>", color, uvi)
 end
 
-local function new(args)
-    args = args or {}
-
-    args.time_format_12h = args.time_format_12h or false
-    args.both_units_widget = args.both_units_widget or false
+local function new()
+    local time_format_12h = false
+    local both_units_widget = false
 
     local icon = wibox.widget {
         widget = widgets.text,
-        color = beautiful.colors.random_accent_color(),
         size = 85,
-        font = icon_map["01d"].font
     }
 
     local current_weather_widget = wibox.widget {
@@ -364,9 +360,9 @@ local function new(args)
         stack:raise_widget(weather_widget)
 
         local weather = result.current
-        icon:set_icon(icon_map[weather.weather[1]])
+        icon:set_icon(icon_map[weather.weather[1].icon])
         current_weather_widget:get_children_by_id("temp")[1]:set_text(
-            gen_temperature_str(weather.temp, "%.0f", args.both_units_widget, units))
+            gen_temperature_str(weather.temp, "%.0f", both_units_widget, units))
         current_weather_widget:get_children_by_id("feels_like_temp")[1]:set_text("Feels like " ..
                                                                                      gen_temperature_str(
                 weather.feels_like, "%.0f", false, units))
@@ -386,7 +382,7 @@ local function new(args)
                     widget = widgets.text,
                     halign = "center",
                     size = 12,
-                    text = os.date(args.time_format_12h and "%I%p" or "%H:00", tonumber(hour.dt))
+                    text = os.date(time_format_12h and "%I%p" or "%H:00", tonumber(hour.dt))
                 }
 
                 local temperature_widget = wibox.widget {
