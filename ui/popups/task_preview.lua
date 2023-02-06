@@ -81,6 +81,7 @@ function task_preview:show(c, args)
                 spacing = dpi(15),
                 {
                     layout = wibox.layout.fixed.horizontal,
+                    forced_height = dpi(30),
                     spacing = dpi(10),
                     {
                         widget = widgets.text,
