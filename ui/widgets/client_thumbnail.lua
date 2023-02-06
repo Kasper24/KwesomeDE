@@ -49,7 +49,7 @@ local function new(client)
         forced_height = dpi(300),
         halign = "center",
         valign = "center",
-        size = 50,
+        size = (thumbnail.font_icon.size or 20) * 2,
         icon = thumbnail.font_icon
     }
 

@@ -46,7 +46,7 @@ local function client_widget(self, client)
         widget = wibox.container.constraint,
         mode = "max",
         width = dpi(300),
-        height = dpi(150),
+        height = dpi(200),
         {
             widget = widgets.button.elevated.state,
             id = "button",
@@ -67,6 +67,7 @@ local function client_widget(self, client)
                     spacing = dpi(15),
                     {
                         layout = wibox.layout.fixed.horizontal,
+                        forced_height = dpi(30),
                         spacing = dpi(10),
                         {
                             widget = widgets.text,
@@ -76,7 +77,6 @@ local function client_widget(self, client)
                         },
                         {
                             widget = widgets.text,
-                            forced_height = dpi(30),
                             halign = "center",
                             valign = "center",
                             size = 15,
