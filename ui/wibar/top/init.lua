@@ -2,13 +2,11 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
+local awful = require("awful")
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
-local capi = {
-    screen = screen
-}
 
 local path = ...
 local start = require(path .. ".start")
@@ -17,7 +15,7 @@ local tray = require(path .. ".tray")
 local time = require(path .. ".time")
 local notification = require(path .. ".notification")
 
-capi.screen.connect_signal("request::desktop_decoration", function(s)
+awful.screen.connect_for_each_screen(function(s)
     -- Using popup instead of the wibar widget because it has some edge case bugs with detecting mouse input correctly
     s.top_wibar = widgets.popup {
         screen = s,

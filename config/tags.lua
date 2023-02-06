@@ -3,13 +3,7 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 local awful = require("awful")
-local capi = {
-    awesome = awesome,
-    screen = screen
-}
 
-capi.screen.connect_signal("request::desktop_decoration", function(s)
-    if capi.awesome.startup == true then
-        awful.tag({"1", "2", "3", "4", "5", "6", "7", "8"}, s, awful.layout.layouts[1])
-    end
+awful.screen.connect_for_each_screen(function(s)
+    awful.tag({"1", "2", "3", "4", "5", "6", "7", "8"}, s, awful.layout.layouts[1])
 end)

@@ -20,7 +20,7 @@ local greeters = {"Authentication success! Logging in!", "Logging in! Biatch",
                   "Splish! Splash! Your password is trash!", "Looking good today~", "What are you doing, stepbro?~",
                   "You are someone\"s reason to smile.", "Finally, someone with a good amount of IQ!"}
 
-capi.screen.connect_signal("request::desktop_decoration", function(s)
+awful.screen.connect_for_each_screen(function(s)
     if capi.awesome.startup == false then
         return
     end
@@ -60,6 +60,7 @@ capi.screen.connect_signal("request::desktop_decoration", function(s)
     }
 
     local loading_popup = awful.popup {
+        screen = s,
         type = "splash",
         ontop = true,
         placement = awful.placement.maximize,
@@ -85,16 +86,10 @@ capi.screen.connect_signal("request::desktop_decoration", function(s)
             s.loading_popup = widgets.screen_mask(s)
         end
 
-        gtimer {
-            timeout = 3,
-            autostart = true,
-            call_now = false,
-            single_shot = true,
-            callback = function()
-                s.loading_popup.visible = false
-                spinning_circle:abort()
-                s.loading_popup = nil
-            end
-        }
+        capi.awesome.connect_signal("ui::ready", function()
+            s.loading_popup.visible = false
+            spinning_circle:abort()
+            s.loading_popup = nil
+        end)
     end
 end)

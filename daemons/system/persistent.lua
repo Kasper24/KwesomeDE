@@ -229,6 +229,7 @@ local function restore_clients(self, args)
             single_shot = true,
             callback = function()
                 reapply_clients(self)
+                capi.awesome.emit_signal("startup::finished")
             end
         }
     else

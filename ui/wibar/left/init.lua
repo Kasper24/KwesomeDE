@@ -15,7 +15,7 @@ local capi = {
 local path = ...
 local taglist = require(path .. ".taglist")
 
-capi.screen.connect_signal("request::desktop_decoration", function(s)
+awful.screen.connect_for_each_screen(function(s)
     s.left_wibar = widgets.popup {
         screen = s,
         type = "dock",
