@@ -97,18 +97,9 @@ local function clients_widget(self)
         spacing = dpi(15)
     }
 
-    self._private.sorted_clients = {}
-    for _, tag in ipairs(helpers.client.get_sorted_clients()) do
-        local master = tag["master"]
-        if master ~= nil then
-            clients_layout:add(client_widget(self, master))
-            table.insert(self._private.sorted_clients, master)
-        end
-
-        for _, client in ipairs(tag.clients) do
-            clients_layout:add(client_widget(self, client))
-            table.insert(self._private.sorted_clients, client)
-        end
+    self._private.sorted_clients = helpers.client.get_sorted_clients()
+    for _, client in ipairs(self._private.sorted_clients) do
+        clients_layout:add(client_widget(self, client))
     end
 
     return wibox.widget {

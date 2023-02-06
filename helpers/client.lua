@@ -365,6 +365,7 @@ function _client.get_dominant_color(client)
 end
 
 function _client.get_sorted_clients()
+    local clients = {}
     local tags = {}
 
     for index, tag in pairs(capi.root.tags()) do
@@ -380,7 +381,18 @@ function _client.get_sorted_clients()
         end
     end
 
-    return tags
+    for _, tag in ipairs(tags) do
+        local master = tag["master"]
+        if master ~= nil then
+            table.insert(clients, master)
+        end
+
+        for _, client in ipairs(tag.clients) do
+            table.insert(clients, client)
+        end
+    end
+
+    return clients
 end
 
 return _client
