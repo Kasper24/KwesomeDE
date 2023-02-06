@@ -6,8 +6,9 @@ local gmath = require("gears.math")
 local gsurface = require("gears.surface")
 local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
-local math = math
 local pairs = pairs
+local table = table
+local math = math
 local capi = {
     root = root,
     client = client,
@@ -365,36 +366,30 @@ function _client.get_dominant_color(client)
 end
 
 function _client.get_sorted_clients()
-    local clients = {}
-    local tags = {}
+    local clients = capi.client.get()
 
-    for index, tag in pairs(capi.root.tags()) do
-        tags[index] = {}
-        tags[index].clients = {}
+    table.sort(clients, function(a, b)
+        local a_idx = awful.client.idx(a)
+        local b_idx = awful.client.idx(b)
 
-        for _, client in pairs(tag:clients()) do
-            if client.first_tag == tag then
-                if awful.client.getmaster() == client then
-                    tags[index]["master"] = client
-                else
-                    table.insert(tags[index].clients, client)
-                end
-            end
-        end
-    end
+        local a_score = a.first_tag.index + (a_idx.col or 0) + (a_idx.idx or 0)
+        local b_score = b.first_tag.index + (b_idx.col or 0) + (b_idx.idx or 0)
 
-    for _, tag in ipairs(tags) do
-        local master = tag["master"]
-        if master ~= nil then
-            table.insert(clients, master)
-        end
-
-        for _, client in ipairs(tag.clients) do
-            table.insert(clients, client)
-        end
-    end
+        return a_score < b_score
+    end)
 
     return clients
+end
+
+function _client.get_client_index(client)
+    local client_idx = awful.client.idx(client)
+    return client.first_tag.index + (client_idx.col or 0) + (client_idx.idx or 0)
+
+    -- for index, c in ipairs(_client.get_sorted_clients()) do
+    --     if client == c then
+    --         return index
+    --     end
+    -- end
 end
 
 return _client

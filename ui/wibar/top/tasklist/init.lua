@@ -23,7 +23,7 @@ local tasklist = {
 
 local favorites = {}
 
-local function favorite(layout, client, class)
+local function favorite_widget(layout, client, class)
     favorites[class] = true
 
     local menu = widgets.menu {widgets.menu.button {
@@ -82,7 +82,7 @@ local function favorite(layout, client, class)
     return button
 end
 
-local function client(favorites_layout, client)
+local function client_widget(favorites_layout, client)
     local menu = widgets.client_menu(client)
 
     local button = wibox.widget {
@@ -194,7 +194,7 @@ local function client(favorites_layout, client)
 
         local client_favorite = favorites_daemon:is_favorite(client.class)
         if client_favorite ~= nil and favorites[client.class] == nil then
-            favorites_layout:add(favorite(favorites_layout, client_favorite, client.class))
+            favorites_layout:add(favorite_widget(favorites_layout, client_favorite, client.class))
         end
     end)
 
@@ -212,38 +212,36 @@ local function new()
         spacing = dpi(15)
     }
 
-    for _, c in ipairs(helpers.client.get_sorted_clients()) do
-        task_list:add(client(favorites, c))
-    end
+    capi.client.connect_signal("unmanage", function(client)
+        task_list:remove_widgets(client.tasklist_widget)
+    end)
 
-    capi.client.connect_signal("unmanage", function()
-        task_list:reset()
-        for _, c in ipairs(helpers.client.get_sorted_clients()) do
-            task_list:add(client(favorites, c))
+    capi.client.connect_signal("swapped", function(client, other_client, is_source)
+        if is_source then
+            -- task_list:remove_widgets(client.tasklist_widget)
+            -- task_list:remove_widgets(other_client.tasklist_widget)
+
+            -- client.tasklist_widget = client_widget(favorites, client)
+            -- other_client.tasklist_widget = client_widget(favorites, other_client)
+            -- task_list:insert(1, client.tasklist_widget)
+            -- task_list:insert(2, other_client.tasklist_widget)
         end
     end)
 
-    capi.client.connect_signal("swapped", function()
-        task_list:reset()
-        for _, c in ipairs(helpers.client.get_sorted_clients()) do
-            task_list:add(client(favorites, c))
-        end
-    end)
-
-    capi.client.connect_signal("tagged", function(c)
-        print(c)
-        if favorites_daemon:is_favorite(c.class) then
-            favorites:remove(c.favorite_widget)
+    capi.client.connect_signal("tagged", function(client)
+        if favorites_daemon:is_favorite(client.class) then
+            favorites:remove(client.favorite_widget)
         end
 
-        task_list:reset()
-        for _, c in ipairs(helpers.client.get_sorted_clients()) do
-            task_list:add(client(favorites, c))
+        if client.tasklist_widget ~= nil then
+            task_list:remove_widgets(client.tasklist_widget)
         end
+        client.tasklist_widget = client_widget(favorites, client)
+        task_list:insert(helpers.client.get_client_index(client), client.tasklist_widget)
     end)
 
     for class, client in pairs(favorites_daemon:get_favorites()) do
-        favorites:add(favorite(favorites, client, class))
+        favorites:add(favorite_widget(favorites, client, class))
     end
 
     return wibox.widget {
