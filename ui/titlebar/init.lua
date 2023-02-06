@@ -81,67 +81,94 @@ capi.client.connect_signal("request::titlebars", function(c)
         layout = wibox.layout.align.horizontal,
         nil,
         {
-            widget = awful.titlebar.widget.titlewidget(c),
-            align = "center",
-            font = beautiful.font_name .. 12,
-            buttons = { -- Move client
-            awful.button {
-                modifiers = {},
-                button = 1,
-                on_press = function()
-                    c.maximized = false
-                    c:activate{
-                        context = "mouse_click",
-                        action = "mouse_move"
+            widget = wibox.container.place,
+            halign = "center",
+            {
+                layout = wibox.layout.fixed.horizontal,
+                spacing = dpi(15),
+                {
+                    widget = widgets.text,
+                    halign = "center",
+                    icon = c.font_icon,
+                    size = (c.font_icon.size or 20) * 0.8
+                },
+                {
+                    widget = widgets.text,
+                    halign = "center",
+                    size = 12,
+                    text = c.name,
+                    color = beautiful.colors.on_background,
+                    buttons =
+                    {
+                        -- Move client
+                        awful.button {
+                            modifiers = {},
+                            button = 1,
+                            on_press = function()
+                                c.maximized = false
+                                c:activate{
+                                    context = "mouse_click",
+                                    action = "mouse_move"
+                                }
+                            end
+                        },
+                        -- Kill client
+                        awful.button {
+                            modifiers = {},
+                            button = 2,
+                            on_press = function()
+                                c:kill()
+                            end
+                        },
+                        -- Resize client
+                        awful.button {
+                            modifiers = {},
+                            button = 3,
+                            on_press = function()
+                                helpers.input.tap_or_drag {
+                                    on_tap = function()
+                                        menu:toggle{}
+                                    end,
+                                    on_drag = function()
+                                        c.maximized = false
+                                        c:activate{
+                                            context = "mouse_click",
+                                            action = "mouse_resize"
+                                        }
+                                    end
+                                }
+                            end
+                        },
+                        -- Side button up
+                        awful.button {
+                            modifiers = {},
+                            button = 9,
+                            on_press = function()
+                                c.floating = not c.floating
+                            end
+                        },
+                        -- Side button down
+                        awful.button {
+                            modifiers = {},
+                            button = 8,
+                            on_press = function()
+                                c.ontop = not c.ontop
+                            end
+                        }
                     }
-                end
-            }, -- Kill client
-            awful.button {
-                modifiers = {},
-                button = 2,
-                on_press = function()
-                    c:kill()
-                end
-            }, -- Resize client
-            awful.button {
-                modifiers = {},
-                button = 3,
-                on_press = function()
-                    helpers.input.tap_or_drag {
-                        on_tap = function()
-                            menu:toggle{}
-                        end,
-                        on_drag = function()
-                            c.maximized = false
-                            c:activate{
-                                context = "mouse_click",
-                                action = "mouse_resize"
-                            }
-                        end
-                    }
-                end
-            }, -- Side button up
-            awful.button {
-                modifiers = {},
-                button = 9,
-                on_press = function()
-                    c.floating = not c.floating
-                end
-            }, -- Side button down
-            awful.button {
-                modifiers = {},
-                button = 8,
-                on_press = function()
-                    c.ontop = not c.ontop
-                end
-            }}
+                }
+            },
         },
         {
-            layout = wibox.layout.fixed.horizontal,
-            minimize,
-            maximize,
-            close,
-            widgets.spacer.horizontal(dpi(5))
+            widget = wibox.container.place,
+            halign = "right",
+            {
+                layout = wibox.layout.fixed.horizontal,
+                minimize,
+                maximize,
+                close,
+                widgets.spacer.horizontal(dpi(5))
+            }
         }
     }
 
