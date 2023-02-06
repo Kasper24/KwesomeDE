@@ -306,6 +306,47 @@ function File:write(data, mode, cb)
     end)
 end
 
+function File:write_root(text, callback, is_retry)
+    local gfile = self._private.f
+
+    self:exists(function(err, exists)
+        if not exists then
+            if is_retry then
+                if callback then
+                    callback(false)
+                end
+                return
+            end
+            -- making parent directories
+            gfile:get_parent():make_directory_with_parents()
+            gfile:create_readwrite_async(Gio.FileCreateFlags.NONE, GLib.PRIORITY_DEFAULT, nil, function(_, create_result)
+                -- file created
+                self:write_root(text, callback, true)
+            end, nil)
+        else
+            gfile:open_readwrite_async(GLib.PRIORITY_DEFAULT, nil, function(_, io_stream_result)
+                local io_stream = gfile:open_readwrite_finish(io_stream_result)
+                io_stream:seek(0, GLib.SeekType.SET, nil)
+                local file = io_stream:get_output_stream()
+                file:write_all_async(text, GLib.PRIORITY_DEFAULT, nil, function(_, write_result)
+                    local length_written = file:write_all_finish(write_result)
+                    -- file written
+                    file:truncate(length_written, nil)
+                    file:close_async(GLib.PRIORITY_DEFAULT, nil, function(_, file_close_result)
+                        -- output stream closed
+                        io_stream:close_async(GLib.PRIORITY_DEFAULT, nil, function(_, stream_close_result)
+                            -- file stream closed
+                            if callback then
+                                callback(true)
+                            end
+                        end, nil)
+                    end, nil)
+                end, nil)
+            end, nil)
+        end
+    end)
+end
+
 --- Read at most the specified number of bytes from the file.
 --
 -- If there is not enough data to read, the result may contain less than `size` bytes of data.

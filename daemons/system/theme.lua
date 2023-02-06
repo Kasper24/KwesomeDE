@@ -204,7 +204,7 @@ local function on_finished_generating(self)
     reload_gtk()
 end
 
-local function generate_sequences(self)
+local function generate_sequences(colors)
     local function set_special(index, color, alpha)
         if (index == 11 or index == 708) and alpha ~= 100 then
             return string.format("\27]%s;[%s]%s\27\\", index, alpha, color)
@@ -217,25 +217,22 @@ local function generate_sequences(self)
         return string.format("\27]4;%s;%s\27\\", index, color)
     end
 
-    local colors = self._private.colors[self._private.selected_wallpaper]
-    local sequences = {}
+    local sequences = ""
 
     for index, color in ipairs(colors) do
-        table.insert(sequences, set_color(index - 1, color))
+        sequences = sequences .. set_color(index - 1, color)
     end
 
-    table.insert(sequences, set_special(10, colors[16]))
-    table.insert(sequences, set_special(11, colors[1], 0))
-    table.insert(sequences, set_special(12, colors[16]))
-    table.insert(sequences, set_special(13, colors[16]))
-    table.insert(sequences, set_special(17, colors[16]))
-    table.insert(sequences, set_special(19, colors[1]))
-    table.insert(sequences, set_color(232, colors[1]))
-    table.insert(sequences, set_color(256, colors[16]))
-    table.insert(sequences, set_color(257, colors[1]))
-    table.insert(sequences, set_special(708, colors[1], 0))
-
-    local string = table.concat(sequences)
+    sequences = sequences .. set_special(10, colors[16])
+    sequences = sequences .. set_special(11, colors[1], 0)
+    sequences = sequences .. set_special(12, colors[16])
+    sequences = sequences .. set_special(13, colors[16])
+    sequences = sequences .. set_special(17, colors[16])
+    sequences = sequences .. set_special(19, colors[1])
+    sequences = sequences .. set_color(232, colors[1])
+    sequences = sequences .. set_color(256, colors[16])
+    sequences = sequences .. set_color(257, colors[1])
+    sequences = sequences .. set_special(708, colors[1], 0)
 
     local file = helpers.file.new_for_path(GENERATED_TEMPLATES_PATH .. "sequences")
     file:write(string)
@@ -246,7 +243,7 @@ local function generate_sequences(self)
 
     for index = 0, 9 do
         local file = helpers.file.new_for_path("/dev/pts/" .. index)
-        file:write(string)
+        file:write_root(sequences)
     end
 end
 
@@ -367,7 +364,6 @@ local function generate_templates(self)
                     for _, path in ipairs(copy_to) do
                         path = path:gsub("~", os.getenv("HOME"))
                         local file = helpers.file.new_for_path(path)
-                        print(path)
                         file:write(output)
                     end
                 end
@@ -578,7 +574,7 @@ function theme:set_colorscheme()
     reload_awesome_colorscheme(self)
     install_gtk_theme()
     generate_templates(self)
-    generate_sequences(self)
+    generate_sequences(self._private.colorscheme)
 end
 
 function theme:select_wallpaper(wallpaper)
