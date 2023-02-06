@@ -19,6 +19,9 @@ local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 local tostring = tostring
 local ipairs = ipairs
+local capi = {
+    awesome = awesome
+}
 
 local info = {
     mt = {}
@@ -79,6 +82,18 @@ local function arc_widget(icon, on_release, on_scroll_up, on_scroll_down)
         }},
         icon_widget
     }
+
+    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+        arc.bg = beautiful.colors.surface
+        arc.colors = {{
+            type = "linear",
+            from = {0, 0},
+            to = {400, 400},
+            stops = {{0, beautiful.colors.random_accent_color()}, {0.2, beautiful.colors.random_accent_color()},
+                     {0.4, beautiful.colors.random_accent_color()}, {0.6, beautiful.colors.random_accent_color()},
+                     {0.8, beautiful.colors.random_accent_color()}}
+        }}
+    end)
 
     local value_text = wibox.widget {
         widget = widgets.text,
