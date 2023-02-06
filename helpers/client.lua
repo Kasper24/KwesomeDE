@@ -329,7 +329,11 @@ function _client.get_dominant_color(client)
     local pb
     local bytes
     local tally = {}
-    local content = gsurface(client.content)
+    local screenshot = awful.screenshot {
+        client = client
+    }
+    screenshot:refresh()
+    local content = screenshot.surface
     local cgeo = client:geometry()
     local x_offset = 2
     local y_offset = 2
