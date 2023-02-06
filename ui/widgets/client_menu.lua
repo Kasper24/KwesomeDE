@@ -43,38 +43,46 @@ local function new(client)
                                 client_checkbox_button(client, "below", "Below"),
                                 client_checkbox_button(client, "ontop", "On Top")}
 
-    local menu = mwidget {mwidget.button {
-        icon = client.font_icon,
-        text = client.class,
-        on_press = function()
-            client:jump_to()
-        end
-    }, mwidget.button {
-        text = favorites_daemon:is_favorite(client.class) and "Unpin from taskbar" or "Pin to taskbar",
-        on_press = function(self, text_widget)
-            favorites_daemon:toggle_favorite(client)
-            local text = favorites_daemon:is_favorite(client.class) and "Unpin from taskbar" or "Pin to taskbar"
-            text_widget:set_text(text)
-        end
-    }, mwidget.sub_menu_button {
-        text = "Maximize",
-        arrow_color = client.font_icon.color,
-        sub_menu = maximize_menu
-    }, client_checkbox_button(client, "minimized", "Minimize"),
-                          client_checkbox_button(client, "fullscreen", "Fullscreen"),
-                          client_checkbox_button(client, "titlebar", "Titlebar", function()
-        awful.titlebar.toggle(client)
-    end), client_checkbox_button(client, "sticky", "Sticky"), client_checkbox_button(client, "hidden", "Hidden"),
-                          client_checkbox_button(client, "floating", "Floating"), mwidget.sub_menu_button {
-        text = "Layer",
-        arrow_color = client.font_icon.color,
-        sub_menu = layer_menu
-    }, mwidget.button {
-        text = "Close",
-        on_press = function()
-            client:kill()
-        end
-    }}
+    local menu = mwidget {
+        mwidget.button {
+            icon = client.font_icon,
+            text = client.class,
+            on_press = function()
+                client:jump_to()
+            end
+        },
+        mwidget.button {
+            text = favorites_daemon:is_favorite(client.class) and "Unpin from taskbar" or "Pin to taskbar",
+            on_press = function(self, text_widget)
+                favorites_daemon:toggle_favorite(client)
+                local text = favorites_daemon:is_favorite(client.class) and "Unpin from taskbar" or "Pin to taskbar"
+                text_widget:set_text(text)
+            end
+        },
+        mwidget.sub_menu_button {
+            text = "Maximize",
+            arrow_color = client.font_icon.color,
+            sub_menu = maximize_menu
+        },
+        client_checkbox_button(client, "minimized", "Minimize"),
+        client_checkbox_button(client, "fullscreen", "Fullscreen"),
+        client_checkbox_button(client, "titlebar", "Titlebar", function()
+            awful.titlebar.toggle(client)
+        end),
+        client_checkbox_button(client, "sticky", "Sticky"),
+        client_checkbox_button(client, "hidden", "Hidden"),
+        client_checkbox_button(client, "floating", "Floating"),
+        mwidget.sub_menu_button {
+            text = "Layer",
+            arrow_color = client.font_icon.color,
+            sub_menu = layer_menu
+        },
+        mwidget.button {
+            text = "Close",
+            on_press = function()
+                client:kill()
+            end
+        }}
 
     -- At the time this funciton runs client.custom_titlebar is still nil
     -- so check if that property change and if so remove the titlebar toggle button
