@@ -20,9 +20,7 @@ local tasklist = {
     mt = {}
 }
 
--- =============================================================================
---  Task list
--- =============================================================================
+
 local favorites = {}
 
 local function favorite(layout, client, class)
@@ -84,7 +82,7 @@ local function favorite(layout, client, class)
     return button
 end
 
-local function client_task(favorites_layout, task_list, client)
+local function client(favorites_layout, client)
     local menu = widgets.client_menu(client)
 
     local button = wibox.widget {
@@ -185,17 +183,8 @@ local function client_task(favorites_layout, task_list, client)
         indicator_animation:set(dpi(20))
     end)
 
-    client:connect_signal("swapped", function()
-        if awful.client.getmaster() == client then
-            if task_list:remove_widgets(widget) == true then
-                task_list:insert(1, widget)
-            end
-        end
-    end)
-
     client:connect_signal("unmanage", function()
         menu:hide()
-        task_list:remove_widgets(widget)
 
         for _, c in ipairs(capi.client.get()) do
             if c.class == client.class then
@@ -209,17 +198,10 @@ local function client_task(favorites_layout, task_list, client)
         end
     end)
 
-    if awful.client.getmaster() == client then
-        task_list:insert(1, widget)
-    else
-        task_list:add(widget)
-    end
-
-    client.current_task_list = task_list
-    client.current_task_widget = widget
+    return widget
 end
 
-local function new(s)
+local function new()
     local favorites = wibox.widget {
         layout = wibox.layout.flex.horizontal,
         spacing = dpi(15)
@@ -227,43 +209,38 @@ local function new(s)
 
     local task_list = wibox.widget {
         layout = wibox.layout.fixed.horizontal,
-        spacing = dpi(20)
+        spacing = dpi(15)
     }
 
-    for _, __ in ipairs(s.tags) do
-        local tag_task_list = wibox.widget {
-            layout = wibox.layout.flex.horizontal,
-            spacing = dpi(15)
-        }
-        task_list:add(tag_task_list)
+    for _, c in ipairs(helpers.client.get_sorted_clients()) do
+        task_list:add(client(favorites, c))
     end
 
-    -- Wait a little bit so clients show at the correct order
-    gtimer {
-        timeout = 2,
-        single_shot = true,
-        call_now = false,
-        autostart = true,
-        callback = function()
-            for _, c in ipairs(capi.client.get()) do
-                client_task(favorites, task_list.children[c.first_tag.index], c)
-            end
-
-            capi.client.connect_signal("tagged", function(c, t)
-                if c.current_task_list and c.current_task_widget then
-                    c.current_task_list:remove_widgets(c.current_task_widget)
-                    c.current_task_list = nil
-                    c.current_task_widget = nil
-                end
-
-                if favorites_daemon:is_favorite(c.class) then
-                    favorites:remove(c.favorite_widget)
-                end
-
-                client_task(favorites, task_list.children[t.index], c)
-            end)
+    capi.client.connect_signal("unmanage", function()
+        task_list:reset()
+        for _, c in ipairs(helpers.client.get_sorted_clients()) do
+            task_list:add(client(favorites, c))
         end
-    }
+    end)
+
+    capi.client.connect_signal("swapped", function()
+        task_list:reset()
+        for _, c in ipairs(helpers.client.get_sorted_clients()) do
+            task_list:add(client(favorites, c))
+        end
+    end)
+
+    capi.client.connect_signal("tagged", function(c)
+        print(c)
+        if favorites_daemon:is_favorite(c.class) then
+            favorites:remove(c.favorite_widget)
+        end
+
+        task_list:reset()
+        for _, c in ipairs(helpers.client.get_sorted_clients()) do
+            task_list:add(client(favorites, c))
+        end
+    end)
 
     for class, client in pairs(favorites_daemon:get_favorites()) do
         favorites:add(favorite(favorites, client, class))
