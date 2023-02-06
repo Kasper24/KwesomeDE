@@ -373,10 +373,12 @@ function _client.get_sorted_clients()
         tags[index].clients = {}
 
         for _, client in pairs(tag:clients()) do
-            if awful.client.getmaster() == client then
-                tags[index]["master"] = client
-            else
-                table.insert(tags[index].clients, client)
+            if client.first_tag == tag then
+                if awful.client.getmaster() == client then
+                    tags[index]["master"] = client
+                else
+                    table.insert(tags[index].clients, client)
+                end
             end
         end
     end
