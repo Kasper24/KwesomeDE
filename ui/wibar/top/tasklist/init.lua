@@ -85,7 +85,6 @@ local function favorite(layout, client, class)
 end
 
 local function client_task(favorites_layout, task_list, client)
-    client.font_icon = beautiful.get_font_icon_for_app_name(client.class)
     local menu = widgets.client_menu(client)
 
     local button = wibox.widget {
@@ -171,8 +170,7 @@ local function client_task(favorites_layout, task_list, client)
         indicator
     }
 
-    client:connect_signal("property::class", function()
-        client.font_icon = beautiful.get_font_icon_for_app_name(client.class)
+    client:connect_signal("property::font_icon", function()
         button:set_icon(client.font_icon)
         indicator:set_bg(client.font_icon.color)
     end)
@@ -242,7 +240,7 @@ local function new(s)
 
     -- Wait a little bit so clients show at the correct order
     gtimer {
-        timeout = 3.5,
+        timeout = 2,
         single_shot = true,
         call_now = false,
         autostart = true,

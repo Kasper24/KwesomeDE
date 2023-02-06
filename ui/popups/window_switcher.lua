@@ -39,7 +39,6 @@ local function client_widget(self, client)
         return
     end
 
-    local font_icon = beautiful.get_font_icon_for_app_name(client.class)
     local is_selected = client == self._private.selected_client
 
     local widget = wibox.widget {
@@ -54,7 +53,7 @@ local function client_widget(self, client)
             normal_bg = beautiful.colors.background,
             normal_border_width = dpi(5),
             normal_border_color = beautiful.colors.surface,
-            on_normal_border_color = font_icon.color,
+            on_normal_border_color = client.font_icon.color,
             on_release = function()
                 self:select_client(client)
                 self:hide()
@@ -73,7 +72,7 @@ local function client_widget(self, client)
                             widget = widgets.text,
                             halign = "center",
                             valign = "center",
-                            icon = font_icon
+                            icon = client.font_icon
                         },
                         {
                             widget = widgets.text,
@@ -98,14 +97,17 @@ local function clients_widget(self)
         spacing = dpi(15)
     }
 
+    self._private.sorted_clients = {}
     for _, tag in ipairs(helpers.client.get_sorted_clients()) do
         local master = tag["master"]
         if master ~= nil then
             clients_layout:add(client_widget(self, master))
+            table.insert(self._private.sorted_clients, master)
         end
 
         for _, client in ipairs(tag.clients) do
             clients_layout:add(client_widget(self, client))
+            table.insert(self._private.sorted_clients, client)
         end
     end
 
@@ -122,7 +124,7 @@ function window_switcher:select_client(client)
 end
 
 function window_switcher:cycle_clients(increase)
-    local client = gtable.cycle_value(capi.client.get(), self._private.selected_client, (increase and 1 or -1))
+    local client = gtable.cycle_value(self._private.sorted_clients, self._private.selected_client, (increase and 1 or -1))
     self:select_client(client)
 end
 

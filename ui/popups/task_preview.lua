@@ -68,8 +68,6 @@ function task_preview:show(c, args)
         self.widget.y = args.coords.y
     end
 
-    local font_icon = beautiful.get_font_icon_for_app_name(c.class)
-
     local widget = wibox.widget {
         widget = wibox.container.constraint,
         mode = "max",
@@ -88,7 +86,7 @@ function task_preview:show(c, args)
                         widget = widgets.text,
                         halign = "center",
                         valign = "center",
-                        icon = font_icon
+                        icon = c.font_icon
                     },
                     {
                         widget = widgets.text,

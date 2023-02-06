@@ -27,7 +27,7 @@ local function get_client_thumbnail(client)
 
     if client.thumbnail == nil then
         return {
-            font_icon = beautiful.get_font_icon_for_app_name(client.class)
+            font_icon = client.font_icon
         }
     else
         return {
