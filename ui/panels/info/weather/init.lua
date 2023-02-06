@@ -232,7 +232,7 @@ local function new()
 
     local hourly_forecast_graph = wibox.widget {
         widget = widgets.graph,
-        forced_height = dpi(80),
+        forced_height = dpi(100),
         stack = false,
         scale = true,
         step_width = dpi(18),
@@ -244,7 +244,7 @@ local function new()
 
     local hourly_forecast_graph_border = wibox.widget {
         widget = widgets.graph,
-        forced_height = dpi(80),
+        forced_height = dpi(100),
         stack = false,
         scale = true,
         step_width = dpi(18),
