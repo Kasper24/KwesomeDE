@@ -281,14 +281,13 @@ capi.client.connect_signal("manage", function(c)
     if not capi.awesome.startup then
         c:to_secondary_section()
     end
-    c.font_icon = beautiful.get_font_icon_for_app_name(c.class)
-    c:connect_signal("property::class", function()
-        c.font_icon = beautiful.get_font_icon_for_app_name(c.class)
-    end)
 end)
 
 capi.client.connect_signal("tagged", function(c, t)
     c.font_icon = beautiful.get_font_icon_for_app_name(c.class)
+    c:connect_signal("property::class", function()
+        c.font_icon = beautiful.get_font_icon_for_app_name(c.class)
+    end)
 end)
 
 capi.client.connect_signal("property::floating", function(c)
