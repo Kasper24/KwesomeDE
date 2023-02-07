@@ -69,10 +69,10 @@ local function client_widget(self, client)
                         forced_height = dpi(30),
                         spacing = dpi(10),
                         {
-                            widget = widgets.text,
+                            widget = widgets.client_font_icon,
                             halign = "center",
                             valign = "center",
-                            icon = client.font_icon
+                            client = client
                         },
                         {
                             widget = widgets.text,

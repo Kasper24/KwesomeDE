@@ -5,7 +5,7 @@
 local awful = require("awful")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
-local twidget = require("ui.widgets.text")
+local cfiwidget = require("ui.widgets.client_font_icon")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 
@@ -25,32 +25,24 @@ local function get_client_thumbnail(client)
         client.thumbnail = screenshot.surface
     end
 
-    if client.thumbnail == nil then
-        return {
-            font_icon = client.font_icon
-        }
-    else
-        return {
-            thumbnail = client.thumbnail
-        }
-    end
+    return client.thumbnail
 end
 
 local function new(client)
     local thumbnail = get_client_thumbnail(client)
-    local widget = thumbnail.thumbnail and wibox.widget {
+    local widget = thumbnail and wibox.widget {
         widget = wibox.widget.imagebox,
         horizontal_fit_policy = "fit",
         vertical_fit_policy = "fit",
-        image = thumbnail.thumbnail
+        image = thumbnail
     } or wibox.widget {
-        widget = twidget,
+        widget = cfiwidget,
         forced_width = dpi(300),
         forced_height = dpi(300),
         halign = "center",
         valign = "center",
-        size = (thumbnail.font_icon.size or 20) * 2,
-        icon = thumbnail.font_icon
+        size = (client.font_icon.size or 20) * 2,
+        client = client
     }
 
     return widget

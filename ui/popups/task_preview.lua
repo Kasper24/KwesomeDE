@@ -84,10 +84,10 @@ function task_preview:show(c, args)
                     forced_height = dpi(30),
                     spacing = dpi(10),
                     {
-                        widget = widgets.text,
+                        widget = widgets.client_font_icon,
                         halign = "center",
                         valign = "center",
-                        icon = c.font_icon
+                        client = c
                     },
                     {
                         widget = widgets.text,

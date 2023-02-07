@@ -8,6 +8,7 @@ return {
     battery_icon = require(... .. ".battery_icon"),
     calendar = require(... .. ".calendar"),
     checkbox = require(... .. ".checkbox"),
+    client_font_icon  = require(... .. ".client_font_icon"),
     client_menu = require(... .. ".client_menu"),
     client_thumbnail = require(... .. ".client_thumbnail"),
     dropdown = require(... .. ".dropdown"),

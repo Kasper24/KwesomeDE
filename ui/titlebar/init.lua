@@ -87,10 +87,10 @@ capi.client.connect_signal("request::titlebars", function(c)
                 layout = wibox.layout.fixed.horizontal,
                 spacing = dpi(15),
                 {
-                    widget = widgets.text,
+                    widget = widgets.client_font_icon,
                     halign = "center",
-                    icon = c.font_icon,
-                    size = (c.font_icon.size or 20) * 0.8
+                    client = c,
+                    scale = 0.8
                 },
                 {
                     widget = widgets.text,
