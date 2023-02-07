@@ -381,10 +381,65 @@ function _client.get_sorted_clients()
     return clients
 end
 
-function _client.get_client_index(client)
-    local client_idx = awful.client.idx(client)
-    return client.first_tag.index + (client_idx.col or 0) + (client_idx.idx or 0)
+function _client.idx(c)
+    c = c or capi.client.focus
+    if not c then return end
 
+    local clients = capi.client.get()
+    local idx = nil
+    for k, cl in ipairs(clients) do
+        if cl == c then
+            idx = k
+            break
+        end
+    end
+
+    local t = c.screen.selected_tag
+    local nmaster = t.master_count
+
+    -- This will happen for floating or maximized clients
+    if not idx then return nil end
+
+    if idx <= nmaster then
+        return {idx = idx, col=0, num=nmaster}
+    end
+    local nother = #clients - nmaster
+    idx = idx - nmaster
+
+    -- rather than regenerate the column number we can calculate it
+    -- based on the how the tiling algorithm places clients we calculate
+    -- the column, we could easily use the for loop in the program but we can
+    -- calculate it.
+    local ncol = t.column_count
+    -- minimum number of clients per column
+    local percol = math.floor(nother / ncol)
+    -- number of columns with an extra client
+    local overcol = math.fmod(nother, ncol)
+    -- number of columns filled with [percol] clients
+    local regcol = ncol - overcol
+
+    local col = math.floor( (idx - 1) / percol) + 1
+    if  col > regcol then
+        -- col = math.floor( (idx - (percol*regcol) - 1) / (percol + 1) ) + regcol + 1
+        -- simplified
+        col = math.floor( (idx + regcol + percol) / (percol+1) )
+        -- calculate the index in the column
+        idx = idx - percol*regcol - (col - regcol - 1) * (percol+1)
+        percol = percol+1
+    else
+        idx = idx - percol*(col-1)
+    end
+
+    return {idx = idx, col=col, num=percol}
+end
+
+function _client.get_client_index(client)
+    local data = _client.idx(client)
+    local t = client.first_tag.index + data.col + data.idx
+    print(string.format("%s: tag: %s col: %s idx: %s", client.class, client.first_tag.index, data.col, data.idx))
+    -- print(data.col)
+    -- print(data.idx)
+    return t
     -- for index, c in ipairs(_client.get_sorted_clients()) do
     --     if client == c then
     --         return index

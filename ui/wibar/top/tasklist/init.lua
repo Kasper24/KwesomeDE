@@ -212,32 +212,44 @@ local function new()
         spacing = dpi(15)
     }
 
+    capi.client.connect_signal("manage", function(client)
+        if favorites_daemon:is_favorite(client.class) then
+            favorites:remove(client.favorite_widget)
+        end
+    end)
+
+    capi.client.connect_signal("tagged", function(client)
+        if client.tasklist_widget then
+            task_list:remove_widgets(client.tasklist_widget)
+        end
+        client.tasklist_widget = client_widget(favorites, client)
+        local client_index = helpers.client.get_client_index(client)
+        if #task_list.children < client_index then
+            task_list:add(client.tasklist_widget)
+        else
+            task_list:insert(client_index, client.tasklist_widget)
+        end
+    end)
+
+    -- capi.client.connect_signal("request::tag", function(client)
+    --     task_list:remove_widgets(client.tasklist_widget)
+    --     client.tasklist_widget = client_widget(favorites, client)
+    --     local client_index = helpers.client.get_client_index(client)
+    --     if #task_list.children < client_index then
+    --         task_list:add(client.tasklist_widget)
+    --     else
+    --         task_list:insert(client_index, client.tasklist_widget)
+    --     end
+    -- end)
+
     capi.client.connect_signal("unmanage", function(client)
         task_list:remove_widgets(client.tasklist_widget)
     end)
 
     capi.client.connect_signal("swapped", function(client, other_client, is_source)
-        if is_source then
-            -- task_list:remove_widgets(client.tasklist_widget)
-            -- task_list:remove_widgets(other_client.tasklist_widget)
-
-            -- client.tasklist_widget = client_widget(favorites, client)
-            -- other_client.tasklist_widget = client_widget(favorites, other_client)
-            -- task_list:insert(1, client.tasklist_widget)
-            -- task_list:insert(2, other_client.tasklist_widget)
+        if is_source and client.tasklist_widget and other_client.tasklist_widget then
+            task_list:swap_widgets(client.tasklist_widget, other_client.tasklist_widget)
         end
-    end)
-
-    capi.client.connect_signal("tagged", function(client)
-        if favorites_daemon:is_favorite(client.class) then
-            favorites:remove(client.favorite_widget)
-        end
-
-        if client.tasklist_widget ~= nil then
-            task_list:remove_widgets(client.tasklist_widget)
-        end
-        client.tasklist_widget = client_widget(favorites, client)
-        task_list:insert(helpers.client.get_client_index(client), client.tasklist_widget)
     end)
 
     for class, client in pairs(favorites_daemon:get_favorites()) do
