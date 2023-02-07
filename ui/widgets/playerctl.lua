@@ -3,6 +3,7 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 local gshape = require("gears.shape")
+local gcolor = require("gears.color")
 local wibox = require("wibox")
 local twidget = require("ui.widgets.text")
 local tbwidget = require("ui.widgets.button.text")
@@ -289,14 +290,13 @@ local function create_point_maker()
     return self
 end
 
-local function get_draw(pos, pm)
-    return function(_, _, cr, _, height)
+local function get_draw(pm)
+    return function(self, _, cr, __, height)
         pm:set_height(height)
 
-        -- cr:set_source_rgb(1.0, 1.0, 1.0)
-        cr:set_source(require("gears.color")(beautiful.colors.background))
+        cr:set_source(gcolor(beautiful.colors.background))
 
-        if pos == 1 then
+        if self.pos == 1 then
             cr:move_to(pm.p1.x, pm.p1.y - pm.p1d.y)
             cr:line_to(pm.p6.x, pm.p6.y - pm.p6d.y)
             cr:line_to(pm.p4.x, pm.p4.y - pm.p4d.y)
@@ -304,16 +304,16 @@ local function get_draw(pos, pm)
             return
         end
 
-        cr:move_to(pm.p1.x, pm.p1.y - pm.p1d.y * pos)
-        cr:line_to(pm.p2.x, pm.p2.y - pm.p2d.y * pos)
-        cr:line_to(pm.p3.x, pm.p3.y - pm.p3d.y * pos)
-        cr:line_to(pm.p4.x, pm.p4.y - pm.p4d.y * pos)
+        cr:move_to(pm.p1.x, pm.p1.y - pm.p1d.y * self.pos)
+        cr:line_to(pm.p2.x, pm.p2.y - pm.p2d.y * self.pos)
+        cr:line_to(pm.p3.x, pm.p3.y - pm.p3d.y * self.pos)
+        cr:line_to(pm.p4.x, pm.p4.y - pm.p4d.y * self.pos)
         cr:fill()
 
-        cr:move_to(pm.p5.x - pm.p5d.x * pos, pm.p5.y - pm.p5d.y * pos)
-        cr:line_to(pm.p6.x, pm.p6.y - pm.p6d.y * pos)
-        cr:line_to(pm.p7.x, pm.p7.y - pm.p7d.y * pos)
-        cr:line_to(pm.p8.x - pm.p8d.x * pos, pm.p8.y - pm.p8d.y * pos)
+        cr:move_to(pm.p5.x - pm.p5d.x * self.pos, pm.p5.y - pm.p5d.y * self.pos)
+        cr:line_to(pm.p6.x, pm.p6.y - pm.p6d.y * self.pos)
+        cr:line_to(pm.p7.x, pm.p7.y - pm.p7d.y * self.pos)
+        cr:line_to(pm.p8.x - pm.p8d.x * self.pos, pm.p8.y - pm.p8d.y * self.pos)
         cr:fill()
     end
 end
@@ -327,10 +327,11 @@ function playerctl.play(daemon)
         widget = wibox.widget.make_base_widget,
         forced_width = dpi(25),
         forced_height = dpi(25),
+        pos = 0,
         fit = function(_, _, _, height)
             return height, height
         end,
-        draw = get_draw(0, point_maker)
+        draw = get_draw(point_maker)
     }
 
     local button = wibox.widget {
@@ -347,7 +348,7 @@ function playerctl.play(daemon)
         duration = 0.2,
         easing = helpers.animation.easing.linear,
         update = function(self, pos)
-            widget.draw = get_draw(pos, point_maker)
+            widget.pos = pos
             widget:emit_signal("widget::redraw_needed")
         end
     }

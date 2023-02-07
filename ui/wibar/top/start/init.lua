@@ -8,6 +8,7 @@ local app_launcher = require("ui.popups.app_launcher")
 local beautiful = require("beautiful")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
+local pi = math.pi
 local capi = {
     awesome = awesome
 }
@@ -16,9 +17,9 @@ local start = {
     mt = {}
 }
 
-local function draw(pos, color)
-    return function(_, _, cr, _, height)
-        cr:set_source_rgb(color.r / 255, color.g / 255, color.b / 255)
+local function draw()
+    return function(self, __, cr, ___, height)
+        cr:set_source_rgb(self.color.r / 255, self.color.g / 255, self.color.b / 255)
         cr:set_line_width(0.1 * height)
 
         -- top, middle, bottom, left, right, radius, radius/2 pi*2
@@ -30,14 +31,14 @@ local function draw(pos, color)
         r = 0.75 * height
         ra = 0.05 * height
         ra2 = ra / 2
-        pi2 = math.pi * 2
+        pi2 = pi * 2
 
-        if pos <= 0.5 then
+        if self.pos <= 0.5 then
 
-            local tpos = t + (m - t) * pos
-            local bpos = b - (b - m) * pos
+            local tpos = t + (m - t) * self.pos
+            local bpos = b - (b - m) * self.pos
 
-            pos = pos * 2
+            self.pos = self.pos * 2
 
             cr:arc(l, tpos, ra, 0, pi2)
             cr:arc(r, tpos, ra, 0, pi2)
@@ -62,13 +63,13 @@ local function draw(pos, color)
 
             cr:stroke()
         else
-            pos = (pos - 0.5) * 2
+            self.pos = (self.pos - 0.5) * 2
 
-            cr:move_to(l, m - (m - l) * pos)
-            cr:line_to(r, m + (r - m) * pos)
+            cr:move_to(l, m - (m - l) * self.pos)
+            cr:line_to(r, m + (r - m) * self.pos)
 
-            cr:move_to(l, m + (r - m) * pos)
-            cr:line_to(r, m - (m - l) * pos)
+            cr:move_to(l, m + (r - m) * self.pos)
+            cr:line_to(r, m - (m - l) * self.pos)
 
             cr:stroke()
         end
@@ -80,13 +81,15 @@ local function new()
     local off_color = beautiful.colors.on_background
 
     local widget = wibox.widget {
+        widget = wibox.widget.make_base_widget,
         forced_width = dpi(45),
         forced_height = dpi(60),
-        draw = draw(0, helpers.color.hex_to_rgb(off_color)),
+        pos = 0,
+        color = helpers.color.hex_to_rgb(off_color),
+        draw = draw(),
         fit = function(_, _, _, height)
             return height, height
         end,
-        widget = wibox.widget.make_base_widget
     }
 
     local button = wibox.widget {
@@ -105,7 +108,8 @@ local function new()
         easing = helpers.animation.easing.linear,
         duration = 0.2,
         update = function(self, pos)
-            widget.draw = draw(pos.height, pos.color)
+            widget.pos = pos.height
+            widget.color = pos.color
             widget:emit_signal("widget::redraw_needed")
         end
     }
