@@ -11,6 +11,7 @@ local widgets = require("ui.widgets")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local capi = {
+    root = root,
     client = client
 }
 
@@ -143,7 +144,9 @@ function window_switcher:hide(focus)
         focus_client(self._private.selected_client)
     end
 
-    awful.keygrabber.stop(self._private.keygrabber)
+    -- I couldn't get the keygrabber to stop when pressing on the client button
+    -- and not actually relasing the alt key
+    capi.root.fake_input("key_release", "Alt_L")
 
     self.widget.visible = false
     self.widget.widget = nil
