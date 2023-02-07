@@ -72,7 +72,7 @@ function task_preview:show(c, args)
         widget = wibox.container.constraint,
         mode = "max",
         width = dpi(300),
-        height = dpi(150),
+        height = dpi(200),
         {
             widget = wibox.container.margin,
             margins = dpi(15),
