@@ -88,6 +88,8 @@ local function client_widget(self, client)
         }
     }
 
+    client.window_switcher_widget = widget
+
     return widget
 end
 
@@ -110,8 +112,9 @@ local function clients_widget(self)
 end
 
 function window_switcher:select_client(client)
+    self._private.selected_client.window_switcher_widget:get_children_by_id("button")[1]:turn_off()
+    client.window_switcher_widget:get_children_by_id("button")[1]:turn_on()
     self._private.selected_client = client
-    self.widget.widget = clients_widget(self)
 end
 
 function window_switcher:cycle_clients(increase)
