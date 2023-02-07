@@ -12,6 +12,7 @@ local favorites_daemon = require("daemons.system.favorites")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local ipairs = ipairs
+local pairs = pairs
 local capi = {
     client = client
 }
@@ -20,26 +21,28 @@ local tasklist = {
     mt = {}
 }
 
-
 local favorites = {}
 
 local function favorite_widget(layout, client, class)
     favorites[class] = true
 
-    local menu = widgets.menu {widgets.menu.button {
-        icon = client.font_icon,
-        text = class,
-        on_press = function()
-            awful.spawn(client.command, false)
-        end
-    }, widgets.menu.button {
-        text = "Unpin from taskbar",
-        on_press = function()
-            favorites_daemon:remove_favorite({
-                class = class
-            })
-        end
-    }}
+    local menu = widgets.menu {
+        widgets.menu.button {
+            icon = client.font_icon,
+            text = class,
+            on_press = function()
+                awful.spawn(client.command, false)
+            end
+        },
+        widgets.menu.button {
+            text = "Unpin from taskbar",
+            on_press = function()
+                favorites_daemon:remove_favorite({
+                    class = class
+                })
+            end
+        }
+    }
 
     local font_icon = beautiful.get_font_icon_for_app_name(class)
 
@@ -82,7 +85,7 @@ local function favorite_widget(layout, client, class)
     return button
 end
 
-local function client_widget(favorites_layout, client)
+local function client_widget(client)
     local menu = widgets.client_menu(client)
 
     local button = wibox.widget {
@@ -185,20 +188,22 @@ local function client_widget(favorites_layout, client)
 
     client:connect_signal("unmanage", function()
         menu:hide()
-
-        for _, c in ipairs(capi.client.get()) do
-            if c.class == client.class then
-                return
-            end
-        end
-
-        local client_favorite = favorites_daemon:is_favorite(client.class)
-        if client_favorite ~= nil and favorites[client.class] == nil then
-            favorites_layout:add(favorite_widget(favorites_layout, client_favorite, client.class))
-        end
     end)
 
     return widget
+end
+
+local function add_client_widget(client, task_list)
+    if client.tasklist_widget then
+        task_list:remove_widgets(client.tasklist_widget)
+    end
+    client.tasklist_widget = client_widget(client)
+    local client_index = helpers.client.get_client_index(client)
+    if #task_list.children < client_index then
+        task_list:add(client.tasklist_widget)
+    else
+        task_list:insert(client_index, client.tasklist_widget)
+    end
 end
 
 local function new()
@@ -218,38 +223,39 @@ local function new()
         end
     end)
 
-    capi.client.connect_signal("tagged", function(client)
-        if client.tasklist_widget then
-            task_list:remove_widgets(client.tasklist_widget)
-        end
-        client.tasklist_widget = client_widget(favorites, client)
-        local client_index = helpers.client.get_client_index(client)
-        if #task_list.children < client_index then
-            task_list:add(client.tasklist_widget)
-        else
-            task_list:insert(client_index, client.tasklist_widget)
-        end
-    end)
-
-    -- capi.client.connect_signal("request::tag", function(client)
-    --     task_list:remove_widgets(client.tasklist_widget)
-    --     client.tasklist_widget = client_widget(favorites, client)
-    --     local client_index = helpers.client.get_client_index(client)
-    --     if #task_list.children < client_index then
-    --         task_list:add(client.tasklist_widget)
-    --     else
-    --         task_list:insert(client_index, client.tasklist_widget)
-    --     end
-    -- end)
-
     capi.client.connect_signal("unmanage", function(client)
         task_list:remove_widgets(client.tasklist_widget)
+
+        for _, c in ipairs(capi.client.get()) do
+            if c.class == client.class then
+                return
+            end
+        end
+
+        local client_favorite = favorites_daemon:is_favorite(client.class)
+        if client_favorite ~= nil and favorites[client.class] == nil then
+            favorites:add(favorite_widget(favorites, client_favorite, client.class))
+        end
     end)
 
     capi.client.connect_signal("swapped", function(client, other_client, is_source)
-        if is_source and client.tasklist_widget and other_client.tasklist_widget then
-            task_list:swap_widgets(client.tasklist_widget, other_client.tasklist_widget)
+        if is_source then
+            local client_index = helpers.client.get_client_index(client)
+            local other_client_index = helpers.client.get_client_index(other_client)
+            task_list:set(client_index, client.tasklist_widget)
+            task_list:set(other_client_index, other_client.tasklist_widget)
         end
+    end)
+
+    capi.client.connect_signal("scanned", function()
+        for _, client in ipairs(helpers.client.get_sorted_clients()) do
+            client.tasklist_widget = client_widget(client)
+            task_list:add(client.tasklist_widget)
+        end
+
+        capi.client.connect_signal("tagged", function(client)
+            add_client_widget(client, task_list)
+        end)
     end)
 
     for class, client in pairs(favorites_daemon:get_favorites()) do

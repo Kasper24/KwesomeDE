@@ -369,13 +369,12 @@ function _client.get_sorted_clients()
     local clients = capi.client.get()
 
     table.sort(clients, function(a, b)
-        local a_idx = awful.client.idx(a)
-        local b_idx = awful.client.idx(b)
-
-        local a_score = a.first_tag.index + (a_idx.col or 0) + (a_idx.idx or 0)
-        local b_score = b.first_tag.index + (b_idx.col or 0) + (b_idx.idx or 0)
-
-        return a_score < b_score
+        if a.first_tag == b.first_tag then
+            local a_data = _client.idx(a)
+            local b_data = _client.idx(b)
+            return a_data.col + a_data.idx < b_data.col + b_data.idx
+        end
+        return a.first_tag.index < b.first_tag.index
     end)
 
     return clients
@@ -434,9 +433,25 @@ function _client.idx(c)
 end
 
 function _client.get_client_index(client)
-    local data = _client.idx(client)
-    local t = client.first_tag.index + data.col + data.idx
-    print(string.format("%s: tag: %s col: %s idx: %s", client.class, client.first_tag.index, data.col, data.idx))
+    -- local clients = _client.get_sorted_clients()
+
+    for index, client1 in ipairs(_client.get_sorted_clients()) do
+        if client == client1 then
+            print(index)
+            return index
+        end
+    end
+
+    -- local data = _client.idx(client)
+    -- local t = client.first_tag.index + data.col + data.idx
+    -- local s= string.format("%s: tag: %s col: %s idx: %s", client.class, client.first_tag.index, data.col, data.idx)
+    -- require("naughty").notification {
+    --     app_font_icon = beautiful.icons.bluetooth.on,
+    --     app_name = "Bluetooth",
+    --     title = "Bluetooth",
+    --     text = s,
+    -- }
+    -- print(s)
     -- print(data.col)
     -- print(data.idx)
     return t
