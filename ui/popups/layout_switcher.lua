@@ -10,6 +10,9 @@ local beautiful = require("beautiful")
 local widgets = require("ui.widgets")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
+local capi = {
+    tag = tag
+}
 
 local layout_switcher = {}
 local instance = nil
@@ -36,34 +39,76 @@ function layout_switcher:toggle()
     end
 end
 
+local function create_layouts_for_tag(tag, layouts)
+    layouts:reset()
+
+    local color = beautiful.colors.random_accent_color()
+
+    for _, layout in ipairs(tag.layouts) do
+        local button = wibox.widget
+        {
+            layout = wibox.layout.fixed.horizontal,
+            forced_height = dpi(50),
+            {
+                layout = wibox.layout.fixed.horizontal,
+                forced_width = dpi(230),
+                spacing = dpi(15),
+                {
+                    widget = wibox.widget.imagebox,
+                    image = beautiful["layout_" .. (layout.name or "")],
+                },
+                {
+                    widget = widgets.text,
+                    size = 12,
+                    text = layout.name
+                }
+            },
+            {
+                widget = widgets.checkbox,
+                id = "checkbox",
+                color = color,
+                on_turn_on = function()
+                    tag.layout = layout
+                end
+            }
+        }
+
+        if tag.layout == layout then
+            button:get_children_by_id("checkbox")[1]:turn_on()
+        else
+            button:get_children_by_id("checkbox")[1]:turn_off()
+        end
+
+        tag:connect_signal("property::layout", function()
+            if tag.layout == layout then
+                button:get_children_by_id("checkbox")[1]:turn_on()
+            else
+                button:get_children_by_id("checkbox")[1]:turn_off()
+            end
+        end)
+
+        layouts:add(button)
+    end
+end
+
 local function new()
     local ret = gobject {}
     gtable.crush(ret, layout_switcher)
 
     ret.layout_list = awful.widget.layoutlist {
         source = awful.widget.layoutlist.source.default_layouts,
-        base_layout = wibox.widget {
-            layout = wibox.layout.grid.vertical,
-            spacing = dpi(15),
-            forced_num_cols = 4
-        },
-        widget_template = {
-            widget = wibox.container.background,
-            id = "background_role",
-            forced_width = dpi(70),
-            forced_height = dpi(70),
-            {
-                widget = wibox.container.margin,
-                margins = dpi(25),
-                {
-                    widget = wibox.widget.imagebox,
-                    id = "icon_role",
-                    forced_height = dpi(70),
-                    forced_width = dpi(70)
-                }
-            }
-        }
     }
+
+    local layouts = wibox.widget {
+        layout = wibox.layout.fixed.vertical,
+        spacing = dpi(15)
+    }
+
+    capi.tag.connect_signal("property::selected", function(tag)
+        create_layouts_for_tag(tag, layouts)
+    end)
+
+    create_layouts_for_tag(awful.screen.focused().selected_tag, layouts)
 
     ret.widget = widgets.popup {
         placement = awful.placement.centered,
@@ -74,7 +119,7 @@ local function new()
         widget = wibox.widget {
             widget = wibox.container.margin,
             margins = dpi(25),
-            ret.layout_list
+            layouts
         }
     }
 
