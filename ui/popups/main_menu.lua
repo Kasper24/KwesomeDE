@@ -77,38 +77,44 @@ end
 local function layout_sub_menu()
     local menu = widgets.menu {}
 
-    capi.tag.connect_signal("property::selected", function(t)
+    local function create_layout_menu_for_tag(tag)
         menu:reset()
 
         local color = beautiful.colors.random_accent_color()
 
-        for _, layout in ipairs(t.layouts) do
+        for _, layout in ipairs(tag.layouts) do
             local button = widgets.menu.checkbox_button {
                 text = layout.name,
                 image = beautiful["layout_" .. (layout.name or "")],
                 color = color,
                 on_press = function()
-                    t.layout = layout
+                    tag.layout = layout
                 end
             }
 
             menu:add(button)
 
-            if t.layout == layout then
+            if tag.layout == layout then
                 button:turn_on()
             else
                 button:turn_off()
             end
 
-            t:connect_signal("property::layout", function()
-                if t.layout == layout then
+            tag:connect_signal("property::layout", function()
+                if tag.layout == layout then
                     button:turn_on()
                 else
                     button:turn_off()
                 end
             end)
         end
+    end
+
+    capi.tag.connect_signal("property::selected", function(tag)
+        create_layout_menu_for_tag(tag)
     end)
+
+    create_layout_menu_for_tag(awful.screen.focused().selected_tag)
 
     return menu
 end
