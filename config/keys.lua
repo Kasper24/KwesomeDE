@@ -804,77 +804,89 @@ awful.keyboard.append_global_keybindings({ -- Toggle app launcher
 })
 
 awful.keygrabber {
-    keybindings = {awful.key {
-        modifiers = {keys.alt},
-        key = "Escape",
-        on_press = function()
-            window_switcher:hide()
-        end
-    }, awful.key {
-        modifiers = {keys.alt},
-        key = "n",
-        on_press = function()
-            if capi.client.focus then
-                capi.client.focus.minimized = true
+    keybindings = {
+        awful.key {
+            modifiers = {keys.alt},
+            key = "Escape",
+            on_press = function()
+                window_switcher:hide()
             end
-        end
-    }, awful.key {
-        modifiers = {keys.alt},
-        key = "N",
-        on_press = function()
-            if awful.client.restore() then
-                capi.client.focus = awful.client.restore()
+        },
+        awful.key {
+            modifiers = {keys.alt},
+            key = "n",
+            on_press = function()
+                if capi.client.focus then
+                    capi.client.focus.minimized = true
+                end
             end
-        end
-    }, awful.key {
-        modifiers = {keys.alt},
-        key = "q",
-        on_press = function()
-            if capi.client.focus then
-                capi.client.focus:kill()
+        },
+        awful.key {
+            modifiers = {keys.alt},
+            key = "N",
+            on_press = function()
+                if awful.client.restore() then
+                    capi.client.focus = awful.client.restore()
+                end
             end
-        end
-    }, awful.key {
-        modifiers = {keys.alt},
-        key = "Tab",
-        on_press = function()
-            window_switcher:cycle_clients(true)
-        end
-    }, awful.key {
-        modifiers = {keys.alt},
-        key = "Left",
-        on_press = function()
-            window_switcher:cycle_clients(false)
-        end
-    }, awful.key {
-        modifiers = {keys.alt},
-        key = "Right",
-        on_press = function()
-            window_switcher:cycle_clients(true)
-        end
-    }, awful.key {
-        modifiers = {keys.alt},
-        key = "h",
-        on_press = function()
-            window_switcher:cycle_clients(false)
-        end
-    }, awful.key {
-        modifiers = {keys.alt},
-        key = "l",
-        on_press = function()
-            window_switcher:cycle_clients(true)
-        end
-    }},
-    root_keybindings = {awful.key {
-        modifiers = {keys.alt},
-        key = "Tab",
-        on_press = function()
-        end
-    }},
+        },
+        awful.key {
+            modifiers = {keys.alt},
+            key = "q",
+            on_press = function()
+                if capi.client.focus then
+                    capi.client.focus:kill()
+                end
+            end
+        },
+        awful.key {
+            modifiers = {keys.alt},
+            key = "Tab",
+            on_press = function()
+                window_switcher:cycle_clients(true)
+            end
+        },
+        awful.key {
+            modifiers = {keys.alt},
+            key = "Left",
+            on_press = function()
+                window_switcher:cycle_clients(false)
+            end
+        },
+        awful.key {
+            modifiers = {keys.alt},
+            key = "Right",
+            on_press = function()
+                window_switcher:cycle_clients(true)
+            end
+        },
+        awful.key {
+            modifiers = {keys.alt},
+            key = "h",
+            on_press = function()
+                window_switcher:cycle_clients(false)
+            end
+        },
+        awful.key {
+            modifiers = {keys.alt},
+            key = "l",
+            on_press = function()
+                window_switcher:cycle_clients(true)
+            end
+        }
+    },
+    root_keybindings = {
+        awful.key {
+            modifiers = {keys.alt},
+            key = "Tab",
+            on_press = function()
+            end
+        }
+    },
     stop_key = keys.alt,
     stop_event = "release",
-    start_callback = function(keygrabber)
-        window_switcher:show(true, keygrabber)
+    start_callback = function()
+        window_switcher:show(true)
     end,
     stop_callback = function()
         window_switcher:hide()
@@ -882,30 +894,36 @@ awful.keygrabber {
 }
 
 awful.keygrabber {
-    keybindings = {awful.key {
-        modifiers = {keys.mod},
-        key = "a",
-        on_press = function()
-            layout_switcher:cycle_layouts(false)
-        end
-    }, awful.key {
-        modifiers = {keys.mod},
-        key = "z",
-        on_press = function()
-            layout_switcher:cycle_layouts(true)
-        end
-    }},
-    root_keybindings = {awful.key {
-        modifiers = {keys.mod},
-        key = "a",
-        on_press = function()
-        end
-    }, awful.key {
-        modifiers = {keys.mod},
-        key = "z",
-        on_press = function()
-        end
-    }},
+    keybindings = {
+        awful.key {
+            modifiers = {keys.mod},
+            key = "a",
+            on_press = function()
+                layout_switcher:cycle_layouts(false)
+            end
+        },
+        awful.key {
+            modifiers = {keys.mod},
+            key = "z",
+            on_press = function()
+                layout_switcher:cycle_layouts(true)
+            end
+        }
+    },
+    root_keybindings = {
+        awful.key {
+            modifiers = {keys.mod},
+            key = "a",
+            on_press = function()
+            end
+        },
+        awful.key {
+            modifiers = {keys.mod},
+            key = "z",
+            on_press = function()
+            end
+        }
+    },
     stop_key = keys.mod,
     stop_event = "release",
     start_callback = function()
