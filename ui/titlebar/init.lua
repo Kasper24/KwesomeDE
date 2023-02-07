@@ -3,6 +3,7 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 local awful = require("awful")
+local gshape = require("gears.shape")
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
@@ -18,26 +19,26 @@ capi.client.connect_signal("request::titlebars", function(c)
 
     -- No clue why by minimizng only works if I do it via on_release?
     local minimize = wibox.widget {
-        widget = widgets.button.text.normal,
-        forced_width = dpi(40),
-        forced_height = dpi(40),
-        normal_bg = color,
-        text_normal_bg = beautiful.colors.cyan,
-        icon = beautiful.icons.triangle,
-        size = 12,
+        widget = widgets.button.elevated.normal,
+        forced_width = dpi(20),
+        forced_height = dpi(20),
+        normal_shape = gshape.circle,
+        normal_bg = beautiful.colors.cyan,
+        hover_bg = beautiful.colors.on_background,
+        press_bg = beautiful.colors.on_background,
         on_release = function(self)
             c.minimized = not c.minimized
         end
     }
 
     local maximize = wibox.widget {
-        widget = widgets.button.text.normal,
-        forced_width = dpi(40),
-        forced_height = dpi(40),
-        normal_bg = color,
-        text_normal_bg = beautiful.colors.green,
-        icon = beautiful.icons.square,
-        size = 12,
+        widget = widgets.button.elevated.normal,
+        forced_width = dpi(20),
+        forced_height = dpi(20),
+        normal_shape = gshape.circle,
+        normal_bg = beautiful.colors.green,
+        hover_bg = beautiful.colors.on_background,
+        press_bg = beautiful.colors.on_background,
         on_release = function(self)
             c.maximized = not c.maximized
             c:raise()
@@ -45,28 +46,28 @@ capi.client.connect_signal("request::titlebars", function(c)
     }
 
     local close = wibox.widget {
-        widget = widgets.button.text.normal,
-        forced_width = dpi(40),
-        forced_height = dpi(40),
-        normal_bg = color,
-        text_normal_bg = beautiful.colors.error,
-        icon = beautiful.icons.circle,
-        size = 12,
+        widget = widgets.button.elevated.normal,
+        forced_width = dpi(20),
+        forced_height = dpi(20),
+        normal_shape = gshape.circle,
+        normal_bg = beautiful.colors.error,
+        hover_bg = beautiful.colors.on_background,
+        press_bg = beautiful.colors.on_background,
         on_release = function()
             c:kill()
         end
     }
 
     c:connect_signal("focus", function()
-        minimize:set_color(beautiful.colors.cyan)
-        maximize:set_color(beautiful.colors.green)
-        close:set_color(beautiful.colors.error)
+        minimize:set_normal_bg(beautiful.colors.cyan)
+        maximize:set_normal_bg(beautiful.colors.green)
+        close:set_normal_bg(beautiful.colors.error)
     end)
 
     c:connect_signal("unfocus", function()
-        minimize:set_color(beautiful.colors.surface)
-        maximize:set_color(beautiful.colors.surface)
-        close:set_color(beautiful.colors.surface)
+        minimize:set_normal_bg(beautiful.colors.surface)
+        maximize:set_normal_bg(beautiful.colors.surface)
+        close:set_normal_bg(beautiful.colors.surface)
     end)
 
     local menu = widgets.client_menu(c)
@@ -164,6 +165,7 @@ capi.client.connect_signal("request::titlebars", function(c)
             halign = "right",
             {
                 layout = wibox.layout.fixed.horizontal,
+                spacing = dpi(15),
                 minimize,
                 maximize,
                 close,
