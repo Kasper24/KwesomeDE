@@ -73,6 +73,8 @@ local function colors()
 end
 
 local function icons()
+    beautiful.theme_assets.recolor_layout(theme, theme.colors.on_background)
+
     local font_awesome_6_solid_font_name = "Font Awesome 6 Pro Solid "
     local font_awesome_6_brands_font_name = "Font Awesome 6 Brands "
     local nerd_font_name = "Nerd Font Mono "
@@ -882,26 +884,6 @@ local function opacity()
     theme.opacity_fullscreen_new = nil
 end
 
-local function layoutlist()
-    theme.layoutlist_fg_normal = nil
-    theme.layoutlist_bg_normal = "#FFFFFF00"
-    theme.layoutlist_fg_selected = nil
-    theme.layoutlist_bg_selected = theme.colors.surface
-    theme.layoutlist_disable_icon = false
-    theme.layoutlist_disable_name = false
-    theme.layoutlist_font = theme.font
-    theme.layoutlist_font_selected = theme.font_name .. "Bold 16"
-    theme.layoutlist_spacing = dpi(0)
-    theme.layoutlist_shape = helpers.ui.rrect(beautiful.border_radius)
-    theme.layoutlist_shape_border_width = 0
-    theme.layoutlist_shape_border_color = 0
-    theme.layoutlist_shape_selected = helpers.ui.rrect(beautiful.border_radius)
-    theme.layoutlist_shape_border_width_selected = 0
-    theme.layoutlist_shape_border_color_selected = 0
-
-    beautiful.theme_assets.recolor_layout(theme, theme.colors.on_background)
-end
-
 local function notification()
     theme.notification_spacing = dpi(30)
 end
@@ -958,7 +940,6 @@ icons()
 assets()
 defaults()
 opacity()
-layoutlist()
 notification()
 systray()
 tabbed()
