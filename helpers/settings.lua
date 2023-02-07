@@ -22,6 +22,10 @@ function settings:get_value(key)
     return self.settings:get_value(key).value
 end
 
+function settings:get_direct(key)
+    return self.settings:get_value(key)
+end
+
 local function new()
     local ret = gobject {}
     gtable.crush(ret, settings, true)

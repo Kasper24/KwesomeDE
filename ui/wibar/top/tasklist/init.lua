@@ -23,28 +23,26 @@ local tasklist = {
 
 local favorites = {}
 
-local function favorite_widget(layout, client, class)
+local function favorite_widget(layout, command, class)
     favorites[class] = true
+
+    local font_icon = beautiful.get_font_icon_for_app_name(class)
 
     local menu = widgets.menu {
         widgets.menu.button {
-            icon = client.font_icon,
+            icon = font_icon,
             text = class,
             on_press = function()
-                awful.spawn(client.command, false)
+                awful.spawn(command, false)
             end
         },
         widgets.menu.button {
-            text = "Unpin from taskbar",
+            text = "Unpin from Taskbar",
             on_press = function()
-                favorites_daemon:remove_favorite({
-                    class = class
-                })
+                favorites_daemon:remove_favorite{class = class}
             end
         }
     }
-
-    local font_icon = beautiful.get_font_icon_for_app_name(class)
 
     local button = wibox.widget {
         widget = wibox.container.margin,
@@ -54,10 +52,9 @@ local function favorite_widget(layout, client, class)
             forced_width = dpi(65),
             forced_height = dpi(65),
             icon = font_icon,
-            size = 20,
             on_release = function()
                 menu:hide()
-                awful.spawn(client.command, false)
+                awful.spawn(command, false)
             end,
             on_secondary_press = function(self)
                 menu:toggle{
@@ -73,11 +70,13 @@ local function favorite_widget(layout, client, class)
 
     favorites_daemon:connect_signal(class .. "::removed", function()
         layout:remove_widgets(button)
+        menu:hide()
     end)
 
     capi.client.connect_signal("manage", function(c)
         if c.class == class then
             layout:remove_widgets(button)
+            menu:hide()
             favorites[class] = nil
         end
     end)
@@ -193,19 +192,6 @@ local function client_widget(client)
     return widget
 end
 
-local function add_client_widget(client, task_list)
-    if client.tasklist_widget then
-        task_list:remove_widgets(client.tasklist_widget)
-    end
-    client.tasklist_widget = client_widget(client)
-    local client_index = helpers.client.get_client_index(client)
-    if #task_list.children < client_index then
-        task_list:add(client.tasklist_widget)
-    else
-        task_list:insert(client_index, client.tasklist_widget)
-    end
-end
-
 local function new()
     local favorites = wibox.widget {
         layout = wibox.layout.flex.horizontal,
@@ -218,7 +204,7 @@ local function new()
     }
 
     capi.client.connect_signal("manage", function(client)
-        if favorites_daemon:is_favorite(client.class) then
+        if favorites_daemon:is_favorite(client) then
             favorites:remove(client.favorite_widget)
         end
     end)
@@ -232,9 +218,9 @@ local function new()
             end
         end
 
-        local client_favorite = favorites_daemon:is_favorite(client.class)
-        if client_favorite ~= nil and favorites[client.class] == nil then
-            favorites:add(favorite_widget(favorites, client_favorite, client.class))
+        local command = favorites_daemon:is_favorite(client)
+        if command ~= nil and favorites[client.class] == nil then
+            favorites:add(favorite_widget(favorites, command, client.class))
         end
     end)
 
@@ -254,12 +240,21 @@ local function new()
         end
 
         capi.client.connect_signal("tagged", function(client)
-            add_client_widget(client, task_list)
+            if client.tasklist_widget then
+                task_list:remove_widgets(client.tasklist_widget)
+            end
+            client.tasklist_widget = client_widget(client)
+            local client_index = helpers.client.get_client_index(client)
+            if #task_list.children < client_index then
+                task_list:add(client.tasklist_widget)
+            else
+                task_list:insert(client_index, client.tasklist_widget)
+            end
         end)
     end)
 
-    for class, client in pairs(favorites_daemon:get_favorites()) do
-        favorites:add(favorite_widget(favorites, client, class))
+    for class, command in pairs(favorites_daemon:get_favorites()) do
+        favorites:add(favorite_widget(favorites, command, class))
     end
 
     return wibox.widget {

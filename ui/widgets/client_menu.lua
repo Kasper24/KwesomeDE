@@ -43,6 +43,26 @@ local function new(client)
                                 client_checkbox_button(client, "below", "Below"),
                                 client_checkbox_button(client, "ontop", "On Top")}
 
+    local pin_to_taskbar_button = mwidget.checkbox_button {
+        color = client.font_icon.color,
+        text = "Pin to Taskbar",
+        on_press = function(self)
+            if favorites_daemon:is_favorite(client) then
+                self:turn_off()
+                favorites_daemon:remove_favorite(client)
+            else
+                self:turn_on()
+                favorites_daemon:add_favorite(client)
+            end
+        end
+    }
+
+    if favorites_daemon:is_favorite(client) then
+        pin_to_taskbar_button:turn_on()
+    else
+        pin_to_taskbar_button:turn_off()
+    end
+
     local menu = mwidget {
         mwidget.button {
             icon = client.font_icon,
@@ -51,14 +71,7 @@ local function new(client)
                 client:jump_to()
             end
         },
-        mwidget.button {
-            text = favorites_daemon:is_favorite(client.class) and "Unpin from taskbar" or "Pin to taskbar",
-            on_press = function(self, text_widget)
-                favorites_daemon:toggle_favorite(client)
-                local text = favorites_daemon:is_favorite(client.class) and "Unpin from taskbar" or "Pin to taskbar"
-                text_widget:set_text(text)
-            end
-        },
+        pin_to_taskbar_button,
         mwidget.sub_menu_button {
             text = "Maximize",
             arrow_color = client.font_icon.color,

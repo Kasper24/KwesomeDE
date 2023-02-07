@@ -385,7 +385,8 @@ function menu.checkbox_button(args)
     local checkbox = cbwidget {}
     checkbox:set_color(args.color)
 
-    local widget = wibox.widget {
+    local widget = nil
+    widget = wibox.widget {
         widget = wibox.container.margin,
         forced_height = dpi(45),
         margins = dpi(5),
@@ -396,8 +397,8 @@ function menu.checkbox_button(args)
                 widget = ebwidget.normal,
                 id = "button",
                 normal_shape = helpers.ui.rrect(0),
-                on_release = function(self)
-                    args.on_press()
+                on_release = function()
+                    args.on_press(widget)
                 end,
                 on_hover = function(self)
                     self.menu:hide_children_menus()

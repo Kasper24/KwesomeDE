@@ -214,7 +214,7 @@
     </key>
 
     <key name="favorite-apps" type="a{ss}">
-      <default>[]</default>
+      <default>{}</default>
       <summary>Favorite apps</summary>
       <description>
         Your most loved apps
