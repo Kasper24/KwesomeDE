@@ -57,7 +57,6 @@ local function client_widget(self, client)
             on_normal_border_color = client.font_icon.color,
             on_release = function()
                 self:select_client(client)
-                self:hide()
             end,
             child = {
                 widget = wibox.container.margin,
@@ -123,9 +122,7 @@ function window_switcher:cycle_clients(increase)
     self:select_client(client)
 end
 
-function window_switcher:show(set_selected_client, keygrabber)
-    self._private.keygrabber = keygrabber
-
+function window_switcher:show(set_selected_client)
     if #capi.client.get() == 0 then
         self:hide(false)
         return
@@ -144,21 +141,17 @@ function window_switcher:hide(focus)
         focus_client(self._private.selected_client)
     end
 
-    -- I couldn't get the keygrabber to stop when pressing on the client button
-    -- and not actually relasing the alt key
-    capi.root.fake_input("key_release", "Alt_L")
-
     self.widget.visible = false
     self.widget.widget = nil
 
     collectgarbage("collect")
 end
 
-function window_switcher:toggle(keygrabber)
+function window_switcher:toggle()
     if self.widget.visible == true then
         self:hide()
     else
-        self:show(true, keygrabber)
+        self:show(true)
     end
 end
 
