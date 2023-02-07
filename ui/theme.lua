@@ -786,11 +786,15 @@ local function icons()
     }
 
     function theme.get_font_icon_for_app_name(name)
-        name = name:lower()
-        name = name:gsub("_", "")
-        name = name:gsub("%s+", "")
-        name = name:gsub("-", "")
-        name = name:gsub("%.", "")
+        if name then
+            name = name:lower()
+            name = name:gsub("_", "")
+            name = name:gsub("%s+", "")
+            name = name:gsub("-", "")
+            name = name:gsub("%.", "")
+        else
+            return theme.icons.window
+        end
 
         return theme.app_to_font_icon_lookup[name] or theme.icons.window
     end
