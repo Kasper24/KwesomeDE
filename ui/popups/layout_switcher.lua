@@ -42,16 +42,17 @@ end
 local function create_layouts_for_tag(tag, layouts)
     layouts:reset()
 
-    local color = beautiful.colors.random_accent_color()
-
     for _, layout in ipairs(tag.layouts) do
         local button = wibox.widget
         {
-            layout = wibox.layout.fixed.horizontal,
-            forced_height = dpi(50),
-            {
+            widget = widgets.button.elevated.state,
+            on_turn_on = function()
+                tag.layout = layout
+            end,
+            child = {
                 layout = wibox.layout.fixed.horizontal,
                 forced_width = dpi(230),
+                forced_height = dpi(50),
                 spacing = dpi(15),
                 {
                     widget = wibox.widget.imagebox,
@@ -62,28 +63,20 @@ local function create_layouts_for_tag(tag, layouts)
                     size = 12,
                     text = layout.name
                 }
-            },
-            {
-                widget = widgets.checkbox,
-                id = "checkbox",
-                color = color,
-                on_turn_on = function()
-                    tag.layout = layout
-                end
             }
         }
 
         if tag.layout == layout then
-            button:get_children_by_id("checkbox")[1]:turn_on()
+            button:turn_on()
         else
-            button:get_children_by_id("checkbox")[1]:turn_off()
+            button:turn_off()
         end
 
         tag:connect_signal("property::layout", function()
             if tag.layout == layout then
-                button:get_children_by_id("checkbox")[1]:turn_on()
+                button:turn_on()
             else
-                button:get_children_by_id("checkbox")[1]:turn_off()
+                button:turn_off()
             end
         end)
 
