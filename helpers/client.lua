@@ -433,33 +433,11 @@ function _client.idx(c)
 end
 
 function _client.get_client_index(client)
-    -- local clients = _client.get_sorted_clients()
-
     for index, client1 in ipairs(_client.get_sorted_clients()) do
         if client == client1 then
-            print(index)
             return index
         end
     end
-
-    -- local data = _client.idx(client)
-    -- local t = client.first_tag.index + data.col + data.idx
-    -- local s= string.format("%s: tag: %s col: %s idx: %s", client.class, client.first_tag.index, data.col, data.idx)
-    -- require("naughty").notification {
-    --     app_font_icon = beautiful.icons.bluetooth.on,
-    --     app_name = "Bluetooth",
-    --     title = "Bluetooth",
-    --     text = s,
-    -- }
-    -- print(s)
-    -- print(data.col)
-    -- print(data.idx)
-    return t
-    -- for index, c in ipairs(_client.get_sorted_clients()) do
-    --     if client == c then
-    --         return index
-    --     end
-    -- end
 end
 
 return _client
