@@ -23,5 +23,6 @@ return {
     slider = require(... .. ".slider"),
     spacer = require(... .. ".spacer"),
     spinning_circle = require(... .. ".spinning_circle"),
-    text = require(... .. ".text")
+    text = require(... .. ".text"),
+    titlebar = require(... .. ".titlebar")
 }

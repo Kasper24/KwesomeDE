@@ -9,7 +9,6 @@ local gshape = require("gears.shape")
 local ruled = require("ruled")
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
-local titlebar_patched = require("ui.titlebar.titlebar_patched")
 local beautiful = require("beautiful")
 local record_daemon = require("daemons.system.record")
 local pactl_daemon = require("daemons.hardware.pactl")
@@ -407,7 +406,7 @@ local function new()
                 c.x = (c.screen.geometry.width / 2) - (dpi(550) / 2)
                 c.y = (c.screen.geometry.height / 2) - (dpi(435) / 2)
 
-                local titlebar = titlebar_patched(c, {
+                local titlebar = widgets.titlebar(c, {
                     position = "top",
                     size = dpi(435),
                     bg = beautiful.colors.background
