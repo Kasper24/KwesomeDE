@@ -6,6 +6,7 @@ local gtable = require("gears.table")
 local gshape = require("gears.shape")
 local wibox = require("wibox")
 local twidget = require("ui.widgets.text")
+local ebwidget = require("ui.widgets.button.elevated")
 local tbwidget = require("ui.widgets.button.text")
 local bwidget = require("ui.widgets.background")
 local beautiful = require("beautiful")
@@ -90,7 +91,8 @@ function calendar:set_date(date)
         month = date.month,
         day = 1
     }
-    self:get_children_by_id("current_month_button")[1]:set_text(os.date("%B %Y", time))
+    self:get_children_by_id("current_month_button")[1]:set_text(os.date("%B", time))
+    self:get_children_by_id("current_year_button")[1]:set_text(os.date("%Y", time))
 
     local days_to_add_at_month_start = first_day.wday - 1
     local days_to_add_at_month_end = 42 - last_day.day - days_to_add_at_month_start
@@ -119,17 +121,35 @@ function calendar:set_date_current()
     self:set_date(os.date("*t"))
 end
 
-function calendar:increase_date()
-    local new_calendar_month = self._private.date.month + 1
+function calendar:set_month_current()
+    local date = os.date("*t")
     self:set_date({
         year = self._private.date.year,
-        month = new_calendar_month,
+        month = date.month,
         day = self._private.date.day
     })
 end
 
-function calendar:decrease_date()
-    local new_calendar_month = self._private.date.month - 1
+function calendar:set_year_current()
+    local date = os.date("*t")
+    self:set_date({
+        year = date.year,
+        month = self._private.date.month,
+        day = self._private.date.day
+    })
+end
+
+function calendar:change_year(increment)
+    local new_calendar_year = self._private.date.year + increment
+    self:set_date({
+        year = new_calendar_year,
+        month = self._private.date.month,
+        day = self._private.date.day
+    })
+end
+
+function calendar:change_month(increment)
+    local new_calendar_month = self._private.date.month + increment
     self:set_date({
         year = self._private.date.year,
         month = new_calendar_month,
@@ -145,36 +165,76 @@ local function new()
         spacing = dpi(15),
         {
             layout = wibox.layout.align.horizontal,
+            forced_height = dpi(40),
             {
-                widget = tbwidget.normal,
-                forced_width = dpi(35),
-                forced_height = dpi(35),
-                text_normal_bg = beautiful.colors.on_background,
-                icon = beautiful.icons.caret.left,
-                size = 15,
-                on_release = function()
-                    widget:decrease_date()
-                end
+                layout = wibox.layout.align.horizontal,
+                {
+                    widget = tbwidget.normal,
+                    forced_width = dpi(35),
+                    text_normal_bg = beautiful.colors.on_background,
+                    icon = beautiful.icons.caret.left,
+                    size = 15,
+                    on_release = function()
+                        widget:change_month(-1)
+                    end
+                },
+                {
+                    widget = tbwidget.normal,
+                    forced_width = dpi(120),
+                    id = "current_month_button",
+                    text_normal_bg = beautiful.colors.on_background,
+                    size = 15,
+                    text = os.date("%B"),
+                    on_release = function()
+                        widget:set_month_current()
+                    end
+                },
+                {
+                    widget = tbwidget.normal,
+                    forced_width = dpi(35),
+                    text_normal_bg = beautiful.colors.on_background,
+                    icon = beautiful.icons.caret.right,
+                    size = 15,
+                    on_release = function()
+                        widget:change_month(1)
+                    end
+                },
             },
+            nil,
             {
-                widget = tbwidget.normal,
-                id = "current_month_button",
-                text = os.date("%B %Y"),
-                on_release = function()
-                    widget:set_date_current()
-                end
-            },
-            {
-                widget = tbwidget.normal,
-                forced_width = dpi(35),
-                forced_height = dpi(35),
-                text_normal_bg = beautiful.colors.on_background,
-                icon = beautiful.icons.caret.right,
-                size = 15,
-                on_release = function()
-                    widget:increase_date()
-                end
-            },
+                layout = wibox.layout.align.horizontal,
+                {
+                    widget = tbwidget.normal,
+                    forced_width = dpi(35),
+                    text_normal_bg = beautiful.colors.on_background,
+                    icon = beautiful.icons.caret.left,
+                    size = 15,
+                    on_release = function()
+                        widget:change_year(-1)
+                    end
+                },
+                {
+                    widget = tbwidget.normal,
+                    forced_width = dpi(120),
+                    id = "current_year_button",
+                    text_normal_bg = beautiful.colors.on_background,
+                    size = 15,
+                    text = os.date("%Y"),
+                    on_release = function()
+                        widget:set_year_current()
+                    end
+                },
+                {
+                    widget = tbwidget.normal,
+                    forced_width = dpi(35),
+                    text_normal_bg = beautiful.colors.on_background,
+                    icon = beautiful.icons.caret.right,
+                    size = 15,
+                    on_release = function()
+                        widget:change_year(1)
+                    end
+                },
+            }
         },
         {
             layout = wibox.layout.grid,
