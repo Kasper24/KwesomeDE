@@ -69,9 +69,9 @@ local function new(args)
     gtable.crush(ret, animated_popup, true)
     ret.axis = args.axis or "x"
     ret.start_pos = args.start_pos or 4000
+    ret.real_widget = args.widget
 
     ret.state = false
-    ret.real_widget = args.widget
     ret.animation = helpers.animation:new{
         pos = ret.start_pos,
         easing = helpers.animation.easing.outExpo,
