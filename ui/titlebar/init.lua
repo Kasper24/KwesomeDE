@@ -6,6 +6,7 @@ local awful = require("awful")
 local gshape = require("gears.shape")
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
+local titlebar_patched = require("ui.titlebar.titlebar_patched")
 local beautiful = require("beautiful")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
@@ -72,7 +73,7 @@ capi.client.connect_signal("request::titlebars", function(c)
 
     local menu = widgets.client_menu(c)
 
-    local titlebar = awful.titlebar(c, {
+    local titlebar = titlebar_patched(c, {
         position = "top",
         size = dpi(35),
         bg = color,

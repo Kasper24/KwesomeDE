@@ -8,6 +8,7 @@ local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local ruled = require("ruled")
 local wibox = require("wibox")
+local titlebar_patched = require("ui.titlebar.titlebar_patched")
 local beautiful = require("beautiful")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
@@ -111,9 +112,9 @@ local function new()
 
                 -- Settings placement in properties doesn't work
                 c.x = (c.screen.geometry.width / 2) - (dpi(800) / 2)
-                c.y = (c.screen.geometry.height / 2) - (dpi(1020) / 2)
+                c.y = (c.screen.geometry.height / 2) - (dpi(1060) / 2)
 
-                local titlebar = awful.titlebar(c, {
+                local titlebar = titlebar_patched(c, {
                     position = "top",
                     size = dpi(1060),
                     bg = beautiful.colors.background

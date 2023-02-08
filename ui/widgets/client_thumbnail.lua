@@ -17,7 +17,7 @@ local function get_client_thumbnail(client)
     -- Thumbnails for clients with custom titlebars, i.e welcome/screenshot/record/theme manager
     -- won't work correctly since all the UI is hacked on with the titlebars which aren't included
     -- when taking a screenshot with awful.screenshot
-    if client:isvisible() and client.custom_titlebar ~= true then
+    if client:isvisible() then
         local screenshot = awful.screenshot {
             client = client
         }
@@ -29,12 +29,24 @@ local function get_client_thumbnail(client)
 end
 
 local function new(client)
+    -- print(require("helpers.inspect").inspect(client.titlebar._widget))
+    -- print(client._private.titlebars["top"].args.size)
+
     local thumbnail = get_client_thumbnail(client)
     local widget = thumbnail and wibox.widget {
-        widget = wibox.widget.imagebox,
-        horizontal_fit_policy = "fit",
-        vertical_fit_policy = "fit",
-        image = thumbnail
+        layout = wibox.layout.fixed.vertical,
+        client.titlebar and {
+            widget = wibox.widget.imagebox,
+            horizontal_fit_policy = "fit",
+            vertical_fit_policy = "fit",
+            image = wibox.widget.draw_to_image_surface(client.titlebar.widget, client.width, client.titlebar_size)
+        } or nil,
+        {
+            widget = wibox.widget.imagebox,
+            horizontal_fit_policy = "fit",
+            vertical_fit_policy = "fit",
+            image = thumbnail
+        }
     } or wibox.widget {
         widget = cfiwidget,
         forced_width = dpi(300),
