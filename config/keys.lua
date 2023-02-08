@@ -896,14 +896,14 @@ awful.keygrabber {
 awful.keygrabber {
     keybindings = {
         awful.key {
-            modifiers = {keys.ctrl},
+            modifiers = {keys.alt},
             key = "a",
             on_press = function()
                 layout_switcher:cycle_layouts(false)
             end
         },
         awful.key {
-            modifiers = {keys.ctrl},
+            modifiers = {keys.alt},
             key = "z",
             on_press = function()
                 layout_switcher:cycle_layouts(true)
@@ -912,19 +912,19 @@ awful.keygrabber {
     },
     root_keybindings = {
         awful.key {
-            modifiers = {keys.ctrl},
+            modifiers = {keys.alt},
             key = "a",
             on_press = function()
             end
         },
         awful.key {
-            modifiers = {keys.ctrl},
+            modifiers = {keys.alt},
             key = "z",
             on_press = function()
             end
         }
     },
-    stop_key = keys.ctrl,
+    stop_key = keys.alt,
     stop_event = "release",
     start_callback = function()
         layout_switcher:show()
