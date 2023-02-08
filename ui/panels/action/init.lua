@@ -35,19 +35,37 @@ local function separator()
 end
 
 function action_panel:show()
+    self.state = true
+
     self.widget.screen = awful.screen.focused()
     self.widget.minimum_height = awful.screen.focused().workarea.height
     self.widget.maximum_height = awful.screen.focused().workarea.height
-    self.widget.visible = true
+
+    self.fake_widget.visible = true
+    self.fake_widget.y = self.widget.y
+    self.fake_widget.widget.image = wibox.widget.draw_to_image_surface(self.widget.widget, self.widget.width, self.widget.height)
+    self.animation.easing = helpers.animation.easing.outExpo
+    self.animation:set(self.widget.x)
     self:emit_signal("visibility", true)
 end
 
 function action_panel:hide()
+    self.state = false
+
+    self.fake_widget.widget.image = wibox.widget.draw_to_image_surface(self.widget.widget, self.widget.width, self.widget.height)
+    self.animation.easing = helpers.animation.easing.inExpo
+    self.animation:set(4000)
+
+    self.fake_widget.visible = true
     self.widget.visible = false
     self:emit_signal("visibility", false)
 end
 
 function action_panel:toggle()
+    if self.animation.state == true then
+        return
+    end
+
     if self.widget.visible == false then
         self:show()
     else
@@ -96,6 +114,47 @@ local function new()
                 separator(),
                 media
             }
+        }
+    }
+
+    ret.fake_widget = widgets.popup {
+        type = "dock",
+        visible = false,
+        ontop = true,
+        minimum_width = dpi(550),
+        maximum_width = dpi(550),
+        minimum_height = capi.screen.primary.workarea.height,
+        maximum_height = capi.screen.primary.workarea.height,
+        widget = wibox.widget.imagebox,
+    }
+
+    ret.animation = helpers.animation:new{
+        pos = 4000,
+        easing = helpers.animation.easing.outExpo,
+        duration = 0.8,
+        update = function(_, pos)
+            ret.fake_widget.x = pos
+        end,
+        signals = {
+            ["ended"] = function()
+                if ret.state == true then
+                    print("1")
+                    ret.widget.visible = true
+                else
+                    print("2")
+                    ret.widget.visible = false
+                end
+
+                require("gears.timer") {
+                    timeout = 3,
+                    single_shot = true,
+                    call_now = false,
+                    autostart = true,
+                    callback = function()
+                        ret.fake_widget.visible = false
+                    end
+                }
+            end
         }
     }
 
