@@ -120,9 +120,9 @@ local function arc_widget(icon, on_release, on_scroll_up, on_scroll_down)
     return widget
 end
 
-local function cpu(action_panel)
+local function cpu()
     local arc = arc_widget(beautiful.icons.microchip, function()
-        cpu_popup:toggle(action_panel.widget)
+        cpu_popup:toggle()
     end)
 
     cpu_daemon:connect_signal("update::slim", function(self, value)
@@ -132,9 +132,9 @@ local function cpu(action_panel)
     return arc
 end
 
-local function ram(action_panel)
+local function ram()
     local arc = arc_widget(beautiful.icons.memory, function()
-        ram_popup:toggle(action_panel.widget)
+        ram_popup:toggle()
     end)
 
     ram_daemon:connect_signal("update",
@@ -147,9 +147,9 @@ local function ram(action_panel)
     return arc
 end
 
-local function disk(action_panel)
+local function disk()
     local arc = arc_widget(beautiful.icons.disc_drive, function()
-        disk_popup:toggle(action_panel.widget)
+        disk_popup:toggle()
     end)
 
     disk_daemon:connect_signal("update", function(self, disks)
@@ -200,9 +200,9 @@ local function brightness()
     return arc
 end
 
-local function audio(action_panel)
+local function audio()
     local arc = arc_widget(beautiful.icons.volume.off, function()
-        audio_popup:toggle(action_panel.widget)
+        audio_popup:toggle()
     end, function()
         pactl_daemon:sink_volume_up(nil, 5)
     end, function()
@@ -226,7 +226,7 @@ local function audio(action_panel)
     return arc
 end
 
-local function new(action_panel)
+local function new()
     return wibox.widget {
         layout = wibox.layout.fixed.vertical,
         forced_height = dpi(300),
@@ -234,22 +234,22 @@ local function new(action_panel)
         {
             layout = wibox.layout.flex.horizontal,
             spacing = dpi(30),
-            cpu(action_panel),
-            ram(action_panel),
-            disk(action_panel)
+            cpu(),
+            ram(),
+            disk()
         },
         {
             layout = wibox.layout.flex.horizontal,
             spacing = dpi(30),
             temperature(),
             brightness(),
-            audio(action_panel)
+            audio()
         }
     }
 end
 
-function info.mt:__call(action_panel)
-    return new(action_panel)
+function info.mt:__call()
+    return new()
 end
 
 return setmetatable(info, info.mt)

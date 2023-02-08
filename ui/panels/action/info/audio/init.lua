@@ -16,9 +16,9 @@ local dpi = beautiful.xresources.apply_dpi
 local audio = {}
 local instance = nil
 
-function audio:show(next_to)
+function audio:show()
     self.widget.screen = awful.screen.focused()
-    self.widget:move_next_to(next_to)
+    self.widget:move_next_to(action_panel)
     self.widget.visible = true
     self:emit_signal("visibility", true)
 end
@@ -28,11 +28,11 @@ function audio:hide()
     self:emit_signal("visibility", false)
 end
 
-function audio:toggle(next_to)
+function audio:toggle()
     if self.widget.visible then
         self:hide()
     else
-        self:show(next_to)
+        self:show()
     end
 end
 

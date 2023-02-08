@@ -17,10 +17,10 @@ local math = mat
 local cpu = {}
 local instance = nil
 
-function cpu:show(next_to)
+function cpu:show()
     cpu_daemon:set_slim(false)
     self.widget.screen = awful.screen.focused()
-    self.widget:move_next_to(next_to)
+    self.widget:move_next_to(action_panel)
     self.widget.visible = true
     self:emit_signal("visibility", true)
 end
@@ -31,11 +31,11 @@ function cpu:hide()
     self:emit_signal("visibility", false)
 end
 
-function cpu:toggle(next_to)
+function cpu:toggle()
     if self.widget.visible then
         self:hide()
     else
-        self:show(next_to)
+        self:show()
     end
 end
 

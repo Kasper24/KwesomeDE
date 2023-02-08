@@ -152,11 +152,11 @@ local function quick_action(icon, text, on_release)
     }
 end
 
-local function wifi(action_panel)
+local function wifi()
     local widget = arrow_button(beautiful.icons.network.wifi_high, "Wi-Fi", function()
         network_daemon:toggle_wireless_state()
     end, function()
-        wifi_popup:toggle(action_panel.widget)
+        wifi_popup:toggle()
     end)
 
     network_daemon:connect_signal("wireless_state", function(self, state)
@@ -174,11 +174,11 @@ local function wifi(action_panel)
     return widget
 end
 
-local function bluetooth(action_panel)
+local function bluetooth()
     local widget = arrow_button(beautiful.icons.bluetooth.on, "Bluetoooth", function()
         bluetooth_daemon:toggle()
     end, function()
-        bluetooth_popup:toggle(action_panel.widget)
+        bluetooth_popup:toggle()
     end)
 
     bluetooth_daemon:connect_signal("state", function(self, state)
@@ -300,7 +300,7 @@ local function record()
     return widget
 end
 
-local function new(action_panel)
+local function new()
     return wibox.widget {
         layout = wibox.layout.fixed.vertical,
         forced_height = dpi(450),
@@ -308,8 +308,8 @@ local function new(action_panel)
         {
             layout = wibox.layout.flex.horizontal,
             spacing = dpi(30),
-            wifi(action_panel),
-            bluetooth(action_panel),
+            wifi(),
+            bluetooth(),
             airplane_mode()
         },
         {
@@ -329,8 +329,8 @@ local function new(action_panel)
     }
 end
 
-function dashboard.mt:__call(action_panel)
-    return new(action_panel)
+function dashboard.mt:__call()
+    return new()
 end
 
 return setmetatable(dashboard, dashboard.mt)

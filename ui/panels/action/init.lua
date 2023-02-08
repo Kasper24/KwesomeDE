@@ -34,8 +34,7 @@ local function separator()
 end
 
 local function new()
-    local ret = nil
-    ret = widgets.animated_panel {
+    action_panel = widgets.animated_panel {
         type = "dock",
         visible = false,
         ontop = true,
@@ -66,16 +65,16 @@ local function new()
                 step = 50,
                 header,
                 separator(),
-                dashboard(ret),
+                dashboard(),
                 separator(),
-                info(ret),
+                info(),
                 separator(),
                 media
             }
         }
     }
 
-    return ret
+    return action_panel
 end
 
 if not instance then

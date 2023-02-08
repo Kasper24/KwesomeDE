@@ -19,9 +19,9 @@ local capi = {
 local wifi = {}
 local instance = nil
 
-function wifi:show(next_to)
+function wifi:show()
     self.widget.screen = awful.screen.focused()
-    self.widget:move_next_to(next_to)
+    self.widget:move_next_to(action_panel)
     self.widget.visible = true
     self:emit_signal("visibility", true)
 end
@@ -31,11 +31,11 @@ function wifi:hide()
     self:emit_signal("visibility", false)
 end
 
-function wifi:toggle(next_to)
+function wifi:toggle()
     if self.widget.visible then
         self:hide()
     else
-        self:show(next_to)
+        self:show()
     end
 end
 
