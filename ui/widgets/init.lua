@@ -3,7 +3,7 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 return {
-    animated_popup = require(... .. ".animated_popup"),
+    animated_panel = require(... .. ".animated_panel"),
     button = require(... .. ".button"),
     background = require(... .. ".background"),
     battery_icon = require(... .. ".battery_icon"),

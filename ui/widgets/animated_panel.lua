@@ -8,7 +8,7 @@ local wibox = require("wibox")
 local pwidget = require("ui.widgets.popup")
 local helpers = require("helpers")
 
-local animated_popup = {
+local animated_panel = {
     mt = {}
 }
 
@@ -19,7 +19,7 @@ local function fake_widget(image)
     }
 end
 
-function animated_popup:show()
+function animated_panel:show()
     self.state = true
 
     self.screen = awful.screen.focused()
@@ -37,7 +37,7 @@ function animated_popup:show()
     self:emit_signal("visibility", true)
 end
 
-function animated_popup:hide()
+function animated_panel:hide()
     if self.state == false then
         return
     end
@@ -51,7 +51,7 @@ function animated_popup:hide()
     self:emit_signal("visibility", false)
 end
 
-function animated_popup:toggle()
+function animated_panel:toggle()
     if self.animation.state == true then
         return
     end
@@ -66,7 +66,7 @@ local function new(args)
     args = args or {}
 
     local ret = pwidget(args)
-    gtable.crush(ret, animated_popup, true)
+    gtable.crush(ret, animated_panel, true)
     ret.axis = args.axis or "x"
     ret.start_pos = args.start_pos or 4000
 
@@ -92,8 +92,8 @@ local function new(args)
     return ret
 end
 
-function animated_popup.mt:__call(...)
+function animated_panel.mt:__call(...)
     return new(...)
 end
 
-return setmetatable(animated_popup, animated_popup.mt)
+return setmetatable(animated_panel, animated_panel.mt)

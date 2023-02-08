@@ -35,7 +35,7 @@ end
 
 local function new()
     local ret = nil
-    ret = widgets.animated_popup {
+    ret = widgets.animated_panel {
         type = "dock",
         visible = false,
         ontop = true,
