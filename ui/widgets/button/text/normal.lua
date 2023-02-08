@@ -61,6 +61,7 @@ function text_button_normal:text_effect(instant)
     local bg = wp[key .. "bg"] or wp.defaults[key .. "bg"]
 
     if instant == true then
+        self.color_animation:stop()
         self.color_animation.pos = helpers.color.hex_to_rgb(bg)
         self.text_widget:set_color(bg)
     else

@@ -51,6 +51,7 @@ function elevated_button_normal:effect(instant)
     local border_color = wp[key .. "border_color"] or wp.defaults[key .. "border_color"]
 
     if instant == true then
+        self.animation:stop()
         self.bg = bg
         self.border_width = border_width
         self.border_color = border_color
