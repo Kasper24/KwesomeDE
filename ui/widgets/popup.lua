@@ -8,7 +8,7 @@ local capi = {
     awesome = awesome
 }
 
-local background = {
+local popup = {
     mt = {}
 }
 
@@ -25,8 +25,8 @@ local function new(args)
     return widget
 end
 
-function background.mt:__call(...)
+function popup.mt:__call(...)
     return new(...)
 end
 
-return setmetatable(background, background.mt)
+return setmetatable(popup, popup.mt)
