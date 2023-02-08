@@ -113,17 +113,14 @@ end
 
 function animation:set(args)
     self:start(args)
-    self:emit_signal("set")
 end
 
 function animation:stop()
     self.state = false
-    self:emit_signal("stopped")
 end
 
 function animation:abort(reset)
     animation:stop(reset)
-    self:emit_signal("aborted")
 end
 
 function animation:initial()
