@@ -26,7 +26,7 @@ function animated_popup:show()
     self.minimum_height = awful.screen.focused().workarea.height
     self.maximum_height = awful.screen.focused().workarea.height
 
-    local image = wibox.widget.draw_to_image_surface(self.real_widget, self.width, self.height)
+    local image = wibox.widget.draw_to_image_surface(self.widget, self.width, self.height)
     self.widget = fake_widget(image)
     self.animation.easing = helpers.animation.easing.outExpo
     self.visible = true
@@ -69,7 +69,6 @@ local function new(args)
     gtable.crush(ret, animated_popup, true)
     ret.axis = args.axis or "x"
     ret.start_pos = args.start_pos or 4000
-    ret.real_widget = args.widget
 
     ret.state = false
     ret.animation = helpers.animation:new{
@@ -82,7 +81,7 @@ local function new(args)
         signals = {
             ["ended"] = function()
                 if ret.state == true then
-                    ret.widget = ret.real_widget
+                    ret.widget = args.widget
                 else
                     ret.visible = false
                 end

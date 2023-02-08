@@ -14,7 +14,6 @@ local capi = {
     screen = screen
 }
 
-local action_panel = {}
 local instance = nil
 
 local path = ...
@@ -31,30 +30,6 @@ local function separator()
         shape = helpers.ui.rrect(beautiful.border_radius),
         orientation = "horizontal",
         color = beautiful.colors.surface
-    }
-end
-
-local function widget(self)
-    return wibox.widget {
-        widget = wibox.container.margin,
-        margins = dpi(25),
-        {
-            layout = widgets.overflow.vertical,
-            spacing = dpi(30),
-            scrollbar_widget = {
-                widget = wibox.widget.separator,
-                shape = helpers.ui.rrect(beautiful.border_radius)
-            },
-            scrollbar_width = dpi(10),
-            step = 50,
-            header,
-            separator(),
-            dashboard(self),
-            separator(),
-            info(self),
-            separator(),
-            media
-        }
     }
 end
 
@@ -77,7 +52,27 @@ local function new()
         end,
         shape = helpers.ui.rrect(beautiful.border_radius),
         bg = beautiful.colors.background,
-        widget = widget(ret)
+        widget = wibox.widget {
+            widget = wibox.container.margin,
+            margins = dpi(25),
+            {
+                layout = widgets.overflow.vertical,
+                spacing = dpi(30),
+                scrollbar_widget = {
+                    widget = wibox.widget.separator,
+                    shape = helpers.ui.rrect(beautiful.border_radius)
+                },
+                scrollbar_width = dpi(10),
+                step = 50,
+                header,
+                separator(),
+                dashboard(ret),
+                separator(),
+                info(ret),
+                separator(),
+                media
+            }
+        }
     }
 
     return ret

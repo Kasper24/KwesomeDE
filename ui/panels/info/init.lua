@@ -47,10 +47,19 @@ local function new()
             })
         end,
         shape = function(cr, width, height)
-            gshape.infobubble(cr, width, height, nil, nil, dpi(360))
+            gshape.infobubble(cr, width, dpi(600), nil, nil, dpi(360))
         end,
         bg = beautiful.colors.background,
-        widget = widget()
+        widget = wibox.widget {
+            widget = wibox.container.margin,
+            margins = dpi(25),
+            {
+                layout = wibox.layout.flex.horizontal,
+                spacing = dpi(15),
+                calender,
+                weather
+            }
+        }
     }
 end
 

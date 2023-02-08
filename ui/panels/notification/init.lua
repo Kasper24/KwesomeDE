@@ -29,20 +29,6 @@ local function separator()
     }
 end
 
-local function widget()
-    return wibox.widget {
-        widget = wibox.container.margin,
-        margins = dpi(25),
-        {
-            layout = wibox.layout.fixed.vertical,
-            spacing = dpi(30),
-            top,
-            separator(),
-            bottom
-        }
-    }
-end
-
 local function new()
     return widgets.animated_popup {
         type = "dock",
@@ -61,7 +47,17 @@ local function new()
         end,
         shape = helpers.ui.rrect(beautiful.border_radius),
         bg = beautiful.colors.background,
-        widget = widget()
+        widget = wibox.widget {
+            widget = wibox.container.margin,
+            margins = dpi(25),
+            {
+                layout = wibox.layout.fixed.vertical,
+                spacing = dpi(30),
+                top,
+                separator(),
+                bottom
+            }
+        }
     }
 end
 
