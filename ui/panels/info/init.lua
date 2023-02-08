@@ -3,48 +3,38 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 local awful = require("awful")
-local gobject = require("gears.object")
-local gtable = require("gears.table")
 local gshape = require("gears.shape")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
 local widgets = require("ui.widgets")
 local dpi = beautiful.xresources.apply_dpi
 
-local info_panel = {}
 local instance = nil
 
 local path = ...
 local calender = require(path .. ".calendar")
 local weather = require(path .. ".weather")
 
-function info_panel:show()
-    self.widget.screen = awful.screen.focused()
-    self.widget.visible = true
-    self:emit_signal("visibility", true)
-end
-
-function info_panel:hide()
-    self.widget.visible = false
-    self:emit_signal("visibility", false)
-end
-
-function info_panel:toggle()
-    if self.widget.visible == false then
-        self:show()
-    else
-        self:hide()
-    end
+local function widget()
+    return wibox.widget {
+        widget = wibox.container.margin,
+        margins = dpi(25),
+        {
+            layout = wibox.layout.flex.horizontal,
+            spacing = dpi(15),
+            calender,
+            weather
+        }
+    }
 end
 
 local function new()
-    local ret = gobject {}
-    gtable.crush(ret, info_panel, true)
-
-    ret.widget = widgets.popup {
+    return widgets.animated_popup {
         type = "dock",
         visible = false,
         ontop = true,
+        axis = "y",
+        start_pos = -500,
         minimum_width = dpi(800),
         maximum_width = dpi(800),
         minimum_height = dpi(600),
@@ -60,19 +50,8 @@ local function new()
             gshape.infobubble(cr, width, height, nil, nil, dpi(360))
         end,
         bg = beautiful.colors.background,
-        widget = {
-            widget = wibox.container.margin,
-            margins = dpi(25),
-            {
-                layout = wibox.layout.flex.horizontal,
-                spacing = dpi(15),
-                calender,
-                weather
-            }
-        }
+        widget = widget()
     }
-
-    return ret
 end
 
 if not instance then

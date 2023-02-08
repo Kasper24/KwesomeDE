@@ -58,65 +58,9 @@ local function widget(self)
     }
 end
 
-local function fake_widget(image)
-    return wibox.widget {
-        widget = wibox.widget.imagebox,
-        image = image
-    }
-end
-
-function action_panel:show()
-    self.state = true
-
-    self.widget.screen = awful.screen.focused()
-    self.widget.minimum_height = awful.screen.focused().workarea.height
-    self.widget.maximum_height = awful.screen.focused().workarea.height
-
-    local image = wibox.widget.draw_to_image_surface(self.widget.widget, self.widget.width, self.widget.height)
-    self.widget.widget = fake_widget(image)
-    self.animation.easing = helpers.animation.easing.outExpo
-    self.widget.visible = true
-    if self.actual_x == nil then
-        self.actual_x = self.widget.x
-    end
-    self.animation:set(self.actual_x)
-    self:emit_signal("visibility", true)
-end
-
-function action_panel:hide()
-    if self.state == false then
-        return
-    end
-
-    self.state = false
-
-    local image = wibox.widget.draw_to_image_surface(self.widget.widget, self.widget.width, self.widget.height)
-    self.widget.widget = fake_widget(image)
-    self.animation.easing = helpers.animation.easing.inExpo
-    self.animation:set(4000)
-    self:emit_signal("visibility", false)
-end
-
-function action_panel:toggle()
-    if self.animation.state == true then
-        return
-    end
-
-    if self.widget.visible == false then
-        self:show()
-    else
-        self:hide()
-    end
-end
-
 local function new()
-    local ret = gobject {}
-    gtable.crush(ret, action_panel, true)
-
-    ret.state = false
-
-    ret.real_widget = widget(ret)
-    ret.widget = widgets.popup {
+    local ret = nil
+    ret = widgets.animated_popup {
         type = "dock",
         visible = false,
         ontop = true,
@@ -133,25 +77,7 @@ local function new()
         end,
         shape = helpers.ui.rrect(beautiful.border_radius),
         bg = beautiful.colors.background,
-        widget = ret.real_widget
-    }
-
-    ret.animation = helpers.animation:new{
-        pos = 4000,
-        easing = helpers.animation.easing.outExpo,
-        duration = 0.8,
-        update = function(_, pos)
-            ret.widget.x = pos
-        end,
-        signals = {
-            ["ended"] = function()
-                if ret.state == true then
-                    ret.widget.widget = ret.real_widget
-                else
-                    ret.widget.visible = false
-                end
-            end
-        }
+        widget = widget(ret)
     }
 
     return ret
