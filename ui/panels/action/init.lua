@@ -34,6 +34,37 @@ local function separator()
     }
 end
 
+local function widget(self)
+    return wibox.widget {
+        widget = wibox.container.margin,
+        margins = dpi(25),
+        {
+            layout = widgets.overflow.vertical,
+            spacing = dpi(30),
+            scrollbar_widget = {
+                widget = wibox.widget.separator,
+                shape = helpers.ui.rrect(beautiful.border_radius)
+            },
+            scrollbar_width = dpi(10),
+            step = 50,
+            header,
+            separator(),
+            dashboard(self),
+            separator(),
+            info(self),
+            separator(),
+            media
+        }
+    }
+end
+
+local function fake_widget(image)
+    return wibox.widget {
+        widget = wibox.widget.imagebox,
+        image = image
+    }
+end
+
 function action_panel:show()
     self.state = true
 
@@ -41,23 +72,28 @@ function action_panel:show()
     self.widget.minimum_height = awful.screen.focused().workarea.height
     self.widget.maximum_height = awful.screen.focused().workarea.height
 
-    self.fake_widget.visible = true
-    self.fake_widget.y = self.widget.y
-    self.fake_widget.widget.image = wibox.widget.draw_to_image_surface(self.widget.widget, self.widget.width, self.widget.height)
+    local image = wibox.widget.draw_to_image_surface(self.widget.widget, self.widget.width, self.widget.height)
+    self.widget.widget = fake_widget(image)
     self.animation.easing = helpers.animation.easing.outExpo
-    self.animation:set(self.widget.x)
+    self.widget.visible = true
+    if self.actual_x == nil then
+        self.actual_x = self.widget.x
+    end
+    self.animation:set(self.actual_x)
     self:emit_signal("visibility", true)
 end
 
 function action_panel:hide()
+    if self.state == false then
+        return
+    end
+
     self.state = false
 
-    self.fake_widget.widget.image = wibox.widget.draw_to_image_surface(self.widget.widget, self.widget.width, self.widget.height)
+    local image = wibox.widget.draw_to_image_surface(self.widget.widget, self.widget.width, self.widget.height)
+    self.widget.widget = fake_widget(image)
     self.animation.easing = helpers.animation.easing.inExpo
     self.animation:set(4000)
-
-    self.fake_widget.visible = true
-    self.widget.visible = false
     self:emit_signal("visibility", false)
 end
 
@@ -77,6 +113,9 @@ local function new()
     local ret = gobject {}
     gtable.crush(ret, action_panel, true)
 
+    ret.state = false
+
+    ret.real_widget = widget(ret)
     ret.widget = widgets.popup {
         type = "dock",
         visible = false,
@@ -94,38 +133,7 @@ local function new()
         end,
         shape = helpers.ui.rrect(beautiful.border_radius),
         bg = beautiful.colors.background,
-        widget = {
-            widget = wibox.container.margin,
-            margins = dpi(25),
-            {
-                layout = widgets.overflow.vertical,
-                spacing = dpi(30),
-                scrollbar_widget = {
-                    widget = wibox.widget.separator,
-                    shape = helpers.ui.rrect(beautiful.border_radius)
-                },
-                scrollbar_width = dpi(10),
-                step = 50,
-                header,
-                separator(),
-                dashboard(ret),
-                separator(),
-                info(ret),
-                separator(),
-                media
-            }
-        }
-    }
-
-    ret.fake_widget = widgets.popup {
-        type = "dock",
-        visible = false,
-        ontop = true,
-        minimum_width = dpi(550),
-        maximum_width = dpi(550),
-        minimum_height = capi.screen.primary.workarea.height,
-        maximum_height = capi.screen.primary.workarea.height,
-        widget = wibox.widget.imagebox,
+        widget = ret.real_widget
     }
 
     ret.animation = helpers.animation:new{
@@ -133,27 +141,15 @@ local function new()
         easing = helpers.animation.easing.outExpo,
         duration = 0.8,
         update = function(_, pos)
-            ret.fake_widget.x = pos
+            ret.widget.x = pos
         end,
         signals = {
             ["ended"] = function()
                 if ret.state == true then
-                    print("1")
-                    ret.widget.visible = true
+                    ret.widget.widget = ret.real_widget
                 else
-                    print("2")
                     ret.widget.visible = false
                 end
-
-                require("gears.timer") {
-                    timeout = 3,
-                    single_shot = true,
-                    call_now = false,
-                    autostart = true,
-                    callback = function()
-                        ret.fake_widget.visible = false
-                    end
-                }
             end
         }
     }
