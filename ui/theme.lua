@@ -477,6 +477,7 @@ end
 local function systray()
     theme.bg_systray = theme.colors.background
     theme.systray_icon_spacing = dpi(20)
+    theme.systray_max_rows = 3
 end
 
 local function tabbed()

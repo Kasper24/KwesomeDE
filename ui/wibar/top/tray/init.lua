@@ -2,6 +2,8 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
+local awful = require("awful")
+local ghsape = require("gears.shape")
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local action_panel = require("ui.panels.action")
@@ -10,7 +12,6 @@ local network_daemon = require("daemons.hardware.network")
 local bluetooth_daemon = require("daemons.hardware.bluetooth")
 local pactl_daemon = require("daemons.hardware.pactl")
 local upower_daemon = require("daemons.hardware.upower")
-local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 
 local tray = {
@@ -18,54 +19,51 @@ local tray = {
 }
 
 local function system_tray()
-    local system_tray = wibox.widget {
-        widget = wibox.container.constraint,
-        strategy = "max",
-        width = dpi(0),
-        {
+    local system_tray = widgets.animated_panel {
+        type = "dock",
+        visible = false,
+        ontop = true,
+        minimum_width = dpi(200),
+        maximum_width = dpi(200),
+        axis = "y",
+        start_pos = -500,
+        placement = function(widget)
+            awful.placement.top_right(widget, {
+                honor_workarea = true,
+                honor_padding = true,
+                attach = true,
+                offset = { x = -dpi(220) }
+            })
+        end,
+        shape = function(cr, width, height)
+            ghsape.infobubble(cr, width, dpi(200), nil, nil, dpi(137))
+        end,
+        bg = beautiful.colors.background,
+        widget = wibox.widget {
             widget = wibox.container.margin,
-            margins = {
-                left = dpi(15),
-                top = dpi(20)
-            },
+            margins = dpi(15),
             {
                 widget = wibox.widget.systray,
-                base_size = dpi(25)
+                horizontal = false
             }
         }
     }
 
-    local system_tray_animation = helpers.animation:new{
-        easing = helpers.animation.easing.linear,
-        duration = 0.2,
-        update = function(self, pos)
-            system_tray.width = pos
-        end
-    }
-
-    local arrow = wibox.widget {
+    return wibox.widget {
         widget = wibox.container.margin,
         margins = dpi(5),
         {
             widget = widgets.button.text.state,
             forced_width = dpi(50),
             forced_height = dpi(50),
-            icon = beautiful.icons.chevron_circle.left,
-            on_turn_on = function(self)
-                system_tray_animation:set(400)
-                self:set_icon(beautiful.icons.chevron_circle.right)
+            icon = beautiful.icons.chevron.down,
+            on_turn_on = function()
+                system_tray:show()
             end,
-            on_turn_off = function(self)
-                system_tray_animation:set(0)
-                self:set_icon(beautiful.icons.chevron_circle.left)
-            end
+            on_turn_off = function()
+                system_tray:hide()
+            end,
         }
-    }
-
-    return wibox.widget {
-        layout = wibox.layout.fixed.horizontal,
-        arrow,
-        system_tray
     }
 end
 
