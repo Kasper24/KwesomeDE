@@ -170,7 +170,7 @@ local function client_widget(client)
         indicator
     }
 
-    client:connect_signal("property::font_icon", function()
+    client:connect_signal("property::font_icon", function(client)
         button:set_icon(client.font_icon)
         indicator:set_bg(client.font_icon.color)
     end)
