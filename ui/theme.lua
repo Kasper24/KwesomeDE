@@ -134,10 +134,6 @@ local function icons()
             on = { icon = "" },
             off = { icon = "" },
         },
-        chevron_circle = {
-            left = { icon = "︁" },
-            right = { icon = "︁" },
-        },
         airplane = {
             on = { icon = "" },
             off = { icon = "" },
