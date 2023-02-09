@@ -5,6 +5,7 @@
 local awful = require("awful")
 local mwidget = require("ui.widgets.menu")
 local favorites_daemon = require("daemons.system.favorites")
+local helpers = require("helpers")
 local setmetatable = setmetatable
 
 local client_menu = {
@@ -72,6 +73,12 @@ local function new(client)
             end
         },
         pin_to_taskbar_button,
+        mwidget.separator(),
+        mwidget.sub_menu_button {
+            text = "Layer",
+            arrow_color = client.font_icon.color,
+            sub_menu = layer_menu
+        },
         mwidget.sub_menu_button {
             text = "Maximize",
             arrow_color = client.font_icon.color,
@@ -85,17 +92,27 @@ local function new(client)
         client_checkbox_button(client, "sticky", "Sticky"),
         client_checkbox_button(client, "hidden", "Hidden"),
         client_checkbox_button(client, "floating", "Floating"),
-        mwidget.sub_menu_button {
-            text = "Layer",
-            arrow_color = client.font_icon.color,
-            sub_menu = layer_menu
-        },
         mwidget.button {
             text = "Close",
             on_press = function()
                 client:kill()
             end
-        }}
+        }
+    }
+
+    local actions = helpers.client.get_actions(client)
+    for index, action in ipairs(actions) do
+        menu:add(mwidget.button {
+            text = action.name,
+            on_press = function()
+                action.launch()
+            end
+        }, 1 + index)
+
+        if index == #actions then
+            menu:add(mwidget.separator(), 2 + index)
+        end
+    end
 
     -- At the time this funciton runs client.custom_titlebar is still nil
     -- so check if that property change and if so remove the titlebar toggle button

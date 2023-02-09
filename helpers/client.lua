@@ -1,4 +1,5 @@
 local lgi = require("lgi")
+local Gio = require("lgi").Gio
 local Gdk = lgi.require("Gdk", "3.0")
 local awful = require("awful")
 local gtable = require("gears.table")
@@ -438,6 +439,97 @@ function _client.get_client_index(client)
             return index
         end
     end
+end
+
+
+local function get_appinfo_by_command(client, apps)
+    local pid = client.pid
+    if pid ~= nil then
+        local handle = io.popen(string.format("ps -p %d -o comm=", pid))
+        local pid_command = handle:read("*a"):gsub("^%s*(.-)%s*$", "%1")
+        handle:close()
+
+        for _, app in ipairs(apps) do
+            local executable = app:get_executable()
+            if executable and executable:find(pid_command, 1, true) then
+                return app
+            end
+        end
+    end
+end
+
+local function get_appinfo_by_iconname(client, apps)
+    local icon_name = client.icon_name and client.icon_name:lower() or nil
+    if icon_name ~= nil then
+        for _, app in ipairs(apps) do
+            local name = app:get_name():lower()
+            if name and name:find(icon_name, 1, true) then
+                return app
+            end
+        end
+    end
+end
+
+local name_lookup = {
+    ["jetbrains-studio"] = "android-studio"
+}
+
+local function get_appinfo_by_class(client, apps)
+    if client.class ~= nil then
+        local class = name_lookup[client.class] or client.class:lower()
+
+        -- Try to remove dashes
+        local class_1 = class:gsub("[%-]", "")
+
+        -- Try to replace dashes with dot
+        local class_2 = class:gsub("[%-]", ".")
+
+        -- Try to match only the first word
+        local class_3 = class:match("(.-)-") or class
+        class_3 = class_3:match("(.-)%.") or class_3
+        class_3 = class_3:match("(.-)%s+") or class_3
+
+        local possible_icon_names = {class, class_3, class_2, class_1}
+        for _, app in ipairs(apps) do
+            local id = app:get_id():lower()
+            for _, possible_icon_name in ipairs(possible_icon_names) do
+                if id and id:find(possible_icon_name, 1, true) then
+                    return app
+                end
+            end
+        end
+    end
+end
+
+function _client.get_appinfo(client)
+    local apps = Gio.AppInfo.get_all()
+
+    return get_appinfo_by_command(client, apps) or get_appinfo_by_iconname(client, apps) or
+        get_appinfo_by_class(client, apps)
+end
+
+function _client.get_desktopappinfo(client)
+    local app_info = _client.get_appinfo(client)
+    if app_info ~= nil then
+        return Gio.DesktopAppInfo.new(app_info:get_id())
+    end
+end
+
+function _client.get_actions(client)
+    local actions = {}
+    local desktop_app_info = _client.get_desktopappinfo(client)
+    if desktop_app_info ~= nil then
+        for _, action in ipairs(desktop_app_info:list_actions()) do
+            table.insert(actions,
+            {
+                name = desktop_app_info:get_action_name(action),
+                launch = function()
+                    desktop_app_info:launch_action(action)
+                end
+            })
+        end
+    end
+    return actions
 end
 
 return _client
