@@ -3,7 +3,6 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 local awful = require("awful")
-local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gcolor = require("gears.color")
 local gstring = require("gears.string")
@@ -400,8 +399,8 @@ function prompt:toggle()
     end
 end
 
-local function new(args)
-    local widget = ebwidget.state(args)
+local function new()
+    local widget = ebwidget.state()
     gtable.crush(widget, prompt, true)
 
     widget:set_child(wibox.widget.textbox())
@@ -417,7 +416,7 @@ local function new(args)
     wp.icon_color = beautiful.colors.on_background or "#FFFFFF"
     wp.prompt_color = beautiful.colors.on_background or "#FFFFFF"
     wp.text_color = beautiful.colors.on_background or "#FFFFFF"
-    wp.cursor_color = "#FF0000"
+    wp.cursor_color = beautiful.colors.on_background or "#FFFFFF"
 
     wp.always_on = false
     wp.reset_on_stop = false
