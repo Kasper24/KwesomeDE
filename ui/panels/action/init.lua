@@ -3,8 +3,6 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 local awful = require("awful")
-local gobject = require("gears.object")
-local gtable = require("gears.table")
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
@@ -21,17 +19,6 @@ local header = require(path .. ".header")
 local dashboard = require(path .. ".dashboard")
 local info = require(path .. ".info")
 local media = require(path .. ".media")
-
-local function separator()
-    return wibox.widget {
-        widget = wibox.widget.separator,
-        forced_width = dpi(1),
-        forced_height = dpi(13),
-        shape = helpers.ui.rrect(beautiful.border_radius),
-        orientation = "horizontal",
-        color = beautiful.colors.surface
-    }
-end
 
 local function new()
     action_panel = widgets.animated_panel {
