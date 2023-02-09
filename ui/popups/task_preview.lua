@@ -131,7 +131,7 @@ local function new()
         ontop = true,
         bg = beautiful.colors.background,
         shape = function(cr, width, height)
-            gshape.infobubble(cr, width, height, nil, nil, dpi(27))
+            gshape.infobubble(cr, width, height, nil, nil, dpi(22))
         end,
         widget = wibox.container.background -- A dummy widget to make awful.popup not scream
     }
