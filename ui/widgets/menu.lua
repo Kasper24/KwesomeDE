@@ -10,6 +10,7 @@ local ebwidget = require("ui.widgets.button.elevated")
 local twidget = require("ui.widgets.text")
 local cbwidget = require("ui.widgets.checkbox")
 local pwidget = require("ui.widgets.popup")
+local bwidget = require("ui.widgets.background")
 local beautiful = require("beautiful")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
@@ -435,15 +436,10 @@ end
 
 function menu.separator()
     return wibox.widget {
-        widget = wibox.container.margin,
-        forced_height = dpi(15),
-        margins = dpi(5),
-        {
-            widget = wibox.widget.separator,
-            orientation = "horizontal",
-            thickness = dpi(1),
-            color = beautiful.colors.on_background .. "64"
-        }
+        widget = bwidget,
+        forced_height = dpi(1),
+        shape = helpers.ui.rrect(beautiful.border_radius),
+        bg = beautiful.colors.surface
     }
 end
 

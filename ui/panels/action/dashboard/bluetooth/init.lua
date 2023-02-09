@@ -243,12 +243,10 @@ local function new()
     }
 
     local seperator = wibox.widget {
-        widget = wibox.widget.separator,
-        forced_width = dpi(1),
+        widget = widgets.background,
         forced_height = dpi(1),
         shape = helpers.ui.rrect(beautiful.border_radius),
-        orientation = "horizontal",
-        color = beautiful.colors.surface
+        bg = beautiful.colors.surface
     }
 
     local accent_color = beautiful.colors.random_accent_color()
