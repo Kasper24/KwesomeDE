@@ -47,9 +47,4 @@ function _input.tap_or_drag(args)
     end)
 end
 
-function _input.fake_escape()
-    capi.root.fake_input("key_press", "Escape")
-    capi.root.fake_input("key_release", "Escape")
-end
-
 return _input
