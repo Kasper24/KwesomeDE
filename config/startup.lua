@@ -13,6 +13,15 @@ local function setup_system_tools()
     helpers.run.run_once_grep("parcellite")
     helpers.run.run_once_grep("kdeconnect-indicator")
     helpers.run.run_once_grep("mopidy")
+    gtimer {
+        timeout = 3,
+        single_shot = true,
+        call_now = false,
+        autostart = true,
+        callback = function()
+            helpers.run.run_once_grep("openrgb")
+        end
+    }
 end
 
 local function configure_keyboard()
