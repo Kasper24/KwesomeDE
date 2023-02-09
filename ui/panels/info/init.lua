@@ -33,12 +33,12 @@ local function new()
         type = "dock",
         visible = false,
         ontop = true,
-        axis = "y",
-        start_pos = -500,
         minimum_width = dpi(800),
         maximum_width = dpi(800),
         minimum_height = dpi(600),
         maximum_height = dpi(600),
+        axis = "y",
+        start_pos = -500,
         placement = function(widget)
             awful.placement.top(widget, {
                 honor_workarea = true,
