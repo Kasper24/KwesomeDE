@@ -437,8 +437,8 @@ function playerctl.play(daemon)
 
     local widget = wibox.widget {
         widget = wibox.widget.make_base_widget,
-        forced_width = dpi(25),
-        forced_height = dpi(25),
+        forced_width = dpi(35),
+        forced_height = dpi(35),
         pos = 0,
         fit = function(_, _, _, height)
             return height, height
@@ -488,6 +488,7 @@ function playerctl.previous(width, height, daemon)
         forced_width = width or dpi(50),
         forced_height = height or dpi(50),
         normal_shape = gshape.circle,
+        normal_bg = beautiful.colors.transparent,
         text_normal_bg = beautiful.colors.on_background,
         icon = beautiful.icons.backward,
         size = 12,
@@ -505,6 +506,7 @@ function playerctl.next(width, height, daemon)
         forced_width = width or dpi(50),
         forced_height = height or dpi(50),
         normal_shape = gshape.circle,
+        normal_bg = beautiful.colors.transparent,
         text_normal_bg = beautiful.colors.on_background,
         icon = beautiful.icons.forward,
         size = 12,
@@ -522,6 +524,7 @@ function playerctl.loop(width, height, daemon)
         forced_width = width or dpi(50),
         forced_height = height or dpi(50),
         normal_shape = gshape.circle,
+        normal_bg = beautiful.colors.transparent,
         text_normal_bg = beautiful.colors.on_background,
         icon = beautiful.icons._repeat,
         size = 12,
@@ -549,6 +552,7 @@ function playerctl.shuffle(width, height, daemon)
         forced_width = width or dpi(50),
         forced_height = height or dpi(50),
         normal_shape = gshape.circle,
+        normal_bg = beautiful.colors.transparent,
         text_normal_bg = beautiful.colors.on_background,
         icon = beautiful.icons.shuffle,
         size = 12,
@@ -613,24 +617,11 @@ function playerctl.slider(width, daemon)
         bar_shape = helpers.ui.rrect(beautiful.border_radius),
         bar_color = beautiful.colors.surface,
         bar_active_color = beautiful.colors.on_background,
-        handle_width = dpi(2),
-        handle_color = beautiful.colors.surface,
-        handle_shape = gshape.circle
-    }
-
-    widget:connect_signal("mouse::enter", function()
-        if widget.maximum > 1 then
-            widget.bar_active_color = accent_color
-            widget.handle_color = beautiful.colors.on_background
-            widget.handle_width = dpi(15)
+        handle_color = beautiful.colors.on_background,
+        handle_shape = function(cr, width, height)
+            return gshape.rounded_bar(cr, 10, 40)
         end
-    end)
-
-    widget:connect_signal("mouse::leave", function()
-        widget.bar_active_color = beautiful.colors.on_background
-        widget.handle_color = beautiful.colors.surface
-        widget.handle_width = dpi(2)
-    end)
+    }
 
     local function set_slider_value(self, position, length)
         widget.maximum = math.max(length, 1)
