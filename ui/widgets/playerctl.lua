@@ -2,6 +2,8 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
+local cairo = require("lgi").cairo
+local gsurface = require("gears.surface")
 local gshape = require("gears.shape")
 local gcolor = require("gears.color")
 local wibox = require("wibox")
@@ -11,14 +13,100 @@ local ebwidget = require("ui.widgets.button.elevated")
 local swidget = require("ui.widgets.slider")
 local beautiful = require("beautiful")
 local general_playerctl_daemon = require("daemons.system.playerctl")
+local theme_daemmon = require("daemons.system.theme")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 local math = math
+local capi = {
+    screen = screen
+}
 
 local playerctl = {}
 
 local accent_color = beautiful.colors.random_accent_color()
+
+local function crop_surface(ratio, surf)
+    local old_w, old_h = gsurface.get_size(surf)
+    local old_ratio = old_w/old_h
+
+    if old_ratio == ratio then return surf end
+
+    local new_h = old_h
+    local new_w = old_w
+    local offset_h, offset_w = 0, 0
+    -- quick mafs
+    if (old_ratio < ratio) then
+        new_h = old_w * (1/ratio)
+        offset_h = (old_h - new_h)/2
+    else
+        new_w = old_h * ratio
+        offset_w = (old_w - new_w)/2
+    end
+
+    local out_surf = cairo.ImageSurface(cairo.Format.ARGB32, new_w, new_h)
+    local cr = cairo.Context(out_surf)
+    cr:set_source_surface(surf, -offset_w, -offset_h)
+    cr.operator = cairo.Operator.SOURCE
+    cr:paint()
+
+    return out_surf
+end
+
+local function image_with_gradient(image)
+    local in_surf = gsurface.load_uncached(image)
+    local surf = crop_surface(2, in_surf)
+
+    local cr = cairo.Context(surf)
+    local w, h = gsurface.get_size(surf)
+    cr:rectangle(0, 0, w, h)
+
+    local pat_h = cairo.Pattern.create_linear(0, 0, w, 0)
+    pat_h:add_color_stop_rgba(0 ,gcolor.parse_color(beautiful.colors.background))
+    pat_h:add_color_stop_rgba(0.3 ,gcolor.parse_color(beautiful.colors.background .. "CC"))
+    pat_h:add_color_stop_rgba(0.7 ,gcolor.parse_color(beautiful.colors.background .. "BB"))
+    pat_h:add_color_stop_rgba(1 ,gcolor.parse_color(beautiful.colors.background .. "99"))
+    cr:set_source(pat_h)
+    cr:fill()
+
+    return surf
+end
+
+function playerctl.art_opacity(daemon)
+    local playerctl_daemon = daemon or general_playerctl_daemon
+
+    local art = wibox.widget{
+        widget = wibox.widget.imagebox,
+        opacity = 0.6,
+        horizontal_fit_policy = "fit",
+        vertical_fit_policy = "fit",
+        image = image_with_gradient(theme_daemmon:get_wallpaper()),
+    }
+
+    local has_art = false
+    playerctl_daemon:connect_signal("metadata", function(_, title, artist, album_path, _, new, player_name)
+        if album_path ~= "" then
+            art.image = image_with_gradient(album_path)
+            has_art = true
+        else
+            art.image = image_with_gradient(theme_daemmon:get_wallpaper())
+            has_art = false
+        end
+    end)
+
+    playerctl_daemon:connect_signal("no_players", function()
+        art.image = image_with_gradient(theme_daemmon:get_wallpaper())
+        has_art = false
+    end)
+
+    capi.screen.connect_signal("request::wallpaper", function()
+        if not has_art then
+            art.image = image_with_gradient(theme_daemmon:get_wallpaper())
+        end
+    end)
+
+    return art
+end
 
 function playerctl.art(halign, valign, size, default_icon_size, daemon)
     local playerctl_daemon = daemon or general_playerctl_daemon
