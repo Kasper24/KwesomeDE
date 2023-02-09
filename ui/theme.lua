@@ -97,642 +97,210 @@ local function icons()
     local font_awesome_6_brands_font_name = "Font Awesome 6 Brands "
     local nerd_font_name = "Nerd Font Mono "
 
-    theme.icons = {
+    theme.icons =
+    {
         thermometer = {
-            quarter = {
-                icon = "︁",
-                font = font_awesome_6_solid_font_name,
-                size = 30
-            },
-            half = {
-                icon = "",
-                font = font_awesome_6_solid_font_name,
-                size = 30
-            },
-            three_quarter = {
-                icon = "︁",
-                font = font_awesome_6_solid_font_name,
-                size = 30
-            },
-            full = {
-                icon = "︁",
-                font = font_awesome_6_solid_font_name,
-                size = 30
-            }
+            quarter = { icon = "︁", size = 30 },
+            half = { icon = "", size = 30 },
+            three_quarter = { icon = "︁", size = 30 },
+            full = { icon = "︁", size = 30 },
         },
         network = {
-            wifi_off = {
-                icon = "",
-                font = font_awesome_6_solid_font_name
-            },
-            wifi_low = {
-                icon = "",
-                font = font_awesome_6_solid_font_name
-            },
-            wifi_medium = {
-                icon = "",
-                font = font_awesome_6_solid_font_name
-            },
-            wifi_high = {
-                icon = "",
-                font = font_awesome_6_solid_font_name
-            },
-            wired_off = {
-                icon = "",
-                font = font_awesome_6_solid_font_name
-            },
-            wired = {
-                icon = "",
-                font = font_awesome_6_solid_font_name
-            }
+            wifi_off = { icon = "" },
+            wifi_low = { icon = "" },
+            wifi_medium = { icon = "" },
+            wifi_high = { icon = "" },
+            wired_off = { icon = "" },
+            wired = { icon = "" },
         },
         bluetooth = {
-            on = {
-                icon = "",
-                font = nerd_font_name
-            },
-            off = {
-                icon = "",
-                font = nerd_font_name
-            }
+            on = { icon = "", font = nerd_font_name },
+            off = { icon = "", font = nerd_font_name },
         },
         battery = {
-            bolt = {
-                icon = "",
-                font = font_awesome_6_solid_font_name
-            },
-            quarter = {
-                icon = "",
-                font = font_awesome_6_solid_font_name
-            },
-            half = {
-                icon = "",
-                font = font_awesome_6_solid_font_name
-            },
-            three_quarter = {
-                icon = "",
-                font = font_awesome_6_solid_font_name
-            },
-            full = {
-                icon = "",
-                font = font_awesome_6_solid_font_name
-            }
+            bolt = { icon = "" },
+            quarter = { icon = "" },
+            half = { icon = "" },
+            three_quarter = { icon = "" },
+            full = { icon = "" },
         },
         volume = {
-            off = {
-                icon = "",
-                font = font_awesome_6_solid_font_name
-            },
-            low = {
-                icon = "",
-                font = font_awesome_6_solid_font_name
-            },
-            normal = {
-                icon = "",
-                font = font_awesome_6_solid_font_name
-            },
-            high = {
-                icon = "",
-                font = font_awesome_6_solid_font_name
-            }
+            off = { icon = "" },
+            low = { icon = "" },
+            normal = { icon = "" },
+            high = { icon = "" },
         },
         bluelight = {
-            on = {
-                icon = "",
-                font = font_awesome_6_solid_font_name
-            },
-            off = {
-                icon = "",
-                font = font_awesome_6_solid_font_name
-            }
+            on = { icon = "" },
+            off = { icon = "" },
         },
         chevron_circle = {
-            left = {
-                icon = "︁",
-                font = font_awesome_6_solid_font_name
-            },
-            right = {
-                icon = "︁",
-                font = font_awesome_6_solid_font_name
-            }
+            left = { icon = "︁" },
+            right = { icon = "︁" },
         },
         airplane = {
-            on = {
-                icon = "",
-                font = font_awesome_6_solid_font_name
-            },
-            off = {
-                icon = "",
-                font = font_awesome_6_solid_font_name
-            }
+            on = { icon = "" },
+            off = { icon = "" },
         },
         microphone = {
-            on = {
-                icon = "",
-                font = font_awesome_6_solid_font_name
-            },
-            off = {
-                icon = "",
-                font = font_awesome_6_solid_font_name
-            }
+            on = { icon = "" },
+            off = { icon = "" },
         },
         lightbulb = {
-            on = {
-                icon = "",
-                font = font_awesome_6_solid_font_name
-            },
-            off = {
-                icon = "",
-                font = font_awesome_6_solid_font_name
-            }
+            on = { icon = "" },
+            off = { icon = "" },
         },
         toggle = {
-            on = {
-                icon = "",
-                font = font_awesome_6_solid_font_name
-            },
-            off = {
-                icon = "",
-                font = font_awesome_6_solid_font_name
-            }
+            on = { icon = "" },
+            off = { icon = "" },
         },
         circle = {
-            plus = {
-                icon = "",
-                font = font_awesome_6_solid_font_name
-            },
-            minus = {
-                icon = "",
-                font = font_awesome_6_solid_font_name
-            }
+            plus = { icon = "" },
+            minus = { icon = "" },
         },
         caret = {
-            left = {
-                icon = "",
-                font = font_awesome_6_solid_font_name
-            },
-            right = {
-                icon = "",
-                font = font_awesome_6_solid_font_name
-            }
+            left  = { icon = "" },
+            right = { icon = "" },
         },
         chevron = {
-            up = {
-                icon = "",
-                font = font_awesome_6_solid_font_name
-            },
-            down = {
-                icon = "",
-                font = font_awesome_6_solid_font_name
-            },
-            right = {
-                icon = "",
-                font = font_awesome_6_solid_font_name
-            }
+            up = { icon = "" },
+            down = { icon = "" },
+            right = { icon = "" },
         },
-        window = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        file_manager = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        terminal = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        firefox = {
-            icon = "︁",
-            font = font_awesome_6_brands_font_name
-        },
-        chrome = {
-            icon = "",
-            font = font_awesome_6_brands_font_name
-        },
-        code = {
-            icon = "",
-            font = font_awesome_6_solid_font_name,
-            size = 25
-        },
-        git = {
-            icon = "",
-            font = font_awesome_6_brands_font_name
-        },
-        gitkraken = {
-            icon = "︁",
-            font = font_awesome_6_brands_font_name
-        },
-        discord = {
-            icon = "︁",
-            font = font_awesome_6_brands_font_name
-        },
-        telegram = {
-            icon = "︁",
-            font = font_awesome_6_brands_font_name
-        },
-        spotify = {
-            icon = "",
-            font = font_awesome_6_brands_font_name
-        },
-        steam = {
-            icon = "︁",
-            font = font_awesome_6_brands_font_name
-        },
-        vscode = {
-            icon = "﬏",
-            font = "JetBrainsMono Nerd Font 40",
-            size = 40
-        },
-        github = {
-            icon = "",
-            font = font_awesome_6_brands_font_name
-        },
-        gitlab = {
-            icon = "",
-            font = font_awesome_6_brands_font_name
-        },
-        youtube = {
-            icon = "",
-            font = font_awesome_6_brands_font_name
-        },
-        nvidia = {
-            icon = "︁",
-            font = font_awesome_6_solid_font_name
-        },
-        system_monitor = {
-            icon = "︁",
-            font = font_awesome_6_solid_font_name
-        },
-        calculator = {
-            icon = "🖩︁",
-            font = font_awesome_6_solid_font_name
-        },
+        window = { icon = "" },
+        file_manager = { icon = "" },
+        terminal = { icon = "" },
+        firefox = { icon = "︁", font = font_awesome_6_brands_font_name },
+        chrome = { icon = "", font = font_awesome_6_brands_font_name },
+        code = { icon = "", size = 25 },
+        git = { icon = "", font = font_awesome_6_brands_font_name },
+        gitkraken = { icon = "︁", font = font_awesome_6_brands_font_name },
+        discord = { icon = "︁", font = font_awesome_6_brands_font_name },
+        telegram = { icon = "︁", font = font_awesome_6_brands_font_name },
+        spotify = { icon = "", font = font_awesome_6_brands_font_name },
+        steam = { icon = "︁", font = font_awesome_6_brands_font_name },
+        vscode = { icon = "﬏", size = 40 },
+        github = { icon = "", font = font_awesome_6_brands_font_name },
+        gitlab = { icon = "", font = font_awesome_6_brands_font_name },
+        youtube = { icon = "", font = font_awesome_6_brands_font_name },
+        nvidia = { icon = "︁" },
+        system_monitor = { icon = "︁" },
+        calculator = { icon = "🖩︁" },
 
-        play = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        pause = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        forward = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        backward = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        _repeat = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        shuffle = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
+        play = { icon = "" },
+        pause = { icon = "" },
+        forward = { icon = "" },
+        backward = { icon = "" },
+        _repeat = { icon = "" },
+        shuffle = { icon = "" },
 
-        sun = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        cloud_sun = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        sun_cloud = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        cloud_sun_rain = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        cloud_bolt_sun = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        cloud = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        raindrops = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        snowflake = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        cloud_fog = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        moon = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        cloud_moon = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        moon_cloud = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        cloud_moon_rain = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        cloud_bolt_moon = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
+        sun = { icon = "" },
+        cloud_sun = { icon = "" },
+        sun_cloud = { icon = "" },
+        cloud_sun_rain = { icon = "" },
+        cloud_bolt_sun = { icon = "" },
+        cloud = { icon = "" },
+        raindrops = { icon = "" },
+        snowflake = { icon = "" },
+        cloud_fog = { icon = "" },
+        moon = { icon = "" },
+        cloud_moon = { icon = "" },
+        moon_cloud = { icon = "" },
+        cloud_moon_rain = { icon = "" },
+        cloud_bolt_moon = { icon = "" },
 
-        poweroff = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        reboot = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        suspend = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        exit = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        lock = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
+        poweroff = { icon = "" },
+        reboot = { icon = "" },
+        suspend = { icon = "" },
+        exit = { icon = "" },
+        lock = { icon = "" },
 
-        triangle = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        circle = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        square = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
+        triangle = { icon = "" },
+        circle = { icon = "" },
+        square = { icon = "" },
 
-        code_pull_request = {
-            icon = "︁",
-            font = font_awesome_6_solid_font_name
-        },
-        commit = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        star = {
-            icon = "︁",
-            font = font_awesome_6_solid_font_name
-        },
-        code_branch = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
+        code_pull_request = { icon = "︁" },
+        commit = { icon = "" },
+        star = { icon = "︁" },
+        code_branch = { icon = "" },
 
-        gamepad_alt = {
-            icon = "",
-            font = font_awesome_6_solid_font_name,
-            size = 20
-        },
-        lights_holiday = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        download = {
-            icon = "︁",
-            font = font_awesome_6_solid_font_name
-        },
-        computer = {
-            icon = "︁",
-            font = font_awesome_6_solid_font_name
-        },
-        video_download = {
-            icon = "︁",
-            font = font_awesome_6_solid_font_name
-        },
-        speaker = {
-            icon = "︁",
-            font = font_awesome_6_solid_font_name
-        },
-        archeive = {
-            icon = "︁",
-            font = font_awesome_6_solid_font_name
-        },
-        unlock = {
-            icon = "︁",
-            font = font_awesome_6_solid_font_name
-        },
-        spraycan = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        note = {
-            icon = "︁",
-            font = font_awesome_6_solid_font_name
-        },
-        image = {
-            icon = "︁",
-            font = font_awesome_6_solid_font_name
-        },
-        envelope = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        word = {
-            icon = "︁",
-            font = font_awesome_6_solid_font_name
-        },
-        powerpoint = {
-            icon = "︁",
-            font = font_awesome_6_solid_font_name
-        },
-        excel = {
-            icon = "︁",
-            font = font_awesome_6_solid_font_name
-        },
-        camera_retro = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        keyboard = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        brightness = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        circle_exclamation = {
-            icon = "︁",
-            font = font_awesome_6_solid_font_name
-        },
-        bell = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        router = {
-            icon = "︁",
-            font = font_awesome_6_solid_font_name
-        },
-        message = {
-            icon = "︁",
-            font = font_awesome_6_solid_font_name
-        },
-        xmark = {
-            icon = "",
-            font = nerd_font_name
-        },
-        microchip = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        memory = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        disc_drive = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        gear = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        check = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        user = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        scissors = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        clock = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        box = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        left = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        video = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        industry = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        calendar = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        hammer = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        folder_open = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        launcher = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        check = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        trash = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        list_music = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        arrow_rotate_right = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        table_layout = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        tag = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        xmark_fw = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        clouds = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        circle_check = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        laptop_code = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        location_dot = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        server = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        usb = {
-            icon = "",
-            font = font_awesome_6_brands_font_name
-        },
-        usb_drive = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        signal_stream = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        },
-        car_battery = {
-            icon = "",
-            font = font_awesome_6_solid_font_name
-        }
+        gamepad_alt = { icon = "" },
+        lights_holiday = { icon = "" },
+        download = { icon = "︁" },
+        computer = { icon = "︁" },
+        video_download = { icon = "︁" },
+        speaker = { icon = "︁" },
+        archeive = { icon = "︁" },
+        unlock = { icon = "︁" },
+        spraycan = { icon = "" },
+        note = { icon = "︁" },
+        image = { icon = "︁" },
+        envelope = { icon = "" },
+        word = { icon = "︁" },
+        powerpoint = { icon = "︁" },
+        excel = { icon = "︁" },
+        camera_retro = { icon = "" },
+        keyboard = { icon = "" },
+        brightness = { icon = "" },
+        circle_exclamation = { icon = "︁" },
+        bell = { icon = "" },
+        router = { icon = "︁" },
+        message = { icon = "︁" },
+        xmark = { icon = "" },
+        microchip = { icon = "" },
+        memory = { icon = "" },
+        disc_drive = { icon = "" },
+        gear = { icon = "" },
+        check = { icon = "" },
+        user = { icon = "" },
+        scissors = { icon = "" },
+        clock = { icon = "" },
+        box = { icon = "" },
+        left = { icon = "" },
+        video = { icon = "" },
+        industry = { icon = "" },
+        calendar = { icon = "" },
+        hammer = { icon = "" },
+        folder_open = { icon = "" },
+        launcher = { icon = "" },
+        check = { icon = "" },
+        trash = { icon = "" },
+        list_music = { icon = "" },
+        arrow_rotate_right = { icon = "" },
+        table_layout = { icon = "" },
+        tag = { icon = "" },
+        xmark_fw = { icon = "" },
+        clouds = { icon = "" },
+        circle_check = { icon = "" },
+        laptop_code = { icon = "" },
+        location_dot = { icon = "" },
+        server = { icon = "" },
+        usb = { icon = "", font = font_awesome_6_brands_font_name },
+        usb_drive = { icon = "" },
+        signal_stream = { icon = "" },
+        car_battery =  { icon = "" },
     }
 
+    local function set_icon_default_props(icon, color)
+        if icon.color == nil then
+            icon.color = color or theme.colors.random_accent_color()
+        end
+        if icon.font == nil then
+            icon.font = font_awesome_6_solid_font_name
+        end
+        if icon.size == nil then
+            icon.size = 20
+        end
+    end
+
     for _, icon in pairs(theme.icons) do
-        local color = theme.colors.random_accent_color()
         if icon.icon == nil then
+            local color = theme.colors.random_accent_color()
             for _, _icon in pairs(icon) do
-                _icon.color = color
+                set_icon_default_props(_icon, color)
             end
         else
-            icon.color = color
+            set_icon_default_props(icon)
         end
     end
 

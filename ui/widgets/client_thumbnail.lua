@@ -29,9 +29,6 @@ local function get_client_thumbnail(client)
 end
 
 local function new(client)
-    -- print(require("helpers.inspect").inspect(client.titlebar._widget))
-    -- print(client._private.titlebars["top"].args.size)
-
     local thumbnail = get_client_thumbnail(client)
     local widget = thumbnail and wibox.widget {
         layout = wibox.layout.fixed.vertical,
@@ -53,7 +50,7 @@ local function new(client)
         forced_height = dpi(300),
         halign = "center",
         valign = "center",
-        size = (client.font_icon.size or 20) * 2,
+        size = client.font_icon.size * 2,
         client = client
     }
 

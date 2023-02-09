@@ -15,11 +15,11 @@ local client_font_icon = {
 
 function client_font_icon:set_client(client)
     self:set_icon(client.font_icon)
-    self:set_size((client.font_icon.size or 20) * self._private.scale)
+    self:set_size(client.font_icon.size * self._private.scale)
 
     client:connect_signal("property::font_icon", function(_, font_icon)
         self:set_icon(font_icon)
-        self:set_size((font_icon.size or 20) * self._private.scale)
+        self:set_size(font_icon.size * self._private.scale)
     end)
 end
 

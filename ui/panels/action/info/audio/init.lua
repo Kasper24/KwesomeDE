@@ -70,7 +70,7 @@ local function application_widget(args)
     else
         icon = wibox.widget {
             widget = widgets.text,
-            size = font_icon.size or 15,
+            size = font_icon.size,
             icon = font_icon
         }
     end

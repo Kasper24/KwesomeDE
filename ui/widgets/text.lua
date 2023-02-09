@@ -74,7 +74,7 @@ function text:set_icon(icon)
 
     wp.icon = icon
     wp.font = wp.font or icon.font
-    wp.size = wp.size or icon.size or 20
+    wp.size = wp.size or icon.size
     wp.color = wp.color or icon.color
     wp.text = icon.icon
 
