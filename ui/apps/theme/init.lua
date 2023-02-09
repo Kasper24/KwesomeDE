@@ -57,7 +57,7 @@ local window = [[ lua -e "
 function theme:show()
     helpers.client.run_or_raise_with_shell({
         class = "awesome-app-theme-manager"
-    }, false, window)
+    }, true, window)
 end
 
 function theme:hide()

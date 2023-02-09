@@ -63,7 +63,7 @@ local accent_color = beautiful.colors.random_accent_color()
 function welcome:show()
     helpers.client.run_or_raise_with_shell({
         class = "awesome-app-welcome"
-    }, false, window)
+    }, true, window)
     self._private.visible = true
 end
 
