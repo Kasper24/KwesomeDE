@@ -29,7 +29,7 @@ local DATA_PATH = PATH .. "data.json"
 
 local client_properties = {"hidden", "minimized", "above", "ontop", "below", "fullscreen", "maximized",
     "maximized_horizontal", "maximized_vertical", "sticky", "floating", "x", "y", "width",
-    "height"}
+    "height", "class"}
 
 function persistent:save_tags()
     self.settings.tags = {}
@@ -54,10 +54,6 @@ end
 function persistent:save_clients()
     self.settings.clients = {}
 
-    local properties = {"hidden", "minimized", "above", "ontop", "below", "fullscreen", "maximized",
-                        "maximized_horizontal", "maximized_vertical", "sticky", "floating", "x", "y", "width", "height",
-                        "class"}
-
     for _, client in ipairs(capi.client.get()) do
         local pid = tostring(client.pid)
         self.settings.clients[pid] = {}
@@ -70,12 +66,14 @@ function persistent:save_clients()
         end
 
         -- Properties
-        for _, property in ipairs(properties) do
-            for _, property in ipairs(properties) do
-                self.settings.clients[pid][property] = client[property]
-            end
+        for _, property in ipairs(client_properties) do
+            self.settings.clients[pid][property] = client[property]
         end
         self.settings.clients[pid].screen = client.screen.index
+
+        if client.titlebar_widget and not client.custom_titlebar then
+            self.settings.clients[pid].titlebar = true
+        end
 
         -- Tags
         self.settings.clients[pid].tags = {}
@@ -151,6 +149,9 @@ function persistent:reapply_clients()
                 client[property] = self.restored_settings.clients[pid][property]
             end
             client:move_to_screen(self.restored_settings.clients[pid].screen)
+            if self.restored_settings.clients[pid].titlebar then
+                awful.titlebar.show(client)
+            end
 
             -- Tags
             gtimer.delayed_call(function()
