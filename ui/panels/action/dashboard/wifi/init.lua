@@ -67,6 +67,7 @@ local function access_point_widget(layout, access_point, accent_color)
         icon_font = beautiful.icons.lock.font,
         icon = beautiful.icons.lock.icon
     }
+
     local toggle_password_obscure_button = wibox.widget {
         widget = widgets.checkbox,
         state = true,
@@ -177,6 +178,9 @@ local function access_point_widget(layout, access_point, accent_color)
         height = dpi(65),
         {
             widget = widgets.button.elevated.state,
+            on_normal_bg = beautiful.colors.background,
+            on_hover_bg = beautiful.colors.background,
+            on_press_bg = beautiful.colors.background,
             id = "button",
             on_press = function(self)
                 if self._private.state == false then

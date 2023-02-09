@@ -124,6 +124,9 @@ local function device_widget(device, path, layout, accent_color)
         height = dpi(60),
         {
             widget = widgets.button.elevated.state,
+            on_normal_bg = beautiful.colors.background,
+            on_hover_bg = beautiful.colors.background,
+            on_press_bg = beautiful.colors.background,
             id = "button",
             on_press = function(self)
                 if self._private.state == false then
