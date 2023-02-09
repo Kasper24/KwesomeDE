@@ -26,7 +26,7 @@ local function separator()
     return wibox.widget {
         widget = wibox.widget.separator,
         forced_width = dpi(1),
-        forced_height = dpi(1),
+        forced_height = dpi(13),
         shape = helpers.ui.rrect(beautiful.border_radius),
         orientation = "horizontal",
         color = beautiful.colors.surface
@@ -64,11 +64,40 @@ local function new()
                 scrollbar_width = dpi(10),
                 step = 50,
                 header,
-                separator(),
-                dashboard(),
-                separator(),
-                info(),
-                separator(),
+                {
+                    widget = widgets.background,
+                    shape = helpers.ui.rrect(beautiful.border_radius),
+                    bg = beautiful.colors.surface,
+                    {
+                        widget = wibox.container.margin,
+                        margins = dpi(15),
+                        forced_height = dpi(850),
+                        {
+                            layout = wibox.layout.fixed.vertical,
+                            spacing = dpi(25),
+                            {
+                                widget = widgets.background,
+                                shape = helpers.ui.rrect(beautiful.border_radius),
+                                bg = beautiful.colors.background,
+                                {
+                                    widget = wibox.container.margin,
+                                    margins = dpi(15),
+                                    dashboard,
+                                }
+                            },
+                            {
+                                widget = widgets.background,
+                                shape = helpers.ui.rrect(beautiful.border_radius),
+                                bg = beautiful.colors.background,
+                                {
+                                    widget = wibox.container.margin,
+                                    margins = dpi(15),
+                                    info,
+                                }
+                            },
+                        }
+                    }
+                },
                 media
             }
         }

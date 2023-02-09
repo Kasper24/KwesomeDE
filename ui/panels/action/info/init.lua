@@ -15,6 +15,7 @@ local disk_daemon = require("daemons.hardware.disk")
 local temperature_daemon = require("daemons.hardware.temperature")
 local pactl_daemon = require("daemons.hardware.pactl")
 local brightness_daemon = require("daemons.system.brightness")
+local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 local tostring = tostring
@@ -27,7 +28,7 @@ local info = {
     mt = {}
 }
 
-local function arc_widget(icon, on_release, on_scroll_up, on_scroll_down)
+local function arc_widget(name, icon, on_release, on_scroll_up, on_scroll_down)
     local icon_widget = nil
     if on_release ~= nil then
         icon_widget = wibox.widget {
@@ -35,7 +36,7 @@ local function arc_widget(icon, on_release, on_scroll_up, on_scroll_down)
             halign = "center",
             valign = "center",
             icon = icon,
-            size = 30,
+            size = 25,
             on_release = function()
                 if on_release ~= nil then
                     on_release()
@@ -58,7 +59,7 @@ local function arc_widget(icon, on_release, on_scroll_up, on_scroll_down)
             halign = "center",
             valign = "center",
             icon = icon,
-            size = 30
+            size = 25
         }
     end
 
@@ -103,9 +104,15 @@ local function arc_widget(icon, on_release, on_scroll_up, on_scroll_down)
 
     local widget = wibox.widget {
         layout = wibox.layout.fixed.vertical,
+        forced_height = dpi(130),
         spacing = dpi(15),
         arc,
-        value_text
+        {
+            widget = widgets.text,
+            halign = "center",
+            size = 15,
+            text = name
+        }
     }
 
     function widget:set_value(value)
@@ -121,7 +128,7 @@ local function arc_widget(icon, on_release, on_scroll_up, on_scroll_down)
 end
 
 local function cpu()
-    local arc = arc_widget(beautiful.icons.microchip, function()
+    local arc = arc_widget("CPU", beautiful.icons.microchip, function()
         cpu_popup:toggle()
     end)
 
@@ -133,7 +140,7 @@ local function cpu()
 end
 
 local function ram()
-    local arc = arc_widget(beautiful.icons.memory, function()
+    local arc = arc_widget("RAM", beautiful.icons.memory, function()
         ram_popup:toggle()
     end)
 
@@ -148,7 +155,7 @@ local function ram()
 end
 
 local function disk()
-    local arc = arc_widget(beautiful.icons.disc_drive, function()
+    local arc = arc_widget("Disk", beautiful.icons.disc_drive, function()
         disk_popup:toggle()
     end)
 
@@ -164,7 +171,7 @@ local function disk()
 end
 
 local function temperature()
-    local arc = arc_widget(beautiful.icons.thermometer.full)
+    local arc = arc_widget("Temperature", beautiful.icons.thermometer.full)
 
     temperature_daemon:connect_signal("update", function(self, value)
         if value == nil then
@@ -189,7 +196,7 @@ local function temperature()
 end
 
 local function brightness()
-    local arc = arc_widget(beautiful.icons.brightness)
+    local arc = arc_widget("Brightness", beautiful.icons.brightness)
 
     brightness_daemon:connect_signal("update", function(self, value)
         if value >= 0 then
@@ -201,7 +208,7 @@ local function brightness()
 end
 
 local function audio()
-    local arc = arc_widget(beautiful.icons.volume.off, function()
+    local arc = arc_widget("Audio", beautiful.icons.volume.off, function()
         audio_popup:toggle()
     end, function()
         pactl_daemon:sink_volume_up(nil, 5)

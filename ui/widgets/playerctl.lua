@@ -94,6 +94,30 @@ function playerctl.title_artist(daemon)
     return widget
 end
 
+function playerctl.player_art(halign, valign, daemon)
+    local playerctl_daemon = daemon or general_playerctl_daemon
+
+    local icon = wibox.widget {
+        widget = twidget,
+        halign = halign or "left",
+        valign = valign or "center",
+        icon = beautiful.icons.spotify,
+    }
+
+    playerctl_daemon:connect_signal("metadata", function(self, title, artist, album_path, album, new, player_name)
+        if player_name ~= "" then
+            local app_font_icon = beautiful.get_font_icon_for_app_name(player_name)
+            icon:set_icon(app_font_icon or beautiful.icons.spotify)
+        end
+    end)
+
+    playerctl_daemon:connect_signal("no_players", function(self)
+        icon:set_icon(beautiful.icons.spotify)
+    end)
+
+    return icon
+end
+
 function playerctl.player_name(halign, daemon)
     local playerctl_daemon = daemon or general_playerctl_daemon
 
