@@ -14,7 +14,8 @@ local elevated_button_normal = {
     mt = {}
 }
 
-local properties = {"halign", "valign", "normal_bg", "hover_bg", "press_bg", "normal_shape", "hover_shape",
+local properties = { "forced_width", "forced_height", "halign", "valign",
+                    "normal_bg", "hover_bg", "press_bg", "normal_shape", "hover_shape",
                     "press_shape", "normal_border_width", "hover_border_width", "press_border_width",
                     "normal_border_color", "hover_border_color", "press_border_color", "on_hover", "on_leave",
                     "on_press", "on_release", "on_secondary_press", "on_secondary_release", "on_scroll_up",
@@ -87,6 +88,20 @@ end
 
 function elevated_button_normal:get_child()
     return self._private.child
+end
+
+function elevated_button_normal:set_halign(halign)
+    self._private.halign = halign
+    if self._private.widget then
+        self._private.widget:set_halign(halign)
+    end
+end
+
+function elevated_button_normal:set_valign(valign)
+    self._private.valign = valign
+    if self._private.widget then
+        self._private.widget:set_valign(valign)
+    end
 end
 
 function elevated_button_normal:set_normal_bg(normal_bg)
