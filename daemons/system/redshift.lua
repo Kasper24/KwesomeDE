@@ -20,7 +20,7 @@ function redshift:turn_on(skip_check)
     end
 
     if skip_check ~= true then
-        helpers.run.check_if_running("redshift", function(is_running)
+        helpers.run.is_running("redshift", function(is_running)
             if is_running == false then
                 turn_on()
             end
