@@ -83,7 +83,7 @@ local function new()
                 packages_count = helpers.string.trim(packages_count:gsub("packages", ""))
 
                 awful.spawn.easy_async("neofetch uptime", function(uptime)
-                    uptime = helpers.string.trim(uptime:gsub("time", ""))
+                    uptime = helpers.string.trim(uptime:gsub("time", ""):gsub("up  ", ""))
                     ret:emit_signal("update", packages_count, uptime)
                 end)
             end)
