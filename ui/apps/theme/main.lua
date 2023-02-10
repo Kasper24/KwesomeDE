@@ -479,8 +479,6 @@ local function wip_tab()
 end
 
 local function new(self, layout)
-    local accent_color = beautiful.colors.random_accent_color()
-
     local _image_button = {}
     local _tiled_button = {}
     local _color_button = {}
@@ -505,7 +503,7 @@ local function new(self, layout)
         widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
-        text_normal_bg = accent_color,
+        text_normal_bg = beautiful.icons.spraycan.color,
         icon = beautiful.icons.gear,
         size = 15,
         on_release = function()
@@ -517,7 +515,7 @@ local function new(self, layout)
         widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
-        text_normal_bg = accent_color,
+        text_normal_bg = beautiful.icons.spraycan.color,
         icon = beautiful.icons.xmark,
         on_release = function()
             self:hide()
@@ -528,7 +526,7 @@ local function new(self, layout)
         widget = widgets.button.text.state,
         on_by_default = true,
         size = 15,
-        on_normal_bg = accent_color,
+        on_normal_bg = beautiful.icons.spraycan.color,
         text_normal_bg = beautiful.colors.on_background,
         text_on_normal_bg = beautiful.colors.on_accent,
         text = "Image",
@@ -545,7 +543,7 @@ local function new(self, layout)
     _tiled_button = wibox.widget {
         widget = widgets.button.text.state,
         size = 15,
-        on_normal_bg = accent_color,
+        on_normal_bg = beautiful.icons.spraycan.color,
         text_normal_bg = beautiful.colors.on_background,
         text_on_normal_bg = beautiful.colors.on_accent,
         text = "Tiled",
@@ -562,7 +560,7 @@ local function new(self, layout)
     _color_button = wibox.widget {
         widget = widgets.button.text.state,
         size = 15,
-        on_normal_bg = accent_color,
+        on_normal_bg = beautiful.icons.spraycan.color,
         text_normal_bg = beautiful.colors.on_background,
         text_on_normal_bg = beautiful.colors.on_accent,
         text = "Color",
@@ -579,7 +577,7 @@ local function new(self, layout)
     _digital_sun_button = wibox.widget {
         widget = widgets.button.text.state,
         size = 15,
-        on_normal_bg = accent_color,
+        on_normal_bg = beautiful.icons.spraycan.color,
         text_normal_bg = beautiful.colors.on_background,
         text_on_normal_bg = beautiful.colors.on_accent,
         text = "Digital Sun",
@@ -596,7 +594,7 @@ local function new(self, layout)
     _binary_button = wibox.widget {
         widget = widgets.button.text.state,
         size = 15,
-        on_normal_bg = accent_color,
+        on_normal_bg = beautiful.icons.spraycan.color,
         text_normal_bg = beautiful.colors.on_background,
         text_on_normal_bg = beautiful.colors.on_accent,
         text = "Binary",

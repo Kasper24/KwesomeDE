@@ -16,6 +16,7 @@ local function button(icon, text, on_release, on_by_default)
     local icon = wibox.widget {
         widget = widgets.text,
         halign = "center",
+        color = beautiful.colors.on_surface,
         icon = icon
     }
 
@@ -45,8 +46,6 @@ local function button(icon, text, on_release, on_by_default)
 end
 
 local function new(self, layout)
-    local accent_color = beautiful.colors.random_accent_color()
-
     local selection_button = nil
     local screen_button = nil
     local window_button = nil
@@ -83,7 +82,7 @@ local function new(self, layout)
         widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
-        text_normal_bg = accent_color,
+        text_normal_bg = beautiful.icons.camera_retro.color,
         icon = beautiful.icons.gear,
         size = 15,
         on_release = function()
@@ -95,7 +94,7 @@ local function new(self, layout)
         widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
-        text_normal_bg = accent_color,
+        text_normal_bg = beautiful.icons.camera_retro.color,
         icon = beautiful.icons.xmark,
         on_release = function()
             self:hide()
@@ -106,8 +105,8 @@ local function new(self, layout)
         widget = widgets.button.text.normal,
         forced_width = dpi(50),
         size = 15,
-        normal_bg = accent_color,
-        text_normal_bg = beautiful.colors.background,
+        normal_bg = beautiful.icons.camera_retro.color,
+        text_normal_bg = beautiful.colors.on_accent,
         text = "Screenshot",
         on_release = function()
             screenshot_daemon:screenshot()

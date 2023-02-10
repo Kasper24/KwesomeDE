@@ -25,8 +25,6 @@ local capi = {
 
 local playerctl = {}
 
-local accent_color = beautiful.colors.random_accent_color()
-
 local function crop_surface(ratio, surf)
     local old_w, old_h = gsurface.get_size(surf)
     local old_ratio = old_w/old_h
@@ -464,7 +462,7 @@ function playerctl.play(daemon)
     local button = wibox.widget {
         widget = ebwidget.normal,
         normal_shape = gshape.circle,
-        normal_bg = accent_color,
+        normal_bg = beautiful.icons.spotify.color,
         on_release = function()
             playerctl_daemon:play_pause()
         end,
@@ -770,7 +768,6 @@ function playerctl.volume(width, daemon)
         widget = twidget,
         icon = beautiful.icons.volume.normal,
         size = 12,
-        color = accent_color
     }
 
     local widget = swidget {
@@ -787,7 +784,7 @@ function playerctl.volume(width, daemon)
     }
 
     widget:connect_signal("mouse::enter", function()
-        widget.bar_active_color = accent_color
+        widget.bar_active_color = beautiful.icons.spotify.color
         widget.handle_color = beautiful.colors.on_background
         widget.handle_width = dpi(15)
     end)

@@ -6,21 +6,18 @@ local gtable = require("gears.table")
 local gshape = require("gears.shape")
 local wibox = require("wibox")
 local twidget = require("ui.widgets.text")
-local ebwidget = require("ui.widgets.button.elevated")
 local tbwidget = require("ui.widgets.button.text")
 local bwidget = require("ui.widgets.background")
 local beautiful = require("beautiful")
-local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 local os = os
-local capi = {
-    awesome = awesome
-}
 
 local calendar = {
     mt = {}
 }
+
+local accent_color = beautiful.colors.random_accent_color()
 
 local function day_name_widget(name)
     return wibox.widget {
@@ -39,7 +36,7 @@ local function date_widget(self, date, is_current, is_another_month)
     local bg = beautiful.colors.transparent
     local text_color = beautiful.colors.on_background
     if is_current == true then
-        bg = self._private.current_date_accent_color
+        bg = accent_color
         text_color = beautiful.colors.background
     elseif is_another_month == true then
         text_color = beautiful.colors.surface
@@ -246,8 +243,6 @@ local function new()
         }
     }
     gtable.crush(widget, calendar, true)
-
-    widget._private.current_date_accent_color = beautiful.colors.random_accent_color()
 
     widget:set_date_current()
 

@@ -51,8 +51,6 @@ local function new()
     local ret = gobject {}
     gtable.crush(ret, disk, true)
 
-    local accent_color = beautiful.colors.random_accent_color()
-
     local header = wibox.widget {
         layout = wibox.layout.fixed.horizontal,
         {
@@ -60,14 +58,14 @@ local function new()
             forced_width = dpi(170),
             halign = "left",
             bold = true,
-            color = accent_color,
+            color = beautiful.icons.disc_drive.color,
             text = "Mount"
         },
         {
             widget = widgets.text,
             halign = "left",
             bold = true,
-            color = accent_color,
+            color = beautiful.icons.disc_drive.color,
             text = "Used"
         }
     }
@@ -102,7 +100,7 @@ local function new()
                     max_value = 100,
                     value = tonumber(entry.perc),
                     background_color = beautiful.colors.surface,
-                    color = accent_color
+                    color = beautiful.icons.disc_drive.color
                 },
                 {
                     widget = widgets.text,

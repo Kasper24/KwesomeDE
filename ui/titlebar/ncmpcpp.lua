@@ -23,13 +23,11 @@ function ncmppcpp.tabs_titlebar(c)
     local playlist_editor = nil
     local lyrics = nil
 
-    local accent_color = beautiful.colors.random_accent_color()
-
     current_playlist = wibox.widget {
         widget = widgets.button.text.state,
         on_by_default = true,
         halign = "left",
-        on_normal_bg = accent_color,
+        on_normal_bg = beautiful.icons.list_music.color,
         text_normal_bg = beautiful.colors.on_background,
         text_on_normal_bg = beautiful.colors.on_accent,
         size = 12,
@@ -47,7 +45,7 @@ function ncmppcpp.tabs_titlebar(c)
     local_files = wibox.widget {
         widget = widgets.button.text.state,
         halign = "left",
-        on_normal_bg = accent_color,
+        on_normal_bg = beautiful.icons.list_music.color,
         text_normal_bg = beautiful.colors.on_background,
         text_on_normal_bg = beautiful.colors.on_accent,
         size = 12,
@@ -65,7 +63,7 @@ function ncmppcpp.tabs_titlebar(c)
     search = wibox.widget {
         widget = widgets.button.text.state,
         halign = "left",
-        on_normal_bg = accent_color,
+        on_normal_bg = beautiful.icons.list_music.color,
         text_normal_bg = beautiful.colors.on_background,
         text_on_normal_bg = beautiful.colors.on_accent,
         size = 12,
@@ -83,7 +81,7 @@ function ncmppcpp.tabs_titlebar(c)
     libary = wibox.widget {
         widget = widgets.button.text.state,
         halign = "left",
-        on_normal_bg = accent_color,
+        on_normal_bg = beautiful.icons.list_music.color,
         text_normal_bg = beautiful.colors.on_background,
         text_on_normal_bg = beautiful.colors.on_accent,
         size = 12,
@@ -101,7 +99,7 @@ function ncmppcpp.tabs_titlebar(c)
     playlist_editor = wibox.widget {
         widget = widgets.button.text.state,
         halign = "left",
-        on_normal_bg = accent_color,
+        on_normal_bg = beautiful.icons.list_music.color,
         text_normal_bg = beautiful.colors.on_background,
         text_on_normal_bg = beautiful.colors.on_accent,
         size = 12,
@@ -119,7 +117,7 @@ function ncmppcpp.tabs_titlebar(c)
     lyrics = wibox.widget {
         widget = widgets.button.text.state,
         halign = "left",
-        on_normal_bg = accent_color,
+        on_normal_bg = beautiful.icons.list_music.color,
         text_normal_bg = beautiful.colors.on_background,
         text_on_normal_bg = beautiful.colors.on_accent,
         size = 12,
@@ -155,7 +153,6 @@ function ncmppcpp.tabs_titlebar(c)
                     widget = widgets.text,
                     size = 50,
                     icon = beautiful.icons.list_music,
-                    color = accent_color
                 },
                 wibox.widget {
                     widget = widgets.text,

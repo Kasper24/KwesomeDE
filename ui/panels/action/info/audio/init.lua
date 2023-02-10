@@ -73,6 +73,8 @@ local function application_widget(args)
         }
     end
 
+    local accent_color = font_icon.color or beautiful.icons.volume.off.color
+
     local name = wibox.widget {
         widget = widgets.text,
         halign = "left",
@@ -83,8 +85,8 @@ local function application_widget(args)
     local mute = wibox.widget {
         widget = widgets.button.text.state,
         on_by_default = args.application.mute,
-        text_normal_bg = args.accent_color,
-        on_normal_bg = args.accent_color,
+        text_normal_bg = accent_color,
+        on_normal_bg = accent_color,
         text_on_normal_bg = beautiful.colors.on_accent,
         icon = beautiful.icons.volume.off,
         size = 12,
@@ -102,7 +104,7 @@ local function application_widget(args)
         bar_height = 5,
         bar_shape = helpers.ui.rrect(beautiful.border_radius),
         bar_color = beautiful.colors.surface,
-        bar_active_color = args.accent_color,
+        bar_active_color = accent_color,
         handle_width = dpi(15),
         handle_color = beautiful.colors.on_background,
         handle_shape = gshape.circle
@@ -169,7 +171,6 @@ local function device_widget(args)
     args.on_default_press = args.on_default_press or nil
     args.on_slider_moved = args.on_slider_moved or nil
     args.on_removed_cb = args.on_removed_cb or nil
-    args.accent_color = args.accent_color or nil
 
     local name = wibox.widget {
         widget = widgets.text,
@@ -182,8 +183,7 @@ local function device_widget(args)
     local mute = wibox.widget {
         widget = widgets.button.text.state,
         on_by_default = args.device.mute,
-        text_normal_bg = args.accent_color,
-        on_normal_bg = args.accent_color,
+        on_normal_bg = beautiful.icons.volume.off.color,
         text_on_normal_bg = beautiful.colors.on_accent,
         icon = beautiful.icons.volume.off,
         size = 12,
@@ -195,8 +195,8 @@ local function device_widget(args)
     local default = wibox.widget {
         widget = widgets.button.text.state,
         on_by_default = args.device.default,
-        text_normal_bg = args.accent_color,
-        on_normal_bg = args.accent_color,
+        text_normal_bg = beautiful.icons.volume.off.color,
+        on_normal_bg = beautiful.icons.volume.off.color,
         text_on_normal_bg = beautiful.colors.on_accent,
         icon = beautiful.icons.check,
         size = 12,
@@ -213,7 +213,7 @@ local function device_widget(args)
         bar_height = 5,
         bar_shape = helpers.ui.rrect(beautiful.border_radius),
         bar_color = beautiful.colors.surface,
-        bar_active_color = args.accent_color,
+        bar_active_color = beautiful.icons.volume.off.color,
         handle_width = dpi(15),
         handle_color = beautiful.colors.on_background,
         handle_shape = gshape.circle
@@ -272,14 +272,11 @@ local function device_widget(args)
 end
 
 local function applications()
-    local sink_inputs_accent_color = beautiful.colors.random_accent_color()
-    local sources_outputs_accent_color = beautiful.colors.random_accent_color()
-
     local sink_inputs_header = wibox.widget {
         widget = widgets.text,
         halign = "left",
         bold = true,
-        color = sink_inputs_accent_color,
+        color = beautiful.icons.volume.off.color,
         text = "Sink Inputs"
     }
 
@@ -298,7 +295,7 @@ local function applications()
     local source_outputs_header = widgets.text {
         halign = "left",
         bold = true,
-        color = sources_outputs_accent_color,
+        color = beautiful.icons.volume.off.color,
         text = "Source Outputs"
     }
 
@@ -367,14 +364,11 @@ local function applications()
 end
 
 local function devices()
-    local sinks_accent_color = beautiful.colors.random_accent_color()
-    local sources_accent_color = beautiful.colors.random_accent_color()
-
     local sinks_header = wibox.widget {
         widget = widgets.text,
         halign = "left",
         bold = true,
-        color = sinks_accent_color,
+        color = beautiful.icons.volume.off.color,
         text = "Sinks"
     }
 
@@ -394,7 +388,7 @@ local function devices()
         widget = widgets.text,
         halign = "left",
         bold = true,
-        color = sources_accent_color,
+        color = beautiful.icons.volume.off.color,
         text = "Sources"
     }
 
@@ -425,8 +419,7 @@ local function devices()
             end,
             on_removed_cb = function(widget)
                 sinks_layout:remove_widgets(widget)
-            end,
-            accent_color = sinks_accent_color
+            end
         })
     end)
 
@@ -445,8 +438,7 @@ local function devices()
             end,
             on_removed_cb = function(widget)
                 sources_layout:remove_widgets(widget)
-            end,
-            accent_color = sources_accent_color
+            end
         })
     end)
 
@@ -471,8 +463,6 @@ local function devices()
 end
 
 local function widget()
-    local accent_color = beautiful.colors.random_accent_color()
-
     local _applications = applications()
     local _devices = devices()
 
@@ -490,7 +480,7 @@ local function widget()
         widget = widgets.button.text.state,
         on_by_default = true,
         size = 15,
-        on_normal_bg = accent_color,
+        on_normal_bg = beautiful.icons.volume.off.color,
         text_normal_bg = beautiful.colors.on_background,
         text_on_normal_bg = beautiful.colors.on_accent,
         text = "Devices",
@@ -504,7 +494,7 @@ local function widget()
     applications_button = wibox.widget {
         widget = widgets.button.text.state,
         size = 15,
-        on_normal_bg = accent_color,
+        on_normal_bg = beautiful.icons.volume.off.color,
         text_normal_bg = beautiful.colors.on_background,
         text_on_normal_bg = beautiful.colors.on_accent,
         text = "Applications",

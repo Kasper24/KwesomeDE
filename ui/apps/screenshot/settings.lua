@@ -13,13 +13,11 @@ local settings = {
     mt = {}
 }
 
-local accent_color = beautiful.colors.random_accent_color()
-
 local function show_cursor()
     local checkbox = wibox.widget {
         widget = widgets.checkbox,
         state = screenshot_daemon:get_show_cursor(),
-        color = accent_color,
+        active_color = beautiful.icons.camera_retro.color,
         on_turn_on = function()
             screenshot_daemon:set_show_cursor(true)
         end,
@@ -65,7 +63,7 @@ local function delay()
         bar_height = 5,
         bar_shape = helpers.ui.rrect(beautiful.border_radius),
         bar_color = beautiful.colors.surface,
-        bar_active_color = beautiful.colors.random_accent_color(),
+        bar_active_color = beautiful.icons.camera_retro.color,
         handle_width = dpi(15),
         handle_color = beautiful.colors.on_background,
         handle_shape = gshape.circle
@@ -105,6 +103,7 @@ local function folder()
     local set_folder_button = wibox.widget {
         widget = widgets.button.text.normal,
         size = 15,
+        text_normal_bg = beautiful.colors.on_background,
         text = "...",
         on_press = function()
             screenshot_daemon:set_folder()
@@ -130,6 +129,7 @@ local function new(layout)
         widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
+        text_normal_bg = beautiful.icons.camera_retro.color,
         icon = beautiful.icons.left,
         on_release = function()
             layout:raise(2)

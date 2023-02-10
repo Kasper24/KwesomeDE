@@ -39,7 +39,7 @@ function wifi:toggle()
     end
 end
 
-local function access_point_widget(layout, access_point, accent_color)
+local function access_point_widget(layout, access_point)
     local widget = nil
     local anim = nil
 
@@ -71,7 +71,7 @@ local function access_point_widget(layout, access_point, accent_color)
     local toggle_password_obscure_button = wibox.widget {
         widget = widgets.checkbox,
         state = true,
-        color = accent_color,
+        active_color = beautiful.icons.network.wifi_off.color,
         on_turn_on = function()
             prompt:set_obscure(true)
         end,
@@ -94,7 +94,7 @@ local function access_point_widget(layout, access_point, accent_color)
     local auto_connect_checkbox = wibox.widget {
         widget = widgets.checkbox,
         state = true,
-        color = accent_color
+        active_color = beautiful.icons.network.wifi_off.color
     }
 
     local auto_connect_text = wibox.widget {
@@ -247,13 +247,11 @@ local function new()
 
     ret._private = {}
 
-    local accent_color = beautiful.colors.random_accent_color()
-
     local header = wibox.widget {
         widget = widgets.text,
         halign = "left",
         bold = true,
-        color = beautiful.colors.random_accent_color(),
+        color = beautiful.icons.network.wifi_off.color,
         text = "Wi-Fi"
     }
 
@@ -314,9 +312,9 @@ local function new()
         layout:reset()
         for _, access_point in pairs(access_points) do
             if network_daemon:is_access_point_active(access_point) then
-                layout:insert(1, access_point_widget(layout, access_point, accent_color))
+                layout:insert(1, access_point_widget(layout, access_point))
             else
-                layout:add(access_point_widget(layout, access_point, accent_color))
+                layout:add(access_point_widget(layout, access_point))
             end
         end
         stack:raise_widget(layout)

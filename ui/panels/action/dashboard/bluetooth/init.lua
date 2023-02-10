@@ -39,7 +39,7 @@ function bluetooth:toggle()
     end
 end
 
-local function device_widget(device, path, layout, accent_color)
+local function device_widget(device, path, layout)
     local widget = nil
     local anim = nil
 
@@ -195,7 +195,7 @@ local function new()
         widget = widgets.text,
         halign = "left",
         bold = true,
-        color = beautiful.colors.random_accent_color(),
+        color = beautiful.icons.bluetooth.off.color,
         text = "Bluetooth"
     }
 
@@ -252,10 +252,8 @@ local function new()
         bg = beautiful.colors.surface
     }
 
-    local accent_color = beautiful.colors.random_accent_color()
-
     bluetooth_daemon:connect_signal("new_device", function(self, device, path)
-        layout:add(device_widget(device, path, layout, accent_color))
+        layout:add(device_widget(device, path, layout))
         stack:raise_widget(layout)
     end)
 

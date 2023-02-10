@@ -64,8 +64,6 @@ local function new()
         step = 50
     }
 
-    local accent_color = beautiful.colors.random_accent_color()
-
     cpu_daemon:connect_signal("update::full", function(self, cpus, processes)
         scrollbox:reset()
 
@@ -78,7 +76,7 @@ local function new()
                     forced_width = dpi(70),
                     halign = "left",
                     bold = true,
-                    color = accent_color,
+                    color = beautiful.icons.microchip.color,
                     text = "Core"
                 },
                 {
@@ -86,7 +84,7 @@ local function new()
                     forced_width = dpi(200),
                     halign = "left",
                     bold = true,
-                    color = accent_color,
+                    color = beautiful.icons.microchip.color,
                     text = "Usage"
                 }
             }
@@ -122,7 +120,7 @@ local function new()
                     max_value = 100,
                     value = cpu.diff_usage,
                     background_color = beautiful.colors.surface,
-                    color = accent_color
+                    color = beautiful.icons.microchip.color
                 }
             }
 
@@ -137,7 +135,7 @@ local function new()
                     forced_width = dpi(110),
                     halign = "left",
                     bold = true,
-                    color = accent_color,
+                    color = beautiful.icons.microchip.color,
                     text = "PID"
                 },
                 {
@@ -145,7 +143,7 @@ local function new()
                     forced_width = dpi(210),
                     halign = "left",
                     bold = true,
-                    color = accent_color,
+                    color = beautiful.icons.microchip.color,
                     text = "Name"
                 },
                 {
@@ -153,7 +151,7 @@ local function new()
                     forced_width = dpi(90),
                     halign = "left",
                     bold = true,
-                    color = accent_color,
+                    color = beautiful.icons.microchip.color,
                     text = "%CPU"
                 },
                 {
@@ -161,7 +159,7 @@ local function new()
                     forced_width = dpi(70),
                     halign = "left",
                     bold = true,
-                    color = accent_color,
+                    color = beautiful.icons.microchip.color,
                     text = "%MEM"
                 }
             }

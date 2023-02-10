@@ -109,7 +109,7 @@ local function fps()
         bar_height = 5,
         bar_shape = helpers.ui.rrect(beautiful.border_radius),
         bar_color = beautiful.colors.surface,
-        bar_active_color = beautiful.colors.random_accent_color(),
+        bar_active_color = beautiful.icons.video.color,
         handle_width = dpi(15),
         handle_color = beautiful.colors.on_background,
         handle_shape = gshape.circle
@@ -153,7 +153,7 @@ local function delay()
         bar_height = 5,
         bar_shape = helpers.ui.rrect(beautiful.border_radius),
         bar_color = beautiful.colors.surface,
-        bar_active_color = beautiful.colors.random_accent_color(),
+        bar_active_color = beautiful.icons.video.color,
         handle_width = dpi(15),
         handle_color = beautiful.colors.on_background,
         handle_shape = gshape.circle
@@ -233,6 +233,7 @@ local function folder()
     local set_folder_button = wibox.widget {
         widget = widgets.button.text.normal,
         size = 15,
+        text_normal_bg = beautiful.colors.on_background,
         text = "...",
         on_press = function()
             record_daemon:set_folder()
@@ -294,6 +295,7 @@ local function main(self)
         widget = widgets.button.text.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
+        text_normal_bg = beautiful.icons.video.color,
         icon = beautiful.icons.xmark,
         on_release = function()
             self:hide()
@@ -304,8 +306,8 @@ local function main(self)
         widget = widgets.button.text.normal,
         forced_width = dpi(50),
         size = 15,
-        normal_bg = beautiful.colors.random_accent_color(),
-        text_normal_bg = beautiful.colors.background,
+        normal_bg = beautiful.icons.video.color,
+        text_normal_bg = beautiful.colors.on_accent,
         text = record_daemon:get_is_recording() and "Stop" or "Record",
         on_release = function()
             record_daemon:toggle_video()
