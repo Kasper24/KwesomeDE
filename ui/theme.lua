@@ -178,6 +178,8 @@ local function icons()
         nvidia = { icon = "︁" },
         system_monitor = { icon = "︁" },
         calculator = { icon = "🖩︁" },
+        vim = { icon = "" },
+        emacs = { icon = "" },
 
         play = { icon = "" },
         pause = { icon = "" },
@@ -327,8 +329,8 @@ local function icons()
         ["firefox"] = theme.icons.firefox,
         ["vivaldistable"] = theme.icons.chrome,
         ["chromium"] = theme.icons.chrome,
-        ["emacs"] = theme.icons.code,
-        ["vim"] = theme.icons.code,
+        ["emacs"] = theme.icons.emacs,
+        ["vim"] = theme.icons.vim,
         ["code"] = theme.icons.vscode,
         ["jetbrainsstudio"] = theme.icons.code,
         ["qtcreator"] = theme.icons.code,
@@ -363,7 +365,8 @@ local function icons()
         ["awesomeapprecord"] = theme.icons.video,
         ["awesomeappthememanager"] = theme.icons.spraycan,
         ["xfce4settingsmanager"] = theme.icons.gear,
-        ["dconfeditor"] = theme.icons.gear
+        ["dconfeditor"] = theme.icons.gear,
+        ["obs"] = theme.icons.video
     }
 
     function theme.get_font_icon_for_app_name(name)
