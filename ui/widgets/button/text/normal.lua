@@ -151,10 +151,10 @@ local function new(is_state)
         wp.text_normal_bg = old_colorscheme_to_new_map[wp.text_normal_bg] or
                                 old_colorscheme_to_new_map[wp.defaults.text_normal_bg]
         wp.text_hover_bg = old_colorscheme_to_new_map[wp.text_hover_bg] or
-                            old_colorscheme_to_new_map[wp.defaults.text_hover_bg]
+                            old_colorscheme_to_new_map[wp.defaults.text_hover_bg] or
                             helpers.color.button_color(wp.text_normal_bg, 0.1)
         wp.text_press_bg = old_colorscheme_to_new_map[wp.text_press_bg] or
-                            old_colorscheme_to_new_map[wp.defaults.text_press_bg]
+                            old_colorscheme_to_new_map[wp.defaults.text_press_bg] or
                             helpers.color.button_color(wp.text_normal_bg, 0.2)
 
         widget:text_effect(true)
