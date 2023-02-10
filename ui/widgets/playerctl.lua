@@ -19,6 +19,7 @@ local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 local math = math
 local capi = {
+    awesome = awesome,
     screen = screen
 }
 
@@ -83,25 +84,33 @@ function playerctl.art_opacity(daemon)
         image = image_with_gradient(theme_daemmon:get_wallpaper()),
     }
 
-    local has_art = false
+    local image = false
     playerctl_daemon:connect_signal("metadata", function(_, title, artist, album_path, _, new, player_name)
         if album_path ~= "" then
+            image = album_path
             art.image = image_with_gradient(album_path)
-            has_art = true
         else
+            image = nil
             art.image = image_with_gradient(theme_daemmon:get_wallpaper())
-            has_art = false
         end
     end)
 
     playerctl_daemon:connect_signal("no_players", function()
         art.image = image_with_gradient(theme_daemmon:get_wallpaper())
-        has_art = false
+        image = nil
     end)
 
     capi.screen.connect_signal("request::wallpaper", function()
-        if not has_art then
+        if not image then
             art.image = image_with_gradient(theme_daemmon:get_wallpaper())
+        end
+    end)
+
+    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+        if not image then
+            art.image = image_with_gradient(theme_daemmon:get_wallpaper())
+        else
+            art.image = image_with_gradient(image)
         end
     end)
 
