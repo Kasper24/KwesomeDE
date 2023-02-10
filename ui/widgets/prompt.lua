@@ -403,10 +403,10 @@ local function new()
     wp.prompt = ""
     wp.text = ""
 
-    wp.icon_color = beautiful.colors.on_background or "#FFFFFF"
-    wp.prompt_color = beautiful.colors.on_background or "#FFFFFF"
-    wp.text_color = beautiful.colors.on_background or "#FFFFFF"
-    wp.cursor_color = beautiful.colors.on_background or "#FFFFFF"
+    wp.icon_color = beautiful.colors.on_background
+    wp.prompt_color = beautiful.colors.on_background
+    wp.text_color = beautiful.colors.on_background
+    wp.cursor_color = beautiful.colors.on_background
 
     wp.always_on = false
     wp.reset_on_stop = false

@@ -64,7 +64,7 @@ awful.screen.connect_for_each_screen(function(s)
         type = "splash",
         ontop = true,
         placement = awful.placement.maximize,
-        bg = beautiful.colors.background_with_opacity,
+        bg = beautiful.colors.background,
         widget = {
             widget = wibox.container.place,
             halign = "center",

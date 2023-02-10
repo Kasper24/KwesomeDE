@@ -112,7 +112,7 @@ end
 local function widget(self)
     local blur = wibox.widget {
         widget = widgets.background,
-        bg = beautiful.colors.background_with_opacity
+        bg = beautiful.colors.background
     }
 
     local picture = wibox.widget {
@@ -207,7 +207,7 @@ local function new()
         visible = false,
         ontop = true,
         placement = awful.placement.maximize,
-        bg = beautiful.colors.background_with_opacity,
+        bg = beautiful.colors.background,
         widget = widget(ret)
     }
 

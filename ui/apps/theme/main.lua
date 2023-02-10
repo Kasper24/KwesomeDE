@@ -44,7 +44,7 @@ local function color_button(index)
         widget = wibox.container.background,
         forced_width = dpi(200),
         forced_height = dpi(40),
-        bg = "#FFFFFF"
+        bg = beautiful.colors.white
     }
 
     local color_text = wibox.widget {
@@ -52,7 +52,7 @@ local function color_button(index)
         halign = "center",
         size = 12,
         color = beautiful.colors.background,
-        text = "#FFFFFF"
+        text = beautiful.colors.white
     }
 
     local color_button = wibox.widget {
@@ -80,9 +80,9 @@ local function color_button(index)
     theme_daemon:connect_signal("color::" .. index .. "::updated", function(self, color)
         local color = color
         if helpers.color.is_dark(color) then
-            color_text:set_color("#FFFFFF")
+            color_text:set_color(beautiful.colors.white)
         else
-            color_text:set_color("#000000")
+            color_text:set_color(beautiful.colors.black)
         end
         color_text:set_text(color)
         background.bg = color
@@ -91,9 +91,9 @@ local function color_button(index)
     theme_daemon:connect_signal("colorscheme::generated", function(self, colors)
         local color = colors[index]
         if helpers.color.is_dark(color) then
-            color_text:set_color("#FFFFFF")
+            color_text:set_color(beautiful.colors.white)
         else
-            color_text:set_color("#000000")
+            color_text:set_color(beautiful.colors.black)
         end
         color_text:set_text(color)
         background.bg = color

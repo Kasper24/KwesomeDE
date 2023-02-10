@@ -9,7 +9,6 @@ local theme_daemon = require("daemons.system.theme")
 local color_libary = require("external.color")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
-local string = string
 local math = math
 
 local theme = {}
@@ -36,11 +35,13 @@ local function colors()
         cyan = colors[7],
         bright_cyan = colors[15],
 
-        background = colors[1],
-        background_with_opacity = color_with_opacity(colors[1]),
+        background = helpers.color.add_opacity(colors[1], 0.8),
         surface = colors[9],
         error = colors[2],
-        transparent = "#00000000",
+
+        white = "#FFFFFF",
+        black = "#000000",
+        transparent = colors[1] .. "00",
 
         on_background = colors[8],
         on_surface = colors[8],

@@ -49,7 +49,7 @@ end
 local function widget(self)
     local blur = wibox.widget {
         widget = widgets.background,
-        bg = beautiful.colors.background_with_opacity
+        bg = beautiful.colors.background
     }
 
     local picture = wibox.widget {

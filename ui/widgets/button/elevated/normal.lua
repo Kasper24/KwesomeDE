@@ -159,7 +159,7 @@ local function new(is_state)
     -- Setup default values
     wp.defaults.hover_cursor = beautiful.hover_cursor
 
-    wp.defaults.normal_bg = beautiful.colors.background
+    wp.defaults.normal_bg = beautiful.colors.transparent
     wp.defaults.hover_bg = helpers.color.button_color(wp.defaults.normal_bg, 0.1)
     wp.defaults.press_bg = helpers.color.button_color(wp.defaults.normal_bg, 0.2)
 

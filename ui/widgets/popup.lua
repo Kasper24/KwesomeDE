@@ -3,6 +3,7 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 local awful = require("awful")
+local beautiful = require("beautiful")
 local setmetatable = setmetatable
 local capi = {
     awesome = awesome
@@ -15,11 +16,8 @@ local popup = {
 local function new(args)
     local widget = awful.popup(args)
 
-    local bg = args.bg
-
     capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
-        bg = old_colorscheme_to_new_map[bg]
-        widget.bg = bg
+        widget.bg = beautiful.colors.background
     end)
 
     return widget

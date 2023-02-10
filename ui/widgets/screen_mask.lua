@@ -21,7 +21,7 @@ local screen_mask = {
 local function new(screen)
     local blur = wibox.widget {
         widget = bwidget,
-        bg = beautiful.colors.background_with_opacity
+        bg = beautiful.colors.background
     }
 
     return pwidget {

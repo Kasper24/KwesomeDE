@@ -168,7 +168,7 @@ local function new()
         visible = false,
         ontop = true,
         shape = helpers.ui.rrect(beautiful.border_radius),
-        bg = beautiful.colors.background_with_opacity,
+        bg = beautiful.colors.background,
         widget = wibox.container.background -- A dummy widget to make awful.popup not scream
     }
 
