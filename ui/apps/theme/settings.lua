@@ -30,7 +30,7 @@ end
 local function command_after_generation()
     local title = wibox.widget {
         widget = widgets.text,
-        -- size = 15,
+        size = 15,
         text = "Command after generation: "
     }
 
