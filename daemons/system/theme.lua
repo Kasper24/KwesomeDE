@@ -181,17 +181,16 @@ org.gnome.desktop.interface gtk-theme 'FlatColor'
 end
 
 local function reload_awesome_colorscheme(self)
-    local old_colorscheme = self._private.colorscheme
-    local new_colorscheme = self._private.colors[self._private.selected_wallpaper]
+    local old_colorscheme = beautiful.colors
+    self._private.colorscheme = self._private.colors[self._private.selected_wallpaper]
+    beautiful.init(helpers.filesystem.get_awesome_config_dir("ui") .. "theme.lua")
+    local new_colorscheme = beautiful.colors
+
     local old_colorscheme_to_new_map = {}
     for index, color in pairs(old_colorscheme) do
         old_colorscheme_to_new_map[color] = new_colorscheme[index]
     end
-    old_colorscheme_to_new_map["#FFFFFF"] = "#FFFFFF"
-    old_colorscheme_to_new_map["#000000"] = "#000000"
 
-    self._private.colorscheme = new_colorscheme
-    beautiful.init(helpers.filesystem.get_awesome_config_dir("ui") .. "theme.lua")
     capi.awesome.emit_signal("colorscheme::changed", old_colorscheme_to_new_map, new_colorscheme)
     helpers.settings:set_value("theme-colorscheme", self._private.colorscheme)
 end
