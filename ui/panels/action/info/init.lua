@@ -2,6 +2,7 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
+local gshape = require("gears.shape")
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local cpu_popup = require("ui.panels.action.info.cpu")
@@ -18,129 +19,144 @@ local brightness_daemon = require("daemons.system.brightness")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
-local tostring = tostring
 local ipairs = ipairs
-local capi = {
-    awesome = awesome
-}
 
 local info = {
     mt = {}
 }
 
-local function arc_widget(name, icon, on_release, on_scroll_up, on_scroll_down)
-    local icon_widget = nil
-    if on_release ~= nil then
-        icon_widget = wibox.widget {
-            widget = widgets.button.text.normal,
-            halign = "center",
-            valign = "center",
-            icon = icon,
-            size = 25,
-            on_release = function()
-                if on_release ~= nil then
-                    on_release()
-                end
-            end,
-            on_scroll_up = function()
-                if on_scroll_up ~= nil then
-                    on_scroll_up()
-                end
-            end,
-            on_scroll_down = function()
-                if on_scroll_down ~= nil then
-                    on_scroll_down()
-                end
-            end
-        }
-    else
-        icon_widget = wibox.widget {
-            widget = widgets.text,
-            halign = "center",
-            valign = "center",
-            icon = icon,
-            size = 25
-        }
-    end
-
-    local arc = wibox.widget {
-        widget = wibox.container.arcchart,
-        forced_width = dpi(90),
-        forced_height = dpi(90),
+local function progress_bar(icon, on_release)
+    local progress_bar = wibox.widget  {
+        widget = widgets.progressbar,
+        forced_width = dpi(450),
+        forced_height = dpi(10),
+        shape = helpers.ui.rrect(beautiful.border_radius),
         max_value = 100,
-        min_value = 0,
-        value = 0,
-        thickness = dpi(7),
-        rounded_edge = true,
-        bg = beautiful.colors.surface,
-        colors = {{
-            type = "linear",
-            from = {0, 0},
-            to = {400, 400},
-            stops = {{0, beautiful.colors.random_accent_color()}, {0.2, beautiful.colors.random_accent_color()},
-                     {0.4, beautiful.colors.random_accent_color()}, {0.6, beautiful.colors.random_accent_color()},
-                     {0.8, beautiful.colors.random_accent_color()}}
-        }},
-        icon_widget
+        bar_shape = helpers.ui.rrect(beautiful.border_radius),
+        background_color = beautiful.colors.surface,
+        color = icon.color
     }
 
-    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
-        arc.bg = beautiful.colors.surface
-        arc.colors = {{
-            type = "linear",
-            from = {0, 0},
-            to = {400, 400},
-            stops = {{0, beautiful.colors.random_accent_color()}, {0.2, beautiful.colors.random_accent_color()},
-                     {0.4, beautiful.colors.random_accent_color()}, {0.6, beautiful.colors.random_accent_color()},
-                     {0.8, beautiful.colors.random_accent_color()}}
-        }}
-    end)
-
-    local value_text = wibox.widget {
+    local icon = wibox.widget {
         widget = widgets.text,
+        forced_width = dpi(40),
+        forced_height = dpi(40),
         halign = "center",
-        text = "0%"
+        size = 15,
+        icon = icon
     }
 
     local widget = wibox.widget {
-        layout = wibox.layout.fixed.vertical,
-        forced_height = dpi(130),
+        layout = wibox.layout.fixed.horizontal,
         spacing = dpi(15),
-        arc,
+        icon,
         {
-            widget = widgets.text,
-            halign = "center",
-            size = 15,
-            text = name
+            widget = wibox.container.place,
+            valign = "center",
+            progress_bar,
         }
     }
 
-    function widget:set_value(value)
-        arc.value = value
-        value_text:set_text(tostring(value) .. "%")
+    if on_release ~= nil then
+        local arrow = wibox.widget {
+            widget = widgets.button.text.normal,
+            forced_width = dpi(40),
+            forced_height = dpi(40),
+            size = 15,
+            icon = beautiful.icons.chevron.right,
+            text_normal_bg = beautiful.colors.on_background,
+            on_release = function()
+                on_release()
+            end
+        }
+        widget:add(arrow)
+        progress_bar.forced_width = dpi(390)
     end
 
-    function widget:set_icon(icon)
-        icon_widget:set_icon(icon)
+    function widget:set_value(value)
+        progress_bar.value = value
+    end
+
+    function widget:set_icon(new_icon)
+        icon:set_icon(new_icon)
+    end
+
+    return widget
+end
+
+local function slider(icon, on_release)
+    local slider = wibox.widget  {
+        widget = widgets.slider,
+        forced_width = dpi(390),
+        forced_height = dpi(10),
+        max_value = 100,
+        bar_shape = helpers.ui.rrect(beautiful.border_radius),
+        bar_color = beautiful.colors.surface,
+        bar_active_color = icon.color,
+        handle_color = beautiful.colors.on_background,
+        handle_shape = function(cr, width, height)
+            return gshape.rounded_bar(cr, 10, 35)
+        end
+    }
+
+    local icon = wibox.widget {
+        widget = widgets.text,
+        forced_width = dpi(40),
+        forced_height = dpi(40),
+        halign = "center",
+        size = 15,
+        icon = icon
+    }
+
+    local arrow = wibox.widget {
+        widget = widgets.button.text.normal,
+        forced_width = dpi(40),
+        forced_height = dpi(40),
+        size = 15,
+        icon = beautiful.icons.chevron.right,
+        text_normal_bg = beautiful.colors.on_background,
+        on_release = function()
+            on_release()
+        end
+    }
+
+    local widget = wibox.widget {
+        layout = wibox.layout.fixed.horizontal,
+        spacing = dpi(15),
+        icon,
+        {
+            widget = wibox.container.place,
+            valign = "center",
+            slider,
+        },
+        arrow
+    }
+
+    function widget:set_value(value)
+        slider.value = value
+    end
+
+    function widget:set_icon(new_icon)
+        icon:set_icon(new_icon)
     end
 
     return widget
 end
 
 local function cpu()
-    local arc = arc_widget("CPU", beautiful.icons.microchip, function()
+    local widget = progress_bar(beautiful.icons.microchip, function()
         cpu_popup:toggle()
     end)
 
     cpu_daemon:connect_signal("update::slim", function(self, value)
-        arc:set_value(value)
+        widget:set_value(value)
     end)
 
-    return arc
+    return widget
 end
 
 local function ram()
-    local arc = arc_widget("RAM", beautiful.icons.memory, function()
+    local widget = progress_bar(beautiful.icons.memory, function()
         ram_popup:toggle()
     end)
 
@@ -148,110 +164,97 @@ local function ram()
         function(self, total, used, free, shared, buff_cache, available, total_swap, used_swap, free_swap)
 
             local used_ram_percentage = math.floor((used / total) * 100)
-            arc:set_value(used_ram_percentage)
+            widget:set_value(used_ram_percentage)
         end)
 
-    return arc
+    return widget
 end
 
 local function disk()
-    local arc = arc_widget("Disk", beautiful.icons.disc_drive, function()
+    local widget = progress_bar(beautiful.icons.disc_drive, function()
         disk_popup:toggle()
     end)
 
     disk_daemon:connect_signal("update", function(self, disks)
         for _, entry in ipairs(disks) do
             if entry.mount == "/" then
-                arc:set_value(entry.perc)
+                widget:set_value(tonumber(entry.perc))
             end
         end
     end)
 
-    return arc
+    return widget
 end
 
 local function temperature()
-    local arc = arc_widget("Temperature", beautiful.icons.thermometer.full)
+    local widget = progress_bar(beautiful.icons.thermometer.full)
 
     temperature_daemon:connect_signal("update", function(self, value)
         if value == nil then
-            arc:set_icon(beautiful.icons.thermometer.quarter)
-            arc:set_value(10)
+            widget:set_icon(beautiful.icons.thermometer.quarter)
+            widget:set_value(10)
         else
             if value == 0 then
-                arc:set_icon(beautiful.icons.thermometer.quarter)
+                widget:set_icon(beautiful.icons.thermometer.quarter)
             elseif value <= 33 then
-                arc:set_icon(beautiful.icons.thermometer.half)
+                widget:set_icon(beautiful.icons.thermometer.half)
             elseif value <= 66 then
-                arc:set_icon(beautiful.icons.thermometer.three_quarter)
+                widget:set_icon(beautiful.icons.thermometer.three_quarter)
             elseif value > 66 then
-                arc:set_icon(beautiful.icons.thermometer.full)
+                widget:set_icon(beautiful.icons.thermometer.full)
             end
 
-            arc:set_value(value)
+            widget:set_value(value)
         end
     end)
 
-    return arc
+    return widget
 end
 
 local function brightness()
-    local arc = arc_widget("Brightness", beautiful.icons.brightness)
+    local widget = progress_bar(beautiful.icons.brightness)
 
     brightness_daemon:connect_signal("update", function(self, value)
         if value >= 0 then
-            arc:set_value(value)
+            widget:set_value(value)
         end
     end)
 
-    return arc
+    return widget
 end
 
 local function audio()
-    local arc = arc_widget("Audio", beautiful.icons.volume.off, function()
+    local widget = slider(beautiful.icons.volume.off, function()
         audio_popup:toggle()
-    end, function()
-        pactl_daemon:sink_volume_up(nil, 5)
-    end, function()
-        pactl_daemon:sink_volume_down(nil, 5)
     end)
 
     pactl_daemon:connect_signal("default_sinks_updated", function(self, device)
-        arc:set_value(device.volume)
+        widget:set_value(device.volume)
 
         if device.mute or device.volume == 0 then
-            arc:set_icon(beautiful.icons.volume.off)
+            widget:set_icon(beautiful.icons.volume.off)
         elseif device.volume <= 33 then
-            arc:set_icon(beautiful.icons.volume.low)
+            widget:set_icon(beautiful.icons.volume.low)
         elseif device.volume <= 66 then
-            arc:set_icon(beautiful.icons.volume.normal)
+            widget:set_icon(beautiful.icons.volume.normal)
         elseif device.volume > 66 then
-            arc:set_icon(beautiful.icons.volume.high)
+            widget:set_icon(beautiful.icons.volume.high)
         end
     end)
 
-    return arc
+    return widget
 end
 
 local function new()
     return wibox.widget {
-        layout = wibox.layout.fixed.vertical,
-        forced_height = dpi(300),
-        spacing = dpi(30),
-        {
-            layout = wibox.layout.flex.horizontal,
-            spacing = dpi(30),
-            cpu(),
-            ram(),
-            disk()
-        },
-        {
-            layout = wibox.layout.flex.horizontal,
-            spacing = dpi(30),
-            temperature(),
-            brightness(),
-            audio()
-        }
+        layout = wibox.layout.flex.vertical,
+        spacing = dpi(15),
+        cpu(),
+        ram(),
+        disk(),
+        audio(),
+        temperature(),
+        brightness(),
     }
 end
 
