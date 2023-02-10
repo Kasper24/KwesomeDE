@@ -30,7 +30,6 @@ local function arrow_button(icon, text, on_icon_release, on_arrow_release)
 
     local icon = wibox.widget {
         widget = widgets.button.text.state,
-        forced_width = dpi(65),
         forced_height = dpi(90),
         normal_shape = helpers.ui.prrect(beautiful.border_radius, true, false, false, true),
         normal_bg = beautiful.colors.surface,
@@ -43,7 +42,6 @@ local function arrow_button(icon, text, on_icon_release, on_arrow_release)
 
     local arrow = wibox.widget {
         widget = widgets.button.text.state,
-        forced_width = dpi(65),
         forced_height = dpi(90),
         normal_shape = helpers.ui.prrect(beautiful.border_radius, false, true, true, false),
         normal_bg = beautiful.colors.surface,
@@ -55,7 +53,7 @@ local function arrow_button(icon, text, on_icon_release, on_arrow_release)
     }
 
     local button = wibox.widget {
-        layout = wibox.layout.fixed.horizontal,
+        layout = wibox.layout.flex.horizontal,
         spacing = dpi(1),
         icon,
         arrow
@@ -264,22 +262,6 @@ local function screenshot()
     return widget
 end
 
-local function microphone()
-    local widget = button(beautiful.icons.microphone.on, "Microphone", function()
-        pactl_daemon:source_toggle_mute()
-    end)
-
-    pactl_daemon:connect_signal("default_sources_updated", function(self, device)
-        if device.mute == false then
-            widget:turn_on("Microphone")
-        else
-            widget:turn_off("Microphone")
-        end
-    end)
-
-    return widget
-end
-
 local function record()
     local widget = button(beautiful.icons.video, "Record", function()
         if record_daemon:get_is_recording() == false then
@@ -310,21 +292,20 @@ local function new()
             spacing = dpi(30),
             wifi(),
             bluetooth(),
-            airplane_mode()
         },
         {
             layout = wibox.layout.flex.horizontal,
             spacing = dpi(30),
+            airplane_mode(),
             blue_light(),
             compositor(),
-            dont_disturb()
         },
         {
             layout = wibox.layout.flex.horizontal,
             spacing = dpi(30),
+            dont_disturb(),
             record(),
             screenshot(),
-            microphone()
         }
     }
 end
