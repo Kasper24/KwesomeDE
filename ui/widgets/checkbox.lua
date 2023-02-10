@@ -9,6 +9,9 @@ local beautiful = require("beautiful")
 local helpers = require("helpers")
 local setmetatable = setmetatable
 local dpi = beautiful.xresources.apply_dpi
+local capi = {
+    mouse = mouse
+}
 
 local checkbox = {
     mt = {}
@@ -159,7 +162,19 @@ local function new()
         end
     }
 
-    helpers.ui.add_hover_cursor(widget, beautiful.hover_cursor)
+    widget:connect_signal("mouse::enter", function()
+        local widget = capi.mouse.current_wibox
+        if widget then
+            widget.cursor = beautiful.hover_cursor
+        end
+    end)
+
+    widget:connect_signal("mouse::leave", function()
+        local widget = capi.mouse.current_wibox
+        if widget then
+            widget.cursor = "left_ptr"
+        end
+    end)
 
     widget:connect_signal("button::press", function(self, lx, ly, button, mods, find_widgets_result)
         if helpers.table.contains(mods, "Mod4") then

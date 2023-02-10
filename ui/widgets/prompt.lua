@@ -393,6 +393,7 @@ local function new()
     gtable.crush(widget, prompt, true)
 
     widget:set_child(wibox.widget.textbox())
+    widget:set_hover_cursor("xterm")
 
     local wp = widget._private
 

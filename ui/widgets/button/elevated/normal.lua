@@ -9,12 +9,15 @@ local theme_daemon = require("daemons.system.theme")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
+local capi = {
+    mouse = mouse
+}
 
 local elevated_button_normal = {
     mt = {}
 }
 
-local properties = { "forced_width", "forced_height", "halign", "valign",
+local properties = { "forced_width", "forced_height", "halign", "valign", "hover_cursor",
                     "normal_bg", "hover_bg", "press_bg", "normal_shape", "hover_shape",
                     "press_shape", "normal_border_width", "hover_border_width", "press_border_width",
                     "normal_border_color", "hover_border_color", "press_border_color", "on_hover", "on_leave",
@@ -146,6 +149,8 @@ local function new(is_state)
     wp.defaults = {}
 
     -- Setup default values
+    wp.defaults.hover_cursor = beautiful.hover_cursor
+
     wp.defaults.normal_bg = beautiful.colors.background
     wp.defaults.hover_bg = helpers.color.button_color(wp.defaults.normal_bg, 0.1)
     wp.defaults.press_bg = helpers.color.button_color(wp.defaults.normal_bg, 0.2)
@@ -171,9 +176,6 @@ local function new(is_state)
     wp.on_scroll_up = nil
     wp.on_scroll_down = nil
 
-    -- Add hover cursor
-    helpers.ui.add_hover_cursor(widget, beautiful.hover_cursor)
-
     -- Color/Border animations
     widget.animation = helpers.animation:new{
         easing = helpers.animation.easing.linear,
@@ -192,6 +194,11 @@ local function new(is_state)
     }
 
     widget:connect_signal("mouse::enter", function(self, find_widgets_result)
+        local wibox = capi.mouse.current_wibox
+        if wibox then
+            wibox.cursor = wp.hover_cursor or wp.defaults.hover_cursor
+        end
+
         wp.mode = "hover"
         self:effect()
         widget:emit_signal("event", "hover")
@@ -204,6 +211,11 @@ local function new(is_state)
     widget:connect_signal("mouse::leave", function(self, find_widgets_result)
         if widget.button ~= nil then
             widget:emit_signal("event", "release")
+        end
+
+        local wibox = capi.mouse.current_wibox
+        if wibox then
+            wibox.cursor = "left_ptr"
         end
 
         wp.mode = "normal"
