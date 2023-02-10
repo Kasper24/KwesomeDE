@@ -164,7 +164,7 @@ naughty.connect_signal("request::display", function(n)
         max_value = 100,
         min_value = 0,
         value = 0,
-        thickness = dpi(7),
+        thickness = dpi(6),
         rounded_edge = true,
         bg = beautiful.colors.surface,
         colors = {
@@ -239,7 +239,7 @@ naughty.connect_signal("request::display", function(n)
     }
 
     local actions = wibox.widget {
-        layout = wibox.layout.fixed.horizontal,
+        layout = wibox.layout.flex.horizontal,
         spacing = dpi(15)
     }
 
@@ -261,9 +261,9 @@ naughty.connect_signal("request::display", function(n)
         notification = n,
         type = "notification",
         cursor = beautiful.hover_cursor,
-        minimum_width = dpi(325),
+        minimum_width = dpi(400),
         minimum_height = dpi(50),
-        maximum_width = dpi(325),
+        maximum_width = dpi(400),
         maximum_height = dpi(300),
         shape = helpers.ui.rrect(beautiful.border_radius),
         bg = beautiful.colors.background,
