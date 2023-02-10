@@ -43,6 +43,9 @@ local function new()
     }
 
     local hide_timer = gtimer {
+        single_shot = true,
+        call_now = false,
+        autostart = false,
         timeout = 1,
         callback = function()
             ret.widget.visible = false

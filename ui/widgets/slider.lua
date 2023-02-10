@@ -4,7 +4,6 @@ local bwidget = require("ui.widgets.background")
 local beautiful = require("beautiful")
 local color = require("external.color")
 local dpi = beautiful.xresources.apply_dpi
-local helpers = require("helpers")
 local math = math
 local capi = {
 	mouse = mouse,
@@ -115,20 +114,6 @@ local function new(args)
 		layout
 	}
 
-	local animation = helpers.animation:new {
-        easing = helpers.animation.easing.linear,
-		duration = 0.05,
-        update = function(self, pos)
-            bar.pos = pos
-            bar:emit_signal("widget::redraw_needed")
-        end,
-        signals = {
-            ["ended"] = function()
-                widget:emit_signal("property::value", bar.pos * args.maximum)
-            end
-        }
-	}
-
 	layout:connect_signal("button::press", function(self, x, y, button, _, geo)
 		if button ~= 1 then return end
 
@@ -136,12 +121,14 @@ local function new(args)
 		ipos = nil
 
 		--initially move it to the target (only one call of max and min is prolly fine)
-		animation:set(math.min(math.max(((x - args.bar_height) / effwidth), 0), 1))
+		bar.pos = math.min(math.max(((x - args.bar_height) / effwidth), 0), 1)
+        bar:emit_signal("widget::redraw_needed")
+		widget:emit_signal("property::value", bar.pos * args.maximum)
 
 		capi.mousegrabber.run(function(mouse)
 			--stop (and emit signal) if you release mouse 1
 			if not mouse.buttons[1] then
-				widget:emit_signal("slider::ended_mouse_things", animation.pos)
+				widget:emit_signal("slider::ended_mouse_things", bar.pos)
                 is_dragging = false
 				return false
 			end
@@ -154,7 +141,9 @@ local function new(args)
 			lpos = (x + mouse.x - ipos - args.bar_height) / effwidth
 
 			--make sure target \in (0, 1)
-			animation:set(math.max(math.min(lpos, 1), 0))
+			bar.pos = math.max(math.min(lpos, 1), 0)
+			bar:emit_signal("widget::redraw_needed")
+			widget:emit_signal("property::value", bar.pos * args.maximum)
 
 			return true
 		end,"fleur")
@@ -175,12 +164,7 @@ local function new(args)
     end)
 
 	function widget:set_value(val)
-		animation:set(val)
-	end
-
-	function widget:set_value_instant(val)
-        if is_dragging == false then
-            animation.pos = val
+		if is_dragging == false then
             bar.pos = val / args.maximum
             bar:emit_signal("widget::redraw_needed")
         end

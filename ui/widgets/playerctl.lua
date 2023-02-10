@@ -633,21 +633,21 @@ function playerctl.slider(width, daemon)
     }
 
     playerctl_daemon:connect_signal("seeked", function(self, position, player_name)
-        slider:set_value_instant(position)
+        slider:set_value(position)
     end)
 
     playerctl_daemon:connect_signal("metadata", function(self, title, artist, album_path, album, new, player_name)
-        slider:set_value_instant(0)
+        slider:set_value(0)
     end)
 
     playerctl_daemon:connect_signal("no_players", function(self)
         slider:set_maximum(0)
-        slider:set_value_instant(0)
+        slider:set_value(0)
     end)
 
     playerctl_daemon:connect_signal("position", function(self, position, length)
         slider:set_maximum(math.max(length, 1))
-        slider:set_value_instant(math.max(position, 0))
+        slider:set_value(math.max(position, 0))
     end)
 
     slider:connect_signal("property::value", function(self, value)

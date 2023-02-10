@@ -138,7 +138,7 @@ local function application_widget(args)
     end)
 
     pactl_daemon:connect_signal(args.type .. "::" .. args.application.id .. "::updated", function(self, application)
-        slider:set_value_instant(application.volume)
+        slider:set_value(application.volume)
 
         if application.mute == true then
             mute:turn_on()
@@ -234,7 +234,7 @@ local function device_widget(args)
     end)
 
     pactl_daemon:connect_signal(args.type .. "::" .. args.device.id .. "::updated", function(self, device)
-        slider:set_value_instant(device.volume)
+        slider:set_value(device.volume)
 
         if device.default == true then
             default:turn_on()

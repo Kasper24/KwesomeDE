@@ -217,7 +217,7 @@ local function audio()
 
     local icon = icon:get_children_by_id("icon")[1]
     pactl_daemon:connect_signal("default_sinks_updated", function(self, device)
-        slider:set_value_instant(device.volume)
+        slider:set_value(device.volume)
 
         if device.mute or device.volume == 0 then
             icon:set_icon(beautiful.icons.volume.off)
