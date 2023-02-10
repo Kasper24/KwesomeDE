@@ -8,6 +8,9 @@ local ebwidget = require("ui.widgets.button.elevated")
 local beautiful = require("beautiful")
 local helpers = require("helpers")
 local setmetatable = setmetatable
+local capi = {
+    awesome = awesome
+}
 
 local text_button_normal = {
     mt = {}
@@ -143,6 +146,19 @@ local function new(is_state)
     end)
 
     widget:text_effect(true)
+
+    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+        wp.text_normal_bg = old_colorscheme_to_new_map[wp.text_normal_bg] or
+                                old_colorscheme_to_new_map[wp.defaults.text_normal_bg]
+        wp.text_hover_bg = old_colorscheme_to_new_map[wp.text_hover_bg] or
+                            old_colorscheme_to_new_map[wp.defaults.text_hover_bg]
+                            helpers.color.button_color(wp.text_normal_bg, 0.1)
+        wp.text_press_bg = old_colorscheme_to_new_map[wp.text_press_bg] or
+                            old_colorscheme_to_new_map[wp.defaults.text_press_bg]
+                            helpers.color.button_color(wp.text_normal_bg, 0.2)
+
+        widget:text_effect(true)
+    end)
 
     return widget
 end

@@ -6,6 +6,9 @@ local gtable = require("gears.table")
 local ebnwidget = require("ui.widgets.button.elevated.normal")
 local helpers = require("helpers")
 local setmetatable = setmetatable
+local capi = {
+    awesome = awesome
+}
 
 local elevated_button_state = {
     mt = {}
@@ -230,6 +233,20 @@ local function new()
     end)
 
     widget:effect(true)
+
+    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+        wp.on_normal_bg = old_colorscheme_to_new_map[wp.on_normal_bg] or
+                              old_colorscheme_to_new_map[wp.defaults.on_normal_bg] or
+                              helpers.color.button_color(wp.normal_bg, 0.2)
+        wp.on_hover_bg = old_colorscheme_to_new_map[wp.on_hover_bg] or
+                            old_colorscheme_to_new_map[wp.defaults.on_hover_bg] or
+                            helpers.color.button_color(wp.on_normal_bg, 0.1)
+        wp.on_press_bg = old_colorscheme_to_new_map[wp.on_press_bg] or
+                            old_colorscheme_to_new_map[wp.defaults.on_press_bg] or
+                            helpers.color.button_color(wp.on_normal_bg, 0.2)
+
+        widget:effect(true)
+    end)
 
     return widget
 end
