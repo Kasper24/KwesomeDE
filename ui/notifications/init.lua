@@ -112,6 +112,8 @@ naughty.connect_signal("added", function(n)
 end)
 
 naughty.connect_signal("request::display", function(n)
+    local accent_color = n.app_font_icon.color or n.font_icon.color or beautiful.colors.random_accent_color()
+
     if notifications_daemon:is_suspended() == true and n.ignore_suspend ~= true then
         return
     end
@@ -148,6 +150,7 @@ naughty.connect_signal("request::display", function(n)
     local dismiss = wibox.widget {
         widget = widgets.button.text.normal,
         icon = beautiful.icons.xmark,
+        text_normal_bg = beautiful.colors.on_background,
         size = 12,
         on_release = function()
             n:destroy(naughty.notification_closed_reason.dismissed_by_user)
@@ -164,14 +167,9 @@ naughty.connect_signal("request::display", function(n)
         thickness = dpi(7),
         rounded_edge = true,
         bg = beautiful.colors.surface,
-        colors = {{
-            type = "linear",
-            from = {0, 0},
-            to = {400, 400},
-            stops = {{0, beautiful.colors.random_accent_color()}, {0.2, beautiful.colors.random_accent_color()},
-                     {0.4, beautiful.colors.random_accent_color()}, {0.6, beautiful.colors.random_accent_color()},
-                     {0.8, beautiful.colors.random_accent_color()}}
-        }},
+        colors = {
+            accent_color
+        },
         dismiss
     }
 
@@ -208,21 +206,16 @@ naughty.connect_signal("request::display", function(n)
         }
     }
 
-    local colors = {{0, beautiful.colors.green}, {1, beautiful.colors.bright_green}}
+    local color = accent_color
     if n.urgency == "critical" then
-        colors = {{0, beautiful.colors.red}, {1, beautiful.colors.bright_red}}
+        color = beautiful.colors.bright_red
     end
 
     local urgency_color = wibox.widget {
         widget = wibox.container.background,
         forced_height = dpi(10),
         shape = helpers.ui.rrect(beautiful.border_radius),
-        bg = {
-            type = "linear",
-            from = {0, 0},
-            to = {120, 120},
-            stops = colors
-        }
+        bg = color
     }
 
     local message = wibox.widget {

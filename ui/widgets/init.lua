@@ -18,6 +18,7 @@ return {
     overflow = require(... .. ".overflow"),
     playerctl = require(... .. ".playerctl"),
     popup = require(... .. ".popup"),
+    progressbar = require(... .. ".progressbar"),
     prompt = require(... .. ".prompt"),
     screen_mask = require(... .. ".screen_mask"),
     slider = require(... .. ".slider"),

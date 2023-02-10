@@ -31,7 +31,7 @@ local function new()
     }
 
     local slider = wibox.widget {
-        widget = wibox.widget.progressbar,
+        widget = widgets.progressbar,
         forced_width = dpi(150),
         forced_height = dpi(30),
         shape = helpers.ui.rrect(beautiful.border_radius),
@@ -39,12 +39,7 @@ local function new()
         value = 0,
         max_value = 100,
         background_color = beautiful.colors.surface,
-        color = {
-            type = "linear",
-            from = {0, 0},
-            to = {200, 50},
-            stops = {{0, beautiful.colors.random_accent_color()}, {0.50, beautiful.colors.random_accent_color()}}
-        }
+        color = beautiful.icons.volume.normal.color
     }
 
     local hide_timer = gtimer {

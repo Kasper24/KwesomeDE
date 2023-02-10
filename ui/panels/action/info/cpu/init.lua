@@ -65,9 +65,6 @@ local function new()
     }
 
     local accent_color = beautiful.colors.random_accent_color()
-    local gradient_colors = {{0, beautiful.colors.random_accent_color()},
-                             {0.33, beautiful.colors.random_accent_color()},
-                             {0.66, beautiful.colors.random_accent_color()}}
 
     cpu_daemon:connect_signal("update::full", function(self, cpus, processes)
         scrollbox:reset()
@@ -115,7 +112,7 @@ local function new()
                     text = math.floor(cpu.diff_usage) .. "%"
                 },
                 {
-                    widget = wibox.widget.progressbar,
+                    widget = widgets.progressbar,
                     forced_height = dpi(20),
                     forced_width = dpi(370),
                     shape = helpers.ui.rrect(beautiful.border_radius),
@@ -125,12 +122,7 @@ local function new()
                     max_value = 100,
                     value = cpu.diff_usage,
                     background_color = beautiful.colors.surface,
-                    color = {
-                        type = "linear",
-                        from = {0, 0},
-                        to = {300, 300},
-                        stops = gradient_colors
-                    }
+                    color = accent_color
                 }
             }
 
