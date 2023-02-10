@@ -62,6 +62,7 @@ awful.screen.connect_for_each_screen(function(s)
     local loading_popup = widgets.popup {
         screen = s,
         type = "splash",
+        visible = true,
         ontop = true,
         placement = awful.placement.maximize,
         bg = beautiful.colors.background,
@@ -79,17 +80,16 @@ awful.screen.connect_for_each_screen(function(s)
         }
     }
 
-    for s in capi.screen do
-        if s == capi.screen.primary then
-            s.loading_popup = loading_popup
-        else
-            s.loading_popup = widgets.screen_mask(s)
-        end
-
-        capi.awesome.connect_signal("ui::ready", function()
-            s.loading_popup.visible = false
+    gtimer {
+        timeout = 5,
+        single_shot = true,
+        call_now = false,
+        autostart = true,
+        callback = function()
             spinning_circle:abort()
-            s.loading_popup = nil
-        end)
-    end
+            spinning_circle = nil
+            loading_popup.visible = false
+            loading_popup = nil
+        end
+    }
 end)

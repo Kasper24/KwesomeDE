@@ -1,5 +1,10 @@
 local awful = require("awful")
 local widgets = require("ui.widgets")
+local helpers = require("helpers")
+
+if DEBUG ~= true and helpers.misc.is_restart() == true then
+    require(... .. ".popups.loading")
+end
 
 require(... .. ".apps.welcome")
 require(... .. ".desktop")
