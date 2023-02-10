@@ -2,13 +2,11 @@ local color_libary = require("external.color")
 local tonumber = tonumber
 local string = string
 local math = math
-local type = type
 local floor = math.floor
 local max = math.max
 local min = math.min
 local pow = math.pow
 local random = math.random
-local abs = math.abs
 local format = string.format
 
 local _color = {}
@@ -232,6 +230,11 @@ function _color.pywal_darken(color, amount)
     color.b = round(color.b * (1 - amount))
 
     return color.hex
+end
+
+function _color.add_opactiy(color, opacity)
+    opacity = opacity or 0.7
+    return color .. string.format("%x", math.floor(opacity * 255))
 end
 
 return _color

@@ -17,11 +17,6 @@ local theme = {}
 local function colors()
     local colors = theme_daemon:get_colorscheme()
 
-    local function color_with_opacity(color, opacity)
-        opacity = opacity or 0.7
-        return color .. string.format("%x", math.floor(opacity * 255))
-    end
-
     theme.colors = {
         red = colors[2],
         bright_red = colors[10],
