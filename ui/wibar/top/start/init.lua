@@ -132,7 +132,8 @@ local function new()
         on_color = old_colorscheme_to_new_map[on_color]
         off_color = old_colorscheme_to_new_map[off_color]
         local color = animation.pos.height == 1 and on_color or off_color
-        widget.draw = draw(animation.pos.height, helpers.color.hex_to_rgb(color))
+        widget.color = helpers.color.hex_to_rgb(color)
+        widget:emit_signal("widget::redraw_needed")
     end)
 
     return button
