@@ -250,19 +250,19 @@ function playerctl.title(width, halign, daemon)
         forced_height = dpi(20),
         halign = halign or "center",
         size = 12,
-        text = "Not Playing"
+        text = ""
     }
 
     playerctl_daemon:connect_signal("metadata", function(self, title, artist, album_path, album, new, player_name)
         if title ~= "" then
             widget:set_text(title)
         else
-            widget:set_text("Not Playing")
+            widget:set_text("")
         end
     end)
 
     playerctl_daemon:connect_signal("no_players", function(self)
-        widget:set_text("Not Playing")
+        widget:set_text("")
     end)
 
     return widget
@@ -277,19 +277,19 @@ function playerctl.artist(width, halign, daemon)
         forced_height = dpi(20),
         halign = halign or "center",
         size = 12,
-        markup = "Not Playing"
+        markup = ""
     }
 
     playerctl_daemon:connect_signal("metadata", function(self, title, artist, album_path, album, new, player_name)
         if artist ~= "" then
             widget:set_text(artist)
         else
-            widget:set_text("Not Playing")
+            widget:set_text("")
         end
     end)
 
     playerctl_daemon:connect_signal("no_players", function(self)
-        widget:set_text("Not Playing")
+        widget:set_text("")
     end)
 
     return widget
