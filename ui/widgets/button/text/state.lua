@@ -78,20 +78,6 @@ local function new()
 
     widget:text_effect(true)
 
-    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
-        wp.text_on_normal_bg = old_colorscheme_to_new_map[wp.text_on_normal_bg] or
-                                old_colorscheme_to_new_map[wp.defaults.text_on_normal_bg] or
-                                helpers.color.button_color(wp.text_normal_bg, 0.2)
-        wp.text_on_hover_bg = old_colorscheme_to_new_map[wp.text_on_hover_bg] or
-                                old_colorscheme_to_new_map[wp.defaults.text_on_hover_bg] or
-                                helpers.color.button_color(wp.text_on_normal_bg, 0.1)
-        wp.text_on_press_bg = old_colorscheme_to_new_map[wp.text_on_press_bg] or
-                                old_colorscheme_to_new_map[wp.defaults.text_on_press_bg] or
-                                helpers.color.button_color(wp.text_on_normal_bg, 0.2)
-
-        widget:text_effect(true)
-    end)
-
     return widget
 end
 

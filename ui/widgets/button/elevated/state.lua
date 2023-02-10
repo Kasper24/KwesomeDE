@@ -234,28 +234,6 @@ local function new()
 
     widget:effect(true)
 
-    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
-        wp.on_normal_bg = old_colorscheme_to_new_map[wp.on_normal_bg] or
-                              old_colorscheme_to_new_map[wp.defaults.on_normal_bg] or
-                              helpers.color.button_color(wp.normal_bg, 0.2)
-        wp.on_hover_bg = old_colorscheme_to_new_map[wp.on_hover_bg] or
-                            old_colorscheme_to_new_map[wp.defaults.on_hover_bg] or
-                            helpers.color.button_color(wp.on_normal_bg, 0.1)
-        wp.on_press_bg = old_colorscheme_to_new_map[wp.on_press_bg] or
-                            old_colorscheme_to_new_map[wp.defaults.on_press_bg] or
-                            helpers.color.button_color(wp.on_normal_bg, 0.2)
-
-        wp.on_normal_border_color = old_colorscheme_to_new_map[wp.on_normal_border_color] or
-                                    old_colorscheme_to_new_map[wp.defaults.on_normal_border_color]
-        wp.on_hover_border_color = old_colorscheme_to_new_map[wp.on_hover_border_color] or
-                                    old_colorscheme_to_new_map[wp.defaults.on_hover_border_color]
-        wp.on_press_border_color = old_colorscheme_to_new_map[wp.on_press_border_color] or
-                                    old_colorscheme_to_new_map[wp.defaults.on_press_border_color]
-
-
-        widget:effect(true)
-    end)
-
     return widget
 end
 
