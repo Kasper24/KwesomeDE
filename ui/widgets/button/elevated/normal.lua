@@ -10,6 +10,7 @@ local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 local capi = {
+    awesome = awesome,
     mouse = mouse
 }
 
@@ -285,27 +286,44 @@ local function new(is_state)
 
     widget:effect(true)
 
-    awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
-        wp.normal_bg = old_colorscheme_to_new_map[wp.normal_bg] or old_colorscheme_to_new_map[wp.defaults.normal_bg]
-        wp.hover_bg = helpers.color.button_color(wp.normal_bg, 0.1)
-        wp.press_bg = helpers.color.button_color(wp.normal_bg, 0.2)
+    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+        wp.normal_bg = old_colorscheme_to_new_map[wp.normal_bg] or
+                        old_colorscheme_to_new_map[wp.defaults.normal_bg]
+        wp.hover_bg = old_colorscheme_to_new_map[wp.hover_bg] or
+                        old_colorscheme_to_new_map[wp.defaults.hover_bg] or
+                        helpers.color.button_color(wp.normal_bg, 0.1)
+        wp.press_bg = old_colorscheme_to_new_map[wp.press_bg] or
+                        old_colorscheme_to_new_map[wp.defaults.press_bg] or
+                        helpers.color.button_color(wp.normal_bg, 0.2)
 
         wp.on_normal_bg = old_colorscheme_to_new_map[wp.on_normal_bg] or
                               old_colorscheme_to_new_map[wp.defaults.on_normal_bg] or
                               helpers.color.button_color(wp.normal_bg, 0.2)
-        wp.on_hover_bg = helpers.color.button_color(wp.on_normal_bg, 0.1)
-        wp.on_press_bg = helpers.color.button_color(wp.on_normal_bg, 0.2)
+        wp.on_hover_bg = old_colorscheme_to_new_map[wp.on_hover_bg] or
+                            old_colorscheme_to_new_map[wp.defaults.on_hover_bg] or
+                            helpers.color.button_color(wp.on_normal_bg, 0.1)
+        wp.on_press_bg = old_colorscheme_to_new_map[wp.on_press_bg] or
+                            old_colorscheme_to_new_map[wp.defaults.on_press_bg] or
+                            helpers.color.button_color(wp.on_normal_bg, 0.2)
 
         wp.text_normal_bg = old_colorscheme_to_new_map[wp.text_normal_bg] or
                                 old_colorscheme_to_new_map[wp.defaults.text_normal_bg]
-        wp.text_hover_bg = helpers.color.button_color(wp.text_normal_bg, 0.1)
-        wp.text_press_bg = helpers.color.button_color(wp.text_normal_bg, 0.2)
+        wp.text_hover_bg = old_colorscheme_to_new_map[wp.text_hover_bg] or
+                            old_colorscheme_to_new_map[wp.defaults.text_hover_bg]
+                            helpers.color.button_color(wp.text_normal_bg, 0.1)
+        wp.text_press_bg = old_colorscheme_to_new_map[wp.text_press_bg] or
+                            old_colorscheme_to_new_map[wp.defaults.text_press_bg]
+                            helpers.color.button_color(wp.text_normal_bg, 0.2)
 
         wp.text_on_normal_bg = old_colorscheme_to_new_map[wp.text_on_normal_bg] or
-                                   old_colorscheme_to_new_map[wp.defaults.text_on_normal_bg] or
-                                   helpers.color.button_color(wp.text_normal_bg, 0.2)
-        wp.text_on_hover_bg = helpers.color.button_color(wp.text_on_normal_bg, 0.1)
-        wp.text_on_press_bg = helpers.color.button_color(wp.text_on_normal_bg, 0.2)
+                                old_colorscheme_to_new_map[wp.defaults.text_on_normal_bg] or
+                                helpers.color.button_color(wp.text_normal_bg, 0.2)
+        wp.text_on_hover_bg = old_colorscheme_to_new_map[wp.text_on_hover_bg] or
+                                old_colorscheme_to_new_map[wp.defaults.text_on_hover_bg]
+                                helpers.color.button_color(wp.text_on_normal_bg, 0.1)
+        wp.text_on_press_bg = old_colorscheme_to_new_map[wp.text_on_press_bg] or
+                                old_colorscheme_to_new_map[wp.defaults.text_on_press_bg]
+                                helpers.color.button_color(wp.text_on_normal_bg, 0.2)
 
         widget:effect(true)
         if widget.text_effect ~= nil then
