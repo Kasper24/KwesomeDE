@@ -3,10 +3,7 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 local gtable = require("gears.table")
-local wibox = require("wibox")
-local beautiful = require("beautiful")
 local twidget = require("ui.widgets.text")
-local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 
 local client_font_icon = {
@@ -28,9 +25,7 @@ function client_font_icon:set_scale(scale)
 end
 
 local function new()
-    local widget =  wibox.widget {
-        widget = twidget
-    }
+    local widget = twidget()
     gtable.crush(widget, client_font_icon, true)
 
     widget._private.scale = 1
