@@ -7,16 +7,13 @@ local dpi = beautiful.xresources.apply_dpi
 local helpers = require("helpers")
 local math = math
 local capi = {
+	mouse = mouse,
     mousegrabber = mousegrabber
 }
 
 local slider = {
     mt = {}
 }
-
-local properties = { "forced_width", "forced_height", "margins",
-    "bar_height", "bar_color", "bar_active_color",
-    "handle_height", "handle_color" }
 
 local function set_x(x)
     return function(geo, args)
@@ -162,6 +159,20 @@ local function new(args)
 			return true
 		end,"fleur")
 	end)
+
+	layout:connect_signal("mouse::enter", function()
+        local widget = capi.mouse.current_wibox
+        if widget then
+            widget.cursor = "fleur"
+        end
+    end)
+
+    layout:connect_signal("mouse::leave", function()
+        local widget = capi.mouse.current_wibox
+        if widget then
+            widget.cursor = "left_ptr"
+        end
+    end)
 
 	function widget:set_value(val)
 		animation:set(val)
