@@ -17,13 +17,12 @@ ScreenHeight="900"
 
 ## [Blur Settings]
 
-FullBlur="false"
-PartialBlur="true"
+FullBlur="true"
+PartialBlur="false"
 ## Enable or disable the blur effect; if HaveFormBackground is set to true then PartialBlur will trigger the BackgroundColor of the form element to be partially transparent and blend with the blur.
 
-BlurRadius="0"
+BlurRadius="80"
 ## Set the strength of the blur effect. Anything above 100 is pretty strong and might slow down the rendering time. 0 is like setting false for any blur.
-
 
 
 ## [Design Customizations]
