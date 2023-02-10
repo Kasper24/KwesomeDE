@@ -6,7 +6,7 @@ local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
-local helpers = require("helpers")
+local gmath = require("gears.math")
 local tonumber = tonumber
 local string = string
 local pairs = pairs
@@ -43,6 +43,7 @@ function pactl:sink_volume_down(sink, step)
 end
 
 function pactl:sink_set_volume(sink, volume)
+    volume = gmath.round(volume)
     if sink == 0 or sink == nil then
         awful.spawn(string.format("pactl set-sink-volume @DEFAULT_SINK@ %d%%", volume), false)
     else
@@ -79,6 +80,8 @@ function pactl:source_volume_down(source, step)
 end
 
 function pactl:source_set_volume(source, volume)
+    volume = gmath.round(volume)
+
     if source == 0 or source == nil then
         awful.spawn(string.format("pactl set-source-volume @DEFAULT_SOURCE@ %d%%", volume), false)
     else
@@ -91,6 +94,8 @@ function pactl:sink_input_toggle_mute(sink_input)
 end
 
 function pactl:sink_input_set_volume(sink_input, volume)
+    volume = gmath.round(volume)
+
     awful.spawn(string.format("pactl set-sink-input-volume %d %d%%", sink_input, volume), false)
 end
 
@@ -99,6 +104,8 @@ function pactl:source_output_toggle_mute(source_output)
 end
 
 function pactl:source_output_set_volume(source_output, volume)
+    volume = gmath.round(volume)
+
     awful.spawn(string.format("pactl set-source-output-volume %d %d%%", source_output, volume), false)
 end
 
