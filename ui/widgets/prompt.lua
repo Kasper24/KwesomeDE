@@ -194,20 +194,9 @@ function prompt:start()
     local wp = self._private
 
     wp.is_running = true
-    self.can_stop = false
     capi.awesome.emit_signal("prompt::toggled_on", self)
     self:turn_on()
     update_markup(self, true)
-
-    gtimer {
-        timeout = 0.1,
-        autostart = true,
-        call_now = false,
-        single_shot = true,
-        callback = function()
-            self.can_stop = true
-        end
-    }
 
     wp.grabber = awful.keygrabber.run(function(modifiers, key, event)
         -- Convert index array to hash table
@@ -427,22 +416,22 @@ local function new()
 
     wp.cur_pos = #wp.text + 1 or 1
 
-    -- args.on_press = function()
-    --     if args.always_on == false then
-    --         ret:toggle()
-    --     end
-    -- end
+    if widget._private.always_on == false then
+        widget:set_on_press(function()
+            widget:toggle()
+        end)
+    end
 
     update_markup(widget, false)
 
     capi.awesome.connect_signal("root::pressed", function()
-        if wp.always_on == false and wp.can_stop == true then
+        if wp.always_on == false then
             widget:stop()
         end
     end)
 
     capi.client.connect_signal("button::press", function()
-        if wp.always_on == false and wp.can_stop == true then
+        if wp.always_on == false then
             widget:stop()
         end
     end)
