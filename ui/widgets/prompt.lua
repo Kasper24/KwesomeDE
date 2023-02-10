@@ -425,6 +425,12 @@ local function new()
 
     update_markup(widget, false)
 
+    widget:connect_signal("mouse::leave", function()
+        if wp.always_on == false then
+            widget:stop()
+        end
+    end)
+
     capi.awesome.connect_signal("root::pressed", function()
         if wp.always_on == false then
             widget:stop()
