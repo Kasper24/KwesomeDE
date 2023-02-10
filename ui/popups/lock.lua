@@ -115,6 +115,10 @@ local function widget(self)
         widget = widgets.prompt,
         forced_width = dpi(450),
         forced_height = dpi(50),
+        halign = "left",
+        on_normal_bg = beautiful.colors.background,
+        on_hover_bg = beautiful.colors.background,
+        on_press_bg = beautiful.colors.background,
         reset_on_stop = true,
         always_on = true,
         obscure = true,
@@ -141,6 +145,7 @@ local function widget(self)
 
     local unlock_button = wibox.widget {
         widget = widgets.button.text.normal,
+        text_normal_bg = beautiful.colors.on_background,
         text = "Unlock",
         on_release = function()
             system_daemon:unlock(self._private.prompt:get_text())
@@ -200,7 +205,7 @@ local function widget(self)
                 {
                     layout = wibox.layout.fixed.horizontal,
                     spacing = dpi(15),
-                    self._private.prompt.widget,
+                    self._private.prompt,
                     toggle_password_obscure_button
                 },
                 unlock_button
