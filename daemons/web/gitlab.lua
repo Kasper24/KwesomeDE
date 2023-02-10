@@ -17,7 +17,7 @@ local PATH = helpers.filesystem.get_cache_dir("gitlab/created_prs")
 local AVATARS_PATH = PATH .. "avatars/"
 local DATA_PATH = PATH .. "data.json"
 
-local UPDATE_INTERVAL = 10
+local UPDATE_INTERVAL = 60 * 3 -- 3 mins
 
 function gitlab:set_host(host)
     self._private.host = host

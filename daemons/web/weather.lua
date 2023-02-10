@@ -14,7 +14,7 @@ local instance = nil
 local path = helpers.filesystem.get_cache_dir("weather")
 local DATA_PATH = path .. "data.json"
 
-local UPDATE_INTERVAL = 60 * 3 -- 5 mins
+local UPDATE_INTERVAL = 60 * 3 -- 3 mins
 
 function weather:set_api_key(api_key)
     self._private.api_key = api_key

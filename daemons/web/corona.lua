@@ -16,7 +16,7 @@ local link = "https://corona-stats.online/%s?format=json"
 local path = helpers.filesystem.get_cache_dir("corona")
 local DATA_PATH = path .. "data.json"
 
-local UPDATE_INTERVAL = 60 * 3 -- 5 mins
+local UPDATE_INTERVAL = 60 * 3 -- 3 mins
 
 function corona:set_country(country)
     self._private.country = country
