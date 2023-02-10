@@ -112,6 +112,11 @@ local function button(icon, text, on_release)
 end
 
 local function widget(self)
+    local blur = wibox.widget {
+        widget = widgets.background,
+        bg = beautiful.colors.background_with_opacity
+    }
+
     local picture = wibox.widget {
         widget = wibox.widget.imagebox,
         halign = "center",
@@ -174,15 +179,20 @@ local function widget(self)
     }
 
     return wibox.widget {
-        widget = wibox.container.place,
-        halign = "center",
-        valign = "center",
+        widget = wibox.layout.stack,
+        widgets.wallpaper,
+        blur,
         {
-            layout = wibox.layout.fixed.vertical,
-            spacing = dpi(15),
-            user,
-            greeter,
-            buttons
+            widget = wibox.container.place,
+            halign = "center",
+            valign = "center",
+            {
+                layout = wibox.layout.fixed.vertical,
+                spacing = dpi(15),
+                user,
+                greeter,
+                buttons
+            }
         }
     }
 end
