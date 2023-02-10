@@ -62,7 +62,7 @@ local function new(client)
 
     local widget = fake_preview
 
-    if client.titlebar_enabled then
+    if client.titlebar_enabled or client.custom_titlebar then
         add_titlebar(client, preview)
     end
 
