@@ -10,6 +10,7 @@ local helpers = require("helpers")
 local setmetatable = setmetatable
 local tostring = tostring
 local string = string
+local ceil = math.ceil
 local capi = {
     awesome = awesome
 }
@@ -19,35 +20,6 @@ local text = {
 }
 
 local properties = {"bold", "italic", "size", "color", "text", "icon"}
-
-local function generate_markup(self)
-    local bold_start = ""
-    local bold_end = ""
-    local italic_start = ""
-    local italic_end = ""
-
-    if self._private.bold == true then
-        bold_start = "<b>"
-        bold_end = "</b>"
-    end
-    if self._private.italic == true then
-        italic_start = "<i>"
-        italic_end = "</i>"
-    end
-
-    local font = self._private.font or beautiful.font_name
-    local size = self._private.size or 20
-    local color = self._private.color or beautiful.colors.on_background
-    local text = self._private.text or ""
-
-    -- Need to unescape in a case the text was escaped by other code before
-    text = gstring.xml_unescape(tostring(text))
-    text = gstring.xml_escape(tostring(text))
-
-    size = math.ceil(size * 1024)
-    self.markup = string.format("<span font_family='%s' font_size='%s'>", font, size) .. bold_start .. italic_start ..
-                      helpers.ui.colorize_text(text, color) .. italic_end .. bold_end .. "</span>"
-end
 
 local function build_properties(prototype, prop_names)
     for _, prop in ipairs(prop_names) do
@@ -67,6 +39,37 @@ local function build_properties(prototype, prop_names)
             end
         end
     end
+end
+
+local function generate_markup(self)
+    local wp = self._private
+
+    local bold_start = ""
+    local bold_end = ""
+    local italic_start = ""
+    local italic_end = ""
+
+    if wp.bold == true then
+        bold_start = "<b>"
+        bold_end = "</b>"
+    end
+    if wp.italic == true then
+        italic_start = "<i>"
+        italic_end = "</i>"
+    end
+
+    local font = wp.font or wp.defaults.font
+    local size = wp.size or wp.defaults.size
+    local color = wp.color or wp.defaults.color
+    local text = wp.text or wp.defaults.fonttext
+
+    -- Need to unescape in a case the text was escaped by other code before
+    text = gstring.xml_unescape(tostring(text))
+    text = gstring.xml_escape(tostring(text))
+
+    size = ceil(size * 1024)
+    self.markup = string.format("<span font_family='%s' font_size='%s'>", font, size) .. bold_start .. italic_start ..
+                      helpers.ui.colorize_text(text, color) .. italic_end .. bold_end .. "</span>"
 end
 
 function text:set_icon(icon)
@@ -89,8 +92,11 @@ local function new(hot_reload)
     local wp = widget._private
 
     -- Setup default values
-    wp.bold = false
-    wp.italic = false
+    wp.defaults = {}
+    wp.defaults.font = beautiful.font_name
+    wp.defaults.size = 20
+    wp.defaults.color = beautiful.colors.on_background
+    wp.defaults.text = ""
 
     widget:connect_signal("widget::redraw_needed", function()
         generate_markup(widget)
@@ -98,7 +104,7 @@ local function new(hot_reload)
 
     if hot_reload ~= false then
         capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
-            wp.color = old_colorscheme_to_new_map[wp.color]
+            wp.color = old_colorscheme_to_new_map[wp.color or wp.defaults.color]
             generate_markup(widget)
         end)
     end
