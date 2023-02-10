@@ -624,7 +624,8 @@ end
 function playerctl.slider(width, daemon)
     local playerctl_daemon = daemon or general_playerctl_daemon
 
-    local widget = swidget {
+    local widget = wibox.widget {
+        widget = swidget,
         forced_width = width or dpi(200),
         value = 0,
         maximum = 1,
@@ -634,7 +635,7 @@ function playerctl.slider(width, daemon)
         bar_active_color = beautiful.colors.on_background,
         handle_color = beautiful.colors.on_background,
         handle_shape = function(cr, width, height)
-            return gshape.rounded_bar(cr, 10, 40)
+            return gshape.rounded_bar(cr, 10, 35)
         end
     }
 
