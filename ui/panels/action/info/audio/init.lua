@@ -96,12 +96,13 @@ local function application_widget(args)
         end
     }
 
-    local slider = wibox.widget {
-        widget = widgets.slider,
+    local slider = widgets.slider {
         forced_height = dpi(20),
         value = args.application.volume,
         maximum = 100,
         bar_active_color = accent_color,
+        handle_width = dpi(20),
+        handle_height = dpi(20),
     }
 
     local widget = wibox.widget {
@@ -200,8 +201,11 @@ local function device_widget(args)
     }
 
     local slider = widgets.slider {
+        forced_height = dpi(20),
         value = args.device.volume,
         maximum = 100,
+        handle_width = dpi(20),
+        handle_height = dpi(20),
         bar_active_color = beautiful.icons.volume.off.color,
     }
 
