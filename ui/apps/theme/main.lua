@@ -169,8 +169,8 @@ local function image_tab(self)
 
     local light_dark = wibox.widget {
         widget = widgets.button.text.normal,
-        normal_bg = beautiful.colors.surface,
-        text_normal_bg = beautiful.colors.on_surface,
+        normal_bg = beautiful.icons.spraycan.color,
+        text_normal_bg = beautiful.colors.on_accent,
         size = 15,
         text = "Light",
         on_press = function()
@@ -180,8 +180,8 @@ local function image_tab(self)
 
     local reset_colorscheme = wibox.widget {
         widget = widgets.button.text.normal,
-        normal_bg = beautiful.colors.surface,
-        text_normal_bg = beautiful.colors.on_surface,
+        normal_bg = beautiful.icons.spraycan.color,
+        text_normal_bg = beautiful.colors.on_accent,
         size = 15,
         text = "Reset Colorscheme",
         on_press = function()
@@ -191,8 +191,8 @@ local function image_tab(self)
 
     local save_colorscheme = wibox.widget {
         widget = widgets.button.text.normal,
-        normal_bg = beautiful.colors.surface,
-        text_normal_bg = beautiful.colors.on_surface,
+        normal_bg = beautiful.icons.spraycan.color,
+        text_normal_bg = beautiful.colors.on_accent,
         size = 15,
         text = "Save Colorscheme",
         on_press = function()
@@ -202,8 +202,8 @@ local function image_tab(self)
 
     local set_wallpaper = wibox.widget {
         widget = widgets.button.text.normal,
-        normal_bg = beautiful.colors.surface,
-        text_normal_bg = beautiful.colors.on_surface,
+        normal_bg = beautiful.icons.spraycan.color,
+        text_normal_bg = beautiful.colors.on_accent,
         size = 15,
         text = "Set Wallpaper",
         on_press = function()
@@ -213,8 +213,8 @@ local function image_tab(self)
 
     local set_colorscheme = wibox.widget {
         widget = widgets.button.text.normal,
-        normal_bg = beautiful.colors.surface,
-        text_normal_bg = beautiful.colors.on_surface,
+        normal_bg = beautiful.icons.spraycan.color,
+        text_normal_bg = beautiful.colors.on_accent,
         size = 15,
         text = "Set Colorscheme",
         on_press = function()
@@ -224,8 +224,8 @@ local function image_tab(self)
 
     local set_both = wibox.widget {
         widget = widgets.button.text.normal,
-        normal_bg = beautiful.colors.surface,
-        text_normal_bg = beautiful.colors.on_surface,
+        normal_bg = beautiful.icons.spraycan.color,
+        text_normal_bg = beautiful.colors.on_accent,
         size = 15,
         text = "Set Both",
         on_press = function()
