@@ -1,11 +1,12 @@
 local gshape = require("gears.shape")
+local gcolor = require("gears.color")
 local wibox = require("wibox")
 local bwidget = require("ui.widgets.background")
 local beautiful = require("beautiful")
-local color = require("external.color")
 local dpi = beautiful.xresources.apply_dpi
 local math = math
 local capi = {
+	awesome = awesome,
 	mouse = mouse,
     mousegrabber = mousegrabber
 }
@@ -28,13 +29,13 @@ local function new(args)
     args.maximum = args.maximum or 1
     args.margins = args.margins or dpi(0)
     args.bar_height = args.bar_height or dpi(8)
-	args.bar_color = color.color { hex = args.bar_color or beautiful.colors.surface }
-	args.bar_active_color = color.color { hex = args.bar_active_color or beautiful.colors.random_accent_color() }
+	args.bar_color = args.bar_color or beautiful.colors.surface
+	args.bar_active_color = args.bar_active_color or beautiful.colors.random_accent_color()
     args.handle_template = args.handle_template or nil
     args.handle_width = args.handle_width or dpi(20)
     args.handle_height = args.handle_height or dpi(20)
     args.handle_shape = args.handle_shape or gshape.circle
-	args.handle_color = args.handle_color or args.bar_active_color.hex
+	args.handle_color = args.handle_color or args.bar_active_color
     args.handle_border_width = args.handle_border_width or dpi(2)
     args.handle_border_color = args.handle_border_color or  beautiful.colors.background
 
@@ -87,7 +88,7 @@ local function new(args)
 
 			cr:set_line_width(args.bar_height)
 
-			cr:set_source_rgb(args.bar_color.r / 255, args.bar_color.g / 255, args.bar_color.b / 255)
+			cr:set_source(gcolor(args.bar_color))
 			cr:arc(bar_end, height2, hb2, 0, pi2)
 			cr:fill()
 
@@ -95,7 +96,7 @@ local function new(args)
 			cr:line_to(bar_end, height2)
 			cr:stroke()
 
-			cr:set_source_rgb(args.bar_active_color.r / 255, args.bar_active_color.g / 255, args.bar_active_color.b / 255)
+			cr:set_source(gcolor(args.bar_active_color))
 			cr:arc(bar_start, height2, hb2, 0, pi2)
 			cr:arc(bar_current, height2, hb2, 0, pi2)
 			cr:fill()
@@ -173,6 +174,17 @@ local function new(args)
 	function widget:set_maximum(maximum)
         args.maximum = maximum
 	end
+
+	capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+        args.bar_color = old_colorscheme_to_new_map[args.bar_color]
+		args.bar_active_color = old_colorscheme_to_new_map[args.bar_active_color]
+		args.handle_color = old_colorscheme_to_new_map[args.handle_color]
+		args.handle_border_color = old_colorscheme_to_new_map[args.handle_border_color]
+
+		bar:emit_signal("widget::redraw_needed")
+		handle.bg = args.handle_color
+		handle.border_color = args.handle_border_color
+    end)
 
 	return widget
 end
