@@ -296,6 +296,13 @@ local function new(is_state)
                         old_colorscheme_to_new_map[wp.defaults.press_bg] or
                         helpers.color.button_color(wp.normal_bg, 0.2)
 
+        wp.normal_border_color = old_colorscheme_to_new_map[wp.normal_border_color] or
+                        old_colorscheme_to_new_map[wp.defaults.normal_border_color]
+        wp.hover_border_color = old_colorscheme_to_new_map[wp.hover_border_color] or
+                        old_colorscheme_to_new_map[wp.defaults.hover_border_color]
+        wp.press_border_color = old_colorscheme_to_new_map[wp.press_border_color] or
+                        old_colorscheme_to_new_map[wp.defaults.press_border_color]
+
         widget:effect(true)
     end)
 
