@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-local gshape = require("gears.shape")
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local cpu_popup = require("ui.panels.action.info.cpu")
@@ -38,12 +37,18 @@ local function progress_bar(icon, on_release)
     }
 
     local icon = wibox.widget {
-        widget = widgets.text,
-        forced_width = dpi(40),
-        forced_height = dpi(40),
-        halign = "center",
-        size = 15,
-        icon = icon
+        widget = widgets.background,
+        shape = helpers.ui.rrect(beautiful.border_radius),
+        bg = beautiful.colors.surface,
+        {
+            widget = widgets.text,
+            id = "icon",
+            forced_width = dpi(40),
+            forced_height = dpi(40),
+            halign = "center",
+            size = 15,
+            icon = icon
+        }
     }
 
     local widget = wibox.widget {
@@ -78,66 +83,7 @@ local function progress_bar(icon, on_release)
     end
 
     function widget:set_icon(new_icon)
-        icon:set_icon(new_icon)
-    end
-
-    return widget
-end
-
-local function slider(icon, on_release)
-    local slider = wibox.widget  {
-        widget = widgets.slider,
-        forced_width = dpi(390),
-        forced_height = dpi(10),
-        max_value = 100,
-        bar_shape = helpers.ui.rrect(beautiful.border_radius),
-        bar_color = beautiful.colors.surface,
-        bar_active_color = icon.color,
-        handle_color = beautiful.colors.on_background,
-        handle_shape = function(cr, width, height)
-            return gshape.rounded_bar(cr, 10, 35)
-        end
-    }
-
-    local icon = wibox.widget {
-        widget = widgets.text,
-        forced_width = dpi(40),
-        forced_height = dpi(40),
-        halign = "center",
-        size = 15,
-        icon = icon
-    }
-
-    local arrow = wibox.widget {
-        widget = widgets.button.text.normal,
-        forced_width = dpi(40),
-        forced_height = dpi(40),
-        size = 15,
-        icon = beautiful.icons.chevron.right,
-        text_normal_bg = beautiful.colors.on_background,
-        on_release = function()
-            on_release()
-        end
-    }
-
-    local widget = wibox.widget {
-        layout = wibox.layout.fixed.horizontal,
-        spacing = dpi(15),
-        icon,
-        {
-            widget = wibox.container.place,
-            valign = "center",
-            slider,
-        },
-        arrow
-    }
-
-    function widget:set_value(value)
-        slider.value = value
-    end
-
-    function widget:set_icon(new_icon)
-        icon:set_icon(new_icon)
+        icon:get_children_by_id("icon")[1]:set_icon(new_icon)
     end
 
     return widget
@@ -224,21 +170,63 @@ local function brightness()
 end
 
 local function audio()
-    local widget = slider(beautiful.icons.volume.off, function()
-        audio_popup:toggle()
+    local slider = widgets.slider {
+        forced_width = dpi(390),
+        maximum = 100,
+        bar_active_color = beautiful.icons.volume.off.color,
+    }
+
+    local icon = wibox.widget {
+        widget = widgets.background,
+        shape = helpers.ui.rrect(beautiful.border_radius),
+        bg = beautiful.colors.surface,
+        {
+            widget = widgets.text,
+            id = "icon",
+            forced_width = dpi(40),
+            forced_height = dpi(40),
+            halign = "center",
+            size = 15,
+            icon = beautiful.icons.volume.off
+        }
+    }
+
+    local arrow = wibox.widget {
+        widget = widgets.button.text.normal,
+        forced_width = dpi(40),
+        forced_height = dpi(40),
+        size = 15,
+        icon = beautiful.icons.chevron.right,
+        text_normal_bg = beautiful.colors.on_background,
+        on_release = function()
+            audio_popup:toggle()
+        end
+    }
+
+    local widget = wibox.widget {
+        layout = wibox.layout.fixed.horizontal,
+        spacing = dpi(15),
+        icon,
+        slider,
+        arrow
+    }
+
+    slider:connect_signal("property::value", function(self, value)
+        pactl_daemon:sink_set_volume(0, value)
     end)
 
+    local icon = icon:get_children_by_id("icon")[1]
     pactl_daemon:connect_signal("default_sinks_updated", function(self, device)
-        widget:set_value(device.volume)
+        slider:set_value_instant(device.volume)
 
         if device.mute or device.volume == 0 then
-            widget:set_icon(beautiful.icons.volume.off)
+            icon:set_icon(beautiful.icons.volume.off)
         elseif device.volume <= 33 then
-            widget:set_icon(beautiful.icons.volume.low)
+            icon:set_icon(beautiful.icons.volume.low)
         elseif device.volume <= 66 then
-            widget:set_icon(beautiful.icons.volume.normal)
+            icon:set_icon(beautiful.icons.volume.normal)
         elseif device.volume > 66 then
-            widget:set_icon(beautiful.icons.volume.high)
+            icon:set_icon(beautiful.icons.volume.high)
         end
     end)
 

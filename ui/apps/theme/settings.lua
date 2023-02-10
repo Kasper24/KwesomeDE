@@ -99,19 +99,12 @@ local function picom_slider(key, max, divide_by, round)
         text = display_name
     }
 
-    local slider = wibox.widget {
-        widget = widgets.slider,
+    local slider = widgets.slider {
         forced_width = dpi(420),
         forced_height = dpi(20),
         value = picom_daemon["get_" .. key](picom_daemon) * divide_by,
         maximum = max or 100,
-        bar_height = 5,
-        bar_shape = helpers.ui.rrect(beautiful.border_radius),
-        bar_color = beautiful.colors.surface,
         bar_active_color = beautiful.icons.spraycan.color,
-        handle_width = dpi(15),
-        handle_color = beautiful.colors.on_background,
-        handle_shape = gshape.circle
     }
 
     local value_text = wibox.widget {

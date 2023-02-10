@@ -55,25 +55,16 @@ local function delay()
         text = screenshot_daemon:get_delay()
     }
 
-    local slider = wibox.widget {
-        widget = widgets.slider,
+    local slider = widgets.slider {
         forced_width = dpi(150),
         value = screenshot_daemon:get_delay(),
         maximum = 100,
-        bar_height = 5,
-        bar_shape = helpers.ui.rrect(beautiful.border_radius),
-        bar_color = beautiful.colors.surface,
         bar_active_color = beautiful.icons.camera_retro.color,
-        handle_width = dpi(15),
-        handle_color = beautiful.colors.on_background,
-        handle_shape = gshape.circle
     }
 
     slider:connect_signal("property::value", function(self, value, instant)
-        if instant == false then
-            screenshot_daemon:set_delay(value)
-            value_text:set_text(value)
-        end
+        screenshot_daemon:set_delay(value)
+        value_text:set_text(value)
     end)
 
     return wibox.widget {

@@ -101,18 +101,11 @@ local function fps()
         text = record_daemon:get_fps()
     }
 
-    local slider = wibox.widget {
-        widget = widgets.slider,
+    local slider = widgets.slider {
         forced_width = dpi(150),
         value = record_daemon:get_fps(),
         maximum = 360,
-        bar_height = 5,
-        bar_shape = helpers.ui.rrect(beautiful.border_radius),
-        bar_color = beautiful.colors.surface,
         bar_active_color = beautiful.icons.video.color,
-        handle_width = dpi(15),
-        handle_color = beautiful.colors.on_background,
-        handle_shape = gshape.circle
     }
 
     slider:connect_signal("property::value", function(self, value, instant)
@@ -145,18 +138,11 @@ local function delay()
         text = record_daemon:get_delay()
     }
 
-    local slider = wibox.widget {
-        widget = widgets.slider,
+    local slider = widgets.slider {
         forced_width = dpi(150),
         value = record_daemon:get_delay(),
         maximum = 100,
-        bar_height = 5,
-        bar_shape = helpers.ui.rrect(beautiful.border_radius),
-        bar_color = beautiful.colors.surface,
         bar_active_color = beautiful.icons.video.color,
-        handle_width = dpi(15),
-        handle_color = beautiful.colors.on_background,
-        handle_shape = gshape.circle
     }
 
     slider:connect_signal("property::value", function(self, value, instant)

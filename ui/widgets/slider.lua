@@ -1,602 +1,185 @@
--------------------------------------------
--- @author https://github.com/Kasper24
--- @copyright 2021-2022 Kasper24
--------------------------------------------
--- Modified version emitting button::release as it's getting blocked by the mousegrabber
----------------------------------------------------------------------------
--- An interactive mouse based slider widget.
---
---
---
--- ![Usage example](../images/AUTOGEN_wibox_widget_defaults_slider.svg)
---
--- @usage
--- wibox.widget {
---     bar_shape           = gears.shape.rounded_rect,
---     bar_height          = 3,
---     bar_color           = beautiful.border_color,
---     handle_color        = beautiful.bg_normal,
---     handle_shape        = gears.shape.circle,
---     handle_border_color = beautiful.border_color,
---     handle_border_width = 1,
---     value               = 25,
---     widget              = wibox.widget.slider,
--- }
---
--- @author Grigory Mishchenko &lt;grishkokot@gmail.com&gt;
--- @author Emmanuel Lepage Vallee &lt;elv1313@gmail.com&gt;
--- @copyright 2015 Grigory Mishchenko, 2016 Emmanuel Lepage Vallee
--- @widgetmod wibox.widget.slider
--- @supermodule wibox.widget.base
----------------------------------------------------------------------------
-local setmetatable = setmetatable
-local type = type
-local color = require("gears.color")
-local gtable = require("gears.table")
+local gshape = require("gears.shape")
+local wibox = require("wibox")
+local bwidget = require("ui.widgets.background")
 local beautiful = require("beautiful")
-local base = require("wibox.widget.base")
-local shape = require("gears.shape")
+local color = require("external.color")
+local dpi = beautiful.xresources.apply_dpi
 local helpers = require("helpers")
+local math = math
 local capi = {
-    awesome = awesome,
-    mouse = mouse,
-    mousegrabber = mousegrabber,
-    root = root
+    mousegrabber = mousegrabber
 }
 
 local slider = {
     mt = {}
 }
 
---- The slider handle shape.
---
---
---
--- ![Usage example](../images/AUTOGEN_wibox_widget_slider_handle_shape.svg)
---
---
--- @property handle_shape
--- @tparam[opt=gears shape rectangle] gears.shape shape
--- @propemits true false
--- @propbeautiful
--- @see gears.shape
+local properties = { "forced_width", "forced_height", "margins",
+    "bar_height", "bar_color", "bar_active_color",
+    "handle_height", "handle_color" }
 
---- The slider handle color.
---
---
---
--- ![Usage example](../images/AUTOGEN_wibox_widget_slider_handle_color.svg)
---
---
--- @property handle_color
--- @propbeautiful
--- @tparam color handle_color
--- @propemits true false
-
---- The slider handle margins.
---
---
---
--- ![Usage example](../images/AUTOGEN_wibox_widget_slider_handle_margins.svg)
---
---
--- @property handle_margins
--- @tparam[opt={}] table margins
--- @tparam[opt=0] number margins.left
--- @tparam[opt=0] number margins.right
--- @tparam[opt=0] number margins.top
--- @tparam[opt=0] number margins.bottom
--- @propemits true false
--- @propbeautiful
-
---- The slider handle width.
---
---
---
--- ![Usage example](../images/AUTOGEN_wibox_widget_slider_handle_width.svg)
---
---
--- @property handle_width
--- @tparam number handle_width
--- @propemits true false
--- @propbeautiful
-
---- The handle border_color.
---
---
---
--- ![Usage example](../images/AUTOGEN_wibox_widget_slider_handle_border.svg)
---
---
--- @property handle_border_color
--- @tparam color handle_border_color
--- @propemits true false
--- @propbeautiful
-
---- The handle border width.
--- @property handle_border_width
--- @tparam[opt=0] number handle_border_width
--- @propemits true false
--- @propbeautiful
-
---- The bar (background) shape.
---
---
---
--- ![Usage example](../images/AUTOGEN_wibox_widget_slider_bar_shape.svg)
---
---
--- @property bar_shape
--- @tparam[opt=gears shape rectangle] gears.shape shape
--- @propemits true false
--- @propbeautiful
--- @see gears.shape
-
---- The bar (background) height.
---
---
---
--- ![Usage example](../images/AUTOGEN_wibox_widget_slider_bar_height.svg)
---
---
--- @property bar_height
--- @tparam number bar_height
--- @propbeautiful
--- @propemits true false
-
---- The bar (background) color.
---
---
---
--- ![Usage example](../images/AUTOGEN_wibox_widget_slider_bar_color.svg)
---
---
--- @property bar_color
--- @tparam color bar_color
--- @propbeautiful
--- @propemits true false
-
---- The bar (active) color.
---
---
---
--- ![Usage example](../images/AUTOGEN_wibox_widget_slider_bar_active_color.svg)
---
---
--- Only works when both `bar_active_color` and `bar_color` are passed as hex color string
--- @property bar_active_color
--- @tparam color bar_active_color
--- @propbeautiful
--- @propemits true false
-
---- The bar (background) margins.
---
---
---
--- ![Usage example](../images/AUTOGEN_wibox_widget_slider_bar_margins.svg)
---
---
--- @property bar_margins
--- @tparam[opt={}] table margins
--- @tparam[opt=0] number margins.left
--- @tparam[opt=0] number margins.right
--- @tparam[opt=0] number margins.top
--- @tparam[opt=0] number margins.bottom
--- @propbeautiful
--- @propemits true false
-
---- The bar (background) border width.
--- @property bar_border_width
--- @tparam[opt=0] number bar_border_width
--- @propemits true false
-
---- The bar (background) border_color.
---
---
---
--- ![Usage example](../images/AUTOGEN_wibox_widget_slider_bar_border.svg)
---
---
--- @property bar_border_color
--- @tparam color bar_border_color
--- @propbeautiful
--- @propemits true false
-
---- The slider value.
---
--- **Signal:** *property::value* notify the value is changed.
---
---
---
--- ![Usage example](../images/AUTOGEN_wibox_widget_slider_value.svg)
---
---
--- @property value
--- @tparam[opt=0] number value
--- @propemits true false
-
---- The slider minimum value.
---
--- @property minimum
--- @tparam[opt=0] number minimum
--- @propemits true false
-
---- The slider maximum value.
---
--- @property maximum
--- @tparam[opt=100] number maximum
--- @propemits true false
-
---- The bar (background) border width.
---
--- @beautiful beautiful.slider_bar_border_width
--- @param number
-
---- The bar (background) border color.
---
--- @beautiful beautiful.slider_bar_border_color
--- @param color
-
---- The handle border_color.
---
--- @beautiful beautiful.slider_handle_border_color
--- @param color
-
---- The handle border width.
---
--- @beautiful beautiful.slider_handle_border_width
--- @param number
-
---- The handle width.
---
--- @beautiful beautiful.slider_handle_width
--- @param number
-
---- The handle color.
---
--- @beautiful beautiful.slider_handle_color
--- @param color
-
---- The handle shape.
---
--- @beautiful beautiful.slider_handle_shape
--- @tparam[opt=gears shape rectangle] gears.shape shape
--- @see gears.shape
-
---- The bar (background) shape.
---
--- @beautiful beautiful.slider_bar_shape
--- @tparam[opt=gears shape rectangle] gears.shape shape
--- @see gears.shape
-
---- The bar (background) height.
---
--- @beautiful beautiful.slider_bar_height
--- @param number
-
---- The bar (background) margins.
---
--- @beautiful beautiful.slider_bar_margins
--- @tparam[opt={}] table margins
--- @tparam[opt=0] number margins.left
--- @tparam[opt=0] number margins.right
--- @tparam[opt=0] number margins.top
--- @tparam[opt=0] number margins.bottom
-
---- The slider handle margins.
---
--- @beautiful beautiful.slider_handle_margins
--- @tparam[opt={}] table margins
--- @tparam[opt=0] number margins.left
--- @tparam[opt=0] number margins.right
--- @tparam[opt=0] number margins.top
--- @tparam[opt=0] number margins.bottom
-
---- The bar (background) color.
---
--- @beautiful beautiful.slider_bar_color
--- @param color
-
---- The bar (active) color.
---
--- Only works when both `beautiful.slider_bar_color` and `beautiful.slider_bar_active_color` are hex color strings
--- @beautiful beautiful.slider_bar_active_color
--- @param color
-
-local properties = {
-    -- Handle
-    handle_shape = shape.rectangle,
-    handle_color = false,
-    handle_margins = {},
-    handle_width = false,
-    handle_border_width = 0,
-    handle_border_color = false,
-
-    -- Bar
-    bar_shape = shape.rectangle,
-    bar_height = false,
-    bar_color = false,
-    bar_active_color = false,
-    bar_margins = {},
-    bar_border_width = 0,
-    bar_border_color = false,
-
-    -- Content
-    value = 0,
-    minimum = 0,
-    maximum = 100
-}
-
--- Create the accessors
-for prop in pairs(properties) do
-    slider["set_" .. prop] = function(self, value)
-        local changed = self._private[prop] ~= value
-        self._private[prop] = value
-
-        if changed then
-            self:emit_signal("property::" .. prop, value)
-            self:emit_signal("widget::redraw_needed")
-        end
-    end
-
-    slider["get_" .. prop] = function(self)
-        -- Ignoring the false's is on purpose
-        return self._private[prop] == nil and properties[prop] or self._private[prop]
+local function set_x(x)
+    return function(geo, args)
+        return {x=x, y=(args.parent.height - geo.height)/2}
     end
 end
 
--- Add some validation to set_value
-function slider:set_value(value)
-    value = math.min(value, self:get_maximum())
-    value = math.max(value, self:get_minimum())
-    local changed = self._private.value ~= value
-
-    self._private.value = value
-
-    if changed then
-        self:emit_signal("property::value", value, false)
-        self:emit_signal("widget::redraw_needed")
-    end
-end
-
-function slider:set_value_instant(value)
-    if self._private.is_dragging == false then
-        value = math.min(value, self:get_maximum())
-        value = math.max(value, self:get_minimum())
-        local changed = self._private.value ~= value
-
-        self._private.value = value
-
-        if changed then
-            self:emit_signal("property::value", value, true)
-            self:emit_signal("widget::redraw_needed")
-        end
-    end
-end
-
-local function get_extremums(self)
-    local min = self._private.minimum or properties.minimum
-    local max = self._private.maximum or properties.maximum
-    local interval = max - min
-
-    return min, max, interval
-end
-
-function slider:draw(_, cr, width, height)
-    local value = self._private.value or self._private.min or 0
-
-    local maximum = self._private.maximum or properties.maximum
-
-    local minimum = self._private.minimum or properties.minimum
-
-    local range = maximum - minimum
-    local active_rate = (value - minimum) / range
-
-    local handle_height, handle_width = height, self._private.handle_width or beautiful.slider_handle_width or
-        math.floor(height / 2)
-
-    local handle_border_width = self._private.handle_border_width or beautiful.slider_handle_border_width or
-                                    properties.handle_border_width or 0
-
-    local bar_height = self._private.bar_height
-
-    -- If there is no background, then skip this
-    local bar_color = self._private.bar_color or beautiful.slider_bar_color
-
-    local bar_active_color = self._private.bar_active_color or beautiful.slider_bar_active_color
-
-    if bar_color then
-        cr:set_source(color(bar_color))
-    end
-
-    local margins = self._private.bar_margins or beautiful.slider_bar_margins
-
-    local x_offset, right_margin, y_offset = 0, 0, 0
-
-    if margins then
-        if type(margins) == "number" then
-            bar_height = bar_height or (height - 2 * margins)
-            x_offset, y_offset = margins, margins
-            right_margin = margins
-        else
-            bar_height = bar_height or (height - (margins.top or 0) - (margins.bottom or 0))
-            x_offset, y_offset = margins.left or 0, margins.top or 0
-            right_margin = margins.right or 0
-        end
-    else
-        bar_height = bar_height or beautiful.slider_bar_height or height
-        y_offset = math.floor((height - bar_height) / 2)
-    end
-
-    cr:translate(x_offset, y_offset)
-
-    local bar_shape = self._private.bar_shape or beautiful.slider_bar_shape or properties.bar_shape
-
-    local bar_border_width = self._private.bar_border_width or beautiful.slider_bar_border_width or
-                                 properties.bar_border_width
-
-    bar_shape(cr, width - x_offset - right_margin, bar_height or height)
-
-    if bar_active_color and type(bar_color) == "string" and type(bar_active_color) == "string" then
-        local bar_active_width = math.floor(active_rate * (width - x_offset - right_margin) -
-                                                (handle_width - handle_border_width / 2) * (active_rate - 0.5))
-        cr:set_source(color.create_pattern {
-            type = "linear",
-            from = {0, 0},
-            to = {bar_active_width, 0},
-            stops = {{0.99, bar_active_color}, {0.99, bar_color}}
-        })
-    end
-
-    if bar_color then
-        if bar_border_width == 0 then
-            cr:fill()
-        else
-            cr:fill_preserve()
-        end
-    end
-
-    -- Draw the bar border
-    if bar_border_width > 0 then
-        local bar_border_color = self._private.bar_border_color or beautiful.slider_bar_border_color or
-                                     properties.bar_border_color
-
-        cr:set_line_width(bar_border_width)
-
-        if bar_border_color then
-            cr:save()
-            cr:set_source(color(bar_border_color))
-            cr:stroke()
-            cr:restore()
-        else
-            cr:stroke()
-        end
-    end
-
-    cr:translate(-x_offset, -y_offset)
-
-    -- Paint the handle
-    local handle_color = self._private.handle_color or beautiful.slider_handle_color
-
-    -- It is ok if there is no color, it will be inherited
-    if handle_color then
-        cr:set_source(color(handle_color))
-    end
-
-    local handle_shape = self._private.handle_shape or beautiful.slider_handle_shape or properties.handle_shape
-
-    -- Lets get the margins for the handle
-    margins = self._private.handle_margins or beautiful.slider_handle_margins
-
-    x_offset, y_offset = 0, 0
-
-    if margins then
-        if type(margins) == "number" then
-            x_offset, y_offset = margins, margins
-            handle_width = handle_width - 2 * margins
-            handle_height = handle_height - 2 * margins
-        else
-            x_offset, y_offset = margins.left or 0, margins.top or 0
-            handle_width = handle_width - (margins.left or 0) - (margins.right or 0)
-            handle_height = handle_height - (margins.top or 0) - (margins.bottom or 0)
-        end
-    end
-
-    -- Get the widget size back to it's non-transfored value
-    local min, _, interval = get_extremums(self)
-    local rel_value = math.floor(((value - min) / interval) * (width - handle_width))
-
-    cr:translate(x_offset + rel_value, y_offset)
-
-    handle_shape(cr, handle_width, handle_height)
-
-    if handle_border_width > 0 then
-        cr:fill_preserve()
-    else
-        cr:fill()
-    end
-
-    -- Draw the handle border
-    if handle_border_width > 0 then
-        local handle_border_color = self._private.handle_border_color or beautiful.slider_handle_border_color or
-                                        properties.handle_border_color
-
-        if handle_border_color then
-            cr:set_source(color(handle_border_color))
-        end
-
-        cr:set_line_width(handle_border_width)
-        cr:stroke()
-    end
-end
-
-function slider:fit(_, width, height)
-    -- Use all the space, this should be used with a constraint widget
-    return width, height
-end
-
--- Move the handle to the correct location
-local function move_handle(self, width, x, _)
-    local _, _, interval = get_extremums(self)
-    self:set_value(math.floor((x * interval) / width))
-end
-
-local function mouse_press(self, x, y, button_id, mods, geo)
-    if helpers.table.contains(mods, "Mod4") or button_id ~= 1 then
-        return
-    end
-
-    local matrix_from_device = geo.hierarchy:get_matrix_from_device()
-
-    -- Sigh. geo.width/geo.height is in device space. We need it in our own
-    -- coordinate system
-    local width = geo.widget_width
-
-    move_handle(self, width, x, y)
-
-    -- Calculate a matrix transforming from screen coordinates into widget coordinates
-    local wgeo = geo.drawable.drawable:geometry()
-    local matrix = matrix_from_device:translate(-wgeo.x, -wgeo.y)
-
-    capi.mousegrabber.run(function(mouse)
-        if not mouse.buttons[1] then
-            self:emit_signal("button::release", 42, 42, 1, {}, geo)
-            self._private.is_dragging = false
-            return false
-        end
-
-        self._private.is_dragging = true
-
-        -- Calculate the point relative to the widget
-        move_handle(self, width, matrix:transform_point(mouse.x, mouse.y))
-
-        return true
-    end, "fleur")
-end
-
---- Create a slider widget.
--- @tparam[opt={}] table args
--- @constructorfct wibox.widget.slider
 local function new(args)
-    local ret = base.make_widget(nil, nil, {
-        enable_properties = true
-    })
-    ret._private.is_dragging = false
+	args = args or {}
 
-    gtable.crush(ret._private, args or {})
+    args.forced_width = args.forced_width or nil
+	args.forced_height = args.forced_height or dpi(8)
+    args.maximum = args.maximum or 1
+    args.margins = args.margins or dpi(0)
+    args.bar_height = args.bar_height or dpi(8)
+	args.bar_color = color.color { hex = args.bar_color or beautiful.colors.surface }
+	args.bar_active_color = color.color { hex = args.bar_active_color or beautiful.colors.random_accent_color() }
+    args.handle_template = args.handle_template or nil
+    args.handle_width = args.handle_width or dpi(20)
+    args.handle_height = args.handle_height or dpi(20)
+    args.handle_shape = args.handle_shape or gshape.circle
+	args.handle_color = args.handle_color or args.bar_active_color.hex
+    args.handle_border_width = args.handle_border_width or dpi(2)
+    args.handle_border_color = args.handle_border_color or  beautiful.colors.background
 
-    gtable.crush(ret, slider, true)
+	local value = (args.value or 0) / args.maximum
+	local w = 0
+    local is_dragging = false
 
-    ret:connect_signal("button::press", mouse_press)
+	local bar_start, bar_end, bar_current, height2, hb2, pi2, value_min, value_max, effwidth, ipos, lpos
+	hb2 = args.bar_height / 2
+    bar_start = args.margins + hb2
+    bar_end = w - (bar_start)
+    bar_current = value + args.bar_height
+    pi2 = math.pi * 2
+    value_min = args.margins - hb2
+    value_max = w - bar_start - hb2
+    effwidth = value_max - value_min
 
-    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
-        local wp = ret._private
-        wp.bar_color = old_colorscheme_to_new_map[wp.bar_color]
-        wp.bar_active_color = old_colorscheme_to_new_map[wp.bar_active_color]
-        wp.handle_color = old_colorscheme_to_new_map[wp.handle_color]
-    end)
+	local handle = args.handle_template or wibox.widget {
+        widget = bwidget,
+        point = { x = 0, y = 0 },
+        forced_width = args.handle_width,
+		forced_height = args.handle_height,
+        shape = args.handle_shape,
+        bg = args.handle_color,
+        border_width = args.handle_border_width,
+        border_color = args.handle_border_color
+	}
 
-    return ret
+	local layout = wibox.layout {
+        layout = wibox.layout.manual,
+		handle
+	}
+
+	local bar = wibox.widget {
+        widget = wibox.widget.make_base_widge,
+		forced_width = args.forced_width,
+        forced_height = args.forced_height,
+        pos = 0,
+		fit = function(_, _, width, height) return width, height end,
+		draw = function(self, _, cr, width, height)
+			w = width --get the width whenever redrawing just in case
+			bar_end = width - (bar_start) --update bar_end which depends on width
+			height2 = height / 2 --update height2 which depends on height
+			value_max = width - bar_start - hb2
+			effwidth = value_max - value_min
+
+			value = effwidth * self.pos + value_min
+			bar_current = value + args.bar_height
+			layout:move(1, set_x(value))
+
+			cr:set_line_width(args.bar_height)
+
+			cr:set_source_rgb(args.bar_color.r / 255, args.bar_color.g / 255, args.bar_color.b / 255)
+			cr:arc(bar_end, height2, hb2, 0, pi2)
+			cr:fill()
+
+			cr:move_to(bar_start, height2)
+			cr:line_to(bar_end, height2)
+			cr:stroke()
+
+			cr:set_source_rgb(args.bar_active_color.r / 255, args.bar_active_color.g / 255, args.bar_active_color.b / 255)
+			cr:arc(bar_start, height2, hb2, 0, pi2)
+			cr:arc(bar_current, height2, hb2, 0, pi2)
+			cr:fill()
+
+			cr:move_to(bar_start, height2)
+			cr:line_to(bar_current, height2)
+			cr:stroke()
+		end
+	}
+
+	local widget = wibox.widget {
+		layout = wibox.layout.stack,
+		forced_width = args.forced_width,
+		forced_height = args.forced_height,
+		bar,
+		layout
+	}
+
+	local animation = helpers.animation:new {
+        easing = helpers.animation.easing.linear,
+		duration = 0.05,
+        update = function(self, pos)
+            bar.pos = pos
+            bar:emit_signal("widget::redraw_needed")
+        end,
+        signals = {
+            ["ended"] = function()
+                widget:emit_signal("property::value", bar.pos * args.maximum)
+            end
+        }
+	}
+
+	layout:connect_signal("button::press", function(self, x, y, button, _, geo)
+		if button ~= 1 then return end
+
+		--reset initial position for later
+		ipos = nil
+
+		--initially move it to the target (only one call of max and min is prolly fine)
+		animation:set(math.min(math.max(((x - args.bar_height) / effwidth), 0), 1))
+
+		capi.mousegrabber.run(function(mouse)
+			--stop (and emit signal) if you release mouse 1
+			if not mouse.buttons[1] then
+				widget:emit_signal("slider::ended_mouse_things", animation.pos)
+                is_dragging = false
+				return false
+			end
+
+            is_dragging = true
+
+			--get initial position
+			if not ipos then ipos = mouse.x end
+
+			lpos = (x + mouse.x - ipos - args.bar_height) / effwidth
+
+			--make sure target \in (0, 1)
+			animation:set(math.max(math.min(lpos, 1), 0))
+
+			return true
+		end,"fleur")
+	end)
+
+	function widget:set_value(val)
+		animation:set(val)
+	end
+
+	function widget:set_value_instant(val)
+        if is_dragging == false then
+            animation.pos = val
+            bar.pos = val / args.maximum
+            bar:emit_signal("widget::redraw_needed")
+        end
+	end
+
+	function widget:set_maximum(maximum)
+        args.maximum = maximum
+	end
+
+	return widget
 end
 
 function slider.mt:__call(...)
@@ -604,5 +187,3 @@ function slider.mt:__call(...)
 end
 
 return setmetatable(slider, slider.mt)
-
--- vim: filetype=lua:expandtab:shiftwidth=4:tabstop=8:softtabstop=4:textwidth=80

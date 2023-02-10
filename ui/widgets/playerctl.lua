@@ -622,60 +622,39 @@ end
 function playerctl.slider(width, daemon)
     local playerctl_daemon = daemon or general_playerctl_daemon
 
-    local widget = wibox.widget {
-        widget = swidget,
+    local slider = swidget {
         forced_width = width or dpi(200),
-        value = 0,
-        maximum = 1,
-        bar_height = 5,
-        bar_shape = helpers.ui.rrect(beautiful.border_radius),
-        bar_color = beautiful.colors.surface,
+        forced_height = dpi(20),
+        maximum = 0,
         bar_active_color = beautiful.colors.on_background,
+        handle_width = dpi(20),
+        handle_height = dpi(20),
         handle_color = beautiful.colors.on_background,
-        handle_shape = function(cr, width, height)
-            return gshape.rounded_bar(cr, 10, 35)
-        end
     }
 
-    local function set_slider_value(self, position, length)
-        widget.maximum = math.max(length, 1)
-        widget.value = math.max(position, 0)
-    end
-
-    local function set_position(self, value)
-        playerctl_daemon:set_position(value)
-    end
-
     playerctl_daemon:connect_signal("seeked", function(self, position, player_name)
-        widget.value = position
+        slider:set_value_instant(position)
     end)
 
     playerctl_daemon:connect_signal("metadata", function(self, title, artist, album_path, album, new, player_name)
-        widget.value = 0
+        slider:set_value_instant(0)
     end)
 
     playerctl_daemon:connect_signal("no_players", function(self)
-        widget.value = 0
+        slider:set_maximum(0)
+        slider:set_value_instant(0)
     end)
 
-    playerctl_daemon:connect_signal("position", set_slider_value)
-
-    widget:connect_signal("button::press", function()
-        -- widget:connect_signal("property::value", set_position)
-        -- Set position won't be called on the first button press
-        -- playerctl_daemon:set_position(widget.value)
-        playerctl_daemon:disconnect_signal("position", set_slider_value)
+    playerctl_daemon:connect_signal("position", function(self, position, length)
+        slider:set_maximum(math.max(length, 1))
+        slider:set_value_instant(math.max(position, 0))
     end)
 
-    widget:connect_signal("button::release", function()
-        if widget.maximum > 1 then
-            playerctl_daemon:connect_signal("position", set_slider_value)
-            playerctl_daemon:set_position(widget.value)
-        end
-        -- widget:disconnect_signal("property::value", set_position)
+    slider:connect_signal("property::value", function(self, value)
+        playerctl_daemon:set_position(value)
     end)
 
-    return widget
+    return slider
 end
 
 function playerctl.position(daemon)
@@ -770,33 +749,13 @@ function playerctl.volume(width, daemon)
         size = 12,
     }
 
-    local widget = swidget {
+    local slider = swidget {
         forced_width = width or dpi(50),
-        value = 100,
-        maximum = 100,
-        bar_height = 5,
-        bar_shape = helpers.ui.rrect(beautiful.border_radius),
-        bar_color = beautiful.colors.surface,
-        bar_active_color = beautiful.colors.on_background,
-        handle_width = dpi(2),
-        handle_color = beautiful.colors.surface,
-        handle_shape = gshape.circle
+        value = 100
     }
 
-    widget:connect_signal("mouse::enter", function()
-        widget.bar_active_color = beautiful.icons.spotify.color
-        widget.handle_color = beautiful.colors.on_background
-        widget.handle_width = dpi(15)
-    end)
-
-    widget:connect_signal("mouse::leave", function()
-        widget.bar_active_color = beautiful.colors.on_background
-        widget.handle_color = beautiful.colors.surface
-        widget.handle_width = dpi(2)
-    end)
-
-    local function set_slider_value(self, volume)
-        widget.value = volume * 100
+    playerctl_daemon:connect_signal("volume", function(self, volume)
+        slider:set_value_instant(volume)
 
         if volume == 0 then
             icon:set_icon(beautiful.icons.volume.off)
@@ -807,32 +766,17 @@ function playerctl.volume(width, daemon)
         elseif volume > 0.66 then
             icon:set_icon(beautiful.icons.volume.high)
         end
-    end
-
-    local function set_position(self, value)
-        playerctl_daemon:set_volume(value / 100)
-    end
-
-    playerctl_daemon:connect_signal("volume", set_slider_value)
-
-    widget:connect_signal("button::press", function()
-        -- widget:connect_signal("property::value", set_position)
-        -- Set position won't be called on the first button press
-        -- playerctl_daemon:set_position(widget.value)
-        playerctl_daemon:disconnect_signal("volume", set_slider_value)
     end)
 
-    widget:connect_signal("button::release", function()
-        playerctl_daemon:connect_signal("volume", set_slider_value)
-        playerctl_daemon:set_volume(widget.value / 100)
-        -- widget:disconnect_signal("property::value", set_position)
+    slider:connect_signal("property::value", function(self, value)
+        playerctl_daemon:set_volume(value / 100)
     end)
 
     return wibox.widget {
         layout = wibox.layout.fixed.horizontal,
         spacing = dpi(15),
         icon,
-        widget
+        slider
     }
 end
 
