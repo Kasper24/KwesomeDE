@@ -14,6 +14,9 @@ local string = string
 local ipairs = ipairs
 local math = math
 local os = os
+local capi = {
+    awesome = awesome
+}
 
 local weather = {
     mt = {}
@@ -140,22 +143,18 @@ local function gen_temperature_str(temp, fmt_str, show_other_units, units)
     return s
 end
 
-local function uvi_index_color(uvi)
-    local color
-
+local function get_uvi_index_color(uvi)
     if uvi >= 0 and uvi < 3 then
-        color = beautiful.colors.green
+        return beautiful.colors.green
     elseif uvi >= 3 and uvi < 6 then
-        color = beautiful.colors.yellow
+        return beautiful.colors.yellow
     elseif uvi >= 6 and uvi < 8 then
-        color = beautiful.colors.magenta
+        return beautiful.colors.magenta
     elseif uvi >= 8 and uvi < 11 then
-        color = beautiful.colors.red
+        return beautiful.colors.red
     elseif uvi >= 11 then
-        color = beautiful.colors.bright_red
+        return beautiful.colors.bright_red
     end
-
-    return string.format("<span weight='bold' foreground='%s'>%s</span>", color, uvi)
 end
 
 local function new()
@@ -205,21 +204,47 @@ local function new()
                 layout = wibox.layout.align.vertical,
                 expand = "inside",
                 {
-                    widget = widgets.text,
-                    id = "wind",
-                    size = 12
+                    layout = wibox.layout.align.horizontal,
+                    {
+                        widget = widgets.text,
+                        bold = true,
+                        size = 12,
+                        text = "Wind: ",
+                    },
+                    {
+                        widget = widgets.text,
+                        id = "wind",
+                        size = 12
+                    },
                 },
                 {
-                    widget = widgets.text,
-                    id = "humidity",
-                    size = 12
+                    layout = wibox.layout.align.horizontal,
+                    {
+                        widget = widgets.text,
+                        bold = true,
+                        size = 12,
+                        text = "Humidity: ",
+                    },
+                    {
+                        widget = widgets.text,
+                        id = "humidity",
+                        size = 12
+                    },
                 },
                 {
-                    widget = widgets.text,
-                    id = "uv",
-                    bold = true,
-                    size = 12
-                }
+                    layout = wibox.layout.align.horizontal,
+                    {
+                        widget = widgets.text,
+                        bold = true,
+                        size = 12,
+                        text = "UV: ",
+                    },
+                    {
+                        widget = widgets.text,
+                        id = "uv",
+                        size = 12
+                    },
+                },
             }
         }
     }
@@ -232,7 +257,7 @@ local function new()
 
     local hourly_forecast_graph = wibox.widget {
         widget = widgets.graph,
-        forced_height = dpi(100),
+        forced_height = dpi(55),
         stack = false,
         scale = true,
         step_width = dpi(18),
@@ -244,7 +269,7 @@ local function new()
 
     local hourly_forecast_graph_border = wibox.widget {
         widget = widgets.graph,
-        forced_height = dpi(100),
+        forced_height = dpi(55),
         stack = false,
         scale = true,
         step_width = dpi(18),
@@ -254,13 +279,19 @@ local function new()
         opacity = 1
     }
 
+    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+        graph_accent_color = old_colorscheme_to_new_map[graph_accent_color]
+        hourly_forecast_graph.color = helpers.color.darken(graph_accent_color, 0.5)
+        hourly_forecast_graph_border.color = graph_accent_color
+    end)
+
     local hours = wibox.widget {
         layout = wibox.layout.flex.horizontal
     }
 
     local daily_forecast_widget = wibox.widget {
         layout = wibox.layout.flex.horizontal,
-        spacing = dpi(15)
+        spacing = dpi(5)
     }
 
     local spinning_circle = wibox.widget {
@@ -364,14 +395,13 @@ local function new()
         current_weather_widget:get_children_by_id("temp")[1]:set_text(
             gen_temperature_str(weather.temp, "%.0f", both_units_widget, units))
         current_weather_widget:get_children_by_id("feels_like_temp")[1]:set_text("Feels like " ..
-                                                                                     gen_temperature_str(
-                weather.feels_like, "%.0f", false, units))
+            gen_temperature_str(weather.feels_like, "%.0f", false, units))
         current_weather_widget:get_children_by_id("description")[1]:set_text(weather.weather[1].description)
-        current_weather_widget:get_children_by_id("wind")[1]:set_markup(
-            "Wind: " .. "<b>" .. weather.wind_speed .. "m/s (" .. to_direction(weather.wind_deg) .. ")</b>")
-        current_weather_widget:get_children_by_id("humidity")[1]:set_markup(
-            "Humidity: " .. "<b>" .. weather.humidity .. "%</b>")
-        current_weather_widget:get_children_by_id("uv")[1]:set_markup("UV: " .. uvi_index_color(weather.uvi))
+        current_weather_widget:get_children_by_id("wind")[1]:set_text(
+            weather.wind_speed .. "m/s (" .. to_direction(weather.wind_deg) .. ")")
+        current_weather_widget:get_children_by_id("humidity")[1]:set_text(weather.humidity)
+        current_weather_widget:get_children_by_id("uv")[1]:set_text(weather.uvi)
+        current_weather_widget:get_children_by_id("uv")[1]:set_color(get_uvi_index_color(weather.uvi))
 
         for i, hour in ipairs(result.hourly) do
             hourly_forecast_graph:add_value(hour.temp)
@@ -418,6 +448,7 @@ local function new()
                     },
                     {
                         widget = widgets.text,
+                        forced_width = dpi(105),
                         halign = "center",
                         valign = "top",
                         size = 12,
