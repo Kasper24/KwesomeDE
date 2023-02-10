@@ -26,14 +26,18 @@ function animated_panel:show()
     self.minimum_height = awful.screen.focused().workarea.height
     self.maximum_height = awful.screen.focused().workarea.height
 
+    self.placement = nil
+
     local image = wibox.widget.draw_to_image_surface(self.widget, self.width, self.height)
     self.widget = fake_widget(image)
-    self.animation.easing = helpers.animation.easing.outExpo
-    self.visible = true
+
     if self.actual_pos == nil then
         self.actual_pos = self[self.axis]
     end
+
+    self.animation.easing = helpers.animation.easing.outExpo
     self.animation:set(self.actual_pos)
+    self.visible = true
     self:emit_signal("visibility", true)
 end
 
