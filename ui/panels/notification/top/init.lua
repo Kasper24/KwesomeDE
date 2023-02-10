@@ -85,7 +85,7 @@ local function notification_widget(notification, on_removed)
     }
 
     local actions = wibox.widget {
-        layout = wibox.layout.fixed.horizontal,
+        layout = wibox.layout.flex.horizontal,
         spacing = dpi(15)
     }
 
