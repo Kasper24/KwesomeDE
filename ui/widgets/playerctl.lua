@@ -286,7 +286,7 @@ local function create_point_maker()
 
     local margin_x = 0.23
     local margin_y = 0.21
-    local margin_yf = 0.15
+    local margin_yf = 0.2
     local width = 0.18
 
     -- top slope, bottom slope, bottom y-int, top y-int
