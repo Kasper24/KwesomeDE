@@ -232,8 +232,8 @@ function _color.pywal_darken(color, amount)
     return color.hex
 end
 
-function _color.add_opactiy(color, opacity)
-    opacity = opacity or 0.7
+function _color.add_opacity(color, opacity)
+    opacity = opacity or 1
     return color .. string.format("%x", math.floor(opacity * 255))
 end
 
