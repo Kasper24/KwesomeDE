@@ -4,7 +4,6 @@ local Gdk = lgi.require("Gdk", "3.0")
 local awful = require("awful")
 local gtable = require("gears.table")
 local gmath = require("gears.math")
-local gsurface = require("gears.surface")
 local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
 local pairs = pairs
