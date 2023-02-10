@@ -3,6 +3,7 @@ local gcolor = require("gears.color")
 local wibox = require("wibox")
 local bwidget = require("ui.widgets.background")
 local beautiful = require("beautiful")
+local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local math = math
 local capi = {
@@ -115,8 +116,10 @@ local function new(args)
 		layout
 	}
 
-	layout:connect_signal("button::press", function(self, x, y, button, _, geo)
-		if button ~= 1 then return end
+	layout:connect_signal("button::press", function(self, x, y, button, mods, geo)
+		if helpers.table.contains(mods, "Mod4") or button ~= 1 then
+			return
+		end
 
 		--reset initial position for later
 		ipos = nil
