@@ -9,6 +9,7 @@ local beautiful = require("beautiful")
 local picom_daemon = require("daemons.system.picom")
 local ncmpcpp_titlebar = require("ui.titlebar.ncmpcpp")
 local helpers = require("helpers")
+local ipairs = ipairs
 local capi = {
     awesome = awesome,
     client = client
@@ -283,11 +284,18 @@ capi.client.connect_signal("manage", function(c)
     end
 end)
 
-capi.client.connect_signal("tagged", function(c, t)
+capi.client.connect_signal("tagged", function(c)
     c.font_icon = beautiful.get_font_icon_for_app_name(c.class)
-    c:connect_signal("property::class", function()
+end)
+
+capi.client.connect_signal("property::class", function(c)
+    c.font_icon = beautiful.get_font_icon_for_app_name(c.class)
+end)
+
+capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+    for _, c in ipairs(capi.client.get()) do
         c.font_icon = beautiful.get_font_icon_for_app_name(c.class)
-    end)
+    end
 end)
 
 capi.client.connect_signal("property::floating", function(c)
