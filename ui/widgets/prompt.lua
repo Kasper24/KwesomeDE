@@ -449,6 +449,14 @@ local function new()
         end
     end)
 
+    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+        wp.icon_color = old_colorscheme_to_new_map[wp.icon_color]
+        wp.prompt_color = old_colorscheme_to_new_map[wp.prompt_color]
+        wp.text_color = old_colorscheme_to_new_map[wp.text_color]
+        wp.cursor_color = old_colorscheme_to_new_map[wp.cursor_color]
+        update_markup(widget, true)
+    end)
+
     return widget
 end
 
