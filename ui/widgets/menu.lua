@@ -364,7 +364,7 @@ function menu.checkbox_button(args)
     args.icon = args.icon or nil
     args.image = args.image
     args.text = args.text or ""
-    args.color = args.color or beautiful.colors.random_accent_color()
+    args.active_color = args.active_color or beautiful.colors.random_accent_color()
     args.on_by_default = args.on_by_default or nil
     args.on_press = args.on_press or nil
 
@@ -384,7 +384,7 @@ function menu.checkbox_button(args)
     end
 
     local checkbox = cbwidget {}
-    checkbox:set_color(args.color)
+    checkbox:set_active_color(args.active_color)
 
     local widget = nil
     widget = wibox.widget {

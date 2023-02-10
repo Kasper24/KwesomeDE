@@ -5,11 +5,13 @@
 local gtable = require("gears.table")
 local gshape = require("gears.shape")
 local wibox = require("wibox")
+local bwidget = require("ui.widgets.background")
 local beautiful = require("beautiful")
 local helpers = require("helpers")
 local setmetatable = setmetatable
 local dpi = beautiful.xresources.apply_dpi
 local capi = {
+    awesome = awesome,
     mouse = mouse
 }
 
@@ -18,6 +20,17 @@ local checkbox = {
 }
 
 local properties = {"on_turn_on", "on_turn_off", "color"}
+
+local switch_dimensions = {
+    w = dpi(46),
+    h = dpi(18)
+}
+local ball_dimensions = {
+    w = dpi(18),
+    h = dpi(18)
+}
+local start_ball_position = ball_dimensions.w - switch_dimensions.w
+local done_ball_position = -start_ball_position -- just invert it
 
 local function build_properties(prototype, prop_names)
     for _, prop in ipairs(prop_names) do
@@ -39,19 +52,17 @@ local function build_properties(prototype, prop_names)
     end
 end
 
-function checkbox:set_color(color)
+function checkbox:set_active_color(active_color)
     local wp = self._private
-    wp.color = color
-    wp.ball_animation.pos.color = helpers.color.hex_to_rgb(color)
-    wp.ball_indicator.bg = color
+    wp.active_color = active_color
 end
 
 function checkbox:turn_on()
     local wp = self._private
 
-    wp.ball_animation:set{
-        margin_left = wp.done_ball_position,
-        color = helpers.color.hex_to_rgb(wp.color)
+    wp.animation:set{
+        margin_left = done_ball_position,
+        color = helpers.color.hex_to_rgb(wp.active_color)
     }
     wp.state = true
 
@@ -63,8 +74,8 @@ end
 function checkbox:turn_off()
     local wp = self._private
 
-    wp.ball_animation:set{
-        margin_left = wp.start_ball_position,
+    wp.animation:set{
+        margin_left = start_ball_position,
         color = helpers.color.hex_to_rgb(beautiful.colors.on_background)
     }
     wp.state = false
@@ -82,10 +93,6 @@ function checkbox:toggle()
     end
 end
 
-function checkbox:get_state()
-    return self._private.state
-end
-
 function checkbox:set_state(state)
     if state == true then
         self:turn_on()
@@ -94,58 +101,45 @@ function checkbox:set_state(state)
     end
 end
 
+function checkbox:get_state()
+    return self._private.state
+end
+
 local function new()
-    local switch_dimensions = {
-        w = dpi(46),
-        h = dpi(18)
-    }
-    local ball_dimensions = {
-        w = dpi(18),
-        h = dpi(18)
-    }
-    local start_ball_position = ball_dimensions.w - switch_dimensions.w
-    local done_ball_position = -start_ball_position -- just invert it
-    local color = beautiful.colors.random_accent_color()
-
-    local ball_indicator = wibox.widget {
-        widget = wibox.container.margin,
-        left = start_ball_position,
-        {
-            widget = wibox.container.background,
-            id = "ball",
-            forced_height = ball_dimensions.h,
-            forced_width = ball_dimensions.w,
-            shape = gshape.circle,
-            bg = color
-        },
-        set_bg = function(self, new_bg)
-            self:get_children_by_id("ball")[1].bg = new_bg
-        end
-    }
-
     local widget = wibox.widget {
         widget = wibox.container.place,
         valign = "center",
         {
-            widget = wibox.container.background,
-            id = "background_role",
+            widget = bwidget,
             forced_height = switch_dimensions.h,
             forced_width = switch_dimensions.w,
             shape = gshape.rounded_bar,
             bg = beautiful.colors.surface,
-            ball_indicator
+            {
+                widget = wibox.container.margin,
+                id = "ball_margins",
+                left = start_ball_position,
+                {
+                    widget = bwidget,
+                    id = "ball",
+                    forced_height = ball_dimensions.h,
+                    forced_width = ball_dimensions.w,
+                    shape = gshape.circle,
+                    bg = beautiful.colors.on_background,
+                },
+            }
         }
     }
     gtable.crush(widget, checkbox, true)
 
     local wp = widget._private
     wp.state = false
-    wp.color = color
-    wp.ball_indicator = ball_indicator
-    wp.start_ball_position = start_ball_position
-    wp.done_ball_position = done_ball_position
+    wp.active_color = beautiful.colors.random_accent_color()
 
-    wp.ball_animation = helpers.animation:new{
+    local ball_margins = widget:get_children_by_id("ball_margins")[1]
+    local ball = widget:get_children_by_id("ball")[1]
+
+    wp.animation = helpers.animation:new{
         duration = 0.2,
         easing = helpers.animation.easing.inOutQuad,
         pos = {
@@ -154,10 +148,10 @@ local function new()
         },
         update = function(self, pos)
             if pos.margin_left then
-                ball_indicator.left = pos.margin_left
+                ball_margins.left = pos.margin_left
             end
             if pos.color then
-                ball_indicator.bg = helpers.color.rgb_to_hex(pos.color)
+                ball.bg = helpers.color.rgb_to_hex(pos.color)
             end
         end
     }
@@ -183,6 +177,15 @@ local function new()
 
         if button == 1 then
             widget:toggle()
+        end
+    end)
+
+    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+        wp.active_color = old_colorscheme_to_new_map[wp.active_color]
+        if wp.state == true then
+            ball.bg = wp.active_color
+        else
+            ball.bg = beautiful.colors.on_background
         end
     end)
 
