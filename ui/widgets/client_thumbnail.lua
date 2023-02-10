@@ -32,6 +32,9 @@ end
 local function add_titlebar(client, preview)
     client.titlebar_preview = wibox.widget {
         widget = wibox.widget.imagebox,
+        -- Prevernts the titlebar from staying too wide when the client is small
+        -- 500 was choosen randmoly
+        forced_width = client.width - 500,
         horizontal_fit_policy = "fit",
         vertical_fit_policy = "fit",
         image = wibox.widget.draw_to_image_surface(client.titlebar_widget.widget, client.width, client.titlebar_size)
