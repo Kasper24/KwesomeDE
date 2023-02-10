@@ -82,7 +82,7 @@ function elevated_button_normal:set_child(child)
         valign = self._private.valign or "center",
         {
             widget = wibox.container.margin,
-            margins = dpi(10),
+            margins = self._private.paddings or dpi(10),
             child
         }
     }
@@ -105,6 +105,13 @@ function elevated_button_normal:set_valign(valign)
     self._private.valign = valign
     if self._private.widget then
         self._private.widget:set_valign(valign)
+    end
+end
+
+function elevated_button_normal:set_paddings(paddings)
+    self._private.paddings = paddings
+    if self._private.widget then
+        self._private.widget.children[1].margins = paddings
     end
 end
 
