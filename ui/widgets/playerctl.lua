@@ -275,7 +275,7 @@ function playerctl.artist(width, halign, daemon)
         forced_height = dpi(20),
         halign = halign or "center",
         size = 12,
-        markup = ""
+        text = ""
     }
 
     playerctl_daemon:connect_signal("metadata", function(self, title, artist, album_path, album, new, player_name)

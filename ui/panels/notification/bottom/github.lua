@@ -159,11 +159,34 @@ local function github_activity()
                 end
             }
 
+            local user = wibox.widget {
+                widget = widgets.text,
+                halign = "left",
+                bold = true,
+                size = 12,
+                text = event.actor.display_login .. " "
+            }
+
+            local action = wibox.widget {
+                widget = widgets.text,
+                halign = "left",
+                size = 12,
+                text =  action_and_link.action_string .. " "
+            }
+
+            local repo = wibox.widget {
+                widget = widgets.text,
+                halign = "left",
+                bold = true,
+                size = 12,
+                text = event.repo.name .. " "
+            }
+
             local user_action_repo = wibox.widget {
-                widget = wibox.widget.textbox,
-                align = "left",
-                markup = "<b>" .. event.actor.display_login .. "</b> " .. action_and_link.action_string .. " <b>" ..
-                    event.repo.name .. "</b>"
+                layout = wibox.layout.fixed.horizontal,
+                user,
+                action,
+                repo
             }
 
             local icon = wibox.widget {

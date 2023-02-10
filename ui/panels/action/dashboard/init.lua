@@ -71,12 +71,12 @@ local function arrow_button(icon, text, on_icon_release, on_arrow_release)
         turn_on = function(self, text)
             icon:turn_on()
             arrow:turn_on()
-            name.markup = text
+            name:set_text(text)
         end,
         turn_off = function(self, text)
             icon:turn_off()
             arrow:turn_off()
-            name.markup = text
+            name:set_text(text)
         end,
         button,
         name
@@ -109,11 +109,11 @@ local function button(icon, text, on_release)
         spacing = dpi(15),
         turn_on = function(self, text)
             icon:turn_on()
-            name.markup = text
+            name:set_text(text)
         end,
         turn_off = function(self, text)
             icon:turn_off()
-            name.markup = text
+            name:set_text(text)
         end,
         icon,
         name

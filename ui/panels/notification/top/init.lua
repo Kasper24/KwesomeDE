@@ -154,8 +154,8 @@ local function notification_widget(notification, on_removed)
     }
 
     function widget.update_time_ago()
-        time.markup = helpers.string.to_time_ago(os.difftime(os.time(os.date("*t")),
-            helpers.string.parse_date(notification.time)))
+        time:set_text(helpers.string.to_time_ago(os.difftime(os.time(os.date("*t")),
+            helpers.string.parse_date(notification.time))))
     end
 
     return widget
