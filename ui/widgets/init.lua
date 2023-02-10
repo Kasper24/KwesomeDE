@@ -24,5 +24,6 @@ return {
     spacer = require(... .. ".spacer"),
     spinning_circle = require(... .. ".spinning_circle"),
     text = require(... .. ".text"),
-    titlebar = require(... .. ".titlebar")
+    titlebar = require(... .. ".titlebar"),
+    wallpaper = require(... .. ".wallpaper")
 }

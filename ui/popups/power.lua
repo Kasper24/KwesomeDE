@@ -32,14 +32,8 @@ local greeters = {"See you later, alligator!", "After a while, crocodile.", "Sta
                   "Find out on the next episode of Dragonball Z...", "Choose wisely!"}
 
 function power:show()
-    for s in capi.screen do
-        if s == awful.screen.focused() then
-            s.power_popup = self.widget
-        else
-            s.power_popup = widgets.screen_mask(s)
-        end
-        s.power_popup.visible = true
-    end
+    self.widget.screen = awful.screen.focused()
+    self.widget.visible = true
 
     self._private.grabber = awful.keygrabber.run(function(_, key, event)
         key = key:lower() -- Ignore case
@@ -67,15 +61,9 @@ function power:show()
 end
 
 function power:hide()
-    for s in capi.screen do
-        if s.power_popup and s.power_popup.visible == true then
-            s.power_popup.visible = false
-            s.power_popup = nil
-            collectgarbage("collect")
-        end
-    end
-
     awful.keygrabber.stop(self._private.grabber)
+
+    self.widget.visible = false
 
     self:emit_signal("visibility", false)
 end
@@ -206,7 +194,7 @@ local function new()
     ret._private = {}
     ret._private.grabber = nil
 
-    ret.widget = awful.popup {
+    ret.widget = widgets.popup {
         type = "splash",
         visible = false,
         ontop = true,

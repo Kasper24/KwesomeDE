@@ -22,16 +22,10 @@ local lock = {}
 local instance = nil
 
 function lock:show()
-    self._private.prompt:start()
+    self.widget.screen = awful.screen.focused()
+    self.widget.visible = true
 
-    for s in capi.screen do
-        if s == awful.screen.focused() then
-            s.power_popup = self.widget
-        else
-            s.power_popup = widgets.screen_mask.background(s)
-        end
-        s.power_popup.visible = true
-    end
+    self._private.prompt:start()
 
     self:emit_signal("visibility", true)
 end
@@ -39,13 +33,7 @@ end
 function lock:hide()
     self._private.prompt:stop()
 
-    for s in capi.screen do
-        if s.power_popup and s.power_popup.visible == true then
-            s.power_popup.visible = false
-            s.power_popup = nil
-            collectgarbage("collect")
-        end
-    end
+    self.widget.visible = false
 
     self:emit_signal("visibility", false)
 end
@@ -59,14 +47,6 @@ function lock:toggle()
 end
 
 local function widget(self)
-    local background = wibox.widget {
-        widget = wibox.widget.imagebox,
-        resize = true,
-        horizontal_fit_policy = "fit",
-        vertical_fit_policy = "fit",
-        image = theme_daemon:get_wallpaper()
-    }
-
     local blur = wibox.widget {
         widget = widgets.background,
         bg = beautiful.colors.background_with_opacity
@@ -190,7 +170,7 @@ local function widget(self)
 
     return wibox.widget {
         widget = wibox.layout.stack,
-        background,
+        widgets.wallpaper,
         blur,
         {
             widget = wibox.container.place,
@@ -241,7 +221,7 @@ local function new()
     ret._private = {}
     ret._private.grabber = nil
 
-    ret.widget = awful.popup {
+    ret.widget = widgets.popup {
         type = "splash",
         visible = false,
         ontop = true,

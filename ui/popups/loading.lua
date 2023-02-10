@@ -59,7 +59,7 @@ awful.screen.connect_for_each_screen(function(s)
         forced_height = dpi(200)
     }
 
-    local loading_popup = awful.popup {
+    local loading_popup = widgets.popup {
         screen = s,
         type = "splash",
         ontop = true,

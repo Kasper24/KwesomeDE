@@ -13,7 +13,7 @@ local ebwidget = require("ui.widgets.button.elevated")
 local swidget = require("ui.widgets.slider")
 local beautiful = require("beautiful")
 local general_playerctl_daemon = require("daemons.system.playerctl")
-local theme_daemmon = require("daemons.system.theme")
+local theme_daemon = require("daemons.system.theme")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
@@ -81,7 +81,7 @@ function playerctl.art_opacity(daemon)
         opacity = 0.6,
         horizontal_fit_policy = "fit",
         vertical_fit_policy = "fit",
-        image = image_with_gradient(theme_daemmon:get_wallpaper()),
+        image = image_with_gradient(theme_daemon:get_wallpaper()),
     }
 
     local image = false
@@ -91,24 +91,24 @@ function playerctl.art_opacity(daemon)
             art.image = image_with_gradient(album_path)
         else
             image = nil
-            art.image = image_with_gradient(theme_daemmon:get_wallpaper())
+            art.image = image_with_gradient(theme_daemon:get_wallpaper())
         end
     end)
 
     playerctl_daemon:connect_signal("no_players", function()
-        art.image = image_with_gradient(theme_daemmon:get_wallpaper())
+        art.image = image_with_gradient(theme_daemon:get_wallpaper())
         image = nil
     end)
 
     capi.screen.connect_signal("request::wallpaper", function()
         if not image then
-            art.image = image_with_gradient(theme_daemmon:get_wallpaper())
+            art.image = image_with_gradient(theme_daemon:get_wallpaper())
         end
     end)
 
     capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
         if not image then
-            art.image = image_with_gradient(theme_daemmon:get_wallpaper())
+            art.image = image_with_gradient(theme_daemon:get_wallpaper())
         else
             art.image = image_with_gradient(image)
         end

@@ -6,28 +6,25 @@ local awful = require("awful")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
 local pwidget = require("ui.widgets.popup")
+local bwidget = require("ui.widgets.background")
+local wwidget = require("ui.widgets.wallpaper")
 local theme_daemon = require("daemons.system.theme")
 local setmetatable = setmetatable
+local capi = {
+    awesome = awesome
+}
 
 local screen_mask = {
     mt = {}
 }
 
-function screen_mask.background(screen)
-    local background = wibox.widget {
-        widget = wibox.widget.imagebox,
-        resize = true,
-        horizontal_fit_policy = "fit",
-        vertical_fit_policy = "fit",
-        image = theme_daemon:get_wallpaper()
-    }
-
+local function new(screen)
     local blur = wibox.widget {
-        widget = wibox.container.background,
-        bg = beautiful.colors.background
+        widget = bwidget,
+        bg = beautiful.colors.background_with_opacity
     }
 
-    return awful.popup {
+    return pwidget {
         type = "splash",
         screen = screen,
         placement = awful.placement.maximize,
@@ -35,27 +32,14 @@ function screen_mask.background(screen)
         ontop = true,
         widget = {
             widget = wibox.layout.stack,
-            background,
+            wwidget,
             blur
         }
     }
 end
 
-function screen_mask.color(screen)
-    local popup = pwidget {
-        type = "splash",
-        screen = screen,
-        placement = awful.placement.maximize,
-        visible = false,
-        ontop = true,
-        bg = beautiful.colors.background_with_opacity
-    }
-
-    return popup
-end
-
 function screen_mask.mt:__call(...)
-    return screen_mask.color(...)
+    return new(...)
 end
 
 return setmetatable(screen_mask, screen_mask.mt)

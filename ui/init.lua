@@ -1,8 +1,10 @@
+local awful = require("awful")
+local widgets = require("ui.widgets")
+
 require(... .. ".apps.welcome")
 require(... .. ".desktop")
 require(... .. ".popups.brightness")
 require(... .. ".popups.keyboard_layout")
-require(... .. ".popups.lock")
 require(... .. ".popups.volume")
 require(... .. ".notifications")
 require(... .. ".titlebar")
@@ -12,6 +14,7 @@ local action_panel = require(... .. ".panels.action")
 local info_panel = require(... .. ".panels.info")
 local notification_panel = require(... .. ".panels.notification")
 local power_popup = require(... .. ".popups.power")
+local lock_popup = require(... .. ".popups.lock")
 local cpu_popup = require(... .. ".panels.action.info.cpu")
 local ram_popup = require(... .. ".panels.action.info.ram")
 local disk_popup = require(... .. ".panels.action.info.disk")
@@ -20,6 +23,7 @@ local wifi_popup = require(... .. ".panels.action.dashboard.wifi")
 local bluetooth_popup = require(... .. ".panels.action.dashboard.bluetooth")
 
 local capi = {
+    screen = screen,
     client = client
 }
 
@@ -143,5 +147,31 @@ bluetooth_popup:connect_signal("visibility", function(self, visible)
         audio_popup:hide()
         disk_popup:hide()
         wifi_popup:hide()
+    end
+end)
+
+awful.screen.connect_for_each_screen(function(s)
+    s.screen_mask = widgets.screen_mask(s)
+end)
+
+power_popup:connect_signal("visibility", function(visibility)
+    for s in capi.screen do
+        if visibility and s ~= awful.screen.focused() then
+            s.screen_mask.visible = true
+        end
+        if visibility == false then
+            s.screen_mask.visible = false
+        end
+    end
+end)
+
+lock_popup:connect_signal("visibility", function(visibility)
+    for s in capi.screen do
+        if visibility and s ~= awful.screen.focused() then
+            s.screen_mask.visible = true
+        end
+        if visibility == false then
+            s.screen_mask.visible = false
+        end
     end
 end)
