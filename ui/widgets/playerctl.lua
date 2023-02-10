@@ -229,7 +229,13 @@ function playerctl.player_name(halign, daemon)
         if title ~= "" then
             player_name = player_name:sub(1, 1):upper() .. player_name:sub(2)
             widget:set_text(player_name)
+        else
+            widget:set_text("Not Playing")
         end
+    end)
+
+    playerctl_daemon:connect_signal("no_players", function(self)
+        widget:set_text("Not Playing")
     end)
 
     return widget
@@ -271,19 +277,19 @@ function playerctl.artist(width, halign, daemon)
         forced_height = dpi(20),
         halign = halign or "center",
         size = 12,
-        markup = "Artist"
+        markup = "Not Playing"
     }
 
     playerctl_daemon:connect_signal("metadata", function(self, title, artist, album_path, album, new, player_name)
         if artist ~= "" then
             widget:set_text(artist)
         else
-            widget:set_text("Artist")
+            widget:set_text("Not Playing")
         end
     end)
 
     playerctl_daemon:connect_signal("no_players", function(self)
-        widget:set_text("Artist")
+        widget:set_text("Not Playing")
     end)
 
     return widget
@@ -543,7 +549,7 @@ function playerctl.loop(width, height, daemon)
     }
 
     playerctl_daemon:connect_signal("loop_status", function(self, loop_status, player)
-        if loop_status == "none" then
+        if loop_status == "Not Playing" then
             widget:turn_off()
         else
             widget:turn_on()
