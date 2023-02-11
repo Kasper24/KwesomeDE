@@ -74,7 +74,7 @@ local function new(args)
         widget = wibox.widget.make_base_widge,
 		forced_width = args.forced_width,
         forced_height = args.forced_height,
-        pos = 0,
+        pos = value,
 		fit = function(_, _, width, height) return width, height end,
 		draw = function(self, _, cr, width, height)
 			w = width --get the width whenever redrawing just in case
