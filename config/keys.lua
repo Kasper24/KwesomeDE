@@ -14,6 +14,7 @@ local playerctl_daemon = require("daemons.system.playerctl")
 local pactl_daemon = require("daemons.hardware.pactl")
 local brightness_daemon = require("daemons.system.brightness")
 local rgb_daemon = require("daemons.hardware.rgb")
+local theme_daemon = require("daemons.system.theme")
 local helpers = require("helpers")
 local bling = require("external.bling")
 local machi = require("external.layout-machi")
@@ -470,8 +471,9 @@ awful.keyboard.append_global_keybindings({ -- Add padding
         key = "=",
         group = "layout",
         description = "increase padding",
-        on_press = function(c)
-            helpers.layout.resize_padding(5)
+        on_press = function()
+            local current_client_gap = theme_daemon:get_client_gap()
+            theme_daemon:set_client_gap(current_client_gap + 5)
         end
     }, -- Subtract padding
     awful.key {
@@ -479,8 +481,9 @@ awful.keyboard.append_global_keybindings({ -- Add padding
         key = "-",
         group = "layout",
         description = "decrease padding",
-        on_press = function(c)
-            helpers.layout.resize_padding(-5)
+        on_press = function()
+            local current_client_gap = theme_daemon:get_client_gap()
+            theme_daemon:set_client_gap(current_client_gap - 5)
         end
     }, -- Add gaps
     awful.key {
@@ -488,8 +491,9 @@ awful.keyboard.append_global_keybindings({ -- Add padding
         key = "=",
         group = "layout",
         description = "increase gaps",
-        on_press = function(c)
-            helpers.layout.resize_gaps(5)
+        on_press = function()
+            local current_useless_gap = theme_daemon:get_useless_gap()
+            theme_daemon:set_useless_gap(current_useless_gap + 5)
         end
     }, -- Subtract gaps
     awful.key {
@@ -497,8 +501,9 @@ awful.keyboard.append_global_keybindings({ -- Add padding
         key = "-",
         group = "layout",
         description = "decrease gaps",
-        on_press = function(c)
-            helpers.layout.resize_gaps(-5)
+        on_press = function()
+            local current_useless_gap = theme_daemon:get_useless_gap()
+            theme_daemon:set_useless_gap(current_useless_gap + 5)
         end
     }, -- Increase master width
     awful.key {

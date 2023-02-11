@@ -14,7 +14,6 @@ return {
     input = require(... .. ".input"),
     inspect = require(... .. ".inspect"),
     json = require(... .. ".json"),
-    layout = require(... .. ".layout"),
     misc = require(... .. ".misc"),
     run = require(... .. ".run"),
     settings = require(... .. ".settings"),
