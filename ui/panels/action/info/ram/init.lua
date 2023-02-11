@@ -46,12 +46,19 @@ local function new()
 
     ram_daemon:connect_signal("update",
         function(self, total, used, free, shared, buff_cache, available, total_swap, used_swap, free_swap)
-
             ret.widget.widget.data_list =
                 {{"used " .. getPercentage(used + used_swap, total, total_swap), used + used_swap},
                  {"free " .. getPercentage(free + free_swap, total, total_swap), free + free_swap},
                  {"buff_cache " .. getPercentage(buff_cache, total, total_swap), buff_cache}}
         end)
+
+    local chart = wibox.widget {
+        widget = widgets.piechart,
+        forced_height = 200,
+        forced_width = 400,
+        colors = {beautiful.colors.random_accent_color(), beautiful.colors.surface,
+                    beautiful.colors.random_accent_color()}
+    }
 
     ret.widget = widgets.popup {
         ontop = true,
@@ -61,13 +68,7 @@ local function new()
         },
         shape = helpers.ui.rrect(beautiful.border_radius),
         bg = beautiful.colors.background,
-        widget = {
-            widget = wibox.widget.piechart,
-            forced_height = 200,
-            forced_width = 400,
-            colors = {beautiful.colors.random_accent_color(), beautiful.colors.surface,
-                      beautiful.colors.random_accent_color()}
-        }
+        widget = chart
     }
 
     return ret

@@ -17,6 +17,7 @@ return {
     menu = require(... .. ".menu"),
     overflow = require(... .. ".overflow"),
     playerctl = require(... .. ".playerctl"),
+    piechart = require(... .. ".piechart"),
     popup = require(... .. ".popup"),
     progressbar = require(... .. ".progressbar"),
     prompt = require(... .. ".prompt"),
