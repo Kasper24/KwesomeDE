@@ -38,8 +38,7 @@ local function colors()
         background = helpers.color.add_opacity(colors[1], theme_daemon:get_ui_opacity()),
         background_no_opacity = colors[1],
 
-        surface = helpers.color.add_opacity(colors[9], theme_daemon:get_ui_opacity()),
-        surface_no_opacity = colors[9],
+        surface = colors[9],
 
         error = colors[2],
 
@@ -402,7 +401,7 @@ end
 
 local function defaults()
     theme.hover_cursor = "hand2"
-    theme.useless_gap = helpers.settings:get_value("useless-gap")
+    theme.useless_gap = theme_daemon:get_useless_gap()
     theme.font_name = "Iosevka "
     theme.font = theme.font_name .. 12
     theme.secondary_font_name = "Oswald Medium "

@@ -222,6 +222,13 @@ local function new(layout)
                 separator(),
                 command_after_generation(),
                 separator(),
+                theme_slider("Useless gap: ", theme_daemon:get_useless_gap(), 250, function(value)
+                    theme_daemon:set_useless_gap(gmath.round(value))
+                end),
+                theme_slider("Client gap: ", theme_daemon:get_client_gap(), 250, function(value)
+                    theme_daemon:set_client_gap(gmath.round(value))
+                end),
+                separator(),
                 theme_slider("UI Opacity: ", theme_daemon:get_ui_opacity(), 1, function(value)
                     theme_daemon:set_ui_opacity(value)
                 end),

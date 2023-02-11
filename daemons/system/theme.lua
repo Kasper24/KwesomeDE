@@ -20,6 +20,7 @@ local table = table
 local os = os
 local capi = {
     awesome = awesome,
+    root = root,
     screen = screen,
     client = client
 }
@@ -667,6 +668,46 @@ function theme:get_ui_border_radius()
     return self._private.ui_border_radius
 end
 
+function theme:set_useless_gap(useless_gap, save)
+    for _, tag in ipairs(capi.root.tags()) do
+        tag.gap = useless_gap
+    end
+
+    for screen in capi.screen do
+        awful.layout.arrange(screen)
+    end
+
+    self._private.useless_gap = useless_gap
+    if save ~= false then
+        helpers.settings:set_value("theme-useless-gap", self._private.useless_gap)
+    end
+end
+
+function theme:get_useless_gap()
+    return self._private.useless_gap
+end
+
+function theme:set_client_gap(client_gap, save)
+    for screen in capi.screen do
+        screen.padding = {
+            left = client_gap,
+            right = client_gap,
+            top = client_gap,
+            bottom = client_gap
+        }
+        awful.layout.arrange(screen)
+    end
+
+    self._private.client_gap = client_gap
+    if save ~= false then
+        helpers.settings:set_value("theme-client-gap", self._private.client_gap)
+    end
+end
+
+function theme:get_client_gap()
+    return self._private.client_gap
+end
+
 local function new()
     local ret = gobject {}
     gtable.crush(ret, theme, true)
@@ -679,6 +720,10 @@ local function new()
     ret._private.color = helpers.settings:get_value("theme-color")
     ret._private.ui_opacity = helpers.settings:get_value("theme-ui-opacity")
     ret._private.ui_border_radius = tonumber(helpers.settings:get_value("theme-ui-border-radius"))
+    ret._private.useless_gap = tonumber(helpers.settings:get_value("theme-useless-gap"))
+
+    ret._private.client_gap = tonumber(helpers.settings:get_value("theme-client-gap"))
+    ret:set_client_gap(ret._private.client_gap, false)
 
     local colorscheme_from_gsettings = helpers.settings:get_value("theme-colorscheme")
     local colorscheme = {}
