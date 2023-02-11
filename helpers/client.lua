@@ -440,7 +440,6 @@ function _client.get_client_index(client)
     end
 end
 
-
 local function get_appinfo_by_command(client, apps)
     local pid = client.pid
     if pid ~= nil then
