@@ -40,6 +40,14 @@
       </description>
     </key>
 
+    <key name="theme-ui-opacity" type="s">
+      <default>'0.8'</default>
+      <summary>Theme UI opacity</summary>
+      <description>
+        The opacity of AwesomeWM UI elements
+      </description>
+    </key>
+
     <key name="initial" type="b">
       <default>true</default>
       <summary>Initial login</summary>

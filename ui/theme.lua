@@ -35,7 +35,7 @@ local function colors()
         cyan = colors[7],
         bright_cyan = colors[15],
 
-        background = helpers.color.add_opacity(colors[1], 0.8),
+        background = helpers.color.add_opacity(colors[1], theme_daemon:get_ui_opacity()),
         surface = colors[9],
         error = colors[2],
 

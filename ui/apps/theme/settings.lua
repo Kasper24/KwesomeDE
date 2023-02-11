@@ -100,15 +100,15 @@ local function picom_slider(key, maximum, round)
         text = display_name
     }
 
+    local value = picom_daemon["get_" .. key](picom_daemon)
     local slider = widgets.slider {
         forced_width = dpi(420),
         forced_height = dpi(20),
-        value = picom_daemon["get_" .. key](picom_daemon),
+        value = value,
         maximum = maximum,
         bar_active_color = beautiful.icons.spraycan.color,
     }
 
-    local value = picom_daemon["get_" .. key](picom_daemon)
     value = helpers.misc.round_to_decimal_places(value, 2)
     local value_text = wibox.widget {
         widget = widgets.text,
@@ -122,6 +122,48 @@ local function picom_slider(key, maximum, round)
         end
         value_text:set_text(helpers.misc.round_to_decimal_places(value, 2))
         picom_daemon["set_" .. key](picom_daemon, value)
+    end)
+
+    return wibox.widget {
+        layout = wibox.layout.align.horizontal,
+        name,
+        {
+            widget = wibox.container.margin,
+            margins = {
+                right = dpi(15)
+            },
+            slider
+        },
+        value_text
+    }
+end
+
+local function ui_opacity_slider()
+    local name = wibox.widget {
+        widget = widgets.text,
+        size = 15,
+        text = "UI Opacity: "
+    }
+
+    local value = theme_daemon:get_ui_opacity()
+    local slider = widgets.slider {
+        forced_width = dpi(420),
+        forced_height = dpi(20),
+        minimum = 0.1,
+        value = value,
+        bar_active_color = beautiful.icons.spraycan.color,
+    }
+
+    value = helpers.misc.round_to_decimal_places(value, 2)
+    local value_text = wibox.widget {
+        widget = widgets.text,
+        size = 15,
+        text = value
+    }
+
+    slider:connect_signal("property::value", function(self, value)
+        value_text:set_text(helpers.misc.round_to_decimal_places(value, 2))
+        theme_daemon:set_ui_opacity(value)
     end)
 
     return wibox.widget {
@@ -184,6 +226,7 @@ local function new(layout)
                 separator(),
                 command_after_generation(),
                 separator(),
+                ui_opacity_slider(),
                 picom_slider("active-opacity", 1, false),
                 picom_slider("inactive-opacity", 1, false),
                 separator(),

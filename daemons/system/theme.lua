@@ -647,6 +647,16 @@ function theme:get_wallpaper_index()
     end
 end
 
+function theme:set_ui_opacity(opacity)
+    self._private.ui_opacity = opacity
+    helpers.settings:set_value("theme-ui-opacity", self._private.ui_opacity)
+    reload_awesome_colorscheme(self)
+end
+
+function theme:get_ui_opacity()
+    return self._private.ui_opacity
+end
+
 local function new()
     local ret = gobject {}
     gtable.crush(ret, theme, true)
@@ -657,10 +667,11 @@ local function new()
     ret._private.wallpaper_type = helpers.settings:get_value("theme-wallpaper-type")
     ret._private.command_after_generation = helpers.settings:get_value("theme-command-after-generation")
     ret._private.color = helpers.settings:get_value("theme-color")
+    ret._private.ui_opacity = helpers.settings:get_value("theme-ui-opacity")
 
     local colorscheme_from_gsettings = helpers.settings:get_value("theme-colorscheme")
     local colorscheme = {}
-    for index, color in colorscheme_from_gsettings:pairs() do
+    for _, color in colorscheme_from_gsettings:pairs() do
         table.insert(colorscheme, color)
     end
     ret._private.colorscheme = colorscheme
