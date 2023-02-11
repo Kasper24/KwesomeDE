@@ -22,8 +22,8 @@ capi.client.connect_signal("request::titlebars", function(c)
         widget = widgets.button.elevated.normal,
         forced_width = dpi(20),
         forced_height = dpi(20),
-        normal_shape = gshape.circle,
-        normal_bg = beautiful.colors.cyan,
+        normal_shape = gshape.isosceles_triangle,
+        normal_bg = c.font_icon.color,
         hover_bg = beautiful.colors.on_background,
         press_bg = beautiful.colors.on_background,
         on_release = function(self)
@@ -35,8 +35,8 @@ capi.client.connect_signal("request::titlebars", function(c)
         widget = widgets.button.elevated.normal,
         forced_width = dpi(20),
         forced_height = dpi(20),
-        normal_shape = gshape.circle,
-        normal_bg = beautiful.colors.green,
+        normal_shape = helpers.ui.rrect(beautiful.border_radius / 2),
+        normal_bg = c.font_icon.color,
         hover_bg = beautiful.colors.on_background,
         press_bg = beautiful.colors.on_background,
         on_release = function(self)
@@ -50,7 +50,7 @@ capi.client.connect_signal("request::titlebars", function(c)
         forced_width = dpi(20),
         forced_height = dpi(20),
         normal_shape = gshape.circle,
-        normal_bg = beautiful.colors.error,
+        normal_bg = c.font_icon.color,
         hover_bg = beautiful.colors.on_background,
         press_bg = beautiful.colors.on_background,
         on_release = function()
@@ -59,15 +59,27 @@ capi.client.connect_signal("request::titlebars", function(c)
     }
 
     c:connect_signal("focus", function()
-        minimize:set_normal_bg(beautiful.colors.cyan)
-        maximize:set_normal_bg(beautiful.colors.green)
-        close:set_normal_bg(beautiful.colors.error)
+        minimize:set_normal_bg(c.font_icon.color)
+        maximize:set_normal_bg(c.font_icon.color)
+        close:set_normal_bg(c.font_icon.color)
     end)
 
     c:connect_signal("unfocus", function()
         minimize:set_normal_bg(beautiful.colors.surface)
         maximize:set_normal_bg(beautiful.colors.surface)
         close:set_normal_bg(beautiful.colors.surface)
+    end)
+
+    c:connect_signal("property::font_icon", function()
+        if c.active then
+            minimize:set_normal_bg(c.font_icon.color)
+            maximize:set_normal_bg(c.font_icon.color)
+            close:set_normal_bg(c.font_icon.color)
+        else
+            minimize:set_normal_bg(beautiful.colors.surface)
+            maximize:set_normal_bg(beautiful.colors.surface)
+            close:set_normal_bg(beautiful.colors.surface)
+        end
     end)
 
     local menu = widgets.client_menu(c)
@@ -175,10 +187,6 @@ capi.client.connect_signal("request::titlebars", function(c)
     }
 
     capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
-        local color = helpers.client.get_dominant_color(c)
-        titlebar:set_bg(color)
-        minimize:set_normal_bg(color)
-        maximize:set_normal_bg(color)
-        close:set_normal_bg(color)
+        titlebar:set_bg(helpers.client.get_dominant_color(c))
     end)
 end)
