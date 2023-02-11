@@ -23,7 +23,7 @@ local properties = {"on_turn_on", "on_turn_off", "color"}
 
 local switch_dimensions = {
     w = dpi(46),
-    h = dpi(25)
+    h = dpi(18)
 }
 local ball_dimensions = {
     w = dpi(18),
@@ -58,7 +58,6 @@ function checkbox:turn_on()
 
     wp.animation:set{
         handle_offset = done_ball_position,
-        background_color = helpers.color.hex_to_rgb(wp.background_active_color),
         handle_color = helpers.color.hex_to_rgb(wp.handle_active_color),
     }
     wp.state = true
@@ -72,8 +71,7 @@ function checkbox:turn_off()
     local wp = self._private
 
     wp.animation:set{
-        handle_offset = padding,
-        background_color = helpers.color.hex_to_rgb(beautiful.colors.background),
+        handle_offset = padding * self._private.scale,
         handle_color = helpers.color.hex_to_rgb(beautiful.colors.on_background),
     }
     wp.state = false
@@ -94,7 +92,15 @@ end
 function checkbox:set_handle_active_color(active_color)
     local wp = self._private
     wp.handle_active_color = active_color
-    -- wp.background_active_color = helpers.color.darken(wp.handle_active_color, 0.2)
+end
+
+function checkbox:set_scale(scale)
+    local wp = self._private
+    wp.scale = scale
+    self.forced_height = self.forced_height * scale
+
+    local handle = self.children[1].children[1]
+    handle.forced_height = handle.forced_height * scale
 end
 
 function checkbox:set_state(state)
@@ -112,9 +118,9 @@ end
 local function new()
     local handle = wibox.widget {
         widget = bwidget,
-        point = { x = padding, y = 4},
-        forced_height = ball_dimensions.h,
         forced_width = ball_dimensions.w,
+        forced_height = ball_dimensions.h,
+        point = { x = padding, y = 4},
         shape = gshape.circle,
         bg = beautiful.colors.on_background
     }
@@ -126,8 +132,8 @@ local function new()
 
     local widget = wibox.widget {
         widget = bwidget,
-        forced_height = switch_dimensions.h,
         forced_width = switch_dimensions.w,
+        forced_height = switch_dimensions.h,
         shape = gshape.rounded_bar,
         bg = beautiful.colors.surface,
         layout
@@ -136,7 +142,7 @@ local function new()
 
     local wp = widget._private
     wp.handle_active_color = beautiful.colors.random_accent_color()
-    wp.background_active_color = helpers.color.darken(wp.handle_active_color, 0.2)
+    wp.scale = 1
     wp.state = false
 
     wp.animation = helpers.animation:new{
@@ -144,12 +150,10 @@ local function new()
         easing = helpers.animation.easing.inOutQuad,
         pos = {
             handle_offset = padding,
-            background_color = helpers.color.hex_to_rgb(beautiful.colors.background),
             handle_color = helpers.color.hex_to_rgb(beautiful.colors.on_background)
         },
         update = function(self, pos)
             layout:move(1, {x = pos.handle_offset, y = 4})
-            widget.bg = helpers.color.rgb_to_hex(pos.background_color)
             handle.bg = helpers.color.rgb_to_hex(pos.handle_color)
         end
     }
@@ -180,13 +184,10 @@ local function new()
 
     capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
         wp.handle_active_color = old_colorscheme_to_new_map[wp.handle_active_color]
-        wp.background_active_color = helpers.color.darken(wp.handle_active_color, 0.2)
 
         if wp.state == true then
-            widget.bg = wp.background_active_color
             handle.bg = wp.handle_active_color
         else
-            widget.bg = beautiful.colors.background
             handle.bg = beautiful.colors.on_background
         end
     end)
