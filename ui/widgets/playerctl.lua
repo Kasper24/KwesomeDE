@@ -201,8 +201,8 @@ function playerctl.player_art(halign, valign, daemon)
 
     playerctl_daemon:connect_signal("metadata", function(self, title, artist, album_path, album, new, player_name)
         if player_name ~= "" then
-            local app_font_icon = beautiful.get_font_icon_for_app_name(player_name)
-            icon:set_icon(app_font_icon or beautiful.icons.spotify)
+            local app_font_icon = beautiful.get_font_icon_for_app_name(player_name) or beautiful.icons.spotify
+            icon:set_icon(app_font_icon)
         end
     end)
 
@@ -486,8 +486,16 @@ function playerctl.play(daemon)
         end
     end)
 
+    playerctl_daemon:connect_signal("metadata", function(self, title, artist, album_path, album, new, player_name)
+        if player_name ~= "" then
+            local app_font_icon = beautiful.get_font_icon_for_app_name(player_name) or beautiful.icons.spotify
+            button:set_normal_bg(app_font_icon.color)
+        end
+    end)
+
     playerctl_daemon:connect_signal("no_players", function(self)
         play_pause_animation:set(1)
+        button:set_normal_bg(beautiful.icons.spotify.color)
     end)
 
     return button
@@ -751,6 +759,7 @@ function playerctl.volume(width, daemon)
 
     local slider = swidget {
         forced_width = width or dpi(50),
+        active_bar_color = beautiful.icons.volume.normal.color,
         value = 100
     }
 
