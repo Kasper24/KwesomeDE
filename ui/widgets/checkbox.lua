@@ -92,6 +92,9 @@ end
 function checkbox:set_handle_active_color(active_color)
     local wp = self._private
     wp.handle_active_color = active_color
+
+    local handle = self.children[1].children[1]
+    handle.bg = active_color
 end
 
 function checkbox:set_scale(scale)
