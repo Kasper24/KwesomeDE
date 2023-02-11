@@ -135,13 +135,13 @@ function ncmppcpp.tabs_titlebar(c)
     local titlebar =awful.titlebar(c, {
         position = "left",
         size = dpi(230),
-        bg = beautiful.colors.background
+        bg = beautiful.colors.background_no_opacity
     })
     titlebar:setup{
         widget = wibox.container.margin,
         margins = {
             left = dpi(15),
-            right = dpi(25),
+            right = dpi(15),
             top = dpi(25)
         },
         {
@@ -177,7 +177,7 @@ function ncmppcpp.tabs_titlebar(c)
     }
 
     capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
-        titlebar:set_bg(beautiful.colors.background)
+        titlebar:set_bg(beautiful.colors.background_no_opacity)
     end)
 end
 
@@ -191,7 +191,7 @@ function ncmppcpp.media_controls_titlebar(c)
     local titlebar = awful.titlebar(c, {
         position = "bottom",
         size = dpi(100),
-        bg = beautiful.colors.background
+        bg = beautiful.colors.background_no_opacity
     })
     titlebar:setup{
         layout = wibox.layout.align.horizontal,
@@ -234,7 +234,7 @@ function ncmppcpp.media_controls_titlebar(c)
     }
 
     capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
-        titlebar:set_bg(beautiful.colors.background)
+        titlebar:set_bg(beautiful.colors.background_no_opacity)
     end)
 end
 

@@ -36,7 +36,11 @@ local function colors()
         bright_cyan = colors[15],
 
         background = helpers.color.add_opacity(colors[1], theme_daemon:get_ui_opacity()),
+        background_no_opacity = colors[1],
+
         surface = helpers.color.add_opacity(colors[9], theme_daemon:get_ui_opacity()),
+        surface_no_opacity = colors[9],
+
         error = colors[2],
 
         white = "#FFFFFF",
