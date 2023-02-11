@@ -48,6 +48,7 @@ local function colors()
         transparent = colors[1] .. "00",
 
         on_background = colors[8],
+        on_background_dark = helpers.color.is_dark(colors[1]) and helpers.color.pywal_darken(colors[8], 0.4) or helpers.color.pywal_lighten(colors[8], 0.4),
         on_surface = colors[8],
         on_error = colors[1],
         on_accent = colors[1]

@@ -27,6 +27,7 @@ local function new(args)
 
     args.forced_width = args.forced_width or nil
 	args.forced_height = args.forced_height or dpi(8)
+	args.minimum = args.minimum or 0
     args.maximum = args.maximum or 1
     args.margins = args.margins or dpi(0)
     args.bar_height = args.bar_height or dpi(8)
@@ -127,7 +128,7 @@ local function new(args)
 		--initially move it to the target (only one call of max and min is prolly fine)
 		bar.pos = math.min(math.max(((x - args.bar_height) / effwidth), 0), 1)
         bar:emit_signal("widget::redraw_needed")
-		widget:emit_signal("property::value", bar.pos * args.maximum)
+		widget:emit_signal("property::value", math.max(args.minimum, (bar.pos * args.maximum)))
 
 		capi.mousegrabber.run(function(mouse)
 			--stop (and emit signal) if you release mouse 1
@@ -147,7 +148,7 @@ local function new(args)
 			--make sure target \in (0, 1)
 			bar.pos = math.max(math.min(lpos, 1), 0)
 			bar:emit_signal("widget::redraw_needed")
-			widget:emit_signal("property::value", bar.pos * args.maximum)
+			widget:emit_signal("property::value", math.max(args.minimum, (bar.pos * args.maximum)))
 
 			return true
 		end,"fleur")

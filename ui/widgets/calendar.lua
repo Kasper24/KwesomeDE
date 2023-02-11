@@ -39,7 +39,7 @@ local function date_widget(self, date, is_current, is_another_month)
         bg = accent_color
         text_color = beautiful.colors.background
     elseif is_another_month == true then
-        text_color = beautiful.colors.surface
+        text_color = beautiful.colors.on_background_dark
     end
 
     local widget = wibox.widget {
