@@ -23,14 +23,15 @@ local properties = {"on_turn_on", "on_turn_off", "color"}
 
 local switch_dimensions = {
     w = dpi(46),
-    h = dpi(18)
+    h = dpi(25)
 }
 local ball_dimensions = {
     w = dpi(18),
     h = dpi(18)
 }
+local padding = dpi(5)
 local start_ball_position = ball_dimensions.w - switch_dimensions.w
-local done_ball_position = -start_ball_position -- just invert it
+local done_ball_position = -start_ball_position - padding -- just invert it
 
 local function build_properties(prototype, prop_names)
     for _, prop in ipairs(prop_names) do
@@ -52,17 +53,13 @@ local function build_properties(prototype, prop_names)
     end
 end
 
-function checkbox:set_active_color(active_color)
-    local wp = self._private
-    wp.active_color = active_color
-end
-
 function checkbox:turn_on()
     local wp = self._private
 
     wp.animation:set{
-        margin_left = done_ball_position,
-        color = helpers.color.hex_to_rgb(wp.active_color)
+        handle_offset = done_ball_position,
+        background_color = helpers.color.hex_to_rgb(wp.background_active_color),
+        handle_color = helpers.color.hex_to_rgb(wp.handle_active_color),
     }
     wp.state = true
 
@@ -75,8 +72,9 @@ function checkbox:turn_off()
     local wp = self._private
 
     wp.animation:set{
-        margin_left = start_ball_position,
-        color = helpers.color.hex_to_rgb(beautiful.colors.on_background)
+        handle_offset = padding,
+        background_color = helpers.color.hex_to_rgb(beautiful.colors.background),
+        handle_color = helpers.color.hex_to_rgb(beautiful.colors.on_background),
     }
     wp.state = false
 
@@ -93,6 +91,12 @@ function checkbox:toggle()
     end
 end
 
+function checkbox:set_handle_active_color(active_color)
+    local wp = self._private
+    wp.handle_active_color = active_color
+    -- wp.background_active_color = helpers.color.darken(wp.handle_active_color, 0.2)
+end
+
 function checkbox:set_state(state)
     if state == true then
         self:turn_on()
@@ -106,53 +110,47 @@ function checkbox:get_state()
 end
 
 local function new()
+    local handle = wibox.widget {
+        widget = bwidget,
+        point = { x = padding, y = 4},
+        forced_height = ball_dimensions.h,
+        forced_width = ball_dimensions.w,
+        shape = gshape.circle,
+        bg = beautiful.colors.on_background
+    }
+
+    local layout = wibox.widget {
+        widget = wibox.layout.manual,
+        handle
+    }
+
     local widget = wibox.widget {
-        widget = wibox.container.place,
-        valign = "center",
-        {
-            widget = bwidget,
-            forced_height = switch_dimensions.h,
-            forced_width = switch_dimensions.w,
-            shape = gshape.rounded_bar,
-            bg = beautiful.colors.surface,
-            {
-                widget = wibox.container.margin,
-                id = "ball_margins",
-                left = start_ball_position,
-                {
-                    widget = bwidget,
-                    id = "ball",
-                    forced_height = ball_dimensions.h,
-                    forced_width = ball_dimensions.w,
-                    shape = gshape.circle,
-                    bg = beautiful.colors.on_background,
-                },
-            }
-        }
+        widget = bwidget,
+        forced_height = switch_dimensions.h,
+        forced_width = switch_dimensions.w,
+        shape = gshape.rounded_bar,
+        bg = beautiful.colors.surface,
+        layout
     }
     gtable.crush(widget, checkbox, true)
 
     local wp = widget._private
+    wp.handle_active_color = beautiful.colors.random_accent_color()
+    wp.background_active_color = helpers.color.darken(wp.handle_active_color, 0.2)
     wp.state = false
-    wp.active_color = beautiful.colors.random_accent_color()
-
-    local ball_margins = widget:get_children_by_id("ball_margins")[1]
-    local ball = widget:get_children_by_id("ball")[1]
 
     wp.animation = helpers.animation:new{
         duration = 0.2,
         easing = helpers.animation.easing.inOutQuad,
         pos = {
-            margin_left = start_ball_position,
-            color = helpers.color.hex_to_rgb(beautiful.colors.on_background)
+            handle_offset = padding,
+            background_color = helpers.color.hex_to_rgb(beautiful.colors.background),
+            handle_color = helpers.color.hex_to_rgb(beautiful.colors.on_background)
         },
         update = function(self, pos)
-            if pos.margin_left then
-                ball_margins.left = pos.margin_left
-            end
-            if pos.color then
-                ball.bg = helpers.color.rgb_to_hex(pos.color)
-            end
+            layout:move(1, {x = pos.handle_offset, y = 4})
+            widget.bg = helpers.color.rgb_to_hex(pos.background_color)
+            handle.bg = helpers.color.rgb_to_hex(pos.handle_color)
         end
     }
 
@@ -181,11 +179,15 @@ local function new()
     end)
 
     capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
-        wp.active_color = old_colorscheme_to_new_map[wp.active_color]
+        wp.handle_active_color = old_colorscheme_to_new_map[wp.handle_active_color]
+        wp.background_active_color = helpers.color.darken(wp.handle_active_color, 0.2)
+
         if wp.state == true then
-            ball.bg = wp.active_color
+            widget.bg = wp.background_active_color
+            handle.bg = wp.handle_active_color
         else
-            ball.bg = beautiful.colors.on_background
+            widget.bg = beautiful.colors.background
+            handle.bg = beautiful.colors.on_background
         end
     end)
 

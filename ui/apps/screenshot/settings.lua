@@ -17,7 +17,7 @@ local function show_cursor()
     local checkbox = wibox.widget {
         widget = widgets.checkbox,
         state = screenshot_daemon:get_show_cursor(),
-        active_color = beautiful.icons.camera_retro.color,
+        handle_active_color = beautiful.icons.camera_retro.color,
         on_turn_on = function()
             screenshot_daemon:set_show_cursor(true)
         end,

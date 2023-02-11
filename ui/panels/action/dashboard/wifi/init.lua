@@ -71,7 +71,7 @@ local function access_point_widget(layout, access_point)
     local toggle_password_obscure_button = wibox.widget {
         widget = widgets.checkbox,
         state = true,
-        active_color = beautiful.icons.network.wifi_off.color,
+        handle_active_color = beautiful.icons.network.wifi_off.color,
         on_turn_on = function()
             prompt:set_obscure(true)
         end,
@@ -94,7 +94,7 @@ local function access_point_widget(layout, access_point)
     local auto_connect_checkbox = wibox.widget {
         widget = widgets.checkbox,
         state = true,
-        active_color = beautiful.icons.network.wifi_off.color
+        handle_active_color = beautiful.icons.network.wifi_off.color
     }
 
     local auto_connect_text = wibox.widget {

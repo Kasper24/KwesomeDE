@@ -14,7 +14,7 @@ local client_menu = {
 
 local function client_checkbox_button(client, property, text, on_press)
     local button = mwidget.checkbox_button {
-        active_color = client.font_icon.color,
+        handle_active_color = client.font_icon.color,
         text = text,
         on_press = function()
             client[property] = not client[property]
@@ -45,7 +45,7 @@ local function new(client)
                                 client_checkbox_button(client, "ontop", "On Top")}
 
     local pin_to_taskbar_button = mwidget.checkbox_button {
-        active_color = client.font_icon.color,
+        handle_active_color = client.font_icon.color,
         text = "Pin to Taskbar",
         on_press = function(self)
             if favorites_daemon:is_favorite(client) then

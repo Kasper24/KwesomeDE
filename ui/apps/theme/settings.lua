@@ -71,7 +71,7 @@ local function picom_checkbox(key)
     local checkbox = wibox.widget {
         widget = widgets.checkbox,
         state = picom_daemon["get_" .. key](picom_daemon),
-        active_color = beautiful.icons.spraycan.color,
+        handle_active_color = beautiful.icons.spraycan.color,
         on_turn_on = function()
             picom_daemon["set_" .. key](picom_daemon, true)
         end,
