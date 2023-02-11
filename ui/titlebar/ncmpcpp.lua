@@ -141,6 +141,7 @@ function ncmppcpp.tabs_titlebar(c)
         widget = wibox.container.margin,
         margins = {
             left = dpi(15),
+            right = dpi(25),
             top = dpi(25)
         },
         {
