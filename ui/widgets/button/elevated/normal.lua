@@ -294,6 +294,8 @@ local function new(is_state)
     widget:effect(true)
 
     capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+        widget:emit_signal("widget::redraw_needed")
+
         wp.normal_bg = old_colorscheme_to_new_map[wp.normal_bg] or
                     old_colorscheme_to_new_map[wp.defaults.normal_bg]
         wp.hover_bg = old_colorscheme_to_new_map[wp.hover_bg] or

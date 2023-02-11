@@ -660,6 +660,7 @@ end
 function theme:set_ui_border_radius(border_radius)
     self._private.ui_border_radius = border_radius
     helpers.settings:set_value("theme-ui-border-radius", self._private.ui_border_radius)
+    reload_awesome_colorscheme(self)
 end
 
 function theme:get_ui_border_radius()
