@@ -40,7 +40,7 @@ local function separator()
     return wibox.widget {
         widget = widgets.background,
         forced_height = dpi(1),
-        shape = helpers.ui.rrect(beautiful.border_radius),
+        shape = helpers.ui.rrect(),
         bg = beautiful.colors.surface
     }
 end
@@ -505,7 +505,7 @@ local function new()
         visible = false,
         minimum_width = dpi(600),
         maximum_width = dpi(600),
-        shape = helpers.ui.rrect(beautiful.border_radius),
+        shape = helpers.ui.rrect(),
         bg = beautiful.colors.background,
         widget = {
             widget = wibox.container.margin,

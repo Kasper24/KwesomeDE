@@ -2,6 +2,7 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
+local gshape = require("gears.shape")
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
@@ -38,21 +39,21 @@ local function new()
                 widget = widgets.background,
                 forced_width = dpi(10),
                 forced_height = dpi(10),
-                shape = helpers.ui.rrect(2),
+                shape = gshape.squircle,
                 bg = beautiful.colors.random_accent_color()
             },
             {
                 widget = widgets.background,
                 forced_width = dpi(10),
                 forced_height = dpi(10),
-                shape = helpers.ui.rrect(2),
+                shape = gshape.squircle,
                 bg = beautiful.colors.random_accent_color()
             },
             {
                 widget = widgets.background,
                 forced_width = dpi(10),
                 forced_height = dpi(10),
-                shape = helpers.ui.rrect(2),
+                shape = gshape.squircle,
                 bg = beautiful.colors.random_accent_color()
             }
         }

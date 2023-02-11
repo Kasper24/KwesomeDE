@@ -26,7 +26,7 @@ local function new()
         forced_height = dpi(150),
         forced_width = dpi(150),
         valign = "center",
-        clip_shape = helpers.ui.rrect(beautiful.border_radius),
+        clip_shape = helpers.ui.rrect(),
         image = beautiful.profile_icon
     }
 

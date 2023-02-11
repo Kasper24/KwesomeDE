@@ -185,7 +185,7 @@ function menu.menu(widgets, width)
         ontop = true,
         minimum_width = width or dpi(300),
         maximum_width = width or dpi(300),
-        shape = helpers.ui.rrect(beautiful.border_radius),
+        shape = helpers.ui.rrect(),
         bg = beautiful.colors.background,
         widget = menu_container
     }
@@ -429,7 +429,7 @@ function menu.separator()
     return wibox.widget {
         widget = bwidget,
         forced_height = dpi(1),
-        shape = helpers.ui.rrect(beautiful.border_radius),
+        shape = helpers.ui.rrect(),
         bg = beautiful.colors.surface
     }
 end

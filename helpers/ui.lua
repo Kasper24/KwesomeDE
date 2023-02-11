@@ -31,7 +31,7 @@ function _ui.prgram(height, base)
     end
 end
 
-function _ui.prrect(radius, tl, tr, br, bl)
+function _ui.prrect(tl, tr, br, bl)
     return function(cr, width, height)
         local radius = require("beautiful").border_radius
         gshape.partially_rounded_rect(cr, width, height, tl, tr, br, bl, radius)

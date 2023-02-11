@@ -43,7 +43,7 @@ local function separator()
     return wibox.widget {
         widget = widgets.background,
         forced_height = dpi(1),
-        shape = helpers.ui.rrect(beautiful.border_radius),
+        shape = helpers.ui.rrect(),
         bg = beautiful.colors.surface
     }
 end
@@ -110,8 +110,8 @@ local function new()
                     widget = widgets.progressbar,
                     forced_height = dpi(20),
                     forced_width = dpi(370),
-                    shape = helpers.ui.rrect(beautiful.border_radius),
-                    bar_shape = helpers.ui.rrect(beautiful.border_radius),
+                    shape = helpers.ui.rrect(),
+                    bar_shape = helpers.ui.rrect(),
                     margins = dpi(10),
                     paddings = dpi(2),
                     max_value = 100,
@@ -210,7 +210,7 @@ local function new()
     ret.widget = widgets.popup {
         ontop = true,
         visible = false,
-        shape = helpers.ui.rrect(beautiful.border_radius),
+        shape = helpers.ui.rrect(),
         minimum_width = dpi(600),
         maximum_width = dpi(600),
         bg = beautiful.colors.background,

@@ -52,7 +52,7 @@ local function new()
         end,
         minimum_width = dpi(200),
         minimum_height = dpi(200),
-        shape = helpers.ui.rrect(beautiful.border_radius),
+        shape = helpers.ui.rrect(),
         bg = beautiful.colors.background,
         widget = {
             widget = wibox.container.place,

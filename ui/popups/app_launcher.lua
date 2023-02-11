@@ -31,7 +31,7 @@ local function new()
         prompt_height = dpi(50),
         prompt_margins = dpi(25),
         prompt_paddings = dpi(15),
-        prompt_shape = helpers.ui.rrect(beautiful.border_radius),
+        prompt_shape = helpers.ui.rrect(),
         prompt_color = beautiful.colors.background,
         prompt_icon_color = beautiful.colors.on_background,
         prompt_text_color = beautiful.colors.on_background,

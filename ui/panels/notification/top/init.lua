@@ -28,7 +28,7 @@ local function notification_widget(notification, on_removed)
             forced_height = dpi(40),
             halign = "left",
             valign = "top",
-            clip_shape = helpers.ui.rrect(beautiful.border_radius),
+            clip_shape = helpers.ui.rrect(),
             image = notification.icon
         }
     else
@@ -167,7 +167,7 @@ local function notification_group(notification)
             forced_height = dpi(40),
             halign = "left",
             valign = "top",
-            clip_shape = helpers.ui.rrect(beautiful.border_radius),
+            clip_shape = helpers.ui.rrect(),
             image = notification.app_icon
         }
     else
@@ -207,7 +207,7 @@ local function notification_group(notification)
     local seperator = wibox.widget {
         widget = widgets.background,
         forced_height = dpi(1),
-        shape = helpers.ui.rrect(beautiful.border_radius),
+        shape = helpers.ui.rrect(),
         bg = beautiful.colors.surface
     }
 

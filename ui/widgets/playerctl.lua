@@ -122,7 +122,7 @@ function playerctl.art(halign, valign, size, default_icon_size, daemon)
         widget = wibox.widget.imagebox,
         halign = halign or "left",
         valign = valign or "top",
-        clip_shape = helpers.ui.rrect(beautiful.border_radius),
+        clip_shape = helpers.ui.rrect(),
         image = helpers.icon_theme:get_icon_path("spotify")
     }
 

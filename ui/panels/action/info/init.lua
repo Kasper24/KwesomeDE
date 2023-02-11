@@ -29,16 +29,16 @@ local function progress_bar(icon, on_release)
         widget = widgets.progressbar,
         forced_width = dpi(450),
         forced_height = dpi(10),
-        shape = helpers.ui.rrect(beautiful.border_radius),
+        shape = helpers.ui.rrect(),
         max_value = 100,
-        bar_shape = helpers.ui.rrect(beautiful.border_radius),
+        bar_shape = helpers.ui.rrect(),
         background_color = beautiful.colors.surface,
         color = icon.color
     }
 
     local icon = wibox.widget {
         widget = widgets.background,
-        shape = helpers.ui.rrect(beautiful.border_radius),
+        shape = helpers.ui.rrect(),
         bg = beautiful.colors.surface,
         {
             widget = widgets.text,
@@ -178,7 +178,7 @@ local function audio()
 
     local icon = wibox.widget {
         widget = widgets.background,
-        shape = helpers.ui.rrect(beautiful.border_radius),
+        shape = helpers.ui.rrect(),
         bg = beautiful.colors.surface,
         {
             widget = widgets.text,

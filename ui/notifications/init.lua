@@ -129,7 +129,7 @@ naughty.connect_signal("request::display", function(n)
                 widget = wibox.widget.imagebox,
                 halign = "center",
                 valign = "center",
-                clip_shape = helpers.ui.rrect(beautiful.border_radius),
+                clip_shape = helpers.ui.rrect(),
                 image = n.app_icon
             }
         }
@@ -182,7 +182,7 @@ naughty.connect_signal("request::display", function(n)
             width = dpi(40),
             {
                 widget = wibox.widget.imagebox,
-                clip_shape = helpers.ui.rrect(beautiful.border_radius),
+                clip_shape = helpers.ui.rrect(),
                 image = n.icon
             }
         }
@@ -214,7 +214,7 @@ naughty.connect_signal("request::display", function(n)
     local urgency_color = wibox.widget {
         widget = widgets.background,
         forced_height = dpi(10),
-        shape = helpers.ui.rrect(beautiful.border_radius),
+        shape = helpers.ui.rrect(),
         bg = color
     }
 
@@ -262,7 +262,7 @@ naughty.connect_signal("request::display", function(n)
         minimum_height = dpi(50),
         maximum_width = dpi(400),
         maximum_height = dpi(300),
-        shape = helpers.ui.rrect(beautiful.border_radius),
+        shape = helpers.ui.rrect(),
         bg = beautiful.colors.background,
         border_width = 0,
         widget_template = {

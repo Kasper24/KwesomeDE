@@ -17,7 +17,7 @@ local scrollbar = {
 local function new()
     local widget = wibox.widget {
         widget = wibox.widget.separator,
-        shape = helpers.ui.rrect(beautiful.border_radius),
+        shape = helpers.ui.rrect(),
         color = beautiful.colors.on_background
     }
 

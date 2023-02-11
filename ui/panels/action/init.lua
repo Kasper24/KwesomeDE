@@ -24,7 +24,7 @@ local function seperator()
     return wibox.widget {
         widget = widgets.background,
         forced_height = dpi(1),
-        shape = helpers.ui.rrect(beautiful.border_radius),
+        shape = helpers.ui.rrect(),
         bg = beautiful.colors.surface,
     }
 end
@@ -45,7 +45,7 @@ local function new()
                 attach = true
             })
         end,
-        shape = helpers.ui.rrect(beautiful.border_radius),
+        shape = helpers.ui.rrect(),
         bg = beautiful.colors.background,
         widget = wibox.widget {
             widget = wibox.container.margin,

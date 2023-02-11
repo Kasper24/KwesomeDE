@@ -74,7 +74,7 @@ local function tag_widget(self, tag, index)
             widget = widgets.background,
             id = "background",
             forced_width = dpi(5),
-            shape = helpers.ui.rrect(beautiful.border_radius),
+            shape = helpers.ui.rrect(),
             bg = TAGLIST_ICONS[index].color
         }
     }

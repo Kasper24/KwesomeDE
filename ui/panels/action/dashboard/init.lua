@@ -29,7 +29,7 @@ local function arrow_button(icon, text, on_icon_release, on_arrow_release)
     local icon = wibox.widget {
         widget = widgets.button.text.state,
         forced_height = dpi(90),
-        normal_shape = helpers.ui.prrect(beautiful.border_radius, true, false, false, true),
+        normal_shape = helpers.ui.prrect(true, false, false, true),
         normal_bg = beautiful.colors.surface,
         on_normal_bg = icon.color,
         text_normal_bg = icon.color,
@@ -41,7 +41,7 @@ local function arrow_button(icon, text, on_icon_release, on_arrow_release)
     local arrow = wibox.widget {
         widget = widgets.button.text.state,
         forced_height = dpi(90),
-        normal_shape = helpers.ui.prrect(beautiful.border_radius, false, true, true, false),
+        normal_shape = helpers.ui.prrect(false, true, true, false),
         normal_bg = beautiful.colors.surface,
         on_normal_bg = icon.color,
         text_normal_bg = icon.color,

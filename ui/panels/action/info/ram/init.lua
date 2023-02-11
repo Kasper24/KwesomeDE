@@ -66,7 +66,7 @@ local function new()
         offset = {
             y = -dpi(400)
         },
-        shape = helpers.ui.rrect(beautiful.border_radius),
+        shape = helpers.ui.rrect(),
         bg = beautiful.colors.background,
         widget = chart
     }

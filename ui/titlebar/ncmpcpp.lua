@@ -164,7 +164,7 @@ function ncmppcpp.tabs_titlebar(c)
             {
                 widget = widgets.background,
                 forced_height = dpi(1),
-                shape = helpers.ui.rrect(beautiful.border_radius),
+                shape = helpers.ui.rrect(),
                 bg = beautiful.colors.surface
             },
             current_playlist,

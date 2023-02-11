@@ -150,7 +150,7 @@ local function client_widget(client)
             id = "background",
             forced_width = capi.client.focus == client and dpi(50) or dpi(20),
             forced_height = dpi(5),
-            shape = helpers.ui.rrect(beautiful.border_radius),
+            shape = helpers.ui.rrect(),
             bg = client.font_icon.color
         }
     }

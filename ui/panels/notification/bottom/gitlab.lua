@@ -104,7 +104,7 @@ local function new()
                 end,
                 child = wibox.widget {
                     widget = wibox.widget.imagebox,
-                    clip_shape = helpers.ui.rrect(beautiful.border_radius),
+                    clip_shape = helpers.ui.rrect(),
                     image = path_to_avatars .. pr.author.id
                 }
             }

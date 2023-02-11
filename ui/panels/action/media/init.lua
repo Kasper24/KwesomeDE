@@ -17,7 +17,7 @@ local function new()
     return wibox.widget {
         widget = widgets.background,
         forced_height = dpi(225),
-        shape = helpers.ui.rrect(beautiful.border_radius),
+        shape = helpers.ui.rrect(),
         {
             layout = wibox.layout.stack,
             widgets.playerctl.art_opacity(),

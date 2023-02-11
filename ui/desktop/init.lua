@@ -196,7 +196,7 @@ local function desktop_icon(self, pos, path, name, mimetype)
                     forced_height = dpi(40),
                     forced_width = dpi(40),
                     halign = "center",
-                    clip_shape = helpers.ui.rrect(beautiful.border_radius),
+                    clip_shape = helpers.ui.rrect(),
                     image = helpers.icon_theme:get_icon_path(
                         mimetype_to_image_lookup_table[mimetype] or "org.gnome.gedit")
                 },

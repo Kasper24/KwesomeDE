@@ -148,7 +148,7 @@ local function github_activity()
                     widget = wibox.widget.imagebox,
                     forced_width = dpi(40),
                     forced_height = dpi(40),
-                    clip_shape = helpers.ui.rrect(beautiful.border_radius),
+                    clip_shape = helpers.ui.rrect(),
                     image = path_to_avatars .. event.actor.id
                 },
                 on_release = function()
@@ -279,7 +279,7 @@ local function github_pr()
                     widget = wibox.widget.imagebox,
                     forced_width = dpi(50),
                     forced_height = dpi(50),
-                    clip_shape = helpers.ui.rrect(beautiful.border_radius),
+                    clip_shape = helpers.ui.rrect(),
                     image = path_to_avatars .. pr.user.id
                 }
             }

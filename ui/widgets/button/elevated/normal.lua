@@ -163,7 +163,7 @@ local function new(is_state)
     wp.defaults.hover_bg = helpers.color.button_color(wp.defaults.normal_bg, 0.1)
     wp.defaults.press_bg = helpers.color.button_color(wp.defaults.normal_bg, 0.2)
 
-    wp.defaults.normal_shape = helpers.ui.rrect(beautiful.border_radius)
+    wp.defaults.normal_shape = helpers.ui.rrect()
     wp.defaults.hover_shape = wp.defaults.normal_shape
     wp.defaults.press_shape = wp.defaults.normal_shape
 

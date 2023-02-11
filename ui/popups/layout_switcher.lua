@@ -107,7 +107,7 @@ local function new()
         placement = awful.placement.centered,
         ontop = true,
         visible = false,
-        shape = helpers.ui.rrect(beautiful.border_radius),
+        shape = helpers.ui.rrect(),
         bg = beautiful.colors.background,
         widget = wibox.widget {
             widget = wibox.container.margin,
