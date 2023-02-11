@@ -12,7 +12,7 @@ local cpu_daemon = require("daemons.hardware.cpu")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local ipairs = ipairs
-local math = mat
+local math = math
 
 local cpu = {}
 local instance = nil
