@@ -138,32 +138,31 @@ local function picom_slider(key, maximum, round)
     }
 end
 
-local function ui_opacity_slider()
+local function theme_slider(text, initial_value, maximum, on_changed)
     local name = wibox.widget {
         widget = widgets.text,
         size = 15,
-        text = "UI Opacity: "
+        text = text
     }
 
-    local value = theme_daemon:get_ui_opacity()
     local slider = widgets.slider {
         forced_width = dpi(420),
         forced_height = dpi(20),
-        minimum = 0.1,
-        value = value,
+        maximum = maximum,
+        value = initial_value,
         bar_active_color = beautiful.icons.spraycan.color,
     }
 
-    value = helpers.misc.round_to_decimal_places(value, 2)
+    initial_value = helpers.misc.round_to_decimal_places(initial_value, 2)
     local value_text = wibox.widget {
         widget = widgets.text,
         size = 15,
-        text = value
+        text = initial_value
     }
 
     slider:connect_signal("property::value", function(self, value)
         value_text:set_text(helpers.misc.round_to_decimal_places(value, 2))
-        theme_daemon:set_ui_opacity(value)
+        on_changed(value)
     end)
 
     return wibox.widget {
@@ -223,10 +222,15 @@ local function new(layout)
                 separator(),
                 command_after_generation(),
                 separator(),
-                ui_opacity_slider(),
+                theme_slider("UI Opacity: ", theme_daemon:get_ui_opacity(), 1, function(value)
+                    theme_daemon:set_ui_opacity(value)
+                end),
                 picom_slider("active-opacity", 1, false),
                 picom_slider("inactive-opacity", 1, false),
                 separator(),
+                theme_slider("UI Border Radius: ", theme_daemon:get_ui_border_radius(), 100, function(value)
+                    theme_daemon:set_ui_border_radius(value)
+                end),
                 picom_slider("corner-radius", 100, true),
                 picom_slider("blur-strength", 20, true),
                 separator(),

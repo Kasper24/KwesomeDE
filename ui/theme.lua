@@ -417,7 +417,7 @@ local function defaults()
     theme.fg_minimize = nil
     theme.border_width = nil
     theme.border_color = theme.colors.surface
-    theme.border_radius = 10
+    theme.border_radius = theme_daemon:get_ui_border_radius()
     theme.border_color_active = theme.colors.random_accent_color()
     theme.border_color_normal = theme.colors.surface
     theme.border_color_urgent = nil

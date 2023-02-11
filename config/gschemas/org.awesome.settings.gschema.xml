@@ -48,6 +48,14 @@
       </description>
     </key>
 
+    <key name="theme-ui-border-radius" type="s">
+      <default>'8'</default>
+      <summary>Theme UI border raidus</summary>
+      <description>
+        The border radius of AwesomeWM UI elements
+      </description>
+    </key>
+
     <key name="initial" type="b">
       <default>true</default>
       <summary>Initial login</summary>
