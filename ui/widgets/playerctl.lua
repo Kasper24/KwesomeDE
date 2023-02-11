@@ -547,7 +547,7 @@ function playerctl.loop(width, height, daemon)
     }
 
     playerctl_daemon:connect_signal("loop_status", function(self, loop_status, player)
-        if loop_status == "Not Playing" then
+        if loop_status == "none" then
             widget:turn_off()
         else
             widget:turn_on()
