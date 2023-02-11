@@ -41,7 +41,7 @@ local function system_tray()
         bg = beautiful.colors.background,
         widget = wibox.widget {
             widget = wibox.container.margin,
-            margins = dpi(15),
+            margins = dpi(30),
             {
                 widget = wibox.widget.systray,
                 horizontal = false
