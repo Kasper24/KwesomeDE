@@ -2,7 +2,7 @@ local awful = require("awful")
 local widgets = require("ui.widgets")
 local helpers = require("helpers")
 
-if DEBUG ~= true and helpers.misc.is_restart() == true then
+if DEBUG ~= true and helpers.misc.is_restart() == false then
     require(... .. ".popups.loading")
 end
 
