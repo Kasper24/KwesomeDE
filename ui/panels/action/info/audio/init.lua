@@ -274,10 +274,7 @@ local function applications()
         layout = widgets.overflow.vertical,
         forced_height = dpi(300),
         spacing = dpi(15),
-        scrollbar_widget = {
-            widget = wibox.widget.separator,
-            shape = helpers.ui.rrect(beautiful.border_radius)
-        },
+        scrollbar_widget = widgets.scrollbar,
         scrollbar_width = dpi(10),
         step = 50
     }
@@ -293,10 +290,7 @@ local function applications()
         layout = widgets.overflow.vertical,
         forced_height = dpi(300),
         spacing = dpi(15),
-        scrollbar_widget = {
-            widget = wibox.widget.separator,
-            shape = helpers.ui.rrect(beautiful.border_radius)
-        },
+        scrollbar_widget = widgets.scrollbar,
         scrollbar_width = dpi(10),
         step = 50
     }
@@ -366,10 +360,7 @@ local function devices()
         layout = widgets.overflow.vertical,
         forced_height = dpi(300),
         spacing = dpi(15),
-        scrollbar_widget = {
-            widget = wibox.widget.separator,
-            shape = helpers.ui.rrect(beautiful.border_radius)
-        },
+        scrollbar_widget = widgets.scrollbar,
         scrollbar_width = dpi(10),
         step = 50
     }
@@ -386,10 +377,7 @@ local function devices()
         layout = widgets.overflow.vertical,
         forced_height = dpi(300),
         spacing = dpi(15),
-        scrollbar_widget = {
-            widget = wibox.widget.separator,
-            shape = helpers.ui.rrect(beautiful.border_radius)
-        },
+        scrollbar_widget = widgets.scrollbar,
         scrollbar_width = dpi(10),
         step = 50
     }

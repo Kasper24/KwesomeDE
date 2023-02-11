@@ -61,10 +61,7 @@ local function notification_widget(notification, on_removed)
             layout = widgets.overflow.vertical,
             forced_width = dpi(1000),
             spacing = dpi(10),
-            scrollbar_widget = {
-                widget = wibox.widget.separator,
-                shape = helpers.ui.rrect(beautiful.border_radius)
-            },
+            scrollbar_widget = widgets.scrollbar,
             scrollbar_width = dpi(10),
             step = 50,
             {
@@ -282,10 +279,7 @@ local function new()
     local scrollbox = wibox.widget {
         layout = widgets.overflow.vertical,
         spacing = dpi(20),
-        scrollbar_widget = {
-            widget = wibox.widget.separator,
-            shape = helpers.ui.rrect(beautiful.border_radius)
-        },
+        scrollbar_widget = widgets.scrollbar,
         scrollbar_width = dpi(10),
         step = 50
     }

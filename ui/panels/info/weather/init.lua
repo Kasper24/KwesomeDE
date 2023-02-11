@@ -331,10 +331,7 @@ local function new()
         {
             layout = widgets.overflow.horizontal,
             forced_width = dpi(500),
-            scrollbar_widget = {
-                widget = wibox.widget.separator,
-                shape = helpers.ui.rrect(beautiful.border_radius)
-            },
+            scrollbar_widget = widgets.scrollbar,
             scrollbar_width = dpi(10),
             step = 50,
             {

@@ -158,11 +158,7 @@ local function image_tab(self)
         layout = widgets.overflow.vertical,
         forced_height = dpi(250),
         spacing = dpi(3),
-        scrollbar_widget = {
-            widget = wibox.widget.separator,
-            shape = helpers.ui.rrect(beautiful.border_radius),
-            color = beautiful.colors.on_background
-        },
+        scrollbar_widget = widgets.scrollbar,
         scrollbar_width = dpi(3),
         step = 43
     }

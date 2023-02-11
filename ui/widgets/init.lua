@@ -23,6 +23,7 @@ return {
     progressbar = require(... .. ".progressbar"),
     prompt = require(... .. ".prompt"),
     screen_mask = require(... .. ".screen_mask"),
+    scrollbar = require(... .. ".scrollbar"),
     slider = require(... .. ".slider"),
     spacer = require(... .. ".spacer"),
     spinning_circle = require(... .. ".spinning_circle"),
