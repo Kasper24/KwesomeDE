@@ -61,7 +61,7 @@ local function generate_markup(self)
     local font = wp.font or wp.defaults.font
     local size = wp.size or wp.defaults.size
     local color = wp.color or wp.defaults.color
-    local text = wp.text or wp.defaults.fonttext
+    local text = wp.text or wp.defaults.text
 
     -- Need to unescape in a case the text was escaped by other code before
     text = gstring.xml_unescape(tostring(text))
@@ -76,10 +76,10 @@ function text:set_icon(icon)
     local wp = self._private
 
     wp.icon = icon
-    wp.font = wp.font or icon.font
-    wp.size = wp.size or icon.size
-    wp.color = wp.color or icon.color
-    wp.text = icon.icon
+    wp.defaults.font = wp.font or icon.font
+    wp.defaults.size = wp.size or icon.size
+    wp.defaults.color = wp.color or icon.color
+    wp.defaults.text = icon.icon
 
     self:emit_signal("widget::redraw_needed")
     self:emit_signal("property::icon", icon)
