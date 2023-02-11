@@ -76,4 +76,9 @@ function _misc.convert_range(old_value, old_min, old_max, new_min, new_max)
     return ((old_value - old_min) / (old_max - old_min)) * (new_max - new_min) + new_min
 end
 
+function _misc.round_to_decimal_places(num, num_decimal_places)
+    local mult = 10^(num_decimal_places or 0)
+    return math.floor(num * mult + 0.5) / mult
+  end
+
 return _misc

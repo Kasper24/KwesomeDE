@@ -3,6 +3,7 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 local gshape = require("gears.shape")
+local gmath = require("gears.math")
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
@@ -87,7 +88,7 @@ local function picom_checkbox(key)
     }
 end
 
-local function picom_slider(key, max, divide_by, round)
+local function picom_slider(key, maximum, round)
     local display_name = key:gsub("(%l)(%w*)", function(a, b)
         return string.upper(a) .. b
     end)
@@ -102,23 +103,24 @@ local function picom_slider(key, max, divide_by, round)
     local slider = widgets.slider {
         forced_width = dpi(420),
         forced_height = dpi(20),
-        value = picom_daemon["get_" .. key](picom_daemon) * divide_by,
-        maximum = max or 100,
+        value = picom_daemon["get_" .. key](picom_daemon),
+        maximum = maximum,
         bar_active_color = beautiful.icons.spraycan.color,
     }
 
+    local value = picom_daemon["get_" .. key](picom_daemon)
+    value = helpers.misc.round_to_decimal_places(value, 2)
     local value_text = wibox.widget {
         widget = widgets.text,
         size = 15,
-        text = picom_daemon["get_" .. key](picom_daemon)
+        text = value
     }
 
     slider:connect_signal("property::value", function(self, value, instant)
-        local value = value / (divide_by or 1)
         if round == true then
-            value = math.floor(value)
+            value = gmath.round(value)
         end
-        value_text:set_text(value)
+        value_text:set_text(helpers.misc.round_to_decimal_places(value, 2))
         picom_daemon["set_" .. key](picom_daemon, value)
     end)
 
@@ -182,27 +184,27 @@ local function new(layout)
                 separator(),
                 command_after_generation(),
                 separator(),
-                picom_slider("active-opacity", 100, 100, false),
-                picom_slider("inactive-opacity", 100, 100, false),
+                picom_slider("active-opacity", 1, false),
+                picom_slider("inactive-opacity", 1, false),
                 separator(),
-                picom_slider("corner-radius", 100, 1, true),
-                picom_slider("blur-strength", 20, 1, true),
+                picom_slider("corner-radius", 100, true),
+                picom_slider("blur-strength", 20, true),
                 separator(),
-                picom_slider("animation-stiffness", 1000, 1, true),
-                picom_slider("animation-dampening", 200, 1, true),
-                picom_slider("animation-window-mass", 100, 1, true),
+                picom_slider("animation-stiffness", 1000, true),
+                picom_slider("animation-dampening", 200, true),
+                picom_slider("animation-window-mass", 100, true),
                 picom_checkbox("animations"),
                 picom_checkbox("animation-clamping"),
                 separator(),
-                picom_slider("shadow-radius", 100, 1, true),
-                picom_slider("shadow-opacity", 100, 100, false),
-                picom_slider("shadow-offset-x", 100, 1, true),
-                picom_slider("shadow-offset-y", 100, 1, true),
+                picom_slider("shadow-radius", 100, true),
+                picom_slider("shadow-opacity", 1, false),
+                picom_slider("shadow-offset-x", 100, true),
+                picom_slider("shadow-offset-y", 100, true),
                 picom_checkbox("shadow"),
                 separator(),
-                picom_slider("fade-delta", 100, 1, true),
-                picom_slider("fade-in-step", 100, 100, false),
-                picom_slider("fade-out-step", 100, 100, false),
+                picom_slider("fade-delta", 100, true),
+                picom_slider("fade-in-step", 1, false),
+                picom_slider("fade-out-step", 1, false),
                 picom_checkbox("fading")
             }
         }
