@@ -38,7 +38,9 @@ local function new(args)
         thickness = args.thickness,
         rounded_edge = true,
         bg = beautiful.colors.surface,
-        colors = beautiful.colors.random_accent_color()
+        colors = {
+            beautiful.colors.random_accent_color()
+        }
     }
     gtable.crush(widget, spinning_circle, true)
 
