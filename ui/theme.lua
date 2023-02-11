@@ -273,7 +273,7 @@ local function icons()
         usb_drive = { icon = "" },
         signal_stream = { icon = "" },
         car_battery =  { icon = "" },
-        desktop = { icon = "" }
+        computer = { icon = "" }
     }
 
     local function set_icon_default_props(icon, color)

@@ -12,7 +12,7 @@ local icons = {"system-error", "dialog-error", "aptdaemon-error", "arch-error-sy
 
 naughty.connect_signal("request::display_error", function(message, startup)
     naughty.notification {
-        app_font_icon = beautiful.icons.desktop,
+        app_font_icon = beautiful.icons.computer,
         app_icon = icons,
         app_name = "Awesome",
         font_icon = beautiful.icons.circle_exclamation,
