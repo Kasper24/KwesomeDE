@@ -212,7 +212,7 @@ naughty.connect_signal("request::display", function(n)
     end
 
     local urgency_color = wibox.widget {
-        widget = wibox.container.background,
+        widget = widgets.background,
         forced_height = dpi(10),
         shape = helpers.ui.rrect(beautiful.border_radius),
         bg = color
