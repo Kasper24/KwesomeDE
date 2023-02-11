@@ -4,6 +4,7 @@
 -------------------------------------------
 local gtable = require("gears.table")
 local wibox = require("wibox")
+local acwidget = require("ui.widgets.arcchart")
 local beautiful = require("beautiful")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
@@ -29,7 +30,7 @@ local function new(args)
     args.thickness = args.thickness or dpi(30)
 
     local widget = wibox.widget {
-        widget = wibox.container.arcchart,
+        widget = acwidget,
         forced_width = args.forced_width,
         forced_height = args.forced_height,
         max_value = 100,

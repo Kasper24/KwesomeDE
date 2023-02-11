@@ -158,7 +158,7 @@ naughty.connect_signal("request::display", function(n)
     }
 
     local timeout_arc = wibox.widget {
-        widget = wibox.container.arcchart,
+        widget = widgets.arcchart,
         forced_width = dpi(45),
         forced_height = dpi(45),
         max_value = 100,

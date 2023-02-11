@@ -4,6 +4,7 @@
 -------------------------------------------
 return {
     animated_panel = require(... .. ".animated_panel"),
+    arcchart = require(... .. ".arcchart"),
     button = require(... .. ".button"),
     background = require(... .. ".background"),
     battery_icon = require(... .. ".battery_icon"),
