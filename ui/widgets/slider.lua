@@ -85,7 +85,7 @@ local function new(args)
 
 			value = effwidth * self.pos + value_min
 			bar_current = value + args.bar_height
-			layout:move(1, set_x(value - 10))
+			layout:move(1, set_x(value))
 
 			cr:set_line_width(args.bar_height)
 
