@@ -85,6 +85,11 @@ function text:set_icon(icon)
     self:emit_signal("property::icon", icon)
 end
 
+function text:get_size()
+    local wp = self._private
+    return wp.size or wp.defaults.size
+end
+
 local function new(hot_reload)
     local widget = wibox.widget.textbox()
     gtable.crush(widget, text, true)
