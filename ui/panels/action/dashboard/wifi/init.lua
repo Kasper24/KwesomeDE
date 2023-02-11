@@ -178,9 +178,10 @@ local function access_point_widget(layout, access_point)
         height = dpi(65),
         {
             widget = widgets.button.elevated.state,
-            on_normal_bg = beautiful.colors.background,
-            on_hover_bg = beautiful.colors.background,
-            on_press_bg = beautiful.colors.background,
+            press_bg = beautiful.colors.transparent,
+            on_normal_bg = beautiful.colors.transparent,
+            on_hover_bg = beautiful.colors.transparent,
+            on_press_bg = beautiful.colors.transparent,
             id = "button",
             on_press = function(self)
                 if self._private.state == false then
