@@ -84,6 +84,8 @@ local function application_widget(args)
 
     local mute = wibox.widget {
         widget = widgets.button.text.state,
+        forced_width = dpi(40),
+        forced_height = dpi(40),
         on_by_default = args.application.mute,
         text_normal_bg = accent_color,
         on_normal_bg = accent_color,
@@ -108,7 +110,7 @@ local function application_widget(args)
     local widget = wibox.widget {
         widget = wibox.container.margin,
         margins = {
-            right = dpi(10)
+            right = dpi(20)
         },
         {
             layout = wibox.layout.fixed.vertical,
@@ -169,7 +171,7 @@ local function device_widget(args)
 
     local name = wibox.widget {
         widget = widgets.text,
-        forced_width = dpi(440),
+        forced_width = dpi(400),
         halign = "left",
         size = 12,
         text = args.device.description
@@ -177,6 +179,8 @@ local function device_widget(args)
 
     local mute = wibox.widget {
         widget = widgets.button.text.state,
+        forced_width = dpi(40),
+        forced_height = dpi(40),
         on_by_default = args.device.mute,
         on_normal_bg = beautiful.icons.volume.off.color,
         text_on_normal_bg = beautiful.colors.on_accent,
@@ -189,6 +193,8 @@ local function device_widget(args)
 
     local default = wibox.widget {
         widget = widgets.button.text.state,
+        forced_width = dpi(40),
+        forced_height = dpi(40),
         on_by_default = args.device.default,
         text_normal_bg = beautiful.icons.volume.off.color,
         on_normal_bg = beautiful.icons.volume.off.color,
@@ -212,7 +218,7 @@ local function device_widget(args)
     local widget = wibox.widget {
         widget = wibox.container.margin,
         margins = {
-            right = dpi(10)
+            right = dpi(20)
         },
         {
             layout = wibox.layout.fixed.vertical,
