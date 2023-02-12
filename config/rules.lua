@@ -269,40 +269,43 @@ local apps = {
 
 require("awful.autofocus")
 
-capi.client.connect_signal("mouse::enter", function(c)
-    if not c.fullscreen then
-        c:activate{
+capi.client.connect_signal("mouse::enter", function(client)
+    if not client.fullscreen then
+        client:activate{
             context = "mouse_enter",
             raise = false
         }
     end
 end)
 
-capi.client.connect_signal("manage", function(c)
+capi.client.connect_signal("manage", function(client)
     if not capi.awesome.startup then
-        c:to_secondary_section()
+        client:to_secondary_section()
     end
 end)
 
-capi.client.connect_signal("tagged", function(c)
-    c.font_icon = beautiful.get_font_icon_for_app_name(c.class)
+capi.client.connect_signal("tagged", function(client)
+    client.font_icon = beautiful.get_font_icon_for_app_name(client.class)
+    client:emit_signal("property::font_icon", client)
 end)
 
-capi.client.connect_signal("property::class", function(c)
-    c.font_icon = beautiful.get_font_icon_for_app_name(c.class)
+capi.client.connect_signal("property::class", function(client)
+    client.font_icon = beautiful.get_font_icon_for_app_name(client.class)
+    client:emit_signal("property::font_icon", client)
 end)
 
 capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
-    for _, c in ipairs(capi.client.get()) do
-        c.font_icon = beautiful.get_font_icon_for_app_name(c.class)
+    for _, client in ipairs(capi.client.get()) do
+        client.font_icon = beautiful.get_font_icon_for_app_name(client.class)
+        client:emit_signal("property::font_icon", client)
     end
 end)
 
-capi.client.connect_signal("property::floating", function(c)
-    if c.floating and not c.fullscreen then
-        c.ontop = true
+capi.client.connect_signal("property::floating", function(client)
+    if client.floating and not client.fullscreen then
+        client.ontop = true
     else
-        c.ontop = false
+        client.ontop = false
     end
 end)
 
