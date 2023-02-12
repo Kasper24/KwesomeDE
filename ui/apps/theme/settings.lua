@@ -91,91 +91,60 @@ local function picom_slider(key, maximum, round, minimum)
     local display_name = key:gsub("(%l)(%w*)", function(a, b)
         return string.upper(a) .. b
     end)
-    display_name = display_name:gsub("-", " ") .. ": "
+    display_name = display_name:gsub("-", " ") .. ":"
 
     local name = wibox.widget {
         widget = widgets.text,
+        forced_width = dpi(180),
         size = 15,
         text = display_name
     }
 
-    local value = picom_daemon["get_" .. key](picom_daemon)
-    local slider = widgets.slider {
-        forced_width = dpi(420),
-        forced_height = dpi(20),
-        value = value,
+    local slider_prompt = widgets.slider_prompt {
+        slider_width = dpi(430),
+        value = picom_daemon["get_" .. key](picom_daemon),
         minimum = minimum or 0,
         maximum = maximum,
         bar_active_color = beautiful.icons.spraycan.color,
     }
 
-    value = helpers.misc.round_to_decimal_places(value, 2)
-    local value_text = wibox.widget {
-        widget = widgets.text,
-        size = 15,
-        text = value
-    }
-
-    slider:connect_signal("property::value", function(self, value, instant)
+    slider_prompt:connect_signal("property::value", function(self, value, instant)
         if round == true then
             value = gmath.round(value)
         end
-        value_text:set_text(helpers.misc.round_to_decimal_places(value, 2))
         picom_daemon["set_" .. key](picom_daemon, value)
     end)
 
     return wibox.widget {
         layout = wibox.layout.align.horizontal,
         name,
-        {
-            widget = wibox.container.margin,
-            margins = {
-                right = dpi(15)
-            },
-            slider
-        },
-        value_text
+        slider_prompt
     }
 end
 
 local function theme_slider(text, initial_value, maximum, on_changed)
     local name = wibox.widget {
         widget = widgets.text,
+        forced_width = dpi(180),
         size = 15,
         text = text
     }
 
-    local slider = widgets.slider {
-        forced_width = dpi(420),
-        forced_height = dpi(20),
-        maximum = maximum,
+    local slider_prompt = widgets.slider_prompt {
+        slider_width = dpi(430),
         value = initial_value,
+        maximum = maximum,
         bar_active_color = beautiful.icons.spraycan.color,
     }
 
-    initial_value = helpers.misc.round_to_decimal_places(initial_value, 2)
-    local value_text = wibox.widget {
-        widget = widgets.text,
-        size = 15,
-        text = initial_value
-    }
-
-    slider:connect_signal("property::value", function(self, value)
-        value_text:set_text(helpers.misc.round_to_decimal_places(value, 2))
+    slider_prompt:connect_signal("property::value", function(self, value)
         on_changed(value)
     end)
 
     return wibox.widget {
         layout = wibox.layout.align.horizontal,
         name,
-        {
-            widget = wibox.container.margin,
-            margins = {
-                right = dpi(15)
-            },
-            slider
-        },
-        value_text
+        slider_prompt
     }
 end
 

@@ -24,6 +24,7 @@ return {
     prompt = require(... .. ".prompt"),
     screen_mask = require(... .. ".screen_mask"),
     scrollbar = require(... .. ".scrollbar"),
+    slider_prompt = require(... .. ".slider_prompt"),
     slider = require(... .. ".slider"),
     spinning_circle = require(... .. ".spinning_circle"),
     text = require(... .. ".text"),

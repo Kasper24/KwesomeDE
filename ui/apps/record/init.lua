@@ -96,14 +96,8 @@ local function fps()
         text = "FPS:"
     }
 
-    local value_text = wibox.widget {
-        widget = widgets.text,
-        size = 15,
-        text = record_daemon:get_fps()
-    }
-
-    local slider = widgets.slider {
-        forced_width = dpi(150),
+    local slider = widgets.slider_prompt {
+        slider_width = dpi(150),
         value = record_daemon:get_fps(),
         round = true,
         maximum = 360,
@@ -112,7 +106,6 @@ local function fps()
 
     slider:connect_signal("property::value", function(self, value, instant)
         record_daemon:set_fps(value)
-        value_text:set_text(value)
     end)
 
     return wibox.widget {
@@ -120,8 +113,7 @@ local function fps()
         forced_height = dpi(35),
         spacing = dpi(15),
         title,
-        slider,
-        value_text
+        slider
     }
 end
 
@@ -133,14 +125,8 @@ local function delay()
         text = "Delay:"
     }
 
-    local value_text = wibox.widget {
-        widget = widgets.text,
-        size = 15,
-        text = record_daemon:get_delay()
-    }
-
-    local slider = widgets.slider {
-        forced_width = dpi(150),
+    local slider = widgets.slider_prompt {
+        slider_width = dpi(150),
         value = record_daemon:get_delay(),
         round = true,
         maximum = 100,
@@ -149,7 +135,6 @@ local function delay()
 
     slider:connect_signal("property::value", function(self, value, instant)
         record_daemon:set_delay(value)
-        value_text:set_text(value)
     end)
 
     return wibox.widget {
@@ -157,8 +142,7 @@ local function delay()
         forced_height = dpi(35),
         spacing = dpi(15),
         title,
-        slider,
-        value_text
+        slider
     }
 end
 

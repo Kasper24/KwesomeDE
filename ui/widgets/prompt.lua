@@ -182,12 +182,16 @@ end
 function prompt:set_text(text)
     self._private.text = text
     self._private.cur_pos = #text + 1
-    update_markup(self, true)
+    update_markup(self, false)
 end
 
 function prompt:set_prompt(prompt)
     self._private.prompt = prompt
     update_markup(self, true)
+end
+
+function prompt:set_only_numbers(only_numbers)
+    self._private.only_numbers = only_numbers
 end
 
 function prompt:start()
@@ -227,6 +231,7 @@ function prompt:start()
                 end
             end
             if user_catched then
+                self:emit_signal("text::changed", wp.text)
                 if wp.changed_callback then
                     wp.changed_callback(wp.text)
                 end
@@ -336,6 +341,10 @@ function prompt:start()
             elseif key == "Right" then
                 wp.cur_pos = wp.cur_pos + 1
             else
+                if wp.only_numbers and tonumber(key) == nil then
+                    return
+                end
+
                 -- wlen() is UTF-8 aware but #key is not,
                 -- so check that we have one UTF-8 char but advance the cursor of # position
                 if key:wlen() == 1 then
@@ -350,7 +359,13 @@ function prompt:start()
             end
         end
 
+        if wp.only_numbers and wp.text == "" then
+            wp.text = "0"
+            wp.cur_pos = #wp.text + 1
+        end
+
         update_markup(self, true)
+        self:emit_signal("text::changed", wp.text)
 
         if wp.changed_callback then
             wp.changed_callback(wp.text)
@@ -415,6 +430,7 @@ local function new()
     wp.keypressed_callback = nil
     wp.changed_callback = nil
     wp.done_callback = nil
+    wp.only_numbers = false
 
     wp.cur_pos = #wp.text + 1 or 1
 
