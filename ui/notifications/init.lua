@@ -12,11 +12,8 @@ local notifications_daemon = require("daemons.system.notifications")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local ipairs = ipairs
+local string = string
 local type = type
-
--- naughty.expiration_paused = true
--- naughty.image_animations_enabled = true
-naughty.persistence_enabled = true
 
 local function get_oldest_notification()
     for _, notification in ipairs(naughty.active) do
@@ -42,6 +39,88 @@ local function play_sound(n)
     else
         awful.spawn("canberra-gtk-play -i bell", false)
     end
+end
+
+local function is_suspended()
+    if notifications_daemon:is_suspended() == true and n.ignore_suspend ~= true then
+        return true
+    end
+    return false
+end
+
+local function get_notification_accent_color(n)
+    return n.app_font_icon.color or
+            n.font_icon.color or
+            beautiful.colors.random_accent_color()
+end
+
+local function app_icon_widget(n)
+    if n.app_font_icon == nil then
+        return wibox.widget {
+            widget = wibox.container.constraint,
+            strategy = "max",
+            height = dpi(20),
+            width = dpi(20),
+            {
+                widget = wibox.widget.imagebox,
+                halign = "center",
+                valign = "center",
+                clip_shape = helpers.ui.rrect(),
+                image = n.app_icon
+            }
+        }
+    else
+        return wibox.widget {
+            widget = widgets.text,
+            icon = n.app_font_icon,
+            size = n.app_font_icon.size
+        }
+    end
+end
+
+local function icon_widget(n)
+    if n.font_icon == nil then
+        return wibox.widget {
+            widget = wibox.container.constraint,
+            strategy = "max",
+            height = dpi(40),
+            width = dpi(40),
+            {
+                widget = wibox.widget.imagebox,
+                clip_shape = helpers.ui.rrect(),
+                image = n.icon
+            }
+        }
+    else
+        return wibox.widget {
+            widget = widgets.text,
+            size = 30,
+            icon = n.font_icon
+        }
+    end
+end
+
+local function actions_widget(n)
+    local actions = wibox.widget {
+        layout = wibox.layout.flex.horizontal,
+        spacing = dpi(15)
+    }
+
+    for _, action in ipairs(n.actions) do
+        local button = wibox.widget {
+            widget = widgets.button.text.normal,
+            size = 12,
+            normal_bg = beautiful.colors.surface,
+            text_normal_bg = beautiful.colors.on_surface,
+            text = action.name,
+            on_press = function()
+                action:invoke()
+            end
+        }
+        actions:add(button)
+    end
+
+    return actions
 end
 
 ruled.notification.connect_signal("request::rules", function()
@@ -112,34 +191,11 @@ naughty.connect_signal("added", function(n)
 end)
 
 naughty.connect_signal("request::display", function(n)
-    local accent_color = n.app_font_icon.color or n.font_icon.color or beautiful.colors.random_accent_color()
-
-    if notifications_daemon:is_suspended() == true and n.ignore_suspend ~= true then
+    if is_suspended() then
         return
     end
 
-    local app_icon = nil
-    if n.app_font_icon == nil then
-        app_icon = wibox.widget {
-            widget = wibox.container.constraint,
-            strategy = "max",
-            height = dpi(20),
-            width = dpi(20),
-            {
-                widget = wibox.widget.imagebox,
-                halign = "center",
-                valign = "center",
-                clip_shape = helpers.ui.rrect(),
-                image = n.app_icon
-            }
-        }
-    else
-        app_icon = wibox.widget {
-            widget = widgets.text,
-            icon = n.app_font_icon,
-            size = n.app_font_icon.size
-        }
-    end
+    local accent_color = get_notification_accent_color(n)
 
     local app_name = wibox.widget {
         widget = widgets.text,
@@ -173,27 +229,6 @@ naughty.connect_signal("request::display", function(n)
         dismiss
     }
 
-    local icon = nil
-    if n.font_icon == nil then
-        icon = wibox.widget {
-            widget = wibox.container.constraint,
-            strategy = "max",
-            height = dpi(40),
-            width = dpi(40),
-            {
-                widget = wibox.widget.imagebox,
-                clip_shape = helpers.ui.rrect(),
-                image = n.icon
-            }
-        }
-    else
-        icon = wibox.widget {
-            widget = widgets.text,
-            size = 30,
-            icon = n.font_icon
-        }
-    end
-
     local title = wibox.widget {
         widget = wibox.container.scroll.horizontal,
         step_function = wibox.container.scroll.step_functions.waiting_nonlinear_back_and_forth,
@@ -206,16 +241,11 @@ naughty.connect_signal("request::display", function(n)
         }
     }
 
-    local color = accent_color
-    if n.urgency == "critical" then
-        color = beautiful.colors.bright_red
-    end
-
-    local urgency_color = wibox.widget {
+    local bar = wibox.widget {
         widget = widgets.background,
         forced_height = dpi(10),
         shape = helpers.ui.rrect(),
-        bg = color
+        bg = accent_color
     }
 
     local message = wibox.widget {
@@ -234,25 +264,6 @@ naughty.connect_signal("request::display", function(n)
             }
         }
     }
-
-    local actions = wibox.widget {
-        layout = wibox.layout.flex.horizontal,
-        spacing = dpi(15)
-    }
-
-    for _, action in ipairs(n.actions) do
-        local button = wibox.widget {
-            widget = widgets.button.text.normal,
-            size = 12,
-            normal_bg = beautiful.colors.surface,
-            text_normal_bg = beautiful.colors.on_surface,
-            text = action.name,
-            on_press = function()
-                action:invoke()
-            end
-        }
-        actions:add(button)
-    end
 
     local widget = naughty.layout.box {
         notification = n,
@@ -278,7 +289,7 @@ naughty.connect_signal("request::display", function(n)
                         {
                             layout = wibox.layout.fixed.horizontal,
                             spacing = dpi(15),
-                            app_icon,
+                            app_icon_widget(n),
                             app_name
                         },
                         nil,
@@ -287,12 +298,12 @@ naughty.connect_signal("request::display", function(n)
                     {
                         layout = wibox.layout.fixed.horizontal,
                         spacing = dpi(15),
-                        icon,
+                        icon_widget(n),
                         title
                     },
-                    urgency_color,
+                    bar,
                     message,
-                    actions
+                    actions_widget(n)
                 }
             }
         }
@@ -301,7 +312,7 @@ naughty.connect_signal("request::display", function(n)
     -- Don't destroy the notification on click
     widget.buttons = {}
 
-    local anim = helpers.animation:new{
+    local timeout_arc_anim = helpers.animation:new{
         duration = n.timeout,
         target = 100,
         easing = helpers.animation.easing.linear,
@@ -311,18 +322,18 @@ naughty.connect_signal("request::display", function(n)
         end
     }
 
-    anim:connect_signal("ended", function()
+    timeout_arc_anim:connect_signal("ended", function()
         n:destroy()
     end)
 
     widget:connect_signal("mouse::enter", function()
         -- Absurdly big number because setting it to 0 doesn't work
         n:set_timeout(4294967)
-        anim:stop()
+        timeout_arc_anim:stop()
     end)
 
     widget:connect_signal("mouse::leave", function()
-        anim:set()
+        timeout_arc_anim:set()
     end)
 
     local notification_height = widget.height + beautiful.notification_spacing
@@ -332,8 +343,7 @@ naughty.connect_signal("request::display", function(n)
         get_oldest_notification():destroy(naughty.notification_closed_reason.too_many_on_screen)
     end
 
-    anim:set()
-
+    timeout_arc_anim:set()
     play_sound(n)
 end)
 
