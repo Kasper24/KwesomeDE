@@ -131,7 +131,8 @@ local function new(args)
 		--initially move it to the target (only one call of max and min is prolly fine)
 		bar.pos = math.min(math.max(((x - args.bar_height) / effwidth), 0), 1)
         bar:emit_signal("widget::redraw_needed")
-		local value = math.max(args.minimum, (bar.pos * args.maximum))
+
+		local value = helpers.misc.convert_range(bar.pos, 0, 1, args.minimum, args.maximum)
 		if args.round then
 			value = gmath.round(value)
 		end
@@ -155,7 +156,7 @@ local function new(args)
 			--make sure target \in (0, 1)
 			bar.pos = math.max(math.min(lpos, 1), 0)
 			bar:emit_signal("widget::redraw_needed")
-			local value = math.max(args.minimum, (bar.pos * args.maximum))
+			local value = helpers.misc.convert_range(bar.pos, 0, 1, args.minimum, args.maximum)
 			if args.round then
 				value = gmath.round(value)
 			end
@@ -181,7 +182,8 @@ local function new(args)
 
 	function widget:set_value(val)
 		if is_dragging == false then
-            bar.pos = val / args.maximum
+			val = helpers.misc.convert_range(val, args.minimum, args.maximum, 0, 1)
+            bar.pos = val
             bar:emit_signal("widget::redraw_needed")
         end
 	end

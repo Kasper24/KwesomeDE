@@ -88,7 +88,7 @@ local function picom_checkbox(key)
     }
 end
 
-local function picom_slider(key, maximum, round)
+local function picom_slider(key, maximum, round, minimum)
     local display_name = key:gsub("(%l)(%w*)", function(a, b)
         return string.upper(a) .. b
     end)
@@ -105,6 +105,7 @@ local function picom_slider(key, maximum, round)
         forced_width = dpi(420),
         forced_height = dpi(20),
         value = value,
+        minimum = minimum or 0,
         maximum = maximum,
         bar_active_color = beautiful.icons.spraycan.color,
     }
@@ -228,8 +229,8 @@ local function new(layout)
         separator(),
         picom_slider("shadow-radius", 100, true),
         picom_slider("shadow-opacity", 1, false),
-        picom_slider("shadow-offset-x", 100, true),
-        picom_slider("shadow-offset-y", 100, true),
+        picom_slider("shadow-offset-x", 500, true, -500),
+        picom_slider("shadow-offset-y", 500, true, -500),
         picom_checkbox("shadow"),
         separator(),
         picom_slider("fade-delta", 100, true),
