@@ -308,7 +308,7 @@ function prompt:start()
                 wp.cur_pos = wstart
             end
         else
-            if key == "Escape" then
+            if key == "Escape" or key == "Return" then
                 if self.always_on == false then
                     self:stop()
                     return
