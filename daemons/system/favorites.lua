@@ -25,6 +25,10 @@ function favorites:remove_favorite(client)
 end
 
 function favorites:is_favorite(client)
+    return self._private.favorites[client.class] ~= nil
+end
+
+function favorites:get_favorite_command(client)
     return self._private.favorites[client.class]
 end
 

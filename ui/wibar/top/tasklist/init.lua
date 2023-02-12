@@ -218,8 +218,8 @@ local function new()
             end
         end
 
-        local command = favorites_daemon:is_favorite(client)
-        if command ~= nil and favorites[client.class] == nil then
+        if favorites_daemon:is_favorite(client) and favorites[client.class] == nil then
+            local command = favorites_daemon:get_favorite_command(client)
             favorites:add(favorite_widget(favorites, command, client.class))
         end
     end)
