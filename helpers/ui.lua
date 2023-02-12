@@ -1,10 +1,6 @@
 local gshape = require("gears.shape")
 local gmatrix = require("gears.matrix")
 local ipairs = ipairs
-local table = table
-local capi = {
-    mouse = mouse
-}
 
 local _ui = {}
 
@@ -19,33 +15,11 @@ function _ui.rrect(radius)
     end
 end
 
-function _ui.pie(width, height, start_angle, end_angle, radius)
-    return function(cr)
-        gshape.pie(cr, width, height, start_angle, end_angle, radius)
-    end
-end
-
-function _ui.prgram(height, base)
-    return function(cr, width)
-        gshape.parallelogram(cr, width, height, base)
-    end
-end
-
 function _ui.prrect(tl, tr, br, bl)
     return function(cr, width, height)
         local radius = require("beautiful").border_radius
         gshape.partially_rounded_rect(cr, width, height, tl, tr, br, bl, radius)
     end
-end
-
-function _ui.custom_shape(cr, width, height)
-    cr:move_to(0, height / 25)
-    cr:line_to(height / 25, 0)
-    cr:line_to(width, 0)
-    cr:line_to(width, height - height / 25)
-    cr:line_to(width - height / 25, height)
-    cr:line_to(0, height)
-    cr:close_path()
 end
 
 local function _get_widget_geometry(_hierarchy, widget)
