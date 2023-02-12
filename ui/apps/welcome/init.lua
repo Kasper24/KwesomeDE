@@ -347,19 +347,19 @@ local function weather_page(on_next_pressed, on_previous_pressed)
                         widget = wibox.container.place,
                         halign = "center",
                         valign = "center",
-                        api_key_prompt.widget
+                        api_key_prompt
                     },
                     {
                         widget = wibox.container.place,
                         halign = "center",
                         valign = "center",
-                        coordinate_x_prompt.widget
+                        coordinate_x_prompt
                     },
                     {
                         widget = wibox.container.place,
                         halign = "center",
                         valign = "center",
-                        coordinate_y_prompt.widget
+                        coordinate_y_prompt
                     },
                     {
                         widget = wibox.container.place,
@@ -523,13 +523,13 @@ local function gitlab_page(on_next_pressed, on_previous_pressed)
                     widget = wibox.container.place,
                     halign = "center",
                     valign = "center",
-                    access_token_prompt.widget
+                    access_token_prompt
                 },
                 {
                     widget = wibox.container.place,
                     halign = "center",
                     valign = "center",
-                    host_prompt.widget
+                    host_prompt
                 }
             },
             nil,
@@ -633,7 +633,7 @@ local function github_page(on_next_pressed, on_previous_pressed)
                     widget = wibox.container.place,
                     halign = "center",
                     valign = "center",
-                    username_prompt.widget
+                    username_prompt
                 }
             },
             nil,
@@ -762,19 +762,19 @@ local function email_page(on_next_pressed, on_previous_pressed)
                     widget = wibox.container.place,
                     halign = "center",
                     valign = "center",
-                    machine_prompt.widget
+                    machine_prompt
                 },
                 {
                     widget = wibox.container.place,
                     halign = "center",
                     valign = "center",
-                    login_prompt.widget
+                    login_prompt
                 },
                 {
                     widget = wibox.container.place,
                     halign = "center",
                     valign = "center",
-                    password_prompt.widget
+                    password_prompt
                 }
             },
             nil,
@@ -878,7 +878,7 @@ local function password_page(on_next_pressed, on_previous_pressed)
                     widget = wibox.container.place,
                     halign = "center",
                     valign = "center",
-                    password_prompt.widget
+                    password_prompt
                 }
             },
             nil,
@@ -1125,7 +1125,7 @@ local function new()
         }
     end)
 
-    if helpers.settings:get_value("initial") ~= false then
+    if helpers.settings:get_value("initial") ~= true then
         ret:show()
     end
 
