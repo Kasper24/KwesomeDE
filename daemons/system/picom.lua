@@ -36,10 +36,10 @@ function picom:turn_on(save)
             cmd = cmd .. "--experimental-backends "
         end
         if stdout:find("--animations", 1, true) == nil then
-            table.remove(properties)
-            table.remove(properties)
-            table.remove(properties)
-            table.remove(bool_properties)
+            helpers.table.remove_value(properties, "animation-stiffness")
+            helpers.table.remove_value(properties, "animation-dampening")
+            helpers.table.remove_value(properties, "animation-window-mass")
+            helpers.table.remove_value("animations")
         end
 
         cmd = cmd .. "--config " .. CONFIG_PATH .. " "

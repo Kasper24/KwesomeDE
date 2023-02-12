@@ -96,9 +96,13 @@ function _table.contains_only(table, elems, strify)
         end
         if not _table.contains(elems, val) then
             return false
+function _table.remove_value(tbl, value)
+    for index, _value in ipairs(tbl) do
+        if _value == value then
+            table.remove(tbl, index)
+            break
         end
     end
-    return true
 end
 
 return _table
