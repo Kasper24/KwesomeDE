@@ -59,7 +59,7 @@ local function access_point_widget(layout, access_point)
 
     local prompt = wibox.widget {
         widget = widgets.prompt,
-        forced_width = dpi(450),
+        forced_width = dpi(440),
         forced_height = dpi(50),
         halign = "left",
         obscure = true,

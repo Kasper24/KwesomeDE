@@ -22,14 +22,15 @@ local checkbox = {
 local properties = {"on_turn_on", "on_turn_off", "color"}
 
 local switch_dimensions = {
-    w = dpi(46),
-    h = dpi(18)
+    w = dpi(50),
+    h = dpi(25)
 }
 local ball_dimensions = {
     w = dpi(18),
-    h = dpi(18)
+    h = dpi(20)
 }
-local padding = dpi(5)
+local padding = dpi(3)
+local y_offset = dpi(3)
 local start_ball_position = ball_dimensions.w - switch_dimensions.w
 local done_ball_position = -start_ball_position - padding -- just invert it
 
@@ -60,6 +61,7 @@ function checkbox:turn_on()
         handle_offset = done_ball_position,
         handle_color = helpers.color.hex_to_rgb(wp.handle_active_color),
     }
+
     wp.state = true
 
     if wp.on_turn_on ~= nil then
@@ -74,6 +76,7 @@ function checkbox:turn_off()
         handle_offset = padding * self._private.scale,
         handle_color = helpers.color.hex_to_rgb(beautiful.colors.on_background),
     }
+
     wp.state = false
 
     if wp.on_turn_off ~= nil then
@@ -91,18 +94,26 @@ end
 
 function checkbox:set_handle_active_color(active_color)
     local wp = self._private
+    wp.animation:stop()
+
     wp.handle_active_color = active_color
 
-    local handle = self.children[1].children[1]
-    handle.bg = active_color
+    if wp.state == true then
+        local handle = self.children[1].children[1].children[1]
+        handle.bg = active_color
+    end
 end
 
 function checkbox:set_scale(scale)
     local wp = self._private
     wp.scale = scale
-    self.forced_height = self.forced_height * scale
 
-    local handle = self.children[1].children[1]
+    local background = self.children[1]
+    background.forced_width = background.forced_width * scale
+    background.forced_height = background.forced_height * scale
+
+    local handle = self.children[1].children[1].children[1]
+    handle.forced_width = handle.forced_width * scale
     handle.forced_height = handle.forced_height * scale
 end
 
@@ -123,7 +134,7 @@ local function new()
         widget = bwidget,
         forced_width = ball_dimensions.w,
         forced_height = ball_dimensions.h,
-        point = { x = padding, y = 4},
+        point = { x = padding, y = y_offset },
         shape = gshape.circle,
         bg = beautiful.colors.on_background
     }
@@ -134,12 +145,17 @@ local function new()
     }
 
     local widget = wibox.widget {
-        widget = bwidget,
-        forced_width = switch_dimensions.w,
-        forced_height = switch_dimensions.h,
-        shape = gshape.rounded_bar,
-        bg = beautiful.colors.surface,
-        layout
+        widget = wibox.container.place,
+        halign = "center",
+        valign = "center",
+        {
+            widget = bwidget,
+            forced_width = switch_dimensions.w,
+            forced_height = switch_dimensions.h,
+            shape = gshape.rounded_bar,
+            bg = beautiful.colors.surface,
+            layout
+        }
     }
     gtable.crush(widget, checkbox, true)
 
@@ -156,7 +172,7 @@ local function new()
             handle_color = helpers.color.hex_to_rgb(beautiful.colors.on_background)
         },
         update = function(self, pos)
-            layout:move(1, {x = pos.handle_offset, y = 4})
+            layout:move(1, { x = pos.handle_offset, y = y_offset })
             handle.bg = helpers.color.rgb_to_hex(pos.handle_color)
         end
     }
