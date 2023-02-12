@@ -108,27 +108,21 @@ local function application_widget(args)
     }
 
     local widget = wibox.widget {
-        widget = wibox.container.margin,
-        margins = {
-            right = dpi(20)
-        },
+        layout = wibox.layout.fixed.vertical,
+        forced_height = dpi(80),
+        spacing = dpi(15),
         {
-            layout = wibox.layout.fixed.vertical,
-            forced_height = dpi(80),
-            spacing = dpi(15),
+            layout = wibox.layout.align.horizontal,
             {
-                layout = wibox.layout.align.horizontal,
-                {
-                    layout = wibox.layout.fixed.horizontal,
-                    spacing = dpi(15),
-                    icon,
-                    name
-                },
-                nil,
-                mute
+                layout = wibox.layout.fixed.horizontal,
+                spacing = dpi(15),
+                icon,
+                name
             },
-            slider
-        }
+            nil,
+            mute
+        },
+        slider
     }
 
     pactl_daemon:connect_signal(args.type .. "::" .. args.application.id .. "::removed", function(self)
@@ -214,27 +208,21 @@ local function device_widget(args)
     }
 
     local widget = wibox.widget {
-        widget = wibox.container.margin,
-        margins = {
-            right = dpi(20)
-        },
+        layout = wibox.layout.fixed.vertical,
+        forced_height = dpi(80),
+        spacing = dpi(15),
         {
-            layout = wibox.layout.fixed.vertical,
-            forced_height = dpi(80),
-            spacing = dpi(15),
+            layout = wibox.layout.align.horizontal,
+            name,
+            nil,
             {
-                layout = wibox.layout.align.horizontal,
-                name,
-                nil,
-                {
-                    layout = wibox.layout.fixed.horizontal,
-                    spacing = dpi(15),
-                    mute,
-                    default
-                }
-            },
-            slider
-        }
+                layout = wibox.layout.fixed.horizontal,
+                spacing = dpi(15),
+                mute,
+                default
+            }
+        },
+        slider
     }
 
     pactl_daemon:connect_signal(args.type .. "::" .. args.device.id .. "::removed", function(self)

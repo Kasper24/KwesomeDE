@@ -188,7 +188,7 @@ function overflow:layout(context, orig_width, orig_height)
 
     for i, w in ipairs(widgets) do
         local content_x, content_y
-        local content_w, content_h = base.fit_widget(self, context, w, width, height)
+        local content_w, content_h = base.fit_widget(self, context, w, need_scrollbar and width - self._private.scrollbar_spacing or width, height)
 
         -- When scrolling down, the content itself moves up -> substract
         local scrolled_pos = pos - (scroll_position * interval)
@@ -232,9 +232,8 @@ function overflow:layout(context, orig_width, orig_height)
                         math.floor(is_y and (content_y - spacing) or content_y),
                         math.floor(is_y and content_w or spacing), math.floor(is_y and spacing or content_h)))
             end
-
             table.insert(result, base.place_widget_at(w, math.floor(content_x), math.floor(content_y),
-                math.floor(content_w), math.floor(content_h)))
+                math.floor(need_scrollbar and content_w - self._private.scrollbar_spacing or content_w), math.floor(content_h)))
         end
     end
 
@@ -456,6 +455,18 @@ function overflow:get_scrollbar_widget()
     return self._private.scrollbar_widget
 end
 
+
+function overflow:set_scrollbar_spacing(spacing)
+    self._private.scrollbar_spacing = spacing
+
+    self:emit_signal("widget::layout_changed")
+    self:emit_signal("property::scrollbar_spacing", spacing)
+end
+
+function overflow:get_scrollbar_spacing()
+    return self._private.scrollbar_spacing
+end
+
 local function new(dir, ...)
     local ret = fixed[dir](...)
 
@@ -475,6 +486,7 @@ local function new(dir, ...)
     ret._private.scrollbar_width = 5
     ret._private.scrollbar_enabled = true
     ret._private.scrollbar_position = dir == "vertical" and "right" or "bottom"
+    ret._private.scrollbar_spacing = 15
 
     local scrollbar_widget = separator({
         shape = gshape.rectangle
