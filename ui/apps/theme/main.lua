@@ -162,7 +162,7 @@ local function mountain_tab()
 end
 
 local function digital_sun_tab()
-    local widget = wibox.widget {
+    local sun = wibox.widget {
         colors = theme_daemon:get_colorscheme(),
         fit = function(_, _, width, height) return width, height end,
         draw = function(self, _, cr, width, height)
@@ -219,12 +219,20 @@ local function digital_sun_tab()
         end
     }
 
+    -- I can't manage to clip the grid correctly so it fits inside
+    -- the widget, so instead showing an image of it
+    local image = wibox.widget {
+        widget = wibox.widget.imagebox,
+        image =  wibox.widget.draw_to_image_surface(sun, 1000, 370)
+    }
+
     theme_daemon:connect_signal("colorscheme::generated", function(self, new_colors)
-        widget.colors = new_colors
-        widget:emit_signal("widget::redraw_needed")
+        sun.colors = new_colors
+        sun:emit_signal("widget::redraw_needed")
+        image.image = wibox.widget.draw_to_image_surface(sun, 1000, 370)
     end)
 
-    return widget
+    return image
 end
 
 local function binary_tab()
