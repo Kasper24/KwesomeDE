@@ -26,21 +26,21 @@ local function generate_action_string(event)
 
     if (event.type == "PullRequestEvent") then
         action_string = event.payload.action .. " a pull request in"
-        link = event.pr_url
+        link = event.payload.pull_request.html_url
         icon = beautiful.icons.code_pull_request
     elseif (event.type == "PullRequestReviewCommentEvent") then
         action_string = event.payload.action == "created" and "commented in pull request" or event.payload.action ..
                             " a comment in"
-        link = event.pr_url
+        link = event.payload.pull_request.html_url
         icon = beautiful.icons.message
     elseif (event.type == "IssuesEvent") then
         action_string = event.payload.action .. " an issue in"
-        link = event.issue_url
+        link = event.payload.issue.html_url
         icon = beautiful.icons.circle_exclamation
     elseif (event.type == "IssueCommentEvent") then
         action_string = event.payload.action == "created" and "commented in issue" or event.payload.action ..
                             " a comment in"
-        link = event.issue_url
+        link = event.payload.issue.html_url
         icon = beautiful.icons.message
     elseif (event.type == "WatchEvent") then
         action_string = "starred"
