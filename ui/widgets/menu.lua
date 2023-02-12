@@ -348,8 +348,8 @@ function menu.button(args)
         }
     }
 
-    function widget:set_icon(icon)
-        icon:set_icon(icon)
+    function widget:set_icon(new_icon)
+        icon:set_icon(new_icon)
     end
 
     return widget
