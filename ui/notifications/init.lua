@@ -3,6 +3,7 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 local awful = require("awful")
+local gtimer = require("gears.timer")
 local ruled = require("ruled")
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
@@ -14,17 +15,6 @@ local dpi = beautiful.xresources.apply_dpi
 local ipairs = ipairs
 local string = string
 local type = type
-
-local function get_oldest_notification()
-    for _, notification in ipairs(naughty.active) do
-        if notification and notification.timeout > 0 then
-            return notification
-        end
-    end
-
-    -- Fallback to first one.
-    return naughty.active[1]
-end
 
 local function play_sound(n)
     if n.category == "device.added" or n.category == "network.connected" then
@@ -123,77 +113,9 @@ local function actions_widget(n)
     return actions
 end
 
-ruled.notification.connect_signal("request::rules", function()
-    ruled.notification.append_rule {
-        rule = {},
-        properties = {
-            screen = awful.screen.preferred,
-            position = "top_right",
-            implicit_timeout = 5,
-            resident = true
-        }
-    }
-    ruled.notification.append_rule {
-        rule = {
-            app_name = "networkmanager-dmenu"
-        },
-        properties = {
-            icon = helpers.icon_theme:get_icon_path("networkmanager")
-        }
-    }
-    ruled.notification.append_rule {
-        rule = {
-            app_name = "blueman"
-        },
-        properties = {
-            icon = helpers.icon_theme:get_icon_path("blueman-device")
-        }
-    }
-end)
-
-naughty.connect_signal("request::action_icon", function(a, context, hints)
-    a.icon = helpers.icon_theme:get_icon_path(hints.id)
-end)
-
-naughty.connect_signal("added", function(n)
-    if n.title == "" or n.title == nil then
-        n.title = n.app_name
-    end
-
-    if n._private.app_font_icon == nil then
-        n.app_font_icon = beautiful.get_font_icon_for_app_name(n.app_name)
-        if n.app_font_icon == nil then
-            n.app_font_icon = beautiful.icons.window
-        end
-    else
-        n.app_font_icon = n._private.app_font_icon
-    end
-    n.font_icon = n._private.font_icon
-
-    if type(n._private.app_icon) == "table" then
-        n.app_icon = helpers.icon_theme:choose_icon(n._private.app_icon)
-    else
-        n.app_icon = helpers.icon_theme:get_icon_path(n._private.app_icon or n.app_name)
-    end
-
-    if type(n.icon) == "table" then
-        n.icon = helpers.icon_theme:choose_icon(n.icon)
-    end
-
-    if n.app_icon == "" or n.app_icon == nil then
-        n.app_icon = helpers.icon_theme:get_icon_path("application-default-icon")
-    end
-
-    if (n.icon == "" or n.icon == nil) and n.font_icon == nil then
-        n.font_icon = beautiful.icons.message
-        n.icon = helpers.icon_theme:get_icon_path("preferences-desktop-notification-bell")
-    end
-end)
-
-naughty.connect_signal("request::display", function(n)
-    if is_suspended() then
-        return
-    end
+local function create_notification(n)
+    -- Absurdly big number because setting it to 0 doesn't work
+    n:set_timeout(4294967)
 
     local accent_color = get_notification_accent_color(n)
 
@@ -309,11 +231,11 @@ naughty.connect_signal("request::display", function(n)
         }
     }
 
-    -- Don't destroy the notification on click
+    -- Still waiting on that PR to fix this!
     widget.buttons = {}
 
     local timeout_arc_anim = helpers.animation:new{
-        duration = n.timeout,
+        duration = 5,
         target = 100,
         easing = helpers.animation.easing.linear,
         reset_on_stop = false,
@@ -322,13 +244,7 @@ naughty.connect_signal("request::display", function(n)
         end
     }
 
-    timeout_arc_anim:connect_signal("ended", function()
-        n:destroy()
-    end)
-
     widget:connect_signal("mouse::enter", function()
-        -- Absurdly big number because setting it to 0 doesn't work
-        n:set_timeout(4294967)
         timeout_arc_anim:stop()
     end)
 
@@ -336,15 +252,94 @@ naughty.connect_signal("request::display", function(n)
         timeout_arc_anim:set()
     end)
 
-    local notification_height = widget.height + beautiful.notification_spacing
-    local total_notifications_height = (#naughty.active) * notification_height
-
-    if total_notifications_height > n.screen.workarea.height then
-        get_oldest_notification():destroy(naughty.notification_closed_reason.too_many_on_screen)
-    end
+    timeout_arc_anim:connect_signal("ended", function()
+        n:destroy()
+    end)
 
     timeout_arc_anim:set()
     play_sound(n)
+end
+
+ruled.notification.connect_signal("request::rules", function()
+    ruled.notification.append_rule {
+        rule = {},
+        properties = {
+            screen = awful.screen.preferred,
+            position = "top_right",
+            implicit_timeout = 5,
+            resident = true
+        }
+    }
+    ruled.notification.append_rule {
+        rule = {
+            app_name = "networkmanager-dmenu"
+        },
+        properties = {
+            icon = helpers.icon_theme:get_icon_path("networkmanager")
+        }
+    }
+    ruled.notification.append_rule {
+        rule = {
+            app_name = "blueman"
+        },
+        properties = {
+            icon = helpers.icon_theme:get_icon_path("blueman-device")
+        }
+    }
+end)
+
+naughty.connect_signal("request::action_icon", function(a, context, hints)
+    a.icon = helpers.icon_theme:get_icon_path(hints.id)
+end)
+
+naughty.connect_signal("added", function(n)
+    if n.title == "" or n.title == nil then
+        n.title = n.app_name
+    end
+
+    if n._private.app_font_icon == nil then
+        n.app_font_icon = beautiful.get_font_icon_for_app_name(n.app_name)
+        if n.app_font_icon == nil then
+            n.app_font_icon = beautiful.icons.window
+        end
+    else
+        n.app_font_icon = n._private.app_font_icon
+    end
+    n.font_icon = n._private.font_icon
+
+    if type(n._private.app_icon) == "table" then
+        n.app_icon = helpers.icon_theme:choose_icon(n._private.app_icon)
+    else
+        n.app_icon = helpers.icon_theme:get_icon_path(n._private.app_icon or n.app_name)
+    end
+
+    if type(n.icon) == "table" then
+        n.icon = helpers.icon_theme:choose_icon(n.icon)
+    end
+
+    if n.app_icon == "" or n.app_icon == nil then
+        n.app_icon = helpers.icon_theme:get_icon_path("application-default-icon")
+    end
+
+    if (n.icon == "" or n.icon == nil) and n.font_icon == nil then
+        n.font_icon = beautiful.icons.message
+        n.icon = helpers.icon_theme:get_icon_path("preferences-desktop-notification-bell")
+    end
+end)
+
+naughty.connect_signal("request::display", function(n)
+    if is_suspended() then
+        return
+    end
+
+    gtimer.start_new(0.1, function()
+        if #naughty.active > 3 then
+            return true
+        end
+
+        create_notification(n)
+        return false
+    end)
 end)
 
 require(... .. ".bluetooth")
