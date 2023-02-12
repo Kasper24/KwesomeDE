@@ -1125,7 +1125,7 @@ local function new()
         }
     end)
 
-    if helpers.settings:get_value("initial") ~= true then
+    if helpers.settings:get_value("initial") ~= false then
         ret:show()
     end
 
