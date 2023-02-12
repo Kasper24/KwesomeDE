@@ -34,8 +34,7 @@ local function new()
         ontop = true,
         minimum_width = dpi(550),
         maximum_width = dpi(550),
-        minimum_height = capi.screen.primary.workarea.height,
-        maximum_height = capi.screen.primary.workarea.height,
+        max_height = true,
         placement = function(widget)
             awful.placement.top_right(widget, {
                 honor_workarea = true,

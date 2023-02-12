@@ -47,7 +47,7 @@ local function new()
             })
         end,
         shape = function(cr, width, height)
-            gshape.infobubble(cr, width, dpi(600), nil, nil, dpi(360))
+            gshape.infobubble(cr, width, height, nil, nil, dpi(360))
         end,
         bg = beautiful.colors.background,
         widget = wibox.widget {

@@ -22,9 +22,11 @@ end
 function animated_panel:show()
     self.state = true
 
-    self.screen = awful.screen.focused()
-    self.minimum_height = awful.screen.focused().workarea.height
-    self.maximum_height = awful.screen.focused().workarea.height
+    if self.max_height then
+        self.screen = awful.screen.focused()
+        self.minimum_height = awful.screen.focused().workarea.height
+        self.maximum_height = awful.screen.focused().workarea.height
+    end
 
     self.placement = nil
 
