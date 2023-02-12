@@ -18,7 +18,7 @@ function spinning_circle:start()
     self._private.anim:set()
 end
 
-function spinning_circle:abort()
+function spinning_circle:stop()
     self._private.anim:stop()
 end
 
@@ -28,6 +28,7 @@ local function new(args)
     args.forced_width = args.forced_width or nil
     args.forced_height = args.forced_height or nil
     args.thickness = args.thickness or dpi(30)
+    args.run_by_default = args.run_by_default
 
     local widget = wibox.widget {
         widget = acwidget,
@@ -55,7 +56,9 @@ local function new(args)
         end
     }
 
-    widget._private.anim:set()
+    if args.run_by_default == true or args.run_by_default == nil then
+        widget._private.anim:set()
+    end
 
     return widget
 end

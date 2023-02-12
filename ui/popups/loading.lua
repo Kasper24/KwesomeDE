@@ -86,7 +86,7 @@ awful.screen.connect_for_each_screen(function(s)
         call_now = false,
         autostart = true,
         callback = function()
-            spinning_circle:abort()
+            spinning_circle:stop()
             spinning_circle = nil
             loading_popup.visible = false
             loading_popup = nil

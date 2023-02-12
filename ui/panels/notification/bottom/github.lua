@@ -208,17 +208,17 @@ local function events()
     }
 
     github_daemon:connect_signal("events::error", function()
-        spinning_circle.children[1]:abort()
+        spinning_circle.children[1]:stop()
         widget:raise_widget(error_icon)
     end)
 
     github_daemon:connect_signal("missing_credentials", function()
-        spinning_circle.children[1]:abort()
+        spinning_circle.children[1]:stop()
         widget:raise_widget(missing_credentials_text)
     end)
 
     github_daemon:connect_signal("events", function(self, events, path_to_avatars)
-        spinning_circle.children[1]:abort()
+        spinning_circle.children[1]:stop()
         scrollbox:reset()
         collectgarbage("collect")
         widget:raise_widget(scrollbox)
@@ -316,17 +316,17 @@ local function prs()
     }
 
     github_daemon:connect_signal("prs::error", function()
-        spinning_circle.children[1]:abort()
+        spinning_circle.children[1]:stop()
         widget:raise_widget(error_icon)
     end)
 
     github_daemon:connect_signal("missing_credentials", function()
-        spinning_circle.children[1]:abort()
+        spinning_circle.children[1]:stop()
         widget:raise_widget(missing_credentials_text)
     end)
 
     github_daemon:connect_signal("prs", function(self, prs, path_to_avatars)
-        spinning_circle.children[1]:abort()
+        spinning_circle.children[1]:stop()
         scrollbox:reset()
         collectgarbage("collect")
         widget:raise_widget(scrollbox)

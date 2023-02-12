@@ -423,11 +423,10 @@ local function widget(self)
         widgets.spinning_circle {
             forced_width = dpi(250),
             forced_height = dpi(250),
-            thickness = dpi(30)
+            thickness = dpi(30),
+            run_by_default = false
         }
     }
-
-    spinning_circle.children[1]:abort()
 
     local wallpapers_layout = wibox.widget {
         layout = widgets.overflow.vertical,
@@ -547,12 +546,12 @@ local function widget(self)
     end)
 
     theme_daemon:connect_signal("colorscheme::failed_to_generate", function()
-        spinning_circle.children[1]:abort()
+        spinning_circle.children[1]:stop()
         stack:raise_widget(widget)
     end)
 
     theme_daemon:connect_signal("wallpaper::selected", function()
-        spinning_circle.children[1]:abort()
+        spinning_circle.children[1]:stop()
         stack:raise_widget(widget)
     end)
 
@@ -568,7 +567,7 @@ local function widget(self)
         end
 
         stack:raise_widget(widget)
-        spinning_circle.children[1]:abort()
+        spinning_circle.children[1]:stop()
     end)
 
     theme_daemon:connect_signal("wallpapers::empty", function()

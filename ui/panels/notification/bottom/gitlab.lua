@@ -177,17 +177,17 @@ local function new()
     }
 
     gitlab_daemon:connect_signal("error", function()
-        spinning_circle.children[1]:abort()
+        spinning_circle.children[1]:stop()
         widget:raise_widget(error_icon)
     end)
 
     gitlab_daemon:connect_signal("missing_credentials", function()
-        spinning_circle.children[1]:abort()
+        spinning_circle.children[1]:stop()
         widget:raise_widget(missing_credentials_text)
     end)
 
     gitlab_daemon:connect_signal("update", function(self, mrs, path_to_avatars)
-        spinning_circle.children[1]:abort()
+        spinning_circle.children[1]:stop()
         scrollbox:reset()
         collectgarbage("collect")
         widget:raise_widget(scrollbox)

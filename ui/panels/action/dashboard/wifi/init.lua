@@ -132,9 +132,9 @@ local function access_point_widget(layout, access_point)
     local spinning_circle = widgets.spinning_circle {
         forced_width = dpi(25),
         forced_height = dpi(25),
-        thickness = dpi(10)
+        thickness = dpi(10),
+        run_by_default = false
     }
-    spinning_circle:abort()
 
     local connect_or_disconnect_stack = wibox.widget {
         widget = wibox.layout.stack,
@@ -158,7 +158,7 @@ local function access_point_widget(layout, access_point)
             layout:insert(1, widget)
             connect_or_disconnect:set_text("Disconnect")
 
-            spinning_circle:abort()
+            spinning_circle:stop()
             connect_or_disconnect_stack:raise_widget(connect_or_disconnect)
 
             prompt:stop()
@@ -168,7 +168,7 @@ local function access_point_widget(layout, access_point)
     end)
 
     network_daemon:connect_signal("access_point::connected", function(self, ssid, strength)
-        spinning_circle:abort()
+        spinning_circle:stop()
         connect_or_disconnect_stack:raise_widget(connect_or_disconnect)
     end)
 

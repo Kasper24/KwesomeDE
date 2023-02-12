@@ -119,12 +119,12 @@ local function new()
     }
 
     email_daemon:connect_signal("error", function()
-        spinning_circle.children[1]:abort()
+        spinning_circle.children[1]:stop()
         widget:raise_widget(error_icon)
     end)
 
     email_daemon:connect_signal("emails", function(self, emails)
-        spinning_circle.children[1]:abort()
+        spinning_circle.children[1]:stop()
         scrollbox:reset()
         collectgarbage("collect")
         widget:raise_widget(scrollbox)

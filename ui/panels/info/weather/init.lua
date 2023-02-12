@@ -366,17 +366,17 @@ local function new()
     }
 
     weather_daemon:connect_signal("error", function()
-        spinning_circle.children[1]:abort()
+        spinning_circle.children[1]:stop()
         stack:raise_widget(error_icon)
     end)
 
     weather_daemon:connect_signal("missing_credentials", function()
-        spinning_circle.children[1]:abort()
+        spinning_circle.children[1]:stop()
         stack:raise_widget(missing_credentials_text)
     end)
 
     weather_daemon:connect_signal("weather", function(self, result, units)
-        spinning_circle.children[1]:abort()
+        spinning_circle.children[1]:stop()
 
         hours:reset()
         temperatures:reset()

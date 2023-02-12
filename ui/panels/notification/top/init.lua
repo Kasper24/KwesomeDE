@@ -325,14 +325,14 @@ local function new()
             scrollbox:insert(1, notification_groups[notification.app_name].widget)
         end
 
-        spinning_circle.children[1]:abort()
+        spinning_circle.children[1]:stop()
         stack:remove_widgets(spinning_circle)
         stack:raise_widget(scrollbox)
     end)
 
     notifications_daemon:connect_signal("empty", function(self)
         notification_groups = {}
-        spinning_circle.children[1]:abort()
+        spinning_circle.children[1]:stop()
         scrollbox:reset()
         stack:remove_widgets(spinning_circle)
         stack:raise_widget(empty_notifications)
