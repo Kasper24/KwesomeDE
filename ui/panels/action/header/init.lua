@@ -100,7 +100,6 @@ local function new()
     local info = wibox.widget {
         layout = wibox.layout.fixed.vertical,
         spacing = dpi(15),
-        widgets.spacer.vertical(1),
         {
             layout = wibox.layout.fixed.horizontal,
             spacing = dpi(140),
@@ -109,7 +108,6 @@ local function new()
         },
         uptime_widget,
         packages,
-        widgets.spacer.vertical(1)
     }
 
     local startup = true

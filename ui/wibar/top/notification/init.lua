@@ -15,7 +15,7 @@ local notification = {
 local function new()
     local widget = wibox.widget {
         widget = wibox.container.margin,
-        margins = dpi(5),
+        margins = { top = dpi(5), bottom = dpi(5), left = dpi(5), right = dpi(25)},
         {
             widget = widgets.button.text.state,
             id = "button",

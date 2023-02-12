@@ -202,8 +202,11 @@ function ncmppcpp.media_controls_titlebar(c)
             {
                 layout = wibox.layout.fixed.horizontal,
                 spacing = dpi(15),
-                widgets.spacer.horizontal(1),
-                widgets.playerctl.art("center", "top", dpi(50), 25, playerctl_daemon),
+                {
+                    widget = wibox.container.margin,
+                    margins = { left = dpi(15) },
+                    widgets.playerctl.art("center", "top", dpi(50), 25, playerctl_daemon),
+                },
                 {
                     widget = wibox.container.place,
                     valign = "center",
@@ -228,8 +231,11 @@ function ncmppcpp.media_controls_titlebar(c)
         },
         {
             layout = wibox.layout.fixed.horizontal,
-            widgets.playerctl.volume(dpi(100), playerctl_daemon),
-            widgets.spacer.horizontal(30)
+            {
+                widget = wibox.container.margin,
+                margins = { right = dpi(30) },
+                widgets.playerctl.volume(dpi(100), playerctl_daemon),
+            }
         }
     }
 

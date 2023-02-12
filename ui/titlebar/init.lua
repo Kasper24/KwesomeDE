@@ -180,8 +180,11 @@ capi.client.connect_signal("request::titlebars", function(c)
                 spacing = dpi(15),
                 minimize,
                 maximize,
-                close,
-                widgets.spacer.horizontal(dpi(5))
+                {
+                    widget = wibox.container.margin,
+                    margins = { right = 20 },
+                    close
+                }
             }
         }
     }
