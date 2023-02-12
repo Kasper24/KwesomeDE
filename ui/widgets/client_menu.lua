@@ -45,6 +45,7 @@ local function new(client)
                                 client_checkbox_button(client, "ontop", "On Top")}
 
     local pin_to_taskbar_button = mwidget.checkbox_button {
+        state = favorites_daemon:is_favorite(client),
         handle_active_color = client.font_icon.color,
         text = "Pin to Taskbar",
         on_press = function(self)
@@ -57,12 +58,6 @@ local function new(client)
             end
         end
     }
-
-    if favorites_daemon:is_favorite(client) then
-        pin_to_taskbar_button:turn_on()
-    else
-        pin_to_taskbar_button:turn_off()
-    end
 
     local menu = mwidget {
         mwidget.button {
