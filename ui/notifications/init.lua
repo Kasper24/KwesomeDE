@@ -12,8 +12,10 @@ local naughty = require("naughty")
 local notifications_daemon = require("daemons.system.notifications")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
+local max = math.max
 local ipairs = ipairs
 local string = string
+local table = table
 local type = type
 
 local function play_sound(n)
@@ -42,6 +44,23 @@ local function get_notification_accent_color(n)
     return n.app_font_icon.color or
             n.font_icon.color or
             beautiful.colors.random_accent_color()
+end
+
+local function set_notification_position(n, screen)
+    local placement = awful.placement.top_right(n.widget, {
+        honor_workarea = true,
+        honor_padding = true,
+        attach = true,
+        pretend = true,
+        margins = dpi(30)
+    })
+    n.widget.x = placement.x
+    n.widget.y = placement.y
+
+    if #screen.notifications > 1 then
+        local parent = screen.notifications[#screen.notifications - 1]
+        n.widget.y = parent.widget.y + parent.widget.height + 30
+    end
 end
 
 local function app_icon_widget(n)
@@ -231,6 +250,10 @@ local function create_notification(n)
         }
     }
 
+    local screen = awful.screen.focused()
+    table.insert(screen.notifications, n)
+    set_notification_position(n, screen)
+
     local timeout_arc_anim = helpers.animation:new{
         duration = 5,
         target = 100,
@@ -247,20 +270,31 @@ local function create_notification(n)
     }
 
     local size_anim = helpers.animation:new{
-        pos = {
-            width = 0,
-            height = 1
-        },
+        pos = 1,
         duration = 0.5,
         easing = helpers.animation.easing.linear,
         update = function(self, pos)
-            n.widget.maximum_height = dpi(math.max(1, pos.height))
+            n.widget.maximum_height = dpi(max(1, pos))
         end,
         signals = {
             ["ended"] = function()
                 timeout_arc_anim:set()
+
+                if n.hiding then
+                    n.widget.visible = false
+                    n.widget = nil
+                end
             end
         }
+    }
+
+    n.pos_anim = helpers.animation:new{
+        pos = n.widget.y,
+        duration = 0.5,
+        easing = helpers.animation.easing.linear,
+        update = function(self, pos)
+            n.widget.y = pos
+        end
     }
 
     n.widget:connect_signal("mouse::enter", function()
@@ -271,34 +305,19 @@ local function create_notification(n)
         timeout_arc_anim:set()
     end)
 
-    size_anim:set{width = dpi(400), height = dpi(300)}
-    play_sound(n)
-
-    local placement = awful.placement.top_right(n.widget, {
-        honor_workarea = true,
-        honor_padding = true,
-        attach = true,
-        pretend = true,
-        margins = dpi(30)
-    })
-    n.widget.x = placement.x
-    n.widget.y = placement.y
-
-    n.parent = awful.screen.focused().last_notif
-    if n.parent then
-        n.widget.y = n.parent.widget.y + n.parent.widget.height + 30
-
-        n.parent:connect_signal("destroyed", function()
-            n.widget.y = n.parent.widget.y
-        end)
-    end
-
     n:connect_signal("destroyed", function()
-        n.widget.visible = false
-        -- n.widget = nil
+        helpers.table.remove_value(screen.notifications, n)
+        for _, n in ipairs(screen.notifications) do
+            if #screen.notifications > 0 then
+                n.pos_anim:set(n.widget.y - n.widget.height - 30)
+            end
+        end
+        n.hiding = true
+        size_anim:set(0)
     end)
 
-    awful.screen.focused().last_notif = n
+    size_anim:set(300)
+    play_sound(n)
 end
 
 ruled.notification.connect_signal("request::rules", function()
@@ -381,6 +400,10 @@ naughty.connect_signal("request::display", function(n)
         create_notification(n)
         return false
     end)
+end)
+
+awful.screen.connect_for_each_screen(function(s)
+    s.notifications = {}
 end)
 
 require(... .. ".bluetooth")
