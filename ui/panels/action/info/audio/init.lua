@@ -54,8 +54,8 @@ local function application_widget(args)
     args.on_slider_moved = args.on_slider_moved or nil
     args.on_removed_cb = args.on_removed_cb or nil
 
-    local icon = nil
     local font_icon = beautiful.get_font_icon_for_app_name(args.application.name)
+    local icon = nil
     if font_icon == nil then
         icon = wibox.widget {
             widget = wibox.widget.imagebox,
@@ -73,8 +73,6 @@ local function application_widget(args)
         }
     end
 
-    local accent_color = font_icon.color or beautiful.icons.volume.off.color
-
     local name = wibox.widget {
         widget = widgets.text,
         halign = "left",
@@ -87,8 +85,8 @@ local function application_widget(args)
         forced_width = dpi(40),
         forced_height = dpi(40),
         on_by_default = args.application.mute,
-        text_normal_bg = accent_color,
-        on_normal_bg = accent_color,
+        text_normal_bg = font_icon.color,
+        on_normal_bg = font_icon.color,
         text_on_normal_bg = beautiful.colors.on_accent,
         icon = beautiful.icons.volume.off,
         size = 12,
@@ -102,7 +100,7 @@ local function application_widget(args)
         forced_height = dpi(20),
         value = args.application.volume,
         maximum = 100,
-        bar_active_color = accent_color,
+        bar_active_color = font_icon.color,
         handle_width = dpi(20),
         handle_height = dpi(20),
     }
@@ -122,7 +120,11 @@ local function application_widget(args)
             nil,
             mute
         },
-        slider
+        {
+            widget = wibox.container.margin,
+            margins = { right = dpi(15) },
+            slider
+        }
     }
 
     pactl_daemon:connect_signal(args.type .. "::" .. args.application.id .. "::removed", function(self)
@@ -222,7 +224,11 @@ local function device_widget(args)
                 default
             }
         },
-        slider
+        {
+            widget = wibox.container.margin,
+            margins = { right = dpi(15) },
+            slider
+        }
     }
 
     pactl_daemon:connect_signal(args.type .. "::" .. args.device.id .. "::removed", function(self)

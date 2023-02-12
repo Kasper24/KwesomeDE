@@ -91,6 +91,7 @@ end
 local function fps()
     local title = wibox.widget {
         widget = widgets.text,
+        forced_width = dpi(65),
         size = 15,
         text = "FPS:"
     }
@@ -126,6 +127,7 @@ end
 local function delay()
     local title = wibox.widget {
         widget = widgets.text,
+        forced_width = dpi(65),
         size = 15,
         text = "Delay:"
     }
