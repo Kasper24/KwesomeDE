@@ -17,7 +17,76 @@ local email = {
     mt = {}
 }
 
-local function widget()
+local function email_widget(email)
+    local halign = helpers.string.contain_right_to_left_characters(email.title) and "right" or "left"
+
+    local name_halign = "left"
+    if not helpers.string.contain_right_to_left_characters(email.author.name) then
+        name_halign = halign
+    end
+
+    local title_halign = "left"
+    if not helpers.string.contain_right_to_left_characters(email.title) then
+        title_halign = halign
+    end
+
+    local author = wibox.widget {
+        widget = widgets.text,
+        halign = name_halign,
+        size = 15,
+        bold = true,
+        text = email.author.name
+    }
+
+    local time = wibox.widget {
+        widget = widgets.text,
+        halign = halign,
+        size = 12,
+        italic = true,
+        text = helpers.string.to_time_ago(os.difftime(os.time(os.date("!*t")),
+                helpers.string.parse_date(email.modified)))
+    }
+
+    local title = wibox.widget {
+        widget = widgets.text,
+        halign = title_halign,
+        size = 12,
+        bold = true,
+        text = tostring(email.title)
+    }
+
+    local summary = wibox.widget {
+        widget = widgets.text,
+        halign = "left",
+        size = 12,
+        text = tostring(email.summary)
+    }
+
+    return wibox.widget {
+        widget = wibox.container.constraint,
+        height = dpi(500),
+        {
+            widget = wibox.container.place,
+            halign = "left",
+            {
+                widget = widgets.button.elevated.normal,
+                on_release = function()
+                    email_daemon:open(email)
+                end,
+                child = wibox.widget {
+                    layout = wibox.layout.fixed.vertical,
+                    spacing = dpi(5),
+                    author,
+                    time,
+                    title,
+                    summary
+                }
+            }
+        }
+    }
+end
+
+local function new()
     local spinning_circle = wibox.widget {
         widget = wibox.container.place,
         halign = "center",
@@ -28,21 +97,7 @@ local function widget()
         }
     }
 
-    local missing_credentials_text = wibox.widget {
-        widget = wibox.container.place,
-        halign = "center",
-        valign = "center",
-        {
-            widget = widgets.text,
-            halign = "center",
-            size = 25,
-            color = beautiful.colors.on_background,
-            text = "Missing Credentials"
-        }
-    }
-
-    local error_icon
-    wibox.widget {
+    local error_icon = wibox.widget {
         widget = wibox.container.place,
         halign = "center",
         valign = "center",
@@ -61,12 +116,6 @@ local function widget()
         scrollbar_width = dpi(10),
         step = 50
     }
-
-    return spinning_circle, missing_credentials_text, error_icon, scrollbox
-end
-
-local function new()
-    local spinning_circle, _, error_icon, scrollbox = widget()
 
     local widget = wibox.widget {
         layout = wibox.layout.stack,
@@ -87,55 +136,8 @@ local function new()
         collectgarbage("collect")
         widget:raise_widget(scrollbox)
 
-        for index, email in ipairs(emails) do
-            local widget = wibox.widget {
-                widget = wibox.container.constraint,
-                height = dpi(500),
-                {
-                    widget = wibox.container.place,
-                    halign = "left",
-                    {
-                        widget = widgets.button.elevated.normal,
-                        on_release = function()
-                            email_daemon:open(email)
-                        end,
-                        child = wibox.widget {
-                            layout = wibox.layout.fixed.vertical,
-                            spacing = dpi(5),
-                            {
-                                widget = widgets.text,
-                                halign = "left",
-                                size = 12,
-                                text = "From: " .. email.author.name
-                            },
-                            {
-                                widget = widgets.text,
-                                halign = "left",
-                                size = 12,
-                                text = "Date: " .. email.modified
-                            },
-                            {
-                                widget = widgets.text,
-                                halign = "left",
-                                size = 12,
-                                text = "Subject: " .. tostring(email.title)
-                            },
-                            {
-                                widget = widgets.text,
-                                halign = "left",
-                                size = 12,
-                                text = "Summary: " .. tostring(email.summary)
-                            }
-                        }
-                    }
-                }
-            }
-            scrollbox:add(widget)
-
-            -- Make it scroll all the way down
-            if index == #emails then
-                scrollbox:add(widgets.spacer.vertical(20))
-            end
+        for _, email in ipairs(emails) do
+            scrollbox:add(email_widget(email))
         end
     end)
 
