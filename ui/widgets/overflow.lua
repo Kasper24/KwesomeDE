@@ -19,6 +19,8 @@ local separator = require('wibox.widget.separator')
 local gtable = require('gears.table')
 local gshape = require('gears.shape')
 local gobject = require('gears.object')
+local beautiful = require('beautiful')
+local dpi = beautiful.xresources.apply_dpi
 local mousegrabber = mousegrabber
 
 local overflow = {
@@ -486,7 +488,7 @@ local function new(dir, ...)
     ret._private.scrollbar_width = 5
     ret._private.scrollbar_enabled = true
     ret._private.scrollbar_position = dir == "vertical" and "right" or "bottom"
-    ret._private.scrollbar_spacing = 15
+    ret._private.scrollbar_spacing = dpi(15)
 
     local scrollbar_widget = separator({
         shape = gshape.rectangle
