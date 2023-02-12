@@ -105,6 +105,7 @@ local function fps()
     local slider = widgets.slider {
         forced_width = dpi(150),
         value = record_daemon:get_fps(),
+        round = true,
         maximum = 360,
         bar_active_color = beautiful.icons.video.color,
     }
@@ -141,6 +142,7 @@ local function delay()
     local slider = widgets.slider {
         forced_width = dpi(150),
         value = record_daemon:get_delay(),
+        round = true,
         maximum = 100,
         bar_active_color = beautiful.icons.video.color,
     }
@@ -183,7 +185,7 @@ local function audio_source()
             selected = true
         end
     end
-    for index, source in pairs(pactl_daemon:get_sources()) do
+    for _, source in pairs(pactl_daemon:get_sources()) do
         dropdown:add(source.description, source.name)
         if selected == false then
             dropdown:select(source.description, source.name)

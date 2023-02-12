@@ -58,6 +58,7 @@ local function delay()
     local slider = widgets.slider {
         forced_width = dpi(150),
         value = screenshot_daemon:get_delay(),
+        round = true,
         maximum = 100,
         bar_active_color = beautiful.icons.camera_retro.color,
     }

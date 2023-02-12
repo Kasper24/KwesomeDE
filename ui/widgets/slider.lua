@@ -1,5 +1,6 @@
 local gshape = require("gears.shape")
 local gcolor = require("gears.color")
+local gmath = require("gears.math")
 local wibox = require("wibox")
 local bwidget = require("ui.widgets.background")
 local beautiful = require("beautiful")
@@ -29,6 +30,7 @@ local function new(args)
 	args.forced_height = args.forced_height or dpi(8)
 	args.minimum = args.minimum or 0
     args.maximum = args.maximum or 1
+	args.round = args.round
     args.margins = args.margins or dpi(0)
     args.bar_height = args.bar_height or dpi(8)
 	args.bar_color = args.bar_color or beautiful.colors.surface
@@ -128,7 +130,11 @@ local function new(args)
 		--initially move it to the target (only one call of max and min is prolly fine)
 		bar.pos = math.min(math.max(((x - args.bar_height) / effwidth), 0), 1)
         bar:emit_signal("widget::redraw_needed")
-		widget:emit_signal("property::value", math.max(args.minimum, (bar.pos * args.maximum)))
+		local value = math.max(args.minimum, (bar.pos * args.maximum))
+		if args.round then
+			value = gmath.round(value)
+		end
+		widget:emit_signal("property::value", value)
 
 		capi.mousegrabber.run(function(mouse)
 			--stop (and emit signal) if you release mouse 1
@@ -148,7 +154,11 @@ local function new(args)
 			--make sure target \in (0, 1)
 			bar.pos = math.max(math.min(lpos, 1), 0)
 			bar:emit_signal("widget::redraw_needed")
-			widget:emit_signal("property::value", math.max(args.minimum, (bar.pos * args.maximum)))
+			local value = math.max(args.minimum, (bar.pos * args.maximum))
+			if args.round then
+				value = gmath.round(value)
+			end
+			widget:emit_signal("property::value", value)
 
 			return true
 		end,"fleur")
