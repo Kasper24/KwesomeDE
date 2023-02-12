@@ -239,68 +239,65 @@ local function pr_widget(pr, path_to_avatars)
         end,
         child = {
             widget = wibox.widget.imagebox,
-            forced_width = dpi(50),
-            forced_height = dpi(50),
+            forced_width = dpi(40),
+            forced_height = dpi(40),
             clip_shape = helpers.ui.rrect(),
             image = path_to_avatars .. pr.user.id
         }
     }
 
+    local repo = string.sub(pr.repository_url, string.find(pr.repository_url, "/[^/]*$") + 1)
+    local title = " - #" .. pr.number .. " " .. pr.title
+    local repo_and_title = wibox.widget {
+        widget = widgets.text,
+        forced_width = dpi(600),
+        forced_height = dpi(15),
+        size = 12,
+        bold = true,
+        text = repo .. title
+    }
+
+    local time = wibox.widget {
+        widget = widgets.text,
+        size = 12,
+        text = helpers.string .to_time_ago(os.difftime(os.time(os.date("!*t")),
+                helpers.string.parse_date(pr.created_at)))
+    }
+
+    local comments = wibox.widget {
+        layout = wibox.layout.fixed.horizontal,
+        spacing = dpi(10),
+        {
+            widget = widgets.text,
+            icon = beautiful.icons.message,
+            size = 15
+        },
+        {
+            widget = widgets.text,
+            size = 12,
+            text = pr.comments
+        }
+    }
+
     local button = wibox.widget {
         widget = widgets.button.elevated.normal,
+        haling = "left",
         on_release = function()
             awful.spawn("xdg-open " .. pr.html_url, false)
         end,
         child = wibox.widget {
             layout = wibox.layout.fixed.vertical,
-            spacing = dpi(3),
-            forced_height = dpi(65),
-            {
-                layout = wibox.layout.fixed.horizontal,
-                spacing = dpi(10),
-                {
-                    widget = widgets.text,
-                    size = 12,
-                    bold = true,
-                    text = string.sub(pr.repository_url, string.find(pr.repository_url, "/[^/]*$") + 1) ..
-                        " |"
-                },
-                {
-                    widget = widgets.text,
-                    size = 12,
-                    text = pr.title
-                }
-            },
-            {
-                widget = widgets.text,
-                size = 12,
-                text = "#" .. pr.number .. " opened " ..
-                    helpers.string
-                        .to_time_ago(
-                        os.difftime(os.time(os.date("!*t")), helpers.string.parse_date(pr.created_at))) ..
-                    " by " .. pr.user.login
-            },
-            {
-                layout = wibox.layout.fixed.horizontal,
-                spacing = dpi(10),
-                {
-                    widget = widgets.text,
-                    icon = beautiful.icons.message,
-                    size = 15
-                },
-                {
-                    widget = widgets.text,
-                    size = 12,
-                    text = pr.comments
-                }
-            }
+            spacing = dpi(5),
+            repo_and_title,
+            time,
+            comments
         }
     }
 
     return wibox.widget {
         layout = wibox.layout.fixed.horizontal,
-        forced_width = dpi(400),
-        spacing = dpi(5),
+        forced_height = dpi(90),
+        spacing = dpi(3),
         avatar,
         button
     }
