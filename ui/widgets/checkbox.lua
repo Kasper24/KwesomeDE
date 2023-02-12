@@ -26,11 +26,11 @@ local switch_dimensions = {
     h = dpi(25)
 }
 local ball_dimensions = {
-    w = dpi(18),
-    h = dpi(20)
+    w = dpi(25),
+    h = dpi(23)
 }
-local padding = dpi(3)
-local y_offset = dpi(3)
+local padding = dpi(2)
+local y_offset = dpi(1)
 local start_ball_position = ball_dimensions.w - switch_dimensions.w
 local done_ball_position = -start_ball_position - padding -- just invert it
 
@@ -73,7 +73,7 @@ function checkbox:turn_off()
     local wp = self._private
 
     wp.animation:set{
-        handle_offset = padding * self._private.scale,
+        handle_offset = padding,
         handle_color = helpers.color.hex_to_rgb(beautiful.colors.on_background),
     }
 
@@ -97,24 +97,16 @@ function checkbox:set_handle_active_color(active_color)
     wp.animation:stop()
 
     wp.handle_active_color = active_color
-
     if wp.state == true then
         local handle = self.children[1].children[1].children[1]
         handle.bg = active_color
+
+        local layout = self.children[1].children[1]
+        layout:move(1, { x = done_ball_position, y = y_offset })
+
+        wp.animation.pos.handle_offset = done_ball_position
+        wp.animation.pos.handle_color = active_color
     end
-end
-
-function checkbox:set_scale(scale)
-    local wp = self._private
-    wp.scale = scale
-
-    local background = self.children[1]
-    background.forced_width = background.forced_width * scale
-    background.forced_height = background.forced_height * scale
-
-    local handle = self.children[1].children[1].children[1]
-    handle.forced_width = handle.forced_width * scale
-    handle.forced_height = handle.forced_height * scale
 end
 
 function checkbox:set_state(state)
@@ -136,7 +128,9 @@ local function new()
         forced_height = ball_dimensions.h,
         point = { x = padding, y = y_offset },
         shape = gshape.circle,
-        bg = beautiful.colors.on_background
+        bg = beautiful.colors.on_background,
+        border_width = dpi(2),
+        border_color = beautiful.colors.background,
     }
 
     local layout = wibox.widget {
@@ -161,7 +155,6 @@ local function new()
 
     local wp = widget._private
     wp.handle_active_color = beautiful.colors.random_accent_color()
-    wp.scale = 1
     wp.state = false
 
     wp.animation = helpers.animation:new{

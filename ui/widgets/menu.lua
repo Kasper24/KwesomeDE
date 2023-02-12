@@ -244,6 +244,19 @@ function menu.sub_menu_button(args)
         icon = args.icon
     } or nil
 
+    local text = wibox.widget {
+        widget = twidget,
+        size = 12,
+        text = args.text
+    }
+
+    local arrow = wibox.widget {
+        widget = twidget,
+        icon = beautiful.icons.chevron.right,
+        color = beautiful.colors.on_background,
+        size = 12
+    }
+
     local widget = wibox.widget {
         widget = wibox.container.margin,
         forced_height = dpi(45),
@@ -271,19 +284,10 @@ function menu.sub_menu_button(args)
                     layout = wibox.layout.fixed.horizontal,
                     spacing = dpi(15),
                     icon,
-                    {
-                        widget = twidget,
-                        size = 12,
-                        text = args.text
-                    }
+                    text
                 },
                 nil,
-                {
-                    widget = twidget,
-                    icon = beautiful.icons.chevron.right,
-                    color = beautiful.colors.on_background,
-                    size = 12
-                }
+                arrow
             }
         }
     }
@@ -335,15 +339,11 @@ function menu.button(args)
                 self.menu:hide_children_menus()
             end,
             child = {
-                layout = wibox.layout.align.horizontal,
+                layout = wibox.layout.fixed.horizontal,
                 forced_width = dpi(270),
-                {
-                    layout = wibox.layout.fixed.horizontal,
-                    spacing = dpi(15),
-                    icon,
-                    text_widget
-                },
-                nil
+                spacing = dpi(15),
+                icon,
+                text_widget
             }
         }
     }
@@ -361,7 +361,6 @@ function menu.checkbox_button(args)
     args.on_press = args.on_press or nil
 
     local icon = nil
-
     if args.icon ~= nil then
         icon = wibox.widget {
             widget = twidget,
@@ -375,9 +374,14 @@ function menu.checkbox_button(args)
         }
     end
 
+    local text = wibox.widget {
+        widget = twidget,
+        size = 12,
+        text = args.text
+    }
+
     local checkbox = cbwidget {}
     checkbox:set_handle_active_color(args.handle_active_color)
-    checkbox:set_scale(0.5)
 
     local widget = nil
     widget = wibox.widget {
@@ -397,18 +401,15 @@ function menu.checkbox_button(args)
                     self.menu:hide_children_menus()
                 end,
                 child = {
-                    layout = wibox.layout.fixed.horizontal,
+                    layout = wibox.layout.align.horizontal,
+                    forced_width = dpi(270),
                     {
                         layout = wibox.layout.fixed.horizontal,
-                        forced_width = dpi(230),
                         spacing = dpi(15),
                         icon,
-                        {
-                            widget = twidget,
-                            size = 12,
-                            text = args.text
-                        }
+                        text,
                     },
+                    nil,
                     checkbox
                 }
             }
