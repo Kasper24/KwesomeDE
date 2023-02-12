@@ -198,6 +198,55 @@ local function new(layout)
         text = "Settings"
     }
 
+    local layout = wibox.widget {
+        layout = widgets.overflow.vertical,
+        scrollbar_widget = widgets.scrollbar,
+        scrollbar_width = dpi(10),
+        step = 50,
+        spacing = dpi(15),
+        separator(),
+        command_after_generation(),
+        separator(),
+        theme_slider("Useless gap: ", theme_daemon:get_useless_gap(), 250, function(value)
+            theme_daemon:set_useless_gap(gmath.round(value))
+        end),
+        theme_slider("Client gap: ", theme_daemon:get_client_gap(), 250, function(value)
+            theme_daemon:set_client_gap(gmath.round(value))
+        end),
+        separator(),
+        theme_slider("UI Opacity: ", theme_daemon:get_ui_opacity(), 1, function(value)
+            theme_daemon:set_ui_opacity(value)
+        end),
+        picom_slider("active-opacity", 1, false),
+        picom_slider("inactive-opacity", 1, false),
+        separator(),
+        theme_slider("UI Corner Radius: ", theme_daemon:get_ui_border_radius(), 100, function(value)
+            theme_daemon:set_ui_border_radius(value)
+        end),
+        picom_slider("corner-radius", 100, true),
+        picom_slider("blur-strength", 20, true),
+        separator(),
+        picom_slider("shadow-radius", 100, true),
+        picom_slider("shadow-opacity", 1, false),
+        picom_slider("shadow-offset-x", 100, true),
+        picom_slider("shadow-offset-y", 100, true),
+        picom_checkbox("shadow"),
+        separator(),
+        picom_slider("fade-delta", 100, true),
+        picom_slider("fade-in-step", 1, false),
+        picom_slider("fade-out-step", 1, false),
+        picom_checkbox("fading")
+    }
+
+    picom_daemon:connect_signal("animations::support", function()
+        layout:add(separator())
+        layout:add(picom_slider("animation-stiffness", 1000, true))
+        layout:add(picom_slider("animation-dampening", 200, true))
+        layout:add(picom_slider("animation-window-mass", 100, true))
+        layout:add(picom_checkbox("animations"))
+        layout:add(picom_checkbox("animation-clamping"))
+    end)
+
     return wibox.widget {
         layout = wibox.layout.fixed.vertical,
         spacing = dpi(15),
@@ -213,51 +262,7 @@ local function new(layout)
                 left = dpi(25),
                 right = dpi(25)
             },
-            {
-                layout = widgets.overflow.vertical,
-                scrollbar_widget = widgets.scrollbar,
-                scrollbar_width = dpi(10),
-                step = 50,
-                spacing = dpi(15),
-                separator(),
-                command_after_generation(),
-                separator(),
-                theme_slider("Useless gap: ", theme_daemon:get_useless_gap(), 250, function(value)
-                    theme_daemon:set_useless_gap(gmath.round(value))
-                end),
-                theme_slider("Client gap: ", theme_daemon:get_client_gap(), 250, function(value)
-                    theme_daemon:set_client_gap(gmath.round(value))
-                end),
-                separator(),
-                theme_slider("UI Opacity: ", theme_daemon:get_ui_opacity(), 1, function(value)
-                    theme_daemon:set_ui_opacity(value)
-                end),
-                picom_slider("active-opacity", 1, false),
-                picom_slider("inactive-opacity", 1, false),
-                separator(),
-                theme_slider("UI Corner Radius: ", theme_daemon:get_ui_border_radius(), 100, function(value)
-                    theme_daemon:set_ui_border_radius(value)
-                end),
-                picom_slider("corner-radius", 100, true),
-                picom_slider("blur-strength", 20, true),
-                separator(),
-                picom_slider("animation-stiffness", 1000, true),
-                picom_slider("animation-dampening", 200, true),
-                picom_slider("animation-window-mass", 100, true),
-                picom_checkbox("animations"),
-                picom_checkbox("animation-clamping"),
-                separator(),
-                picom_slider("shadow-radius", 100, true),
-                picom_slider("shadow-opacity", 1, false),
-                picom_slider("shadow-offset-x", 100, true),
-                picom_slider("shadow-offset-y", 100, true),
-                picom_checkbox("shadow"),
-                separator(),
-                picom_slider("fade-delta", 100, true),
-                picom_slider("fade-in-step", 1, false),
-                picom_slider("fade-out-step", 1, false),
-                picom_checkbox("fading")
-            }
+            layout
         }
     }
 end

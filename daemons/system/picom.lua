@@ -7,6 +7,7 @@ local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local helpers = require("helpers")
+local table = table
 local capi = {
     awesome = awesome
 }
@@ -21,23 +22,38 @@ local properties = {"active-opacity", "inactive-opacity", "fade-delta", "fade-in
                     "corner-radius", "blur-strength", "shadow-radius", "shadow-opacity", "shadow-offset-x",
                     "shadow-offset-y", "animation-stiffness", "animation-dampening", "animation-window-mass"}
 
-local bool_properties = {"animations", "shadow", "fading", "animation-clamping"}
+local bool_properties = {"shadow", "fading", "animation-clamping", "animations"}
 
 function picom:turn_on(save)
     if DEBUG == true then
         return
     end
 
-    local cmd = string.format("picom --experimental-backends --config %s ", CONFIG_PATH)
-    for _, prop in ipairs(properties) do
-        cmd = cmd .. string.format("--%s %s ", prop, self._private[prop])
-    end
-    for _, prop in ipairs(bool_properties) do
-        if self._private[prop] == true then
-            cmd = cmd .. string.format("--%s ", prop)
+    local cmd = "picom "
+
+    awful.spawn.easy_async("picom --help", function(stdout)
+        if stdout:find("--experimental-backends", 1, true) then
+            cmd = cmd .. "--experimental-backends "
         end
-    end
-    awful.spawn(cmd, false)
+        if stdout:find("--animations", 1, true) == nil then
+            table.remove(properties)
+            table.remove(properties)
+            table.remove(properties)
+            table.remove(bool_properties)
+        end
+
+        cmd = cmd .. "--config " .. CONFIG_PATH .. " "
+        for _, prop in ipairs(properties) do
+            cmd = cmd .. string.format("--%s %s ", prop, self._private[prop])
+        end
+        for _, prop in ipairs(bool_properties) do
+            if self._private[prop] == true then
+                cmd = cmd .. string.format("--%s ", prop)
+            end
+        end
+
+        awful.spawn(cmd, false)
+    end)
 
     if save == true then
         helpers.settings:set_value("picom", true)
@@ -49,20 +65,18 @@ function picom:turn_off(save)
         return
     end
 
-    awful.spawn("pkill -f 'picom --experimental-backends'", false)
+    awful.spawn("pkill -f picom", false)
     if save == true then
         helpers.settings:set_value("picom", false)
     end
 end
 
 function picom:toggle(save)
-    helpers.run.is_running("picom", function(is_running)
-        if is_running == true then
-            self:turn_off(save, true)
-        else
-            self:turn_on(save, true)
-        end
-    end)
+    if capi.awesome.composite_manager_running == true then
+        self:turn_off(save, true)
+    else
+        self:turn_on(save, true)
+    end
 end
 
 local function build_properties(prototype, properties)
@@ -73,14 +87,11 @@ local function build_properties(prototype, properties)
                     self._private[prop] = value
                     helpers.settings:set_value("picom-" .. prop, value)
 
-                    helpers.run.is_running("picom", function(is_running)
-                        if is_running == true then
-                            awful.spawn.easy_async("pkill -f 'picom --experimental-backends'", function()
-                                self._private.refreshing = true
-                                self._private.refresh_timer:again()
-                            end)
-                        end
-                    end)
+                    if capi.awesome.composite_manager_running == true then
+                        self._private.refreshing = true
+                        self:turn_off(false)
+                        self._private.refresh_timer:again()
+                    end
                 end
                 return self
             end
@@ -135,6 +146,12 @@ local function new()
                 end
             end
         }
+
+        awful.spawn.easy_async("picom --help", function(stdout)
+            if stdout:find("--animations", 1, true) ~= nil then
+                ret:emit_signal("animations::support")
+            end
+        end)
     end)
 
     return ret
