@@ -480,9 +480,9 @@ local function digital_sun_wallpaper(self, screen)
                     cr:stroke()
                 end
 
-                for i = 1, 5 do
-                    cr:move_to(0, height * 0.75 + i * 10 + i * 2)
-                    cr:line_to(width, height * 0.75 + i * 10 + i * 2)
+                for i=1, 10 do
+                    cr:move_to(0, height*0.75 + i*30 + i*2)
+                    cr:line_to(width, height*0.75 + i*30 + i*2)
                     cr:stroke()
                 end
             end
