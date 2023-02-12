@@ -271,10 +271,6 @@ local function create_notification(n)
         timeout_arc_anim:set()
     end)
 
-    timeout_arc_anim:connect_signal("ended", function()
-        n:destroy()
-    end)
-
     size_anim:set{width = dpi(400), height = dpi(300)}
     play_sound(n)
 
@@ -288,24 +284,19 @@ local function create_notification(n)
     n.widget.x = placement.x
     n.widget.y = placement.y
 
-    local previous_notif = awful.screen.focused().last_notif
-    if previous_notif then
-        n.parent = previous_notif
-        n.widget.y = previous_notif.widget.y + previous_notif.widget.height + 30
+    n.parent = awful.screen.focused().last_notif
+    if n.parent then
+        n.widget.y = n.parent.widget.y + n.parent.widget.height + 30
 
-        previous_notif:connect_signal("destroyed", function()
-            if previous_notif.parent then
-                n.widget.y = previous_notif.parent.widget.y + previous_notif.parent.widget.height + 30
-                previous_notif.parent.widget.visible = false
-                previous_notif.parent.widget = nil
-            end
-        end)
-    else
-        n:connect_signal("destroyed", function()
-            n.widget.visible = false
-            n.widget = nil
+        n.parent:connect_signal("destroyed", function()
+            n.widget.y = n.parent.widget.y
         end)
     end
+
+    n:connect_signal("destroyed", function()
+        n.widget.visible = false
+        -- n.widget = nil
+    end)
 
     awful.screen.focused().last_notif = n
 end
