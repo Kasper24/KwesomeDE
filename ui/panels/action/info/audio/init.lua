@@ -151,9 +151,7 @@ local function application_widget(args)
     end)
 
     slider:connect_signal("property::value", function(self, value, instant)
-        if instant == false then
-            args.on_slider_moved(value)
-        end
+        args.on_slider_moved(value)
     end)
 
     return widget
@@ -259,9 +257,7 @@ local function device_widget(args)
     end)
 
     slider:connect_signal("property::value", function(self, value, instant)
-        if instant == false then
-            args.on_slider_moved(value)
-        end
+        args.on_slider_moved(value)
     end)
 
     return widget

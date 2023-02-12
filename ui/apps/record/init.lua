@@ -109,10 +109,8 @@ local function fps()
     }
 
     slider:connect_signal("property::value", function(self, value, instant)
-        if instant == false then
-            record_daemon:set_fps(value)
-            value_text:set_text(value)
-        end
+        record_daemon:set_fps(value)
+        value_text:set_text(value)
     end)
 
     return wibox.widget {
@@ -146,10 +144,8 @@ local function delay()
     }
 
     slider:connect_signal("property::value", function(self, value, instant)
-        if instant == false then
-            record_daemon:set_delay(value)
-            value_text:set_text(value)
-        end
+        record_daemon:set_delay(value)
+        value_text:set_text(value)
     end)
 
     return wibox.widget {
