@@ -44,7 +44,7 @@ local function new(args)
     args.handle_border_width = args.handle_border_width or dpi(2)
     args.handle_border_color = args.handle_border_color or  beautiful.colors.background
 
-	local value = (args.value or 0) / args.maximum
+	local value = helpers.misc.convert_range((args.value or 0 ), args.minimum, args.maximum, 0, 1)
 	local w = 0
     local is_dragging = false
 
