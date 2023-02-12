@@ -50,7 +50,6 @@ function gitlab:refresh()
 
             for index, pr in ipairs(data) do
                 if old_data[pr.id] == nil then
-                    print(pr.id)
                     self:emit_signal("new_pr", pr)
                 end
 

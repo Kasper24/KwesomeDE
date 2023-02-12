@@ -95,7 +95,6 @@ function persistent:save_clients()
 end
 
 function persistent:reapply_selected_tags()
-    print(#self.restored_settings.selected_tags)
     if #self.restored_settings.selected_tags > 0 then
         awful.tag.viewnone()
     end
