@@ -269,7 +269,7 @@ local function create_notification(n)
 
     local size_anim = helpers.animation:new{
         pos = 1,
-        duration = 0.5,
+        duration = 0.2,
         easing = helpers.animation.easing.linear,
         update = function(self, pos)
             n.widget.maximum_height = dpi(max(1, pos))
@@ -290,7 +290,7 @@ local function create_notification(n)
 
     n.pos_anim = helpers.animation:new{
         pos = n.widget.y,
-        duration = 0.5,
+        duration = 0.2,
         easing = helpers.animation.easing.linear,
         update = function(self, pos)
             n.widget.y = pos
