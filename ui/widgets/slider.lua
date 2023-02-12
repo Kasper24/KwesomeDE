@@ -1,6 +1,7 @@
+local gtable = require("gears.table")
+local gmath = require("gears.math")
 local gshape = require("gears.shape")
 local gcolor = require("gears.color")
-local gmath = require("gears.math")
 local wibox = require("wibox")
 local bwidget = require("ui.widgets.background")
 local beautiful = require("beautiful")
@@ -120,7 +121,7 @@ local function new(args)
 	}
 
 	layout:connect_signal("button::press", function(self, x, y, button, mods, geo)
-		if helpers.table.contains(mods, "Mod4") or button ~= 1 then
+		if gtable.hasitem(mods, "Mod4") or button ~= 1 then
 			return
 		end
 

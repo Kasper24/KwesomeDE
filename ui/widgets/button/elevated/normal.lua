@@ -237,7 +237,7 @@ local function new(is_state)
 
     if is_state ~= true then
         widget:connect_signal("button::press", function(self, lx, ly, button, mods, find_widgets_result)
-            if helpers.table.contains(mods, "Mod4") then
+            if gtable.hasitem(mods, "Mod4") then
                 return
             end
 
