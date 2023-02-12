@@ -132,19 +132,6 @@ function _string.find_last(haystack, needle)
     end
 end
 
-function _string.split(string, separator)
-    if separator == nil then
-        separator = "%s"
-    end
-
-    local t = {}
-    for str in string.gmatch(string, "([^" .. separator .. "]+)") do
-        table.insert(t, str)
-    end
-
-    return t
-end
-
 function _string.random_uuid()
     local template = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
     return string.gsub(template, '[xy]', function(c)

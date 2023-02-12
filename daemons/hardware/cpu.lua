@@ -5,6 +5,7 @@
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
+local gstring = require("gears.string")
 local gtimer = require("gears.timer")
 local helpers = require("helpers")
 local tonumber = tonumber
@@ -50,7 +51,7 @@ local function update(self)
                         processes[j] = {}
                     end
 
-                    local columns = helpers.string.split(line, "|")
+                    local columns = gstring.split(line, "|")
 
                     processes[j].pid = columns[1]:gsub("%s+", "")
                     processes[j].comm = columns[2]
