@@ -53,8 +53,9 @@ local function new()
             {
                 layout = widgets.overflow.vertical,
                 spacing = dpi(25),
-                scrollbar_widget = widgets.scrollbar,
+                scrollbar_widget = wibox.widget{},
                 scrollbar_width = dpi(10),
+                scrollbar_spacing = 0,
                 step = 50,
                 header,
                 seperator(),
