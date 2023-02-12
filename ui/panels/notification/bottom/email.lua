@@ -63,25 +63,18 @@ local function email_widget(email)
     }
 
     return wibox.widget {
-        widget = wibox.container.constraint,
-        height = dpi(500),
-        {
-            widget = wibox.container.place,
-            halign = "left",
-            {
-                widget = widgets.button.elevated.normal,
-                on_release = function()
-                    email_daemon:open(email)
-                end,
-                child = wibox.widget {
-                    layout = wibox.layout.fixed.vertical,
-                    spacing = dpi(5),
-                    author,
-                    time,
-                    title,
-                    summary
-                }
-            }
+        widget = widgets.button.elevated.normal,
+        forced_height = dpi(150),
+        on_release = function()
+            email_daemon:open(email)
+        end,
+        child = wibox.widget {
+            layout = wibox.layout.fixed.vertical,
+            spacing = dpi(5),
+            author,
+            time,
+            title,
+            summary
         }
     }
 end
