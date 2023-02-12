@@ -52,20 +52,21 @@ local function colors()
         on_error = colors[1],
         on_accent = colors[1]
     }
-    function theme.colors.random_accent_color()
+    function theme.colors.random_accent_color(accent_colors)
+        accent_colors = accent_colors or colors
+
         local color_1 = color_libary.color {
-            hex = theme.colors.bright_red
+            hex = accent_colors[10] -- Bright red
         }
         local color_2 = color_libary.color {
-            hex = theme.colors.bright_green
+            hex = accent_colors[11] -- Bright green
         }
 
         local accents = {}
-
         if math.abs(color_1.h - color_2.h) < 50 then
-            accents = {colors[10], colors[11], colors[12], colors[13], colors[14], colors[15]}
+            accents = {accent_colors[10], accent_colors[11], accent_colors[12], accent_colors[13], accent_colors[14], accent_colors[15]}
         else
-            accents = {colors[13], colors[14]}
+            accents = {accent_colors[13], accent_colors[14]}
         end
 
         local i = math.random(1, #accents)
@@ -392,6 +393,7 @@ local function assets()
     local assets_folder = helpers.filesystem.get_awesome_config_dir("ui/assets")
 
     theme.profile_icon = assets_folder .. "profile.png"
+    theme.mountain_background = assets_folder .. "mountain.png"
     theme.overview_pictures = {assets_folder .. "overview/1.png", assets_folder .. "overview/2.png",
                                assets_folder .. "overview/3.png", assets_folder .. "overview/4.png",
                                assets_folder .. "overview/5.png", assets_folder .. "overview/6.png",
