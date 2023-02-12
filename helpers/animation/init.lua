@@ -74,7 +74,7 @@ local function second_to_milli(sec)
     return sec * 1000
 end
 
-function animation:start(args)
+function animation:set(args)
     args = args or {}
 
     -- Awestoer/Rubbto compatibility
@@ -111,16 +111,13 @@ function animation:start(args)
     self:emit_signal("started")
 end
 
-function animation:set(args)
-    self:start(args)
+-- Rubato compatibility
+function animation:abort()
+    self.state = false
 end
 
 function animation:stop()
     self.state = false
-end
-
-function animation:abort(reset)
-    animation:stop(reset)
 end
 
 function animation:initial()

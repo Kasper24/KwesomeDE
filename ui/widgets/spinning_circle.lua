@@ -15,7 +15,7 @@ local spinning_circle = {
 }
 
 function spinning_circle:start()
-    self._private.anim:start()
+    self._private.anim:set()
 end
 
 function spinning_circle:abort()
@@ -55,7 +55,7 @@ local function new(args)
         end
     }
 
-    widget._private.anim:start()
+    widget._private.anim:set()
 
     return widget
 end

@@ -322,7 +322,7 @@ naughty.connect_signal("request::display", function(n)
     end)
 
     widget:connect_signal("mouse::leave", function()
-        anim:start()
+        anim:set()
     end)
 
     local notification_height = widget.height + beautiful.notification_spacing
@@ -332,7 +332,7 @@ naughty.connect_signal("request::display", function(n)
         get_oldest_notification():destroy(naughty.notification_closed_reason.too_many_on_screen)
     end
 
-    anim:start()
+    anim:set()
 
     play_sound(n)
 end)
