@@ -503,7 +503,7 @@ awful.keyboard.append_global_keybindings({ -- Add padding
         description = "decrease gaps",
         on_press = function()
             local current_useless_gap = theme_daemon:get_useless_gap()
-            theme_daemon:set_useless_gap(current_useless_gap + 5)
+            theme_daemon:set_useless_gap(current_useless_gap - 5)
         end
     }, -- Increase master width
     awful.key {
