@@ -18,7 +18,112 @@ local gitlab = {
     mt = {}
 }
 
-local function widget()
+local function mr_widget(mr, path_to_avatars)
+    local avatar = wibox.widget {
+        widget = widgets.button.elevated.normal,
+        forced_width = dpi(60),
+        forced_height = dpi(60),
+        on_release = function()
+            awful.spawn("xdg-open " .. mr.author.web_url, false)
+        end,
+        child = wibox.widget {
+            widget = wibox.widget.imagebox,
+            clip_shape = helpers.ui.rrect(),
+            image = path_to_avatars .. mr.author.id
+        }
+    }
+
+    local title = wibox.widget {
+        widget = widgets.text,
+        size = 12,
+        bold = true,
+        text = mr.title
+    }
+
+    local from_branch_to_branch = wibox.widget {
+        widget = widgets.text,
+        size = 12,
+        text = mr.source_branch .. " -> " .. mr.target_branch
+    }
+
+    local name_time = wibox.widget {
+        layout = wibox.layout.fixed.horizontal,
+        spacing = dpi(10),
+        {
+            widget = widgets.text,
+            size = 12,
+            text = mr.author.name
+        },
+        {
+            widget = widgets.text,
+            size = 12,
+            text = helpers.string.to_time_ago(os.difftime(os.time(os.date("!*t")),
+                helpers.string.parse_date(mr.created_at)))
+        }
+    }
+
+    local approves = wibox.widget {
+        layout = wibox.layout.fixed.horizontal,
+        spacing = dpi(10),
+        {
+            widget = widgets.text,
+            icon = beautiful.icons.check,
+            size = 15
+        },
+        {
+            widget = widgets.text,
+            size = 12,
+            text = mr.upvotes
+        }
+    }
+
+    local comments = wibox.widget {
+        layout = wibox.layout.fixed.horizontal,
+        spacing = dpi(10),
+        {
+            widget = widgets.text,
+            icon = beautiful.icons.message,
+            size = 15
+        },
+        {
+            widget = widgets.text,
+            size = 12,
+            text = mr.user_notes_count
+        }
+    }
+
+    local button = wibox.widget {
+        widget = widgets.button.elevated.normal,
+        on_release = function()
+            awful.spawn("xdg-open " .. mr.web_url, false)
+        end,
+        child = wibox.widget {
+            layout = wibox.layout.fixed.horizontal,
+            {
+                layout = wibox.layout.flex.vertical,
+                forced_width = dpi(360),
+                title,
+                from_branch_to_branch,
+                name_time
+            },
+            {
+                layout = wibox.layout.flex.vertical,
+                approves,
+                comments
+            }
+        }
+    }
+
+    return wibox.widget {
+        layout = wibox.layout.fixed.horizontal,
+        forced_width = dpi(1000),
+        spacing = dpi(5),
+        avatar,
+        button
+    }
+end
+
+local function new()
     local spinning_circle = wibox.widget {
         widget = wibox.container.place,
         halign = "center",
@@ -42,8 +147,7 @@ local function widget()
         }
     }
 
-    local error_icon
-    wibox.widget {
+    local error_icon = wibox.widget {
         widget = wibox.container.place,
         halign = "center",
         valign = "center",
@@ -62,12 +166,6 @@ local function widget()
         scrollbar_width = dpi(10),
         step = 50
     }
-
-    return spinning_circle, missing_credentials_text, error_icon, scrollbox
-end
-
-local function new()
-    local spinning_circle, missing_credentials_text, error_icon, scrollbox = widget()
 
     local widget = wibox.widget {
         layout = wibox.layout.stack,
@@ -88,122 +186,14 @@ local function new()
         widget:raise_widget(missing_credentials_text)
     end)
 
-    gitlab_daemon:connect_signal("update", function(self, prs, path_to_avatars)
+    gitlab_daemon:connect_signal("update", function(self, mrs, path_to_avatars)
         spinning_circle.children[1]:abort()
         scrollbox:reset()
         collectgarbage("collect")
         widget:raise_widget(scrollbox)
 
-        for index, pr in ipairs(prs) do
-            local avatar = wibox.widget {
-                widget = widgets.button.elevated.normal,
-                forced_width = dpi(60),
-                forced_height = dpi(60),
-                on_release = function()
-                    awful.spawn("xdg-open " .. pr.author.web_url, false)
-                end,
-                child = wibox.widget {
-                    widget = wibox.widget.imagebox,
-                    clip_shape = helpers.ui.rrect(),
-                    image = path_to_avatars .. pr.author.id
-                }
-            }
-
-            local title = wibox.widget {
-                widget = widgets.text,
-                size = 12,
-                bold = true,
-                text = pr.title
-            }
-
-            local from_branch_to_branch = wibox.widget {
-                widget = widgets.text,
-                size = 12,
-                text = pr.source_branch .. " -> " .. pr.target_branch
-            }
-
-            local name_time = wibox.widget {
-                layout = wibox.layout.fixed.horizontal,
-                spacing = dpi(10),
-                {
-                    widget = widgets.text,
-                    size = 12,
-                    text = pr.author.name
-                },
-                {
-                    widget = widgets.text,
-                    size = 12,
-                    text = helpers.string.to_time_ago(os.difftime(os.time(os.date("!*t")),
-                        helpers.string.parse_date(pr.created_at)))
-                }
-            }
-
-            local approves = wibox.widget {
-                layout = wibox.layout.fixed.horizontal,
-                spacing = dpi(10),
-                {
-                    widget = widgets.text,
-                    icon = beautiful.icons.check,
-                    size = 15
-                },
-                {
-                    widget = widgets.text,
-                    size = 12,
-                    text = pr.upvotes
-                }
-            }
-
-            local comments = wibox.widget {
-                layout = wibox.layout.fixed.horizontal,
-                spacing = dpi(10),
-                {
-                    widget = widgets.text,
-                    icon = beautiful.icons.message,
-                    size = 15
-                },
-                {
-                    widget = widgets.text,
-                    size = 12,
-                    text = pr.user_notes_count
-                }
-            }
-
-            local button = wibox.widget {
-                widget = widgets.button.elevated.normal,
-                on_release = function()
-                    awful.spawn("xdg-open " .. pr.web_url, false)
-                end,
-                child = wibox.widget {
-                    layout = wibox.layout.fixed.horizontal,
-                    {
-                        layout = wibox.layout.flex.vertical,
-                        forced_width = dpi(360),
-                        title,
-                        from_branch_to_branch,
-                        name_time
-                    },
-                    {
-                        layout = wibox.layout.flex.vertical,
-                        approves,
-                        comments
-                    }
-                }
-            }
-
-            local widget = wibox.widget {
-                layout = wibox.layout.fixed.horizontal,
-                forced_width = dpi(1000),
-                spacing = dpi(5),
-                avatar,
-                button
-            }
-
-            scrollbox:add(widget)
-
-            -- Make it scroll all the way down
-            if index == #prs then
-                scrollbox:add(widgets.spacer.vertical(20))
-            end
+        for _, mr in ipairs(mrs) do
+            scrollbox:add(mr_widget(mr, path_to_avatars))
         end
     end)
 
