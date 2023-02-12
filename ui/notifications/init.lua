@@ -154,22 +154,21 @@ local function create_notification(n)
         end
     }
 
-    local timeout_arc = nil
-    -- wibox.widget {
-    --     widget = widgets.arcchart,
-    --     forced_width = dpi(45),
-    --     forced_height = dpi(45),
-    --     max_value = 100,
-    --     min_value = 0,
-    --     value = 0,
-    --     thickness = dpi(6),
-    --     rounded_edge = true,
-    --     bg = beautiful.colors.surface,
-    --     colors = {
-    --         accent_color
-    --     },
-    --     dismiss
-    -- }
+    local timeout_arc = wibox.widget {
+        widget = widgets.arcchart,
+        forced_width = dpi(45),
+        forced_height = dpi(45),
+        max_value = 100,
+        min_value = 0,
+        value = 0,
+        thickness = dpi(6),
+        rounded_edge = true,
+        bg = beautiful.colors.surface,
+        colors = {
+            accent_color
+        },
+        dismiss
+    }
 
     local title = wibox.widget {
         widget = wibox.container.scroll.horizontal,
@@ -209,9 +208,8 @@ local function create_notification(n)
 
     n.widget = widgets.popup {
         minimum_width = dpi(400),
-        -- minimum_height = dpi(50),
+        minimum_height = dpi(50),
         maximum_width = dpi(400),
-        -- maximum_height = dpi(300),
         offset = { y = dpi(30) },
         ontop = true,
         shape = helpers.ui.rrect(),
@@ -227,6 +225,7 @@ local function create_notification(n)
                     spacing = dpi(15),
                     {
                         layout = wibox.layout.align.horizontal,
+                        id = "top_row",
                         {
                             layout = wibox.layout.fixed.horizontal,
                             spacing = dpi(15),
@@ -234,7 +233,6 @@ local function create_notification(n)
                             app_name
                         },
                         nil,
-                        timeout_arc
                     },
                     {
                         layout = wibox.layout.fixed.horizontal,
@@ -260,7 +258,7 @@ local function create_notification(n)
         easing = helpers.animation.easing.linear,
         reset_on_stop = false,
         update = function(self, pos)
-            -- timeout_arc.value = pos
+            timeout_arc.value = pos
         end,
         signals = {
             ["ended"] = function()
@@ -278,11 +276,13 @@ local function create_notification(n)
         end,
         signals = {
             ["ended"] = function()
-                timeout_arc_anim:set()
-
                 if n.hiding then
                     n.widget.visible = false
                     n.widget = nil
+                else
+                    -- Prevents a crash caused by drawing the arc when the size is to small
+                    n.widget.widget:get_children_by_id("top_row")[1]:set_third(timeout_arc)
+                    timeout_arc_anim:set()
                 end
             end
         }
