@@ -61,7 +61,6 @@ local function access_point_widget(layout, access_point)
         widget = widgets.prompt,
         forced_width = dpi(440),
         forced_height = dpi(50),
-        halign = "left",
         obscure = true,
         text = access_point.password,
         icon_font = beautiful.icons.lock.font,

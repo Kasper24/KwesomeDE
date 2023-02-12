@@ -37,7 +37,6 @@ local function command_after_generation()
         widget = widgets.prompt,
         forced_width = dpi(600),
         forced_height = dpi(50),
-        halign = "left",
         reset_on_stop = false,
         prompt = "",
         text = theme_daemon:get_command_after_generation(),

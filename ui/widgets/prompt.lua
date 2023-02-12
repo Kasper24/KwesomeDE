@@ -394,6 +394,7 @@ local function new()
 
     widget:set_child(wibox.widget.textbox())
     widget:set_hover_cursor("xterm")
+    widget:set_halign("left")
 
     local wp = widget._private
 

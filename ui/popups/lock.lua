@@ -95,7 +95,6 @@ local function widget(self)
         widget = widgets.prompt,
         forced_width = dpi(450),
         forced_height = dpi(50),
-        halign = "left",
         on_normal_bg = beautiful.colors.background,
         on_hover_bg = beautiful.colors.background,
         on_press_bg = beautiful.colors.background,
