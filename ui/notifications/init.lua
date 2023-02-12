@@ -135,21 +135,22 @@ local function create_notification(n)
         end
     }
 
-    local timeout_arc = wibox.widget {
-        widget = widgets.arcchart,
-        forced_width = dpi(45),
-        forced_height = dpi(45),
-        max_value = 100,
-        min_value = 0,
-        value = 0,
-        thickness = dpi(6),
-        rounded_edge = true,
-        bg = beautiful.colors.surface,
-        colors = {
-            accent_color
-        },
-        dismiss
-    }
+    local timeout_arc = nil
+    -- wibox.widget {
+    --     widget = widgets.arcchart,
+    --     forced_width = dpi(45),
+    --     forced_height = dpi(45),
+    --     max_value = 100,
+    --     min_value = 0,
+    --     value = 0,
+    --     thickness = dpi(6),
+    --     rounded_edge = true,
+    --     bg = beautiful.colors.surface,
+    --     colors = {
+    --         accent_color
+    --     },
+    --     dismiss
+    -- }
 
     local title = wibox.widget {
         widget = wibox.container.scroll.horizontal,
@@ -187,18 +188,17 @@ local function create_notification(n)
         }
     }
 
-    local widget = naughty.layout.box {
-        notification = n,
-        type = "notification",
-        cursor = beautiful.hover_cursor,
+    n.widget = widgets.popup {
         minimum_width = dpi(400),
-        minimum_height = dpi(50),
+        -- minimum_height = dpi(50),
         maximum_width = dpi(400),
-        maximum_height = dpi(300),
+        -- maximum_height = dpi(300),
+        offset = { y = dpi(30) },
+        ontop = true,
         shape = helpers.ui.rrect(),
         bg = beautiful.colors.background,
         border_width = 0,
-        widget_template = {
+        widget = wibox.widget {
             widget = wibox.container.background,
             {
                 widget = wibox.container.margin,
@@ -231,24 +231,43 @@ local function create_notification(n)
         }
     }
 
-    -- Still waiting on that PR to fix this!
-    widget.buttons = {}
-
     local timeout_arc_anim = helpers.animation:new{
         duration = 5,
         target = 100,
         easing = helpers.animation.easing.linear,
         reset_on_stop = false,
         update = function(self, pos)
-            timeout_arc.value = pos
-        end
+            -- timeout_arc.value = pos
+        end,
+        signals = {
+            ["ended"] = function()
+                n:destroy()
+            end
+        }
     }
 
-    widget:connect_signal("mouse::enter", function()
+    local size_anim = helpers.animation:new{
+        pos = {
+            width = 0,
+            height = 1
+        },
+        duration = 0.5,
+        easing = helpers.animation.easing.linear,
+        update = function(self, pos)
+            n.widget.maximum_height = dpi(math.max(1, pos.height))
+        end,
+        signals = {
+            ["ended"] = function()
+                timeout_arc_anim:set()
+            end
+        }
+    }
+
+    n.widget:connect_signal("mouse::enter", function()
         timeout_arc_anim:stop()
     end)
 
-    widget:connect_signal("mouse::leave", function()
+    n.widget:connect_signal("mouse::leave", function()
         timeout_arc_anim:set()
     end)
 
@@ -256,8 +275,39 @@ local function create_notification(n)
         n:destroy()
     end)
 
-    timeout_arc_anim:set()
+    size_anim:set{width = dpi(400), height = dpi(300)}
     play_sound(n)
+
+    local placement = awful.placement.top_right(n.widget, {
+        honor_workarea = true,
+        honor_padding = true,
+        attach = true,
+        pretend = true,
+        margins = dpi(30)
+    })
+    n.widget.x = placement.x
+    n.widget.y = placement.y
+
+    local previous_notif = awful.screen.focused().last_notif
+    if previous_notif then
+        n.parent = previous_notif
+        n.widget.y = previous_notif.widget.y + previous_notif.widget.height + 30
+
+        previous_notif:connect_signal("destroyed", function()
+            if previous_notif.parent then
+                n.widget.y = previous_notif.parent.widget.y + previous_notif.parent.widget.height + 30
+                previous_notif.parent.widget.visible = false
+                previous_notif.parent.widget = nil
+            end
+        end)
+    else
+        n:connect_signal("destroyed", function()
+            n.widget.visible = false
+            n.widget = nil
+        end)
+    end
+
+    awful.screen.focused().last_notif = n
 end
 
 ruled.notification.connect_signal("request::rules", function()
