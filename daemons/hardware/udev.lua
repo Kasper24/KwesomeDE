@@ -2,15 +2,28 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-local GUdev = require("lgi").GUdev
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
+local gdebug = require("gears.debug")
 local helpers = require("helpers")
 local string = string
 local ipairs = ipairs
 local pairs = pairs
+
+-- This seems to be common issue causing a crash, so make sure GUdev is available
+local _gudev_status, GUdev = pcall(function()
+    return require("lgi").GUdev
+end)
+if not _gudev_status or not GUdev then
+    gdebug.print_warning(
+        "Can't load GUdev introspection. "..
+        "Seems like GUdev is not installed or `lua-lgi` was built with an incompatible GUdev version. " ..
+        "USB notifications will not be available!"
+    )
+    return gobject {}
+end
 
 local udev = {}
 local instance = nil
