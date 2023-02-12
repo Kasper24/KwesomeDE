@@ -172,6 +172,7 @@ local function client_widget(client)
 
     client:connect_signal("property::font_icon", function(client)
         button:get_children_by_id("button")[1]:set_icon(client.font_icon)
+        indicator:get_children_by_id("background")[1]:set_bg(client.font_icon.color)
     end)
 
     client:connect_signal("focus", function()
