@@ -324,7 +324,7 @@ function menu.button(args)
         text = args.text
     }
 
-    return wibox.widget {
+    local widget = wibox.widget {
         widget = wibox.container.margin,
         forced_height = dpi(45),
         margins = dpi(5),
@@ -348,6 +348,11 @@ function menu.button(args)
         }
     }
 
+    function widget:set_icon(icon)
+        icon:set_icon(icon)
+    end
+
+    return widget
 end
 
 function menu.checkbox_button(args)
@@ -423,6 +428,10 @@ function menu.checkbox_button(args)
 
     function widget:turn_off()
         checkbox:turn_off()
+    end
+
+    function widget:set_handle_active_color(handle_active_color)
+        checkbox:set_handle_active_color(handle_active_color)
     end
 
     return widget

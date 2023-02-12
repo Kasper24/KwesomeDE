@@ -7,6 +7,7 @@ local mwidget = require("ui.widgets.menu")
 local favorites_daemon = require("daemons.system.favorites")
 local helpers = require("helpers")
 local setmetatable = setmetatable
+local ipairs = ipairs
 
 local client_menu = {
     mt = {}
@@ -23,6 +24,10 @@ local function client_checkbox_button(client, property, text, on_press)
             end
         end
     }
+
+    client:connect_signal("property::font_icon", function(client)
+        button:set_handle_active_color(client.font_icon.color)
+    end)
 
     client:connect_signal("property::" .. property, function()
         if client[property] then
@@ -44,6 +49,15 @@ local function new(client)
                                 client_checkbox_button(client, "below", "Below"),
                                 client_checkbox_button(client, "ontop", "On Top")}
 
+
+    local client_icon_button = mwidget.button {
+        icon = client.font_icon,
+        text = client.class,
+        on_press = function()
+            client:jump_to()
+        end
+    }
+
     local pin_to_taskbar_button = mwidget.checkbox_button {
         state = favorites_daemon:is_favorite(client),
         handle_active_color = client.font_icon.color,
@@ -60,13 +74,7 @@ local function new(client)
     }
 
     local menu = mwidget {
-        mwidget.button {
-            icon = client.font_icon,
-            text = client.class,
-            on_press = function()
-                client:jump_to()
-            end
-        },
+        client_icon_button,
         pin_to_taskbar_button,
         mwidget.separator(),
         mwidget.sub_menu_button {
@@ -106,6 +114,11 @@ local function new(client)
             menu:add(mwidget.separator(), 2 + index)
         end
     end
+
+    client:connect_signal("property::font_icon", function(client)
+        client_icon_button:set_icon(client.font_icon)
+        pin_to_taskbar_button:set_handle_active_color(client.font_icon.color)
+    end)
 
     -- At the time this funciton runs client.custom_titlebar is still nil
     -- so check if that property change and if so remove the titlebar toggle button
