@@ -17,7 +17,21 @@ local capi = {
 capi.client.connect_signal("request::titlebars", function(client)
     local color = helpers.client.get_dominant_color(client)
 
-    -- No clue why by minimizng only works if I do it via on_release?
+    local font_icon = wibox.widget {
+        widget = widgets.client_font_icon,
+        halign = "center",
+        client = client,
+        scale = 0.8
+    }
+
+    local title = wibox.widget {
+        widget = widgets.text,
+        halign = "center",
+        size = 12,
+        text = client.name,
+        color = beautiful.colors.on_background,
+    }
+
     local minimize = wibox.widget {
         widget = widgets.button.elevated.normal,
         forced_width = dpi(20),
@@ -61,12 +75,16 @@ capi.client.connect_signal("request::titlebars", function(client)
     }
 
     client:connect_signal("focus", function()
+        font_icon:set_color(client.font_icon.color)
+        title:set_color(beautiful.colors.on_background)
         minimize:set_normal_bg(client.font_icon.color)
         maximize:set_normal_bg(client.font_icon.color)
         close:set_normal_bg(client.font_icon.color)
     end)
 
     client:connect_signal("unfocus", function()
+        font_icon:set_color(beautiful.colors.surface)
+        title:set_color(beautiful.colors.surface)
         minimize:set_normal_bg(beautiful.colors.surface)
         maximize:set_normal_bg(beautiful.colors.surface)
         close:set_normal_bg(beautiful.colors.surface)
@@ -159,19 +177,8 @@ capi.client.connect_signal("request::titlebars", function(client)
             {
                 layout = wibox.layout.fixed.horizontal,
                 spacing = dpi(15),
-                {
-                    widget = widgets.client_font_icon,
-                    halign = "center",
-                    client = c,
-                    scale = 0.8
-                },
-                {
-                    widget = widgets.text,
-                    halign = "center",
-                    size = 12,
-                    text = client.name,
-                    color = beautiful.colors.on_background,
-                }
+                font_icon,
+                title
             },
         },
         {
