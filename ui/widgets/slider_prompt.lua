@@ -52,6 +52,10 @@ local function new(args)
 			prompt:set_text(tostring(args.maximum))
 			slider:set_value(args.maximum)
 			widget:emit_signal('property::value', args.maximum)
+		elseif value < args.minimum then
+			prompt:set_text(tostring(args.minimum))
+			slider:set_value(args.minimum)
+			widget:emit_signal('property::value', args.minimum)
 		else
 			slider:set_value(value)
 			widget:emit_signal('property::value', value)
