@@ -21,9 +21,10 @@ local function new(args)
 	args.forced_height = args.slider_height
 	local slider = swidget(args)
 
-	args.forced_width = args.prompt_width
-	args.forced_height = args.prompt_height
 	local prompt = pwidget(args)
+	prompt:set_forced_width(args.prompt_width or dpi(80))
+	prompt:set_forced_height(args.prompt_height or dpi(40))
+
 	prompt:set_only_numbers(true)
 
 	local text_value = tostring(helpers.misc.round_to_decimal_places(args.value, 2))
@@ -47,6 +48,11 @@ local function new(args)
 
 	prompt:connect_signal("text::changed", function(self, text)
 		local value = tonumber(text)
+
+		-- Don't the prompt to show values like '01', '02' etc
+		if value > 0 and text:sub(1, 1) == "0" then
+			prompt:set_text(tostring(value))
+		end
 
 		if value > args.maximum then
 			prompt:set_text(tostring(args.maximum))
