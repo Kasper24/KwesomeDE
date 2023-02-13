@@ -35,7 +35,9 @@ capi.client.connect_signal("request::titlebars", function(client)
         widget = widgets.button.elevated.normal,
         forced_width = dpi(20),
         forced_height = dpi(20),
-        normal_shape = helpers.ui.rrect(beautiful.border_radius / 2),
+        normal_shape = function(cr, width, hegiht)
+            gshape.rounded_rect(cr, width, hegiht, 5)
+        end,
         normal_bg = client.font_icon.color,
         hover_bg = beautiful.colors.on_background,
         press_bg = beautiful.colors.on_background,
