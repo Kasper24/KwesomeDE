@@ -108,10 +108,10 @@ local function new(client)
             on_press = function()
                 action.launch()
             end
-        }, 1 + index)
+        }, 3 + index)
 
         if index == #actions then
-            menu:add(mwidget.separator(), 2 + index)
+            menu:add(mwidget.separator(), 4 + index)
         end
     end
 
