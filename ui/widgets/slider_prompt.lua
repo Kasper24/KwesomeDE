@@ -51,8 +51,12 @@ local function new(args)
 
 		-- Don't the prompt to show values like '01', '02' etc
 		if value > 0 and text:sub(1, 1) == "0" then
-			prompt:set_text(tostring(value))
+			prompt:set_text(tostring(value), true)
 		end
+	end)
+
+	prompt:connect_signal("stopped", function(self, text)
+		local value = tonumber(text)
 
 		if value > args.maximum then
 			prompt:set_text(tostring(args.maximum))

@@ -179,10 +179,10 @@ function prompt:get_text()
     return self._private.text
 end
 
-function prompt:set_text(text)
+function prompt:set_text(text, show_cursor)
     self._private.text = text
     self._private.cur_pos = #text + 1
-    update_markup(self, false)
+    update_markup(self, show_cursor ~= nil and show_cursor or false)
 end
 
 function prompt:set_prompt(prompt)
@@ -197,7 +197,7 @@ end
 function prompt:start()
     local wp = self._private
 
-    wp.is_running = true
+    wp.state = true
     capi.awesome.emit_signal("prompt::toggled_on", self)
     self:turn_on()
     update_markup(self, true)
@@ -376,7 +376,7 @@ end
 function prompt:stop()
     local wp = self._private
 
-    wp.is_running = false
+    wp.state = false
 
     if self.reset_on_stop == true or wp.cur_pos == nil then
         wp.cur_pos = wp.text:wlen() + 1
@@ -393,10 +393,13 @@ function prompt:stop()
     if self.done_callback then
         self.done_callback()
     end
+    self:emit_signal("stopped", wp.text)
 end
 
 function prompt:toggle()
-    if self._private.is_running == true then
+    local wp = self._private
+
+    if wp.state == true then
         self:stop()
     else
         self:start()
@@ -443,31 +446,31 @@ local function new()
     update_markup(widget, false)
 
     widget:connect_signal("mouse::leave", function()
-        if wp.always_on == false then
+        if wp.always_on == false and wp.state == true then
             widget:stop()
         end
     end)
 
     capi.awesome.connect_signal("root::pressed", function()
-        if wp.always_on == false then
+        if wp.always_on == false and wp.state == true then
             widget:stop()
         end
     end)
 
     capi.client.connect_signal("button::press", function()
-        if wp.always_on == false then
+        if wp.always_on == false and wp.state == true then
             widget:stop()
         end
     end)
 
     capi.tag.connect_signal("property::selected", function()
-        if wp.always_on == false then
+        if wp.always_on == false and wp.state == true then
             widget:stop()
         end
     end)
 
     capi.awesome.connect_signal("prompt::toggled_on", function(prompt)
-        if wp.always_on == false and prompt ~= widget then
+        if wp.always_on == false and prompt ~= widget and wp.state == true then
             widget:stop()
         end
     end)
