@@ -101,7 +101,7 @@ local function picom_slider(key, maximum, round, minimum)
     }
 
     local slider_prompt = widgets.slider_prompt {
-        slider_width = dpi(430),
+        slider_width = dpi(420),
         value = picom_daemon["get_" .. key](picom_daemon),
         minimum = minimum or 0,
         maximum = maximum,
