@@ -172,7 +172,7 @@ end
 
 function prompt:set_obscure(value)
     self._private.obscure = value
-    update_markup(self, true)
+    update_markup(self, false)
 end
 
 function prompt:get_text()
@@ -187,7 +187,7 @@ end
 
 function prompt:set_prompt(prompt)
     self._private.prompt = prompt
-    update_markup(self, true)
+    update_markup(self, false)
 end
 
 function prompt:set_only_numbers(only_numbers)
@@ -477,7 +477,7 @@ local function new()
         wp.prompt_color = old_colorscheme_to_new_map[wp.prompt_color]
         wp.text_color = old_colorscheme_to_new_map[wp.text_color]
         wp.cursor_color = old_colorscheme_to_new_map[wp.cursor_color]
-        update_markup(widget, true)
+        update_markup(widget, false)
     end)
 
     return widget
