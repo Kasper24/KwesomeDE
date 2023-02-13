@@ -911,17 +911,6 @@ local function password_page(on_next_pressed, on_previous_pressed)
 end
 
 local function welcome_page(on_next_pressed, on_previous_pressed)
-    local function picture(value)
-        return wibox.widget {
-            widget = wibox.widget.imagebox,
-            forced_width = dpi(260),
-            forced_height = dpi(100),
-            horizontal_fit_policy = "fit",
-            vertical_fit_policy = "fit",
-            image = beautiful.overview_pictures[value]
-        }
-    end
-
     local icon = wibox.widget {
         widget = wibox.widget.imagebox,
         halign = "center",
@@ -937,19 +926,11 @@ local function welcome_page(on_next_pressed, on_previous_pressed)
         text = "Hi " .. os.getenv("USER"):upper() .. ", Welcome to KwesomeDE!"
     }
 
-    local pictures = wibox.widget {
-        layout = wibox.layout.grid,
-        forced_num_rows = 4,
-        forced_num_cols = 2,
-        spacing = dpi(5),
-        picture(1),
-        picture(2),
-        picture(3),
-        picture(4),
-        picture(5),
-        picture(6),
-        picture(7),
-        picture(8)
+    local overview = wibox.widget {
+        widget = wibox.widget.imagebox,
+        horizontal_fit_policy = "fit",
+        vertical_fit_policy = "fit",
+        image = beautiful.overview
     }
 
     local quit_button = wibox.widget {
@@ -982,7 +963,7 @@ local function welcome_page(on_next_pressed, on_previous_pressed)
                 spacing = dpi(20),
                 icon,
                 title,
-                pictures
+                overview
             },
             nil,
             {
