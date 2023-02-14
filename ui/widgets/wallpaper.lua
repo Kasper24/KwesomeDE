@@ -19,11 +19,11 @@ local function new()
         resize = true,
         horizontal_fit_policy = "fit",
         vertical_fit_policy = "fit",
-        image = theme_daemon:get_wallpaper()
+        image = theme_daemon:get_wallpaper_surface()
     }
 
     capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
-        widget.image = theme_daemon:get_wallpaper()
+        widget.image = theme_daemon:get_wallpaper_surface()
     end)
 
     return widget

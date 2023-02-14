@@ -88,7 +88,7 @@ function tag_preview:show(t, args)
         forced_height = dpi(150),
         horizontal_fit_policy = "fit",
         vertical_fit_policy = "fit",
-        image = t.thumbnail or theme_daemon:get_wallpaper()
+        image = t.thumbnail or theme_daemon:get_wallpaper_surface()
     }
 
     self.widget.widget = widget

@@ -381,118 +381,128 @@ local function install_gtk_theme()
 end
 
 local function image_wallpaper(self, screen)
+    local widget = wibox.widget {
+        widget = wibox.widget.imagebox,
+        resize = true,
+        horizontal_fit_policy = "fit",
+        vertical_fit_policy = "fit",
+        image = self._private.wallpaper
+    }
+
+    self._private.wallpaper_surface = wibox.widget.draw_to_image_surface(widget, screen.geometry.width, screen.geometry.height)
+
     awful.wallpaper {
         screen = screen,
-        widget = {
-            widget = wibox.widget.imagebox,
-            resize = true,
-            horizontal_fit_policy = "fit",
-            vertical_fit_policy = "fit",
-            image = self._private.wallpaper
-        }
+        widget = widget
     }
 end
 
 local function mountain_wallpaper(self, screen)
     local colors = self._private.colors[self._private.selected_wallpaper]
 
+    local widget = wibox.widget {
+        layout = wibox.layout.stack,
+        {
+            widget = wibox.container.background,
+            id = "background",
+            bg = {
+                type = 'linear',
+                from = {0, 0},
+                to = {0, 100},
+                stops = {
+                    {0, beautiful.colors.random_accent_color(colors)},
+                    {0.75, beautiful.colors.random_accent_color(colors)},
+                    {1, beautiful.colors.random_accent_color(colors)}
+                }
+            }
+        },
+        {
+            widget = wibox.widget.imagebox,
+            resize = true,
+            horizontal_fit_policy = "fit",
+            vertical_fit_policy = "fit",
+            image = beautiful.mountain_background
+        },
+    }
+
+    self._private.wallpaper_surface = wibox.widget.draw_to_image_surface(widget, screen.geometry.width, screen.geometry.height)
+
     awful.wallpaper {
         screen = screen,
-        widget = {
-            layout = wibox.layout.stack,
-            {
-                widget = wibox.container.background,
-                id = "background",
-                bg = {
-                    type = 'linear',
-                    from = {0, 0},
-                    to = {0, 100},
-                    stops = {
-                        {0, beautiful.colors.random_accent_color(colors)},
-                        {0.75, beautiful.colors.random_accent_color(colors)},
-                        {1, beautiful.colors.random_accent_color(colors)}
-                    }
-                }
-            },
-            {
-                widget = wibox.widget.imagebox,
-                resize = true,
-                horizontal_fit_policy = "fit",
-                vertical_fit_policy = "fit",
-                image = beautiful.mountain_background
-            },
-        }
+        widget = widget
     }
 end
 
 local function digital_sun_wallpaper(self, screen)
     local colors = self._private.colors[self._private.selected_wallpaper]
 
+    local widget =  wibox.widget {
+        fit = function(_, width, height)
+            return width, height
+        end,
+        draw = function(self, _, cr, width, height)
+            cr:set_source(gcolor {
+                type = 'linear',
+                from = {0, 0},
+                to = {0, height},
+                stops = {
+                    {0, colors[1]},
+                    {0.75, colors[9]},
+                    {1, colors[1]}
+                }
+            })
+            cr:paint()
+            -- Clip the first 33% of the screen
+            cr:rectangle(0, 0, width, height / 3)
+
+            -- Clip-out some increasingly large sections of add the sun "bars"
+            for i = 0, 6 do
+                cr:rectangle(0, height * .28 + i * (height * .055 + i / 2), width, height * .055)
+            end
+            cr:clip()
+
+            -- Draw the sun
+            cr:set_source(gcolor {
+                type = 'linear',
+                from = {0, 0},
+                to = {0, height},
+                stops = {
+                    {0, beautiful.colors.random_accent_color(colors)},
+                    {1, beautiful.colors.random_accent_color(colors)}
+                }
+            })
+            cr:arc(width / 2, height / 2, height * .35, 0, math.pi * 2)
+            cr:fill()
+
+            -- Draw the grid
+            local lines = width / 8
+            cr:reset_clip()
+            cr:set_line_width(0.5)
+            cr:set_source(gcolor(beautiful.colors.random_accent_color(colors)))
+
+            for i = 1, lines do
+                cr:move_to((-width) + i * math.sin(i * (math.pi / (lines * 2))) * 30, height)
+                cr:line_to(width / 4 + i * ((width / 2) / lines), height * 0.75 + 2)
+                cr:stroke()
+            end
+
+            for i=1, 10 do
+                cr:move_to(0, height*0.75 + i*30 + i*2)
+                cr:line_to(width, height*0.75 + i*30 + i*2)
+                cr:stroke()
+            end
+        end
+    }
+
+    self._private.wallpaper_surface = wibox.widget.draw_to_image_surface(widget, screen.geometry.width, screen.geometry.height)
+
     awful.wallpaper {
         screen = screen,
-        widget = wibox.widget {
-            fit = function(_, width, height)
-                return width, height
-            end,
-            draw = function(self, _, cr, width, height)
-                cr:set_source(gcolor {
-                    type = 'linear',
-                    from = {0, 0},
-                    to = {0, height},
-                    stops = {
-                        {0, colors[1]},
-                        {0.75, colors[9]},
-                        {1, colors[1]}
-                    }
-                })
-                cr:paint()
-                -- Clip the first 33% of the screen
-                cr:rectangle(0, 0, width, height / 3)
-
-                -- Clip-out some increasingly large sections of add the sun "bars"
-                for i = 0, 6 do
-                    cr:rectangle(0, height * .28 + i * (height * .055 + i / 2), width, height * .055)
-                end
-                cr:clip()
-
-                -- Draw the sun
-                cr:set_source(gcolor {
-                    type = 'linear',
-                    from = {0, 0},
-                    to = {0, height},
-                    stops = {
-                        {0, beautiful.colors.random_accent_color(colors)},
-                        {1, beautiful.colors.random_accent_color(colors)}
-                    }
-                })
-                cr:arc(width / 2, height / 2, height * .35, 0, math.pi * 2)
-                cr:fill()
-
-                -- Draw the grid
-                local lines = width / 8
-                cr:reset_clip()
-                cr:set_line_width(0.5)
-                cr:set_source(gcolor(beautiful.colors.random_accent_color(colors)))
-
-                for i = 1, lines do
-                    cr:move_to((-width) + i * math.sin(i * (math.pi / (lines * 2))) * 30, height)
-                    cr:line_to(width / 4 + i * ((width / 2) / lines), height * 0.75 + 2)
-                    cr:stroke()
-                end
-
-                for i=1, 10 do
-                    cr:move_to(0, height*0.75 + i*30 + i*2)
-                    cr:line_to(width, height*0.75 + i*30 + i*2)
-                    cr:stroke()
-                end
-            end
-        }
+        widget = widget
     }
 end
 
 local function binary_wallpaper(self, screen)
-    local colors = self._private.colors[self._private.selected_wallpaper]
-
     local function binary()
         local ret = {}
         for _ = 1, 30 do
@@ -505,30 +515,36 @@ local function binary_wallpaper(self, screen)
         return table.concat(ret)
     end
 
-    awful.wallpaper {
-        screen = screen,
-        bg = colors[1],
-        fg = beautiful.colors.random_accent_color(colors),
-        widget = wibox.widget {
-            widget = wibox.layout.stack,
-            {
-                widget = wibox.container.background,
-                fg = beautiful.colors.random_accent_color(colors),
-                {
-                    widget = wibox.widget.textbox,
-                    halign = "center",
-                    valign = "center",
-                    markup = "<tt><b>[SYSTEM FAILURE]</b></tt>"
-                }
-            },
+    local colors = self._private.colors[self._private.selected_wallpaper]
+
+    local widget = wibox.widget {
+        widget = wibox.layout.stack,
+        {
+            widget = wibox.container.background,
+            fg = beautiful.colors.random_accent_color(colors),
             {
                 widget = wibox.widget.textbox,
                 halign = "center",
                 valign = "center",
-                wrap = "word",
-                text = binary()
+                markup = "<tt><b>[SYSTEM FAILURE]</b></tt>"
             }
+        },
+        {
+            widget = wibox.widget.textbox,
+            halign = "center",
+            valign = "center",
+            wrap = "word",
+            text = binary()
         }
+    }
+
+    self._private.wallpaper_surface = wibox.widget.draw_to_image_surface(widget, screen.geometry.width, screen.geometry.height)
+
+    awful.wallpaper {
+        screen = screen,
+        bg = colors[1],
+        fg = beautiful.colors.random_accent_color(colors),
+        widget = widget
     }
 end
 
@@ -658,6 +674,10 @@ end
 
 function theme:get_wallpaper()
     return self._private.wallpaper
+end
+
+function theme:get_wallpaper_surface()
+    return self._private.wallpaper_surface
 end
 
 function theme:get_short_wallpaper_name(wallpaper_path)
