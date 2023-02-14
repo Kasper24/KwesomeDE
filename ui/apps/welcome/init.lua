@@ -19,7 +19,8 @@ local theme_app = require("ui.apps.theme")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local capi = {
-    awesome = awesome
+    awesome = awesome,
+    client = client
 }
 
 local welcome = {}
@@ -73,7 +74,7 @@ function welcome:hide()
     end
     self._private.visible = false
 
-    if helpers.settings:get_value("initial") ~= false then
+    if system_daemon:does_need_setup() then
         theme_app:show()
     end
 end
@@ -158,7 +159,7 @@ For more information visit the following links.]]
         text = "Finish",
         on_press = function()
             on_next_pressed()
-            helpers.settings:set_value("initial", false)
+            system_daemon:set_need_setup_off()
         end
     }
 
@@ -1106,9 +1107,11 @@ local function new()
         }
     end)
 
-    if helpers.settings:get_value("initial") ~= false then
-        ret:show()
-    end
+    capi.client.connect_signal("scanned", function()
+        if system_daemon:is_new_version() or system_daemon:does_need_setup() then
+            ret:toggle()
+        end
+    end)
 
     return ret
 end

@@ -80,9 +80,17 @@
       </description>
     </key>
 
-    <key name="initial" type="b">
+   <key name="version" type="s">
+      <default>""</default>
+      <summary>Version</summary>
+      <description>
+        KwesomeDE version
+      </description>
+    </key>
+
+    <key name="need-setup" type="b">
       <default>true</default>
-      <summary>Initial login</summary>
+      <summary>Need Setup</summary>
       <description>
         If true the welcome screen will show
       </description>

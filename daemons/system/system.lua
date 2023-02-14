@@ -16,6 +16,25 @@ local system = {}
 local instance = nil
 
 local UPDATE_INTERVAL = 60
+local VERSION = 0
+
+function system:set_need_setup_off()
+    return helpers.settings:set_value("need-setup", false)
+end
+
+function system:does_need_setup()
+    return helpers.settings:get_value("need-setup", VERSION)
+end
+
+function system:is_new_version()
+    local version = tonumber(helpers.settings:get_value("version", VERSION))
+    if version ~= VERSION then
+        helpers.settings:set_value("version", VERSION)
+        return true
+    end
+
+    return false
+end
 
 function system:set_password(password)
     self._private.password = password
