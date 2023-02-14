@@ -131,10 +131,8 @@ local function new()
                     titlebar:set_bg(beautiful.colors.background)
                 end)
 
-                gtimer.delayed_call(function()
-                    ret._private.visible = true
-                    ret:emit_signal("visible", true)
-                end)
+                ret._private.visible = true
+                ret:emit_signal("visible", true)
             end
         }
     end)

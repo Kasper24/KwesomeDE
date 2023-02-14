@@ -58,7 +58,6 @@ function screenshot:show()
     helpers.client.run_or_raise_with_shell({
         class = "awesome-app-screenshot"
     }, true, window)
-    self._private.visible = true
 end
 
 function screenshot:hide()
@@ -66,6 +65,7 @@ function screenshot:hide()
         self._private.client:kill()
     end
     self._private.visible = false
+    self:emit_signal("visibility", false)
 end
 
 function screenshot:toggle()
@@ -124,6 +124,9 @@ local function new()
                 capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
                     titlebar:set_bg(beautiful.colors.background)
                 end)
+
+                ret._private.visible = true
+                ret:emit_signal("visibility", true)
             end
         }
     end)
