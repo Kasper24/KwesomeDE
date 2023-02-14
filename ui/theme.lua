@@ -258,7 +258,8 @@ local function icons()
         usb_drive = { icon = "" },
         signal_stream = { icon = "" },
         car_battery =  { icon = "" },
-        computer = { icon = "" }
+        computer = { icon = "" },
+        palette = { icon = "" }
     }
 
     local function set_icon_default_props(icon, color)
@@ -348,7 +349,7 @@ local function icons()
         ["libreofficecalc"] = theme.icons.excel,
         ["awesomeappscreenshot"] = theme.icons.camera_retro,
         ["awesomeapprecord"] = theme.icons.video,
-        ["awesomeappthememanager"] = theme.icons.spraycan,
+        ["awesomeappthememanager"] = theme.icons.palette,
         ["awesomeappwelcome"] = theme.icons.computer,
         ["xfce4settingsmanager"] = theme.icons.computer,
         ["dconfeditor"] = theme.icons.computer,
