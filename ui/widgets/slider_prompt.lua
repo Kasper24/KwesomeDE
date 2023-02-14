@@ -24,8 +24,8 @@ local function new(args)
 	local prompt = pwidget(args)
 	prompt:set_forced_width(args.prompt_width or dpi(80))
 	prompt:set_forced_height(args.prompt_height or dpi(40))
-
 	prompt:set_only_numbers(true)
+	prompt:set_halign("center")
 
 	local text_value = tostring(helpers.misc.round_to_decimal_places(args.value, 2))
 	prompt:set_text(text_value)
