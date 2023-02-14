@@ -11,6 +11,8 @@ local dbus_proxy = require("helpers").dbus_proxy
 local pairs = pairs
 
 local bluetooth = {}
+local device = {}
+
 local instance = nil
 
 function bluetooth:toggle()
@@ -29,6 +31,51 @@ end
 
 function bluetooth:scan()
     self._private.adapter_proxy:StartDiscovery()
+end
+
+function device:toggle_connect()
+    if self.Connected == true then
+        self:DisconnectAsync()
+    else
+        self:ConnectAsync()
+    end
+end
+
+function device:toggle_trust()
+    local is_trusted = self.Trusted
+    self:Set("org.bluez.Device1", "Trusted", lgi.GLib.Variant("b", not is_trusted))
+    self.Trusted = {
+        signature = "b",
+        value = not is_trusted
+    }
+end
+
+function device:toggle_pair()
+    if self.Paired == true then
+        self:PairAsync()
+    else
+        self:CancelPairingAsync()
+    end
+end
+
+function device:is_connected()
+    return self.Connected
+end
+
+function device:is_paired()
+    return self.Paired
+end
+
+function device:is_trusted()
+    return self.Trusted
+end
+
+function device:get_name()
+    return self.Name
+end
+
+function device:get_icon()
+    return self.Icon
 end
 
 local function get_device_info(self, object_path)
@@ -57,6 +104,8 @@ local function get_device_info(self, object_path)
 
                 self:emit_signal(object_path .. "_updated", device_proxy)
             end)
+
+            gtable.crush(device_proxy, device, true)
 
             self:emit_signal("new_device", device_proxy, object_path)
         end

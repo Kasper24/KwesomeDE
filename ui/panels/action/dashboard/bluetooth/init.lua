@@ -16,7 +16,7 @@ local capi = {
 
 local instance = nil
 
-local function device_widget(device, path, layout)
+local function device_widget(device, path)
     local widget = nil
     local anim = nil
 
@@ -24,7 +24,7 @@ local function device_widget(device, path, layout)
         widget = wibox.widget.imagebox,
         forced_width = dpi(50),
         forced_height = dpi(50),
-        image = helpers.icon_theme.get_icon_path(device.Icon or "bluetooth")
+        image = helpers.icon_theme.get_icon_path(device:get_icon() or "bluetooth")
     }
 
     local name = wibox.widget {
@@ -33,7 +33,7 @@ local function device_widget(device, path, layout)
         forced_height = dpi(30),
         halign = "left",
         size = 12,
-        text = device.Name,
+        text = device:get_name(),
         color = beautiful.colors.on_surface
     }
 
@@ -54,13 +54,9 @@ local function device_widget(device, path, layout)
         normal_bg = beautiful.colors.surface,
         text_normal_bg = beautiful.colors.on_surface,
         size = 12,
-        text = device.Connected == true and "Disconnect" or "Connect",
+        text = device:is_connected() == true and "Disconnect" or "Connect",
         on_press = function()
-            if device.Connected == true then
-                device:DisconnectAsync()
-            else
-                device:ConnectAsync()
-            end
+            device:toggle_connect()
         end
     }
 
@@ -69,14 +65,9 @@ local function device_widget(device, path, layout)
         normal_bg = beautiful.colors.surface,
         text_normal_bg = beautiful.colors.on_surface,
         size = 12,
-        text = device.Trusted == true and "Untrust" or "Trust",
+        text = device:is_trusted() == true and "Untrust" or "Trust",
         on_press = function()
-            local is_trusted = device.Trusted
-            device:Set("org.bluez.Device1", "Trusted", lgi.GLib.Variant("b", not is_trusted))
-            device.Trusted = {
-                signature = "b",
-                value = not is_trusted
-            }
+            device:toggle_trust()
         end
     }
 
@@ -85,13 +76,9 @@ local function device_widget(device, path, layout)
         normal_bg = beautiful.colors.surface,
         text_normal_bg = beautiful.colors.on_surface,
         size = 12,
-        text = device.Paired == true and "Unpair" or "Pair",
+        text = device:is_paired() == true and "Unpair" or "Pair",
         on_press = function()
-            if device.Paired == true then
-                device:PairAsync()
-            else
-                device:CancelPairingAsync()
-            end
+            device:toggle_pair()
         end
     }
 
@@ -143,14 +130,10 @@ local function device_widget(device, path, layout)
         end
     }
 
-    bluetooth_daemon:connect_signal(path .. "_removed", function(self)
-        layout:remove_widgets(widget)
-    end)
-
     bluetooth_daemon:connect_signal(path .. "_updated", function(self)
-        connect_or_disconnect.text = device.Connected and "Disconnect" or "Connect"
-        trust_or_untrust.text = device.Trusted and "Untrust" or "Trust"
-        pair_or_unpair.text = device.Paired and "Unpair" or "Pair"
+        connect_or_disconnect.text = device:is_connected() and "Disconnect" or "Connect"
+        trust_or_untrust.text = device:is_trusted() and "Untrust" or "Trust"
+        pair_or_unpair.text = device:is_paired() and "Unpair" or "Pair"
     end)
 
     capi.awesome.connect_signal("bluetooth_device_widget::expanded", function(toggled_on_widget)
@@ -223,8 +206,13 @@ local function new()
     }
 
     bluetooth_daemon:connect_signal("new_device", function(self, device, path)
-        layout:add(device_widget(device, path, layout))
+        local widget = device_widget(device, path)
+        layout:add(widget)
         stack:raise_widget(layout)
+
+        bluetooth_daemon:connect_signal(path .. "_removed", function(self)
+            layout:remove_widgets(widget)
+        end)
     end)
 
     bluetooth_daemon:connect_signal("state", function(self, state)
