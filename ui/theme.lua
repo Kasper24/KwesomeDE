@@ -207,7 +207,6 @@ local function icons()
         gamepad_alt = { icon = "" },
         lights_holiday = { icon = "" },
         download = { icon = "︁" },
-        computer = { icon = "︁" },
         video_download = { icon = "︁" },
         speaker = { icon = "︁" },
         archeive = { icon = "︁" },
@@ -350,8 +349,9 @@ local function icons()
         ["awesomeappscreenshot"] = theme.icons.camera_retro,
         ["awesomeapprecord"] = theme.icons.video,
         ["awesomeappthememanager"] = theme.icons.spraycan,
-        ["xfce4settingsmanager"] = theme.icons.gear,
-        ["dconfeditor"] = theme.icons.gear,
+        ["awesome-app-welcome"] = theme.icons.computer,
+        ["xfce4settingsmanager"] = theme.icons.computer,
+        ["dconfeditor"] = theme.icons.computer,
         ["obs"] = theme.icons.video
     }
 
