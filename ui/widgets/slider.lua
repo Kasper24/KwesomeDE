@@ -188,6 +188,10 @@ local function new(args)
         end
 	end
 
+	function widget:get_value()
+		return helpers.misc.convert_range(bar.pos, 0, 1, args.minimum, args.maximum)
+	end
+
 	function widget:set_maximum(maximum)
         args.maximum = maximum
 	end

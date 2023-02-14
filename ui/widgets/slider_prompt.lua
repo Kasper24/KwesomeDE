@@ -58,6 +58,10 @@ local function new(args)
 	prompt:connect_signal("stopped", function(self, text)
 		local value = tonumber(text)
 
+		if value == slider:get_value() then
+			return
+		end
+
 		if value > args.maximum then
 			prompt:set_text(tostring(args.maximum))
 			slider:set_value(args.maximum)
