@@ -419,7 +419,7 @@ local function get_draw(pm)
     return function(self, _, cr, __, height)
         pm:set_height(height)
 
-        cr:set_source(gcolor(beautiful.colors.background))
+        cr:set_source(gcolor(beautiful.colors.background_no_opacity))
 
         if self.pos == 1 then
             cr:move_to(pm.p1.x, pm.p1.y - pm.p1d.y)
