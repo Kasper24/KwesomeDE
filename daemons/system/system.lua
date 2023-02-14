@@ -26,10 +26,6 @@ function system:get_password()
     return self._private.password
 end
 
-function system:get_is_pam_installed()
-    return self._private.is_pam_installed
-end
-
 function system:shutdown()
     awful.spawn("systemctl poweroff", false)
 end
