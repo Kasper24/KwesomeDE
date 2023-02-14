@@ -10,6 +10,7 @@ local theme_daemon = require("daemons.system.theme")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
+local ipairs = ipairs
 
 local main = {
     mt = {}
