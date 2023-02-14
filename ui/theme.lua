@@ -38,7 +38,7 @@ local function colors()
         background = helpers.color.add_opacity(colors[1], theme_daemon:get_ui_opacity()),
         background_no_opacity = colors[1],
 
-        surface = colors[9],
+        surface = helpers.color.add_opacity(colors[9], theme_daemon:get_ui_opacity()),
 
         error = colors[2],
 
