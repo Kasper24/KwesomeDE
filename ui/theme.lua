@@ -349,7 +349,7 @@ local function icons()
         ["awesomeappscreenshot"] = theme.icons.camera_retro,
         ["awesomeapprecord"] = theme.icons.video,
         ["awesomeappthememanager"] = theme.icons.spraycan,
-        ["awesome-app-welcome"] = theme.icons.computer,
+        ["awesomeappwelcome"] = theme.icons.computer,
         ["xfce4settingsmanager"] = theme.icons.computer,
         ["dconfeditor"] = theme.icons.computer,
         ["obs"] = theme.icons.video
