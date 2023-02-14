@@ -2,58 +2,18 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-local awful = require("awful")
-local gobject = require("gears.object")
-local gtable = require("gears.table")
-local gshape = require("gears.shape")
-local ruled = require("ruled")
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
+local app = require("ui.apps.app")
 local beautiful = require("beautiful")
 local record_daemon = require("daemons.system.record")
 local pactl_daemon = require("daemons.hardware.pactl")
-local helpers = require("helpers")
+local app = require("ui.apps.app")
 local dpi = beautiful.xresources.apply_dpi
 local pairs = pairs
-local capi = {
-    awesome = awesome
-}
 
 local record = {}
 local instance = nil
-
-local window = [[ lua -e "
-    local lgi = require 'lgi'
-    local Gtk = lgi.require('Gtk', '3.0')
-
-    -- Create top level window with some properties and connect its 'destroy'
-    -- signal to the event loop termination.
-    local window = Gtk.Window {
-    title = 'Record',
-    default_width = 0,
-    default_height = 0,
-    on_destroy = Gtk.main_quit
-    }
-
-    if tonumber(Gtk._version) >= 3 then
-    window.has_resize_grip = true
-    end
-
-    local icon = 'screen-recorder'
-    pixbuf24 = Gtk.IconTheme.get_default():load_icon(icon, 24, 0)
-    pixbuf32 = Gtk.IconTheme.get_default():load_icon(icon, 32, 0)
-    pixbuf48 = Gtk.IconTheme.get_default():load_icon(icon, 48, 0)
-    pixbuf64 = Gtk.IconTheme.get_default():load_icon(icon, 64, 0)
-    pixbuf96 = Gtk.IconTheme.get_default():load_icon(icon, 96, 0)
-    window:set_icon_list({pixbuf24, pixbuf32, pixbuf48, pixbuf64, pixbuf96});
-
-    window:set_wmclass('awesome-app-record', 'awesome-app-record')
-
-    -- Show window and start the loop.
-    window:show_all()
-    Gtk.main()
-"
-]]
 
 local function resolution()
     local title = wibox.widget {
@@ -253,7 +213,7 @@ local function format()
     }
 end
 
-local function main(self)
+local function widget(self)
     local title = wibox.widget {
         widget = widgets.text,
         bold = true,
@@ -323,91 +283,28 @@ local function main(self)
     }
 end
 
-function record:show()
-    helpers.client.run_or_raise_with_shell({
-        class = "awesome-app-record"
-    }, true, window)
-end
-
-function record:hide()
-    if self._private.client ~= nil then
-        self._private.client:kill()
-    end
-    self._private.visible = false
-    self:emit_signal("visibility", false)
-end
-
-function record:toggle()
-    if self._private.visible == true then
-        self:hide()
-    else
-        self:show()
-    end
-end
-
 local function new()
-    local ret = gobject {}
-    gtable.crush(ret, record, true)
-
-    ret._private = {}
-
-    ruled.client.connect_signal("request::rules", function()
-        ruled.client.append_rule {
-            rule = {
-                class = "awesome-app-record"
-            },
-            properties = {
-                floating = true,
-                width = dpi(550),
-                height = 1,
-                placement = awful.placement.centered
-            },
-            callback = function(c)
-                ret._private.client = c
-
-                c:connect_signal("unmanage", function()
-                    ret._private.visible = false
-                    ret._private.client = nil
-                end)
-
-                c.custom_titlebar = true
-                c.can_resize = false
-                c.can_tile = false
-
-                -- Settings placement in properties doesn't work
-                c.x = (c.screen.geometry.width / 2) - (dpi(550) / 2)
-                c.y = (c.screen.geometry.height / 2) - (dpi(435) / 2)
-
-                local titlebar = widgets.titlebar(c, {
-                    position = "top",
-                    size = dpi(435),
-                    bg = beautiful.colors.background
-                })
-                titlebar:setup{ widget = main(ret) }
-
-                capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
-                    titlebar:set_bg(beautiful.colors.background)
-                end)
-
-                ret._private.visible = true
-                ret:emit_signal("visibility", true)
-            end
-        }
-    end)
+    local app = app {
+        title ="Recorder",
+        class = "Recorder",
+        width = dpi(550),
+        height = dpi(435),
+    }
+    app:set_widget(widget(app))
 
     record_daemon:connect_signal("started", function()
-        ret._private.client.hidden = true
+        app:set_hidden(true)
     end)
 
     record_daemon:connect_signal("ended", function()
-        ret._private.client.hidden = false
+        app:set_hidden(false)
     end)
 
     record_daemon:connect_signal("error::create_directory", function()
-        ret._private.client.hidden = false
+        app:set_hidden(false)
     end)
 
-    return ret
+    return app
 end
 
 if not instance then

@@ -3,89 +3,34 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 local awful = require("awful")
-local gobject = require("gears.object")
-local gtable = require("gears.table")
 local ruled = require("ruled")
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
+local app = require("ui.apps.app")
 local beautiful = require("beautiful")
 local screenshot_daemon = require("daemons.system.screenshot")
-local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local capi = {
     awesome = awesome
 }
 
-local screenshot = {}
 local instance = nil
 
 local path = ...
 
-local window = [[ lua -e "
-    local lgi = require 'lgi'
-    local Gtk = lgi.require('Gtk', '3.0')
-
-    -- Create top level window with some properties and connect its 'destroy'
-    -- signal to the event loop termination.
-    local window = Gtk.Window {
-    title = 'Screenshot',
-    default_width = 0,
-    default_height = 0,
-    on_destroy = Gtk.main_quit
-    }
-
-    if tonumber(Gtk._version) >= 3 then
-    window.has_resize_grip = true
-    end
-
-    local icon = 'camera'
-    pixbuf24 = Gtk.IconTheme.get_default():load_icon(icon, 24, 0)
-    pixbuf32 = Gtk.IconTheme.get_default():load_icon(icon, 32, 0)
-    pixbuf48 = Gtk.IconTheme.get_default():load_icon(icon, 48, 0)
-    pixbuf64 = Gtk.IconTheme.get_default():load_icon(icon, 64, 0)
-    pixbuf96 = Gtk.IconTheme.get_default():load_icon(icon, 96, 0)
-    window:set_icon_list({pixbuf24, pixbuf32, pixbuf48, pixbuf64, pixbuf96});
-
-    window:set_wmclass('awesome-app-screenshot', 'awesome-app-screenshot')
-
-    -- Show window and start the loop.
-    window:show_all()
-    Gtk.main()
-"
-]]
-
-function screenshot:show()
-    helpers.client.run_or_raise_with_shell({
-        class = "awesome-app-screenshot"
-    }, true, window)
-end
-
-function screenshot:hide()
-    if self._private.client ~= nil then
-        self._private.client:kill()
-    end
-    self._private.visible = false
-    self:emit_signal("visibility", false)
-end
-
-function screenshot:toggle()
-    if self._private.visible == true then
-        self:hide()
-    else
-        self:show()
-    end
-end
-
 local function new()
-    local ret = gobject {}
-    gtable.crush(ret, screenshot, true)
-
-    ret._private = {}
-
+    local app = app {
+        title ="Screenshot",
+        class = "Screenshot",
+        width = dpi(420),
+        height = dpi(280),
+    }
     local stack = wibox.layout.stack()
     stack:set_top_only(true)
-    stack:add(require(path .. ".main")(ret, stack))
+    stack:add(require(path .. ".main")(app, stack))
     stack:add(require(path .. ".settings")(stack))
+    app:set_widget(stack)
+
 
     ruled.client.connect_signal("request::rules", function()
         ruled.client.append_rule {
@@ -132,22 +77,22 @@ local function new()
     end)
 
     screenshot_daemon:connect_signal("started", function()
-        ret._private.client.hidden = true
+        app:set_hidden(true)
     end)
 
     screenshot_daemon:connect_signal("ended", function()
-        ret._private.client.hidden = false
+        app:set_hidden(false)
     end)
 
     screenshot_daemon:connect_signal("error::create_file", function()
-        ret._private.client.hidden = false
+        app:set_hidden(false)
     end)
 
     screenshot_daemon:connect_signal("error::create_directory", function()
-        ret._private.client.hidden = false
+        app:set_hidden(false)
     end)
 
-    return ret
+    return app
 end
 
 if not instance then
