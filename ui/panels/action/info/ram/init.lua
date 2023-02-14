@@ -3,8 +3,6 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 local awful = require("awful")
-local gobject = require("gears.object")
-local gtable = require("gears.table")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
 local widgets = require("ui.widgets")
@@ -13,45 +11,13 @@ local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local math = math
 
-local ram = {}
 local instance = nil
-
-function ram:show()
-    self.widget.screen = awful.screen.focused()
-    self.widget:move_next_to(action_panel)
-    self.widget.visible = true
-    self:emit_signal("visibility", true)
-end
-
-function ram:hide()
-    self.widget.visible = false
-    self:emit_signal("visibility", false)
-end
-
-function ram:toggle()
-    if self.widget.visible then
-        self:hide()
-    else
-        self:show()
-    end
-end
 
 local function getPercentage(value, total, total_swap)
     return math.floor(value / (total + total_swap) * 100 + 0.5) .. "%"
 end
 
 local function new()
-    local ret = gobject {}
-    gtable.crush(ret, ram, true)
-
-    ram_daemon:connect_signal("update",
-        function(self, total, used, free, shared, buff_cache, available, total_swap, used_swap, free_swap)
-            ret.widget.widget.data_list =
-                {{"used " .. getPercentage(used + used_swap, total, total_swap), used + used_swap},
-                 {"free " .. getPercentage(free + free_swap, total, total_swap), free + free_swap},
-                 {"buff_cache " .. getPercentage(buff_cache, total, total_swap), buff_cache}}
-        end)
-
     local chart = wibox.widget {
         widget = widgets.piechart,
         forced_height = 200,
@@ -60,18 +26,33 @@ local function new()
                     beautiful.colors.random_accent_color()}
     }
 
-    ret.widget = widgets.popup {
+    local widget =  widgets.animated_panel {
         ontop = true,
         visible = false,
-        offset = {
-            y = -dpi(400)
-        },
+        minimum_width = dpi(400),
+        maximum_width = dpi(400),
+        placement = function(widget)
+            awful.placement.bottom_right(widget, {
+                honor_workarea = true,
+                honor_padding = true,
+                attach = true,
+                margins = { bottom = 450, right = dpi(550)}
+            })
+        end,
         shape = helpers.ui.rrect(),
         bg = beautiful.colors.background,
         widget = chart
     }
 
-    return ret
+    ram_daemon:connect_signal("update",
+    function(self, total, used, free, shared, buff_cache, available, total_swap, used_swap, free_swap)
+        widget.widget.data_list =
+            {{"used " .. getPercentage(used + used_swap, total, total_swap), used + used_swap},
+             {"free " .. getPercentage(free + free_swap, total, total_swap), free + free_swap},
+             {"buff_cache " .. getPercentage(buff_cache, total, total_swap), buff_cache}}
+    end)
+
+    return widget
 end
 
 if not instance then

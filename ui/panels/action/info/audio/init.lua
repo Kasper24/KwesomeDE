@@ -3,9 +3,6 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 local awful = require("awful")
-local gobject = require("gears.object")
-local gtable = require("gears.table")
-local gshape = require("gears.shape")
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
@@ -13,28 +10,7 @@ local pactl_daemon = require("daemons.hardware.pactl")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 
-local audio = {}
 local instance = nil
-
-function audio:show()
-    self.widget.screen = awful.screen.focused()
-    self.widget:move_next_to(action_panel)
-    self.widget.visible = true
-    self:emit_signal("visibility", true)
-end
-
-function audio:hide()
-    self.widget.visible = false
-    self:emit_signal("visibility", false)
-end
-
-function audio:toggle()
-    if self.widget.visible then
-        self:hide()
-    else
-        self:show()
-    end
-end
 
 local function separator()
     return wibox.widget {
@@ -493,24 +469,27 @@ local function widget()
 end
 
 local function new()
-    local ret = gobject {}
-    gtable.crush(ret, audio, true)
-
-    ret.widget = widgets.popup {
+    return widgets.animated_panel {
         ontop = true,
         visible = false,
         minimum_width = dpi(600),
         maximum_width = dpi(600),
+        placement = function(widget)
+            awful.placement.bottom_right(widget, {
+                honor_workarea = true,
+                honor_padding = true,
+                attach = true,
+                margins = { right = dpi(550)}
+            })
+        end,
         shape = helpers.ui.rrect(),
         bg = beautiful.colors.background,
-        widget = {
+        widget = wibox.widget {
             widget = wibox.container.margin,
             margins = dpi(25),
             widget()
         }
     }
-
-    return ret
 end
 
 if not instance then

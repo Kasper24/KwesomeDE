@@ -4,8 +4,6 @@
 -------------------------------------------
 local lgi = require("lgi")
 local awful = require("awful")
-local gobject = require("gears.object")
-local gtable = require("gears.table")
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
@@ -16,28 +14,7 @@ local capi = {
     awesome = awesome
 }
 
-local bluetooth = {}
 local instance = nil
-
-function bluetooth:show()
-    self.widget.screen = awful.screen.focused()
-    self.widget:move_next_to(action_panel)
-    self.widget.visible = true
-    self:emit_signal("visibility", true)
-end
-
-function bluetooth:hide()
-    self.widget.visible = false
-    self:emit_signal("visibility", false)
-end
-
-function bluetooth:toggle()
-    if self.widget.visible then
-        self:hide()
-    else
-        self:show()
-    end
-end
 
 local function device_widget(device, path, layout)
     local widget = nil
@@ -187,11 +164,6 @@ local function device_widget(device, path, layout)
 end
 
 local function new()
-    local ret = gobject {}
-    gtable.crush(ret, bluetooth, true)
-
-    ret._private = {}
-
     local header = wibox.widget {
         widget = widgets.text,
         halign = "left",
@@ -261,14 +233,22 @@ local function new()
         end
     end)
 
-    ret.widget = widgets.popup {
+    return widgets.animated_panel {
         ontop = true,
         visible = false,
         minimum_width = dpi(600),
         maximum_width = dpi(600),
+        placement = function(widget)
+            awful.placement.bottom_right(widget, {
+                honor_workarea = true,
+                honor_padding = true,
+                attach = true,
+                margins = { right = dpi(550)}
+            })
+        end,
         shape = helpers.ui.rrect(),
         bg = beautiful.colors.background,
-        widget = {
+        widget = wibox.widget {
             widget = wibox.container.margin,
             margins = dpi(25),
             {
@@ -290,8 +270,6 @@ local function new()
             }
         }
     }
-
-    return ret
 end
 
 if not instance then

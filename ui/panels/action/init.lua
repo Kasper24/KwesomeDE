@@ -30,7 +30,7 @@ local function seperator()
 end
 
 local function new()
-    action_panel = widgets.animated_panel {
+    return widgets.animated_panel {
         type = "dock",
         visible = false,
         ontop = true,
@@ -66,8 +66,6 @@ local function new()
             }
         }
     }
-
-    return action_panel
 end
 
 if not instance then
