@@ -37,7 +37,7 @@ local function date_widget(self, date, is_current, is_another_month)
     local text_color = beautiful.colors.on_background
     if is_current == true then
         bg = accent_color
-        text_color = beautiful.colors.background
+        text_color = beautiful.colors.background_no_opacity
     elseif is_another_month == true then
         text_color = beautiful.colors.on_background_dark
     end
