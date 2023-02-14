@@ -30,7 +30,27 @@ local function seperator()
 end
 
 local function new()
-    return widgets.animated_panel {
+    local widget = wibox.widget {
+        widget = wibox.container.margin,
+        margins = dpi(25),
+        {
+            layout = widgets.overflow.vertical,
+            spacing = dpi(25),
+            scrollbar_widget = widgets.scrollbar,
+            scrollbar_width = dpi(0),
+            scrollbar_spacing = 0,
+            step = 50,
+            header,
+            seperator(),
+            dashboard,
+            seperator(),
+            info,
+            seperator(),
+            media
+        }
+    }
+
+    local panel = widgets.animated_panel {
         type = "dock",
         visible = false,
         ontop = true,
@@ -46,26 +66,16 @@ local function new()
         end,
         shape = helpers.ui.rrect(),
         bg = beautiful.colors.background,
-        widget = wibox.widget {
-            widget = wibox.container.margin,
-            margins = dpi(25),
-            {
-                layout = widgets.overflow.vertical,
-                spacing = dpi(25),
-                scrollbar_widget = wibox.widget{},
-                scrollbar_width = dpi(10),
-                scrollbar_spacing = 0,
-                step = 50,
-                header,
-                seperator(),
-                dashboard,
-                seperator(),
-                info,
-                seperator(),
-                media
-            }
-        }
+        widget = widget
     }
+
+    panel:connect_signal("visibility", function(visible)
+        if visible then
+            widget.widget.forced_height = awful.screen.focused().geometry.height - 100
+        end
+    end)
+
+    return panel
 end
 
 if not instance then
