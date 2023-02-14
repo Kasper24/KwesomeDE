@@ -93,13 +93,16 @@ local function new()
     ret._private = {}
     ret._private.slim = true
 
+    local first_time = true
+
     gtimer {
         timeout = UPDATE_INTERVAL,
         autostart = true,
         call_now = true,
         callback = function()
-            if ret._private.slim then
+            if ret._private.slim and first_time == false then
                 slim_update(ret)
+                first_time = false
             else
                 update(ret)
             end
