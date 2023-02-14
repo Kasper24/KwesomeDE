@@ -443,7 +443,7 @@ local function widget(self)
         spacing = dpi(3),
         scrollbar_widget = widgets.scrollbar,
         scrollbar_width = dpi(3),
-        step = 43
+        step = 50
     }
 
     local light_dark = wibox.widget {
