@@ -565,8 +565,9 @@ local function scan_for_wallpapers(self)
                     return a < b
                 end)
 
-                self:emit_signal("wallpapers", self._private.images)
                 self:select_wallpaper(self:get_wallpaper())
+                self:set_wallpaper(self._private.wallpaper_type)
+                self:emit_signal("wallpapers", self._private.images)
             end
         end
     }
@@ -602,12 +603,6 @@ function theme:set_wallpaper(type)
         file:copy(BACKGROUND_PATH, {
             overwrite = true
         })
-    elseif type == "tiled" then
-    elseif type == "color" then
-        self._private.color = self._private.selected_color
-        helpers.settings:set_value("theme-color", self._private.color)
-    elseif type == "digital_sun" then
-    elseif type == "binary" then
     end
 
     self._private.wallpaper_type = type
@@ -808,11 +803,9 @@ local function new()
         elseif ret._private.wallpaper_type == "binary" then
             binary_wallpaper(ret, s)
         end
-    end)
 
-    for s in capi.screen do
-        capi.screen.emit_signal("request::wallpaper", s)
-    end
+        capi.awesome.emit_signal("wallpaper::changed")
+    end)
 
     return ret
 end

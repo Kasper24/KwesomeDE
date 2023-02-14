@@ -22,7 +22,7 @@ local function new()
         image = theme_daemon:get_wallpaper_surface()
     }
 
-    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+    capi.awesome.connect_signal("wallpaper::changed", function()
         widget.image = theme_daemon:get_wallpaper_surface()
     end)
 
