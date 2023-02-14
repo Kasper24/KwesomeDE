@@ -272,7 +272,7 @@ function widget.new(args)
         self.modifiers_fg = args.modifiers_fg or beautiful.colors.random_accent_color() or beautiful.bg_minimize or
                                 "#555555"
         self.label_bg = args.label_bg or beautiful.colors.random_accent_color() or self.fg
-        self.label_fg = args.label_fg or beautiful.colors.surface or self.bg
+        self.label_fg = args.label_fg or beautiful.colors.on_background or self.bg
         self.opacity = args.opacity or 1
         self.font = args.font or beautiful.font_name .. "Bold 15" or "Monospace Bold 9"
         self.description_font = args.description_font or beautiful.font_name .. "12" or "Monospace 8"
