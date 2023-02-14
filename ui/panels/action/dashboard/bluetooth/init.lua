@@ -47,7 +47,7 @@ local function device_widget(device, path, layout)
         widget = wibox.widget.imagebox,
         forced_width = dpi(50),
         forced_height = dpi(50),
-        image = helpers.icon_theme:get_icon_path(device.Icon or "bluetooth")
+        image = helpers.icon_theme.get_icon_path(device.Icon or "bluetooth")
     }
 
     local name = wibox.widget {

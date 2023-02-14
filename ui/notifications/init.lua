@@ -335,7 +335,7 @@ ruled.notification.connect_signal("request::rules", function()
             app_name = "networkmanager-dmenu"
         },
         properties = {
-            icon = helpers.icon_theme:get_icon_path("networkmanager")
+            icon = helpers.icon_theme.get_icon_path("networkmanager")
         }
     }
     ruled.notification.append_rule {
@@ -343,13 +343,13 @@ ruled.notification.connect_signal("request::rules", function()
             app_name = "blueman"
         },
         properties = {
-            icon = helpers.icon_theme:get_icon_path("blueman-device")
+            icon = helpers.icon_theme.get_icon_path("blueman-device")
         }
     }
 end)
 
 naughty.connect_signal("request::action_icon", function(a, context, hints)
-    a.icon = helpers.icon_theme:get_icon_path(hints.id)
+    a.icon = helpers.icon_theme.get_icon_path(hints.id)
 end)
 
 naughty.connect_signal("added", function(n)
@@ -365,22 +365,22 @@ naughty.connect_signal("added", function(n)
     n.font_icon = n._private.font_icon
 
     if type(n._private.app_icon) == "table" then
-        n.app_icon = helpers.icon_theme:choose_icon(n._private.app_icon)
+        n.app_icon = helpers.icon_theme.choose_icon(n._private.app_icon)
     else
-        n.app_icon = helpers.icon_theme:get_icon_path(n._private.app_icon or n.app_name)
+        n.app_icon = helpers.icon_theme.get_icon_path(n._private.app_icon or n.app_name)
     end
 
     if type(n.icon) == "table" then
-        n.icon = helpers.icon_theme:choose_icon(n.icon)
+        n.icon = helpers.icon_theme.choose_icon(n.icon)
     end
 
     if n.app_icon == "" or n.app_icon == nil then
-        n.app_icon = helpers.icon_theme:get_icon_path("application-default-icon")
+        n.app_icon = helpers.icon_theme.get_icon_path("application-default-icon")
     end
 
     if (n.icon == "" or n.icon == nil) and n.font_icon == nil then
         n.font_icon = beautiful.icons.message
-        n.icon = helpers.icon_theme:get_icon_path("preferences-desktop-notification-bell")
+        n.icon = helpers.icon_theme.get_icon_path("preferences-desktop-notification-bell")
     end
 end)
 

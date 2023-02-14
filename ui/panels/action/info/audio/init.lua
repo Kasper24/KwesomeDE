@@ -63,7 +63,7 @@ local function application_widget(args)
             valign = "center",
             forced_height = dpi(25),
             forced_width = dpi(25),
-            image = helpers.icon_theme:choose_icon{args.application.name, "gnome-audio", "org.pulseaudio.pavucontrol"}
+            image = helpers.icon_theme.choose_icon{args.application.name, "gnome-audio", "org.pulseaudio.pavucontrol"}
         }
     else
         icon = wibox.widget {
@@ -132,7 +132,7 @@ local function application_widget(args)
     end)
 
     pactl_daemon:connect_signal(args.type .. "::" .. args.application.id .. "::icon_name", function(self, icon_name)
-        icon.image = helpers.icon_theme:choose_icon{icon_name, args.application.name, "gnome-audio",
+        icon.image = helpers.icon_theme.choose_icon{icon_name, args.application.name, "gnome-audio",
                                                     "org.pulseaudio.pavucontrol"}
     end)
 
