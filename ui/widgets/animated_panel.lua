@@ -7,6 +7,10 @@ local gtable = require("gears.table")
 local wibox = require("wibox")
 local pwidget = require("ui.widgets.popup")
 local helpers = require("helpers")
+local capi = {
+    awesome = awesome,
+    client = client
+}
 
 local animated_panel = {
     mt = {}
@@ -94,6 +98,14 @@ local function new(args)
             end
         }
     }
+
+    capi.awesome.connect_signal("root::pressed", function()
+        ret:hide()
+    end)
+
+    capi.client.connect_signal("button::press", function()
+        ret:hide()
+    end)
 
     return ret
 end
