@@ -22,6 +22,7 @@ local function new()
 
     capi.awesome.connect_signal("colorscheme::changed", function( old_colorscheme_to_new_map)
         widget.bg = old_colorscheme_to_new_map[widget_bg]
+        widget.border_color = old_colorscheme_to_new_map[widget.border_color]
         widget:emit_signal("widget::redraw_needed")
     end)
 
