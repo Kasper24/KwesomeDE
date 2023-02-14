@@ -23,18 +23,18 @@ function dropdown:add(key, value)
         text = key,
         on_press = function()
             self.on_value_selected(value)
-            self.text = self.prompt .. key
+            self:set_text(self.prompt .. key)
         end
     })
 end
 
 function dropdown:select(key, value)
     self.on_value_selected(value)
-    self.text = self.prompt .. key
+    self:set_text(self.prompt .. key)
 end
 
 function dropdown:get_value()
-    return self._private.text.text:gsub(self.prompt, "")
+    return self:get_text():gsub(self.prompt, "")
 end
 
 local function new(args)
