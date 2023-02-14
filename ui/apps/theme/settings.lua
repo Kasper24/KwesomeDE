@@ -187,7 +187,7 @@ local function new(layout)
             theme_daemon:set_ui_opacity(value)
         end),
         picom_slider("active-opacity", 1, false, 0.1),
-        picom_slider("inactive-opacity", 1, false),
+        picom_slider("inactive-opacity", 1, false, 0.1),
         separator(),
         theme_slider("UI Corner Radius: ", theme_daemon:get_ui_border_radius(), 100, function(value)
             theme_daemon:set_ui_border_radius(value)
