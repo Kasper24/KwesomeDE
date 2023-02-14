@@ -8,13 +8,13 @@ local screenshot_popup = require("ui.apps.screenshot")
 local record_popup = require("ui.apps.record")
 local wifi_popup = require("ui.panels.action.dashboard.wifi")
 local bluetooth_popup = require("ui.panels.action.dashboard.bluetooth")
+local theme_popup = require("ui.panels.action.dashboard.theme")
 local beautiful = require("beautiful")
 local radio_daemon = require("daemons.hardware.radio")
 local network_daemon = require("daemons.hardware.network")
 local bluetooth_daemon = require("daemons.hardware.bluetooth")
 local picom_daemon = require("daemons.system.picom")
 local redshift_daemon = require("daemons.system.redshift")
-local pactl_daemon = require("daemons.hardware.pactl")
 local record_daemon = require("daemons.system.record")
 local notifications_daemon = require("daemons.system.notifications")
 local helpers = require("helpers")
@@ -120,32 +120,6 @@ local function button(icon, text, on_release)
     }
 end
 
-local function quick_action(icon, text, on_release)
-    local icon = wibox.widget {
-        widget = widgets.button.text.normal,
-        forced_width = dpi(150),
-        forced_height = dpi(90),
-        normal_bg = beautiful.colors.surface,
-        icon = icon,
-        on_release = on_release
-    }
-
-    local name = wibox.widget {
-        widget = widgets.text,
-        halign = "center",
-        size = 15,
-        text = text
-    }
-
-    return wibox.widget {
-        layout = wibox.layout.fixed.vertical,
-        forced_height = dpi(130),
-        spacing = dpi(15),
-        icon,
-        name
-    }
-end
-
 local function wifi()
     local widget = arrow_button(beautiful.icons.network.wifi_high, "Wi-Fi", function()
         network_daemon:toggle_wireless_state()
@@ -234,6 +208,22 @@ local function compositor()
     return widget
 end
 
+local function theme()
+    local widget = button(beautiful.icons.palette, "Theme", function()
+        theme_popup:toggle()
+    end)
+
+    theme_popup:connect_signal("visibility", function(self, visible)
+        if visible == true then
+            widget:turn_on("Theme")
+        else
+            widget:turn_off("Theme")
+        end
+    end)
+
+    return widget
+end
+
 local function dont_disturb()
     local widget = button(beautiful.icons.suspend, "Don't Disturb", function()
         notifications_daemon:toggle()
@@ -251,8 +241,16 @@ local function dont_disturb()
 end
 
 local function screenshot()
-    local widget = quick_action(beautiful.icons.camera_retro, "Screenshot", function()
-        screenshot_popup:show()
+    local widget = button(beautiful.icons.palette, "Screenshot", function()
+        screenshot_popup:toggle()
+    end)
+
+    screenshot_popup:connect_signal("visibility", function(self, visible)
+        if visible == true then
+            widget:turn_on("Screenshot")
+        else
+            widget:turn_off("Screenshot")
+        end
     end)
 
     return widget
@@ -288,20 +286,21 @@ local function new()
             spacing = dpi(30),
             wifi(),
             bluetooth(),
+            airplane_mode()
         },
         {
             layout = wibox.layout.flex.horizontal,
             spacing = dpi(30),
-            airplane_mode(),
             blue_light(),
+            dont_disturb(),
             compositor(),
         },
         {
             layout = wibox.layout.flex.horizontal,
             spacing = dpi(30),
-            dont_disturb(),
+            theme(),
             record(),
-            screenshot(),
+            screenshot()
         }
     }
 end
