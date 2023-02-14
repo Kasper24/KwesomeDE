@@ -131,7 +131,7 @@ local function theme_slider(text, initial_value, maximum, on_changed)
     }
 
     local slider_prompt = widgets.slider_prompt {
-        slider_width = dpi(430),
+        slider_width = dpi(420),
         value = initial_value,
         maximum = maximum,
         bar_active_color = beautiful.icons.spraycan.color,
