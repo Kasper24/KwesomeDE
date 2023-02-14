@@ -23,16 +23,14 @@ local properties = {"on_turn_on", "on_turn_off", "color"}
 
 local switch_dimensions = {
     w = dpi(50),
-    h = dpi(25)
+    h = dpi(20)
 }
 local ball_dimensions = {
     w = dpi(25),
-    h = dpi(23)
+    h = dpi(25)
 }
-local padding = dpi(2)
-local y_offset = dpi(1)
 local start_ball_position = ball_dimensions.w - switch_dimensions.w
-local done_ball_position = -start_ball_position - padding -- just invert it
+local done_ball_position = -start_ball_position -- just invert it
 
 local function build_properties(prototype, prop_names)
     for _, prop in ipairs(prop_names) do
@@ -56,13 +54,12 @@ end
 
 function checkbox:turn_on()
     local wp = self._private
+    wp.state = true
 
     wp.animation:set{
         handle_offset = done_ball_position,
         handle_color = helpers.color.hex_to_rgb(wp.handle_active_color),
     }
-
-    wp.state = true
 
     if wp.on_turn_on ~= nil then
         wp.on_turn_on()
@@ -71,13 +68,12 @@ end
 
 function checkbox:turn_off()
     local wp = self._private
+    wp.state = false
 
     wp.animation:set{
-        handle_offset = padding,
-        handle_color = helpers.color.hex_to_rgb(beautiful.colors.on_background),
+        handle_offset = 0,
+        handle_color = helpers.color.hex_to_rgb(beautiful.colors.background),
     }
-
-    wp.state = false
 
     if wp.on_turn_off ~= nil then
         wp.on_turn_off()
@@ -97,12 +93,10 @@ function checkbox:set_handle_active_color(active_color)
     wp.animation:stop()
 
     wp.handle_active_color = active_color
-    if wp.state == true then
-        local handle = self.children[1].children[1].children[1]
-        handle.bg = active_color
 
-        local layout = self.children[1].children[1]
-        layout:move(1, { x = done_ball_position, y = y_offset })
+    if wp.state == true then
+        local handle = self.children[1].children[1]
+        handle.bg = active_color
 
         wp.animation.pos.handle_offset = done_ball_position
         wp.animation.pos.handle_color = active_color
@@ -110,10 +104,16 @@ function checkbox:set_handle_active_color(active_color)
 end
 
 function checkbox:set_state(state)
+    local wp = self._private
+
     if state == true then
-        self:turn_on()
-    else
-        self:turn_off()
+        wp.state = true
+
+        local handle = self.children[1].children[1]
+        handle.bg = wp.handle_active_color
+
+        local handle_layout = self.children[1]
+        handle_layout:move(1, { x = done_ball_position, y = 0 })
     end
 end
 
@@ -122,34 +122,27 @@ function checkbox:get_state()
 end
 
 local function new()
-    local handle = wibox.widget {
-        widget = bwidget,
-        forced_width = ball_dimensions.w,
-        forced_height = ball_dimensions.h,
-        point = { x = padding, y = y_offset },
-        shape = gshape.circle,
-        bg = beautiful.colors.on_background,
-        border_width = dpi(2),
-        border_color = beautiful.colors.background,
-    }
-
-    local layout = wibox.widget {
-        widget = wibox.layout.manual,
-        handle
+    local handle_layout = wibox.widget {
+        layout = wibox.layout.manual
+        {
+            widget = bwidget,
+            forced_width = ball_dimensions.w,
+            forced_height = ball_dimensions.h,
+            point = { x = 0, y = 0 },
+            shape = gshape.circle,
+            bg = beautiful.colors.background,
+            border_width = dpi(2),
+            border_color = beautiful.colors.on_background,
+        }
     }
 
     local widget = wibox.widget {
-        widget = wibox.container.place,
-        halign = "center",
-        valign = "center",
-        {
-            widget = bwidget,
-            forced_width = switch_dimensions.w,
-            forced_height = switch_dimensions.h,
-            shape = gshape.rounded_bar,
-            bg = beautiful.colors.surface,
-            layout
-        }
+        widget = bwidget,
+        forced_width = switch_dimensions.w,
+        forced_height = switch_dimensions.h,
+        shape = gshape.rounded_bar,
+        bg = beautiful.colors.surface,
+        handle_layout
     }
     gtable.crush(widget, checkbox, true)
 
@@ -157,15 +150,16 @@ local function new()
     wp.handle_active_color = beautiful.colors.random_accent_color()
     wp.state = false
 
+    local handle = handle_layout.children[1]
     wp.animation = helpers.animation:new{
         duration = 0.2,
         easing = helpers.animation.easing.inOutQuad,
         pos = {
-            handle_offset = padding,
+            handle_offset = 0,
             handle_color = helpers.color.hex_to_rgb(beautiful.colors.on_background)
         },
         update = function(self, pos)
-            layout:move(1, { x = pos.handle_offset, y = y_offset })
+            handle_layout:move(1, { x = pos.handle_offset, y = 0 })
             handle.bg = helpers.color.rgb_to_hex(pos.handle_color)
         end
     }

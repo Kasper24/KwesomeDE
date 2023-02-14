@@ -42,7 +42,7 @@ local function new(args)
     args.handle_shape = args.handle_shape or gshape.circle
 	args.handle_color = args.handle_color or args.bar_active_color
     args.handle_border_width = args.handle_border_width or dpi(2)
-    args.handle_border_color = args.handle_border_color or  beautiful.colors.background
+    args.handle_border_color = args.handle_border_color or  beautiful.colors.on_background
 
 	local value = helpers.misc.convert_range((args.value or 0 ), args.minimum, args.maximum, 0, 1)
 	local w = 0
