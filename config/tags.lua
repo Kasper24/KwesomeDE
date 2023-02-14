@@ -5,5 +5,12 @@
 local awful = require("awful")
 
 awful.screen.connect_for_each_screen(function(s)
-    awful.tag({"1", "2", "3", "4", "5", "6", "7", "8"}, s, awful.layout.layouts[1])
+    for i = 1, 8, 1  do
+        awful.tag.add(i, {
+            layout = awful.layout.layouts[1],
+            master_fill_policy = "master_width_factor",
+            screen = s,
+            selected = i == 1 and true or false,
+        })
+    end
 end)
