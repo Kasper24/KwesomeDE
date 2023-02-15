@@ -33,7 +33,7 @@ local function play_sound(n)
     end
 end
 
-local function is_suspended()
+local function is_suspended(n)
     if notifications_daemon:is_suspended() == true and n.ignore_suspend ~= true then
         return true
     end
@@ -385,7 +385,7 @@ naughty.connect_signal("added", function(n)
 end)
 
 naughty.connect_signal("request::display", function(n)
-    if is_suspended() then
+    if is_suspended(n) then
         return
     end
 
