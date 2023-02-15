@@ -81,8 +81,11 @@ local function new(args)
 	end)
 
 	slider:connect_signal("property::value", function(self, value)
-		local text_value = tostring(helpers.misc.round_to_decimal_places(value, 2))
-		prompt:set_text(text_value)
+		local text_value = helpers.misc.round_to_decimal_places(value, 2)
+		if args.round then
+			text_value = gmath.round(text_value)
+		end
+		prompt:set_text(tostring(text_value))
         widget:emit_signal('property::value', value)
     end)
 
