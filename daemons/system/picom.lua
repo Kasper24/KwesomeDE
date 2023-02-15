@@ -52,7 +52,9 @@ function picom:turn_on(save)
             end
         end
 
-        awful.spawn(cmd, false)
+        awful.spawn.easy_async(cmd, function()
+            self._private.refreshing = false
+        end)
     end)
 
     if save == true then
@@ -84,14 +86,14 @@ local function build_properties(prototype, properties)
         if not prototype["set_" .. prop] then
             prototype["set_" .. prop] = function(self, value)
                 if self._private[prop] ~= value then
+                    if capi.awesome.composite_manager_running == true then
+                        self:turn_off(false)
+                    end
+
                     self._private[prop] = value
                     helpers.settings:set_value("picom-" .. prop, value)
-
-                    if capi.awesome.composite_manager_running == true then
-                        self._private.refreshing = true
-                        self:turn_off(false)
-                        self._private.refresh_timer:again()
-                    end
+                    self._private.refreshing = true
+                    self._private.refresh_timer:again()
                 end
                 return self
             end
@@ -121,10 +123,10 @@ local function new()
     ret._private.refresh_timer = gtimer {
         timeout = 1,
         autostart = false,
+        calL_now = false,
         single_shot = true,
         callback = function()
             ret:turn_on(false)
-            ret._private.refreshing = false
         end
     }
 
