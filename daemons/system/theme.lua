@@ -635,24 +635,38 @@ function theme:edit_color(index)
 end
 
 -- Wallpaper
-function theme:set_wallpaper(type)
-    self._private.active_wallpaper = self:get_selected_colorscheme()
-    helpers.settings:set_value("theme-active-wallpaper", self:get_selected_colorscheme())
+function theme:set_wallpaper(wallpaper, type)
+    self._private.active_wallpaper = wallpaper
+    helpers.settings:set_value("theme-active-wallpaper", wallpaper)
 
     self._private.wallpaper_type = type
     helpers.settings:set_value("theme-wallpaper-type", type)
 
-    -- local file = helpers.file.new_for_path(self:get_active_wallpaper())
-    -- file:copy(BACKGROUND_PATH, {
-    --     overwrite = true
-    -- })
-
-    self._private.wallpaper_surface = wibox.widget.draw_to_image_surface(widget, screen.geometry.width, screen.geometry.height)
-    wibox.widget.draw_to_svg_file(self._private.wallpaper_surface, BACKGROUND_PATH, screen.primary.geometry.width, screen.primary.geometry.height)
-
     for s in capi.screen do
-        capi.screen.emit_signal("_request::wallpaper", s)
+        if self:get_wallpaper_type() == "image" then
+            image_wallpaper(self, s)
+        elseif self:get_wallpaper_type() == "mountain" then
+            mountain_wallpaper(self, s)
+        elseif self:get_wallpaper_type() == "digital_sun" then
+            digital_sun_wallpaper(self, s)
+        elseif self:get_wallpaper_type() == "binary" then
+            binary_wallpaper(self, s)
+        end
     end
+
+    self._private.wallpaper_surface = wibox.widget.draw_to_image_surface(
+        self._private.wallpaper_widget,
+        capi.screen.primary.geometry.width,
+        capi.screen.primary.geometry.width
+    )
+    wibox.widget.draw_to_svg_file(
+        self._private.wallpaper_widget,
+        BACKGROUND_PATH,
+        capi.screen.primary.geometry.width,
+        capi.screen.primary.geometry.height
+    )
+
+    capi.awesome.emit_signal("wallpaper::changed")
 end
 
 function theme:get_wallpaper_surface()
@@ -858,20 +872,6 @@ local function new()
 
     scan_wallpapers(ret)
     watch_wallpaper_changes(ret)
-
-    capi.screen.connect_signal("_request::wallpaper", function(s)
-        if ret:get_wallpaper_type() == "image" then
-            image_wallpaper(ret, s)
-        elseif ret:get_wallpaper_type() == "mountain" then
-            mountain_wallpaper(ret, s)
-        elseif ret:get_wallpaper_type() == "digital_sun" then
-            digital_sun_wallpaper(ret, s)
-        elseif ret:get_wallpaper_type() == "binary" then
-            binary_wallpaper(ret, s)
-        end
-
-        capi.awesome.emit_signal("wallpaper::changed")
-    end)
 
     return ret
 end

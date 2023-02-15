@@ -487,7 +487,7 @@ local function widget(self)
         size = 15,
         text = "Set Wallpaper",
         on_press = function()
-            theme_daemon:set_wallpaper(self._private.selected_tab)
+            theme_daemon:set_wallpaper(theme_daemon:get_selected_colorscheme(), self._private.selected_tab)
         end
     }
 
@@ -509,7 +509,7 @@ local function widget(self)
         size = 15,
         text = "Set Both",
         on_press = function()
-            theme_daemon:set_wallpaper(self._private.selected_tab)
+            theme_daemon:set_wallpaper(theme_daemon:get_selected_colorscheme(), self._private.selected_tab)
             theme_daemon:set_colorscheme(theme_daemon:get_selected_colorscheme())
         end
     }

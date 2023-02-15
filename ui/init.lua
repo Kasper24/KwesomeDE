@@ -14,9 +14,7 @@ end
 local theme_daemon = require("daemons.system.theme")
 theme_daemon:set_ui_animations(theme_daemon:get_ui_animations())
 
-for s in capi.screen do
-    capi.screen.emit_signal("_request::wallpaper", s)
-end
+theme_daemon:set_wallpaper(theme_daemon:get_active_wallpaper(), theme_daemon:get_wallpaper_type())
 if system_daemon:is_new_version() or system_daemon:does_need_setup() then
     theme_daemon:set_colorscheme(theme_daemon:get_active_colorscheme())
 end
