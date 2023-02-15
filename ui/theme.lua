@@ -407,72 +407,9 @@ local function defaults()
     theme.font = theme.font_name .. 12
     theme.secondary_font_name = "Oswald Medium "
     theme.secondary_font = theme.secondary_font_name .. 12
-    theme.bg_normal = theme.colors.background
-    theme.bg_focus = theme.colors.random_accent_color()
-    theme.bg_urgent = theme.colors.background
-    theme.bg_minimize = theme.colors.background
-    theme.fg_normal = theme.colors.on_background
-    theme.fg_focus = theme.colors.background
-    theme.fg_urgent = nil
-    theme.fg_minimize = nil
     theme.border_width = 0
     theme.border_color = theme.colors.surface
     theme.border_radius = theme_daemon:get_ui_border_radius()
-    theme.border_color_active = theme.colors.random_accent_color()
-    theme.border_color_normal = theme.colors.surface
-    theme.border_color_urgent = nil
-    theme.border_color_new = theme.border_color_normal
-    theme.border_color_floating_active = theme.colors.random_accent_color()
-    theme.border_color_floating_normal = theme.colors.surface
-    theme.border_color_floating_urgent = nil
-    theme.border_color_floating_new = theme.border_color_floating_normal
-    theme.border_color_maximized_active = theme.colors.transparent
-    theme.border_color_maximized_normal = theme.colors.transparent
-    theme.border_color_maximized_urgent = theme.colors.transparent
-    theme.border_color_maximized_new = theme.colors.transparent
-    theme.border_color_fullscreen_active = theme.colors.transparent
-    theme.border_color_fullscreen_normal = theme.colors.transparent
-    theme.border_color_fullscreen_urgent = theme.colors.transparent
-    theme.border_color_fullscreen_new = theme.colors.transparent
-    theme.border_width_normal = theme.border_width
-    theme.border_width_active = theme.border_width
-    theme.border_width_urgent = theme.border_width
-    theme.border_width_new = theme.border_width
-    theme.border_width_floating_normal = theme.border_width
-    theme.border_width_floating_active = theme.border_width
-    theme.border_width_floating_urgent = theme.border_width
-    theme.border_width_floating_new = theme.border_width
-    theme.border_width_maximized_normal = dpi(0)
-    theme.border_width_maximized_active = dpi(0)
-    theme.border_width_maximized_urgent = dpi(0)
-    theme.border_width_maximized_new = dpi(0)
-    theme.border_width_fullscreen_normal = dpi(0)
-    theme.border_width_fullscreen_active = dpi(0)
-    theme.border_width_fullscreen_urgent = dpi(0)
-    theme.border_width_fullscreen_new = dpi(0)
-end
-
-local function opacity()
-    theme.opacity_normal = nil
-    theme.opacity_active = nil
-    theme.opacity_urgent = nil
-    theme.opacity_new = nil
-    theme.opacity_floating_normal = nil
-    theme.opacity_floating_active = nil
-    theme.opacity_floating_urgent = nil
-    theme.opacity_floating_new = nil
-    theme.opacity_maximized_normal = nil
-    theme.opacity_maximized_active = nil
-    theme.opacity_maximized_urgent = nil
-    theme.opacity_maximized_new = nil
-    theme.opacity_fullscreen_normal = nil
-    theme.opacity_fullscreen_active = nil
-    theme.opacity_fullscreen_urgent = nil
-    theme.opacity_fullscreen_new = nil
-end
-
-local function notification()
-    theme.notification_spacing = dpi(30)
 end
 
 local function systray()
@@ -527,8 +464,6 @@ colors()
 icons()
 assets()
 defaults()
-opacity()
-notification()
 systray()
 tabbed()
 machi()
