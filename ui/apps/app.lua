@@ -126,6 +126,10 @@ local function new(args)
                     ret._private.titlebar:set_bg(beautiful.colors.background)
                 end)
 
+                c:connect_signal("request::unmanage", function()
+                    ret:emit_signal("visibility", false)
+                end)
+
                 ret._private.visible = true
                 ret:emit_signal("visibility", true)
             end
