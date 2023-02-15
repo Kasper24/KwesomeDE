@@ -23,7 +23,7 @@ local prompt = {
     mt = {}
 }
 
-local properties = {"icon_font", "icon", "font", "prompt", "text", "icon_color", "prompt_color", "text_color",
+local properties = { "only_numbers", "round", "icon_size", "icon_color", "icon", "font", "prompt", "text_size", "text", "icon_color", "prompt_color", "text_color",
                     "cursor_color", "always_on", "reset_on_stop", "obscure", "keypressed_callback", "changed_callback",
                     "done_callback"}
 
@@ -190,10 +190,6 @@ function prompt:set_prompt(prompt)
     update_markup(self, false)
 end
 
-function prompt:set_only_numbers(only_numbers)
-    self._private.only_numbers = only_numbers
-end
-
 function prompt:start()
     local wp = self._private
 
@@ -341,7 +337,7 @@ function prompt:start()
             elseif key == "Right" then
                 wp.cur_pos = wp.cur_pos + 1
             else
-                if wp.only_numbers and tonumber(key) == nil then
+                if (wp.only_numbers and tonumber(key) == nil) or (wp.round and key == ".") then
                     return
                 end
 
@@ -434,6 +430,7 @@ local function new()
     wp.changed_callback = nil
     wp.done_callback = nil
     wp.only_numbers = false
+    wp.round = false
 
     wp.cur_pos = #wp.text + 1 or 1
 

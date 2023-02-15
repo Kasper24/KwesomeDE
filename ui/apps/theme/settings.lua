@@ -41,8 +41,6 @@ local function command_after_generation()
         prompt = "",
         text = theme_daemon:get_command_after_generation(),
         text_color = beautiful.colors.on_background,
-        icon_font = beautiful.icons.launcher.font,
-        icon = nil,
         changed_callback = function(text)
             theme_daemon:set_command_after_generation(text)
         end
@@ -102,16 +100,14 @@ local function picom_slider(key, maximum, round, minimum)
 
     local slider_prompt = widgets.slider_prompt {
         slider_width = dpi(420),
-        value = picom_daemon["get_" .. key](picom_daemon),
+        round = round,
         minimum = minimum or 0,
         maximum = maximum,
+        value = picom_daemon["get_" .. key](picom_daemon),
         bar_active_color = beautiful.icons.spraycan.color,
     }
 
     slider_prompt:connect_signal("property::value", function(self, value, instant)
-        if round == true then
-            value = gmath.round(value)
-        end
         picom_daemon["set_" .. key](picom_daemon, value)
     end)
 
@@ -122,7 +118,7 @@ local function picom_slider(key, maximum, round, minimum)
     }
 end
 
-local function theme_slider(text, initial_value, maximum, on_changed)
+local function theme_slider(text, initial_value, maximum, round, on_changed)
     local name = wibox.widget {
         widget = widgets.text,
         forced_width = dpi(180),
@@ -132,6 +128,7 @@ local function theme_slider(text, initial_value, maximum, on_changed)
 
     local slider_prompt = widgets.slider_prompt {
         slider_width = dpi(420),
+        round = round,
         value = initial_value,
         maximum = maximum,
         bar_active_color = beautiful.icons.spraycan.color,
@@ -176,23 +173,23 @@ local function new(layout)
         separator(),
         command_after_generation(),
         separator(),
-        theme_slider("DPI: ", theme_daemon:get_dpi(), 250, function(value)
-            theme_daemon:set_dpi(gmath.round(value))
+        theme_slider("DPI: ", theme_daemon:get_dpi(), 250, true, function(value)
+            theme_daemon:set_dpi(value)
         end),
-        theme_slider("Useless gap: ", theme_daemon:get_useless_gap(), 250, function(value)
-            theme_daemon:set_useless_gap(gmath.round(value))
+        theme_slider("Useless gap: ", theme_daemon:get_useless_gap(), 250, true, function(value)
+            theme_daemon:set_useless_gap(value)
         end),
-        theme_slider("Client gap: ", theme_daemon:get_client_gap(), 250, function(value)
-            theme_daemon:set_client_gap(gmath.round(value))
+        theme_slider("Client gap: ", theme_daemon:get_client_gap(), 250, true, function(value)
+            theme_daemon:set_client_gap(value)
         end),
         separator(),
-        theme_slider("UI Opacity: ", theme_daemon:get_ui_opacity(), 1, function(value)
+        theme_slider("UI Opacity: ", theme_daemon:get_ui_opacity(), 1, false, function(value)
             theme_daemon:set_ui_opacity(value)
         end),
         picom_slider("active-opacity", 1, false, 0.1),
         picom_slider("inactive-opacity", 1, false, 0.1),
         separator(),
-        theme_slider("UI Corner Radius: ", theme_daemon:get_ui_border_radius(), 100, function(value)
+        theme_slider("UI Corner Radius: ", theme_daemon:get_ui_border_radius(), 100, true, function(value)
             theme_daemon:set_ui_border_radius(value)
         end),
         picom_slider("corner-radius", 100, true),

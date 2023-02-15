@@ -1,3 +1,4 @@
+local gmath = require("gears.math")
 local wibox = require("wibox")
 local swidget = require("ui.widgets.slider")
 local pwidget = require("ui.widgets.prompt")
@@ -27,8 +28,11 @@ local function new(args)
 	prompt:set_only_numbers(true)
 	prompt:set_halign("center")
 
-	local text_value = tostring(helpers.misc.round_to_decimal_places(args.value, 2))
-	prompt:set_text(text_value)
+	local text_value = helpers.misc.round_to_decimal_places(args.value, 2)
+	if args.round then
+		text_value = gmath.round(text_value)
+	end
+	prompt:set_text(tostring(text_value))
 
 	local widget = wibox.widget {
 		layout = wibox.layout.fixed.horizontal,
