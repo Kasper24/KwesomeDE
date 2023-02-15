@@ -997,18 +997,6 @@ local function new()
     }
     app:set_widget(widget(app))
 
-    capi.client.connect_signal("scanned", function()
-        if system_daemon:is_new_version() or system_daemon:does_need_setup() then
-            app:toggle()
-        end
-    end)
-
-    app:connect_signal("visibility", function(visible)
-        if visible == false then
-            theme_app:show()
-        end
-    end)
-
     return app
 end
 

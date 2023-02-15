@@ -10,6 +10,7 @@ local gcolor = require("gears.color")
 local gtimer = require("gears.timer")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
+local system_daemon = require("daemons.system.system")
 local color_libary = require("external.color")
 local helpers = require("helpers")
 local tonumber = tonumber
@@ -52,8 +53,8 @@ local PICTURES_MIMETYPES = {
 }
 
 local function generate_colorscheme(self, wallpaper, reset, light)
-    if self._private.colorschemes[wallpaper] ~= nil and reset ~= true then
-        self:emit_signal("colorscheme::generated", self._private.colorschemes[wallpaper])
+    if self:get_colorschemes()[wallpaper] ~= nil and reset ~= true then
+        self:emit_signal("colorscheme::generated", self:get_colorschemes()[wallpaper])
         self:emit_signal("wallpaper::selected", wallpaper)
         return
     end
@@ -132,7 +133,7 @@ local function generate_colorscheme(self, wallpaper, reset, light)
             self:emit_signal("colorscheme::generated", colors)
             self:emit_signal("wallpaper::selected", wallpaper)
 
-            self._private.colorschemes[wallpaper] = colors
+            self:get_colorschemes()[wallpaper] = colors
             self:save_colorscheme()
         end)
     end
@@ -382,7 +383,7 @@ local function image_wallpaper(self, screen)
         image = self:get_active_wallpaper()
     }
 
-    self._private.wallpaper_surface = wibox.widget.draw_to_image_surface(widget, screen.geometry.width, screen.geometry.height)
+    self:set_wallpaper_surface(widget, screen)
 
     awful.wallpaper {
         screen = screen,
@@ -418,7 +419,7 @@ local function mountain_wallpaper(self, screen)
         },
     }
 
-    self._private.wallpaper_surface = wibox.widget.draw_to_image_surface(widget, screen.geometry.width, screen.geometry.height)
+    self:set_wallpaper_surface(widget, screen)
 
     awful.wallpaper {
         screen = screen,
@@ -487,7 +488,7 @@ local function digital_sun_wallpaper(self, screen)
         end
     }
 
-    self._private.wallpaper_surface = wibox.widget.draw_to_image_surface(widget, screen.geometry.width, screen.geometry.height)
+    self:set_wallpaper_surface(widget, screen)
 
     awful.wallpaper {
         screen = screen,
@@ -531,7 +532,7 @@ local function binary_wallpaper(self, screen)
         }
     }
 
-    self._private.wallpaper_surface = wibox.widget.draw_to_image_surface(widget, screen.geometry.width, screen.geometry.height)
+    self:set_wallpaper_surface(widget, screen)
 
     awful.wallpaper {
         screen = screen,
@@ -559,7 +560,6 @@ local function scan_wallpapers(self)
                 end)
 
                 self:set_selected_colorscheme(self:get_selected_colorscheme())
-                self:set_wallpaper(self:get_wallpaper_type())
                 self:emit_signal("wallpapers", self._private.wallpapers)
             end
         end
@@ -586,18 +586,26 @@ local function watch_wallpaper_changes(self)
     end)
 end
 
-function theme:set_wallpaper(type)
-    self:save_colorscheme()
-    self:set_active_wallpaper(self:get_selected_colorscheme())
-    local file = helpers.file.new_for_path(self:get_active_wallpaper())
-    file:copy(BACKGROUND_PATH, {
-        overwrite = true
-    })
-    self:set_wallpaper_type(type)
+--Colorschemes
+function theme:save_colorscheme()
+    helpers.settings:set_value("theme-colorschemes", self._private.colorschemes)
+end
 
-    for s in capi.screen do
-        capi.screen.emit_signal("_request::wallpaper", s)
+function theme:get_colorschemes()
+    if self._private.colorschemes == nil then
+        local colorscheme_from_gsettings = helpers.settings:get_direct("theme-colorschemes")
+        local colorschemes = {}
+        for path, colorscheme in colorscheme_from_gsettings:pairs() do
+            path = path:gsub("~", os.getenv("HOME"))
+            colorschemes[path] = {}
+            for index, color in colorscheme:ipairs() do
+                colorschemes[path][index] = color
+            end
+        end
+        self._private.colorschemes = colorschemes
     end
+
+    return self._private.colorschemes
 end
 
 function theme:reset_colorscheme()
@@ -626,55 +634,62 @@ function theme:edit_color(index)
     end)
 end
 
+-- Wallpaper
+function theme:set_wallpaper(type)
+    self._private.active_wallpaper = self:get_selected_colorscheme()
+    helpers.settings:set_value("theme-active-wallpaper", self:get_selected_colorscheme())
+
+    self._private.wallpaper_type = type
+    helpers.settings:set_value("theme-wallpaper-type", type)
+
+    local file = helpers.file.new_for_path(self:get_active_wallpaper())
+    file:copy(BACKGROUND_PATH, {
+        overwrite = true
+    })
+
+    for s in capi.screen do
+        capi.screen.emit_signal("_request::wallpaper", s)
+    end
+end
+
+function theme:set_wallpaper_surface(widget, screen)
+    self._private.wallpaper_surface = wibox.widget.draw_to_image_surface(widget, screen.geometry.width, screen.geometry.height)
+end
+
 function theme:get_wallpaper_surface()
     return self._private.wallpaper_surface
+end
+
+function theme:get_wallpaper_type()
+    if self._private.wallpaper_type == nil then
+        self._private.wallpaper_type = helpers.settings:get_value("theme-wallpaper-type")
+    end
+
+    return self._private.wallpaper_type
+end
+
+function theme:get_active_wallpaper()
+    if self._private.active_wallpaper == nil then
+        self._private.active_wallpaper = helpers.settings:get_value("theme-active-wallpaper"):gsub("~", os.getenv("HOME"))
+    end
+
+    return self._private.active_wallpaper
+end
+
+function theme:get_active_wallpaper_colors()
+    return self:get_colorschemes()[self:get_active_wallpaper()]
 end
 
 function theme:get_short_wallpaper_name(wallpaper_path)
     return wallpaper_path:gsub(WALLPAPERS_PATH, "")
 end
 
-function theme:get_wallpapers()
-    return self._private.wallpapers or {}
-end
-
-function theme:set_command_after_generation(command_after_generation)
-    self._private.command_after_generation = command_after_generation
-    helpers.settings:set_value("theme-command-after-generation", command_after_generation)
-end
-
-function theme:get_command_after_generation()
-    if self._private.command_after_generation == nil then
-        self._private.command_after_generation = helpers.settings:get_value("theme-command-after-generation")
-    end
-
-    return self._private.command_after_generation
-end
-
-function theme:save_colorscheme()
-    helpers.settings:set_value("theme-colorschemes", self._private.colorschemes)
-end
-
-function theme:get_colorschemes()
-    if self._private.colorschemes == nil then
-        local colorscheme_from_gsettings = helpers.settings:get_direct("theme-colorschemes")
-        local colorschemes = {}
-        for path, colorscheme in colorscheme_from_gsettings:pairs() do
-            path = path:gsub("~", os.getenv("HOME"))
-            colorschemes[path] = {}
-            for index, color in colorscheme:ipairs() do
-                colorschemes[path][index] = color
-            end
-        end
-        self._private.colorschemes = colorschemes
-    end
-
-    return self._private.colorschemes
-end
-
-function theme:set_active_colorscheme(colorscheme)
+-- Active colorscheme
+function theme:set_colorscheme(colorscheme)
     self._private.active_colorscheme = colorscheme
     helpers.settings:set_value("theme-active-colorscheme", colorscheme)
+
+    self:save_colorscheme()
 
     reload_awesome_colorscheme()
     install_gtk_theme()
@@ -694,23 +709,7 @@ function theme:get_active_colorscheme_colors()
     return self:get_colorschemes()[self:get_active_colorscheme()]
 end
 
-function theme:set_active_wallpaper(active_wallpaper)
-    self._private.active_wallpaper = active_wallpaper
-    helpers.settings:set_value("theme-active-wallpaper", active_wallpaper)
-end
-
-function theme:get_active_wallpaper()
-    if self._private.active_wallpaper == nil then
-        self._private.active_wallpaper = helpers.settings:get_value("theme-active-wallpaper"):gsub("~", os.getenv("HOME"))
-    end
-
-    return self._private.active_wallpaper
-end
-
-function theme:get_active_wallpaper_colors()
-    return self:get_colorschemes()[self:get_active_wallpaper()]
-end
-
+-- Selected colorscheme
 function theme:set_selected_colorscheme(colorscheme)
     self._private.selected_colorscheme = colorscheme
     generate_colorscheme(self, colorscheme)
@@ -724,19 +723,7 @@ function theme:get_selected_colorscheme_colors()
     return self:get_colorschemes()[self:get_selected_colorscheme()]
 end
 
-function theme:set_wallpaper_type(wallpaper_type)
-    self._private.wallpaper_type = wallpaper_type
-    helpers.settings:set_value("theme-wallpaper-type", wallpaper_type)
-end
-
-function theme:get_wallpaper_type()
-    if self._private.wallpaper_type == nil then
-        self._private.wallpaper_type = helpers.settings:get_value("theme-wallpaper-type")
-    end
-
-    return self._private.wallpaper_type
-end
-
+-- UI dpi
 function theme:set_dpi(dpi)
     self._private.dpi = dpi
     helpers.settings:set_value("theme-dpi", dpi)
@@ -750,6 +737,7 @@ function theme:get_dpi()
     return self._private.dpi
 end
 
+-- UI opacity
 function theme:set_ui_opacity(opacity)
     self._private.ui_opacity = opacity
     helpers.settings:set_value("theme-ui-opacity", opacity)
@@ -764,6 +752,7 @@ function theme:get_ui_opacity()
     return self._private.ui_opacity
 end
 
+-- UI border radius
 function theme:set_ui_border_radius(border_radius)
     self._private.ui_border_radius = border_radius
     helpers.settings:set_value("theme-ui-border-radius", border_radius)
@@ -778,6 +767,7 @@ function theme:get_ui_border_radius()
     return self._private.ui_border_radius
 end
 
+-- Useless gaps
 function theme:set_useless_gap(useless_gap, save)
     for _, tag in ipairs(capi.root.tags()) do
         tag.gap = useless_gap
@@ -801,6 +791,7 @@ function theme:get_useless_gap()
     return self._private.useless_gap
 end
 
+-- Client gaps
 function theme:set_client_gap(client_gap, save)
     for screen in capi.screen do
         screen.padding = {
@@ -824,6 +815,20 @@ function theme:get_client_gap()
     end
 
     return self._private.client_gap
+end
+
+-- Command after generation
+function theme:set_command_after_generation(command_after_generation)
+    self._private.command_after_generation = command_after_generation
+    helpers.settings:set_value("theme-command-after-generation", command_after_generation)
+end
+
+function theme:get_command_after_generation()
+    if self._private.command_after_generation == nil then
+        self._private.command_after_generation = helpers.settings:get_value("theme-command-after-generation")
+    end
+
+    return self._private.command_after_generation
 end
 
 local function new()

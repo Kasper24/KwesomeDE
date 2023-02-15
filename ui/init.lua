@@ -1,12 +1,39 @@
 local awful = require("awful")
 local widgets = require("ui.widgets")
 local helpers = require("helpers")
+local system_daemon = require("daemons.system.system")
+local capi = {
+    screen = screen,
+    client = client
+}
 
 if DEBUG ~= true and helpers.misc.is_restart() == false then
     require(... .. ".popups.loading")
 end
 
-require(... .. ".apps.welcome")
+local theme_daemon = require("daemons.system.theme")
+for s in capi.screen do
+    capi.screen.emit_signal("_request::wallpaper", s)
+end
+if system_daemon:is_new_version() or system_daemon:does_need_setup() then
+    theme_daemon:set_colorscheme(theme_daemon:get_active_colorscheme())
+end
+
+local welcome_app = require("ui.apps.welcome")
+local theme_app = require("ui.apps.theme")
+
+capi.client.connect_signal("scanned", function()
+    if system_daemon:is_new_version() or system_daemon:does_need_setup() then
+        welcome_app:toggle()
+
+        welcome_app:connect_signal("visibility", function(self, visible)
+            if visible == false then
+                theme_app:show()
+            end
+        end)
+    end
+end)
+
 require(... .. ".desktop")
 require(... .. ".popups.brightness")
 require(... .. ".popups.keyboard_layout")
