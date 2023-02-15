@@ -122,7 +122,7 @@ local function theme_checkbox(key)
     local name = wibox.widget {
         widget = widgets.text,
         size = 15,
-        text = "UI " .. key:sub(1, 1):upper() .. key:sub(2)
+        text = "UI " .. key:sub(1, 1):upper() .. key:sub(2) .. ":"
     }
 
     local checkbox = wibox.widget {
