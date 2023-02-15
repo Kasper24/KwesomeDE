@@ -105,30 +105,45 @@ local function update_markup(self, show_cursor)
         end
 
         if wp.icon ~= nil then
-            self._private.child:set_markup(string.format('<span font_desc="%s" font_size="%s" foreground="%s">%s  </span>' ..
-                                                             '<span font_size="%s" foreground="%s">%s</span>' ..
-                                                             '<span font_size="%s" foreground="%s">%s</span>' ..
-                                                             '<span background="%s">%s</span>' ..
-                                                             '<span font_size="%s" foreground="%s">%s%s</span>', wp.icon.font, icon_size,
-                icon_color, wp.icon.icon, text_size, prompt_color, wp.prompt, text_size, text_color, text_start, cursor_color, char, text_size, text_color,
-                text_end, spacer))
+            self._private.child:set_markup(string.format(
+                '<span font_size="%s" font_desc="%s" foreground="%s">%s  </span>' ..
+                '<span font_size="%s" foreground="%s">%s</span>' ..
+                '<span font_size="%s" foreground="%s">%s</span>' ..
+                '<span font_size="%s" background="%s">%s</span>' ..
+                '<span font_size="%s" foreground="%s">%s%s</span>',
+                icon_size, wp.icon.font, icon_color, wp.icon.icon,
+                text_size, prompt_color, wp.prompt,
+                text_size, text_color, text_start,
+                text_size, cursor_color, char,
+                text_size, text_color, text_end,
+                spacer))
         else
-            self._private.child:set_markup(string.format('<span foreground="%s">%s</span>' ..
-                                                             '<span foreground="%s">%s</span>' ..
-                                                             '<span background="%s">%s</span>' ..
-                                                             '<span foreground="%s">%s%s</span>', prompt_color,
-                wp.prompt, text_color, text_start, cursor_color, char, text_color, text_end, spacer))
+            self._private.child:set_markup(string.format(
+                '<span font_size="%s" foreground="%s">%s</span>' ..
+                '<span font_size="%s" foreground="%s">%s</span>' ..
+                '<span font_size="%s" background="%s">%s</span>' ..
+                '<span font_size="%s" foreground="%s">%s%s</span>',
+                text_size, prompt_color, wp.prompt,
+                text_size, text_color, text_start,
+                text_size, cursor_color, char,
+                text_size, text_color, text_end,
+                spacer))
         end
     else
         if wp.icon ~= nil then
-            self._private.child:set_markup(string.format('<span font_desc="%s" foreground="%s">%s  </span>' ..
-                                                             '<span foreground="%s">%s</span>' ..
-                                                             '<span foreground="%s">%s</span>', wp.icon.font,
-                icon_color, wp.icon.icon, prompt_color, wp.prompt, text_color, gstring.xml_escape(text)))
+            self._private.child:set_markup(string.format(
+                '<span font_size="%s" font_desc="%s" foreground="%s">%s  </span>' ..
+                '<span font_size="%s" foreground="%s">%s</span>' ..
+                '<span font_size="%s" foreground="%s">%s</span>',
+                icon_size, wp.icon.font, icon_color, wp.icon.icon,
+                text_size, prompt_color, wp.prompt,
+                text_size, text_color, gstring.xml_escape(text)))
         else
-            self._private.child:set_markup(string.format('<span foreground="%s">%s</span>' ..
-                                                             '<span foreground="%s">%s</span>', prompt_color, wp.prompt,
-                text_color, gstring.xml_escape(text)))
+            self._private.child:set_markup(string.format(
+                '<span font_size="%s" foreground="%s">%s</span>' ..
+                '<span font_size="%s" foreground="%s">%s</span>',
+                text_size, prompt_color, wp.prompt,
+                text_size, text_color, gstring.xml_escape(text)))
         end
     end
 end
