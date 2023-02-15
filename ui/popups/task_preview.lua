@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gmatrix = require("gears.matrix")
@@ -10,6 +9,7 @@ local gshape = require("gears.shape")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
 local widgets = require("ui.widgets")
+local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local collectgarbage = collectgarbage
 local ipairs = ipairs
@@ -21,32 +21,6 @@ local capi = {
 local task_preview = {}
 local instance = nil
 
-local function _get_widget_geometry(_hierarchy, widget)
-    local width, height = _hierarchy:get_size()
-    if _hierarchy:get_widget() == widget then
-        -- Get the extents of this widget in the device space
-        local x, y, w, h = gmatrix.transform_rectangle(_hierarchy:get_matrix_to_device(), 0, 0, width, height)
-        return {
-            x = x,
-            y = y,
-            width = w,
-            height = h,
-            hierarchy = _hierarchy
-        }
-    end
-
-    for _, child in ipairs(_hierarchy:get_children()) do
-        local ret = _get_widget_geometry(child, widget)
-        if ret then
-            return ret
-        end
-    end
-end
-
-local function get_widget_geometry(wibox, widget)
-    return _get_widget_geometry(wibox._drawable._widget_hierarchy, widget)
-end
-
 function task_preview:show(c, args)
     args = args or {}
 
@@ -56,7 +30,7 @@ function task_preview:show(c, args)
     args.offset = args.offset or {}
 
     if not args.coords and args.wibox and args.widget then
-        args.coords = get_widget_geometry(args.wibox, args.widget)
+        args.coords = helpers.ui.get_widget_geometry(args.wibox, args.widget)
         if args.offset.x ~= nil then
             args.coords.x = args.coords.x + args.offset.x
         end
