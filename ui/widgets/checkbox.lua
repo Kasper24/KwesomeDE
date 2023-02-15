@@ -137,7 +137,7 @@ local function new()
                     shape = gshape.circle,
                     bg = beautiful.colors.background,
                     border_width = dpi(2),
-                    border_color = beautiful.colors.on_background,
+                    border_color = beautiful.colors.background_no_opacity,
                 }
             }
         }
