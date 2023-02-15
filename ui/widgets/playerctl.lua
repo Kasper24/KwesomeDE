@@ -106,6 +106,15 @@ function playerctl.art_opacity(daemon)
         end
     end)
 
+    capi.awesome.connect_signal("colorscheme::changed", function()
+        if not image then
+            art.image = image_with_gradient(theme_daemon:get_wallpaper_surface())
+        else
+            art.image = image_with_gradient(image)
+        end
+    end)
+
+
     return art
 end
 
