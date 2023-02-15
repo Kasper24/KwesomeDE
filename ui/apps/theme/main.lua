@@ -25,7 +25,7 @@ local function wallpaper_widget(wallpaper)
         size = 12,
         text = theme_daemon:get_short_wallpaper_name(wallpaper),
         on_press = function()
-            theme_daemon:select_wallpaper(wallpaper)
+            theme_daemon:set_selected_colorscheme(wallpaper)
         end
     }
 
@@ -120,7 +120,7 @@ local function image_tab()
 end
 
 local function mountain_tab()
-    local colors = theme_daemon:get_colorscheme()
+    local colors = theme_daemon:get_selected_colorscheme_colors()
 
     local widget = wibox.widget {
         layout = wibox.layout.stack,
@@ -165,7 +165,7 @@ end
 
 local function digital_sun_tab()
     local sun = wibox.widget {
-        colors = theme_daemon:get_colorscheme(),
+        colors = theme_daemon:get_selected_colorscheme_colors(),
         fit = function(_, _, width, height) return width, height end,
         draw = function(self, _, cr, width, height)
             cr:set_source(gcolor {
@@ -238,7 +238,7 @@ local function digital_sun_tab()
 end
 
 local function binary_tab()
-    local colors = theme_daemon:get_colorscheme()
+    local colors = theme_daemon:get_selected_colorscheme_colors()
 
     local function binary()
         local ret = {}
@@ -498,7 +498,7 @@ local function widget(self)
         size = 15,
         text = "Set Colorscheme",
         on_press = function()
-            theme_daemon:set_colorscheme()
+            theme_daemon:set_active_colorscheme(theme_daemon:get_selected_colorscheme())
         end
     }
 
@@ -510,7 +510,7 @@ local function widget(self)
         text = "Set Both",
         on_press = function()
             theme_daemon:set_wallpaper(self._private.selected_tab)
-            theme_daemon:set_colorscheme()
+            theme_daemon:set_active_colorscheme(theme_daemon:get_selected_colorscheme())
         end
     }
 

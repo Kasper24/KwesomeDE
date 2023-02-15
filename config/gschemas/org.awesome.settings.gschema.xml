@@ -1,10 +1,42 @@
 <schemalist>
   <schema id="org.awesome.settings" path="/org/awesome/settings/">
-    <key name="theme-colorscheme" type="as">
-      <default>['#0c0606', '#BB303B', '#EA1416', '#97635D', '#62857E', '#D99666', '#CD5697', '#e1d0c8', '#2d1717', '#f43e4c', '#ff4b4d', '#d2756b', '#67c5b3', '#fac8a4', '#f586c2', '#f3ece8']</default>
-      <summary>Theme Colorscheme</summary>
+    <key name="theme-colorschemes" type="a{sas}">
+      <default>{"~/.config/awesome/ui/assets/wallpapers/52_by_gydw1n_dblxpwi.jpg":[
+       "#010610",
+       "#2C5F9A",
+       "#2972E4",
+       "#4C7ADD",
+       "#488CB1",
+       "#3493ED",
+       "#549CED",
+       "#A7E0F2",
+       "#04183F",
+       "#1579ED",
+       "#5F9DFF",
+       "#84ABFE",
+       "#5FB6E5",
+       "#79BEFF",
+       "#A2CEFF",
+       "#D3EFF8"]}</default>
+      <summary>Theme Colorschemes</summary>
       <description>
-        The current colorscheme
+        All the generated colorschemes
+      </description>
+    </key>
+
+    <key name="theme-active-colorscheme" type="s">
+      <default>"~/.config/awesome/ui/assets/wallpapers/52_by_gydw1n_dblxpwi.jpg"</default>
+      <summary>Theme active colorscheme</summary>
+      <description>
+        The active colorscheme
+      </description>
+    </key>
+
+    <key name="theme-active-wallpaper" type="s">
+      <default>"~/.config/awesome/ui/assets/wallpapers/52_by_gydw1n_dblxpwi.jpg"</default>
+      <summary>Theme active wallpaper</summary>
+      <description>
+        The active wallpaper
       </description>
     </key>
 
@@ -13,22 +45,6 @@
       <summary>Theme wallpaper type</summary>
       <description>
         The wallpaper type (image/sun/binary/etc)
-      </description>
-    </key>
-
-    <key name="theme-wallpaper" type="s">
-      <default>"~/.config/awesome/ui/assets/wallpapers/wallpaperflare.com_wallpaper_2.jpg"</default>
-      <summary>Theme wallpaper</summary>
-      <description>
-        Image wallpaper path
-      </description>
-    </key>
-
-    <key name="theme-color" type="s">
-      <default>"#000000"</default>
-      <summary>Theme color</summary>
-      <description>
-        The background color if mode == color is used
       </description>
     </key>
 

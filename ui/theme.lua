@@ -14,7 +14,7 @@ local math = math
 local theme = {}
 
 local function colors()
-    local colors = theme_daemon:get_colorscheme()
+    local colors = theme_daemon:get_active_colorscheme_colors()
 
     theme.colors = {
         red = colors[2],
