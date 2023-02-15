@@ -118,6 +118,33 @@ local function picom_slider(key, maximum, round, minimum)
     }
 end
 
+local function theme_checkbox(key)
+    local name = wibox.widget {
+        widget = widgets.text,
+        size = 15,
+        text = "UI " .. key:sub(1, 1):upper() .. key:sub(2)
+    }
+
+    local checkbox = wibox.widget {
+        widget = widgets.checkbox,
+        state = theme_daemon["get_ui_" .. key](theme_daemon),
+        handle_active_color = beautiful.icons.spraycan.color,
+        on_turn_on = function()
+            theme_daemon["set_ui_" .. key](theme_daemon, true)
+        end,
+        on_turn_off = function()
+            theme_daemon["set_ui_" .. key](theme_daemon, false)
+        end
+    }
+
+    return wibox.widget {
+        layout = wibox.layout.fixed.horizontal,
+        spacing = dpi(15),
+        name,
+        checkbox
+    }
+end
+
 local function theme_slider(text, initial_value, maximum, round, on_changed)
     local name = wibox.widget {
         widget = widgets.text,
@@ -182,16 +209,17 @@ local function new(layout)
         theme_slider("Client gap: ", theme_daemon:get_client_gap(), 250, true, function(value)
             theme_daemon:set_client_gap(value)
         end),
-        separator(),
         theme_slider("UI Opacity: ", theme_daemon:get_ui_opacity(), 1, false, function(value)
             theme_daemon:set_ui_opacity(value)
         end),
-        picom_slider("active-opacity", 1, false, 0.1),
-        picom_slider("inactive-opacity", 1, false, 0.1),
-        separator(),
         theme_slider("UI Corner Radius: ", theme_daemon:get_ui_border_radius(), 100, true, function(value)
             theme_daemon:set_ui_border_radius(value)
         end),
+        theme_checkbox("animations"),
+        separator(),
+        picom_slider("active-opacity", 1, false, 0.1),
+        picom_slider("inactive-opacity", 1, false, 0.1),
+        separator(),
         picom_slider("corner-radius", 100, true),
         picom_slider("blur-strength", 20, true),
         separator(),

@@ -7,6 +7,7 @@ local gtimer = require("gears.timer")
 local ruled = require("ruled")
 local beautiful = require("beautiful")
 local picom_daemon = require("daemons.system.picom")
+local theme_daemon = require("daemons.system.theme")
 local ncmpcpp_titlebar = require("ui.titlebar.ncmpcpp")
 local helpers = require("helpers")
 local ipairs = ipairs
@@ -670,10 +671,12 @@ ruled.client.connect_signal("request::rules", function()
         callback = function(c)
             -- Kill picom when a game starts
             -- Respawn picom when the game is closed
-            helpers.animation:set_instant(true)
+            theme_daemon:set_ui_animations(false, false)
             picom_daemon:turn_off(false)
             c:connect_signal("unmanage", function()
-                helpers.animation:set_instant(false)
+                if helpers.settings:get_value("theme-ui-animations") ~= false then
+                    theme_daemon:set_ui_animations(true, false)
+                end
 
                 if helpers.settings:get_value("picom") ~= false then
                     picom_daemon:turn_on(false)

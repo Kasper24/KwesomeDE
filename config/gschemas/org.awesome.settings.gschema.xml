@@ -18,7 +18,7 @@
        "#79BEFF",
        "#A2CEFF",
        "#D3EFF8"]}</default>
-      <summary>Theme Colorschemes</summary>
+      <summary>Colorschemes</summary>
       <description>
         All the generated colorschemes
       </description>
@@ -26,7 +26,7 @@
 
     <key name="theme-active-colorscheme" type="s">
       <default>"~/.config/awesome/ui/assets/wallpapers/52_by_gydw1n_dblxpwi.jpg"</default>
-      <summary>Theme active colorscheme</summary>
+      <summary>Active colorscheme</summary>
       <description>
         The active colorscheme
       </description>
@@ -34,7 +34,7 @@
 
     <key name="theme-active-wallpaper" type="s">
       <default>"~/.config/awesome/ui/assets/wallpapers/52_by_gydw1n_dblxpwi.jpg"</default>
-      <summary>Theme active wallpaper</summary>
+      <summary>Active wallpaper</summary>
       <description>
         The active wallpaper
       </description>
@@ -42,7 +42,7 @@
 
     <key name="theme-wallpaper-type" type="s">
       <default>"image"</default>
-      <summary>Theme wallpaper type</summary>
+      <summary>Wallpaper type</summary>
       <description>
         The wallpaper type (image/sun/binary/etc)
       </description>
@@ -52,13 +52,13 @@
       <default>""</default>
       <summary>Command after generation</summary>
       <description>
-        Command to run after theme generation
+        Command to run after colorscheme change
       </description>
     </key>
 
     <key name="theme-ui-opacity" type="s">
       <default>'0.8'</default>
-      <summary>Theme UI opacity</summary>
+      <summary>UI opacity</summary>
       <description>
         The opacity of AwesomeWM UI elements
       </description>
@@ -66,7 +66,7 @@
 
     <key name="theme-ui-border-radius" type="s">
       <default>'8'</default>
-      <summary>Theme UI border raidus</summary>
+      <summary>UI border raidus</summary>
       <description>
         The border radius of AwesomeWM UI elements
       </description>
@@ -74,7 +74,7 @@
 
     <key name="theme-dpi" type="s">
       <default>'96'</default>
-      <summary>Theme DPI</summary>
+      <summary>UI DPI</summary>
       <description>
         Scale of UI elements
       </description>
@@ -82,7 +82,7 @@
 
     <key name="theme-client-gap" type="s">
       <default>'0'</default>
-      <summary>Theme client gap</summary>
+      <summary>Client gap</summary>
       <description>
         The gap between the screen and the clients
       </description>
@@ -90,9 +90,17 @@
 
     <key name="theme-useless-gap" type="s">
       <default>'0'</default>
-      <summary>Theme useless gap</summary>
+      <summary>Useless gap</summary>
       <description>
         The gap between the clients
+      </description>
+    </key>
+
+    <key name="theme-ui-animations" type="b">
+      <default>true</default>
+      <summary>UI animations</summary>
+      <description>
+        Enable or disable UI animations
       </description>
     </key>
 

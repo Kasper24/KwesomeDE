@@ -817,6 +817,24 @@ function theme:get_client_gap()
     return self._private.client_gap
 end
 
+-- UI animations
+function theme:set_ui_animations(animations, save)
+    helpers.animation:set_instant(not animations)
+
+    if save ~= false then
+        self._private.ui_animations = animations
+        helpers.settings:set_value("theme-ui-animations", animations)
+    end
+end
+
+function theme:get_ui_animations()
+    if self._private.ui_animations == nil then
+        self._private.ui_animations = helpers.settings:get_value("theme-ui-animations")
+    end
+
+    return self._private.ui_animations
+end
+
 -- Command after generation
 function theme:set_command_after_generation(command_after_generation)
     self._private.command_after_generation = command_after_generation

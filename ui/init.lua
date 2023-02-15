@@ -12,6 +12,8 @@ if DEBUG ~= true and helpers.misc.is_restart() == false then
 end
 
 local theme_daemon = require("daemons.system.theme")
+theme_daemon:set_ui_animations(theme_daemon:get_ui_animations())
+
 for s in capi.screen do
     capi.screen.emit_signal("_request::wallpaper", s)
 end
