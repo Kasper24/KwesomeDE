@@ -175,11 +175,14 @@ local function desktop_icon(self, pos, path, name, mimetype)
             forced_width = dpi(100),
             forced_height = dpi(100),
             on_press = function(self)
-                helpers.input.single_double_tap(function()
-                    on_drag_start(self, widget)
-                end, function()
-                    awful.spawn("xdg-open " .. path, false)
-                end)
+                helpers.input.tap_or_drag{
+                    on_tap = function()
+                        awful.spawn("xdg-open " .. path, false)
+                    end,
+                    on_drag = function()
+                        on_drag_start(self, widget)
+                    end
+                }
             end,
             on_release = function()
                 widget.ontop = false

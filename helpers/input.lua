@@ -16,35 +16,22 @@ function _input.send_key_sequence(c, seq)
     awful.spawn.with_shell("xdotool type --delay 5 --window " .. tostring(c.window) .. " " .. seq)
 end
 
-local double_tap_timer = nil
-function _input.single_double_tap(single_tap_function, double_tap_function)
-    if double_tap_timer then
-        double_tap_timer:stop()
-        double_tap_timer = nil
-        double_tap_function()
-        return
-    end
-
-    double_tap_timer = gtimer.start_new(0.20, function()
-        double_tap_timer = nil
-        if single_tap_function then
-            single_tap_function()
-        end
-        return false
-    end)
-end
-
 function _input.tap_or_drag(args)
     local old_coords = capi.mouse.coords()
-    gtimer.start_new(0.20, function()
-        local new_coords = capi.mouse.coords()
-        if new_coords.x ~= old_coords.x or new_coords.y ~= old_coords.y then
-            args.on_drag()
-        else
-            args.on_tap()
+    gtimer {
+        timeout = 0.2,
+        call_now = false,
+        autostart = true,
+        single_shot = true,
+        callback = function()
+            local new_coords = capi.mouse.coords()
+            if new_coords.x ~= old_coords.x or new_coords.y ~= old_coords.y then
+                args.on_drag()
+            else
+                args.on_tap()
+            end
         end
-        return false
-    end)
+    }
 end
 
 return _input
