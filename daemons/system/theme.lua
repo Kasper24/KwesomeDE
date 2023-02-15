@@ -657,7 +657,7 @@ function theme:set_wallpaper(wallpaper, type)
     self._private.wallpaper_surface = wibox.widget.draw_to_image_surface(
         self._private.wallpaper_widget,
         capi.screen.primary.geometry.width,
-        capi.screen.primary.geometry.width
+        capi.screen.primary.geometry.height
     )
     wibox.widget.draw_to_svg_file(
         self._private.wallpaper_widget,
