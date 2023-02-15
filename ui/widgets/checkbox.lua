@@ -116,6 +116,8 @@ function checkbox:get_state()
 end
 
 local function new()
+    local accent_color = beautiful.colors.random_accent_color()
+
     local widget = wibox.widget {
         widget = wibox.container.place,
         halign = "center",
@@ -139,7 +141,7 @@ local function new()
                     forced_height = ball_dimensions.h,
                     point = { x = -2, y = 0 },
                     shape = gshape.circle,
-                    bg = beautiful.colors.random_accent_color(),
+                    bg = accent_color,
                     border_width = dpi(2),
                     border_color = beautiful.colors.background_no_opacity,
                 }
@@ -155,7 +157,7 @@ local function new()
     wp.handle_layout = widget:get_children_by_id("handle_layout")[1]
     wp.handle = widget:get_children_by_id("handle")[1]
 
-    wp.handle_active_color = wp.background.bg
+    wp.handle_active_color = accent_color
 
     wp.animation = helpers.animation:new{
         duration = 0.2,
