@@ -695,6 +695,15 @@ function theme:get_wallpaper_index()
     end
 end
 
+function theme:set_dpi(dpi)
+    self._private.dpi = dpi
+    helpers.settings:set_value("theme-dpi", self._private.dpi)
+end
+
+function theme:get_dpi()
+    return self._private.dpi
+end
+
 function theme:set_ui_opacity(opacity)
     self._private.ui_opacity = opacity
     helpers.settings:set_value("theme-ui-opacity", self._private.ui_opacity)
@@ -765,6 +774,7 @@ local function new()
     ret._private.wallpaper_type = helpers.settings:get_value("theme-wallpaper-type")
     ret._private.command_after_generation = helpers.settings:get_value("theme-command-after-generation")
     ret._private.color = helpers.settings:get_value("theme-color")
+    ret._private.dpi = tonumber(helpers.settings:get_value("theme-dpi"))
     ret._private.ui_opacity = helpers.settings:get_value("theme-ui-opacity")
     ret._private.ui_border_radius = tonumber(helpers.settings:get_value("theme-ui-border-radius"))
     ret._private.useless_gap = tonumber(helpers.settings:get_value("theme-useless-gap"))

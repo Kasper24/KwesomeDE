@@ -176,6 +176,9 @@ local function new(layout)
         separator(),
         command_after_generation(),
         separator(),
+        theme_slider("DPI: ", theme_daemon:get_dpi(), 250, function(value)
+            theme_daemon:set_dpi(gmath.round(value))
+        end),
         theme_slider("Useless gap: ", theme_daemon:get_useless_gap(), 250, function(value)
             theme_daemon:set_useless_gap(gmath.round(value))
         end),
