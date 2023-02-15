@@ -213,7 +213,6 @@ end
 function prompt:start()
     local wp = self._private
 
-    wp.state = true
     capi.awesome.emit_signal("prompt::toggled_on", self)
     self:turn_on()
     update_markup(self, true)
@@ -391,9 +390,6 @@ end
 
 function prompt:stop()
     local wp = self._private
-
-    wp.state = false
-
     if self.reset_on_stop == true or wp.cur_pos == nil then
         wp.cur_pos = wp.text:wlen() + 1
     end
@@ -415,9 +411,15 @@ end
 function prompt:toggle()
     local wp = self._private
 
-    if wp.state == true then
+    if wp.always_on then
+        return
+    end
+
+    if wp.prompt_state == true then
+        wp.prompt_state = false
         self:stop()
     else
+        wp.prompt_state = true
         self:start()
     end
 end
@@ -455,11 +457,9 @@ local function new()
 
     wp.cur_pos = #wp.text + 1 or 1
 
-    if widget._private.always_on == false then
-        widget:set_on_press(function()
-            widget:toggle()
-        end)
-    end
+    widget:set_on_press(function()
+        widget:toggle()
+    end)
 
     update_markup(widget, false)
 
