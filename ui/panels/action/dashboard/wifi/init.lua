@@ -14,7 +14,6 @@ local capi = {
     awesome = awesome
 }
 
-local wifi = {}
 local instance = nil
 
 local function access_point_widget(layout, access_point)
@@ -63,7 +62,7 @@ local function access_point_widget(layout, access_point)
         forced_height = dpi(30),
         halign = "left",
         size = 12,
-        text = network_daemon:is_access_point_active(access_point) and access_point.ssid .. " - Activated" or
+        text = access_point:is_access_point_active() and access_point.ssid .. " - Activated" or
             access_point.ssid,
         color = beautiful.colors.on_surface
     }
@@ -100,9 +99,9 @@ local function access_point_widget(layout, access_point)
         normal_bg = beautiful.colors.surface,
         text_normal_bg = beautiful.colors.on_surface,
         size = 12,
-        text = network_daemon:is_access_point_active(access_point) == true and "Disconnect" or "Connect",
+        text = access_point:is_access_point_active() == true and "Disconnect" or "Connect",
         on_press = function()
-            network_daemon:toggle_access_point(access_point, prompt:get_text(), auto_connect_checkbox:get_state())
+            access_point:toggle_access_point(prompt:get_text(), auto_connect_checkbox:get_state())
         end
     }
 
@@ -281,7 +280,7 @@ local function new()
     network_daemon:connect_signal("scan_access_points::success", function(self, access_points)
         layout:reset()
         for _, access_point in pairs(access_points) do
-            if network_daemon:is_access_point_active(access_point) then
+            if access_point:is_access_point_active() then
                 layout:insert(1, access_point_widget(layout, access_point))
             else
                 layout:add(access_point_widget(layout, access_point))
@@ -296,7 +295,7 @@ local function new()
         end
     end)
 
-    local widget = widgets.animated_panel {
+    return widgets.animated_panel {
         ontop = true,
         visible = false,
         minimum_width = dpi(600),
@@ -333,8 +332,6 @@ local function new()
             }
         }
     }
-
-    return widget
 end
 
 if not instance then

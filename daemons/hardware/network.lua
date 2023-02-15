@@ -16,6 +16,7 @@ local table = table
 local math = math
 
 local network = {}
+local access_point = {}
 local instance = nil
 
 network.NMState = {
@@ -278,7 +279,7 @@ function network:scan_access_points()
                     end
                 end
 
-                table.insert(self._private.access_points, {
+                local ret = {
                     raw_ssid = access_point_proxy.Ssid,
                     ssid = ssid,
                     security = security,
@@ -287,8 +288,12 @@ function network:scan_access_points()
                     path = access_point_path,
                     hw_address = access_point_proxy.HwAddress,
                     device_interface = self._private.device_proxy.Interface,
-                    device_proxy_path = self._private.device_proxy.object_path
-                })
+                    device_proxy_path = self._private.device_proxy.object_path,
+                    network_manager = self
+                }
+                gtable.crush(ret, access_point, true)
+
+                table.insert(self._private.access_points, ret)
             end
         end
 
@@ -302,60 +307,8 @@ function network:scan_access_points()
     }, {})
 end
 
-function network:connect_to_access_point(access_point, password, auto_connect)
-    local connections = get_access_point_connections(self, access_point.ssid)
-    local profile = create_profile(access_point, password, auto_connect)
-
-    -- No connection profiles, need to create one
-    if #connections == 0 then
-        -- AddAndActivateConnectionAsync doesn't actually verify that the profile is valid
-        -- The NetworkManager libary has methods to verify manually, but they are not exposed to DBus
-        -- so instead I'm using the 2 seperate methods
-        self._private.client_proxy:AddAndActivateConnectionAsync(
-            function(proxy, context, success, failure)
-                if failure ~= nil then
-                    -- print("Failed to activate connection: ", failure)
-                    -- print("Failed to activate connection error code: ", failure.code)
-                    self:emit_signal("activate_access_point::failed", tostring(failure), tostring(failure.code))
-                    return
-                end
-
-                self:emit_signal("activate_access_point::success", access_point.ssid)
-            end, {
-                call_id = "my-id"
-            }, profile, access_point.device_proxy_path, access_point.path)
-    else
-        connections[1]:Update(profile)
-        self._private.client_proxy:ActivateConnectionAsync(function(proxy, context, success, failure)
-            if failure ~= nil then
-                -- print("Failed to activate connection: ", failure)
-                -- print("Failed to activate connection error code: ", failure.code)
-                self:emit_signal("activate_access_point::failed", tostring(failure), tostring(failure.code))
-                return
-            end
-
-            self:emit_signal("activate_access_point::success", access_point.ssid)
-
-        end, {
-            call_id = "my-id"
-        }, connections[1].object_path, access_point.device_proxy_path, access_point.path)
-    end
-end
-
-function network:is_access_point_active(access_point)
-    return access_point.path == self._private.wifi_proxy.ActiveAccessPoint
-end
-
-function network:disconnect_from_access_point()
+function network:disconnect_from_active_access_point()
     self._private.client_proxy:DeactivateConnection(self._private.device_proxy.ActiveConnection)
-end
-
-function network:toggle_access_point(access_point, password, auto_connect)
-    if self:is_access_point_active(access_point) then
-        self:disconnect_from_access_point()
-    else
-        self:connect_to_access_point(access_point, password, auto_connect)
-    end
 end
 
 function network:toggle_wireless_state()
@@ -377,6 +330,53 @@ end
 
 function network:open_settings()
     awful.spawn("nm-connection-editor", false)
+end
+
+function access_point:connect_to_access_point(password, auto_connect)
+    local connections = get_access_point_connections(self.network_manager, self.ssid)
+    local profile = create_profile(self, password, auto_connect)
+
+    -- No connection profiles, need to create one
+    if #connections == 0 then
+        -- AddAndActivateConnectionAsync doesn't actually verify that the profile is valid
+        -- The NetworkManager libary has methods to verify manually, but they are not exposed to DBus
+        -- so instead I'm using the 2 seperate methods
+        self._private.client_proxy:AddAndActivateConnectionAsync(function(proxy, context, success, failure)
+            if failure ~= nil then
+                print("Failed to activate connection: ", failure)
+                print("Failed to activate connection error code: ", failure.code)
+                self.network_manager:emit_signal("activate_access_point::failed", tostring(failure), tostring(failure.code))
+                return
+            end
+
+            self.network_manager:emit_signal("activate_access_point::success", self.ssid)
+        end, {call_id = "my-id"}, profile, self.device_proxy_path, self.path)
+    else
+        connections[1]:Update(profile)
+        self.network_manager._private.client_proxy:ActivateConnectionAsync(function(proxy, context, success, failure)
+            if failure ~= nil then
+                print("Failed to activate connection: ", failure)
+                print("Failed to activate connection error code: ", failure.code)
+                self.network_manager:emit_signal("activate_access_point::failed", tostring(failure), tostring(failure.code))
+                return
+            end
+
+            self.network_manager:emit_signal("activate_access_point::success", self.ssid)
+
+        end, {call_id = "my-id"}, connections[1].object_path, self.device_proxy_path, self.path)
+    end
+end
+
+function access_point:is_access_point_active()
+    return self.path == self.network_manager._private.wifi_proxy.ActiveAccessPoint
+end
+
+function access_point:toggle_access_point(password, auto_connect)
+    if self:is_access_point_active() then
+        self:disconnect_from_active_access_point()
+    else
+        self:connect_to_access_point(password, auto_connect)
+    end
 end
 
 local function new()
