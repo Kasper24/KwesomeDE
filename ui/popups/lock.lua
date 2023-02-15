@@ -101,8 +101,7 @@ local function widget(self)
         reset_on_stop = true,
         always_on = true,
         obscure = true,
-        icon_font = beautiful.icons.lock.font,
-        icon = beautiful.icons.lock.icon,
+        icon = beautiful.icons.lock,
         keyreleased_callback = function(mod, key, text)
             if key == "Return" then
                 system_daemon:unlock(text)

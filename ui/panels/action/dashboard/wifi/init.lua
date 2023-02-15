@@ -40,8 +40,7 @@ local function access_point_widget(layout, access_point)
         forced_height = dpi(50),
         obscure = true,
         text = access_point.password,
-        icon_font = beautiful.icons.lock.font,
-        icon = beautiful.icons.lock.icon
+        icon = beautiful.icons.lock
     }
 
     local toggle_password_obscure_button = wibox.widget {

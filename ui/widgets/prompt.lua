@@ -10,7 +10,9 @@ local gtimer = require("gears.timer")
 local wibox = require("wibox")
 local ebwidget = require("ui.widgets.button.elevated")
 local beautiful = require("beautiful")
+local dpi = beautiful.xresources.apply_dpi
 local tostring = tostring
+local ceil = math.ceil
 local ipairs = ipairs
 local string = string
 local capi = {
@@ -75,6 +77,9 @@ local function update_markup(self, show_cursor)
     local text_color = gcolor.ensure_pango_color(wp.text_color)
     local cursor_color = gcolor.ensure_pango_color(wp.cursor_color)
 
+    local icon_size = dpi(ceil(wp.icon_size * 1024))
+    local text_size = dpi(ceil(wp.text_size * 1024))
+
     local text = tostring(wp.text) or ""
     if wp.obscure == true then
         text = text:gsub(".", "*")
@@ -100,12 +105,12 @@ local function update_markup(self, show_cursor)
         end
 
         if wp.icon ~= nil then
-            self._private.child:set_markup(string.format('<span font_desc="%s" foreground="%s">%s  </span>' ..
-                                                             '<span foreground="%s">%s</span>' ..
-                                                             '<span foreground="%s">%s</span>' ..
+            self._private.child:set_markup(string.format('<span font_desc="%s" font_size="%s" foreground="%s">%s  </span>' ..
+                                                             '<span font_size="%s" foreground="%s">%s</span>' ..
+                                                             '<span font_size="%s" foreground="%s">%s</span>' ..
                                                              '<span background="%s">%s</span>' ..
-                                                             '<span foreground="%s">%s%s</span>', wp.icon_font,
-                icon_color, wp.icon, prompt_color, wp.prompt, text_color, text_start, cursor_color, char, text_color,
+                                                             '<span font_size="%s" foreground="%s">%s%s</span>', wp.icon.font, icon_size,
+                icon_color, wp.icon.icon, text_size, prompt_color, wp.prompt, text_size, text_color, text_start, cursor_color, char, text_size, text_color,
                 text_end, spacer))
         else
             self._private.child:set_markup(string.format('<span foreground="%s">%s</span>' ..
@@ -118,8 +123,8 @@ local function update_markup(self, show_cursor)
         if wp.icon ~= nil then
             self._private.child:set_markup(string.format('<span font_desc="%s" foreground="%s">%s  </span>' ..
                                                              '<span foreground="%s">%s</span>' ..
-                                                             '<span foreground="%s">%s</span>', wp.icon_font,
-                icon_color, wp.icon, prompt_color, wp.prompt, text_color, gstring.xml_escape(text)))
+                                                             '<span foreground="%s">%s</span>', wp.icon.font,
+                icon_color, wp.icon.icon, prompt_color, wp.prompt, text_color, gstring.xml_escape(text)))
         else
             self._private.child:set_markup(string.format('<span foreground="%s">%s</span>' ..
                                                              '<span foreground="%s">%s</span>', prompt_color, wp.prompt,
@@ -412,14 +417,15 @@ local function new()
 
     local wp = widget._private
 
-    wp.icon_font = beautiful.font
     wp.icon = nil
     wp.font = beautiful.font
     wp.prompt = ""
     wp.text = ""
 
+    wp.icon_size = 12
     wp.icon_color = beautiful.colors.on_background
     wp.prompt_color = beautiful.colors.on_background
+    wp.text_size = 12
     wp.text_color = beautiful.colors.on_background
     wp.cursor_color = beautiful.colors.on_background
 
