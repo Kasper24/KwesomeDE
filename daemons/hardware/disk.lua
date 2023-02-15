@@ -6,8 +6,6 @@ local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
-local helpers = require("helpers")
-local tonumber = tonumber
 local table = table
 
 local disk = {}
