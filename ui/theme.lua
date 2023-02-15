@@ -263,6 +263,12 @@ local function icons()
         palette = { icon = "" }
     }
 
+    theme.taglist_icons = {
+        theme.icons.firefox, theme.icons.vscode, theme.icons.git,
+        theme.icons.discord, theme.icons.spotify, theme.icons.steam,
+        theme.icons.gamepad_alt, theme.icons.lights_holiday
+    }
+
     local function set_icon_default_props(icon, color)
         if icon.color == nil then
             icon.color = color or theme.colors.random_accent_color()

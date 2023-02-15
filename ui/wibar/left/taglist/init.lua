@@ -14,10 +14,6 @@ local taglist = {
     mt = {}
 }
 
-local TAGLIST_ICONS = {beautiful.icons.firefox, beautiful.icons.vscode, beautiful.icons.git,
-beautiful.icons.discord, beautiful.icons.spotify, beautiful.icons.steam,
-beautiful.icons.gamepad_alt, beautiful.icons.lights_holiday}
-
 local function update_taglist(self, tag)
     if #tag:clients() == 0 then
         self.indicator_animation:set(dpi(0))
@@ -36,7 +32,7 @@ local function tag_widget(self, tag, index)
     local button = wibox.widget {
         widget = widgets.button.text.state,
         id = "button",
-        icon = TAGLIST_ICONS[index],
+        icon = tag.icon,
         on_hover = function()
             if #tag:clients() > 0 then
                 tag_preview:show(tag, {
@@ -75,7 +71,7 @@ local function tag_widget(self, tag, index)
             id = "background",
             forced_width = dpi(5),
             shape = helpers.ui.rrect(),
-            bg = TAGLIST_ICONS[index].color
+            bg = tag.icon.color
         }
     }
 

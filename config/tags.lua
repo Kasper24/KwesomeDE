@@ -3,14 +3,16 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 local awful = require("awful")
+local beautiful = require("beautiful")
 
 awful.screen.connect_for_each_screen(function(s)
     for i = 1, 8, 1  do
         awful.tag.add(i, {
+            screen = s,
             layout = awful.layout.layouts[1],
             centered_layout_master_fill_policy = "master_width_factor",
-            screen = s,
             selected = i == 1 and true or false,
+            icon = beautiful.taglist_icons[i]
         })
     end
 end)
