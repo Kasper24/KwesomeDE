@@ -192,9 +192,9 @@ local function new()
         wp.handle_active_color = old_colorscheme_to_new_map[wp.handle_active_color]
 
         if wp.state == true then
-            handle.bg = wp.handle_active_color
+            wp.handle.bg = wp.handle_active_color
         else
-            handle.bg = beautiful.colors.on_background
+            wp.handle.bg = beautiful.colors.on_background
         end
     end)
 
