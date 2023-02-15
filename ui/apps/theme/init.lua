@@ -2,21 +2,11 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-local awful = require("awful")
-local gobject = require("gears.object")
-local gtable = require("gears.table")
-local ruled = require("ruled")
 local wibox = require("wibox")
-local widgets = require("ui.widgets")
 local app = require("ui.apps.app")
 local beautiful = require("beautiful")
-local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
-local capi = {
-    awesome = awesome
-}
 
-local theme = {}
 local instance = nil
 
 local path = ...
