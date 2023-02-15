@@ -22,6 +22,11 @@ gtimer{
 local beautiful = require("beautiful")
 local helpers = require("helpers")
 beautiful.init(helpers.filesystem.get_awesome_config_dir("ui") .. "theme.lua")
+
+local theme_daemon = require("daemons.system.theme")
+local beautiful = require("beautiful")
+beautiful.xresources.set_dpi(theme_daemon:get_dpi())
+
 require("config")
 require("ui")
 

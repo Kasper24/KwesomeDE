@@ -1,7 +1,3 @@
-local theme_daemon = require("daemons.system.theme")
-local beautiful = require("beautiful")
-beautiful.xresources.set_dpi(theme_daemon:get_dpi())
-
 local awful = require("awful")
 local widgets = require("ui.widgets")
 local helpers = require("helpers")
