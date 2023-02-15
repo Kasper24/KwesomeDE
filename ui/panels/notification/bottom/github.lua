@@ -395,7 +395,6 @@ local function new()
         },
         {
             widget = wibox.container.place,
-            forced_height = dpi(700),
             halign = "center",
             valign = "center",
             content
