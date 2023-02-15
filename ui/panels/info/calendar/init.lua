@@ -21,7 +21,7 @@ local function new()
     local hour = wibox.widget {
         widget = wibox.widget.textclock,
         format = "%H",
-        font = beautiful.font_name .. 50
+        font = beautiful.font_name .. dpi(50)
     }
     local hour_accent_color = beautiful.colors.on_background
     hour.markup = helpers.ui.colorize_text(hour.text, hour_accent_color)
@@ -62,7 +62,7 @@ local function new()
     local minute = wibox.widget {
         widget = wibox.widget.textclock,
         format = "%M",
-        font = beautiful.font_name .. 50
+        font = beautiful.font_name .. dpi(50)
     }
     local minute_accent_color = beautiful.colors.on_background
     minute.markup = helpers.ui.colorize_text(minute.text, minute_accent_color)
@@ -87,7 +87,7 @@ local function new()
         format = "%A, %b, %d",
         align = "center",
         valign = "center",
-        font = beautiful.font_name .. 20
+        font = beautiful.font_name .. dpi(20)
     }
 
     local date_accent_color = beautiful.colors.random_accent_color()

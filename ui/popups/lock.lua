@@ -80,7 +80,7 @@ local function widget(self)
         align = "center",
         valign = "center",
         format = "%H:%M",
-        font = beautiful.font_name .. 60
+        font = beautiful.font_name .. dpi(60)
     }
 
     local date = wibox.widget {
@@ -88,7 +88,7 @@ local function widget(self)
         align = "center",
         valign = "center",
         format = "%d" .. helpers.string.day_ordinal_number() .. " of %B, %A",
-        font = beautiful.font_name .. 30
+        font = beautiful.font_name .. dpi(30)
     }
 
     self._private.prompt = wibox.widget {

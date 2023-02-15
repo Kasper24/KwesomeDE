@@ -23,7 +23,7 @@ local function new()
         format = "%d %b %H:%M",
         align = "center",
         valign = "center",
-        font = beautiful.font_name .. 14
+        font = beautiful.font_name .. dpi(14)
     }
 
     clock.markup = helpers.ui.colorize_text(clock.text, accent_color)

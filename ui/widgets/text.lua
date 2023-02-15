@@ -7,6 +7,7 @@ local gstring = require("gears.string")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
 local helpers = require("helpers")
+local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 local tostring = tostring
 local string = string
@@ -62,6 +63,8 @@ local function generate_markup(self)
     local size = wp.size or wp.defaults.size
     local color = wp.color or wp.defaults.color
     local text = wp.text or wp.defaults.text
+
+    size = dpi(size)
 
     -- Need to unescape in a case the text was escaped by other code before
     text = gstring.xml_unescape(tostring(text))
