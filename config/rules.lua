@@ -287,12 +287,10 @@ end)
 
 capi.client.connect_signal("tagged", function(client)
     client.font_icon = beautiful.get_font_icon_for_app_name(client.class)
-    client:emit_signal("property::font_icon", client)
 end)
 
 capi.client.connect_signal("property::class", function(client)
     client.font_icon = beautiful.get_font_icon_for_app_name(client.class)
-    client:emit_signal("property::font_icon", client)
 end)
 
 capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
