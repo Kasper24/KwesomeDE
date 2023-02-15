@@ -88,8 +88,6 @@ function animation:set(args)
     local duration = is_table and (args.duration or self.duration) or self.duration
     local easing = is_table and (args.easing or self.easing) or self.easing
 
-    duration = self._private.anim_manager._private.instant == true and 0.01 or duration
-
     if self.tween == nil or self.reset_on_stop == true then
         self.tween = tween.new {
             initial = initial,
@@ -177,38 +175,50 @@ local function new()
 
     GLib.timeout_add(GLib.PRIORITY_DEFAULT, ANIMATION_FRAME_DELAY, function()
         for index, animation in ipairs(ret._private.animations) do
-            if animation.state == true then
-                -- compute delta time
-                local time = GLib.get_monotonic_time()
-                local delta = time - animation.last_elapsed
-                animation.last_elapsed = time
+            if ret._private.instant then
+                -- Snap to end
+                animation.pos = animation.tween.target
+                animation:fire(animation.pos)
+                animation:emit_signal("update", animation.pos)
 
-                -- If pos is true, the animation has ended
-                local pos = animation.tween:update(delta)
-                if pos == true then
-                    -- Loop the animation, don't end it.
-                    -- Useful for widgets like the spinning cicle
-                    if animation.loop == true then
-                        animation.tween:reset()
+                animation.state = false
+                animation.ended:fire(animation.pos)
+                table.remove(ret._private.animations, index)
+                animation:emit_signal("ended", animation.pos)
+            else
+                if animation.state == true then
+                    -- compute delta time
+                    local time = GLib.get_monotonic_time()
+                    local delta = time - animation.last_elapsed
+                    animation.last_elapsed = time
+
+                    -- If pos is true, the animation has ended
+                    local pos = animation.tween:update(delta)
+                    if pos == true then
+                        -- Loop the animation, don't end it.
+                        -- Useful for widgets like the spinning cicle
+                        if animation.loop == true then
+                            animation.tween:reset()
+                        else
+                            -- Snap to end
+                            animation.pos = animation.tween.target
+                            animation:fire(animation.pos)
+                            animation:emit_signal("update", animation.pos)
+
+                            animation.state = false
+                            animation.ended:fire(pos)
+                            table.remove(ret._private.animations, index)
+                            animation:emit_signal("ended", animation.pos)
+                        end
+                        -- Animation in process, keep updating
                     else
-                        -- Snap to end
-                        animation.pos = animation.tween.target
+                        animation.pos = pos
                         animation:fire(animation.pos)
                         animation:emit_signal("update", animation.pos)
-
-                        animation.state = false
-                        animation.ended:fire(pos)
-                        table.remove(ret._private.animations, index)
-                        animation:emit_signal("ended", animation.pos)
                     end
-                    -- Animation in process, keep updating
                 else
-                    animation.pos = pos
-                    animation:fire(animation.pos)
-                    animation:emit_signal("update", animation.pos)
+                    table.remove(ret._private.animations, index)
                 end
-            else
-                table.remove(ret._private.animations, index)
             end
         end
 

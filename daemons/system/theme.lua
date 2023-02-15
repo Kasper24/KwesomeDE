@@ -383,7 +383,7 @@ local function image_wallpaper(self, screen)
         image = self:get_active_wallpaper()
     }
 
-    self:set_wallpaper_surface(widget, screen)
+    self._private.wallpaper_widget = widget
 
     awful.wallpaper {
         screen = screen,
@@ -419,7 +419,7 @@ local function mountain_wallpaper(self, screen)
         },
     }
 
-    self:set_wallpaper_surface(widget, screen)
+    self._private.wallpaper_widget = widget
 
     awful.wallpaper {
         screen = screen,
@@ -488,7 +488,7 @@ local function digital_sun_wallpaper(self, screen)
         end
     }
 
-    self:set_wallpaper_surface(widget, screen)
+    self._private.wallpaper_widget = widget
 
     awful.wallpaper {
         screen = screen,
@@ -532,7 +532,7 @@ local function binary_wallpaper(self, screen)
         }
     }
 
-    self:set_wallpaper_surface(widget, screen)
+    self._private.wallpaper_widget = widget
 
     awful.wallpaper {
         screen = screen,
@@ -642,18 +642,17 @@ function theme:set_wallpaper(type)
     self._private.wallpaper_type = type
     helpers.settings:set_value("theme-wallpaper-type", type)
 
-    local file = helpers.file.new_for_path(self:get_active_wallpaper())
-    file:copy(BACKGROUND_PATH, {
-        overwrite = true
-    })
+    -- local file = helpers.file.new_for_path(self:get_active_wallpaper())
+    -- file:copy(BACKGROUND_PATH, {
+    --     overwrite = true
+    -- })
+
+    self._private.wallpaper_surface = wibox.widget.draw_to_image_surface(widget, screen.geometry.width, screen.geometry.height)
+    wibox.widget.draw_to_svg_file(self._private.wallpaper_surface, BACKGROUND_PATH, screen.primary.geometry.width, screen.primary.geometry.height)
 
     for s in capi.screen do
         capi.screen.emit_signal("_request::wallpaper", s)
     end
-end
-
-function theme:set_wallpaper_surface(widget, screen)
-    self._private.wallpaper_surface = wibox.widget.draw_to_image_surface(widget, screen.geometry.width, screen.geometry.height)
 end
 
 function theme:get_wallpaper_surface()
