@@ -543,7 +543,7 @@ local function binary_wallpaper(self, screen)
 end
 
 local function scan_wallpapers(self)
-    self._private.wallpapers = {}
+    local wallpapers = {}
 
     -- Make sure Awesome doesn't work too hard adding widgets
     -- if there are more changes coming soon
@@ -552,15 +552,15 @@ local function scan_wallpapers(self)
         autostart = false,
         single_shot = true,
         callback = function()
-            if #self._private.wallpapers == 0 then
+            if #wallpapers == 0 then
                 self:emit_signal("wallpapers::empty")
             else
-                table.sort(self._private.wallpapers, function(a, b)
+                table.sort(wallpapers, function(a, b)
                     return a < b
                 end)
 
                 self:set_selected_colorscheme(self:get_selected_colorscheme())
-                self:emit_signal("wallpapers", self._private.wallpapers)
+                self:emit_signal("wallpapers", wallpapers)
             end
         end
     }
@@ -569,7 +569,7 @@ local function scan_wallpapers(self)
         local wallpaper_path = WALLPAPERS_PATH .. file:get_name()
         local mimetype = Gio.content_type_guess(wallpaper_path)
         if PICTURES_MIMETYPES[mimetype] ~= nil then
-            table.insert(self._private.wallpapers, wallpaper_path)
+            table.insert(wallpapers, wallpaper_path)
         end
     end, {}, function()
         emit_signal_timer:again()
