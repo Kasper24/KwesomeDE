@@ -93,6 +93,7 @@ function checkbox:set_handle_active_color(active_color)
     wp.animation:stop()
 
     wp.handle_active_color = active_color
+    wp.handle.bg = active_color
 
     if wp.state == true then
         self:turn_on()
@@ -121,6 +122,7 @@ local function new()
         valign = "center",
         {
             widget = bwidget,
+            id = "background",
             forced_width = switch_dimensions.w,
             forced_height = switch_dimensions.h,
             shape = gshape.rounded_bar,
@@ -137,7 +139,7 @@ local function new()
                     forced_height = ball_dimensions.h,
                     point = { x = -2, y = 0 },
                     shape = gshape.circle,
-                    bg = beautiful.colors.background,
+                    bg = beautiful.colors.random_accent_color(),
                     border_width = dpi(2),
                     border_color = beautiful.colors.background_no_opacity,
                 }
@@ -147,11 +149,13 @@ local function new()
     gtable.crush(widget, checkbox, true)
 
     local wp = widget._private
-    wp.handle_active_color = beautiful.colors.random_accent_color()
     wp.state = false
 
+    wp.background = widget:get_children_by_id("background")[1]
     wp.handle_layout = widget:get_children_by_id("handle_layout")[1]
     wp.handle = widget:get_children_by_id("handle")[1]
+
+    wp.handle_active_color = wp.background.bg
 
     wp.animation = helpers.animation:new{
         duration = 0.2,
@@ -162,7 +166,7 @@ local function new()
         },
         update = function(self, pos)
             wp.handle_layout:move(1, { x = pos.handle_offset, y = 0 })
-            wp.handle.bg = helpers.color.rgb_to_hex(pos.handle_color)
+            wp.background.bg = helpers.color.rgb_to_hex(pos.handle_color)
         end
     }
 
@@ -192,11 +196,12 @@ local function new()
 
     capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
         wp.handle_active_color = old_colorscheme_to_new_map[wp.handle_active_color]
+        wp.handle.bg = wp.handle_active_color
 
         if wp.state == true then
-            wp.handle.bg = wp.handle_active_color
+            wp.background.bg = wp.handle_active_color
         else
-            wp.handle.bg = beautiful.colors.on_background
+            wp.background.bg = beautiful.colors.background_no_opacity
         end
     end)
 
