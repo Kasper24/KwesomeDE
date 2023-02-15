@@ -79,6 +79,7 @@ local function new(args)
     gtable.crush(ret, animated_panel, true)
     ret.axis = args.axis or "x"
     ret.start_pos = args.start_pos or 4000
+    ret.max_height = args.max_height
 
     ret.state = false
     ret.animation = helpers.animation:new{

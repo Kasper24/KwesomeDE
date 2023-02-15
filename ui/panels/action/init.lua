@@ -69,12 +69,6 @@ local function new()
         widget = widget
     }
 
-    panel:connect_signal("visibility", function(visible)
-        if visible then
-            widget.widget.forced_height = awful.screen.focused().geometry.height - 100
-        end
-    end)
-
     return panel
 end
 
