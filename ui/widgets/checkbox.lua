@@ -30,7 +30,7 @@ local ball_dimensions = {
     h = dpi(25)
 }
 local start_ball_position = ball_dimensions.w - switch_dimensions.w
-local done_ball_position = -start_ball_position -- just invert it
+local done_ball_position = -start_ball_position + 2-- just invert it
 
 local function build_properties(prototype, prop_names)
     for _, prop in ipairs(prop_names) do
@@ -71,7 +71,7 @@ function checkbox:turn_off()
     wp.state = false
 
     wp.animation:set{
-        handle_offset = 0,
+        handle_offset = -2,
         handle_color = helpers.color.hex_to_rgb(beautiful.colors.background),
     }
 
@@ -124,7 +124,9 @@ local function new()
             forced_width = switch_dimensions.w,
             forced_height = switch_dimensions.h,
             shape = gshape.rounded_bar,
-            bg = beautiful.colors.surface,
+            bg = beautiful.colors.surface_no_opacity,
+            border_width = dpi(2),
+            border_color = beautiful.colors.background_no_opacity,
             {
                 layout = wibox.layout.manual,
                 id = "handle_layout",
@@ -133,7 +135,7 @@ local function new()
                     id = "handle",
                     forced_width = ball_dimensions.w,
                     forced_height = ball_dimensions.h,
-                    point = { x = 0, y = 0 },
+                    point = { x = -2, y = 0 },
                     shape = gshape.circle,
                     bg = beautiful.colors.background,
                     border_width = dpi(2),
@@ -155,7 +157,7 @@ local function new()
         duration = 0.2,
         easing = helpers.animation.easing.inOutQuad,
         pos = {
-            handle_offset = 0,
+            handle_offset = -2,
             handle_color = helpers.color.hex_to_rgb(beautiful.colors.on_background)
         },
         update = function(self, pos)
