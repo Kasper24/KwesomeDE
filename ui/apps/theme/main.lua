@@ -45,6 +45,7 @@ local function color_button(index)
         widget = wibox.container.background,
         forced_width = dpi(200),
         forced_height = dpi(40),
+        shape = helpers.ui.rrect(),
         bg = beautiful.colors.white
     }
 
