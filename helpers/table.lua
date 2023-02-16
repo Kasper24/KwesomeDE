@@ -15,7 +15,7 @@ end
 
 function _table.dump(o, args)
     args = args or {}
-    args.pretty = args.pretty or false
+    args.pretty = args.pretty or true
     args.depth = args.depth or 0
     args.max_depth = args.max_depth or -1
     if args.max_depth > 0 and args.depth > args.max_depth then

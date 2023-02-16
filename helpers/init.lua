@@ -11,7 +11,6 @@ return {
     icon_theme = require(... .. ".icon_theme"),
     inotify = require(... .. ".inotify"),
     input = require(... .. ".input"),
-    inspect = require(... .. ".inspect"),
     json = require(... .. ".json"),
     misc = require(... .. ".misc"),
     run = require(... .. ".run"),
