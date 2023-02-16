@@ -77,8 +77,7 @@ local function notification_widget(notification, on_removed)
         halign = "left",
         valign = "top",
         size = 12,
-        text = helpers.string.to_time_ago(os.difftime(os.time(os.date("*t")),
-            helpers.string.parse_date(notification.time)))
+        text = helpers.string.to_time_ago(notification.time)
     }
 
     local actions = wibox.widget {
@@ -151,8 +150,7 @@ local function notification_widget(notification, on_removed)
     }
 
     function widget.update_time_ago()
-        time:set_text(helpers.string.to_time_ago(os.difftime(os.time(os.date("*t")),
-            helpers.string.parse_date(notification.time))))
+        time:set_text(helpers.string.to_time_ago(notification.time))
     end
 
     return widget

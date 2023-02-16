@@ -43,8 +43,7 @@ local function email_widget(email)
         halign = halign,
         size = 12,
         italic = true,
-        text = helpers.string.to_time_ago(os.difftime(os.time(os.date("!*t")),
-                helpers.string.parse_date(email.modified)))
+        text = helpers.string.to_time_ago(email.modified)
     }
 
     local title = wibox.widget {

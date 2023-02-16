@@ -57,8 +57,7 @@ local function mr_widget(mr, path_to_avatars)
         {
             widget = widgets.text,
             size = 12,
-            text = helpers.string.to_time_ago(os.difftime(os.time(os.date("!*t")),
-                helpers.string.parse_date(mr.created_at)))
+            text = helpers.string.to_time_ago(mr.created_at)
         }
     }
 

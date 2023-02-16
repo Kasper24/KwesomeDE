@@ -159,8 +159,7 @@ local function event_widget(event, path_to_avatars)
     local time = wibox.widget {
         widget = widgets.text,
         size = 12,
-        text = helpers.string.to_time_ago(os.difftime(os.time(os.date("!*t")),
-            helpers.string.parse_date(event.created_at)))
+        text = helpers.string.to_time_ago(event.created_at)
     }
 
     local info = wibox.widget {
@@ -260,8 +259,7 @@ local function pr_widget(pr, path_to_avatars)
     local time = wibox.widget {
         widget = widgets.text,
         size = 12,
-        text = helpers.string .to_time_ago(os.difftime(os.time(os.date("!*t")),
-                helpers.string.parse_date(pr.created_at)))
+        text = helpers.string .to_time_ago(pr.created_at)
     }
 
     local comments = wibox.widget {

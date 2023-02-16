@@ -40,7 +40,9 @@ function _string.parse_date(date_str)
 end
 
 --- Converts seconds to "time ago" representation, like '1 hour ago'
-function _string.to_time_ago(seconds)
+function _string.to_time_ago(time)
+    local seconds = os.difftime(os.time(os.date("*t")), _string.parse_date(time))
+
     local days = seconds / 86400
     if days >= 1 then
         days = math.floor(days)
