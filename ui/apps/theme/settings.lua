@@ -200,9 +200,20 @@ local function new(layout)
         separator(),
         command_after_generation(),
         separator(),
-        theme_slider("DPI: ", theme_daemon:get_dpi(), 250, true, function(value)
-            theme_daemon:set_dpi(value)
-        end),
+        {
+            layout = wibox.layout.fixed.vertical,
+            forced_height = dpi(60),
+            spacing = dpi(5),
+            theme_slider("DPI: ", theme_daemon:get_dpi(), 250, true, function(value)
+                theme_daemon:set_dpi(value)
+            end),
+            {
+                widget = widgets.text,
+                italic = true,
+                size = 10,
+                text = "* Restart AwesomeWM for this to take effect"
+            }
+        },
         theme_slider("Useless gap: ", theme_daemon:get_useless_gap(), 250, true, function(value)
             theme_daemon:set_useless_gap(value)
         end),
