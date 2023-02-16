@@ -80,28 +80,24 @@ function screenshot:screenshot()
         end)
     end
 
-    gtimer {
-        timeout = self._private.delay,
-        single_shot = true,
-        autostart = true,
-        call_now = false,
-        callback = function()
-            local folder = helpers.file.new_for_path(self._private.folder)
-            folder:exists(function(error, exists)
-                if exists == false then
-                    helpers.filesystem.make_directory(self._private.folder, function(error)
-                        if error == nil then
-                            screenshot()
-                        else
-                            self:emit_signal("error::create_directory")
-                        end
-                    end)
-                else
-                    screenshot()
-                end
-            end)
-        end
-    }
+    gtimer.start_new(self._private.delay, function()
+        local folder = helpers.file.new_for_path(self._private.folder)
+        folder:exists(function(error, exists)
+            if exists == false then
+                helpers.filesystem.make_directory(self._private.folder, function(error)
+                    if error == nil then
+                        screenshot()
+                    else
+                        self:emit_signal("error::create_directory")
+                    end
+                end)
+            else
+                screenshot()
+            end
+        end)
+
+        return false
+    end)
 end
 
 local function new()

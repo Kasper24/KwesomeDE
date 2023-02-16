@@ -337,10 +337,8 @@ local function new()
         collectgarbage("collect")
     end)
 
-    gtimer {
+    gtimer.poller {
         timeout = 60,
-        call_now = false,
-        autostart = true,
         callback = function()
             for _, widget in ipairs(scrollbox.all_children) do
                 if widget.update_time_ago then

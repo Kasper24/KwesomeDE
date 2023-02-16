@@ -257,11 +257,8 @@ local function new()
     ret._private.sink_inputs = {}
     ret._private.source_outputs = {}
 
-    gtimer {
+    gtimer.poller {
         timeout = 5,
-        autostart = true,
-        call_now = false,
-        single_shot = true,
         callback = function()
             get_devices(ret)
             get_applications(ret)

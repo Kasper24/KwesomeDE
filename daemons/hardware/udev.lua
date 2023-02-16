@@ -99,21 +99,14 @@ local function new()
     ret._private.usb_devices = {}
     ret._private.block_devices = {}
 
-    local emit_timer = gtimer {
-        timeout = 0.5,
-        autostart = false,
-        single_shot = true,
-        call_now = true,
-        callback = function()
-            check_usb_device(ret)
-            check_block_devices(ret)
-        end
-    }
-
     awful.spawn.easy_async("pkill -f 'udevadm monitor'", function()
         awful.spawn.with_line_callback("udevadm monitor", {
             stdout = function(_)
-                emit_timer:again()
+                gtimer.start_new(0.5, function()
+                    check_usb_device(ret)
+                    check_block_devices(ret)
+                    return false
+                end)
             end
         })
     end)

@@ -17,10 +17,8 @@ local function new()
     local ret = gobject {}
     gtable.crush(ret, disk, true)
 
-    gtimer {
+    gtimer.poller {
         timeout = UPDATE_INTERVAL,
-        autostart = true,
-        call_now = true,
         callback = function()
             awful.spawn.easy_async_with_shell("df | tail -n +2", function(stdout)
                 local disks = {}

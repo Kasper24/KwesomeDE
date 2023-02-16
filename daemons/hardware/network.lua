@@ -413,15 +413,10 @@ local function new()
             ret:emit_signal("wireless_state", data.WirelessEnabled)
 
             if data.WirelessEnabled == true then
-                gtimer {
-                    timeout = 5,
-                    autostart = true,
-                    call_now = false,
-                    single_shot = true,
-                    callback = function()
-                        ret:scan_access_points()
-                    end
-                }
+                gtimer.start_new(5, function()
+                    ret:scan_access_points()
+                    return false
+                end)
             end
         end
     end)

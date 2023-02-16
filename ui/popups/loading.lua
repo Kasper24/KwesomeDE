@@ -80,16 +80,12 @@ awful.screen.connect_for_each_screen(function(s)
         }
     }
 
-    gtimer {
-        timeout = 5,
-        single_shot = true,
-        call_now = false,
-        autostart = true,
-        callback = function()
-            spinning_circle:stop()
-            spinning_circle = nil
-            loading_popup.visible = false
-            loading_popup = nil
-        end
-    }
+    gtimer.start_new(5, function()
+        spinning_circle:stop()
+        spinning_circle = nil
+        loading_popup.visible = false
+        loading_popup = nil
+
+        return false
+    end)
 end)

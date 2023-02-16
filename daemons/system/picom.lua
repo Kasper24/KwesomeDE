@@ -137,10 +137,8 @@ local function new()
             ret:turn_off()
         end
 
-        gtimer {
+        gtimer.poller {
             timeout = UPDATE_INTERVAL,
-            autostart = true,
-            call_now = true,
             callback = function()
                 if ret._private.state ~= capi.awesome.composite_manager_running and not ret._private.refreshing then
                     ret:emit_signal("state", capi.awesome.composite_manager_running)

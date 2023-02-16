@@ -107,15 +107,10 @@ function menu:show(args)
     self.visible = true
     self._private.can_hide = false
 
-    gtimer {
-        timeout = 0.05,
-        autostart = true,
-        call_now = false,
-        single_shot = true,
-        callback = function()
-            self._private.can_hide = true
-        end
-    }
+    gtimer.start_new(0.05, function()
+        self._private.can_hide = true
+        return false
+    end)
 
     capi.awesome.emit_signal("menu::toggled_on", self)
 end

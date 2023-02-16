@@ -89,10 +89,8 @@ local function new()
     ret._private = {}
     ret._private.password = helpers.settings:get_value("password")
 
-    gtimer {
+    gtimer.poller {
         timeout = UPDATE_INTERVAL,
-        autostart = true,
-        call_now = true,
         callback = function()
             awful.spawn.easy_async("neofetch packages", function(packages_count)
                 packages_count = helpers.string.trim(packages_count:gsub("packages", ""))

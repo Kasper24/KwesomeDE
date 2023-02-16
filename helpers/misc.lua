@@ -58,15 +58,10 @@ function _misc.sleep(time)
 end
 
 local show = false
-gtimer {
-    timeout = 5,
-    autostart = true,
-    call_now = false,
-    single_shot = true,
-    callback = function()
-        show = true
-    end
-}
+gtimer.start_new(5, function()
+    show = true
+    return false
+end)
 
 function _misc.should_show_notification()
     return show

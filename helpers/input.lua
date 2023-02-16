@@ -18,20 +18,16 @@ end
 
 function _input.tap_or_drag(args)
     local old_coords = capi.mouse.coords()
-    gtimer {
-        timeout = 0.2,
-        call_now = false,
-        autostart = true,
-        single_shot = true,
-        callback = function()
-            local new_coords = capi.mouse.coords()
-            if new_coords.x ~= old_coords.x or new_coords.y ~= old_coords.y then
-                args.on_drag()
-            else
-                args.on_tap()
-            end
+    gtimer.start_new(0.2, function()
+        local new_coords = capi.mouse.coords()
+        if new_coords.x ~= old_coords.x or new_coords.y ~= old_coords.y then
+            args.on_drag()
+        else
+            args.on_tap()
         end
-    }
+
+        return false
+    end)
 end
 
 return _input

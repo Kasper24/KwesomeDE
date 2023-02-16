@@ -339,11 +339,8 @@ end
 function filesystem.remote_watch(path, uri, interval, callback, old_content_callback)
     local file = File.new_for_path(path)
 
-    local timer = gtimer {
-        timeout = interval,
-        call_now = true,
-        autostart = true,
-        single_shot = false
+    local timer = gtimer.poller {
+        timeout = interval
     }
 
     timer:connect_signal("timeout", function()

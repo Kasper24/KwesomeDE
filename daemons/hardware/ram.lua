@@ -16,10 +16,8 @@ local function new()
     local ret = gobject {}
     gtable.crush(ret, ram, true)
 
-    gtimer {
+    gtimer.poller {
         timeout = UPDATE_INTERVAL,
-        autostart = true,
-        call_now = true,
         callback = function()
             awful.spawn.easy_async([[ bash -c "LANGUAGE=en_US.UTF-8 free | grep -z Mem.*Swap.*" ]], function(stdout)
                 local total, used, free, shared, buff_cache, available, total_swap, used_swap, free_swap

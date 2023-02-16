@@ -95,10 +95,8 @@ local function new()
 
     local first_time = true
 
-    gtimer {
+    gtimer.poller {
         timeout = UPDATE_INTERVAL,
-        autostart = true,
-        call_now = true,
         callback = function()
             if ret._private.slim and first_time == false then
                 slim_update(ret)

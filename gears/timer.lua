@@ -721,6 +721,22 @@ function timer.new(args)
     return ret
 end
 
+function timer.poller(args)
+    args = args or {}
+
+    local _timer = timer.new {
+        timeout = args.timeout,
+        callback = args.callback,
+        wake_up = true,
+        autostart = true,
+        single_shot = false,
+        call_now = true,
+        randomized = true
+    }
+
+    return _timer
+end
+
 --- Create a simple timer for calling the `callback` function continuously.
 --
 -- This is a small wrapper around `gears.timer`, that creates a timer based on

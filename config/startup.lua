@@ -13,15 +13,10 @@ local function setup_system_tools()
     helpers.run.run_once_grep("parcellite")
     helpers.run.run_once_grep("kdeconnect-indicator")
     helpers.run.run_once_grep("mopidy")
-    gtimer {
-        timeout = 3,
-        single_shot = true,
-        call_now = false,
-        autostart = true,
-        callback = function()
-            helpers.run.run_once_grep("openrgb")
-        end
-    }
+    gtimer.start_new(3, function()
+        helpers.run.run_once_grep("openrgb")
+        return false
+    end)
 end
 
 local function configure_keyboard()
@@ -49,11 +44,8 @@ local function configure_xserver()
     awful.spawn("xset -dpms", false)
     awful.spawn("xset s noblank", false)
 
-    gtimer {
+    gtimer.poller {
         timeout = 60,
-        autostart = true,
-        single_shot = false,
-        call_now = true,
         callback = function()
             configure_keyboard()
         end

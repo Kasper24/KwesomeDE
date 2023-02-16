@@ -221,16 +221,11 @@ function persistent:recreate_clients()
         end
 
         if index == clients_amount then
-            gtimer {
-                timeout = 0.6,
-                single_shot = true,
-                call_now = false,
-                autostart = true,
-                callback = function()
-                    self:reapply_clients()
-                    self:reapply_selected_tags()
-                end
-            }
+            gtimer.start_new(0.6, function()
+                self:reapply_clients()
+                self:reapply_selected_tags()
+                return false
+            end)
         end
     end
 end

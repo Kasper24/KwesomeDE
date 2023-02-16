@@ -60,10 +60,8 @@ local function new()
         end
     end)
 
-    gtimer {
+    gtimer.poller {
         timeout = UPDATE_INTERVAL,
-        autostart = true,
-        call_now = true,
         callback = function()
             local old_data = nil
             local file = helpers.file.new_for_path(DATA_PATH)

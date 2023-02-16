@@ -71,10 +71,8 @@ local function new()
             -- ret:turn_off()
         end
 
-        gtimer {
+        gtimer.poller {
             timeout = UPDATE_INTERVAL,
-            autostart = true,
-            call_now = true,
             callback = function()
                 helpers.run.is_running("redshift", function(is_running)
                     if is_running == true and state ~= true then

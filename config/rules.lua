@@ -512,18 +512,15 @@ ruled.client.connect_signal("request::rules", function()
                     end
                 end
             end)
-            gtimer {
-                timeout = 15,
-                autostart = true,
-                single_shot = true,
-                callback = function()
-                    c.fullscreen = true
-                    awful.spawn("bakkesmod", false)
-                    c:connect_signal("unmanage", function()
-                        awful.spawn("pkill -f BakkesMod.exe", false)
-                    end)
-                end
-            }
+            gtimer.start_new(15, function()
+                c.fullscreen = true
+                awful.spawn("bakkesmod", false)
+                c:connect_signal("unmanage", function()
+                    awful.spawn("pkill -f BakkesMod.exe", false)
+                end)
+
+                return false
+            end)
         end
     }
 
