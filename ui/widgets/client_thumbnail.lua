@@ -79,24 +79,25 @@ local function new(client)
 
     client:connect_signal("focus", function(client)
         if preview_image.image == nil then
-            gtimer {
-                timeout = 0.2,
-                single_shot = true,
-                autostart = true,
-                call_now = false,
-                callback = function()
-                    preview_image.image = get_client_thumbnail(client)
-                    widget = preview
-                end
-            }
+            -- gtimer {
+            --     timeout = 0.2,
+            --     single_shot = true,
+            --     autostart = true,
+            --     call_now = false,
+            --     callback = function()
+            --         preview_image.image = get_client_thumbnail(client)
+            --         widget = preview
+            --         collectgarbage("collect")
+            --     end
+            -- }
         end
     end)
 
-    local thumbnail = get_client_thumbnail(client)
-    if thumbnail then
-        preview_image.image = get_client_thumbnail(client)
-        widget = preview
-    end
+    -- local thumbnail = get_client_thumbnail(client)
+    -- if thumbnail then
+    --     preview_image.image = get_client_thumbnail(client)
+    --     widget = preview
+    -- end
 
     return widget
 end

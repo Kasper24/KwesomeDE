@@ -52,7 +52,7 @@ function tag_preview:show(t, args)
         self.widget.y = args.coords.y
     end
 
-    save_tag_thumbnail(t)
+    -- save_tag_thumbnail(t)
 
     local widget = wibox.widget {
         widget = wibox.widget.imagebox,
@@ -113,15 +113,15 @@ local function new(args)
 
     capi.tag.connect_signal("property::selected", function(t)
         -- Wait a little bit so it won't screenshot the previous tag
-        gtimer {
-            timeout = 0.4,
-            autostart = true,
-            call_now = false,
-            single_shot = true,
-            callback = function()
-                save_tag_thumbnail(t)
-            end
-        }
+        -- gtimer {
+        --     timeout = 0.4,
+        --     autostart = true,
+        --     call_now = false,
+        --     single_shot = true,
+        --     callback = function()
+        --         save_tag_thumbnail(t)
+        --     end
+        -- }
     end)
 
     return ret
