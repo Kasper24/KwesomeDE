@@ -566,6 +566,23 @@ ruled.client.connect_signal("request::rules", function()
         }
     }
 
+    -- Focus browser when urent if current client is not full screen
+    ruled.client.append_rule {
+        rule_any = {
+            class = {apps.vivaldi.class, apps.firefox.class}
+        },
+        except = {
+            role = "GtkFileChooserDialog"
+        },
+        callback = function(c)
+            if not capi.client.focus.fullscreen or not capi.client.focus then
+                c:connect_signal("property::urgent", function()
+                    c:jump_to()
+                end)
+            end
+        end
+    }
+
     ---------------------------------------------
     -- Start application on specific workspace --
     ---------------------------------------------
