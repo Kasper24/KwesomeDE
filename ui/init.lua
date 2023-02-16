@@ -3,20 +3,11 @@ local widgets = require("ui.widgets")
 local helpers = require("helpers")
 local system_daemon = require("daemons.system.system")
 local capi = {
-    screen = screen,
     client = client
 }
 
 if DEBUG ~= true and helpers.misc.is_restart() == false then
     require(... .. ".popups.loading")
-end
-
-local theme_daemon = require("daemons.system.theme")
-theme_daemon:set_ui_animations(theme_daemon:get_ui_animations())
-
-theme_daemon:set_wallpaper(theme_daemon:get_active_wallpaper(), theme_daemon:get_wallpaper_type())
-if system_daemon:is_new_version() or system_daemon:does_need_setup() then
-    theme_daemon:set_colorscheme(theme_daemon:get_active_colorscheme())
 end
 
 local welcome_app = require("ui.apps.welcome")

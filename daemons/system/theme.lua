@@ -868,7 +868,14 @@ local function new()
 
     ret._private = {}
 
-    ret:set_client_gap(ret:get_client_gap(), false)
+    gtimer.delayed_call(function()
+        ret:set_client_gap(ret:get_client_gap(), false)
+        ret:set_ui_animations(ret:get_ui_animations())
+        ret:set_wallpaper(ret:get_active_wallpaper(), ret:get_wallpaper_type())
+        if system_daemon:is_new_version() or system_daemon:does_need_setup() then
+            ret:set_colorscheme(ret:get_active_colorscheme())
+        end
+    end)
 
     scan_wallpapers(ret)
     watch_wallpaper_changes(ret)
