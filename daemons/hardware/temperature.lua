@@ -12,14 +12,12 @@ local string = string
 local temperature = {}
 local instance = nil
 
-local UPDATE_INTERVAL = 15
-
 local function new()
     local ret = gobject {}
     gtable.crush(ret, temperature, true)
 
     gtimer.poller {
-        timeout = UPDATE_INTERVAL,
+        timeout = 15,
         callback = function()
             awful.spawn.easy_async("sensors", function(stdout)
                 local temp = string.match(stdout, "Tctl:%s*+(%d+)")

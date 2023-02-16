@@ -11,14 +11,12 @@ local table = table
 local disk = {}
 local instance = nil
 
-local UPDATE_INTERVAL = 180
-
 local function new()
     local ret = gobject {}
     gtable.crush(ret, disk, true)
 
     gtimer.poller {
-        timeout = UPDATE_INTERVAL,
+        timeout = 1800,
         callback = function()
             awful.spawn.easy_async_with_shell("df | tail -n +2", function(stdout)
                 local disks = {}

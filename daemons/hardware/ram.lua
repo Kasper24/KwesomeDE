@@ -10,14 +10,12 @@ local gtimer = require("gears.timer")
 local ram = {}
 local instance = nil
 
-local UPDATE_INTERVAL = 5
-
 local function new()
     local ret = gobject {}
     gtable.crush(ret, ram, true)
 
     gtimer.poller {
-        timeout = UPDATE_INTERVAL,
+        timeout = 15,
         callback = function()
             awful.spawn.easy_async([[ bash -c "LANGUAGE=en_US.UTF-8 free | grep -z Mem.*Swap.*" ]], function(stdout)
                 local total, used, free, shared, buff_cache, available, total_swap, used_swap, free_swap

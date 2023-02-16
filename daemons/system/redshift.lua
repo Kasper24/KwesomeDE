@@ -11,8 +11,6 @@ local helpers = require("helpers")
 local redshift = {}
 local instance = nil
 
-local UPDATE_INTERVAL = 1
-
 function redshift:turn_on(skip_check)
     local function turn_on()
         awful.spawn.with_shell("redshift -l 0:0 -t 4500:4500 -r &>/dev/null &")
@@ -72,14 +70,14 @@ local function new()
         end
 
         gtimer.poller {
-            timeout = UPDATE_INTERVAL,
+            timeout = 5,
             callback = function()
                 helpers.run.is_running("redshift", function(is_running)
-                    if is_running == true and state ~= true then
+                    if is_running == true and ret._private.state ~= true then
                         ret:emit_signal("update", true)
                         ret._private.state = true
                     end
-                    if is_running == false and state ~= false then
+                    if is_running == false and ret._private.state ~= false then
                         ret:emit_signal("update", false)
                         ret._private.state = false
                     end

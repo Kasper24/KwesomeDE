@@ -45,7 +45,7 @@ local function configure_xserver()
     awful.spawn("xset s noblank", false)
 
     gtimer.poller {
-        timeout = 60,
+        timeout = 600,
         callback = function()
             configure_keyboard()
         end

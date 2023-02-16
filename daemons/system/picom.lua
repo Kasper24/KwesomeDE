@@ -15,7 +15,6 @@ local capi = {
 local picom = {}
 local instance = nil
 
-local UPDATE_INTERVAL = 1
 local CONFIG_PATH = helpers.filesystem.get_awesome_config_dir("config") .. "picom.conf"
 
 local properties = {"active-opacity", "inactive-opacity", "fade-delta", "fade-in-step", "fade-out-step",
@@ -138,7 +137,7 @@ local function new()
         end
 
         gtimer.poller {
-            timeout = UPDATE_INTERVAL,
+            timeout =  2,
             callback = function()
                 if ret._private.state ~= capi.awesome.composite_manager_running and not ret._private.refreshing then
                     ret:emit_signal("state", capi.awesome.composite_manager_running)
