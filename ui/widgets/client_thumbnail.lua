@@ -3,31 +3,17 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 local awful = require("awful")
-local gtimer = require("gears.timer")
+local gsurface = require("gears.surface")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
 local cfiwidget = require("ui.widgets.client_font_icon")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
+local os = os
 
 local client_thumbnail = {
     mt = {}
 }
-
-local function get_client_thumbnail(client)
-    -- Thumbnails for clients with custom titlebars, i.e welcome/screenshot/record/theme manager
-    -- won't work correctly since all the UI is hacked on with the titlebars which aren't included
-    -- when taking a screenshot with awful.screenshot
-    if client:isvisible() then
-        local screenshot = awful.screenshot {
-            client = client
-        }
-        screenshot:refresh()
-        client.thumbnail = screenshot.surface
-    end
-
-    return client.thumbnail
-end
 
 local function add_titlebar(client, preview)
     client.titlebar_preview = wibox.widget {
@@ -44,13 +30,21 @@ local function add_titlebar(client, preview)
 end
 
 local function new(client)
+    local path = "/tmp/task_preview_" .. client.window .. ".png"
+
     local preview_image = wibox.widget {
         widget = wibox.widget.imagebox,
+        image = gsurface.load_uncached(path)
     }
 
     local preview = wibox.widget {
         layout = wibox.layout.fixed.vertical,
-        preview_image
+        {
+            widget = wibox.container.constraint,
+            mode = "max",
+            width = dpi(300),
+            preview_image
+        }
     }
 
     local fake_preview = wibox.widget {
@@ -77,25 +71,15 @@ local function new(client)
         end
     end)
 
-    client:connect_signal("focus", function(client)
-        if preview_image.image == nil then
-            -- gtimer {
-            --     timeout = 0.2,
-            --     single_shot = true,
-            --     autostart = true,
-            --     call_now = false,
-            --     callback = function()
-            --         preview_image.image = get_client_thumbnail(client)
-            --         widget = preview
-            --         collectgarbage("collect")
-            --     end
-            -- }
-        end
-    end)
+    -- if client:isvisible() then
+    --     awful.spawn.easy_async("maim -i " .. client.window .. " " .. path, function()
+    --         client.thumbnail = path
+    --         preview_image:emit_signal("widget::redraw_needed")
+    --     end)
+    --     widget = preview
+    -- end
 
-    -- local thumbnail = get_client_thumbnail(client)
-    -- if thumbnail then
-    --     preview_image.image = get_client_thumbnail(client)
+    -- if client.thumbnail then
     --     widget = preview
     -- end
 
