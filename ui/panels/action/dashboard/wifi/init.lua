@@ -118,7 +118,7 @@ local function access_point_widget(layout, access_point)
         spinning_circle
     }
 
-    network_daemon:connect_signal(access_point.hw_address .. "::state", function(self, new_state, old_state)
+    network_daemon:dynamic_connect_signal(access_point.hw_address .. "::state", function(self, new_state, old_state)
         name:set_text(access_point.ssid .. " - " .. network_daemon.device_state_to_string(new_state))
 
         if new_state ~= network_daemon.DeviceState.ACTIVATED then
@@ -142,7 +142,7 @@ local function access_point_widget(layout, access_point)
         end
     end)
 
-    network_daemon:connect_signal("access_point::connected", function(self, ssid, strength)
+    network_daemon:dynamic_connect_signal("access_point::connected", function(self, ssid, strength)
         spinning_circle:stop()
         connect_or_disconnect_stack:raise_widget(connect_or_disconnect)
     end)
@@ -276,9 +276,20 @@ local function new()
         bg = beautiful.colors.surface
     }
 
+    local hw_addresses = {}
+
     network_daemon:connect_signal("scan_access_points::success", function(self, access_points)
         layout:reset()
+
+        for _, hw_address in pairs(hw_addresses) do
+            network_daemon:dynamic_disconnect_signals(hw_address .. "::state")
+        end
+        hw_addresses = {}
+        network_daemon:dynamic_disconnect_signals("access_point::connected")
+
         for _, access_point in pairs(access_points) do
+            table.insert(hw_addresses, access_point.hw_address)
+
             if access_point:is_access_point_active() then
                 layout:insert(1, access_point_widget(layout, access_point))
             else

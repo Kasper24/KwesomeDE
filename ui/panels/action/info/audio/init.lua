@@ -103,16 +103,19 @@ local function application_widget(args)
         }
     }
 
-    pactl_daemon:connect_signal(args.type .. "::" .. args.application.id .. "::removed", function(self)
+    pactl_daemon:dynamic_connect_signal(args.type .. "::" .. args.application.id .. "::removed", function(self)
         args.on_removed_cb(widget)
+        pactl_daemon:dynamic_disconnect_signals(args.type .. "::" .. args.application.id .. "::removed")
+        pactl_daemon:dynamic_disconnect_signals(args.type .. "::" .. args.application.id .. "::icon_name")
+        pactl_daemon:dynamic_disconnect_signals(args.type .. "::" .. args.application.id .. "::updated")
     end)
 
-    pactl_daemon:connect_signal(args.type .. "::" .. args.application.id .. "::icon_name", function(self, icon_name)
+    pactl_daemon:dynamic_connect_signal(args.type .. "::" .. args.application.id .. "::icon_name", function(self, icon_name)
         icon.image = helpers.icon_theme.choose_icon{icon_name, args.application.name, "gnome-audio",
                                                     "org.pulseaudio.pavucontrol"}
     end)
 
-    pactl_daemon:connect_signal(args.type .. "::" .. args.application.id .. "::updated", function(self, application)
+    pactl_daemon:dynamic_connect_signal(args.type .. "::" .. args.application.id .. "::updated", function(self, application)
         slider:set_value(application.volume)
 
         if application.mute == true then
@@ -207,11 +210,13 @@ local function device_widget(args)
         }
     }
 
-    pactl_daemon:connect_signal(args.type .. "::" .. args.device.id .. "::removed", function(self)
+    pactl_daemon:dynamic_connect_signal(args.type .. "::" .. args.device.id .. "::removed", function(self)
         args.on_removed_cb(widget)
+        pactl_daemon:dynamic_disconnect_signals(args.type .. "::" .. args.device.id .. "::removed")
+        pactl_daemon:dynamic_disconnect_signals(args.type .. "::" .. args.device.id .. "::updated")
     end)
 
-    pactl_daemon:connect_signal(args.type .. "::" .. args.device.id .. "::updated", function(self, device)
+    pactl_daemon:dynamic_connect_signal(args.type .. "::" .. args.device.id .. "::updated", function(self, device)
         slider:set_value(device.volume)
 
         if device.default == true then

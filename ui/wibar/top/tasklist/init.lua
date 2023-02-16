@@ -68,9 +68,10 @@ local function favorite_widget(layout, command, class)
         }
     }
 
-    favorites_daemon:connect_signal(class .. "::removed", function()
+    favorites_daemon:dynamic_connect_signal(class .. "::removed", function()
         layout:remove_widgets(button)
         menu:hide()
+        favorites_daemon:dynamic_disconnect_signals(class .. "::removed")
     end)
 
     capi.client.connect_signal("manage", function(c)

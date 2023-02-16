@@ -29,7 +29,7 @@ local function wallpaper_widget(wallpaper)
         end
     }
 
-    theme_daemon:connect_signal("wallpaper::selected", function(self, new_wallpaper)
+    theme_daemon:dynamic_connect_signal("wallpaper::selected", function(self, new_wallpaper)
         if wallpaper == new_wallpaper then
             button:turn_on()
         else
@@ -570,6 +570,7 @@ local function widget(self)
         stack:raise_widget(spinning_circle)
 
         wallpapers_layout:reset()
+        theme_daemon:dynamic_disconnect_signals("wallpaper::selected")
         collectgarbage("collect")
 
         for _, wallpaper in ipairs(wallpapers) do
@@ -583,6 +584,8 @@ local function widget(self)
     theme_daemon:connect_signal("wallpapers::empty", function()
         stack:raise_widget(empty_wallpapers)
         wallpapers_layout:reset()
+        theme_daemon:dynamic_disconnect_signals("wallpaper::selected")
+        collectgarbage("collect")
     end)
 
     for i = 1, 16 do
