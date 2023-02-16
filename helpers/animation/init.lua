@@ -98,6 +98,17 @@ function animation:set(args)
         }
     end
 
+    if self._private.anim_manager._private.instant then
+        self.pos = self.tween.target
+        self:fire(self.pos)
+        self:emit_signal("update", self.pos)
+
+        self.state = false
+        self.ended:fire(self.pos)
+        self:emit_signal("ended", self.pos)
+        return
+    end
+
     if self._private.anim_manager._private.animations[self.index] == nil then
         table.insert(self._private.anim_manager._private.animations, self)
     end
@@ -175,50 +186,38 @@ local function new()
 
     GLib.timeout_add(GLib.PRIORITY_DEFAULT, ANIMATION_FRAME_DELAY, function()
         for index, animation in ipairs(ret._private.animations) do
-            if ret._private.instant then
-                -- Snap to end
-                animation.pos = animation.tween.target
-                animation:fire(animation.pos)
-                animation:emit_signal("update", animation.pos)
+            if animation.state == true then
+                -- compute delta time
+                local time = GLib.get_monotonic_time()
+                local delta = time - animation.last_elapsed
+                animation.last_elapsed = time
 
-                animation.state = false
-                animation.ended:fire(animation.pos)
-                table.remove(ret._private.animations, index)
-                animation:emit_signal("ended", animation.pos)
-            else
-                if animation.state == true then
-                    -- compute delta time
-                    local time = GLib.get_monotonic_time()
-                    local delta = time - animation.last_elapsed
-                    animation.last_elapsed = time
-
-                    -- If pos is true, the animation has ended
-                    local pos = animation.tween:update(delta)
-                    if pos == true then
-                        -- Loop the animation, don't end it.
-                        -- Useful for widgets like the spinning cicle
-                        if animation.loop == true then
-                            animation.tween:reset()
-                        else
-                            -- Snap to end
-                            animation.pos = animation.tween.target
-                            animation:fire(animation.pos)
-                            animation:emit_signal("update", animation.pos)
-
-                            animation.state = false
-                            animation.ended:fire(pos)
-                            table.remove(ret._private.animations, index)
-                            animation:emit_signal("ended", animation.pos)
-                        end
-                        -- Animation in process, keep updating
+                -- If pos is true, the animation has ended
+                local pos = animation.tween:update(delta)
+                if pos == true then
+                    -- Loop the animation, don't end it.
+                    -- Useful for widgets like the spinning cicle
+                    if animation.loop == true then
+                        animation.tween:reset()
                     else
-                        animation.pos = pos
+                        -- Snap to end
+                        animation.pos = animation.tween.target
                         animation:fire(animation.pos)
                         animation:emit_signal("update", animation.pos)
+
+                        animation.state = false
+                        animation.ended:fire(pos)
+                        table.remove(ret._private.animations, index)
+                        animation:emit_signal("ended", animation.pos)
                     end
+                    -- Animation in process, keep updating
                 else
-                    table.remove(ret._private.animations, index)
+                    animation.pos = pos
+                    animation:fire(animation.pos)
+                    animation:emit_signal("update", animation.pos)
                 end
+            else
+                table.remove(ret._private.animations, index)
             end
         end
 
