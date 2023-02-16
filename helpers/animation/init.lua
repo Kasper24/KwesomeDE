@@ -5,6 +5,7 @@
 local GLib = require("lgi").GLib
 local gobject = require("gears.object")
 local gtable = require("gears.table")
+local gpcall = require("gears.protected_call")
 local subscribable = require("helpers.animation.subscribable")
 local tween = require("helpers.animation.tween")
 local ipairs = ipairs
@@ -200,21 +201,25 @@ local function new()
                     if animation.loop == true then
                         animation.tween:reset()
                     else
+                        animation.state = false
+
                         -- Snap to end
                         animation.pos = animation.tween.target
-                        animation:fire(animation.pos)
-                        animation:emit_signal("update", animation.pos)
 
-                        animation.state = false
-                        animation.ended:fire(pos)
+                        gpcall(animation.emit_signal, animation, "update", animation.pos)
+                        gpcall(animation.fire, animation, animation.pos)
+
+                        gpcall(animation.emit_signal, animation, "ended", animation.pos)
+                        gpcall(animation.ended.fire, animation, animation.pos)
+
                         table.remove(ret._private.animations, index)
-                        animation:emit_signal("ended", animation.pos)
                     end
                     -- Animation in process, keep updating
                 else
                     animation.pos = pos
-                    animation:fire(animation.pos)
-                    animation:emit_signal("update", animation.pos)
+
+                    gpcall(animation.emit_signal, animation, "update", animation.pos)
+                    gpcall(animation.fire, animation, animation.pos)
                 end
             else
                 table.remove(ret._private.animations, index)
