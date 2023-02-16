@@ -89,24 +89,6 @@ function _client.move_to_edge(c, direction)
     end
 end
 
--- Used as a custom command in rofi to move a window into the current tag
--- instead of following it.
--- Rofi has access to the X window id of the client.
-function _client.rofi_move_client_here(window)
-    local win = function(c)
-        return awful.rules.match(c, {
-            window = window
-        })
-    end
-
-    for c in awful.client.iterate(win) do
-        c.minimized = false
-        c:move_to_tag(capi.mouse.screen.selected_tag)
-        capi.client.focus = c
-        c:raise()
-    end
-end
-
 -- Resize DWIM (Do What I Mean)
 -- Resize client or factor
 function _client.resize_dwim(c, direction)
@@ -302,25 +284,6 @@ function _client.float_and_resize(c, width, height)
     awful.client.property.set(c, "floating_geometry", c:geometry())
     c.floating = true
     c:raise()
-end
-
-function _client.floating_client_placement(c)
-    -- If the layout is floating or there are no other visible
-    -- clients, center client
-    if awful.layout.get(capi.mouse.screen) ~= awful.layout.suit.floating or #capi.mouse.screen.clients == 1 then
-        return awful.placement.centered(c, {
-            honor_padding = true,
-            honor_workarea = true
-        })
-    end
-
-    -- Else use this placement
-    local p = awful.placement.no_overlap + awful.placement.no_offscreen
-    return p(c, {
-        honor_padding = true,
-        honor_workarea = true,
-        margins = beautiful.useless_gap * 2
-    })
 end
 
 function _client.get_dominant_color(client)
