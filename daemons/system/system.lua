@@ -15,7 +15,7 @@ local capi = {
 local system = {}
 local instance = nil
 
-local UPDATE_INTERVAL = 60
+local UPDATE_INTERVAL = 600
 local VERSION = 0
 
 function system:set_need_setup_off()

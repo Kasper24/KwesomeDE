@@ -3,6 +3,7 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 local awful = require("awful")
+local gshape = require("gears.shape")
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
@@ -12,7 +13,6 @@ local dpi = beautiful.xresources.apply_dpi
 local collectgarbage = collectgarbage
 local setmetatable = setmetatable
 local ipairs = ipairs
-local os = os
 
 local gitlab = {
     mt = {}
@@ -21,6 +21,7 @@ local gitlab = {
 local function mr_widget(mr, path_to_avatars)
     local avatar = wibox.widget {
         widget = widgets.button.elevated.normal,
+        normal_shape = gshape.circle,
         forced_width = dpi(60),
         forced_height = dpi(60),
         on_release = function()

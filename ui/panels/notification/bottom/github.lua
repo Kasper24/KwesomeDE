@@ -3,6 +3,7 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 local awful = require("awful")
+local gshape = require("gears.shape")
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
@@ -13,7 +14,6 @@ local collectgarbage = collectgarbage
 local setmetatable = setmetatable
 local string = string
 local ipairs = ipairs
-local os = os
 
 local github = {
     mt = {}
@@ -115,6 +115,7 @@ local function event_widget(event, path_to_avatars)
 
     local avatar = wibox.widget {
         widget = widgets.button.elevated.normal,
+        normal_shape = gshape.circle,
         child = {
             widget = wibox.widget.imagebox,
             forced_width = dpi(40),
@@ -233,6 +234,7 @@ end
 local function pr_widget(pr, path_to_avatars)
     local avatar = wibox.widget {
         widget = widgets.button.elevated.normal,
+        normal_shape = gshape.circle,
         on_release = function()
             awful.spawn("xdg-open " .. pr.user.html_url, false)
         end,
