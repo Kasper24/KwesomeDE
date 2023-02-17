@@ -134,6 +134,10 @@ function animation:initial()
     return self._private.initial
 end
 
+function animation:state()
+    return self.state
+end
+
 function animation_manager:set_instant(value)
     self._private.instant = value
 end
