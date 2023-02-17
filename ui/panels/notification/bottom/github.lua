@@ -21,7 +21,7 @@ local github = {
 local function widget()
     local spinning_circle = widgets.spinning_circle {
         forced_width = dpi(150),
-        forced_height = dpi(150)
+        forced_height = dpi(600)
     }
 
     local missing_credentials_text = wibox.widget {
