@@ -104,7 +104,7 @@ function animation:set(args)
         self:fire(self.pos)
         self:emit_signal("update", self.pos)
 
-        self.state = false
+        self._private.state = false
         self.ended:fire(self.pos)
         self:emit_signal("ended", self.pos)
         return
@@ -114,7 +114,7 @@ function animation:set(args)
         table.insert(self._private.anim_manager._private.animations, self)
     end
 
-    self.state = true
+    self._private.state = true
     self.last_elapsed = GLib.get_monotonic_time()
 
     self.started:fire()
@@ -123,11 +123,11 @@ end
 
 -- Rubato compatibility
 function animation:abort()
-    self.state = false
+    self._private.state = false
 end
 
 function animation:stop()
-    self.state = false
+    self._private.state = false
 end
 
 function animation:initial()
@@ -135,7 +135,7 @@ function animation:initial()
 end
 
 function animation:state()
-    return self.state
+    return self._private.state
 end
 
 function animation_manager:set_instant(value)
@@ -177,6 +177,7 @@ function animation_manager:new(args)
     ret._private = {}
     ret._private.anim_manager = self
     ret._private.initial = args.pos
+    ret._private.state = false
 
     return ret
 end
@@ -191,7 +192,7 @@ local function new()
 
     GLib.timeout_add(GLib.PRIORITY_DEFAULT, ANIMATION_FRAME_DELAY, function()
         for index, animation in ipairs(ret._private.animations) do
-            if animation.state == true then
+            if animation._private.state == true then
                 -- compute delta time
                 local time = GLib.get_monotonic_time()
                 local delta = time - animation.last_elapsed
@@ -205,7 +206,7 @@ local function new()
                     if animation.loop == true then
                         animation.tween:reset()
                     else
-                        animation.state = false
+                        animation._private.state = false
 
                         -- Snap to end
                         animation.pos = animation.tween.target
