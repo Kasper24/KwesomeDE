@@ -11,6 +11,7 @@ local ebwidget = require("ui.widgets.button.elevated")
 local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
 local tostring = tostring
+local tonumber = tonumber
 local ceil = math.ceil
 local ipairs = ipairs
 local string = string
