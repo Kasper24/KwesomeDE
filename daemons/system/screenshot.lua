@@ -7,7 +7,11 @@ local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local helpers = require("helpers")
+local string = string
 local os = os
+local capi = {
+    client = client
+}
 
 local screenshot = {}
 local instance = nil
@@ -61,7 +65,12 @@ function screenshot:screenshot()
         elseif self._private.screenshot_method == "screen" then
             command = command .. " " .. self._private.folder .. file_name
         elseif self._private.screenshot_method == "window" then
-            command = command .. " -i $(xdotool getactivewindow) " .. self._private.folder .. file_name
+            if capi.client.focus then
+                command =  string.format("%s -i %s %s%s", command, capi.client.focus.window, self._private.folder, file_name)
+            else
+                self:emit_signal("error::create_file", "No focused client")
+                return
+            end
         end
 
         awful.spawn.easy_async_with_shell(command, function(stdout, stderr)
