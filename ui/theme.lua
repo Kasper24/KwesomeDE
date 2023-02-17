@@ -403,6 +403,7 @@ local function assets()
     theme.layout_cornerne = themes_path.."default/layouts/cornernew.png"
     theme.layout_cornersw = themes_path.."default/layouts/cornersww.png"
     theme.layout_cornerse = themes_path.."default/layouts/cornersew.png"
+    theme.fg_normal = theme.colors.on_background -- bling uses this to recolor their layout icons
     beautiful.theme_assets.recolor_layout(theme, theme.colors.on_background)
 end
 
