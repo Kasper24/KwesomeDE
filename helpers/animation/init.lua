@@ -5,6 +5,7 @@
 local GLib = require("lgi").GLib
 local gobject = require("gears.object")
 local gtable = require("gears.table")
+local gtimer = require("gears.timer")
 local gpcall = require("gears.protected_call")
 local subscribable = require("helpers.animation.subscribable")
 local tween = require("helpers.animation.tween")
@@ -75,6 +76,53 @@ local function second_to_milli(sec)
     return sec * 1000
 end
 
+local function init_animation_loop(self)
+    self._private.source_id = GLib.timeout_add(GLib.PRIORITY_DEFAULT, ANIMATION_FRAME_DELAY, function()
+        for index, animation in ipairs(self._private.animations) do
+            if animation._private.state == true then
+                -- compute delta time
+                local time = GLib.get_monotonic_time()
+                local delta = time - animation.last_elapsed
+                animation.last_elapsed = time
+
+                -- If pos is true, the animation has ended
+                local pos = gpcall(animation.tween.update, animation.tween, delta)
+                if pos == true then
+                    -- Loop the animation, don't end it.
+                    -- Useful for widgets like the spinning cicle
+                    if animation.loop == true then
+                        animation.tween:reset()
+                    else
+                        animation._private.state = false
+
+                        -- Snap to end
+                        animation.pos = animation.tween.target
+
+                        gpcall(animation.emit_signal, animation, "update", animation.pos)
+                        gpcall(animation.fire, animation, animation.pos)
+
+                        gpcall(animation.emit_signal, animation, "ended", animation.pos)
+                        gpcall(animation.ended.fire, animation, animation.pos)
+
+                        table.remove(self._private.animations, index)
+                    end
+                    -- Animation in process, keep updating
+                else
+                    animation.pos = pos
+
+                    gpcall(animation.emit_signal, animation, "update", animation.pos)
+                    gpcall(animation.fire, animation, animation.pos)
+                end
+            else
+                table.remove(self._private.animations, index)
+            end
+        end
+
+        -- call again the function after cooldown
+        return true
+    end)
+end
+
 function animation:set(args)
     args = args or {}
 
@@ -139,6 +187,16 @@ function animation:state()
 end
 
 function animation_manager:set_instant(value)
+    if value == true and self._private.instant == false then
+        -- Wait a bit so the already running animations can end
+        gtimer.start_new(1, function()
+            GLib.source_remove(self._private.source_id)
+            return false
+        end)
+    elseif self._private.instant == true then
+        init_animation_loop(self)
+    end
+
     self._private.instant = value
 end
 
@@ -190,50 +248,7 @@ local function new()
     ret._private.animations = {}
     ret._private.instant = false
 
-    GLib.timeout_add(GLib.PRIORITY_DEFAULT, ANIMATION_FRAME_DELAY, function()
-        for index, animation in ipairs(ret._private.animations) do
-            if animation._private.state == true then
-                -- compute delta time
-                local time = GLib.get_monotonic_time()
-                local delta = time - animation.last_elapsed
-                animation.last_elapsed = time
-
-                -- If pos is true, the animation has ended
-                local pos = gpcall(animation.tween.update, animation.tween, delta)
-                if pos == true then
-                    -- Loop the animation, don't end it.
-                    -- Useful for widgets like the spinning cicle
-                    if animation.loop == true then
-                        animation.tween:reset()
-                    else
-                        animation._private.state = false
-
-                        -- Snap to end
-                        animation.pos = animation.tween.target
-
-                        gpcall(animation.emit_signal, animation, "update", animation.pos)
-                        gpcall(animation.fire, animation, animation.pos)
-
-                        gpcall(animation.emit_signal, animation, "ended", animation.pos)
-                        gpcall(animation.ended.fire, animation, animation.pos)
-
-                        table.remove(ret._private.animations, index)
-                    end
-                    -- Animation in process, keep updating
-                else
-                    animation.pos = pos
-
-                    gpcall(animation.emit_signal, animation, "update", animation.pos)
-                    gpcall(animation.fire, animation, animation.pos)
-                end
-            else
-                table.remove(ret._private.animations, index)
-            end
-        end
-
-        -- call again the function after cooldown
-        return true
-    end)
+    init_animation_loop(ret)
 
     return ret
 end
