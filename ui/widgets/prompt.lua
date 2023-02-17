@@ -356,7 +356,10 @@ function prompt:start()
             elseif key == "Right" then
                 wp.cur_pos = wp.cur_pos + 1
             else
-                if (wp.only_numbers and tonumber(key) == nil) or (wp.round and key == ".") then
+                if wp.round and key == "." then
+                    return
+                end
+                if wp.only_numbers and tonumber(wp.text .. key) == nil then
                     return
                 end
 
