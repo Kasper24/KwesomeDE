@@ -39,7 +39,7 @@ local function new()
             scrollbar_widget = widgets.scrollbar,
             scrollbar_width = dpi(0),
             scrollbar_spacing = 0,
-            step = 50,
+            step = 300,
             header,
             seperator(),
             dashboard,
