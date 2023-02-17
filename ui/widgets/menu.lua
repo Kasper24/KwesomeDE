@@ -155,6 +155,13 @@ function menu:add(widget, index)
     else
         self.widget:insert(index, widget)
     end
+
+    if self.animation:state() == true then
+        self.animation:stop()
+        self.animation:set(self.menu_height)
+    elseif self.visible then
+        self.widget.forced_height = dpi(self.menu_height)
+    end
 end
 
 function menu:remove(index)
