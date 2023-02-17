@@ -199,7 +199,7 @@ local function new()
                 animation.last_elapsed = time
 
                 -- If pos is true, the animation has ended
-                local pos = animation.tween:update(delta)
+                local pos = gpcall(animation.tween.update, animation.tween, delta)
                 if pos == true then
                     -- Loop the animation, don't end it.
                     -- Useful for widgets like the spinning cicle
