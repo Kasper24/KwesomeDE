@@ -189,15 +189,9 @@ local function new(is_state)
         easing = helpers.animation.easing.linear,
         duration = 0.2,
         update = function(self, pos)
-            if pos.color then
-                widget.bg = helpers.color.rgb_to_hex(pos.color)
-            end
-            if pos.border_width then
-                widget.border_width = pos.border_width
-            end
-            if pos.border_color then
-                widget.border_color = helpers.color.rgb_to_hex(pos.border_color)
-            end
+            widget.bg = helpers.color.rgb_to_hex(pos.color)
+            widget.border_width = pos.border_width
+            widget.border_color = helpers.color.rgb_to_hex(pos.border_color)
         end
     }
 
