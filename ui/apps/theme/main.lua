@@ -426,16 +426,11 @@ local function widget(self)
         }
     }
 
-    local spinning_circle = wibox.widget {
-        widget = wibox.container.place,
-        halign = "center",
-        valign = "center",
-        widgets.spinning_circle {
-            forced_width = dpi(250),
-            forced_height = dpi(250),
-            thickness = dpi(30),
-            run_by_default = false
-        }
+    local spinning_circle = widgets.spinning_circle {
+        forced_width = dpi(250),
+        forced_height = dpi(250),
+        thickness = dpi(30),
+        run_by_default = false
     }
 
     local wallpapers_layout = wibox.widget {
@@ -551,22 +546,22 @@ local function widget(self)
     end)
 
     theme_daemon:connect_signal("colorscheme::generating", function()
-        spinning_circle.children[1]:start()
+        spinning_circle:start()
         stack:raise_widget(spinning_circle)
     end)
 
     theme_daemon:connect_signal("colorscheme::failed_to_generate", function()
-        spinning_circle.children[1]:stop()
+        spinning_circle:stop()
         stack:raise_widget(widget)
     end)
 
     theme_daemon:connect_signal("wallpaper::selected", function()
-        spinning_circle.children[1]:stop()
+        spinning_circle:stop()
         stack:raise_widget(widget)
     end)
 
     theme_daemon:connect_signal("wallpapers", function(self, wallpapers)
-        spinning_circle.children[1]:start()
+        spinning_circle:start()
         stack:raise_widget(spinning_circle)
 
         wallpapers_layout:reset()
@@ -578,7 +573,7 @@ local function widget(self)
         end
 
         stack:raise_widget(widget)
-        spinning_circle.children[1]:stop()
+        spinning_circle:stop()
     end)
 
     theme_daemon:connect_signal("wallpapers::empty", function()

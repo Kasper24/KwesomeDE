@@ -31,20 +31,28 @@ local function new(args)
     args.run_by_default = args.run_by_default
 
     local widget = wibox.widget {
-        widget = acwidget,
-        forced_width = args.forced_width,
-        forced_height = args.forced_height,
-        max_value = 100,
-        min_value = 0,
-        value = 30,
-        thickness = args.thickness,
-        rounded_edge = true,
-        bg = beautiful.colors.surface,
-        colors = {
-            beautiful.colors.random_accent_color()
+        widget = wibox.container.place,
+        halign = "center",
+        valign = "center",
+        {
+            widget = acwidget,
+            id = "spinning_circle",
+            forced_width = args.forced_width,
+            forced_height = args.forced_height,
+            max_value = 100,
+            min_value = 0,
+            value = 30,
+            thickness = args.thickness,
+            rounded_edge = true,
+            bg = beautiful.colors.surface,
+            colors = {
+                beautiful.colors.random_accent_color()
+            }
         }
     }
     gtable.crush(widget, spinning_circle, true)
+
+    local spinning_circle = widget:get_children_by_id("spinning_circle")[1]
 
     widget._private.anim = helpers.animation:new{
         target = 100,
@@ -52,7 +60,7 @@ local function new(args)
         easing = helpers.animation.easing.linear,
         loop = true,
         update = function(self, pos)
-            widget.start_angle = pos
+            spinning_circle.start_angle = pos
         end
     }
 

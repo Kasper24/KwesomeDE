@@ -294,14 +294,9 @@ local function new()
         spacing = dpi(5)
     }
 
-    local spinning_circle = wibox.widget {
-        widget = wibox.container.place,
-        halign = "center",
-        valign = "center",
-        widgets.spinning_circle {
-            forced_width = dpi(150),
-            forced_height = dpi(150)
-        }
+    local spinning_circle = widgets.spinning_circle {
+        forced_width = dpi(150),
+        forced_height = dpi(150)
     }
 
     local missing_credentials_text = wibox.widget {
@@ -366,17 +361,17 @@ local function new()
     }
 
     weather_daemon:connect_signal("error", function()
-        spinning_circle.children[1]:stop()
+        spinning_circle:stop()
         stack:raise_widget(error_icon)
     end)
 
     weather_daemon:connect_signal("missing_credentials", function()
-        spinning_circle.children[1]:stop()
+        spinning_circle:stop()
         stack:raise_widget(missing_credentials_text)
     end)
 
     weather_daemon:connect_signal("weather", function(self, result)
-        spinning_circle.children[1]:stop()
+        spinning_circle:stop()
 
         hours:reset()
         temperatures:reset()
