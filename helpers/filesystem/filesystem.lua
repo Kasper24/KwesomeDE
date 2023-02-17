@@ -4,12 +4,13 @@
 -- @module filesystem
 -- @license GPL v3.0
 ---------------------------------------------------------------------------
-local async = require("helpers.async")
 local lgi = require("lgi")
 local GLib = lgi.GLib
 local Gio = lgi.Gio
-local File = require("helpers.filesystem.file")
 local gtimer = require("gears.timer")
+local File = require("helpers.filesystem.file")
+local async = require("helpers.async")
+local os = os
 local capi = {
     awesome = awesome
 }
