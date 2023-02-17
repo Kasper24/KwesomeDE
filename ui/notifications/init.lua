@@ -46,7 +46,7 @@ local function get_notification_accent_color(n)
             beautiful.colors.random_accent_color()
 end
 
-local function set_notification_position(n, screen)
+local function get_notification_position(n, screen)
     local placement = awful.placement.top_right(n.widget, {
         honor_workarea = true,
         honor_padding = true,
@@ -54,13 +54,15 @@ local function set_notification_position(n, screen)
         pretend = true,
         margins = dpi(30)
     })
-    n.widget.x = placement.x
-    n.widget.y = placement.y
+    local x = placement.x
+    local y = placement.y
 
     if #screen.notifications > 1 then
         local parent = screen.notifications[#screen.notifications - 1]
-        n.widget.y = parent.widget.y + parent.widget.height + 30
+        y = parent.widget.y + parent.widget.height + 30
     end
+
+    return { x = x, y = y }
 end
 
 local function app_icon_widget(n)
@@ -132,7 +134,7 @@ local function actions_widget(n)
     return actions
 end
 
-local function create_notification(n)
+local function create_notification(n, screen)
     -- Absurdly big number because setting it to 0 doesn't work
     n:set_timeout(4294967)
 
@@ -248,10 +250,6 @@ local function create_notification(n)
         }
     }
 
-    local screen = awful.screen.focused()
-    table.insert(screen.notifications, n)
-    set_notification_position(n, screen)
-
     local timeout_arc_anim = helpers.animation:new{
         duration = 5,
         target = 100,
@@ -267,36 +265,6 @@ local function create_notification(n)
         }
     }
 
-    local size_anim = helpers.animation:new{
-        pos = 1,
-        duration = 0.2,
-        easing = helpers.animation.easing.linear,
-        update = function(self, pos)
-            n.widget.maximum_height = dpi(max(1, pos))
-        end,
-        signals = {
-            ["ended"] = function()
-                if n.hiding then
-                    n.widget.visible = false
-                    n.widget = nil
-                else
-                    -- Prevents a crash caused by drawing the arc when the size is to small
-                    n.widget.widget:get_children_by_id("top_row")[1]:set_third(timeout_arc)
-                    timeout_arc_anim:set()
-                end
-            end
-        }
-    }
-
-    n.pos_anim = helpers.animation:new{
-        pos = n.widget.y,
-        duration = 0.2,
-        easing = helpers.animation.easing.linear,
-        update = function(self, pos)
-            n.widget.y = pos
-        end
-    }
-
     n.widget:connect_signal("mouse::enter", function()
         timeout_arc_anim:stop()
     end)
@@ -307,16 +275,50 @@ local function create_notification(n)
 
     n:connect_signal("destroyed", function()
         helpers.table.remove_value(screen.notifications, n)
+        n.destroyed = true
+        local destroyed_n_height = n.widget.height
         for _, n in ipairs(screen.notifications) do
             if #screen.notifications > 0 then
-                n.pos_anim:set(n.widget.y - n.widget.height - 30)
+                n.anim:set{y = n.widget.y - destroyed_n_height - 30, height = 300}
             end
         end
-        n.hiding = true
-        size_anim:set(0)
+
+        n.widget.widget:get_children_by_id("top_row")[1]:set_third(nil)
+        n.anim:set{y = n.widget.y, height = 1}
     end)
 
-    size_anim:set(300)
+    local pos = get_notification_position(n, screen)
+    n.widget.x = pos.x
+    n.widget.y = pos.y
+
+    n.anim = helpers.animation:new{
+        pos = { y = pos.y, height = 1},
+        duration = 0.2,
+        easing = helpers.animation.easing.linear,
+        update = function(self, pos)
+            if pos.y then
+                n.widget.y = pos.y
+            end
+            if pos.height then
+                n.widget.maximum_height = dpi(max(1, pos.height))
+            end
+        end,
+        signals = {
+            ["ended"] = function()
+                if n.destroyed then
+                    n.widget.visible = false
+                    n.widget = nil
+                    collectgarbage("collect")
+                else
+                    -- Prevents a crash caused by drawing the arc when the size is to small
+                    n.widget.widget:get_children_by_id("top_row")[1]:set_third(timeout_arc)
+                    timeout_arc_anim:set()
+                end
+            end
+        }
+    }
+    n.anim:set{y = pos.y, height = 300}
+
     play_sound(n)
 end
 
@@ -389,12 +391,14 @@ naughty.connect_signal("request::display", function(n)
         return
     end
 
-    gtimer.start_new(0.1, function()
-        if #naughty.active > 3 then
+    gtimer.start_new(0.2, function()
+        local screen = awful.screen.focused()
+        if #screen.notifications > 2 then
             return true
         end
 
-        create_notification(n)
+        table.insert(screen.notifications, n)
+        create_notification(n, screen)
         return false
     end)
 end)
