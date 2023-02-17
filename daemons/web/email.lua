@@ -18,7 +18,7 @@ local PATH = helpers.filesystem.get_cache_dir("email")
 local DATA_PATH = PATH .. "data.json"
 local NET_RC_PATH = "/home/" .. os.getenv("USER") .. "/.netrc"
 
-local UPDATE_INTERVAL = 60 * 3 -- 3 mins
+local UPDATE_INTERVAL = 60 * 30 -- 30 mins
 
 function email:open(email)
     awful.spawn("xdg-open " .. email.link._attr.href, false)

@@ -13,7 +13,7 @@ local ipairs = ipairs
 local github = {}
 local instance = nil
 
-local UPDATE_INTERVAL = 60 * 3 -- 3 mins
+local UPDATE_INTERVAL = 60 * 30 -- 30 mins
 local PATH = helpers.filesystem.get_cache_dir("github")
 
 local PRS_PATH = PATH .. "created_prs/"
