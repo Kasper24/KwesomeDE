@@ -122,13 +122,13 @@ local function fahrenheit_to_celsius(f)
     return (f - 32) * 5 / 9
 end
 
-local function gen_temperature_str(temp, fmt_str, show_other_units, units)
+local function gen_temperature_str(temp, fmt_str, show_other_units, unit)
     local temp_str = string.format(fmt_str, temp)
-    local s = temp_str .. "°" .. (units == "metric" and "C" or "F")
+    local s = temp_str .. "°" .. (unit == "metric" and "C" or "F")
 
     if (show_other_units) then
         local temp_conv, units_conv
-        if (units == "metric") then
+        if (unit == "metric") then
             temp_conv = celsius_to_fahrenheit(temp)
             units_conv = "F"
         else
@@ -375,7 +375,7 @@ local function new()
         stack:raise_widget(missing_credentials_text)
     end)
 
-    weather_daemon:connect_signal("weather", function(self, result, units)
+    weather_daemon:connect_signal("weather", function(self, result)
         spinning_circle.children[1]:stop()
 
         hours:reset()
@@ -390,9 +390,9 @@ local function new()
         local weather = result.current
         icon:set_icon(icon_map[weather.weather[1].icon])
         current_weather_widget:get_children_by_id("temp")[1]:set_text(
-            gen_temperature_str(weather.temp, "%.0f", both_units_widget, units))
+            gen_temperature_str(weather.temp, "%.0f", both_units_widget, weather_daemon:get_unit()))
         current_weather_widget:get_children_by_id("feels_like_temp")[1]:set_text("Feels like " ..
-            gen_temperature_str(weather.feels_like, "%.0f", false, units))
+            gen_temperature_str(weather.feels_like, "%.0f", false, weather_daemon:get_unit()))
         current_weather_widget:get_children_by_id("description")[1]:set_text(weather.weather[1].description)
         current_weather_widget:get_children_by_id("wind")[1]:set_text(
             weather.wind_speed .. "m/s (" .. to_direction(weather.wind_deg) .. ")")
@@ -455,13 +455,13 @@ local function new()
                         widget = widgets.text,
                         halign = "center",
                         size = 12,
-                        text = gen_temperature_str(day.temp.day, "%.0f", false, units)
+                        text = gen_temperature_str(day.temp.day, "%.0f", false, weather_daemon:get_unit())
                     },
                     {
                         widget = widgets.text,
                         halign = "center",
                         size = 12,
-                        text = gen_temperature_str(day.temp.night, "%.0f", false, units)
+                        text = gen_temperature_str(day.temp.night, "%.0f", false, weather_daemon:get_unit())
                     }
                 }
             }

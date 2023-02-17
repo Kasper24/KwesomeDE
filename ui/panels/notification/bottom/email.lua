@@ -79,14 +79,9 @@ local function email_widget(email)
 end
 
 local function new()
-    local spinning_circle = wibox.widget {
-        widget = wibox.container.place,
-        halign = "center",
-        valign = "center",
-        widgets.spinning_circle {
-            forced_width = dpi(150),
-            forced_height = dpi(150)
-        }
+    local spinning_circle = widgets.spinning_circle {
+        forced_width = dpi(150),
+        forced_height = dpi(150)
     }
 
     local error_icon = wibox.widget {
@@ -118,20 +113,22 @@ local function new()
     }
 
     email_daemon:connect_signal("error", function()
-        spinning_circle.children[1]:stop()
+        spinning_circle:stop()
         widget:raise_widget(error_icon)
     end)
 
     email_daemon:connect_signal("emails", function(self, emails)
-        spinning_circle.children[1]:stop()
-        scrollbox:reset()
-        collectgarbage("collect")
-        widget:raise_widget(scrollbox)
-
+        spinning_circle:stop()
         for _, email in ipairs(emails) do
             scrollbox:add(email_widget(email))
         end
+        widget:raise_widget(scrollbox)
     end)
+
+    email_daemon:connect_signal("new_email", function(self, emails)
+        scrollbox:add(email_widget(email))
+    end)
+
 
     return widget
 end

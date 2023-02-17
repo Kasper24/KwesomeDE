@@ -60,14 +60,20 @@ local function new()
         end
     end)
 
-    gtimer.poller {
+    gtimer {
         timeout = UPDATE_INTERVAL,
+        autostart = true,
+        call_now = true,
         callback = function()
             local old_data = nil
             local file = helpers.file.new_for_path(DATA_PATH)
             file:read(function(error, content)
                 if error == nil then
                     local data = helpers.json.decode(content) or {}
+                    if old_data == nil and data ~= nil then
+                        ret:emit_signal("emails", data)
+                    end
+
                     old_data = {}
                     for _, email in ipairs(data) do
                         old_data[email.id] = email.id
@@ -88,8 +94,6 @@ local function new()
                         file:write(helpers.json.encode(handler.root.feed.entry, {
                             indent = true
                         }))
-
-                        ret:emit_signal("emails", handler.root.feed.entry, handler.root.feed.fullcount)
                     else
                         ret:emit_signal("error")
                     end

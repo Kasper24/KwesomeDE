@@ -10,7 +10,6 @@ local beautiful = require("beautiful")
 local gitlab_daemon = require("daemons.web.gitlab")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
-local collectgarbage = collectgarbage
 local setmetatable = setmetatable
 local ipairs = ipairs
 
@@ -18,7 +17,7 @@ local gitlab = {
     mt = {}
 }
 
-local function mr_widget(mr, path_to_avatars)
+local function mr_widget(mr)
     local avatar = wibox.widget {
         widget = widgets.button.elevated.normal,
         normal_shape = gshape.circle,
@@ -30,7 +29,7 @@ local function mr_widget(mr, path_to_avatars)
         child = wibox.widget {
             widget = wibox.widget.imagebox,
             clip_shape = helpers.ui.rrect(),
-            image = path_to_avatars .. mr.author.id
+            image = gitlab_daemon:get_avatars_path() .. mr.author.id
         }
     }
 
@@ -124,14 +123,9 @@ local function mr_widget(mr, path_to_avatars)
 end
 
 local function new()
-    local spinning_circle = wibox.widget {
-        widget = wibox.container.place,
-        halign = "center",
-        valign = "center",
-        widgets.spinning_circle {
-            forced_width = dpi(150),
-            forced_height = dpi(150)
-        }
+    local spinning_circle = widgets.spinning_circle {
+        forced_width = dpi(150),
+        forced_height = dpi(150)
     }
 
     local missing_credentials_text = wibox.widget {
@@ -177,24 +171,26 @@ local function new()
     }
 
     gitlab_daemon:connect_signal("error", function()
-        spinning_circle.children[1]:stop()
+        spinning_circle:stop()
         widget:raise_widget(error_icon)
     end)
 
     gitlab_daemon:connect_signal("missing_credentials", function()
-        spinning_circle.children[1]:stop()
+        spinning_circle:stop()
         widget:raise_widget(missing_credentials_text)
     end)
 
-    gitlab_daemon:connect_signal("update", function(self, mrs, path_to_avatars)
-        spinning_circle.children[1]:stop()
-        scrollbox:reset()
-        collectgarbage("collect")
-        widget:raise_widget(scrollbox)
-
+    gitlab_daemon:connect_signal("mrs", function(self, mrs)
+        spinning_circle:stop()
         for _, mr in ipairs(mrs) do
-            scrollbox:add(mr_widget(mr, path_to_avatars))
+            scrollbox:add(mr_widget(mr))
         end
+        widget:raise_widget(scrollbox)
+    end)
+
+    gitlab_daemon:connect_signal("new_mr", function(self, mr)
+        scrollbox:add(mr_widget(mr))
+        widget:raise_widget(scrollbox)
     end)
 
     return widget

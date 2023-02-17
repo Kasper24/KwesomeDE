@@ -14,7 +14,7 @@ local instance = nil
 local path = helpers.filesystem.get_cache_dir("weather")
 local DATA_PATH = path .. "data.json"
 
-local UPDATE_INTERVAL = 60 * 3 -- 3 mins
+local UPDATE_INTERVAL = 60 * 60
 
 function weather:set_api_key(api_key)
     self._private.api_key = api_key
@@ -55,22 +55,26 @@ end
 function weather:refresh()
     local link = string.format(
         "https://api.openweathermap.org/data/2.5/onecall?lat=%s&lon=%s&appid=%s&units=%s&exclude=minutely&lang=en",
-        self._private.coordinate_x, self._private.coordinate_y, self._private.api_key, self._private.unit)
+        self:get_coordinate_x(), self:get_coordinate_y(), self:get_api_key(), self:get_unit())
 
-    helpers.filesystem.remote_watch(DATA_PATH, link, UPDATE_INTERVAL, function(content)
-        if content == nil or content == false then
-            self:emit_signal("error")
-            return
+    helpers.filesystem.remote_watch(
+        DATA_PATH, link,
+        UPDATE_INTERVAL,
+        function(content)
+            if content == nil or content == false then
+                self:emit_signal("error")
+                return
+            end
+
+            local data = helpers.json.decode(content)
+            if data == nil then
+                self:emit_signal("error")
+                return
+            end
+
+            self:emit_signal("weather", data)
         end
-
-        local data = helpers.json.decode(content)
-        if data == nil then
-            self:emit_signal("error")
-            return
-        end
-
-        self:emit_signal("weather", data, self._private.unit)
-    end)
+    )
 
 end
 

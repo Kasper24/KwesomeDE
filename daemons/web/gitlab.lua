@@ -12,7 +12,7 @@ local ipairs = ipairs
 local gitlab = {}
 local instance = nil
 
-local link = "%s/api/v4/merge_requests?private_token=%s"
+local LINK = "%s/api/v4/merge_requests?private_token=%s"
 local PATH = helpers.filesystem.get_cache_dir("gitlab/created_prs")
 local AVATARS_PATH = PATH .. "avatars/"
 local DATA_PATH = PATH .. "data.json"
@@ -37,55 +37,55 @@ function gitlab:get_access_token()
     return self._private.access_token
 end
 
+function gitlab:get_avatars_path()
+    return AVATARS_PATH
+end
+
 function gitlab:refresh()
     local old_data = nil
 
-    helpers.filesystem.remote_watch(DATA_PATH, string.format(link, self._private.host, self._private.access_token),
-        UPDATE_INTERVAL, function(content)
+    helpers.filesystem.remote_watch(
+        DATA_PATH,
+        string.format(LINK, self._private.host, self._private.access_token),
+        UPDATE_INTERVAL,
+        function(content)
             local data = helpers.json.decode(content)
             if data == nil then
                 self:emit_signal("error")
                 return
             end
 
-            for index, pr in ipairs(data) do
-                if old_data[pr.id] == nil then
-                    self:emit_signal("new_pr", pr)
-                end
-
-                local is_downloading = false
-                local path_to_avatar = AVATARS_PATH .. pr.author.id
-                local file = helpers.file.new_for_path(path_to_avatar)
-                file:exists(function(error, exists)
-                    if error == nil then
-                        if exists == false then
-                            is_downloading = true
-
-                            local remote_file = helpers.file.new_for_uri(pr.author.avatar_url)
-                            remote_file:read(function(error, content)
+            for _, mr in ipairs(data) do
+                if old_data[mr.id] == nil then
+                    local remote_file = helpers.file.new_for_uri(mr.author.avatar_url)
+                    remote_file:read(function(error, content)
+                        if error == nil then
+                            local file = helpers.file.new_for_path(AVATARS_PATH .. mr.author.id)
+                            file:write(content, function(error)
                                 if error == nil then
-                                    file:write(content, function(error)
-                                        is_downloading = false
-                                        if index == #data then
-                                            self:emit_signal("update", data, AVATARS_PATH)
-                                        end
+                                    gtimer.start_new(0.5, function()
+                                        self:emit_signal("new_mr", mr)
+                                        return false
                                     end)
                                 end
                             end)
-
-                        elseif index == #data and is_downloading == false then
-                            self:emit_signal("update", data, AVATARS_PATH)
                         end
-                    end
-                end)
+                    end)
+                end
             end
-        end, function(old_content)
+        end,
+        function(old_content)
             local data = helpers.json.decode(old_content) or {}
+            if old_data == nil and data ~= nil then
+                self:emit_signal("mrs", data)
+            end
+
             old_data = {}
             for _, pr in ipairs(data) do
                 old_data[pr.id] = pr.id
             end
-        end)
+        end
+    )
 end
 
 local function new()

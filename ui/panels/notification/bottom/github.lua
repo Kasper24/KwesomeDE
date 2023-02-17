@@ -10,7 +10,6 @@ local beautiful = require("beautiful")
 local github_daemon = require("daemons.web.github")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
-local collectgarbage = collectgarbage
 local setmetatable = setmetatable
 local string = string
 local ipairs = ipairs
@@ -19,59 +18,10 @@ local github = {
     mt = {}
 }
 
-local function generate_action_string(event)
-    local action_string = event.type
-    local icon = "repo.svg"
-    local link = "http://github.com/" .. event.repo.name
-
-    if (event.type == "PullRequestEvent") then
-        action_string = event.payload.action .. " a pull request in"
-        link = event.payload.pull_request.html_url
-        icon = beautiful.icons.code_pull_request
-    elseif (event.type == "PullRequestReviewCommentEvent") then
-        action_string = event.payload.action == "created" and "commented in pull request" or event.payload.action ..
-                            " a comment in"
-        link = event.payload.pull_request.html_url
-        icon = beautiful.icons.message
-    elseif (event.type == "IssuesEvent") then
-        action_string = event.payload.action .. " an issue in"
-        link = event.payload.issue.html_url
-        icon = beautiful.icons.circle_exclamation
-    elseif (event.type == "IssueCommentEvent") then
-        action_string = event.payload.action == "created" and "commented in issue" or event.payload.action ..
-                            " a comment in"
-        link = event.payload.issue.html_url
-        icon = beautiful.icons.message
-    elseif (event.type == "WatchEvent") then
-        action_string = "starred"
-        icon = beautiful.icons.star
-    elseif (event.type == "PushEvent") then
-        action_string = "pushed to"
-        icon = beautiful.icons.commit
-    elseif (event.type == "ForkEvent") then
-        action_string = "forked"
-        icon = beautiful.icons.code_branch
-    elseif (event.type == "CreateEvent") then
-        action_string = "created"
-        icon = beautiful.icons.code_branch
-    end
-
-    return {
-        action_string = action_string,
-        link = link,
-        icon = icon
-    }
-end
-
 local function widget()
-    local spinning_circle = wibox.widget {
-        widget = wibox.container.place,
-        halign = "center",
-        valign = "center",
-        widgets.spinning_circle {
-            forced_width = dpi(150),
-            forced_height = dpi(150)
-        }
+    local spinning_circle = widgets.spinning_circle {
+        forced_width = dpi(150),
+        forced_height = dpi(150)
     }
 
     local missing_credentials_text = wibox.widget {
@@ -110,8 +60,8 @@ local function widget()
     return spinning_circle, missing_credentials_text, error_icon, scrollbox
 end
 
-local function event_widget(event, path_to_avatars)
-    local action_and_link = generate_action_string(event)
+local function event_widget(event)
+    local action_and_link = github_daemon:get_event_info(event)
 
     local avatar = wibox.widget {
         widget = widgets.button.elevated.normal,
@@ -121,7 +71,7 @@ local function event_widget(event, path_to_avatars)
             forced_width = dpi(40),
             forced_height = dpi(40),
             clip_shape = helpers.ui.rrect(),
-            image = path_to_avatars .. event.actor.id
+            image = github_daemon:get_events_avatars_path() .. event.actor.id
         },
         on_release = function()
             awful.spawn("xdg-open http://github.com/" .. event.actor.login, false)
@@ -208,30 +158,33 @@ local function events()
     }
 
     github_daemon:connect_signal("events::error", function()
-        spinning_circle.children[1]:stop()
+        spinning_circle:stop()
         widget:raise_widget(error_icon)
     end)
 
     github_daemon:connect_signal("missing_credentials", function()
-        spinning_circle.children[1]:stop()
+        spinning_circle:stop()
         widget:raise_widget(missing_credentials_text)
     end)
 
-    github_daemon:connect_signal("events", function(self, events, path_to_avatars)
-        spinning_circle.children[1]:stop()
-        scrollbox:reset()
-        collectgarbage("collect")
-        widget:raise_widget(scrollbox)
-
+    github_daemon:connect_signal("events", function(self, events)
+        spinning_circle:stop()
         for _, event in ipairs(events) do
-            scrollbox:add(event_widget(event, path_to_avatars))
+            scrollbox:add(event_widget(event))
         end
+        widget:raise_widget(scrollbox)
+    end)
+
+    github_daemon:connect_signal("new_event", function(self, event)
+        spinning_circle:stop()
+        widget:raise_widget(scrollbox)
+        scrollbox:add(event_widget(event))
     end)
 
     return widget
 end
 
-local function pr_widget(pr, path_to_avatars)
+local function pr_widget(pr)
     local avatar = wibox.widget {
         widget = widgets.button.elevated.normal,
         normal_shape = gshape.circle,
@@ -243,7 +196,7 @@ local function pr_widget(pr, path_to_avatars)
             forced_width = dpi(40),
             forced_height = dpi(40),
             clip_shape = helpers.ui.rrect(),
-            image = path_to_avatars .. pr.user.id
+            image = github_daemon:get_prs_avatars_path() .. pr.user.id
         }
     }
 
@@ -316,24 +269,26 @@ local function prs()
     }
 
     github_daemon:connect_signal("prs::error", function()
-        spinning_circle.children[1]:stop()
+        spinning_circle:stop()
         widget:raise_widget(error_icon)
     end)
 
     github_daemon:connect_signal("missing_credentials", function()
-        spinning_circle.children[1]:stop()
+        spinning_circle:stop()
         widget:raise_widget(missing_credentials_text)
     end)
 
-    github_daemon:connect_signal("prs", function(self, prs, path_to_avatars)
-        spinning_circle.children[1]:stop()
-        scrollbox:reset()
-        collectgarbage("collect")
-        widget:raise_widget(scrollbox)
-
+    github_daemon:connect_signal("prs", function(self, prs)
+        spinning_circle:stop()
         for _, pr in ipairs(prs) do
-            scrollbox:add(pr_widget(pr, path_to_avatars))
+            scrollbox:add(pr_widget(pr))
         end
+        widget:raise_widget(scrollbox)
+    end)
+
+    github_daemon:connect_signal("new_pr", function(self, pr)
+        scrollbox:add(pr_widget(pr))
+        widget:raise_widget(scrollbox)
     end)
 
     return widget

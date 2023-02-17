@@ -32,7 +32,10 @@ function corona:open_website()
 end
 
 function corona:refresh()
-    helpers.filesystem.remote_watch(DATA_PATH, string.format(link, self._private.country), UPDATE_INTERVAL,
+    helpers.filesystem.remote_watch(
+        DATA_PATH,
+        string.format(link, self._private.country),
+        UPDATE_INTERVAL,
         function(content)
             if content == nil then
                 self:emit_signal("error")
@@ -46,7 +49,8 @@ function corona:refresh()
             end
 
             self:emit_signal("corona", data)
-        end)
+        end
+    )
 end
 
 local function new()

@@ -5,6 +5,7 @@
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
+local beautiful = require("beautiful")
 local helpers = require("helpers")
 local string = string
 local ipairs = ipairs
@@ -15,6 +16,14 @@ local instance = nil
 local UPDATE_INTERVAL = 60 * 3 -- 3 mins
 local PATH = helpers.filesystem.get_cache_dir("github")
 
+local PRS_PATH = PATH .. "created_prs/"
+local PRS_AVATARS_PATH = PRS_PATH .. "avatars/"
+local PRS_DATA_PATH = PRS_PATH .. "data.json"
+
+local EVENTS_PATH = PATH .. "events/"
+local EVENTS_AVATARS_PATH = EVENTS_PATH .. "avatars/"
+local EVENTS_DATA_PATH = EVENTS_PATH .. "data.json"
+
 function github:set_username(username)
     self._private.username = username
     helpers.settings:set_value("github-username", self._private.username)
@@ -24,15 +33,63 @@ function github:get_username()
     return self._private.username
 end
 
+function github:get_event_info(event)
+    local action_string = event.type
+    local icon = "repo.svg"
+    local link = "http://github.com/" .. event.repo.name
+
+    if (event.type == "PullRequestEvent") then
+        action_string = event.payload.action .. " a pull request in"
+        link = event.payload.pull_request.html_url
+        icon = beautiful.icons.code_pull_request
+    elseif (event.type == "PullRequestReviewCommentEvent") then
+        action_string = event.payload.action == "created" and "commented in pull request" or event.payload.action ..
+                            " a comment in"
+        link = event.payload.pull_request.html_url
+        icon = beautiful.icons.message
+    elseif (event.type == "IssuesEvent") then
+        action_string = event.payload.action .. " an issue in"
+        link = event.payload.issue.html_url
+        icon = beautiful.icons.circle_exclamation
+    elseif (event.type == "IssueCommentEvent") then
+        action_string = event.payload.action == "created" and "commented in issue" or event.payload.action ..
+                            " a comment in"
+        link = event.payload.issue.html_url
+        icon = beautiful.icons.message
+    elseif (event.type == "WatchEvent") then
+        action_string = "starred"
+        icon = beautiful.icons.star
+    elseif (event.type == "PushEvent") then
+        action_string = "pushed to"
+        icon = beautiful.icons.commit
+    elseif (event.type == "ForkEvent") then
+        action_string = "forked"
+        icon = beautiful.icons.code_branch
+    elseif (event.type == "CreateEvent") then
+        action_string = "created"
+        icon = beautiful.icons.code_branch
+    end
+
+    return {
+        action_string = action_string,
+        link = link,
+        icon = icon
+    }
+end
+
+function github:get_events_avatars_path()
+    return EVENTS_AVATARS_PATH
+end
+
+function github:get_prs_avatars_path()
+    return PRS_AVATARS_PATH
+end
+
 local function github_events(self)
     local link = "https://api.github.com/users/%s/received_events"
-    local path = PATH .. "events/"
-    local avatars_path = path .. "avatars/"
-    local DATA_PATH = path .. "data.json"
-
     local old_data = nil
 
-    helpers.filesystem.remote_watch(DATA_PATH, string.format(link, self._private.username), UPDATE_INTERVAL,
+    helpers.filesystem.remote_watch(EVENTS_DATA_PATH, string.format(link, self._private.username), UPDATE_INTERVAL,
         function(content)
             local data = helpers.json.decode(content)
 
@@ -41,100 +98,85 @@ local function github_events(self)
                 return
             end
 
-            for index, event in ipairs(data) do
-                local path_to_avatar = avatars_path .. event.actor.id
-
+            for _, event in ipairs(data) do
                 if old_data[event.id] == nil then
-                    self:emit_signal("new_event", event, path_to_avatar)
-                end
-
-                local is_downloading = false
-
-                local file = helpers.file.new_for_path(path_to_avatar)
-                file:exists(function(error, exists)
-                    if error == nil then
-                        if exists == false then
-                            is_downloading = true
-
-                            local remote_file = helpers.file.new_for_uri(event.actor.avatar_url)
-                            remote_file:read(function(error, content)
+                    local remote_file = helpers.file.new_for_uri(event.actor.avatar_url)
+                    remote_file:read(function(error, content)
+                        if error == nil then
+                            local file = helpers.file.new_for_path(EVENTS_AVATARS_PATH .. event.actor.id)
+                            file:write(content, function(error)
                                 if error == nil then
-                                    file:write(content, function(error)
-                                        is_downloading = false
-                                        if index == #data then
-                                            self:emit_signal("events", data, avatars_path)
-                                        end
+                                    gtimer.start_new(0.5, function()
+                                        self:emit_signal("new_event", event)
+                                        return false
                                     end)
                                 end
                             end)
-
-                        elseif index == #data and is_downloading == false then
-                            self:emit_signal("events", data, avatars_path)
                         end
-                    end
-                end)
+                    end)
+                end
             end
-        end, function(old_content)
+        end,
+        function(old_content)
             local data = helpers.json.decode(old_content) or {}
+            if old_data == nil and data ~= nil then
+                self:emit_signal("events", data)
+            end
+
             old_data = {}
             for _, event in ipairs(data) do
                 old_data[event.id] = event.id
             end
-        end)
+        end
+    )
 end
 
 local function github_prs(self)
-    local path = PATH .. "created_prs/"
-    local avatars_path = path .. "avatars/"
-    local DATA_PATH = path .. "data.json"
-
     local link = "https://api.github.com/search/issues?q=author%3A" .. self._private.username .. "+type%3Apr"
     local old_data = nil
 
-    helpers.filesystem.remote_watch(DATA_PATH, link, UPDATE_INTERVAL, function(content)
-        local data = helpers.json.decode(content)
-        if data == nil then
-            self:emit_signal("prs::error")
-            return
-        end
-
-        for index, pr in ipairs(data.items) do
-            if old_data[pr.id] == nil then
-                self:emit_signal("new_pr", pr)
+    helpers.filesystem.remote_watch(
+        PRS_DATA_PATH,
+        link,
+        UPDATE_INTERVAL,
+        function(content)
+            local data = helpers.json.decode(content)
+            if data == nil then
+                self:emit_signal("prs::error")
+                return
             end
 
-            local is_downloading = false
-            local path_to_avatar = avatars_path .. pr.user.id
-            local file = helpers.file.new_for_path(path_to_avatar)
-            file:exists(function(error, exists)
-                if error == nil then
-                    if exists == false then
-                        is_downloading = true
-
-                        local remote_file = helpers.file.new_for_uri(pr.user.avatar_url)
-                        remote_file:read(function(error, content)
-                            if error == nil then
-                                file:write(content, function(error)
-                                    is_downloading = false
-                                    if index == #data.items then
-                                        self:emit_signal("prs", data.items, avatars_path)
-                                    end
-                                end)
-                            end
-                        end)
-                    elseif index == #data.items and is_downloading == false then
-                        self:emit_signal("prs", data.items, avatars_path)
-                    end
+            for _, pr in ipairs(data.items) do
+                if old_data[pr.id] == nil then
+                    local remote_file = helpers.file.new_for_uri(pr.user.avatar_url)
+                    remote_file:read(function(error, content)
+                        if error == nil then
+                            local file = helpers.file.new_for_path(PRS_AVATARS_PATH .. pr.user.id)
+                            file:write(content, function(error)
+                                if error == nil then
+                                    gtimer.start_new(0.5, function()
+                                        self:emit_signal("new_pr", pr)
+                                        return false
+                                    end)
+                                end
+                            end)
+                        end
+                    end)
                 end
-            end)
+            end
+        end,
+        function(old_content)
+            local data = helpers.json.decode(old_content) or {}
+            if old_data == nil and data ~= nil then
+                self:emit_signal("prs", data.items)
+            end
+
+            old_data = {}
+            for _, pr in ipairs(data.items) do
+                old_data[pr.id] = pr.id
+            end
         end
-    end, function(old_content)
-        local data = helpers.json.decode(old_content) or {}
-        old_data = {}
-        for _, pr in ipairs(data.items) do
-            old_data[pr.id] = pr.id
-        end
-    end)
+    )
 end
 
 local function github_contributions(self)
@@ -151,7 +193,7 @@ end
 function github:refresh()
     github_events(self)
     github_prs(self)
-    github_contributions(self)
+    -- github_contributions(self)
 end
 
 local function new()
