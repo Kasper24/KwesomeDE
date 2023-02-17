@@ -393,6 +393,14 @@ naughty.connect_signal("request::display", function(n)
 
     gtimer.start_new(0.2, function()
         local screen = awful.screen.focused()
+
+        if screen.notifications then
+            local last_notif = screen.notifications[#screen.notifications]
+            if last_notif and last_notif.anim and last_notif.anim:state() == true then
+                return true
+            end
+        end
+
         if #screen.notifications > 2 then
             return true
         end
