@@ -19,7 +19,7 @@ local checkbox = {
     mt = {}
 }
 
-local properties = {"handle_offset", "on_turn_on", "on_turn_off", "color"}
+local properties = { "on_turn_on", "on_turn_off", "color"}
 
 local switch_dimensions = {
     w = dpi(50),
@@ -85,6 +85,19 @@ function checkbox:toggle()
         self:turn_off()
     else
         self:turn_on()
+    end
+end
+
+function checkbox:set_handle_offset(handle_offset)
+    local wp = self._private
+    wp.animation:stop()
+
+    wp.handle_offset = handle_offset
+
+    if wp.state == true then
+        self:turn_on()
+    else
+        self:turn_off()
     end
 end
 
