@@ -33,7 +33,7 @@ function ncmppcpp.tabs_titlebar(c)
         size = 12,
         text = "Current Playlist",
         on_turn_on = function()
-            helpers.input.send_key_sequence(c, "1o")
+            helpers.input.send_string_to_client(c, "1o")
             local_files:turn_off()
             search:turn_off()
             libary:turn_off()
@@ -51,7 +51,7 @@ function ncmppcpp.tabs_titlebar(c)
         size = 12,
         text = "Local Files",
         on_turn_on = function()
-            helpers.input.send_key(c, "2")
+            helpers.input.send_string_to_client(c, "2")
             current_playlist:turn_off()
             search:turn_off()
             libary:turn_off()
@@ -69,7 +69,7 @@ function ncmppcpp.tabs_titlebar(c)
         size = 12,
         text = "Search",
         on_turn_on = function()
-            helpers.input.send_key(c, "3")
+            helpers.input.send_string_to_client(c, "3")
             current_playlist:turn_off()
             local_files:turn_off()
             libary:turn_off()
@@ -87,7 +87,7 @@ function ncmppcpp.tabs_titlebar(c)
         size = 12,
         text = "Library",
         on_turn_on = function()
-            helpers.input.send_key(c, "4")
+            helpers.input.send_string_to_client(c, "4")
             current_playlist:turn_off()
             local_files:turn_off()
             search:turn_off()
@@ -105,7 +105,7 @@ function ncmppcpp.tabs_titlebar(c)
         size = 12,
         text = "Playlist editor",
         on_turn_on = function()
-            helpers.input.send_key(c, "5")
+            helpers.input.send_string_to_client(c, "5")
             current_playlist:turn_off()
             local_files:turn_off()
             search:turn_off()
@@ -123,7 +123,7 @@ function ncmppcpp.tabs_titlebar(c)
         size = 12,
         text = "Lyrics",
         on_turn_on = function()
-            helpers.input.send_key_sequence(c, "1l")
+            helpers.input.send_string_to_client(c, "1l")
             current_playlist:turn_off()
             local_files:turn_off()
             search:turn_off()

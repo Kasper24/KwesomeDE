@@ -116,7 +116,6 @@ yay/paru -S awesome-git
 | redshift                                | Blue light toggle                                         |
 | maim                                    | Screenshot widget                                         |
 | ffmpeg                                  | Record widget                                             |
-| xdotool                                 | Menu commands use this to input text into terminal        |
 | xclip                                   | Copy screenshot into clipboard/paste text into prompt     |
 | farge                                   | Color picker keybind                                      |
 | upower                                  | Battery notifications/widgets                             |
@@ -133,7 +132,7 @@ yay/paru -S awesome-git
 **Arch Linux (and other Arch-based distributions)**
    ```sh
       pacman -Sy kitty networkmanager blueman pipewire pipewire-pulse lm_sensors inotify-tools
-      redshift maim ffmpeg xdotool xclip upower brightnessctl playerctl fortune-mod
+      redshift maim ffmpeg xclip upower brightnessctl playerctl fortune-mod
       imagemagick yad libgudev dconf-editor neofetch --needed
    ```
    Assuming your **AUR Helper** is [yay](https://github.com/Jguer/yay) or [paru](https://github.com/Morganamilo/paru).

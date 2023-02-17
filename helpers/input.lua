@@ -1,19 +1,21 @@
-local awful = require("awful")
 local gtimer = require("gears.timer")
-local tostring = tostring
 local capi = {
+    client = client,
+    root = root,
     mouse = mouse,
-    root = root
 }
 
 local _input = {}
 
-function _input.send_key(c, key)
-    awful.spawn.with_shell("xdotool key --window " .. tostring(c.window) .. " " .. key)
-end
-
-function _input.send_key_sequence(c, seq)
-    awful.spawn.with_shell("xdotool type --delay 5 --window " .. tostring(c.window) .. " " .. seq)
+function _input.send_string_to_client(client, string)
+    local old_c = capi.client.focus
+    capi.client.focus = client
+    for i=1, #string do
+        local char = string:sub(i,i)
+        capi.root.fake_input("key_press", char)
+        capi.root.fake_input("key_release", char)
+    end
+    capi.client.focus = old_c
 end
 
 function _input.tap_or_drag(args)
