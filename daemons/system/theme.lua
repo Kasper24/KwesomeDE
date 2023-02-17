@@ -848,6 +848,20 @@ function theme:get_ui_animations()
     return self._private.ui_animations
 end
 
+function theme:set_ui_animations_framerate(framerate)
+    helpers.animation:set_framerate(framerate)
+    self._private.ui_animations = framerate
+    helpers.settings:set_value("theme-ui-animations-framerate", framerate)
+end
+
+function theme:get_ui_animations_framerate()
+    if self._private.get_ui_animations_framerate == nil then
+        self._private.get_ui_animations_framerate = helpers.settings:get_value("theme-ui-animations-framerate")
+    end
+
+    return self._private.get_ui_animations_framerate
+end
+
 -- Command after generation
 function theme:set_command_after_generation(command_after_generation)
     self._private.command_after_generation = command_after_generation
@@ -871,6 +885,7 @@ local function new()
     gtimer.delayed_call(function()
         ret:set_client_gap(ret:get_client_gap(), false)
         ret:set_ui_animations(ret:get_ui_animations())
+        ret:set_ui_animations_framerate(ret:get_ui_animations_framerate())
         ret:set_wallpaper(ret:get_active_wallpaper(), ret:get_wallpaper_type())
         if system_daemon:is_new_version() or system_daemon:does_need_setup() then
             ret:set_colorscheme(ret:get_active_colorscheme())

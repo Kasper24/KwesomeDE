@@ -104,6 +104,14 @@
       </description>
     </key>
 
+    <key name="theme-ui-animations-framerate" type="s">
+      <default>"144"</default>
+      <summary>UI animations framerate</summary>
+      <description>
+        The framerate of the UI animations
+      </description>
+    </key>
+
    <key name="version" type="s">
       <default>""</default>
       <summary>Version</summary>

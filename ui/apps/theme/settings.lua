@@ -226,6 +226,9 @@ local function new(layout)
         theme_slider("UI Corner Radius: ", theme_daemon:get_ui_border_radius(), 100, true, function(value)
             theme_daemon:set_ui_border_radius(value)
         end),
+        theme_slider("UI Animations Framerate: ", theme_daemon:get_ui_animations_framerate(), 360, true, function(value)
+            theme_daemon:set_ui_animations_framerate(value)
+        end),
         theme_checkbox("animations"),
         separator(),
         picom_slider("active-opacity", 1, false, 0.1),
