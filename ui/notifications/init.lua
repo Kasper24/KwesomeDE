@@ -134,6 +134,29 @@ local function actions_widget(n)
     return actions
 end
 
+local function destroy_notif(n, screen)
+    local min_y = awful.placement.top_right(n.widget, {
+        honor_workarea = true,
+        honor_padding = true,
+        attach = true,
+        pretend = true,
+        margins = dpi(30)
+    }).y
+
+    helpers.table.remove_value(screen.notifications, n)
+    n.destroyed = true
+    local destroyed_n_height = n.widget.height
+    for _, n in ipairs(screen.notifications) do
+        if #screen.notifications > 0 and n.widget.y ~= min_y then
+            n.anim:set{y = n.widget.y - destroyed_n_height - 30, height = 300}
+        end
+    end
+
+    n.widget.widget:get_children_by_id("top_row")[1]:set_third(nil)
+    n.anim:set{y = n.widget.y, height = 1}
+    n:destroy()
+end
+
 local function create_notification(n, screen)
     -- Absurdly big number because setting it to 0 doesn't work
     n:set_timeout(4294967)
@@ -152,7 +175,7 @@ local function create_notification(n, screen)
         text_normal_bg = beautiful.colors.on_background,
         size = 12,
         on_release = function()
-            n:destroy(naughty.notification_closed_reason.dismissed_by_user)
+            destroy_notif(n, screen)
         end
     }
 
@@ -260,7 +283,7 @@ local function create_notification(n, screen)
         end,
         signals = {
             ["ended"] = function()
-                n:destroy()
+                destroy_notif(n, screen)
             end
         }
     }
@@ -271,20 +294,6 @@ local function create_notification(n, screen)
 
     n.widget:connect_signal("mouse::leave", function()
         timeout_arc_anim:set()
-    end)
-
-    n:connect_signal("destroyed", function()
-        helpers.table.remove_value(screen.notifications, n)
-        n.destroyed = true
-        local destroyed_n_height = n.widget.height
-        for _, n in ipairs(screen.notifications) do
-            if #screen.notifications > 0 then
-                n.anim:set{y = n.widget.y - destroyed_n_height - 30, height = 300}
-            end
-        end
-
-        n.widget.widget:get_children_by_id("top_row")[1]:set_third(nil)
-        n.anim:set{y = n.widget.y, height = 1}
     end)
 
     local pos = get_notification_position(n, screen)
