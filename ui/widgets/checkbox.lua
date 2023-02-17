@@ -19,7 +19,7 @@ local checkbox = {
     mt = {}
 }
 
-local properties = {"on_turn_on", "on_turn_off", "color"}
+local properties = {"handle_offset", "on_turn_on", "on_turn_off", "color"}
 
 local switch_dimensions = {
     w = dpi(50),
@@ -30,7 +30,7 @@ local ball_dimensions = {
     h = dpi(25)
 }
 local start_ball_position = ball_dimensions.w - switch_dimensions.w
-local done_ball_position = -start_ball_position + 2-- just invert it
+local done_ball_position = -start_ball_position -- just invert it
 
 local function build_properties(prototype, prop_names)
     for _, prop in ipairs(prop_names) do
@@ -57,7 +57,7 @@ function checkbox:turn_on()
     wp.state = true
 
     wp.animation:set{
-        handle_offset = done_ball_position,
+        handle_offset = done_ball_position + wp.handle_offset,
         handle_color = helpers.color.hex_to_rgb(wp.handle_active_color),
     }
 
@@ -71,7 +71,7 @@ function checkbox:turn_off()
     wp.state = false
 
     wp.animation:set{
-        handle_offset = -2,
+        handle_offset = -wp.handle_offset,
         handle_color = helpers.color.hex_to_rgb(beautiful.colors.background),
     }
 
@@ -158,12 +158,13 @@ local function new()
     wp.handle = widget:get_children_by_id("handle")[1]
 
     wp.handle_active_color = accent_color
+    wp.handle_offset = 2
 
     wp.animation = helpers.animation:new{
         duration = 0.2,
         easing = helpers.animation.easing.inOutQuad,
         pos = {
-            handle_offset = -2,
+            handle_offset = -wp.handle_offset,
             handle_color = helpers.color.hex_to_rgb(beautiful.colors.on_background)
         },
         update = function(self, pos)

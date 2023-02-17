@@ -390,6 +390,7 @@ function menu.checkbox_button(args)
     local checkbox = cbwidget {}
     checkbox:set_handle_active_color(args.handle_active_color)
     checkbox:set_state(args.state)
+    checkbox:set_handle_offset(5)
 
     local widget = nil
     widget = wibox.widget {
