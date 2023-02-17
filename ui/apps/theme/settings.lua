@@ -93,13 +93,13 @@ local function picom_slider(key, maximum, round, minimum)
 
     local name = wibox.widget {
         widget = widgets.text,
-        forced_width = dpi(180),
+        forced_width = dpi(190),
         size = 15,
         text = display_name
     }
 
     local slider_prompt = widgets.slider_prompt {
-        slider_width = dpi(420),
+        slider_width = dpi(410),
         round = round,
         minimum = minimum or 0,
         maximum = maximum,
@@ -148,13 +148,13 @@ end
 local function theme_slider(text, initial_value, maximum, round, on_changed)
     local name = wibox.widget {
         widget = widgets.text,
-        forced_width = dpi(180),
+        forced_width = dpi(190),
         size = 15,
         text = text
     }
 
     local slider_prompt = widgets.slider_prompt {
-        slider_width = dpi(420),
+        slider_width = dpi(410),
         round = round,
         value = initial_value,
         maximum = maximum,
@@ -226,7 +226,7 @@ local function new(layout)
         theme_slider("UI Corner Radius: ", theme_daemon:get_ui_border_radius(), 100, true, function(value)
             theme_daemon:set_ui_border_radius(value)
         end),
-        theme_slider("UI Animations Framerate: ", theme_daemon:get_ui_animations_framerate(), 360, true, function(value)
+        theme_slider("UI Animations FPS: ", theme_daemon:get_ui_animations_framerate(), 360, true, function(value)
             theme_daemon:set_ui_animations_framerate(value)
         end),
         theme_checkbox("animations"),
