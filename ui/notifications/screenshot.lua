@@ -43,7 +43,7 @@ screenshot_daemon:connect_signal("ended", function(self, screenshot_method, scre
     end)
 
     naughty.notification {
-        app_font_icon = beautiful.camera_retro_icon,
+        app_font_icon = beautiful.icons.camera_retro,
         app_icon = icons,
         app_name = "Screenshot",
         icon = screenshot_directory .. file_name,
@@ -55,10 +55,10 @@ end)
 
 screenshot_daemon:connect_signal("error::create_file", function(self, error)
     naughty.notification {
-        app_font_icon = beautiful.camera_retro_icon,
+        app_font_icon = beautiful.icons.camera_retro,
         app_icon = icons,
         app_name = "Screenshot",
-        font_icon = beautiful.circle_exclamation_icon,
+        font_icon = beautiful.icons.circle_exclamation,
         icon = error_icons,
         title = "Error",
         message = error,
@@ -68,10 +68,10 @@ end)
 
 screenshot_daemon:connect_signal("error::create_directory", function()
     naughty.notification {
-        app_font_icon = beautiful.camera_retro_icon,
+        app_font_icon = beautiful.icons.camera_retro,
         app_icon = icons,
         app_name = "Screenshot",
-        font_icon = beautiful.circle_exclamation_icon,
+        font_icon = beautiful.icons.circle_exclamation,
         icon = error_icons,
         title = "error",
         message = "Failed to create directory",
