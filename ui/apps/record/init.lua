@@ -7,7 +7,7 @@ local widgets = require("ui.widgets")
 local app = require("ui.apps.app")
 local beautiful = require("beautiful")
 local record_daemon = require("daemons.system.record")
-local pactl_daemon = require("daemons.hardware.pactl")
+local audio_daemon = require("daemons.hardware.audio")
 local app = require("ui.apps.app")
 local dpi = beautiful.xresources.apply_dpi
 local pairs = pairs
@@ -122,14 +122,14 @@ local function audio_source()
     }
 
     local selected = false
-    for _, sink in pairs(pactl_daemon:get_sinks()) do
+    for _, sink in pairs(audio_daemon:get_sinks()) do
         dropdown:add(sink.description, sink.name)
         if selected == false then
             dropdown:select(sink.description, sink.name)
             selected = true
         end
     end
-    for _, source in pairs(pactl_daemon:get_sources()) do
+    for _, source in pairs(audio_daemon:get_sources()) do
         dropdown:add(source.description, source.name)
         if selected == false then
             dropdown:select(source.description, source.name)

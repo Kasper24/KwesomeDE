@@ -7,7 +7,7 @@ local gtimer = require("gears.timer")
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
-local pactl_daemon = require("daemons.hardware.pactl")
+local audio_daemon = require("daemons.hardware.audio")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 
@@ -91,7 +91,7 @@ local function new()
     }
 
     local show = false
-    pactl_daemon:connect_signal("default_sinks_updated", function(self, device)
+    audio_daemon:connect_signal("default_sinks_updated", function(self, device)
         if show == true then
             if device.mute or device.volume == 0 then
                 icon:set_icon(beautiful.icons.volume.off)

@@ -11,14 +11,14 @@ local tonumber = tonumber
 local string = string
 local pairs = pairs
 
-local pactl = {}
+local audio = {}
 local instance = nil
 
-function pactl:set_default_sink(sink)
+function audio:set_default_sink(sink)
     awful.spawn(string.format("pactl set-default-sink %d", sink), false)
 end
 
-function pactl:sink_toggle_mute(sink)
+function audio:sink_toggle_mute(sink)
     if sink == 0 or sink == nil then
         awful.spawn(string.format("pactl set-sink-mute @DEFAULT_SINK@ toggle"), false)
     else
@@ -26,7 +26,7 @@ function pactl:sink_toggle_mute(sink)
     end
 end
 
-function pactl:sink_volume_up(sink, step)
+function audio:sink_volume_up(sink, step)
     if sink == 0 or sink == nil then
         awful.spawn(string.format("pactl set-sink-volume @DEFAULT_SINK@ +%d%%", step), false)
     else
@@ -34,7 +34,7 @@ function pactl:sink_volume_up(sink, step)
     end
 end
 
-function pactl:sink_volume_down(sink, step)
+function audio:sink_volume_down(sink, step)
     if sink == 0 or sink == nil then
         awful.spawn(string.format("pactl set-sink-volume @DEFAULT_SINK@ -%d%%", step), false)
     else
@@ -42,7 +42,7 @@ function pactl:sink_volume_down(sink, step)
     end
 end
 
-function pactl:sink_set_volume(sink, volume)
+function audio:sink_set_volume(sink, volume)
     volume = gmath.round(volume)
     if sink == 0 or sink == nil then
         awful.spawn(string.format("pactl set-sink-volume @DEFAULT_SINK@ %d%%", volume), false)
@@ -51,11 +51,11 @@ function pactl:sink_set_volume(sink, volume)
     end
 end
 
-function pactl:set_default_source(source)
+function audio:set_default_source(source)
     awful.spawn(string.format("pactl set-default-source %d", source), false)
 end
 
-function pactl:source_toggle_mute(source)
+function audio:source_toggle_mute(source)
     if source == 0 or source == nil then
         awful.spawn(string.format("pactl set-source-mute @DEFAULT_SOURCE@ toggle", source), false)
     else
@@ -63,7 +63,7 @@ function pactl:source_toggle_mute(source)
     end
 end
 
-function pactl:source_volume_up(source, step)
+function audio:source_volume_up(source, step)
     if source == 0 or source == nil then
         awful.spawn(string.format("pactl set-source-volume @DEFAULT_SOURCE@ +%d%%", step), false)
     else
@@ -71,7 +71,7 @@ function pactl:source_volume_up(source, step)
     end
 end
 
-function pactl:source_volume_down(source, step)
+function audio:source_volume_down(source, step)
     if source == 0 or source == nil then
         awful.spawn(string.format("pactl set-source-volume @DEFAULT_SOURCE@ -%d%%", step), false)
     else
@@ -79,7 +79,7 @@ function pactl:source_volume_down(source, step)
     end
 end
 
-function pactl:source_set_volume(source, volume)
+function audio:source_set_volume(source, volume)
     volume = gmath.round(volume)
 
     if source == 0 or source == nil then
@@ -89,31 +89,31 @@ function pactl:source_set_volume(source, volume)
     end
 end
 
-function pactl:sink_input_toggle_mute(sink_input)
+function audio:sink_input_toggle_mute(sink_input)
     awful.spawn(string.format("pactl set-sink-input-mute %d toggle", sink_input), false)
 end
 
-function pactl:sink_input_set_volume(sink_input, volume)
+function audio:sink_input_set_volume(sink_input, volume)
     volume = gmath.round(volume)
 
     awful.spawn(string.format("pactl set-sink-input-volume %d %d%%", sink_input, volume), false)
 end
 
-function pactl:source_output_toggle_mute(source_output)
+function audio:source_output_toggle_mute(source_output)
     awful.spawn(string.format("pactl set-source-output-mute %d toggle", source_output), false)
 end
 
-function pactl:source_output_set_volume(source_output, volume)
+function audio:source_output_set_volume(source_output, volume)
     volume = gmath.round(volume)
 
     awful.spawn(string.format("pactl set-source-output-volume %d %d%%", source_output, volume), false)
 end
 
-function pactl:get_sinks()
+function audio:get_sinks()
     return self._private.sinks
 end
 
-function pactl:get_sources()
+function audio:get_sources()
     return self._private.sources
 end
 
@@ -249,7 +249,7 @@ end
 
 local function new()
     local ret = gobject {}
-    gtable.crush(ret, pactl, true)
+    gtable.crush(ret, audio, true)
 
     ret._private = {}
     ret._private.sinks = {}

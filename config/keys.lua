@@ -11,7 +11,7 @@ local hotkeys_popup = require("ui.popups.hotkeys")
 local window_switcher = require("ui.popups.window_switcher")
 local layout_switcher = require("ui.popups.layout_switcher")
 local playerctl_daemon = require("daemons.system.playerctl")
-local pactl_daemon = require("daemons.hardware.pactl")
+local audio_daemon = require("daemons.hardware.audio")
 local brightness_daemon = require("daemons.system.brightness")
 local rgb_daemon = require("daemons.hardware.rgb")
 local theme_daemon = require("daemons.system.theme")
@@ -700,7 +700,7 @@ awful.keyboard.append_global_keybindings({ -- Toogle media
         group = "media",
         description = "increase volume",
         on_press = function()
-            -- pactl_daemon:sink_volume_up(nil, 5)
+            -- audio_daemon:sink_volume_up(nil, 5)
         end
     }, -- Lower volume
     awful.key {
@@ -709,7 +709,7 @@ awful.keyboard.append_global_keybindings({ -- Toogle media
         group = "media",
         description = "decrease volume",
         on_press = function()
-            -- pactl_daemon:sink_volume_down(nil, 5)
+            -- audio_daemon:sink_volume_down(nil, 5)
         end
     }, -- Mute volume
     awful.key {
@@ -718,7 +718,7 @@ awful.keyboard.append_global_keybindings({ -- Toogle media
         group = "media",
         description = "mute volume",
         on_press = function()
-            pactl_daemon:sink_toggle_mute()
+            audio_daemon:sink_toggle_mute()
         end
     }, -- Increase brightness
     awful.key {

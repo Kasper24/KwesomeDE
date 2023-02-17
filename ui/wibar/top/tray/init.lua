@@ -10,7 +10,7 @@ local action_panel = require("ui.panels.action")
 local beautiful = require("beautiful")
 local network_daemon = require("daemons.hardware.network")
 local bluetooth_daemon = require("daemons.hardware.bluetooth")
-local pactl_daemon = require("daemons.hardware.pactl")
+local audio_daemon = require("daemons.hardware.audio")
 local upower_daemon = require("daemons.hardware.upower")
 local dpi = beautiful.xresources.apply_dpi
 
@@ -123,7 +123,7 @@ local function volume()
         size = 17
     }
 
-    pactl_daemon:connect_signal("default_sinks_updated", function(self, device)
+    audio_daemon:connect_signal("default_sinks_updated", function(self, device)
         if device.mute or device.volume == 0 then
             widget:set_icon(beautiful.icons.volume.off)
         elseif device.volume <= 33 then

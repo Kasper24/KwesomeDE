@@ -6,7 +6,7 @@ local awful = require("awful")
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
-local pactl_daemon = require("daemons.hardware.pactl")
+local audio_daemon = require("daemons.hardware.audio")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 
@@ -103,19 +103,19 @@ local function application_widget(args)
         }
     }
 
-    pactl_daemon:dynamic_connect_signal(args.type .. "::" .. args.application.id .. "::removed", function(self)
+    audio_daemon:dynamic_connect_signal(args.type .. "::" .. args.application.id .. "::removed", function(self)
         args.on_removed_cb(widget)
-        pactl_daemon:dynamic_disconnect_signals(args.type .. "::" .. args.application.id .. "::removed")
-        pactl_daemon:dynamic_disconnect_signals(args.type .. "::" .. args.application.id .. "::icon_name")
-        pactl_daemon:dynamic_disconnect_signals(args.type .. "::" .. args.application.id .. "::updated")
+        audio_daemon:dynamic_disconnect_signals(args.type .. "::" .. args.application.id .. "::removed")
+        audio_daemon:dynamic_disconnect_signals(args.type .. "::" .. args.application.id .. "::icon_name")
+        audio_daemon:dynamic_disconnect_signals(args.type .. "::" .. args.application.id .. "::updated")
     end)
 
-    pactl_daemon:dynamic_connect_signal(args.type .. "::" .. args.application.id .. "::icon_name", function(self, icon_name)
+    audio_daemon:dynamic_connect_signal(args.type .. "::" .. args.application.id .. "::icon_name", function(self, icon_name)
         icon.image = helpers.icon_theme.choose_icon{icon_name, args.application.name, "gnome-audio",
                                                     "org.pulseaudio.pavucontrol"}
     end)
 
-    pactl_daemon:dynamic_connect_signal(args.type .. "::" .. args.application.id .. "::updated", function(self, application)
+    audio_daemon:dynamic_connect_signal(args.type .. "::" .. args.application.id .. "::updated", function(self, application)
         slider:set_value(application.volume)
 
         if application.mute == true then
@@ -210,13 +210,13 @@ local function device_widget(args)
         }
     }
 
-    pactl_daemon:dynamic_connect_signal(args.type .. "::" .. args.device.id .. "::removed", function(self)
+    audio_daemon:dynamic_connect_signal(args.type .. "::" .. args.device.id .. "::removed", function(self)
         args.on_removed_cb(widget)
-        pactl_daemon:dynamic_disconnect_signals(args.type .. "::" .. args.device.id .. "::removed")
-        pactl_daemon:dynamic_disconnect_signals(args.type .. "::" .. args.device.id .. "::updated")
+        audio_daemon:dynamic_disconnect_signals(args.type .. "::" .. args.device.id .. "::removed")
+        audio_daemon:dynamic_disconnect_signals(args.type .. "::" .. args.device.id .. "::updated")
     end)
 
-    pactl_daemon:dynamic_connect_signal(args.type .. "::" .. args.device.id .. "::updated", function(self, device)
+    audio_daemon:dynamic_connect_signal(args.type .. "::" .. args.device.id .. "::updated", function(self, device)
         slider:set_value(device.volume)
 
         if device.default == true then
@@ -272,15 +272,15 @@ local function applications()
         step = 50
     }
 
-    pactl_daemon:connect_signal("sink_inputs::added", function(self, sink_input)
+    audio_daemon:connect_signal("sink_inputs::added", function(self, sink_input)
         sinks_inputs_layout:add(application_widget {
             type = "sink_inputs",
             application = sink_input,
             on_mute_press = function()
-                pactl_daemon:sink_input_toggle_mute(sink_input.id)
+                audio_daemon:sink_input_toggle_mute(sink_input.id)
             end,
             on_slider_moved = function(volume)
-                pactl_daemon:sink_input_set_volume(sink_input.id, volume)
+                audio_daemon:sink_input_set_volume(sink_input.id, volume)
             end,
             on_removed_cb = function(widget)
                 sinks_inputs_layout:remove_widgets(widget)
@@ -288,15 +288,15 @@ local function applications()
         })
     end)
 
-    pactl_daemon:connect_signal("source_outputs::added", function(self, source_output)
+    audio_daemon:connect_signal("source_outputs::added", function(self, source_output)
         source_outputs_layout:add(application_widget {
             type = "source_output",
             application = source_output,
             on_mute_press = function()
-                pactl_daemon:source_output_toggle_mute(source_output.id)
+                audio_daemon:source_output_toggle_mute(source_output.id)
             end,
             on_slider_moved = function(volume)
-                pactl_daemon:source_output_set_volume(source_output.id, volume)
+                audio_daemon:source_output_set_volume(source_output.id, volume)
             end,
             on_removed_cb = function(widget)
                 source_outputs_layout:remove_widgets(widget)
@@ -359,18 +359,18 @@ local function devices()
         step = 50
     }
 
-    pactl_daemon:connect_signal("sinks::added", function(self, sink)
+    audio_daemon:connect_signal("sinks::added", function(self, sink)
         sinks_layout:add(device_widget {
             type = "sinks",
             device = sink,
             on_mute_press = function()
-                pactl_daemon:sink_toggle_mute(sink.id)
+                audio_daemon:sink_toggle_mute(sink.id)
             end,
             on_default_press = function()
-                pactl_daemon:set_default_sink(sink.id)
+                audio_daemon:set_default_sink(sink.id)
             end,
             on_slider_moved = function(volume)
-                pactl_daemon:sink_set_volume(sink.id, volume)
+                audio_daemon:sink_set_volume(sink.id, volume)
             end,
             on_removed_cb = function(widget)
                 sinks_layout:remove_widgets(widget)
@@ -378,18 +378,18 @@ local function devices()
         })
     end)
 
-    pactl_daemon:connect_signal("sources::added", function(self, source)
+    audio_daemon:connect_signal("sources::added", function(self, source)
         sources_layout:add(device_widget {
             type = "sources",
             device = source,
             on_mute_press = function()
-                pactl_daemon:source_toggle_mute(source.id)
+                audio_daemon:source_toggle_mute(source.id)
             end,
             on_default_press = function()
-                pactl_daemon:set_default_source(source.id)
+                audio_daemon:set_default_source(source.id)
             end,
             on_slider_moved = function(volume)
-                pactl_daemon:source_set_volume(source.id, volume)
+                audio_daemon:source_set_volume(source.id, volume)
             end,
             on_removed_cb = function(widget)
                 sources_layout:remove_widgets(widget)

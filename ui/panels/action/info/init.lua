@@ -13,7 +13,7 @@ local cpu_daemon = require("daemons.hardware.cpu")
 local ram_daemon = require("daemons.hardware.ram")
 local disk_daemon = require("daemons.hardware.disk")
 local temperature_daemon = require("daemons.hardware.temperature")
-local pactl_daemon = require("daemons.hardware.pactl")
+local audio_daemon = require("daemons.hardware.audio")
 local brightness_daemon = require("daemons.system.brightness")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
@@ -212,11 +212,11 @@ local function audio()
     }
 
     slider:connect_signal("property::value", function(self, value)
-        pactl_daemon:sink_set_volume(0, value)
+        audio_daemon:sink_set_volume(0, value)
     end)
 
     local icon = icon:get_children_by_id("icon")[1]
-    pactl_daemon:connect_signal("default_sinks_updated", function(self, device)
+    audio_daemon:connect_signal("default_sinks_updated", function(self, device)
         slider:set_value(device.volume)
 
         if device.mute or device.volume == 0 then
