@@ -191,6 +191,7 @@ local function new()
     gitlab_daemon:connect_signal("new_mr", function(self, mr)
         scrollbox:add(mr_widget(mr))
         widget:raise_widget(scrollbox)
+        spinning_circle:stop()
     end)
 
     return widget

@@ -176,9 +176,9 @@ local function events()
     end)
 
     github_daemon:connect_signal("new_event", function(self, event)
-        spinning_circle:stop()
-        widget:raise_widget(scrollbox)
         scrollbox:add(event_widget(event))
+        widget:raise_widget(scrollbox)
+        spinning_circle:stop()
     end)
 
     return widget
@@ -289,6 +289,7 @@ local function prs()
     github_daemon:connect_signal("new_pr", function(self, pr)
         scrollbox:add(pr_widget(pr))
         widget:raise_widget(scrollbox)
+        spinning_circle:stop()
     end)
 
     return widget
