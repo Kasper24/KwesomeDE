@@ -116,81 +116,99 @@ local function layout_sub_menu()
 end
 
 local function widget()
-    local menu = widgets.menu {widgets.menu.button {
-        icon = beautiful.icons.launcher,
-        text = "Applicaitons",
-        on_press = function()
-            app_launcher:show()
-        end
-    }, widgets.menu.button {
-        icon = beautiful.icons.industry,
-        text = "Action Panel",
-        on_press = function()
-            action_panel:toggle()
-        end
-    }, widgets.menu.button {
-        icon = beautiful.icons.message,
-        text = "Notification Panel",
-        on_press = function()
-            notification_panel:toggle()
-        end
-    }, widgets.menu.button {
-        icon = beautiful.icons.calendar,
-        text = "Info Panel",
-        on_press = function()
-            info_panel:toggle()
-        end
-    }, widgets.menu.button {
-        icon = beautiful.icons.keyboard,
-        text = "Keybinds",
-        on_press = function()
-            hotkeys_popup.show_help()
-        end
-    }, widgets.menu.separator(), widgets.menu.button {
-        icon = beautiful.icons.camera_retro,
-        text = "Screenshot",
-        on_press = function()
-            screenshot_app:show()
-        end
-    }, widgets.menu.button {
-        icon = beautiful.icons.video,
-        text = "Record",
-        on_press = function()
-            record_app:show()
-        end
-    }, widgets.menu.separator(), widgets.menu.sub_menu_button {
-        icon = beautiful.icons.tag,
-        text = "Tag",
-        sub_menu = tag_sub_menu()
-    }, widgets.menu.sub_menu_button {
-        icon = beautiful.icons.table_layout,
-        text = "Layout",
-        sub_menu = layout_sub_menu()
-    }, widgets.menu.separator(), widgets.menu.button {
-        icon = beautiful.icons.gear,
-        text = "Settings",
-        on_press = function()
-            awful.spawn("dconf-editor", false)
-        end
-    }, widgets.menu.button {
-        icon = beautiful.icons.spraycan,
-        text = "Theme",
-        on_press = function()
-            theme_app:show()
-        end
-    }, widgets.menu.separator(), widgets.menu.button {
-        icon = beautiful.icons.reboot,
-        text = "Restart",
-        on_press = function()
-            capi.awesome.restart()
-        end
-    }, widgets.menu.button {
-        icon = beautiful.icons.exit,
-        text = "Exit",
-        on_press = function()
-            power_popup:show()
-        end
-    }}
+    local menu = widgets.menu {
+        widgets.menu.button {
+            icon = beautiful.icons.launcher,
+            text = "Applicaitons",
+            on_press = function()
+                app_launcher:show()
+            end
+        },
+        widgets.menu.button {
+            icon = beautiful.icons.industry,
+            text = "Action Panel",
+            on_press = function()
+                action_panel:toggle()
+            end
+        },
+        widgets.menu.button {
+            icon = beautiful.icons.message,
+            text = "Notification Panel",
+            on_press = function()
+                notification_panel:toggle()
+            end
+        },
+        widgets.menu.button {
+            icon = beautiful.icons.calendar,
+            text = "Info Panel",
+            on_press = function()
+                info_panel:toggle()
+            end
+        },
+        widgets.menu.button {
+            icon = beautiful.icons.keyboard,
+            text = "Keybinds",
+            on_press = function()
+                hotkeys_popup.show_help()
+            end
+        },
+        widgets.menu.separator(),
+        widgets.menu.button {
+            icon = beautiful.icons.camera_retro,
+            text = "Screenshot",
+            on_press = function()
+                screenshot_app:show()
+            end
+        },
+        widgets.menu.button {
+            icon = beautiful.icons.video,
+            text = "Record",
+            on_press = function()
+                record_app:show()
+            end
+        },
+        widgets.menu.separator(),
+        widgets.menu.sub_menu_button {
+            icon = beautiful.icons.tag,
+            text = "Tag",
+            sub_menu = tag_sub_menu()
+        },
+        widgets.menu.sub_menu_button {
+            icon = beautiful.icons.table_layout,
+            text = "Layout",
+            sub_menu = layout_sub_menu()
+        },
+        widgets.menu.separator(),
+        widgets.menu.button {
+            icon = beautiful.icons.gear,
+            text = "Settings",
+            on_press = function()
+                awful.spawn("dconf-editor", false)
+            end
+        },
+        widgets.menu.button {
+            icon = beautiful.icons.spraycan,
+            text = "Theme",
+            on_press = function()
+                theme_app:show()
+            end
+        },
+        widgets.menu.separator(),
+        widgets.menu.button {
+            icon = beautiful.icons.reboot,
+            text = "Restart",
+            on_press = function()
+                capi.awesome.restart()
+            end
+        },
+        widgets.menu.button {
+            icon = beautiful.icons.exit,
+            text = "Exit",
+            on_press = function()
+                power_popup:show()
+            end
+        }
+    }
 
     local added_recent_places_menu = false
 
