@@ -7,7 +7,8 @@ local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local helpers = require("helpers")
-local table = table
+local ipairs = ipairs
+local string = string
 local capi = {
     awesome = awesome
 }
@@ -129,13 +130,13 @@ local function new()
         end
     }
 
-    gtimer.delayed_call(function()
-        if helpers.settings:get_value("picom") == true then
-            ret:turn_on()
-        elseif helpers.settings:get_value("picom") == false then
-            ret:turn_off()
-        end
+    if helpers.settings:get_value("picom") == true then
+        ret:turn_on()
+    elseif helpers.settings:get_value("picom") == false then
+        ret:turn_off()
+    end
 
+    gtimer.delayed_call(function()
         gtimer.poller {
             timeout =  2,
             callback = function()
