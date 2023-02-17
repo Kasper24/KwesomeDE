@@ -7,14 +7,10 @@ local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gstring = require("gears.string")
 local gtimer = require("gears.timer")
-local helpers = require("helpers")
 local tonumber = tonumber
-local string = string
 
 local cpu = {}
 local instance = nil
-
-local UPDATE_INTERVAL = 5
 
 local function update(self)
     awful.spawn.easy_async_with_shell(
@@ -96,7 +92,7 @@ local function new()
     local first_time = true
 
     gtimer.poller {
-        timeout = UPDATE_INTERVAL,
+        timeout = 15,
         callback = function()
             if ret._private.slim and first_time == false then
                 slim_update(ret)
