@@ -257,56 +257,55 @@ local function new()
     ret._private.sink_inputs = {}
     ret._private.source_outputs = {}
 
-    gtimer.poller {
-        timeout = 5,
-        callback = function()
-            get_devices(ret)
-            get_applications(ret)
+    gtimer.start_new(5, function()
+        get_devices(ret)
+        get_applications(ret)
 
-            awful.spawn.easy_async("pkill -f 'pactl subscribe'", function()
-                awful.spawn.with_line_callback("pactl subscribe", {
-                    stdout = function(line)
+        awful.spawn.easy_async("pkill -f 'pactl subscribe'", function()
+            awful.spawn.with_line_callback("pactl subscribe", {
+                stdout = function(line)
+                    ---------------------------------------------------------------------------------------------------------
+                    -- Devices
+                    ---------------------------------------------------------------------------------------------------------
+                    if line:match("Event 'new' on sink #") or line:match("Event 'new' on source #") then
+                        get_devices(ret)
+                    elseif line:match("Event 'change' on server") then
+                        on_default_device_changed(ret)
+                    elseif line:match("Event 'change' on sink #") then
+                        local id = line:match("Event 'change' on sink #(.*)")
+                        on_device_updated(ret, "sinks", id)
+                    elseif line:match("Event 'change' on source #") then
+                        local id = line:match("Event 'change' on source #(.*)")
+                        on_device_updated(ret, "sources", id)
+                    elseif line:match("Event 'remove' on sink #") then
+                        local id = line:match("Event 'remove' on sink #(.*)")
+                        on_object_removed(ret, "sinks", id)
+                    elseif line:match("Event 'remove' on source #") then
+                        local id = line:match("Event 'remove' on source #(.*)")
+                        on_object_removed(ret, "sources", id)
                         ---------------------------------------------------------------------------------------------------------
-                        -- Devices
+                        -- Applications
                         ---------------------------------------------------------------------------------------------------------
-                        if line:match("Event 'new' on sink #") or line:match("Event 'new' on source #") then
-                            get_devices(ret)
-                        elseif line:match("Event 'change' on server") then
-                            on_default_device_changed(ret)
-                        elseif line:match("Event 'change' on sink #") then
-                            local id = line:match("Event 'change' on sink #(.*)")
-                            on_device_updated(ret, "sinks", id)
-                        elseif line:match("Event 'change' on source #") then
-                            local id = line:match("Event 'change' on source #(.*)")
-                            on_device_updated(ret, "sources", id)
-                        elseif line:match("Event 'remove' on sink #") then
-                            local id = line:match("Event 'remove' on sink #(.*)")
-                            on_object_removed(ret, "sinks", id)
-                        elseif line:match("Event 'remove' on source #") then
-                            local id = line:match("Event 'remove' on source #(.*)")
-                            on_object_removed(ret, "sources", id)
-                            ---------------------------------------------------------------------------------------------------------
-                            -- Applications
-                            ---------------------------------------------------------------------------------------------------------
-                        elseif line:match("Event 'new' on sink%-input #") or
-                            line:match("Event 'new' on source%-input #") then
-                            get_applications(ret)
-                        elseif line:match("Event 'change' on sink%-input #") then
-                            get_applications(ret)
-                        elseif line:match("Event 'change' on source%-output #") then
-                            get_applications(ret)
-                        elseif line:match("Event 'remove' on sink%-input #") then
-                            local id = line:match("Event 'remove' on sink%-input #(.*)")
-                            on_object_removed(ret, "sink_inputs", id)
-                        elseif line:match("Event 'remove' on source%-output #") then
-                            local id = line:match("Event 'remove' on source%-output #(.*)")
-                            on_object_removed(ret, "source_outputs", id)
-                        end
+                    elseif line:match("Event 'new' on sink%-input #") or
+                        line:match("Event 'new' on source%-input #") then
+                        get_applications(ret)
+                    elseif line:match("Event 'change' on sink%-input #") then
+                        get_applications(ret)
+                    elseif line:match("Event 'change' on source%-output #") then
+                        get_applications(ret)
+                    elseif line:match("Event 'remove' on sink%-input #") then
+                        local id = line:match("Event 'remove' on sink%-input #(.*)")
+                        on_object_removed(ret, "sink_inputs", id)
+                    elseif line:match("Event 'remove' on source%-output #") then
+                        local id = line:match("Event 'remove' on source%-output #(.*)")
+                        on_object_removed(ret, "source_outputs", id)
                     end
-                })
-            end)
-        end
-    }
+                end
+            })
+        end)
+
+        return false
+    end)
 
     return ret
 end
@@ -315,3 +314,10 @@ if not instance then
     instance = new()
 end
 return instance
+
+-- -- print(helpers.filesystem.get_awesome_config_dir("external"))
+-- package.cpath = package.cpath .. ";" .. helpers.filesystem.get_awesome_config_dir("external") .. "?.so;"
+-- -- print(package.cpath)
+
+-- pulseaudio = require("pulseaudio")
+-- print(helpers.table.dump(pulseaudio.get_sources()))
