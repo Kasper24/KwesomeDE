@@ -44,16 +44,21 @@ function record:get_folder()
     return self._private.folder
 end
 
-function record:set_folder()
-    awful.spawn.easy_async("yad --file --directory", function(stdout)
-        for line in stdout:gmatch("[^\r\n]+") do
-            if line ~= "" then
-                self._private.folder = line
-                helpers.settings:set_value("record-folder", line)
-                self:emit_signal("folder::updated", line)
+function record:set_folder(folder)
+    if folder then
+        self._private.folder = folder
+        helpers.settings:set_value("record-folder", folder)
+    else
+        awful.spawn.easy_async("yad --file --directory", function(stdout)
+            for line in stdout:gmatch("[^\r\n]+") do
+                if line ~= "" then
+                    self._private.folder = line
+                    helpers.settings:set_value("record-folder", line)
+                    self:emit_signal("folder::updated", line)
+                end
             end
-        end
-    end)
+        end)
+    end
 end
 
 function record:get_format()

@@ -34,16 +34,21 @@ function screenshot:get_delay()
     return self._private.delay
 end
 
-function screenshot:set_folder()
-    awful.spawn.easy_async("yad --file --directory", function(stdout)
-        for line in stdout:gmatch("[^\r\n]+") do
-            if line ~= "" then
-                self._private.folder = line
-                helpers.settings:set_value("screenshot-folder", line)
-                self:emit_signal("folder::updated", line)
+function screenshot:set_folder(folder)
+    if folder then
+        self._private.folder = folder
+        helpers.settings:set_value("screenshot-folder", folder)
+    else
+        awful.spawn.easy_async("yad --file --directory", function(stdout)
+            for line in stdout:gmatch("[^\r\n]+") do
+                if line ~= "" then
+                    self._private.folder = line
+                    helpers.settings:set_value("screenshot-folder", line)
+                    self:emit_signal("folder::updated", line)
+                end
             end
-        end
-    end)
+        end)
+    end
 end
 
 function screenshot:get_folder()

@@ -78,10 +78,13 @@ local function folder()
     }
 
     local folder_text = wibox.widget {
-        widget = widgets.text,
+        widget = widgets.prompt,
         forced_width = dpi(220),
         size = 12,
-        text = screenshot_daemon:get_folder()
+        text = screenshot_daemon:get_folder(),
+        changed_callback = function(text)
+            screenshot_daemon:set_folder(text)
+        end
     }
 
     local set_folder_button = wibox.widget {
