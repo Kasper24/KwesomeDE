@@ -8,15 +8,10 @@ local gtable = require("gears.table")
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
-local theme_daemon = require("daemons.system.theme")
 local system_daemon = require("daemons.system.system")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
-local collectgarbage = collectgarbage
 local os = os
-local capi = {
-    screen = screen
-}
 
 local lock = {}
 local instance = nil
@@ -49,7 +44,7 @@ end
 local function widget(self)
     local blur = wibox.widget {
         widget = widgets.background,
-        bg = beautiful.colors.background
+        bg = beautiful.colors.background_blur
     }
 
     local picture = wibox.widget {
@@ -220,7 +215,6 @@ local function new()
     ret._private.grabber = nil
 
     ret.widget = widgets.popup {
-        type = "splash",
         visible = false,
         ontop = true,
         placement = awful.placement.maximize,

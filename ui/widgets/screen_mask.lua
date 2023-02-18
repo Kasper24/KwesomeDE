@@ -8,11 +8,7 @@ local beautiful = require("beautiful")
 local pwidget = require("ui.widgets.popup")
 local bwidget = require("ui.widgets.background")
 local wwidget = require("ui.widgets.wallpaper")
-local theme_daemon = require("daemons.system.theme")
 local setmetatable = setmetatable
-local capi = {
-    awesome = awesome
-}
 
 local screen_mask = {
     mt = {}
@@ -21,11 +17,11 @@ local screen_mask = {
 local function new(screen)
     local blur = wibox.widget {
         widget = bwidget,
-        bg = beautiful.colors.background
+        bg = beautiful.colors.background_blur
     }
 
     return pwidget {
-        type = "splash",
+        -- type = "splash",
         screen = screen,
         placement = awful.placement.maximize,
         visible = false,

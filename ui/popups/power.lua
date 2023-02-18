@@ -11,12 +11,8 @@ local beautiful = require("beautiful")
 local system_daemon = require("daemons.system.system")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
-local collectgarbage = collectgarbage
 local math = math
 local os = os
-local capi = {
-    screen = screen
-}
 
 local power = {}
 local instance = nil
@@ -112,7 +108,7 @@ end
 local function widget(self)
     local blur = wibox.widget {
         widget = widgets.background,
-        bg = beautiful.colors.background
+        bg = beautiful.colors.background_blur
     }
 
     local picture = wibox.widget {
@@ -203,7 +199,7 @@ local function new()
     ret._private.grabber = nil
 
     ret.widget = widgets.popup {
-        type = "splash",
+        -- type = "splash",
         visible = false,
         ontop = true,
         placement = awful.placement.maximize,
