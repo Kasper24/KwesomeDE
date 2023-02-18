@@ -4,7 +4,6 @@
 -------------------------------------------
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
-local app = require("ui.apps.app")
 local beautiful = require("beautiful")
 local record_daemon = require("daemons.system.record")
 local audio_daemon = require("daemons.hardware.audio")
@@ -12,7 +11,6 @@ local app = require("ui.apps.app")
 local dpi = beautiful.xresources.apply_dpi
 local pairs = pairs
 
-local record = {}
 local instance = nil
 
 local function resolution()
