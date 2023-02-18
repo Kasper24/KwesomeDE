@@ -9,7 +9,6 @@ local beautiful = require("beautiful")
 local cpu_daemon = require("daemons.hardware.cpu")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
-local ipairs = ipairs
 local math = math
 
 local instance = nil
@@ -52,6 +51,11 @@ local function core_widget(core)
         color = beautiful.icons.microchip.color
     }
 
+    core:connect_signal("update", function(self, core)
+        usage.text = math.floor(core.diff_usage) .. "%"
+        usage_progressbar.value = core.diff_usage
+    end)
+
     return wibox.widget {
         layout = wibox.layout.fixed.horizontal,
         spacing = dpi(15),
@@ -92,12 +96,21 @@ local function process_widget(process)
 
     local dismiss = wibox.widget {
         widget = widgets.button.text.normal,
+        forced_width = dpi(50),
+        forced_height = dpi(50),
         icon = beautiful.icons.xmark,
         size = 15,
         on_release = function()
             awful.spawn("kill -9 " .. process.pid, false)
+            process:emit_signal("removed")
         end
     }
+
+    process:dynamic_connect_signal("update", function(self, process)
+        name.text = process.comm
+        cpu_usage.text = process.cpu
+        ram_usage.text = process.mem
+    end)
 
     return wibox.widget {
         layout = wibox.layout.fixed.horizontal,
@@ -185,17 +198,18 @@ local function widget()
         step = 50
     }
 
-    cpu_daemon:connect_signal("update::full", function(self, cores, processes)
-        cores_layout:reset()
-        processes_layout:reset()
+    cpu_daemon:connect_signal("core", function(self, core)
+        cores_layout:add(core_widget(core))
+    end)
 
-        for _, core in ipairs(cores) do
-            cores_layout:add(core_widget(core))
-        end
+    cpu_daemon:connect_signal("process", function(self, process)
+        local widget = process_widget(process)
+        processes_layout:add(widget)
 
-        for _, process in ipairs(processes) do
-            processes_layout:add(process_widget(process))
-        end
+        process:connect_signal("removed", function()
+            processes_layout:remove_widgets(widget)
+            process:dynamic_disconnect_signals("update")
+        end)
     end)
 
     return wibox.widget {
