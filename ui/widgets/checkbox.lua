@@ -12,6 +12,7 @@ local setmetatable = setmetatable
 local dpi = beautiful.xresources.apply_dpi
 local capi = {
     awesome = awesome,
+    root = root,
     mouse = mouse
 }
 
@@ -187,13 +188,15 @@ local function new()
     }
 
     widget:connect_signal("mouse::enter", function()
+        capi.root.cursor("hand2")
         local widget = capi.mouse.current_wibox
         if widget then
-            widget.cursor = beautiful.hover_cursor
+            widget.cursor = "hand2"
         end
     end)
 
     widget:connect_signal("mouse::leave", function()
+        capi.root.cursor("left_ptr")
         local widget = capi.mouse.current_wibox
         if widget then
             widget.cursor = "left_ptr"

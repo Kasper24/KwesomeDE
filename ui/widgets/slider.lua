@@ -10,6 +10,7 @@ local dpi = beautiful.xresources.apply_dpi
 local math = math
 local capi = {
 	awesome = awesome,
+	root = root,
 	mouse = mouse,
     mousegrabber = mousegrabber
 }
@@ -167,6 +168,7 @@ local function new(args)
 	end)
 
 	layout:connect_signal("mouse::enter", function()
+        capi.root.cursor("fleur")
         local widget = capi.mouse.current_wibox
         if widget then
             widget.cursor = "fleur"
@@ -174,6 +176,7 @@ local function new(args)
     end)
 
     layout:connect_signal("mouse::leave", function()
+		capi.root.cursor("left_ptr")
         local widget = capi.mouse.current_wibox
         if widget then
             widget.cursor = "left_ptr"

@@ -409,7 +409,6 @@ local function assets()
 end
 
 local function defaults()
-    theme.hover_cursor = "hand2"
     theme.useless_gap = theme_daemon:get_useless_gap()
     theme.font_name = "Iosevka "
     theme.font = theme.font_name .. 12

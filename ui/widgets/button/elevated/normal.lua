@@ -11,6 +11,7 @@ local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 local capi = {
     awesome = awesome,
+    root = root,
     mouse = mouse
 }
 
@@ -157,7 +158,7 @@ local function new(is_state)
     wp.defaults = {}
 
     -- Setup default values
-    wp.defaults.hover_cursor = beautiful.hover_cursor
+    wp.defaults.hover_cursor = "hand2"
 
     wp.defaults.normal_bg = beautiful.colors.transparent
     wp.defaults.hover_bg = helpers.color.button_color(wp.defaults.normal_bg, 0.1)
@@ -196,6 +197,7 @@ local function new(is_state)
     }
 
     widget:connect_signal("mouse::enter", function(self, find_widgets_result)
+        capi.root.cursor(wp.hover_cursor or wp.defaults.hover_cursor)
         local wibox = capi.mouse.current_wibox
         if wibox then
             wibox.cursor = wp.hover_cursor or wp.defaults.hover_cursor
@@ -211,6 +213,8 @@ local function new(is_state)
     end)
 
     widget:connect_signal("mouse::leave", function(self, find_widgets_result)
+        capi.root.cursor("left_ptr")
+
         if widget.button ~= nil then
             widget:emit_signal("event", "release")
         end
