@@ -346,7 +346,7 @@ ruled.client.connect_signal("request::rules", function()
             "floating_terminal", "riotclientux.exe", "leagueclientux.exe", "Devtools" -- Firefox devtools
             },
             class = {apps.lxappearance.class, apps.nm_connection_editor.class, apps.file_roller.class,
-                     apps.nvidia_settings.class, apps.blueman_manager.class, "Yad"},
+                     apps.nvidia_settings.class, apps.blueman_manager.class},
             name = {"Event Tester", -- xev
             "MetaMask Notification"},
             role = {"pop-up", -- e.g. Google Chrome's (detached) Developer Tools.
