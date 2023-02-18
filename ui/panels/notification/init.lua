@@ -28,7 +28,7 @@ local function separator()
 end
 
 local function new()
-    return widgets.animated_panel {
+    notification_panel =  widgets.animated_panel {
         type = "dock",
         visible = false,
         ontop = true,
@@ -56,6 +56,8 @@ local function new()
             }
         }
     }
+
+    return notification_panel
 end
 
 if not instance then

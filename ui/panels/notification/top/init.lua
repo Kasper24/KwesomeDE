@@ -3,7 +3,6 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 local gstring = require("gears.string")
-local gtimer = require("gears.timer")
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
@@ -13,8 +12,7 @@ local dpi = beautiful.xresources.apply_dpi
 local collectgarbage = collectgarbage
 local setmetatable = setmetatable
 local ipairs = ipairs
-local os = os
-
+local string = string
 local top = {
     mt = {}
 }
@@ -74,10 +72,10 @@ local function notification_widget(notification, on_removed)
 
     local time = wibox.widget {
         widget = widgets.text,
+        id = "time",
         halign = "left",
         valign = "top",
         size = 12,
-        text = helpers.string.to_time_ago(notification.time)
     }
 
     local actions = wibox.widget {
@@ -120,6 +118,7 @@ local function notification_widget(notification, on_removed)
                 on_release = function()
                     on_removed(widget)
                     notifications_daemon:remove_notification(notification)
+                    notification_panel:dynamic_disconnect_signal("visibility")
                 end
             }
         }
@@ -149,9 +148,11 @@ local function notification_widget(notification, on_removed)
         }
     }
 
-    function widget.update_time_ago()
-        time:set_text(helpers.string.to_time_ago(notification.time))
-    end
+    notification_panel:dynamic_connect_signal("visibility", function(self, visible)
+        if visible then
+            time:set_text(helpers.string.to_time_ago(notification.time))
+        end
+    end)
 
     return widget
 end
@@ -248,6 +249,7 @@ local function new()
         icon = beautiful.icons.trash,
         on_release = function()
             notifications_daemon:remove_all_notifications()
+            notification_panel:dynamic_disconnect_signal("visibility")
         end
     }
 
@@ -320,17 +322,6 @@ local function new()
         stack:raise_widget(empty_notifications)
         collectgarbage("collect")
     end)
-
-    gtimer.poller {
-        timeout = 60,
-        callback = function()
-            for _, widget in ipairs(scrollbox.all_children) do
-                if widget.update_time_ago then
-                    widget:update_time_ago()
-                end
-            end
-        end
-    }
 
     return wibox.widget {
         layout = wibox.layout.fixed.vertical,
