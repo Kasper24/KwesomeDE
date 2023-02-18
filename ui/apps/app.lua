@@ -17,9 +17,9 @@ local app = {
     mt = {}
 }
 function app:show()
-    helpers.client.run_or_raise_with_shell({
+    helpers.client.run_or_raise({
         class = self._private.class
-    }, true, self._private.command)
+    }, true, self._private.command, {shell = true})
 end
 
 function app:hide()
