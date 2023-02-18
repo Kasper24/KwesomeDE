@@ -282,21 +282,9 @@ local function new()
         step = 50
     }
 
-    local spinning_circle = wibox.widget {
-        widget = wibox.container.margin,
-        margins = {
-            top = dpi(250)
-        },
-        widgets.spinning_circle {
-            forced_width = dpi(50),
-            forced_height = dpi(50)
-        }
-    }
-
     local stack = wibox.widget {
         layout = wibox.layout.stack,
         top_only = true,
-        spinning_circle,
         empty_notifications,
         scrollbox
     }
@@ -323,16 +311,12 @@ local function new()
             scrollbox:insert(1, notification_groups[notification.app_name].widget)
         end
 
-        spinning_circle.children[1]:stop()
-        stack:remove_widgets(spinning_circle)
         stack:raise_widget(scrollbox)
     end)
 
     notifications_daemon:connect_signal("empty", function(self)
         notification_groups = {}
-        spinning_circle.children[1]:stop()
         scrollbox:reset()
-        stack:remove_widgets(spinning_circle)
         stack:raise_widget(empty_notifications)
         collectgarbage("collect")
     end)
