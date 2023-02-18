@@ -26,6 +26,7 @@ local FILE_PICKER_SCRIPT = [[ lua -e "
 
     Dialog:add_button('Open', Gtk.ResponseType.OK)
     Dialog:add_button('Cancel', Gtk.ResponseType.CANCEL)
+    Dialog:set_wmclass('Folder Picker', 'Folder Picker')
 
     self:add_window(Dialog)
     end
