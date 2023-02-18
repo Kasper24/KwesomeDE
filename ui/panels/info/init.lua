@@ -30,7 +30,6 @@ end
 
 local function new()
     return widgets.animated_panel {
-        type = "dock",
         visible = false,
         ontop = true,
         minimum_width = dpi(800),

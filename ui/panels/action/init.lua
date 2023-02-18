@@ -51,7 +51,6 @@ local function new()
     }
 
     local panel = widgets.animated_panel {
-        type = "dock",
         visible = false,
         ontop = true,
         minimum_width = dpi(550),

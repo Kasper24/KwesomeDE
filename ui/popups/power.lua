@@ -199,7 +199,6 @@ local function new()
     ret._private.grabber = nil
 
     ret.widget = widgets.popup {
-        -- type = "splash",
         visible = false,
         ontop = true,
         placement = awful.placement.maximize,

@@ -21,7 +21,6 @@ local function new(screen)
     }
 
     return pwidget {
-        -- type = "splash",
         screen = screen,
         placement = awful.placement.maximize,
         visible = false,

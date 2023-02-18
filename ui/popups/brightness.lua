@@ -62,7 +62,6 @@ local function new()
     }
 
     ret.widget = widgets.popup {
-        type = "notification",
         screen = awful.screen.focused(),
         visible = false,
         ontop = true,

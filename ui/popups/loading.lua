@@ -61,7 +61,6 @@ awful.screen.connect_for_each_screen(function(s)
 
     local loading_popup = widgets.popup {
         screen = s,
-        type = "splash",
         visible = true,
         ontop = true,
         placement = awful.placement.maximize,

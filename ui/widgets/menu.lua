@@ -182,7 +182,6 @@ function menu.menu(widgets, width)
 
     local widget = pwidget {
         x = 32500,
-        type = "menu",
         visible = false,
         ontop = true,
         minimum_width = width or dpi(300),

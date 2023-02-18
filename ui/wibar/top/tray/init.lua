@@ -20,7 +20,6 @@ local tray = {
 
 local function system_tray()
     local system_tray = widgets.animated_panel {
-        type = "dock",
         visible = false,
         ontop = true,
         minimum_width = dpi(200),

@@ -26,7 +26,6 @@ local function new()
                 attach = true
             })
         end,
-        type = "menu",
         background = beautiful.colors.background,
         prompt_height = dpi(50),
         prompt_margins = dpi(25),
