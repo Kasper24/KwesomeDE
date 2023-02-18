@@ -77,7 +77,7 @@ local function folder()
         text = "Folder:"
     }
 
-    local folder_text = wibox.widget {
+    local folder_prompt = wibox.widget {
         widget = widgets.prompt,
         forced_width = dpi(220),
         size = 12,
@@ -98,7 +98,7 @@ local function folder()
     }
 
     screenshot_daemon:connect_signal("folder::updated", function(self, folder)
-        folder_text.text = folder
+        folder_prompt:set_text(folder)
     end)
 
     return wibox.widget {
@@ -106,7 +106,7 @@ local function folder()
         forced_height = dpi(35),
         spacing = dpi(15),
         title,
-        folder_text,
+        folder_prompt,
         set_folder_button
     }
 end

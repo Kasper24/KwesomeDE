@@ -77,6 +77,7 @@ function screenshot:set_folder(folder)
         helpers.settings:set_value("screenshot-folder", folder)
     else
         awful.spawn.easy_async(FILE_PICKER_SCRIPT, function(stdout)
+            stdout = helpers.string.trim(stdout)
             if stdout ~= "" and stdout ~= nil then
                 self._private.folder = stdout
                 helpers.settings:set_value("screenshot-folder", stdout)
