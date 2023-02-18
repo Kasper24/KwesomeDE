@@ -40,23 +40,25 @@ local WAL_CACHE_PATH = helpers.filesystem.get_xdg_cache_home("wal")
 local COLOR_PICKER_SCRIPT = [[ lua -e "local lgi = require('lgi')
 local Gtk = lgi.require('Gtk', '3.0')
 local format = string.format
+local floor = math.floor
 
 local App = Gtk.Application({
     application_id = 'GtkColorPicker'
 })
 
 local function rgba_to_hex(color)
-    local r = color.red * 255
-    local g = color.green * 255
-    local b = color.blue * 255
-    local a = color.alpha * 255
-    return format('%02x%02x%02x%02x', r, g, b, a)
+    local r = floor(color.red * 255)
+    local g = floor(color.green * 255)
+    local b = floor(color.blue * 255)
+
+    return '#' .. format('%02x%02x%02x', r, g, b)
 end
 
 function App:on_startup()
-    local Dialog  = Gtk.ColorChooserDialog({
+    local Dialog  = Gtk.ColorSelectionDialog({
         title = 'Pick a Color',
     })
+    Dialog:set_wmclass('Color Picker', 'Color Picker')
 
     self:add_window(Dialog)
 end
@@ -65,7 +67,7 @@ function App:on_activate()
     local Res = self.active_window:run()
 
     if Res == Gtk.ResponseType.OK then
-        local color = self.active_window:get_rgba()
+        local color = self.active_window:get_color_selection():get_current_rgba()
         print(rgba_to_hex(color))
         self.active_window:destroy()
     elseif Res == Gtk.ResponseType.CANCEL then
@@ -663,9 +665,9 @@ end
 
 function theme:edit_color(index)
     awful.spawn.easy_async(COLOR_PICKER_SCRIPT, function(stdout)
+        stdout = helpers.string.trim(stdout)
         if stdout ~= "" and stdout ~= nil then
-            local color = self:get_selected_colorscheme_colors()[index]
-            color = stdout
+            self:get_selected_colorscheme_colors()[index] = stdout
             self:emit_signal("color::" .. index .. "::updated", stdout)
         end
     end)
