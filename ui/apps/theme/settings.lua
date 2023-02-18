@@ -79,6 +79,7 @@ local function picom_checkbox(key)
 
     return wibox.widget {
         layout = wibox.layout.fixed.horizontal,
+        forced_height = dpi(40),
         spacing = dpi(15),
         name,
         checkbox
@@ -113,6 +114,7 @@ local function picom_slider(key, maximum, round, minimum)
 
     return wibox.widget {
         layout = wibox.layout.align.horizontal,
+        forced_height = dpi(40),
         name,
         slider_prompt
     }
@@ -139,6 +141,7 @@ local function theme_checkbox(key)
 
     return wibox.widget {
         layout = wibox.layout.fixed.horizontal,
+        forced_height = dpi(40),
         spacing = dpi(15),
         name,
         checkbox
@@ -167,6 +170,7 @@ local function theme_slider(text, initial_value, maximum, round, on_changed)
 
     return wibox.widget {
         layout = wibox.layout.align.horizontal,
+        forced_height = dpi(40),
         name,
         slider_prompt
     }
