@@ -46,11 +46,10 @@ local function favorite_widget(layout, command, class)
 
     local button = wibox.widget {
         widget = wibox.container.margin,
+        forced_width = dpi(80),
         margins = dpi(5),
         {
             widget = widgets.button.text.state,
-            forced_width = dpi(65),
-            forced_height = dpi(65),
             icon = font_icon,
             on_release = function()
                 menu:hide()
@@ -95,8 +94,6 @@ local function client_widget(client)
             widget = widgets.button.text.state,
             id = "button",
             on_by_default = capi.client.focus == client,
-            forced_width = dpi(65),
-            forced_height = dpi(65),
             icon = client.font_icon,
             on_hover = function(self)
                 task_preview:show(client, {
@@ -167,6 +164,7 @@ local function client_widget(client)
 
     local widget = wibox.widget {
         widget = wibox.layout.stack,
+        forced_width = dpi(80),
         button,
         indicator
     }
@@ -195,12 +193,12 @@ end
 
 local function new()
     local favorites = wibox.widget {
-        layout = wibox.layout.flex.horizontal,
+        layout = widgets.overflow.horizontal,
         spacing = dpi(15)
     }
 
     local task_list = wibox.widget {
-        layout = wibox.layout.fixed.horizontal,
+        layout = widgets.overflow.horizontal,
         spacing = dpi(15)
     }
 
