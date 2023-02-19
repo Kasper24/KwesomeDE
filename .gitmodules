@@ -7,3 +7,6 @@
 [submodule "color"]
 	path = external/color
 	url = https://github.com/andOrlando/color
+[submodule "xml2lua"]
+	path = external/xml2lua
+	url = https://github.com/manoelcampos/xml2lua
