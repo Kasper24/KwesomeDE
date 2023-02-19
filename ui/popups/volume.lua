@@ -14,8 +14,6 @@ local dpi = beautiful.xresources.apply_dpi
 local instance = nil
 
 local function new()
-    local ret = {}
-
     local icon = wibox.widget {
         widget = widgets.text,
         halign = "center",
@@ -42,25 +40,7 @@ local function new()
         color = beautiful.icons.volume.normal.color
     }
 
-    local hide_timer = gtimer {
-        single_shot = true,
-        call_now = false,
-        autostart = false,
-        timeout = 1,
-        callback = function()
-            ret.widget.visible = false
-        end
-    }
-
-    local anim = helpers.animation:new{
-        duration = 0.2,
-        easing = helpers.animation.easing.linear,
-        update = function(self, pos)
-            slider.value = pos
-        end
-    }
-
-    ret.widget = widgets.popup {
+    local widget = widgets.animated_popup {
         screen = awful.screen.focused(),
         visible = false,
         ontop = true,
@@ -72,7 +52,8 @@ local function new()
             })
         end,
         minimum_width = dpi(200),
-        minimum_height = dpi(200),
+        maximum_width = dpi(200),
+        maximum_height = dpi(200),
         shape = helpers.ui.rrect(),
         bg = beautiful.colors.background,
         widget = {
@@ -89,8 +70,27 @@ local function new()
         }
     }
 
+    local hide_timer = gtimer {
+        single_shot = true,
+        call_now = false,
+        autostart = false,
+        timeout = 1,
+        callback = function()
+            widget:hide()
+        end
+    }
+
+    local anim = helpers.animation:new{
+        duration = 0.2,
+        easing = helpers.animation.easing.linear,
+        update = function(self, pos)
+            slider.value = pos
+        end
+    }
+
     local show = false
     audio_daemon:connect_signal("default_sinks_updated", function(self, device)
+        print('asd')
         if show == true then
             if device.mute or device.volume == 0 then
                 icon:set_icon(beautiful.icons.volume.off)
@@ -105,19 +105,17 @@ local function new()
             text:set_text(device.volume)
             anim:set(device.volume)
 
-            if ret.widget.visible then
-                hide_timer:again()
-            else
-                ret.widget.visible = true
-                hide_timer:again()
+            if widget.visible == false then
+                widget:show()
             end
+            hide_timer:again()
         else
             anim:set(device.volume / 100)
             show = true
         end
     end)
 
-    return ret
+    return widget
 end
 
 if not instance then
