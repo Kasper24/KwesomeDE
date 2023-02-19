@@ -30,11 +30,11 @@ local function add_titlebar(client, preview)
 end
 
 local function new(client)
-    local path = "/tmp/task_preview_" .. client.window .. ".png"
+    -- local path = "/tmp/task_preview_" .. client.window .. ".png"
 
     local preview_image = wibox.widget {
         widget = wibox.widget.imagebox,
-        image = gsurface.load_uncached(path)
+        -- image = gsurface.load_uncached(path)
     }
 
     local preview = wibox.widget {
