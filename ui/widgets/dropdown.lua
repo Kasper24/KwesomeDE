@@ -69,7 +69,7 @@ local function new(args)
             text = key,
             on_press = function()
                 args.on_value_selected(value)
-                dropdown_button.text = args.prompt .. key
+                dropdown_button:set_text(args.prompt .. key)
             end
         })
     end

@@ -246,11 +246,11 @@ local function widget(self)
     }
 
     record_daemon:connect_signal("started", function()
-        record_button.text = "Stop"
+        record_button:set_text("Stop")
     end)
 
     record_daemon:connect_signal("ended", function()
-        record_button.text = "Record"
+        record_button:set_text("Record")
     end)
 
     return wibox.widget {

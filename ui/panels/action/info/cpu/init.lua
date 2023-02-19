@@ -52,7 +52,7 @@ local function core_widget(core)
     }
 
     core:connect_signal("update", function(self, core)
-        usage.text = math.floor(core.diff_usage) .. "%"
+        usage:set_text(math.floor(core.diff_usage) .. "%")
         usage_progressbar.value = core.diff_usage
     end)
 
@@ -107,9 +107,9 @@ local function process_widget(process)
     }
 
     process:dynamic_connect_signal("update", function(self, process)
-        name.text = process.comm
-        cpu_usage.text = process.cpu
-        ram_usage.text = process.mem
+        name:set_text(process.comm)
+        cpu_usage:set_text(process.cpu)
+        ram_usage:set_text(process.mem)
     end)
 
     return wibox.widget {

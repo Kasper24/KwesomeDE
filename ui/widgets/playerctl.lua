@@ -680,22 +680,22 @@ function playerctl.position(daemon)
         local hours = string.format("%02.f", math.floor(position / 3600));
         local mins = string.format("%02.f", math.floor(position / 60 - (hours * 60)));
         local secs = string.format("%02.f", math.floor(position - hours * 3600 - mins * 60));
-        widget.text = mins .. ":" .. secs
+        widget:set_text(mins .. ":" .. secs)
     end)
 
     playerctl_daemon:connect_signal("seeked", function(self, position, player_name)
         local hours = string.format("%02.f", math.floor(position / 3600));
         local mins = string.format("%02.f", math.floor(position / 60 - (hours * 60)));
         local secs = string.format("%02.f", math.floor(position - hours * 3600 - mins * 60));
-        widget.text = mins .. ":" .. secs
+        widget:set_text(mins .. ":" .. secs)
     end)
 
     playerctl_daemon:connect_signal("metadata", function(self, title, artist, album_path, album, new, player_name)
-        widget.text = "00:00"
+        widget:set_text("00:00")
     end)
 
     playerctl_daemon:connect_signal("no_players", function(self)
-        widget.text = "00:00"
+        widget:set_text("00:00")
     end)
 
     return widget
@@ -716,18 +716,18 @@ function playerctl.length(daemon)
             local hours = string.format("%02.f", math.floor(length / 3600));
             local mins = string.format("%02.f", math.floor(length / 60 - (hours * 60)));
             local secs = string.format("%02.f", math.floor(length - hours * 3600 - mins * 60));
-            widget.text = mins .. ":" .. secs
+            widget:set_text(mins .. ":" .. secs)
         else
-            widget.text = "00:00"
+            widget:set_text("00:00")
         end
     end)
 
     playerctl_daemon:connect_signal("metadata", function(self, title, artist, album_path, album, new, player_name)
-        widget.text = "00:00"
+        widget:set_text("00:00")
     end)
 
     playerctl_daemon:connect_signal("no_players", function(self)
-        widget.text = "00:00"
+        widget:set_text("00:00")
     end)
 
     return widget

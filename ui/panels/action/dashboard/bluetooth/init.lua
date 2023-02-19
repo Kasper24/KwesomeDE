@@ -131,9 +131,9 @@ local function device_widget(device, path)
     }
 
     bluetooth_daemon:connect_signal(path .. "_updated", function(self)
-        connect_or_disconnect.text = device:is_connected() and "Disconnect" or "Connect"
-        trust_or_untrust.text = device:is_trusted() and "Untrust" or "Trust"
-        pair_or_unpair.text = device:is_paired() and "Unpair" or "Pair"
+        connect_or_disconnect:set_text(device:is_connected() and "Disconnect" or "Connect")
+        trust_or_untrust:set_text(device:is_trusted() and "Untrust" or "Trust")
+        pair_or_unpair:set_text(device:is_paired() and "Unpair" or "Pair")
     end)
 
     capi.awesome.connect_signal("bluetooth_device_widget::expanded", function(toggled_on_widget)
