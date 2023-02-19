@@ -132,7 +132,7 @@ function window_switcher:hide(focus)
 end
 
 function window_switcher:toggle()
-    if self.widget.visible == true then
+    if self.visible == true then
         self:hide()
     else
         self:show(true)
