@@ -61,7 +61,7 @@ local function access_point_widget(layout, access_point)
         forced_height = dpi(30),
         halign = "left",
         size = 12,
-        text = access_point:is_access_point_active() and access_point.ssid .. " - Activated" or
+        text = access_point:is_active() and access_point.ssid .. " - Activated" or
             access_point.ssid,
         color = beautiful.colors.on_surface
     }
@@ -98,9 +98,9 @@ local function access_point_widget(layout, access_point)
         normal_bg = beautiful.colors.surface,
         text_normal_bg = beautiful.colors.on_surface,
         size = 12,
-        text = access_point:is_access_point_active() == true and "Disconnect" or "Connect",
+        text = access_point:is_active() == true and "Disconnect" or "Connect",
         on_press = function()
-            access_point:toggle_access_point(prompt:get_text(), auto_connect_checkbox:get_state())
+            access_point:toggle(prompt:get_text(), auto_connect_checkbox:get_state())
         end
     }
 
@@ -290,7 +290,7 @@ local function new()
         for _, access_point in pairs(access_points) do
             table.insert(hw_addresses, access_point.hw_address)
 
-            if access_point:is_access_point_active() then
+            if access_point:is_active() then
                 layout:insert(1, access_point_widget(layout, access_point))
             else
                 layout:add(access_point_widget(layout, access_point))

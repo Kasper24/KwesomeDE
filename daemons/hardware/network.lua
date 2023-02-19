@@ -332,7 +332,7 @@ function network:open_settings()
     awful.spawn("nm-connection-editor", false)
 end
 
-function access_point:connect_to_access_point(password, auto_connect)
+function access_point:connect(password, auto_connect)
     local connections = get_access_point_connections(self.network_manager, self.ssid)
     local profile = create_profile(self, password, auto_connect)
 
@@ -367,15 +367,15 @@ function access_point:connect_to_access_point(password, auto_connect)
     end
 end
 
-function access_point:is_access_point_active()
+function access_point:is_active()
     return self.path == self.network_manager._private.wifi_proxy.ActiveAccessPoint
 end
 
-function access_point:toggle_access_point(password, auto_connect)
-    if self:is_access_point_active() then
-        self:disconnect_from_active_access_point()
+function access_point:toggle(password, auto_connect)
+    if self:is_active() then
+        self.network_manager:disconnect_from_active_access_point()
     else
-        self:connect_to_access_point(password, auto_connect)
+        self:connect(password, auto_connect)
     end
 end
 
