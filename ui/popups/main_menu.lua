@@ -75,42 +75,39 @@ end
 local function layout_sub_menu()
     local menu = widgets.menu {}
 
-    local function create_layout_menu_for_tag(tag)
-        menu:reset()
-
-        for _, layout in ipairs(tag.layouts) do
-            local button = widgets.menu.checkbox_button {
-                text = layout.name,
-                image = beautiful["layout_" .. (layout.name or "")],
-                handle_active_color = beautiful.icons.table_layout.color,
-                on_press = function()
-                    tag.layout = layout
-                end
-            }
-
-            menu:add(button)
-
-            if tag.layout == layout then
-                button:turn_on()
-            else
-                button:turn_off()
+    local layouts  = awful.screen.focused().selected_tag.layouts
+    for _, layout in ipairs(layouts) do
+        local widget = widgets.menu.checkbox_button {
+            text = layout.name,
+            image = beautiful["layout_" .. (layout.name or "")],
+            handle_active_color = beautiful.icons.table_layout.color,
+            on_press = function()
+                awful.screen.focused().selected_tag.layout = layout
             end
+        }
 
-            tag:connect_signal("property::layout", function()
-                if tag.layout == layout then
-                    button:turn_on()
-                else
-                    button:turn_off()
-                end
-            end)
+        if awful.screen.focused().selected_tag.layout.name == layout.name then
+            widget:turn_on()
         end
+
+        menu:connect_signal("layout::selected", function(self, name)
+            if layout.name == name then
+                widget:turn_on()
+            else
+                widget:turn_off()
+            end
+        end)
+
+        menu:add(widget)
     end
 
     capi.tag.connect_signal("property::selected", function(tag)
-        create_layout_menu_for_tag(tag)
+        menu:emit_signal("layout::selected", tag.layout.name)
     end)
 
-    create_layout_menu_for_tag(awful.screen.focused().selected_tag)
+    capi.tag.connect_signal("property::layout", function(tag)
+        menu:emit_signal("layout::selected", tag.layout.name)
+    end)
 
     return menu
 end

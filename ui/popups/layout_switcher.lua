@@ -26,12 +26,13 @@ function layout_switcher:cycle_layouts(increase)
     awful.layout.set(gtable.cycle_value(layouts, layout, increase), nil)
 end
 
-local function layout_widget(layout, tag)
-    local button = wibox.widget
+local function layout_widget(self, layout)
+    local widget = wibox.widget
     {
         widget = widgets.button.elevated.state,
+        layout_name = layout.name,
         on_turn_on = function()
-            tag.layout = layout
+            awful.screen.focused().selected_tag.layout = layout
         end,
         child = {
             layout = wibox.layout.fixed.horizontal,
@@ -50,29 +51,22 @@ local function layout_widget(layout, tag)
         }
     }
 
-    if tag.layout == layout then
-        button:turn_on()
-    else
-        button:turn_off()
+    if awful.screen.focused().selected_tag.layout.name == layout.name then
+        widget:turn_on()
     end
 
-    tag:connect_signal("property::layout", function()
-        if tag.layout == layout then
-            button:turn_on()
+    self:connect_signal("layout::selected", function(self, name)
+        if layout.name == name then
+            widget:turn_on()
         else
-            button:turn_off()
+            widget:turn_off()
         end
     end)
 
-    return button
+    return widget
 end
 
 local function new()
-    local layouts = wibox.widget {
-        layout = wibox.layout.fixed.vertical,
-        spacing = dpi(15)
-    }
-
     local widget = widgets.animated_popup {
         placement = awful.placement.centered,
         ontop = true,
@@ -83,23 +77,28 @@ local function new()
         widget = wibox.widget {
             widget = wibox.container.margin,
             margins = dpi(25),
-            layouts
+            {
+                layout = wibox.layout.fixed.vertical,
+                id = "layouts",
+                spacing = dpi(15)
+            }
         }
     }
     gtable.crush(widget, layout_switcher)
 
-    capi.tag.connect_signal("property::selected", function(tag)
-        layouts:reset()
+    local layouts  = awful.screen.focused().selected_tag.layouts
+    local layouts_widget = widget.widget:get_children_by_id("layouts")[1]
+    for _, layout in ipairs(layouts) do
+        layouts_widget:add(layout_widget(widget, layout))
+    end
 
-        for _, layout in ipairs(tag.layouts) do
-            layouts:add(layout_widget(layout, tag))
-        end
+    capi.tag.connect_signal("property::selected", function(tag)
+        widget:emit_signal("layout::selected", tag.layout.name)
     end)
 
-    local tag  = awful.screen.focused().selected_tag
-    for _, layout in ipairs(tag.layouts) do
-        layouts:add(layout_widget(layout, tag))
-    end
+    capi.tag.connect_signal("property::layout", function(tag)
+        widget:emit_signal("layout::selected", tag.layout.name)
+    end)
 
     return widget
 end
