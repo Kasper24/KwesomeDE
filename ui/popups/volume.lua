@@ -90,7 +90,6 @@ local function new()
 
     local show = false
     audio_daemon:connect_signal("default_sinks_updated", function(self, device)
-        print('asd')
         if show == true then
             if device.mute or device.volume == 0 then
                 icon:set_icon(beautiful.icons.volume.off)
