@@ -13,7 +13,7 @@ local animated_popup = {
     mt = {}
 }
 
-function animated_popup:show()
+function animated_popup:show(value)
     if self.state == true then
         return
     end
@@ -21,7 +21,11 @@ function animated_popup:show()
 
     self.animation.pos = 1
     self.animation.easing = helpers.animation.easing.outExpo
-    self.animation:set(self.maximum_height)
+    if self.method == "forced_height" then
+        self.animation:set(value or self.maximum_height)
+    else
+        self.animation:set(value or self.maximum_width)
+    end
     self.visible = true
     self:emit_signal("visibility", true)
 end
@@ -54,13 +58,15 @@ local function new(args)
     local ret = pwidget(args)
     gtable.crush(ret, animated_popup, true)
 
+    ret.method = "forced_" .. (args.animate_method or "height")
+
     ret.state = false
     ret.animation = helpers.animation:new{
         pos = 1,
         easing = helpers.animation.easing.outExpo,
         duration = 0.8,
         update = function(_, pos)
-            ret.widget.forced_height = dpi(pos)
+            ret.widget[ret.method] = dpi(pos)
         end,
         signals = {
             ["ended"] = function()

@@ -77,9 +77,9 @@ local function new()
         visible = false,
         ontop = true,
         shape = helpers.ui.rrect(),
-        minimum_width = dpi(300),
         maximum_width = dpi(300),
         maximum_height = dpi(150),
+        animate_method = "width",
         bg = beautiful.colors.background,
         widget = thumbnail
     }

@@ -108,7 +108,8 @@ function window_switcher:show()
 
     self:select_client(capi.client.focus)
 
-    self:_show()
+    local clients = #capi.client.get()
+    self:_show(clients * dpi(300) + clients * dpi(15))
 end
 
 function window_switcher:hide(focus)
@@ -135,6 +136,7 @@ local function new()
         shape = helpers.ui.rrect(),
         bg = beautiful.colors.background,
         maximum_height = dpi(300),
+        animate_method = "width",
         widget = wibox.widget {
             widget = wibox.container.margin,
             margins = dpi(15),
