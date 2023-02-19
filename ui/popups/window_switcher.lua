@@ -10,6 +10,7 @@ local beautiful = require("beautiful")
 local widgets = require("ui.widgets")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
+local ipairs = ipairs
 local capi = {
     root = root,
     client = client
@@ -93,24 +94,6 @@ local function client_widget(self, client)
     return widget
 end
 
-local function clients_widget(self)
-    local clients_layout = wibox.widget {
-        layout = wibox.layout.fixed.horizontal,
-        spacing = dpi(15)
-    }
-
-    self._private.sorted_clients = helpers.client.get_sorted_clients()
-    for _, client in ipairs(self._private.sorted_clients) do
-        clients_layout:add(client_widget(self, client))
-    end
-
-    return wibox.widget {
-        widget = wibox.container.margin,
-        margins = dpi(15),
-        clients_layout
-    }
-end
-
 function window_switcher:select_client(client)
     self._private.selected_client.window_switcher_widget:get_children_by_id("button")[1]:turn_off()
     client.window_switcher_widget:get_children_by_id("button")[1]:turn_on()
@@ -132,8 +115,14 @@ function window_switcher:show(set_selected_client)
         self._private.selected_client = capi.client.focus
     end
 
-    self.widget.widget = clients_widget(self)
-    self.widget.visible = true
+    self._private.sorted_clients = helpers.client.get_sorted_clients()
+    local clients_layout = self.widget:get_children_by_id("clients")[1]
+    clients_layout:reset()
+    for _, client in ipairs(self._private.sorted_clients) do
+        clients_layout:add(client_widget(self, client))
+    end
+
+    self:_show()
 end
 
 function window_switcher:hide(focus)
@@ -141,10 +130,7 @@ function window_switcher:hide(focus)
         focus_client(self._private.selected_client)
     end
 
-    self.widget.visible = false
-    self.widget.widget = nil
-
-    collectgarbage("collect")
+    self:_hide()
 end
 
 function window_switcher:toggle()
@@ -156,39 +142,47 @@ function window_switcher:toggle()
 end
 
 local function new()
-    local ret = gobject {}
-    gtable.crush(ret, window_switcher)
-
-    ret._private = {}
-    ret._private.sorted_clients = {}
-
-    ret.widget = widgets.popup {
+    local widget = widgets.animated_popup {
         type = 'dropdown_menu',
         placement = awful.placement.centered,
         visible = false,
         ontop = true,
         shape = helpers.ui.rrect(),
         bg = beautiful.colors.background,
-        widget = wibox.container.background -- A dummy widget to make awful.popup not scream
+        maximum_height = dpi(300),
+        widget = wibox.widget {
+            widget = wibox.container.margin,
+            margins = dpi(15),
+            {
+                layout = wibox.layout.fixed.horizontal,
+                id = "clients",
+                spacing = dpi(15)
+            }
+        }
     }
+    widget._private.sorted_clients = {}
+    widget._show = widget.show
+    widget._hide = widget.hide
+
+    gtable.crush(widget, window_switcher, true)
 
     capi.client.connect_signal("manage", function()
-        if ret.widget.visible == true then
-            ret:show()
+        if widget.visible == true then
+            widget:show()
         end
     end)
 
     capi.client.connect_signal("unmanage", function(client)
-        if ret.widget.visible == true then
-            if client == ret._private.selected_client then
-                ret:cycle_clients(true)
+        if widget.visible == true then
+            if client == widget._private.selected_client then
+                widget:cycle_clients(true)
             end
 
-            ret:show(false)
+            widget:show(false)
         end
     end)
 
-    return ret
+    return widget
 end
 
 if not instance then
