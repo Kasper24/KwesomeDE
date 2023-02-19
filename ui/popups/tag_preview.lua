@@ -52,7 +52,6 @@ function tag_preview:show(t, args)
     -- save_tag_thumbnail(t)
     self.widget.image = t.thumbnail or theme_daemon:get_wallpaper_surface()
 
-    self.animation.pos = 0
     self:_show()
 end
 
