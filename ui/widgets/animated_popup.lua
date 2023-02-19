@@ -19,7 +19,6 @@ function animated_popup:show()
     end
     self.state = true
 
-    self.placement = nil
     self.animation.easing = helpers.animation.easing.outExpo
     self.animation:set(self.maximum_height)
     self.visible = true
