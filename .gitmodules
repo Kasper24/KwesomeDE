@@ -16,3 +16,6 @@
 [submodule "dbus_proxy"]
 	path = external/dbus_proxy
 	url = https://github.com/stefano-m/lua-dbus_proxy
+[submodule "async"]
+	path = external/async
+	url = https://github.com/sclu1034/async.lua

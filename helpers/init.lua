@@ -1,6 +1,5 @@
 return {
     animation = require(... .. ".animation"),
-    async = require(... .. ".async"),
     file = require(... .. ".filesystem.file"),
     filesystem = require(... .. ".filesystem.filesystem"),
     stream = require(... .. ".filesystem.stream"),

@@ -30,7 +30,7 @@
 -- @module file
 -- @license GPL v3.0
 ---------------------------------------------------------------------------
-local async = require("helpers.async")
+local async = require("external.async")
 local lgi = require("lgi")
 local Gio = lgi.Gio
 local GLib = lgi.GLib
