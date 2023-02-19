@@ -6,6 +6,7 @@ local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local helpers = require("helpers")
+local json = require("external.json")
 local string = string
 
 local weather = {}
@@ -66,7 +67,7 @@ function weather:refresh()
                 return
             end
 
-            local data = helpers.json.decode(content)
+            local data = json.decode(content)
             if data == nil then
                 self:emit_signal("error")
                 return

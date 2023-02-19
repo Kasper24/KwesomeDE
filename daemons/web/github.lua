@@ -7,6 +7,7 @@ local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local beautiful = require("beautiful")
 local helpers = require("helpers")
+local json = require("external.json")
 local string = string
 local ipairs = ipairs
 
@@ -91,7 +92,7 @@ local function github_events(self)
 
     helpers.filesystem.remote_watch(EVENTS_DATA_PATH, string.format(link, self._private.username), UPDATE_INTERVAL,
         function(content)
-            local data = helpers.json.decode(content)
+            local data = json.decode(content)
 
             if data == nil then
                 self:emit_signal("events::error")
@@ -118,7 +119,7 @@ local function github_events(self)
             end
         end,
         function(old_content)
-            local data = helpers.json.decode(old_content) or {}
+            local data = json.decode(old_content) or {}
             if old_data == nil and data ~= nil then
                 self:emit_signal("events", data)
             end
@@ -140,7 +141,7 @@ local function github_prs(self)
         link,
         UPDATE_INTERVAL,
         function(content)
-            local data = helpers.json.decode(content)
+            local data = json.decode(content)
             if data == nil then
                 self:emit_signal("prs::error")
                 return
@@ -166,7 +167,7 @@ local function github_prs(self)
             end
         end,
         function(old_content)
-            local data = helpers.json.decode(old_content) or {}
+            local data = json.decode(old_content) or {}
             if old_data == nil and data ~= nil then
                 self:emit_signal("prs", data.items)
             end

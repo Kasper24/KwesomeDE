@@ -7,8 +7,8 @@ local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local helpers = require("helpers")
+local json = require("external.json")
 local ipairs = ipairs
-local pairs = pairs
 local os = os
 local capi = {
     screen = screen
@@ -50,9 +50,7 @@ function desktop:ask_for_new_position(widget, path)
         desktop_icons[path].y = new_grid_pos.y
 
         local file = helpers.file.new_for_path(path)
-        file:write(helpers.json.encode(desktop_icons, {
-            indent = true
-        }))
+        file:write(json.encode(desktop_icons))
 
         return {
             x = new_x,
@@ -88,9 +86,7 @@ local function on_desktop_icon_added(self, pos, path, name, mimetype)
     }, path, name, mimetype)
 
     local file = helpers.file.new_for_path(path)
-    file:write(helpers.json.encode(desktop_icons, {
-        indent = true
-    }))
+    file:write(json.encode(desktop_icons))
 end
 
 local function on_desktop_icon_removed(self, path)
@@ -100,9 +96,7 @@ local function on_desktop_icon_removed(self, path)
 
     desktop_icons[path] = nil
     local file = helpers.file.new_for_path(path)
-    file:write(helpers.json.encode(desktop_icons, {
-        indent = true
-    }))
+    file:write(json.encode(desktop_icons))
 end
 
 local function watch_desktop_directory(self)
@@ -129,7 +123,7 @@ local function scan_for_desktop_files_on_init(self)
     file:read(function(error, content)
         if error == nil then
             local old_desktop_icons = {}
-            old_desktop_icons = helpers.json.decode(content) or {}
+            old_desktop_icons = json.decode(content) or {}
             helpers.filesystem.iterate_contents(DESKTOP_PATH, function(file)
                 local name = file:get_name()
                 local path = DESKTOP_PATH .. "/" .. name

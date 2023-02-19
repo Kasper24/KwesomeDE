@@ -6,6 +6,7 @@ local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local helpers = require("helpers")
+local json = require("external.json")
 local string = string
 local ipairs = ipairs
 
@@ -49,7 +50,7 @@ function gitlab:refresh()
         string.format(LINK, self._private.host, self._private.access_token),
         UPDATE_INTERVAL,
         function(content)
-            local data = helpers.json.decode(content)
+            local data = json.decode(content)
             if data == nil then
                 self:emit_signal("error")
                 return
@@ -75,7 +76,7 @@ function gitlab:refresh()
             end
         end,
         function(old_content)
-            local data = helpers.json.decode(old_content) or {}
+            local data = json.decode(old_content) or {}
             if old_data == nil and data ~= nil then
                 self:emit_signal("mrs", data)
             end

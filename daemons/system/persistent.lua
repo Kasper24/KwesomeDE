@@ -9,6 +9,7 @@ local gtimer = require("gears.timer")
 local bling = require("external.bling")
 local tabbed = bling.module.tabbed
 local helpers = require("helpers")
+local json = require("external.json")
 local tostring = tostring
 local string = string
 local ipairs = ipairs
@@ -234,9 +235,7 @@ function persistent:save()
     self:save_tags()
     self:save_clients()
 
-    local json_settings = helpers.json.encode(self.settings, {
-        indent = true
-    })
+    local json_settings = json.encode(self.settings)
     awful.spawn.with_shell(string.format("mkdir -p %s && echo '%s' > %s", PATH, json_settings, DATA_PATH))
 end
 
@@ -244,7 +243,7 @@ function persistent:restore()
     local file = helpers.file.new_for_path(DATA_PATH)
     file:read(function(error, content)
         if error == nil then
-            self.restored_settings = helpers.json.decode(content)
+            self.restored_settings = json.decode(content)
             if self.restored_settings ~= nil then
                 self:recreate_clients()
                 self:reapply_tags()

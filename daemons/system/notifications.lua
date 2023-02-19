@@ -10,6 +10,7 @@ local gstring = require("gears.string")
 local wibox = require("wibox")
 local naughty = require("naughty")
 local helpers = require("helpers")
+local json = require("external.json")
 local ipairs = ipairs
 local table = table
 local os = os
@@ -61,7 +62,7 @@ local function read_notifications(self)
     local file = helpers.file.new_for_path(DATA_PATH)
     file:read(function(error, content)
         if error == nil then
-            self._private.notifications = helpers.json.decode(content) or {}
+            self._private.notifications = json.decode(content) or {}
 
             if #self._private.notifications > 0 then
                 for _, notification in ipairs(self._private.notifications) do
@@ -158,9 +159,7 @@ local function new()
         single_shot = true,
         callback = function()
             local file = helpers.file.new_for_path(DATA_PATH)
-            file:write(helpers.json.encode(ret._private.notifications, {
-                indent = true
-            }))
+            file:write(json.encode(ret._private.notifications))
         end
     }
 

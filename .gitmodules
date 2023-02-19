@@ -10,3 +10,6 @@
 [submodule "xml2lua"]
 	path = external/xml2lua
 	url = https://github.com/manoelcampos/xml2lua
+[submodule "json"]
+	path = external/json
+	url = https://github.com/rxi/json.lua
