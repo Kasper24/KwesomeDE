@@ -55,6 +55,13 @@ local function partition_widget(partition)
             math.floor(partition.perc) .. "%)"
     }
 
+    partition:connect_signal("update", function(self, partition)
+        name:set_text(partition.mount)
+        usage.progressbar.value = tonumber(partition.perc)
+        usage:set_text(math.floor(partition.used / 1024 / 1024) .. "/" .. math.floor(partition.size / 1024 / 1024) .. "GB(" ..
+            math.floor(partition.perc) .. "%)")
+    end)
+
     return wibox.widget {
         layout = wibox.layout.fixed.horizontal,
         spacing = dpi(15),
@@ -89,13 +96,10 @@ local function new()
         spacing = dpi(15)
     }
 
-    disk_daemon:connect_signal("update", function(self, partitions)
-        layout:reset()
-
-        for _, partition in ipairs(partitions) do
-            layout:add(partition_widget(partition))
-        end
+    disk_daemon:connect_signal("partition", function(self, partition)
+        layout:add(partition_widget(partition))
     end)
+
 
     return widgets.animated_panel {
         ontop = true,

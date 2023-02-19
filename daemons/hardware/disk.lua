@@ -15,29 +15,34 @@ local function new()
     local ret = gobject {}
     gtable.crush(ret, disk, true)
 
+    ret._private = {}
+    ret._private.partition = {}
+
     gtimer.poller {
         timeout = 1800,
         callback = function()
             awful.spawn.easy_async_with_shell("df | tail -n +2", function(stdout)
-                local disks = {}
-
                 for line in stdout:gmatch("[^\r\n$]+") do
                     local filesystem, size, used, avail, perc, mount = line:match(
                         "([%p%w]+)%s+([%d%w]+)%s+([%d%w]+)%s+([%d%w]+)%s+([%d]+)%%%s+([%p%w]+)")
 
                     if filesystem ~= "tmpfs" and filesystem ~= "dev" and filesystem ~= "run" then
-                        local disk = {}
-                        disk.filesystem = filesystem
-                        disk.size = size
-                        disk.used = used
-                        disk.avail = avail
-                        disk.perc = perc
-                        disk.mount = mount
-                        table.insert(disks, disk)
+                        local partition = gobject {}
+                        partition.filesystem = filesystem
+                        partition.size = size
+                        partition.used = used
+                        partition.avail = avail
+                        partition.perc = perc
+                        partition.mount = mount
+
+                        if ret._private.partition[partition.mount] == nil then
+                            ret._private.partition[partition.mount] = partition
+                            ret:emit_signal("partition", partition)
+                        else
+                            ret._private.partition[partition.mount]:emit_signal("update", partition)
+                        end
                     end
                 end
-
-                ret:emit_signal("update", disks)
             end)
         end
     }
