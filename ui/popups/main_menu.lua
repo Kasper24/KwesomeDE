@@ -17,6 +17,7 @@ local beautiful = require("beautiful")
 local ipairs = ipairs
 local capi = {
     awesome = awesome,
+    root = root,
     screen = screen,
     tag = tag
 }
@@ -49,7 +50,7 @@ end
 local function tag_sub_menu()
     local menu = widgets.menu {}
 
-    for _, tag in ipairs(capi.screen.primary.tags) do
+    for _, tag in ipairs(capi.root.tags()) do
         local button = widgets.menu.checkbox_button {
             text = tag.name,
             handle_active_color = beautiful.icons.tag.color,
@@ -60,8 +61,14 @@ local function tag_sub_menu()
 
         menu:add(button)
 
-        tag:connect_signal("property::selected", function(t)
-            if t.selected == true then
+        if tag.selected == true then
+            button:turn_on()
+        else
+            button:turn_off()
+        end
+
+        tag:connect_signal("property::selected", function(tag)
+            if tag.selected == true then
                 button:turn_on()
             else
                 button:turn_off()
