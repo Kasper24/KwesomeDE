@@ -1,12 +1,11 @@
 local awful = require("awful")
-
-local tostring = tostring
+local hfilesystem = require("helpers.filesystem.filesystem")
+local tonumber = tonumber
 local string = string
-local ipairs = ipairs
-local math = math
-local os = os
 
 local _run = {}
+
+local AWESOME_SENSIBLE_TERMINAL_PATH = hfilesystem.get_awesome_config_dir("scripts") .. "awesome-sensible-terminal"
 
 function _run.run_once_pgrep(findme, cmd)
     awful.spawn.with_shell(string.format("pgrep -u $USER -x %s > /dev/null || (%s)", findme, cmd))
@@ -41,17 +40,14 @@ function _run.is_pid_running(pid, callback)
     end)
 end
 
-local AWESOME_SENSIBLE_TERMINAL_PATH = debug.getinfo(1).source:match("@?(.*/)") ..
-                                           "../scripts/awesome-sensible-terminal"
-
-function _run.exec_terminal_app(command)
-    awful.spawn.with_shell(AWESOME_SENSIBLE_TERMINAL_PATH .. " -e " .. command)
-end
-
 function _run.is_installed(program, callback)
     awful.spawn.easy_async(string.format("which %s", program), function(stdout, stderr)
         callback(stderr == "")
     end)
+end
+
+function _run.exec_terminal_app(app)
+    awful.spawn.with_shell(AWESOME_SENSIBLE_TERMINAL_PATH .. " -e " .. app)
 end
 
 return _run

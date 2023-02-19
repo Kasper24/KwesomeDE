@@ -10,6 +10,7 @@ local Gio = lgi.Gio
 local gtimer = require("gears.timer")
 local File = require("helpers.filesystem.file")
 local async = require("helpers.async")
+local debug = debug
 local os = os
 local capi = {
     awesome = awesome
@@ -378,20 +379,19 @@ function filesystem.remote_watch(path, uri, interval, callback, old_content_call
     timer:emit_signal("timeout")
 end
 
-function filesystem.get_config_dir(sub_folder)
-    return (os.getenv("XDG_CONFIG_HOME") or os.getenv("HOME") .. "/.config/") .. sub_folder .. "/"
-end
-
-function filesystem.get_awesome_config_dir(sub_folder)
-    return (capi.awesome.conffile:match(".*/") or "./") .. sub_folder .. "/"
+function filesystem.get_xdg_cache_home(sub_folder)
+    return (os.getenv("XDG_CACHE_HOME") or os.getenv("HOME") .. "/.cache") .. "/" .. sub_folder .. "/"
 end
 
 function filesystem.get_cache_dir(sub_folder)
     return (os.getenv("XDG_CACHE_HOME") or os.getenv("HOME") .. "/.cache") .. "/awesome/" .. sub_folder .. "/"
 end
 
-function filesystem.get_xdg_cache_home(sub_folder)
-    return (os.getenv("XDG_CACHE_HOME") or os.getenv("HOME") .. "/.cache") .. "/" .. sub_folder .. "/"
+function filesystem.get_awesome_config_dir(sub_folder)
+    return (capi.awesome.conffile:match(".*/") or "./") .. sub_folder .. "/"
+end
+function filesystem.get_script_path(sub_folder)
+    return debug.getinfo(1).source:match("@?(.*/)") .. sub_folder
 end
 
 return filesystem
