@@ -48,66 +48,58 @@ function tag_preview:show(t, args)
             args.coords.y = args.coords.y + args.offset.y
         end
 
-        self.widget.x = args.coords.x
-        self.widget.y = args.coords.y
+        self.x = args.coords.x
+        self.y = args.coords.y
     end
 
     -- save_tag_thumbnail(t)
+    self.widget.image = t.thumbnail or theme_daemon:get_wallpaper_surface()
 
-    local widget = wibox.widget {
-        widget = wibox.widget.imagebox,
-        forced_width = dpi(300),
-        forced_height = dpi(150),
-        horizontal_fit_policy = "fit",
-        vertical_fit_policy = "fit",
-        image = t.thumbnail or theme_daemon:get_wallpaper_surface()
-    }
-
-    self.widget.widget = widget
-    self.widget.visible = true
-end
-
-function tag_preview:hide()
-    self.widget.visible = false
-    self.widget.widget = nil
-    collectgarbage("collect")
+    self.animation.pos = 0
+    self:_show()
 end
 
 function tag_preview:toggle(t, args)
-    if self.widget.visible == true then
+    if self.visible == true then
         self:hide()
     else
         self:show(t, args)
     end
 end
 
-local function new(args)
-    args = args or {}
+local function new()
+    local thumbnail = wibox.widget {
+        widget = wibox.widget.imagebox,
+        forced_width = dpi(300),
+        forced_height = dpi(150),
+        horizontal_fit_policy = "fit",
+        vertical_fit_policy = "fit",
+        image = theme_daemon:get_wallpaper_surface()
+    }
 
-    local ret = gobject {}
-    ret._private = {}
-
-    gtable.crush(ret, tag_preview)
-    gtable.crush(ret, args)
-
-    ret.widget = widgets.popup {
+    local widget = widgets.animated_popup {
         type = 'dropdown_menu',
         visible = false,
         ontop = true,
         shape = helpers.ui.rrect(),
+        minimum_width = dpi(300),
+        maximum_width = dpi(300),
+        maximum_height = dpi(150),
         bg = beautiful.colors.background,
-        widget = wibox.container.background -- A dummy widget to make awful.popup not scream
+        widget = thumbnail
     }
+    widget._show = widget.show
+    gtable.crush(widget, tag_preview, true)
 
     capi.client.connect_signal("property::fullscreen", function(c)
         if c.fullscreen then
-            ret:hide()
+            widget:hide()
         end
     end)
 
     capi.client.connect_signal("focus", function(c)
         if c.fullscreen then
-            ret:hide()
+            widget:hide()
         end
     end)
 
@@ -124,7 +116,7 @@ local function new(args)
         -- }
     end)
 
-    return ret
+    return widget
 end
 
 if not instance then
