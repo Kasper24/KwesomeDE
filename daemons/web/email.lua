@@ -7,9 +7,11 @@ local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local helpers = require("helpers")
-local xml = require("helpers.xml")
-local handler = require("helpers.xml.tree")
+local xml = require("external.xml2lua.xml2lua")
+local handler = require("external.xml2lua.xmlhandler.tree")
 local ipairs = ipairs
+local string = string
+local os = os
 
 local email = {}
 local instance = nil
@@ -69,31 +71,33 @@ local function new()
             local file = helpers.file.new_for_path(DATA_PATH)
             file:read(function(error, content)
                 if error == nil then
-                    local data = helpers.json.decode(content) or {}
-                    if old_data == nil and data ~= nil then
-                        ret:emit_signal("emails", data)
+                    local emails_handler = handler:new()
+                    local emails_parser = xml.parser(emails_handler)
+                    emails_parser:parse(content)
+
+                    if old_data == nil and emails_handler.root.feed.entry ~= nil then
+                        ret:emit_signal("emails", emails_handler.root.feed.entry)
                     end
 
                     old_data = {}
-                    for _, email in ipairs(data) do
+                    for _, email in ipairs(emails_handler.root.feed.entry) do
                         old_data[email.id] = email.id
                     end
                 end
 
                 awful.spawn.easy_async("curl -fsn https://mail.google.com/mail/feed/atom?alt=json", function(stdout)
-                    local parser = xml.parser(handler)
-                    parser:parse(stdout)
+                    local emails_handler = handler:new()
+                    local emails_parser = xml.parser(emails_handler)
+                    emails_parser:parse(stdout)
 
-                    if handler.root and handler.root.feed then
-                        for _, email in ipairs(handler.root.feed.entry) do
-                            if old_data[email.id] == nil then
+                    if emails_handler.root and emails_handler.root.feed then
+                        for _, email in ipairs(emails_handler.root.feed.entry) do
+                            if old_data == nil or old_data[email.id] == nil then
                                 ret:emit_signal("new_email", email)
                             end
                         end
 
-                        file:write(helpers.json.encode(handler.root.feed.entry, {
-                            indent = true
-                        }))
+                        file:write(stdout)
                     else
                         ret:emit_signal("error")
                     end
