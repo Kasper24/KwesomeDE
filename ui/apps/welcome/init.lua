@@ -30,7 +30,7 @@ local function indicator(active)
         widget = widgets.background,
         forced_width = dpi(20),
         shape = gshape.circle,
-        bg = active and accent_color or helpers.color.lighten(beautiful.colors.surface, 0.2)
+        bg = active and accent_color or helpers.color.lighten(beautiful.colors.surface_no_opacity, 0.2)
     }
 end
 
