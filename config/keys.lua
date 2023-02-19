@@ -891,7 +891,7 @@ awful.keygrabber {
     stop_key = keys.alt,
     stop_event = "release",
     start_callback = function()
-        window_switcher:show(true)
+        window_switcher:show()
     end,
     stop_callback = function()
         window_switcher:hide()

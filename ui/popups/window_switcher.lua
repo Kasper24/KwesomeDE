@@ -35,13 +35,7 @@ local function focus_client(client)
 end
 
 local function client_widget(self, client)
-    if client == nil then
-        return
-    end
-
-    local is_selected = client == self._private.selected_client
-
-    local widget = wibox.widget {
+    return wibox.widget {
         widget = wibox.container.constraint,
         mode = "max",
         width = dpi(300),
@@ -89,38 +83,27 @@ local function client_widget(self, client)
             }
         }
     }
-
-    client.window_switcher_widget = widget
-
-    return widget
 end
 
 function window_switcher:select_client(client)
-    self._private.selected_client.window_switcher_widget:get_children_by_id("button")[1]:turn_off()
-    client.window_switcher_widget:get_children_by_id("button")[1]:turn_on()
-    self._private.selected_client = client
+    if self._private.selected_client then
+        self._private.selected_client.window_switcher_widget:get_children_by_id("button")[1]:turn_off()
+    end
+    if client.window_switcher_widget then
+        client.window_switcher_widget:get_children_by_id("button")[1]:turn_on()
+        self._private.selected_client = client
+    end
 end
 
 function window_switcher:cycle_clients(increase)
-    local client = gtable.cycle_value(self._private.sorted_clients, self._private.selected_client, (increase and 1 or -1))
+    local client = gtable.cycle_value(helpers.client.get_sorted_clients(), self._private.selected_client, (increase and 1 or -1))
     self:select_client(client)
 end
 
-function window_switcher:show(set_selected_client)
+function window_switcher:show()
     if #capi.client.get() == 0 then
         self:hide(false)
         return
-    end
-
-    if set_selected_client == true or set_selected_client == nil then
-        self._private.selected_client = capi.client.focus
-    end
-
-    self._private.sorted_clients = helpers.client.get_sorted_clients()
-    local clients_layout = self.widget:get_children_by_id("clients")[1]
-    clients_layout:reset()
-    for _, client in ipairs(self._private.sorted_clients) do
-        clients_layout:add(client_widget(self, client))
     end
 
     self:_show()
@@ -138,7 +121,7 @@ function window_switcher:toggle()
     if self.visible == true then
         self:hide()
     else
-        self:show(true)
+        self:show()
     end
 end
 
@@ -162,24 +145,49 @@ local function new()
     }
 
     widget._private.sorted_clients = {}
+    widget._private.previous_sorted_clients = {}
+
     widget._show = widget.show
     widget._hide = widget.hide
     gtable.crush(widget, window_switcher, true)
 
-    capi.client.connect_signal("manage", function()
-        if widget.visible == true then
-            widget:show()
+    local clients_layout = widget.widget:get_children_by_id("clients")[1]
+
+    capi.client.connect_signal("unmanage", function(client)
+        clients_layout:remove_widgets(client.window_switcher_widget)
+    end)
+
+    capi.client.connect_signal("swapped", function(client, other_client, is_source)
+        if is_source then
+            local client_index = helpers.client.get_client_index(client)
+            local other_client_index = helpers.client.get_client_index(other_client)
+            clients_layout:set(client_index, client.window_switcher_widget)
+            clients_layout:set(other_client_index, other_client.window_switcher_widget)
         end
     end)
 
-    capi.client.connect_signal("unmanage", function(client)
-        if widget.visible == true then
-            if client == widget._private.selected_client then
-                widget:cycle_clients(true)
-            end
-
-            widget:show(false)
+    capi.client.connect_signal("scanned", function()
+        for _, client in ipairs(helpers.client.get_sorted_clients()) do
+            client.window_switcher_widget = client_widget(widget, client)
+            clients_layout:add(client.window_switcher_widget)
         end
+
+        capi.client.connect_signal("tagged", function(client)
+            if client.window_switcher_widget then
+                clients_layout:remove_widgets(client.window_switcher_widget)
+            end
+            client.window_switcher_widget = client_widget(widget, client)
+            local client_index = helpers.client.get_client_index(client)
+            if #clients_layout.children < client_index then
+                clients_layout:add(client.window_switcher_widget)
+            else
+                clients_layout:insert(client_index, client.window_switcher_widget)
+            end
+        end)
+    end)
+
+    capi.client.connect_signal("focus", function(client)
+        widget:select_client(client)
     end)
 
     return widget
