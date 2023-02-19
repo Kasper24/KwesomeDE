@@ -32,44 +32,41 @@ local function day_name_widget(name)
     }
 end
 
-local function date_widget(self, date, is_current, is_another_month)
-    local bg = beautiful.colors.transparent
-    local text_color = beautiful.colors.on_background
-    if is_current == true then
-        bg = accent_color
-        text_color = beautiful.colors.background_no_opacity
-    elseif is_another_month == true then
-        text_color = beautiful.colors.on_background_dark
-    end
+local function date_widget(self, index)
+    local text = wibox.widget {
+        widget = twidget,
+        halign = "center",
+        size = 15,
+    }
 
     local widget = wibox.widget {
         widget = bwidget,
         forced_width = dpi(35),
         forced_height = dpi(35),
         shape = gshape.circle,
-        bg = bg,
-        {
-            widget = twidget,
-            halign = "center",
-            size = 15,
-            color = text_color,
-            text = date
-        }
+        text
     }
+
+    self:connect_signal(index .. "::updated", function(self, date, is_current, is_another_month)
+        text:set_text(date)
+
+        if is_current == true then
+            widget.bg = accent_color
+            text:set_color(beautiful.colors.background_no_opacity)
+        elseif is_another_month == true then
+            widget.bg = beautiful.colors.transparent
+            text:set_color(beautiful.colors.on_background_dark)
+        else
+            widget.bg = beautiful.colors.transparent
+            text:set_color(beautiful.colors.on_background)
+        end
+    end)
 
     return widget
 end
 
 function calendar:set_date(date)
     self._private.date = date
-    self:get_children_by_id("days")[1]:reset()
-    self:get_children_by_id("days")[1]:add(day_name_widget("Su"))
-    self:get_children_by_id("days")[1]:add(day_name_widget("Mo"))
-    self:get_children_by_id("days")[1]:add(day_name_widget("Tu"))
-    self:get_children_by_id("days")[1]:add(day_name_widget("We"))
-    self:get_children_by_id("days")[1]:add(day_name_widget("Th"))
-    self:get_children_by_id("days")[1]:add(day_name_widget("Fr"))
-    self:get_children_by_id("days")[1]:add(day_name_widget("Sa"))
 
     local first_day = os.date("*t", os.time {
         year = date.year,
@@ -91,6 +88,7 @@ function calendar:set_date(date)
     self:get_children_by_id("current_month_button")[1]:set_text(os.date("%B", time))
     self:get_children_by_id("current_year_button")[1]:set_text(os.date("%Y", time))
 
+    local index = 1
     local days_to_add_at_month_start = first_day.wday - 1
     local days_to_add_at_month_end = 42 - last_day.day - days_to_add_at_month_start
 
@@ -100,17 +98,20 @@ function calendar:set_date(date)
         day = 0
     }).day
     for day = previous_month_last_day - days_to_add_at_month_start, previous_month_last_day - 1, 1 do
-        self:get_children_by_id("days")[1]:add(date_widget(self, day, false, true))
+        self:emit_signal(index .. "::updated", day, false, true)
+        index = index + 1
     end
 
     local current_date = os.date("*t")
     for day = 1, month_days do
         local is_current = day == current_date.day and date.month == current_date.month
-        self:get_children_by_id("days")[1]:add(date_widget(self, day, is_current, false))
+        self:emit_signal(index .. "::updated", day, is_current, false)
+        index = index + 1
     end
 
     for day = 1, days_to_add_at_month_end do
-        self:get_children_by_id("days")[1]:add(date_widget(self, day, false, true))
+        self:emit_signal(index .. "::updated", day, false, true)
+        index = index + 1
     end
 end
 
@@ -239,11 +240,22 @@ local function new()
             forced_num_rows = 6,
             forced_num_cols = 7,
             spacing = dpi(15),
-            expand = true
+            expand = true,
+            day_name_widget("Su"),
+            day_name_widget("Mo"),
+            day_name_widget("Tu"),
+            day_name_widget("We"),
+            day_name_widget("Th"),
+            day_name_widget("Fr"),
+            day_name_widget("Sa")
         }
     }
+
     gtable.crush(widget, calendar, true)
 
+    for day = 1, 42 do
+        widget:get_children_by_id("days")[1]:add(date_widget(widget, day))
+    end
     widget:set_date_current()
 
     return widget
