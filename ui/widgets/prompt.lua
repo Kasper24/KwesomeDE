@@ -25,7 +25,7 @@ local prompt = {
 }
 
 local properties = {
-    "only_numbers", "round", "always_on", "reset_on_stop", "obscure",
+    "only_numbers", "round", "always_on", "reset_on_stop", "obscure", "stop_on_lost_focus",
     "icon_font", "icon_size", "icon_color", "icon",
     "label_font", "label_size", "label_color", "label",
     "text_font", "text_size", "text_color", "text",
@@ -383,6 +383,7 @@ local function new()
     wp.always_on = false
     wp.reset_on_stop = false
     wp.obscure = false
+    wp.stop_on_focus_lost = false
 
     wp.icon_font = beautiful.font
     wp.icon_size = 12
@@ -409,7 +410,7 @@ local function new()
     end)
 
     widget:connect_signal("mouse::leave", function()
-        if wp.always_on == false and wp.state == true then
+        if wp.stop_on_lost_focus ~= false and wp.always_on == false and wp.state == true then
             widget:stop()
         end
     end)
