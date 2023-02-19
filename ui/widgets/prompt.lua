@@ -76,9 +76,9 @@ local function generate_markup(self, show_cursor)
     local wp = self._private
 
     local icon_size = dpi(ceil(wp.icon_size * 1024))
-    local label_size = dpi(ceil(wp.icon_size * 1024))
+    local label_size = dpi(ceil(wp.label_size * 1024))
     local text_size = dpi(ceil(wp.text_size * 1024))
-    local cursor_size = dpi(ceil(wp.icon_size * 1024))
+    local cursor_size = dpi(ceil(wp.cursor_size * 1024))
 
     local text = tostring(wp.text) or ""
     if wp.obscure == true then
