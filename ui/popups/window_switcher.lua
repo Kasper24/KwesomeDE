@@ -102,7 +102,6 @@ end
 
 function window_switcher:show()
     if #capi.client.get() == 0 then
-        self:hide(false)
         return
     end
 
