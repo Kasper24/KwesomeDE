@@ -92,7 +92,7 @@ local function new()
     ret._private.coordinate_x = helpers.settings:get_value("weather-latitude")
     ret._private.coordinate_y = helpers.settings:get_value("weather-longitude")
 
-    if ret._private.api_key ~= nil and ret._private.coordinate_x ~= nil and ret._private.coordinate_y ~= nil then
+    if ret._private.api_key ~= "" and ret._private.coordinate_x ~= "" and ret._private.coordinate_y ~= "" then
         ret:refresh()
     else
         gtimer.delayed_call(function()

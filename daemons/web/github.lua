@@ -205,7 +205,7 @@ local function new()
     ret._private = {}
     ret._private.username = helpers.settings:get_value("github-username")
 
-    if ret._private.username ~= nil then
+    if ret._private.username ~= "" then
         ret:refresh()
     else
         gtimer.delayed_call(function()

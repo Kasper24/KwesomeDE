@@ -98,7 +98,7 @@ local function new()
     ret._private.access_token = helpers.settings:get_value("gitlab-access-token")
     ret._private.host = helpers.settings:get_value("gitlab-host")
 
-    if ret._private.access_token ~= nil then
+    if ret._private.access_token ~= "" then
         ret:refresh()
     else
         gtimer.delayed_call(function()
