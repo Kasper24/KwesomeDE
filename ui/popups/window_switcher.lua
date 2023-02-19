@@ -81,7 +81,10 @@ local function client_widget(self, client)
                             text = client.name
                         }
                     },
-                    widgets.client_thumbnail(client)
+                    {
+                        widget = widgets.client_thumbnail,
+                        client = client
+                    }
                 }
             }
         }
