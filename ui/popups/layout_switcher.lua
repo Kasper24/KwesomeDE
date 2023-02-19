@@ -19,9 +19,11 @@ local layout_switcher = {}
 local instance = nil
 
 function layout_switcher:cycle_layouts(increase)
-    local ll = self.layout_list
+    local layout = awful.screen.focused().selected_tag.layout
+    local layouts = awful.screen.focused().selected_tag.layouts
+
     local increase = increase and 1 or -1
-    awful.layout.set(gtable.cycle_value(ll.layouts, ll.current_layout, increase), nil)
+    awful.layout.set(gtable.cycle_value(layouts, layout, increase), nil)
 end
 
 local function layout_widget(layout, tag)
@@ -85,10 +87,6 @@ local function new()
         }
     }
     gtable.crush(widget, layout_switcher)
-
-    widget.layout_list = awful.widget.layoutlist {
-        source = awful.widget.layoutlist.source.default_layouts,
-    }
 
     capi.tag.connect_signal("property::selected", function(tag)
         layouts:reset()
