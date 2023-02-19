@@ -126,7 +126,7 @@ local function new()
     end)
 
     email_daemon:connect_signal("new_email", function(self, email)
-        scrollbox:add(email_widget(email))
+        scrollbox:insert(1, email_widget(email))
         widget:raise_widget(scrollbox)
         spinning_circle:stop()
     end)
