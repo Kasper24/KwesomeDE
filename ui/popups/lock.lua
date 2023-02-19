@@ -96,13 +96,14 @@ local function widget(self)
         reset_on_stop = true,
         always_on = true,
         obscure = true,
-        icon = beautiful.icons.lock,
-        keyreleased_callback = function(mod, key, text)
-            if key == "Return" then
-                system_daemon:unlock(text)
-            end
-        end
+        icon = beautiful.icons.lock
     }
+
+    self._private.prompt:connect_signal("key::press", function(self, mod, key, text)
+        if key == "Return" then
+            system_daemon:unlock(text)
+        end
+    end)
 
     local toggle_password_obscure_button = wibox.widget {
         widget = widgets.checkbox,

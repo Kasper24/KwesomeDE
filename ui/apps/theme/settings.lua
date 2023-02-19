@@ -38,13 +38,13 @@ local function command_after_generation()
         forced_width = dpi(600),
         forced_height = dpi(50),
         reset_on_stop = false,
-        prompt = "",
         text = theme_daemon:get_command_after_generation(),
         text_color = beautiful.colors.on_background,
-        changed_callback = function(text)
-            theme_daemon:set_command_after_generation(text)
-        end
     }
+
+    prompt:connect_signal("text::changed", function(self, text)
+        theme_daemon:set_command_after_generation(text)
+    end)
 
     return wibox.widget {
         layout = wibox.layout.fixed.horizontal,

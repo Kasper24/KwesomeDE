@@ -81,11 +81,12 @@ local function folder()
         widget = widgets.prompt,
         forced_width = dpi(220),
         size = 12,
-        text = screenshot_daemon:get_folder(),
-        changed_callback = function(text)
-            screenshot_daemon:set_folder(text)
-        end
+        text = screenshot_daemon:get_folder()
     }
+
+    folder_prompt:connect_signal("text::changed", function(self, text)
+        screenshot_daemon:set_folder(text)
+    end)
 
     local set_folder_button = wibox.widget {
         widget = widgets.button.text.normal,

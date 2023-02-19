@@ -4,7 +4,6 @@
 -------------------------------------------
 local awful = require("awful")
 local gtable = require("gears.table")
-local gcolor = require("gears.color")
 local gstring = require("gears.string")
 local wibox = require("wibox")
 local ebwidget = require("ui.widgets.button.elevated")
@@ -25,9 +24,13 @@ local prompt = {
     mt = {}
 }
 
-local properties = { "only_numbers", "round", "icon_size", "icon_color", "icon", "font", "prompt", "text_size", "text", "icon_color", "prompt_color", "text_color",
-                    "cursor_color", "always_on", "reset_on_stop", "obscure", "keypressed_callback", "changed_callback",
-                    "done_callback"}
+local properties = {
+    "only_numbers", "round", "always_on", "reset_on_stop", "obscure",
+    "icon_font", "icon_size", "icon_color", "icon",
+    "label_font", "label_size", "label_color", "label",
+    "text_font", "text_size", "text_color", "text",
+    "cursor_size", "cursor_color"
+}
 
 local function is_word_char(c)
     if string.find(c, "[{[(,.:;_-+=@/ ]") then
@@ -69,20 +72,24 @@ local function have_multibyte_char_at(text, position)
     return text:sub(position, position):wlen() == -1
 end
 
-local function update_markup(self, show_cursor)
+local function generate_markup(self, show_cursor)
     local wp = self._private
 
-    local icon_color = gcolor.ensure_pango_color(wp.icon_color)
-    local prompt_color = gcolor.ensure_pango_color(wp.prompt_color)
-    local text_color = gcolor.ensure_pango_color(wp.text_color)
-    local cursor_color = gcolor.ensure_pango_color(wp.cursor_color)
-
     local icon_size = dpi(ceil(wp.icon_size * 1024))
+    local label_size = dpi(ceil(wp.icon_size * 1024))
     local text_size = dpi(ceil(wp.text_size * 1024))
+    local cursor_size = dpi(ceil(wp.icon_size * 1024))
 
     local text = tostring(wp.text) or ""
     if wp.obscure == true then
         text = text:gsub(".", "*")
+    end
+
+    local markup = ""
+    if wp.icon ~= nil then
+        markup = string.format(
+            '<span font_family="%s" font_size="%s" foreground="%s">%s  </span>',
+            wp.icon.font, icon_size, wp.icon_color, wp.icon.icon)
     end
 
     if show_cursor == true then
@@ -104,48 +111,25 @@ local function update_markup(self, show_cursor)
             text_end = gstring.xml_escape(text:sub(wp.cur_pos + 1 + offset))
         end
 
-        if wp.icon ~= nil then
-            self._private.child:set_markup(string.format(
-                '<span font_size="%s" font_desc="%s" foreground="%s">%s  </span>' ..
-                '<span font_size="%s" foreground="%s">%s</span>' ..
-                '<span font_size="%s" foreground="%s">%s</span>' ..
-                '<span font_size="%s" background="%s">%s</span>' ..
-                '<span font_size="%s" foreground="%s">%s%s</span>',
-                icon_size, wp.icon.font, icon_color, wp.icon.icon,
-                text_size, prompt_color, wp.prompt,
-                text_size, text_color, text_start,
-                text_size, cursor_color, char,
-                text_size, text_color, text_end,
-                spacer))
-        else
-            self._private.child:set_markup(string.format(
-                '<span font_size="%s" foreground="%s">%s</span>' ..
-                '<span font_size="%s" foreground="%s">%s</span>' ..
-                '<span font_size="%s" background="%s">%s</span>' ..
-                '<span font_size="%s" foreground="%s">%s%s</span>',
-                text_size, prompt_color, wp.prompt,
-                text_size, text_color, text_start,
-                text_size, cursor_color, char,
-                text_size, text_color, text_end,
-                spacer))
-        end
+        markup = markup .. (string.format(
+            '<span font_family="%s" font_size="%s" foreground="%s">%s</span>' ..
+            '<span font_family="%s" font_size="%s" foreground="%s">%s</span>' ..
+            '<span font_size="%s" background="%s">%s</span>' ..
+            '<span font_family="%s" font_size="%s" foreground="%s">%s%s</span>',
+            wp.label_font, label_size, wp.label_color, wp.label,
+            wp.text_font, text_size, wp.text_color, text_start,
+            cursor_size, wp.cursor_color, char,
+            wp.text_font, text_size, wp.text_color, text_end,
+            spacer))
     else
-        if wp.icon ~= nil then
-            self._private.child:set_markup(string.format(
-                '<span font_size="%s" font_desc="%s" foreground="%s">%s  </span>' ..
-                '<span font_size="%s" foreground="%s">%s</span>' ..
-                '<span font_size="%s" foreground="%s">%s</span>',
-                icon_size, wp.icon.font, icon_color, wp.icon.icon,
-                text_size, prompt_color, wp.prompt,
-                text_size, text_color, gstring.xml_escape(text)))
-        else
-            self._private.child:set_markup(string.format(
-                '<span font_size="%s" foreground="%s">%s</span>' ..
-                '<span font_size="%s" foreground="%s">%s</span>',
-                text_size, prompt_color, wp.prompt,
-                text_size, text_color, gstring.xml_escape(text)))
-        end
+        markup = markup .. string.format(
+                '<span font_family="%s" font_size="%s" foreground="%s">%s</span>' ..
+                '<span font_family="%s" font_size="%s" foreground="%s">%s</span>',
+                wp.label_font, label_size, wp.label_color, wp.label,
+                wp.text_font, text_size, wp.text_color, gstring.xml_escape(text))
     end
+
+    self._private.child:set_markup(markup)
 end
 
 local function paste(self)
@@ -160,7 +144,7 @@ local function paste(self)
 
             wp.text = wp.text:sub(1, wp.cur_pos - 1) .. stdout .. self.text:sub(wp.cur_pos)
             wp.cur_pos = wp.cur_pos + #stdout
-            update_markup(self, true)
+            generate_markup(self, true)
         end
     end)
 end
@@ -173,7 +157,7 @@ local function build_properties(prototype, prop_names)
                     self._private[prop] = value
                     self:emit_signal("widget::redraw_needed")
                     self:emit_signal("property::" .. prop, value)
-                    update_markup(self, false)
+                    generate_markup(self, self._private.state)
                 end
                 return self
             end
@@ -190,24 +174,14 @@ function prompt:toggle_obscure()
     self:set_obscure(not self._private.obscure)
 end
 
-function prompt:set_obscure(value)
-    self._private.obscure = value
-    update_markup(self, false)
+function prompt:set_text(text)
+    self._private.text = text
+    self._private.cur_pos = #text + 1
+    generate_markup(self, self._private.state)
 end
 
 function prompt:get_text()
     return self._private.text
-end
-
-function prompt:set_text(text, show_cursor)
-    self._private.text = text
-    self._private.cur_pos = #text + 1
-    update_markup(self, show_cursor ~= nil and show_cursor or false)
-end
-
-function prompt:set_prompt(prompt)
-    self._private.prompt = prompt
-    update_markup(self, false)
 end
 
 function prompt:start()
@@ -215,7 +189,7 @@ function prompt:start()
 
     capi.awesome.emit_signal("prompt::toggled_on", self)
     self:turn_on()
-    update_markup(self, true)
+    generate_markup(self, true)
 
     wp.grabber = awful.keygrabber.run(function(modifiers, key, event)
         -- Convert index array to hash table
@@ -225,34 +199,11 @@ function prompt:start()
         end
 
         if event ~= "press" then
-            if wp.keyreleased_callback then
-                wp.keyreleased_callback(mod, key, wp.text)
-            end
+            self:emit_signal("key::release", mod, key, wp.text)
             return
         end
 
-        -- Call the user specified callback. If it returns true as
-        -- the first result then return from the function. Treat the
-        -- second and third results as a new command and new prompt
-        -- to be set (if provided)
-        if wp.keypressed_callback then
-            local user_catched, new_command, new_prompt = wp.keypressed_callback(mod, key, wp.text)
-            if new_command or new_prompt then
-                if new_command then
-                    wp.text = new_command
-                end
-                if new_prompt then
-                    wp.prompt = new_prompt
-                end
-            end
-            if user_catched then
-                self:emit_signal("text::changed", wp.text)
-                if wp.changed_callback then
-                    wp.changed_callback(wp.text)
-                end
-                return
-            end
-        end
+        self:emit_signal("key::press", mod, key, wp.text)
 
         -- Control cases
         if mod.Control then
@@ -333,7 +284,6 @@ function prompt:start()
                     self:stop()
                     return
                 end
-                -- Typin cases
             elseif mod.Shift and key == "Insert" then
                 paste(self)
             elseif key == "Home" then
@@ -382,41 +332,32 @@ function prompt:start()
             wp.cur_pos = #wp.text + 1
         end
 
-        update_markup(self, true)
+        generate_markup(self, true)
         self:emit_signal("text::changed", wp.text)
-
-        if wp.changed_callback then
-            wp.changed_callback(wp.text)
-        end
     end)
 end
 
 function prompt:stop()
     local wp = self._private
+    if wp.always_on then
+        return
+    end
     if self.reset_on_stop == true or wp.cur_pos == nil then
         wp.cur_pos = wp.text:wlen() + 1
     end
     if self.reset_on_stop == true then
         wp.text = ""
-        wp.text = ""
     end
 
     self:turn_off()
     awful.keygrabber.stop(wp.grabber)
-    update_markup(self, false)
+    generate_markup(self, false)
 
-    if self.done_callback then
-        self.done_callback()
-    end
     self:emit_signal("stopped", wp.text)
 end
 
 function prompt:toggle()
     local wp = self._private
-
-    if wp.always_on then
-        return
-    end
 
     if wp.prompt_state == true then
         wp.prompt_state = false
@@ -437,34 +378,35 @@ local function new()
 
     local wp = widget._private
 
-    wp.icon = nil
-    wp.font = beautiful.font
-    wp.prompt = ""
-    wp.text = ""
-
-    wp.icon_size = 12
-    wp.icon_color = beautiful.colors.on_background
-    wp.prompt_color = beautiful.colors.on_background
-    wp.text_size = 12
-    wp.text_color = beautiful.colors.on_background
-    wp.cursor_color = beautiful.colors.on_background
-
+    wp.only_numbers = false
+    wp.round = false
     wp.always_on = false
     wp.reset_on_stop = false
     wp.obscure = false
-    wp.keypressed_callback = nil
-    wp.changed_callback = nil
-    wp.done_callback = nil
-    wp.only_numbers = false
-    wp.round = false
+
+    wp.icon_font = beautiful.font
+    wp.icon_size = 12
+    wp.icon_color = beautiful.colors.on_background
+    wp.icon = nil
+
+    wp.label_font = beautiful.font
+    wp.label_size = 12
+    wp.label_color = beautiful.colors.on_background
+    wp.label = ""
+
+    wp.text_font = beautiful.font
+    wp.text_size = 12
+    wp.text_color = beautiful.colors.on_background
+    wp.text = ""
+
+    wp.cursor_size = 12
+    wp.cursor_color = beautiful.colors.on_background
 
     wp.cur_pos = #wp.text + 1 or 1
 
     widget:set_on_press(function()
         widget:toggle()
     end)
-
-    update_markup(widget, false)
 
     widget:connect_signal("mouse::leave", function()
         if wp.always_on == false and wp.state == true then
@@ -498,10 +440,10 @@ local function new()
 
     capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
         wp.icon_color = old_colorscheme_to_new_map[wp.icon_color]
-        wp.prompt_color = old_colorscheme_to_new_map[wp.prompt_color]
+        wp.label_color = old_colorscheme_to_new_map[wp.label_color]
         wp.text_color = old_colorscheme_to_new_map[wp.text_color]
         wp.cursor_color = old_colorscheme_to_new_map[wp.cursor_color]
-        update_markup(widget, false)
+        generate_markup(widget, false)
     end)
 
     return widget

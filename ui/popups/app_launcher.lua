@@ -40,29 +40,29 @@ local function new()
         apps_per_row = 5,
         apps_per_column = 4,
         apps_margin = { left = dpi(40), right  = dpi(40), bottom = dpi(30) },
-        app_template = function(app)
-            local button = wibox.widget {
-                widget = widgets.button.text.state,
-                forced_width = dpi(200),
-                forced_height = dpi(60),
-                id = "button",
-                size = 12,
-                on_normal_bg = app_on_accent_color,
-                text_normal_bg = beautiful.colors.on_background,
-                text_on_normal_bg = beautiful.colors.on_accent,
-                text = app.name
-            }
+        -- app_template = function(app)
+        --     local button = wibox.widget {
+        --         widget = widgets.button.text.state,
+        --         forced_width = dpi(200),
+        --         forced_height = dpi(60),
+        --         id = "button",
+        --         size = 12,
+        --         on_normal_bg = app_on_accent_color,
+        --         text_normal_bg = beautiful.colors.on_background,
+        --         text_on_normal_bg = beautiful.colors.on_accent,
+        --         text = app.name
+        --     }
 
-            button:connect_signal("selected", function()
-                button:turn_on()
-            end)
+        --     button:connect_signal("selected", function()
+        --         button:turn_on()
+        --     end)
 
-            button:connect_signal("unselected", function()
-                button:turn_off()
-            end)
+        --     button:connect_signal("unselected", function()
+        --         button:turn_off()
+        --     end)
 
-            return button
-        end,
+        --     return button
+        -- end,
     }
 
     capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)

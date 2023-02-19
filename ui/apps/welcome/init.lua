@@ -191,11 +191,11 @@ local function weather_page(on_next_pressed, on_previous_pressed)
         forced_width = dpi(250),
         forced_height = dpi(50),
         reset_on_stop = false,
-        prompt = "API Key: ",
-        text = weather_daemon:get_api_key() or "",
+        label = "API Key: ",
         icon_color = beautiful.colors.on_background,
         icon = beautiful.icons.lock,
-        text_color = beautiful.colors.on_background
+        text_color = beautiful.colors.on_background,
+        text = weather_daemon:get_api_key() or ""
     }
 
     local coordinate_x_prompt = wibox.widget {
@@ -203,11 +203,11 @@ local function weather_page(on_next_pressed, on_previous_pressed)
         forced_width = dpi(250),
         forced_height = dpi(50),
         reset_on_stop = false,
-        prompt = "Lat: ",
-        text = weather_daemon:get_coordinate_x() or "",
+        label = "Lat: ",
         icon_color = beautiful.colors.on_background,
         icon = beautiful.icons.location_dot,
-        text_color = beautiful.colors.on_background
+        text_color = beautiful.colors.on_background,
+        text = weather_daemon:get_coordinate_x() or ""
     }
 
     local coordinate_y_prompt = wibox.widget {
@@ -215,11 +215,11 @@ local function weather_page(on_next_pressed, on_previous_pressed)
         forced_width = dpi(250),
         forced_height = dpi(50),
         reset_on_stop = false,
-        prompt = "Lon: ",
-        text = weather_daemon:get_coordinate_y() or "",
+        label = "Lon: ",
         icon_color = beautiful.colors.on_background,
         icon = beautiful.icons.location_dot,
-        fg_cursor = beautiful.colors.on_background
+        text_color = beautiful.colors.on_background,
+        text = weather_daemon:get_coordinate_y() or ""
     }
 
     local unit_dropdown = widgets.dropdown {
@@ -396,11 +396,11 @@ local function gitlab_page(on_next_pressed, on_previous_pressed)
         forced_width = dpi(300),
         forced_height = dpi(50),
         reset_on_stop = false,
-        prompt = "Host: ",
-        text = gitlab_daemon:get_host() or "",
+        label = "Host: ",
         icon_color = beautiful.colors.on_background,
         icon = beautiful.icons.server,
-        text_color = beautiful.colors.on_background
+        text_color = beautiful.colors.on_background,
+        text = gitlab_daemon:get_host() or ""
     }
 
     local access_token_prompt = wibox.widget {
@@ -408,11 +408,11 @@ local function gitlab_page(on_next_pressed, on_previous_pressed)
         forced_width = dpi(300),
         forced_height = dpi(50),
         reset_on_stop = false,
-        prompt = "Access Token: ",
-        text = gitlab_daemon:get_access_token() or "",
+        label = "Access Token: ",
         icon_color = beautiful.colors.on_background,
         icon = beautiful.icons.lock,
-        text_color = beautiful.colors.on_background
+        text_color = beautiful.colors.on_background,
+        text = gitlab_daemon:get_access_token() or ""
     }
 
     local back_button = wibox.widget {
@@ -522,11 +522,11 @@ local function github_page(on_next_pressed, on_previous_pressed)
         forced_width = dpi(300),
         forced_height = dpi(50),
         reset_on_stop = false,
-        prompt = "Username: ",
-        text = github_daemon:get_username() or "",
+        label = "Username: ",
         icon_color = beautiful.colors.on_background,
         icon = beautiful.icons.user,
-        text_color = beautiful.colors.on_background
+        text_color = beautiful.colors.on_background,
+        text = github_daemon:get_username() or ""
     }
 
     local back_button = wibox.widget {
@@ -625,11 +625,11 @@ local function email_page(on_next_pressed, on_previous_pressed)
         forced_width = dpi(300),
         forced_height = dpi(50),
         reset_on_stop = false,
-        prompt = "Machine: ",
-        text = email_daemon:get_machine() or "mail.google.com",
+        label = "Machine: ",
         icon_color = beautiful.colors.on_background,
         icon = beautiful.icons.server,
-        text_color = beautiful.colors.on_background
+        text_color = beautiful.colors.on_background,
+        text = email_daemon:get_machine() or "mail.google.com"
     }
 
     local login_prompt = wibox.widget {
@@ -637,11 +637,11 @@ local function email_page(on_next_pressed, on_previous_pressed)
         forced_width = dpi(300),
         forced_height = dpi(50),
         reset_on_stop = false,
-        prompt = "Login: ",
-        text = email_daemon:get_login() or "",
+        label = "Login: ",
         icon_color = beautiful.colors.on_background,
         icon = beautiful.icons.user,
-        text_color = beautiful.colors.on_background
+        text_color = beautiful.colors.on_background,
+        text = email_daemon:get_login() or ""
     }
 
     local password_prompt = wibox.widget {
@@ -649,11 +649,11 @@ local function email_page(on_next_pressed, on_previous_pressed)
         forced_width = dpi(300),
         forced_height = dpi(50),
         reset_on_stop = false,
-        prompt = "Password: ",
-        text = email_daemon:get_password() or "",
+        label = "Password: ",
         icon_color = beautiful.colors.on_background,
         icon = beautiful.icons.lock,
-        text_color = beautiful.colors.on_background
+        text_color = beautiful.colors.on_background,
+        text = email_daemon:get_password() or ""
     }
 
     local back_button = wibox.widget {
@@ -764,11 +764,11 @@ local function password_page(on_next_pressed, on_previous_pressed)
         forced_width = dpi(300),
         forced_height = dpi(50),
         reset_on_stop = false,
-        prompt = "Password: ",
-        text = system_daemon:get_password() or "",
+        label = "Password: ",
         icon_color = beautiful.colors.on_background,
         icon = beautiful.icons.lock,
-        text_color = beautiful.colors.on_background
+        text_color = beautiful.colors.on_background,
+        text = system_daemon:get_password() or ""
     }
 
     local back_button = wibox.widget {
