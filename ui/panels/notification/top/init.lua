@@ -118,7 +118,7 @@ local function notification_widget(notification, on_removed)
                 on_release = function()
                     on_removed(widget)
                     notifications_daemon:remove_notification(notification)
-                    notification_panel:dynamic_disconnect_signal("visibility")
+                    notification_panel:dynamic_disconnect_signals("visibility")
                 end
             }
         }
@@ -249,7 +249,7 @@ local function new()
         icon = beautiful.icons.trash,
         on_release = function()
             notifications_daemon:remove_all_notifications()
-            notification_panel:dynamic_disconnect_signal("visibility")
+            notification_panel:dynamic_disconnect_signals("visibility")
         end
     }
 
