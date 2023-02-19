@@ -319,8 +319,8 @@ local function new()
     notifications_daemon:connect_signal("empty", function(self)
         notification_groups = {}
         scrollbox:reset()
-        stack:raise_widget(empty_notifications)
         collectgarbage("collect")
+        stack:raise_widget(empty_notifications)
     end)
 
     return wibox.widget {
