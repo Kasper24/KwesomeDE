@@ -1,8 +1,5 @@
 return {
     animation = require(... .. ".animation"),
-    file = require(... .. ".filesystem.file"),
-    filesystem = require(... .. ".filesystem.filesystem"),
-    stream = require(... .. ".filesystem.stream"),
     bezier = require(... .. ".bezier"),
     client = require(... .. ".client"),
     color = require(... .. ".color"),

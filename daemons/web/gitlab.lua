@@ -6,6 +6,7 @@ local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local helpers = require("helpers")
+local filesystem = require("external.filesystem")
 local json = require("external.json")
 local string = string
 local ipairs = ipairs
@@ -14,7 +15,7 @@ local gitlab = {}
 local instance = nil
 
 local LINK = "%s/api/v4/merge_requests?private_token=%s"
-local PATH = helpers.filesystem.get_cache_dir("gitlab/created_prs")
+local PATH = filesystem.filesystem.get_cache_dir("gitlab/created_prs")
 local AVATARS_PATH = PATH .. "avatars/"
 local DATA_PATH = PATH .. "data.json"
 
@@ -45,7 +46,7 @@ end
 function gitlab:refresh()
     local old_data = nil
 
-    helpers.filesystem.remote_watch(
+    filesystem.filesystem.remote_watch(
         DATA_PATH,
         string.format(LINK, self._private.host, self._private.access_token),
         UPDATE_INTERVAL,
@@ -58,10 +59,10 @@ function gitlab:refresh()
 
             for _, mr in ipairs(data) do
                 if old_data[mr.id] == nil then
-                    local remote_file = helpers.file.new_for_uri(mr.author.avatar_url)
+                    local remote_file = filesystem.file.new_for_uri(mr.author.avatar_url)
                     remote_file:read(function(error, content)
                         if error == nil then
-                            local file = helpers.file.new_for_path(AVATARS_PATH .. mr.author.id)
+                            local file = filesystem.file.new_for_path(AVATARS_PATH .. mr.author.id)
                             file:write(content, function(error)
                                 if error == nil then
                                     gtimer.start_new(0.5, function()

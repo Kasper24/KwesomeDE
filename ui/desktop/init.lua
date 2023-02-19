@@ -10,6 +10,7 @@ local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
 local desktop_daemon = require("daemons.system.desktop")
 local helpers = require("helpers")
+local filesystem = require("external.filesystem")
 local dpi = beautiful.xresources.apply_dpi
 local capi = {
     mousegrabber = mousegrabber
@@ -157,7 +158,7 @@ local function desktop_icon(self, pos, path, name, mimetype)
         icon = beautiful.icons.xmark_fw,
         text = "Delete",
         on_press = function()
-            local file = helpers.file.new_for_path(path)
+            local file = filesystem.file.new_for_path(path)
             file:delete()
         end
     }}

@@ -7,6 +7,7 @@ local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local helpers = require("helpers")
+local filesystem = require("external.filesystem")
 local json = require("external.json")
 local ipairs = ipairs
 local os = os
@@ -20,7 +21,7 @@ local instance = nil
 local grid = {}
 local desktop_icons = {}
 
-local DATA_PATH = helpers.filesystem.get_cache_dir("desktop") .. "data.json"
+local DATA_PATH = filesystem.filesystem.get_cache_dir("desktop") .. "data.json"
 local DESKTOP_PATH = "/home/" .. os.getenv("USER") .. "/Desktop"
 
 local function get_grid_pos_from_real_pos(self, pos)
@@ -49,7 +50,7 @@ function desktop:ask_for_new_position(widget, path)
         desktop_icons[path].x = new_grid_pos.x
         desktop_icons[path].y = new_grid_pos.y
 
-        local file = helpers.file.new_for_path(path)
+        local file = filesystem.file.new_for_path(path)
         file:write(json.encode(desktop_icons))
 
         return {
@@ -85,7 +86,7 @@ local function on_desktop_icon_added(self, pos, path, name, mimetype)
         y = pos.y * self._private.cell_size
     }, path, name, mimetype)
 
-    local file = helpers.file.new_for_path(path)
+    local file = filesystem.file.new_for_path(path)
     file:write(json.encode(desktop_icons))
 end
 
@@ -95,7 +96,7 @@ local function on_desktop_icon_removed(self, path)
     grid[desktop_icons[path].x][desktop_icons[path].y].empty = true
 
     desktop_icons[path] = nil
-    local file = helpers.file.new_for_path(path)
+    local file = filesystem.file.new_for_path(path)
     file:write(json.encode(desktop_icons))
 end
 
@@ -119,12 +120,12 @@ local function watch_desktop_directory(self)
 end
 
 local function scan_for_desktop_files_on_init(self)
-    local file = helpers.file.new_for_path(DATA_PATH)
+    local file = filesystem.file.new_for_path(DATA_PATH)
     file:read(function(error, content)
         if error == nil then
             local old_desktop_icons = {}
             old_desktop_icons = json.decode(content) or {}
-            helpers.filesystem.iterate_contents(DESKTOP_PATH, function(file)
+            filesystem.filesystem.iterate_contents(DESKTOP_PATH, function(file)
                 local name = file:get_name()
                 local path = DESKTOP_PATH .. "/" .. name
 

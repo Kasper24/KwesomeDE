@@ -7,6 +7,7 @@ local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local beautiful = require("beautiful")
 local helpers = require("helpers")
+local filesystem = require("external.filesystem")
 local json = require("external.json")
 local string = string
 local ipairs = ipairs
@@ -15,7 +16,7 @@ local github = {}
 local instance = nil
 
 local UPDATE_INTERVAL = 60 * 30 -- 30 mins
-local PATH = helpers.filesystem.get_cache_dir("github")
+local PATH = filesystem.filesystem.get_cache_dir("github")
 
 local PRS_PATH = PATH .. "created_prs/"
 local PRS_AVATARS_PATH = PRS_PATH .. "avatars/"
@@ -90,7 +91,7 @@ local function github_events(self)
     local link = "https://api.github.com/users/%s/received_events"
     local old_data = nil
 
-    helpers.filesystem.remote_watch(EVENTS_DATA_PATH, string.format(link, self._private.username), UPDATE_INTERVAL,
+    filesystem.filesystem.remote_watch(EVENTS_DATA_PATH, string.format(link, self._private.username), UPDATE_INTERVAL,
         function(content)
             local data = json.decode(content)
 
@@ -101,10 +102,10 @@ local function github_events(self)
 
             for _, event in ipairs(data) do
                 if old_data[event.id] == nil then
-                    local remote_file = helpers.file.new_for_uri(event.actor.avatar_url)
+                    local remote_file = filesystem.file.new_for_uri(event.actor.avatar_url)
                     remote_file:read(function(error, content)
                         if error == nil then
-                            local file = helpers.file.new_for_path(EVENTS_AVATARS_PATH .. event.actor.id)
+                            local file = filesystem.file.new_for_path(EVENTS_AVATARS_PATH .. event.actor.id)
                             file:write(content, function(error)
                                 if error == nil then
                                     gtimer.start_new(0.5, function()
@@ -136,7 +137,7 @@ local function github_prs(self)
     local link = "https://api.github.com/search/issues?q=author%3A" .. self._private.username .. "+type%3Apr"
     local old_data = nil
 
-    helpers.filesystem.remote_watch(
+    filesystem.filesystem.remote_watch(
         PRS_DATA_PATH,
         link,
         UPDATE_INTERVAL,
@@ -149,10 +150,10 @@ local function github_prs(self)
 
             for _, pr in ipairs(data.items) do
                 if old_data[pr.id] == nil then
-                    local remote_file = helpers.file.new_for_uri(pr.user.avatar_url)
+                    local remote_file = filesystem.file.new_for_uri(pr.user.avatar_url)
                     remote_file:read(function(error, content)
                         if error == nil then
-                            local file = helpers.file.new_for_path(PRS_AVATARS_PATH .. pr.user.id)
+                            local file = filesystem.file.new_for_path(PRS_AVATARS_PATH .. pr.user.id)
                             file:write(content, function(error)
                                 if error == nil then
                                     gtimer.start_new(0.5, function()
@@ -185,7 +186,7 @@ local function github_contributions(self)
     local path = PATH .. "contributions/"
     local DATA_PATH = path .. "data.json"
 
-    helpers.filesystem.remote_watch(DATA_PATH, string.format(link, self._private.username), UPDATE_INTERVAL,
+    filesystem.filesystem.remote_watch(DATA_PATH, string.format(link, self._private.username), UPDATE_INTERVAL,
         function(content)
             self:emit_signal("contributions", content)
         end)

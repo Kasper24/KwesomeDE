@@ -6,13 +6,14 @@ local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local helpers = require("helpers")
+local filesystem = require("external.filesystem")
 local json = require("external.json")
 local string = string
 
 local weather = {}
 local instance = nil
 
-local path = helpers.filesystem.get_cache_dir("weather")
+local path = filesystem.filesystem.get_cache_dir("weather")
 local DATA_PATH = path .. "data.json"
 
 local UPDATE_INTERVAL = 60 * 30 -- 30 mins
@@ -58,7 +59,7 @@ function weather:refresh()
         "https://api.openweathermap.org/data/2.5/onecall?lat=%s&lon=%s&appid=%s&units=%s&exclude=minutely&lang=en",
         self:get_coordinate_x(), self:get_coordinate_y(), self:get_api_key(), self:get_unit())
 
-    helpers.filesystem.remote_watch(
+        filesystem.filesystem.remote_watch(
         DATA_PATH, link,
         UPDATE_INTERVAL,
         function(content)

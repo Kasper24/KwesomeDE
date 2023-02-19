@@ -315,8 +315,8 @@ if not instance then
 end
 return instance
 
--- -- print(helpers.filesystem.get_awesome_config_dir("external"))
--- package.cpath = package.cpath .. ";" .. helpers.filesystem.get_awesome_config_dir("external") .. "?.so;"
+-- -- print(filesystem.filesystem.get_awesome_config_dir("external"))
+-- package.cpath = package.cpath .. ";" .. filesystem.filesystem.get_awesome_config_dir("external") .. "?.so;"
 -- -- print(package.cpath)
 
 -- pulseaudio = require("pulseaudio")

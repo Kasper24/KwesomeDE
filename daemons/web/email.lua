@@ -6,7 +6,7 @@ local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
-local helpers = require("helpers")
+local filesystem = require("external.filesystem")
 local xml = require("external.xml2lua.xml2lua")
 local handler = require("external.xml2lua.xmlhandler.tree")
 local ipairs = ipairs
@@ -16,7 +16,7 @@ local os = os
 local email = {}
 local instance = nil
 
-local PATH = helpers.filesystem.get_cache_dir("email")
+local PATH = filesystem.filesystem.get_cache_dir("email")
 local DATA_PATH = PATH .. "data.json"
 local NET_RC_PATH = "/home/" .. os.getenv("USER") .. "/.netrc"
 
@@ -27,7 +27,7 @@ function email:open(email)
 end
 
 function email:update_net_rc(machine, login, password)
-    local file = helpers.file.new_for_path(NET_RC_PATH)
+    local file = filesystem.file.new_for_path(NET_RC_PATH)
     file:write(string.format("machine %s\nlogin %s\npassword %s", machine, login, password))
 end
 
@@ -49,7 +49,7 @@ local function new()
 
     ret._private = {}
 
-    local file = helpers.file.new_for_path(NET_RC_PATH)
+    local file = filesystem.file.new_for_path(NET_RC_PATH)
     file:iterate_lines(function(error, line)
         if error == nil then
             if line:match("machine") then
@@ -68,7 +68,7 @@ local function new()
         call_now = true,
         callback = function()
             local old_data = nil
-            local file = helpers.file.new_for_path(DATA_PATH)
+            local file = filesystem.file.new_for_path(DATA_PATH)
             file:read(function(error, content)
                 if error == nil then
                     local emails_handler = handler:new()

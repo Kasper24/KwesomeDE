@@ -10,6 +10,7 @@ local gstring = require("gears.string")
 local wibox = require("wibox")
 local naughty = require("naughty")
 local helpers = require("helpers")
+local filesystem = require("external.filesystem")
 local json = require("external.json")
 local ipairs = ipairs
 local table = table
@@ -18,7 +19,7 @@ local os = os
 local notifications = {}
 local instance = nil
 
-local PATH = helpers.filesystem.get_cache_dir("notifications")
+local PATH = filesystem.filesystem.get_cache_dir("notifications")
 local ICONS_PATH = PATH .. "icons/"
 local DATA_PATH = PATH .. "data.json"
 
@@ -59,7 +60,7 @@ local function save_notification(self, notification)
 end
 
 local function read_notifications(self)
-    local file = helpers.file.new_for_path(DATA_PATH)
+    local file = filesystem.file.new_for_path(DATA_PATH)
     file:read(function(error, content)
         if error == nil then
             self._private.notifications = json.decode(content) or {}
@@ -80,7 +81,7 @@ end
 function notifications:remove_all_notifications()
     self._private.notifications = {}
     self._private.save_timer:again()
-    helpers.filesystem.remove_directory(ICONS_PATH)
+    filesystem.filesystem.remove_directory(ICONS_PATH)
     self:emit_signal("empty")
 end
 
@@ -94,7 +95,7 @@ function notifications:remove_notification(notification_data)
     end
 
     if index ~= 0 then
-        local file = helpers.file.new_for_path(self._private.notifications[index].icon)
+        local file = filesystem.file.new_for_path(self._private.notifications[index].icon)
         file:delete()
 
         table.remove(self._private.notifications, index)
@@ -158,12 +159,12 @@ local function new()
         autostart = false,
         single_shot = true,
         callback = function()
-            local file = helpers.file.new_for_path(DATA_PATH)
+            local file = filesystem.file.new_for_path(DATA_PATH)
             file:write(json.encode(ret._private.notifications))
         end
     }
 
-    helpers.filesystem.make_directory(ICONS_PATH)
+    filesystem.filesystem.make_directory(ICONS_PATH)
 
     gtimer.delayed_call(function()
         if helpers.settings:get_value("dont-disturb") == true then

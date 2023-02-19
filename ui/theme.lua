@@ -8,6 +8,7 @@ local beautiful = require("beautiful")
 local theme_daemon = require("daemons.system.theme")
 local color_libary = require("external.color")
 local helpers = require("helpers")
+local filesystem = require("external.filesystem")
 local dpi = beautiful.xresources.apply_dpi
 local math = math
 
@@ -382,7 +383,7 @@ local function icons()
 end
 
 local function assets()
-    local assets_folder = helpers.filesystem.get_awesome_config_dir("ui/assets")
+    local assets_folder = filesystem.filesystem.get_awesome_config_dir("ui/assets")
 
     theme.profile_icon = assets_folder .. "profile.png"
     theme.mountain_background = assets_folder .. "mountain.png"

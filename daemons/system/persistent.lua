@@ -9,6 +9,7 @@ local gtimer = require("gears.timer")
 local bling = require("external.bling")
 local tabbed = bling.module.tabbed
 local helpers = require("helpers")
+local filesystem = require("external.filesystem")
 local json = require("external.json")
 local tostring = tostring
 local string = string
@@ -25,7 +26,7 @@ local capi = {
 local persistent = {}
 local instance = nil
 
-local PATH = helpers.filesystem.get_cache_dir("persistent")
+local PATH = filesystem.filesystem.get_cache_dir("persistent")
 local DATA_PATH = PATH .. "data.json"
 
 local client_properties = {"hidden", "minimized", "above", "ontop", "below", "fullscreen", "maximized",
@@ -240,7 +241,7 @@ function persistent:save()
 end
 
 function persistent:restore()
-    local file = helpers.file.new_for_path(DATA_PATH)
+    local file = filesystem.file.new_for_path(DATA_PATH)
     file:read(function(error, content)
         if error == nil then
             self.restored_settings = json.decode(content)

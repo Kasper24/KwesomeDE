@@ -7,6 +7,7 @@ local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local helpers = require("helpers")
+local filesystem = require("external.filesystem")
 local ipairs = ipairs
 local string = string
 local capi = {
@@ -16,7 +17,7 @@ local capi = {
 local picom = {}
 local instance = nil
 
-local CONFIG_PATH = helpers.filesystem.get_awesome_config_dir("config") .. "picom.conf"
+local CONFIG_PATH = filesystem.filesystem.get_awesome_config_dir("config") .. "picom.conf"
 
 local properties = {"active-opacity", "inactive-opacity", "fade-delta", "fade-in-step", "fade-out-step",
                     "corner-radius", "blur-strength", "shadow-radius", "shadow-opacity", "shadow-offset-x",

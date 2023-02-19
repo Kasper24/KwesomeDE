@@ -7,6 +7,7 @@ local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local helpers = require("helpers")
+local filesystem = require("external.filesystem")
 local json = require("external.json")
 local string = string
 
@@ -14,7 +15,7 @@ local corona = {}
 local instance = nil
 
 local link = "https://corona-stats.online/%s?format=json"
-local path = helpers.filesystem.get_cache_dir("corona")
+local path = filesystem.filesystem.get_cache_dir("corona")
 local DATA_PATH = path .. "data.json"
 
 local UPDATE_INTERVAL = 60 * 30 -- 30 mins
@@ -33,7 +34,7 @@ function corona:open_website()
 end
 
 function corona:refresh()
-    helpers.filesystem.remote_watch(
+    filesystem.filesystem.remote_watch(
         DATA_PATH,
         string.format(link, self._private.country),
         UPDATE_INTERVAL,

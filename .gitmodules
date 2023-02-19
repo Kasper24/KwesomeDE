@@ -19,3 +19,6 @@
 [submodule "async"]
 	path = external/async
 	url = https://github.com/sclu1034/async.lua
+[submodule "filesystem"]
+	path = external/filesystem
+	url = https://github.com/sclu1034/lgi-async-extra

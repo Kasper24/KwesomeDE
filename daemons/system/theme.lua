@@ -13,6 +13,7 @@ local beautiful = require("beautiful")
 local system_daemon = require("daemons.system.system")
 local color_libary = require("external.color")
 local helpers = require("helpers")
+local filesystem = require("external.filesystem")
 local tonumber = tonumber
 local string = string
 local ipairs = ipairs
@@ -29,13 +30,13 @@ local capi = {
 local theme = {}
 local instance = nil
 
-local WALLPAPERS_PATH = helpers.filesystem.get_awesome_config_dir("ui/assets/wallpapers")
-local GTK_THEME_PATH = helpers.filesystem.get_awesome_config_dir("config/FlatColor")
+local WALLPAPERS_PATH = filesystem.filesystem.get_awesome_config_dir("ui/assets/wallpapers")
+local GTK_THEME_PATH = filesystem.filesystem.get_awesome_config_dir("config/FlatColor")
 local INSTALLED_GTK_THEME_PATH = os.getenv("HOME") .. "/.local/share/themes/"
-local BASE_TEMPLATES_PATH = helpers.filesystem.get_awesome_config_dir("config/templates")
-local BACKGROUND_PATH = helpers.filesystem.get_cache_dir("") .. "wallpaper"
-local GENERATED_TEMPLATES_PATH = helpers.filesystem.get_cache_dir("templates")
-local WAL_CACHE_PATH = helpers.filesystem.get_xdg_cache_home("wal")
+local BASE_TEMPLATES_PATH = filesystem.filesystem.get_awesome_config_dir("config/templates")
+local BACKGROUND_PATH = filesystem.filesystem.get_cache_dir("") .. "wallpaper"
+local GENERATED_TEMPLATES_PATH = filesystem.filesystem.get_cache_dir("templates")
+local WAL_CACHE_PATH = filesystem.filesystem.get_xdg_cache_home("wal")
 
 local COLOR_PICKER_SCRIPT = [[ lua -e "local lgi = require('lgi')
 local Gtk = lgi.require('Gtk', '3.0')
@@ -210,7 +211,7 @@ org.gnome.desktop.interface gtk-theme 'FlatColor'
     helpers.run.is_installed("xsettingsd", function(is_installed)
         if is_installed == true then
             local path = os.tmpname()
-            local file = helpers.file.new_for_path(path)
+            local file = filesystem.file.new_for_path(path)
             file:write('Net/ThemeName "FlatColor" \n', function(error)
                 if error == nil then
                     awful.spawn(string.format("timeout 0.2s xsettingsd -c %s", path), false)
@@ -222,7 +223,7 @@ end
 
 local function reload_awesome_colorscheme()
     local old_colorscheme = beautiful.colors
-    beautiful.init(helpers.filesystem.get_awesome_config_dir("ui") .. "theme.lua")
+    beautiful.init(filesystem.filesystem.get_awesome_config_dir("ui") .. "theme.lua")
     local new_colorscheme = beautiful.colors
 
     local old_colorscheme_to_new_map = {}
@@ -271,15 +272,15 @@ local function generate_sequences(colors)
     sequences = sequences .. set_color(257, colors[1])
     sequences = sequences .. set_special(708, colors[1], 0)
 
-    local file = helpers.file.new_for_path(GENERATED_TEMPLATES_PATH .. "sequences")
+    local file = filesystem.file.new_for_path(GENERATED_TEMPLATES_PATH .. "sequences")
     file:write(string)
 
     -- Backwards compatibility with wal/wpgtk
-    local file = helpers.file.new_for_path(WAL_CACHE_PATH .. "sequences")
+    local file = filesystem.file.new_for_path(WAL_CACHE_PATH .. "sequences")
     file:write(string)
 
     for index = 0, 9 do
-        local file = helpers.file.new_for_path("/dev/pts/" .. index)
+        local file = filesystem.file.new_for_path("/dev/pts/" .. index)
         file:write_root(sequences)
     end
 end
@@ -326,11 +327,11 @@ local function generate_templates(self)
         end
     }
 
-    helpers.filesystem.iterate_contents(BASE_TEMPLATES_PATH, function(file)
+    filesystem.filesystem.iterate_contents(BASE_TEMPLATES_PATH, function(file)
         local name = file:get_name()
         if name:match(".base") ~= nil then
             local template_path = BASE_TEMPLATES_PATH .. name
-            local file = helpers.file.new_for_path(template_path)
+            local file = filesystem.file.new_for_path(template_path)
             file:read(function(error, content)
                 if error == nil then
                     local lines = {}
@@ -390,17 +391,17 @@ local function generate_templates(self)
                     name = name:gsub(".base", "")
 
                     -- Save to ~/.cache/awesome/templates
-                    local file = helpers.file.new_for_path(GENERATED_TEMPLATES_PATH .. name)
+                    local file = filesystem.file.new_for_path(GENERATED_TEMPLATES_PATH .. name)
                     file:write(output)
 
                     -- Backwards compatibility with wal/wpgtk
-                    local file = helpers.file.new_for_path(WAL_CACHE_PATH .. name)
+                    local file = filesystem.file.new_for_path(WAL_CACHE_PATH .. name)
                     file:write(output)
 
                     -- Save to addiontal location specified in the template file
                     for _, path in ipairs(copy_to) do
                         path = path:gsub("~", os.getenv("HOME"))
-                        local file = helpers.file.new_for_path(path)
+                        local file = filesystem.file.new_for_path(path)
                         file:write(output)
                     end
                 end
@@ -608,7 +609,7 @@ local function scan_wallpapers(self)
         end
     }
 
-    helpers.filesystem.iterate_contents(WALLPAPERS_PATH, function(file)
+    filesystem.filesystem.iterate_contents(WALLPAPERS_PATH, function(file)
         local wallpaper_path = WALLPAPERS_PATH .. file:get_name()
         local mimetype = Gio.content_type_guess(wallpaper_path)
         if PICTURES_MIMETYPES[mimetype] ~= nil then

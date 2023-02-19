@@ -20,8 +20,8 @@ gtimer{
 }
 
 local beautiful = require("beautiful")
-local helpers = require("helpers")
-beautiful.init(helpers.filesystem.get_awesome_config_dir("ui") .. "theme.lua")
+local filesystem = require("external.filesystem")
+beautiful.init(filesystem.filesystem.get_awesome_config_dir("ui") .. "theme.lua")
 
 local theme_daemon = require("daemons.system.theme")
 local beautiful = require("beautiful")

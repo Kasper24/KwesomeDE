@@ -1,11 +1,11 @@
 local awful = require("awful")
-local hfilesystem = require("helpers.filesystem.filesystem")
+local filesystem = require("external.filesystem")
 local tonumber = tonumber
 local string = string
 
 local _run = {}
 
-local AWESOME_SENSIBLE_TERMINAL_PATH = hfilesystem.get_awesome_config_dir("scripts") .. "awesome-sensible-terminal"
+local AWESOME_SENSIBLE_TERMINAL_PATH = filesystem.filesystem.get_awesome_config_dir("scripts") .. "awesome-sensible-terminal"
 
 function _run.run_once_pgrep(findme, cmd)
     awful.spawn.with_shell(string.format("pgrep -u $USER -x %s > /dev/null || (%s)", findme, cmd))

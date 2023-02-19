@@ -7,6 +7,7 @@ local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local helpers = require("helpers")
+local filesystem = require("external.filesystem")
 local string = string
 local os = os
 
@@ -113,7 +114,7 @@ end
 
 function record:stop_video()
     awful.spawn.easy_async("killall ffmpeg", function()
-        local file = helpers.file.new_for_path(self._private.folder .. self._private.file_name)
+        local file = filesystem.file.new_for_path(self._private.folder .. self._private.file_name)
         file:exists(function(error, exists)
             if error == nil then
                 if exists == false then
@@ -140,10 +141,10 @@ function record:start_video()
     end
 
     gtimer.start_new(self._private.delay, function()
-        local folder = helpers.file.new_for_path(self._private.folder)
+        local folder = filesystem.file.new_for_path(self._private.folder)
         folder:exists(function(error, exists)
             if exists == false then
-                helpers.filesystem.make_directory(self._private.folder, function(error)
+                filesystem.filesystem.make_directory(self._private.folder, function(error)
                     if error == nil then
                         record()
                     else
