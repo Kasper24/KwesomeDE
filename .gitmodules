@@ -13,3 +13,6 @@
 [submodule "json"]
 	path = external/json
 	url = https://github.com/rxi/json.lua
+[submodule "dbus_proxy"]
+	path = external/dbus_proxy
+	url = https://github.com/stefano-m/lua-dbus_proxy

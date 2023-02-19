@@ -7,7 +7,7 @@ local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
-local dbus_proxy = require("helpers").dbus_proxy
+local dbus_proxy = require("external.dbus_proxy")
 local pairs = pairs
 
 local bluetooth = {}

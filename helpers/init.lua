@@ -1,7 +1,6 @@
 return {
     animation = require(... .. ".animation"),
     async = require(... .. ".async"),
-    dbus_proxy = require(... .. ".dbus_proxy"),
     file = require(... .. ".filesystem.file"),
     filesystem = require(... .. ".filesystem.filesystem"),
     stream = require(... .. ".filesystem.stream"),
