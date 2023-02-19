@@ -400,7 +400,7 @@ local function new()
     wp.text_color = beautiful.colors.on_background
     wp.text = ""
 
-    wp.cursor_size = 12
+    wp.cursor_size = 4
     wp.cursor_color = beautiful.colors.on_background
 
     wp.cur_pos = #wp.text + 1 or 1
