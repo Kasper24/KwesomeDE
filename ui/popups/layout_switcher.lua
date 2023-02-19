@@ -10,6 +10,7 @@ local beautiful = require("beautiful")
 local widgets = require("ui.widgets")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
+local ipairs = ipairs
 local capi = {
     tag = tag
 }
@@ -39,49 +40,45 @@ function layout_switcher:toggle()
     end
 end
 
-local function create_layouts_for_tag(tag, layouts)
-    layouts:reset()
-
-    for _, layout in ipairs(tag.layouts) do
-        local button = wibox.widget
-        {
-            widget = widgets.button.elevated.state,
-            on_turn_on = function()
-                tag.layout = layout
-            end,
-            child = {
-                layout = wibox.layout.fixed.horizontal,
-                forced_width = dpi(230),
-                forced_height = dpi(50),
-                spacing = dpi(15),
-                {
-                    widget = wibox.widget.imagebox,
-                    image = beautiful["layout_" .. (layout.name or "")],
-                },
-                {
-                    widget = widgets.text,
-                    size = 12,
-                    text = layout.name
-                }
+local function layout_widget(layout, tag)
+    local button = wibox.widget
+    {
+        widget = widgets.button.elevated.state,
+        on_turn_on = function()
+            tag.layout = layout
+        end,
+        child = {
+            layout = wibox.layout.fixed.horizontal,
+            forced_width = dpi(230),
+            forced_height = dpi(50),
+            spacing = dpi(15),
+            {
+                widget = wibox.widget.imagebox,
+                image = beautiful["layout_" .. (layout.name or "")],
+            },
+            {
+                widget = widgets.text,
+                size = 12,
+                text = layout.name
             }
         }
+    }
 
+    if tag.layout == layout then
+        button:turn_on()
+    else
+        button:turn_off()
+    end
+
+    tag:connect_signal("property::layout", function()
         if tag.layout == layout then
             button:turn_on()
         else
             button:turn_off()
         end
+    end)
 
-        tag:connect_signal("property::layout", function()
-            if tag.layout == layout then
-                button:turn_on()
-            else
-                button:turn_off()
-            end
-        end)
-
-        layouts:add(button)
-    end
+    return button
 end
 
 local function new()
@@ -98,10 +95,17 @@ local function new()
     }
 
     capi.tag.connect_signal("property::selected", function(tag)
-        create_layouts_for_tag(tag, layouts)
+        layouts:reset()
+
+        for _, layout in ipairs(tag.layouts) do
+            layouts:add(layout_widget(layout, tag))
+        end
     end)
 
-    create_layouts_for_tag(awful.screen.focused().selected_tag, layouts)
+    local tag  = awful.screen.focused().selected_tag
+    for _, layout in ipairs(tag.layouts) do
+        layouts:add(layout_widget(layout, tag))
+    end
 
     ret.widget = widgets.popup {
         placement = awful.placement.centered,
