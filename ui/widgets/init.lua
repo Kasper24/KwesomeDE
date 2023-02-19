@@ -4,6 +4,7 @@
 -------------------------------------------
 return {
     animated_panel = require(... .. ".animated_panel"),
+    animated_popup = require(... .. ".animated_popup"),
     arcchart = require(... .. ".arcchart"),
     button = require(... .. ".button"),
     background = require(... .. ".background"),

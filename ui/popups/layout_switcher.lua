@@ -24,22 +24,6 @@ function layout_switcher:cycle_layouts(increase)
     awful.layout.set(gtable.cycle_value(ll.layouts, ll.current_layout, increase), nil)
 end
 
-function layout_switcher:show()
-    self.widget.visible = true
-end
-
-function layout_switcher:hide()
-    self.widget.visible = false
-end
-
-function layout_switcher:toggle()
-    if self.widget.visible == true then
-        self:hide()
-    else
-        self:show()
-    end
-end
-
 local function layout_widget(layout, tag)
     local button = wibox.widget
     {
@@ -82,16 +66,28 @@ local function layout_widget(layout, tag)
 end
 
 local function new()
-    local ret = gobject {}
-    gtable.crush(ret, layout_switcher)
-
-    ret.layout_list = awful.widget.layoutlist {
-        source = awful.widget.layoutlist.source.default_layouts,
-    }
-
     local layouts = wibox.widget {
         layout = wibox.layout.fixed.vertical,
         spacing = dpi(15)
+    }
+
+    local widget = widgets.animated_popup {
+        placement = awful.placement.centered,
+        ontop = true,
+        visible = false,
+        shape = helpers.ui.rrect(),
+        bg = beautiful.colors.background,
+        maximum_height = dpi(700),
+        widget = wibox.widget {
+            widget = wibox.container.margin,
+            margins = dpi(25),
+            layouts
+        }
+    }
+    gtable.crush(widget, layout_switcher)
+
+    widget.layout_list = awful.widget.layoutlist {
+        source = awful.widget.layoutlist.source.default_layouts,
     }
 
     capi.tag.connect_signal("property::selected", function(tag)
@@ -107,20 +103,7 @@ local function new()
         layouts:add(layout_widget(layout, tag))
     end
 
-    ret.widget = widgets.popup {
-        placement = awful.placement.centered,
-        ontop = true,
-        visible = false,
-        shape = helpers.ui.rrect(),
-        bg = beautiful.colors.background,
-        widget = wibox.widget {
-            widget = wibox.container.margin,
-            margins = dpi(25),
-            layouts
-        }
-    }
-
-    return ret
+    return widget
 end
 
 if not instance then

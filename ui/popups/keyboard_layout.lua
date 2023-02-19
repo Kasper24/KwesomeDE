@@ -14,8 +14,6 @@ local dpi = beautiful.xresources.apply_dpi
 local instance = nil
 
 local function new()
-    local ret = {}
-
     local icon = wibox.widget {
         widget = widgets.text,
         halign = "center",
@@ -31,17 +29,7 @@ local function new()
         size = 15
     }
 
-    local hide_timer = gtimer {
-        single_shot = true,
-        call_now = false,
-        autostart = false,
-        timeout = 1,
-        callback = function()
-            ret.widget.visible = false
-        end
-    }
-
-    ret.widget = widgets.popup {
+    local widget = widgets.animated_popup {
         screen = awful.screen.focused(),
         visible = false,
         ontop = true,
@@ -53,7 +41,8 @@ local function new()
             })
         end,
         minimum_width = dpi(200),
-        minimum_height = dpi(200),
+        maximum_width = dpi(200),
+        maximum_height = dpi(200),
         shape = helpers.ui.rrect(),
         bg = beautiful.colors.background,
         widget = {
@@ -69,21 +58,29 @@ local function new()
         }
     }
 
+    local hide_timer = gtimer {
+        single_shot = true,
+        call_now = false,
+        autostart = false,
+        timeout = 1,
+        callback = function()
+            widget:hide()
+        end
+    }
+
     local show = false
     keyboard_layout_daemon:connect_signal("update", function(self, layout)
         if show == true then
             text:set_text(layout)
-            if ret.widget.visible then
-                hide_timer:again()
-            else
-                ret.widget.visible = true
-                hide_timer:again()
+            if widget.visible == false then
+                widget:show()
             end
+            hide_timer:again()
         end
         show = true
     end)
 
-    return ret
+    return widget
 end
 
 if not instance then
