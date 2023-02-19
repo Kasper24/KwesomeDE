@@ -108,7 +108,7 @@ local function generate_markup(self, show_cursor)
             char = gstring.xml_escape(text:sub(wp.cur_pos, wp.cur_pos + offset))
             spacer = " "
             text_start = gstring.xml_escape(text:sub(1, wp.cur_pos - 1))
-            text_end = gstring.xml_escape(text:sub(wp.cur_pos + 1 + offset))
+            text_end = gstring.xml_escape(text:sub(wp.cur_pos + offset))
         end
 
         markup = markup .. (string.format(
