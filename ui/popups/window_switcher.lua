@@ -106,7 +106,9 @@ function window_switcher:show()
         return
     end
 
-    self:select_client(capi.client.focus)
+    if self._private.focused_client then
+        self:select_client(self._private.focused_client)
+    end
 
     local clients = #capi.client.get()
     self:_show(clients * dpi(300) + clients * dpi(15))
@@ -188,6 +190,10 @@ local function new()
                 clients_layout:insert(client_index, client.window_switcher_widget)
             end
         end)
+    end)
+
+    capi.client.connect_signal("focus", function(client)
+        widget._private.focused_client = client
     end)
 
     return widget
