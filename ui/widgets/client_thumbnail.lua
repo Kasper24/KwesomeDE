@@ -9,7 +9,6 @@ local beautiful = require("beautiful")
 local cfiwidget = require("ui.widgets.client_font_icon")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
-local os = os
 
 local client_thumbnail = {
     mt = {}
