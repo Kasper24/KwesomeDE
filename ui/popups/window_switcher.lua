@@ -3,7 +3,6 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 local awful = require("awful")
-local gobject = require("gears.object")
 local gtable = require("gears.table")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
@@ -12,7 +11,6 @@ local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local ipairs = ipairs
 local capi = {
-    root = root,
     client = client
 }
 
@@ -160,10 +158,10 @@ local function new()
             }
         }
     }
+
     widget._private.sorted_clients = {}
     widget._show = widget.show
     widget._hide = widget.hide
-
     gtable.crush(widget, window_switcher, true)
 
     capi.client.connect_signal("manage", function()

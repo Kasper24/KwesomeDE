@@ -3,16 +3,13 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 local awful = require("awful")
-local gobject = require("gears.object")
 local gtable = require("gears.table")
-local gtimer = require("gears.timer")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
 local widgets = require("ui.widgets")
 local theme_daemon = require("daemons.system.theme")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
-local collectgarbage = collectgarbage
 local capi = {
     client = client,
     tag = tag
@@ -88,6 +85,7 @@ local function new()
         bg = beautiful.colors.background,
         widget = thumbnail
     }
+
     widget._show = widget.show
     gtable.crush(widget, tag_preview, true)
 
