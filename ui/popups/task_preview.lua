@@ -2,20 +2,15 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-local gobject = require("gears.object")
 local gtable = require("gears.table")
-local gmatrix = require("gears.matrix")
 local gshape = require("gears.shape")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
 local widgets = require("ui.widgets")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
-local collectgarbage = collectgarbage
-local ipairs = ipairs
 local capi = {
     client = client,
-    tag = tag
 }
 
 local task_preview = {}
@@ -38,16 +33,37 @@ function task_preview:show(c, args)
             args.coords.y = args.coords.y + args.offset.y
         end
 
-        self.widget.x = args.coords.x
-        self.widget.y = args.coords.y
+        self.x = args.coords.x
+        self.y = args.coords.y
     end
 
-    local widget = wibox.widget {
-        widget = wibox.container.constraint,
-        mode = "max",
-        width = dpi(300),
-        height = dpi(200),
-        {
+    self.widget:get_children_by_id("font_icon")[1]:set_client(c)
+    self.widget:get_children_by_id("name")[1]:set_text(c.name)
+    self.widget:get_children_by_id("thumbnail")[1]:set_client(c)
+
+    self:_show()
+end
+
+function task_preview:toggle(c, args)
+    if self.visible == true then
+        self:hide()
+    else
+        self:show(c, args)
+    end
+end
+
+local function new()
+    local widget = widgets.animated_popup {
+        visible = false,
+        ontop = true,
+        shape = function(cr, width, height)
+            gshape.infobubble(cr, width, height, nil, nil, dpi(22))
+        end,
+        bg = beautiful.colors.background,
+        minimum_width = dpi(300),
+        maximum_width = dpi(300),
+        maximum_height = dpi(200),
+        widget = wibox.widget {
             widget = wibox.container.margin,
             margins = dpi(15),
             {
@@ -59,70 +75,43 @@ function task_preview:show(c, args)
                     spacing = dpi(10),
                     {
                         widget = widgets.client_font_icon,
+                        id = "font_icon",
                         halign = "center",
                         valign = "center",
-                        client = c
                     },
                     {
                         widget = widgets.text,
+                        id = "name",
                         forced_height = dpi(30),
                         halign = "center",
                         valign = "center",
                         size = 15,
-                        text = c.name
                     }
                 },
-                widgets.client_thumbnail(c)
+                {
+                    widget = widgets.client_thumbnail,
+                    id = "thumbnail"
+                }
             }
         }
     }
 
-    self.widget.widget = widget
-    self.widget.visible = true
-end
-
-function task_preview:hide()
-    self.widget.visible = false
-    self.widget.widget = nil
-    collectgarbage("collect")
-end
-
-function task_preview:toggle(c, args)
-    if self.widget.visible == true then
-        self:hide()
-    else
-        self:show(c, args)
-    end
-end
-
-local function new()
-    local ret = gobject {}
-    gtable.crush(ret, task_preview)
-
-    ret.widget = widgets.popup {
-        type = 'dropdown_menu',
-        visible = false,
-        ontop = true,
-        bg = beautiful.colors.background,
-        shape = function(cr, width, height)
-            gshape.infobubble(cr, width, height, nil, nil, dpi(22))
-        end,
-        widget = wibox.container.background -- A dummy widget to make awful.popup not scream
-    }
+    widget._show = widget.show
+    gtable.crush(widget, task_preview, true)
 
     capi.client.connect_signal("property::fullscreen", function(c)
         if c.fullscreen then
-            ret:hide()
+            widget:hide()
         end
     end)
 
     capi.client.connect_signal("focus", function(c)
         if c.fullscreen then
-            ret:hide()
+            widget:hide()
         end
     end)
 
-    return ret
+    return widget
 end
 
 if not instance then
