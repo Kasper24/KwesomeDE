@@ -141,7 +141,6 @@ end
 
 local function new()
     local widget = widgets.animated_popup {
-        type = 'dropdown_menu',
         placement = awful.placement.centered,
         visible = false,
         ontop = true,

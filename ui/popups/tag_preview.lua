@@ -74,7 +74,6 @@ local function new()
     }
 
     local widget = widgets.animated_popup {
-        type = 'dropdown_menu',
         visible = false,
         ontop = true,
         shape = helpers.ui.rrect(),
