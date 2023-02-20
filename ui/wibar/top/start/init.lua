@@ -114,7 +114,7 @@ local function new()
         end
     }
 
-    app_launcher:connect_signal("bling::app_launcher::visibility", function(self, visibility)
+    app_launcher:connect_signal("visibility", function(self, visibility)
         if visibility == true then
             animation:set{
                 height = 1,
