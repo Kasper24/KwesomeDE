@@ -18,6 +18,7 @@ local function new()
     local app_on_accent_color = beautiful.colors.random_accent_color()
 
     local app_launcher = bling.widget.app_launcher {
+        bg = beautiful.colors.background,
         widget_template = wibox.widget {
             layout = wibox.layout.fixed.horizontal,
             {
@@ -47,7 +48,6 @@ local function new()
                                     widget = widgets.prompt,
                                     id = "prompt_role",
                                     always_on = true,
-                                    reset_on_stop = true,
                                     icon = beautiful.icons.firefox,
                                 }
                             }
@@ -98,7 +98,7 @@ local function new()
     local animation = helpers.animation:new{
         pos = 1,
         easing = helpers.animation.easing.outExpo,
-        duration = 0.8,
+        duration = 0.5,
         update = function(_, pos)
             app_launcher._private.widget.widget.forced_width = dpi(pos)
         end,
@@ -106,6 +106,7 @@ local function new()
             ["ended"] = function()
                 if app_launcher._private.state == false then
                     app_launcher._private.widget.visible = false
+                    app_launcher._private.prompt:set_text("")
                 end
             end
         }

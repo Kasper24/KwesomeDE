@@ -106,7 +106,7 @@ local function new()
             color = helpers.color.hex_to_rgb(off_color)
         },
         easing = helpers.animation.easing.linear,
-        duration = 0.2,
+        duration = 0.5,
         update = function(self, pos)
             widget.pos = pos.height
             widget.color = pos.color
