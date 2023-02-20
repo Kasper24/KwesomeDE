@@ -14,6 +14,15 @@ local capi = {
 
 local instance = nil
 
+local function fake_widget(image)
+    return wibox.widget {
+        widget = wibox.widget.imagebox,
+        forced_width = dpi(800),
+        forced_height = dpi(300),
+        image = image
+    }
+end
+
 local function new()
     local app_on_accent_color = beautiful.colors.random_accent_color()
 
@@ -25,7 +34,7 @@ local function new()
                 layout = wibox.layout.stack,
                 {
                     widget = widgets.wallpaper,
-                    forced_width = dpi(600),
+                    forced_width = dpi(800),
                     forced_height = dpi(300),
                 },
                 {
@@ -37,7 +46,7 @@ local function new()
                         valign = "top",
                         {
                             widget = widgets.background,
-                            forced_width = dpi(550),
+                            forced_width = dpi(750),
                             forced_height = dpi(60),
                             shape = helpers.ui.rrect(),
                             bg = beautiful.colors.background,
@@ -72,7 +81,7 @@ local function new()
         app_template = function(app)
             local button = wibox.widget {
                 widget = widgets.button.text.state,
-                forced_width = dpi(400),
+                forced_width = dpi(500),
                 forced_height = dpi(60),
                 paddings = dpi(15),
                 halign = "left",
@@ -100,7 +109,7 @@ local function new()
         easing = helpers.animation.easing.outExpo,
         duration = 0.5,
         update = function(_, pos)
-            app_launcher._private.widget.widget.forced_width = dpi(pos)
+            app_launcher._private.widget.widget.forced_width = pos
         end,
         signals = {
             ["ended"] = function()
@@ -119,7 +128,7 @@ local function new()
         app_launcher:emit_signal("visibility", true)
 
         animation.easing = helpers.animation.easing.outExpo
-        animation:set(dpi(1000))
+        animation:set(dpi(1300))
     end
 
     function app_launcher:hide()
