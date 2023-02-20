@@ -6,7 +6,6 @@ local awful = require("awful")
 local gtable = require("gears.table")
 local gstring = require("gears.string")
 local wibox = require("wibox")
-local ebwidget = require("ui.widgets.button.elevated")
 local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
 local tostring = tostring
@@ -16,6 +15,8 @@ local ipairs = ipairs
 local string = string
 local capi = {
     awesome = awesome,
+    root = root,
+    mouse = mouse,
     tag = tag,
     client = client
 }
@@ -25,7 +26,9 @@ local prompt = {
 }
 
 local properties = {
-    "only_numbers", "round", "always_on", "reset_on_stop", "obscure", "stop_on_lost_focus",
+    "only_numbers", "round", "obscure",
+    "always_on", "reset_on_stop",
+    "stop_on_lost_focus", "stop_on_tag_changed", "stop_on_clicked_outside",
     "icon_font", "icon_size", "icon_color", "icon",
     "label_font", "label_size", "label_color", "label",
     "text_font", "text_size", "text_color", "text",
@@ -129,7 +132,7 @@ local function generate_markup(self, show_cursor)
                 wp.text_font, text_size, wp.text_color, gstring.xml_escape(text))
     end
 
-    self._private.child:set_markup(markup)
+    self:set_markup(markup)
 end
 
 local function paste(self)
@@ -186,9 +189,9 @@ end
 
 function prompt:start()
     local wp = self._private
+    wp.state = true
 
     capi.awesome.emit_signal("prompt::toggled_on", self)
-    self:turn_on()
     generate_markup(self, true)
 
     wp.grabber = awful.keygrabber.run(function(modifiers, key, event)
@@ -339,9 +342,8 @@ end
 
 function prompt:stop()
     local wp = self._private
-    if wp.always_on then
-        return
-    end
+    wp.state = false
+
     if self.reset_on_stop == true or wp.cur_pos == nil then
         wp.cur_pos = wp.text:wlen() + 1
     end
@@ -349,7 +351,6 @@ function prompt:stop()
         wp.text = ""
     end
 
-    self:turn_off()
     awful.keygrabber.stop(wp.grabber)
     generate_markup(self, false)
 
@@ -359,22 +360,16 @@ end
 function prompt:toggle()
     local wp = self._private
 
-    if wp.prompt_state == true then
-        wp.prompt_state = false
+    if wp.state == true then
         self:stop()
     else
-        wp.prompt_state = true
         self:start()
     end
 end
 
 local function new()
-    local widget = ebwidget.state()
+    local widget = wibox.widget.textbox()
     gtable.crush(widget, prompt, true)
-
-    widget:set_child(wibox.widget.textbox())
-    widget:set_hover_cursor("xterm")
-    widget:set_halign("left")
 
     local wp = widget._private
 
@@ -383,7 +378,9 @@ local function new()
     wp.always_on = false
     wp.reset_on_stop = false
     wp.obscure = false
-    wp.stop_on_focus_lost = false
+    wp.stop_on_focus_lost = true
+    wp.stop_on_tag_changed = true
+    wp.stop_on_clicked_outside = true
 
     wp.icon_font = beautiful.font
     wp.icon_size = 12
@@ -404,31 +401,52 @@ local function new()
     wp.cursor_color = beautiful.colors.on_background
 
     wp.cur_pos = #wp.text + 1 or 1
+    wp.state = false
 
-    widget:set_on_press(function()
-        widget:toggle()
+    widget:connect_signal("mouse::enter", function(self, find_widgets_result)
+        capi.root.cursor("xterm")
+        local wibox = capi.mouse.current_wibox
+        if wibox then
+            wibox.cursor = "xterm"
+        end
     end)
 
     widget:connect_signal("mouse::leave", function()
-        if wp.stop_on_lost_focus ~= false and wp.always_on == false and wp.state == true then
+        capi.root.cursor("left_ptr")
+        local wibox = capi.mouse.current_wibox
+        if wibox then
+            wibox.cursor = "left_ptr"
+        end
+
+        if wp.stop_on_focus_lost ~= false and wp.always_on == false and wp.state == true then
             widget:stop()
         end
     end)
 
+    widget:connect_signal("button::press", function(self, lx, ly, button, mods, find_widgets_result)
+        if wp.always_on then
+            return
+        end
+
+        if button == 1 then
+            widget:toggle()
+        end
+    end)
+
     capi.awesome.connect_signal("root::pressed", function()
-        if wp.always_on == false and wp.state == true then
+        if wp.stop_on_clicked_outside ~= false and wp.always_on == false and wp.state == true then
             widget:stop()
         end
     end)
 
     capi.client.connect_signal("button::press", function()
-        if wp.always_on == false and wp.state == true then
+        if wp.stop_on_clicked_outside ~= false and wp.always_on == false and wp.state == true then
             widget:stop()
         end
     end)
 
     capi.tag.connect_signal("property::selected", function()
-        if wp.always_on == false and wp.state == true then
+        if wp.stop_on_tag_changed ~= false and wp.always_on == false and wp.state == true then
             widget:stop()
         end
     end)
