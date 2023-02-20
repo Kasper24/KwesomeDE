@@ -57,7 +57,7 @@ local function partition_widget(partition)
 
     partition:connect_signal("update", function(self, partition)
         name:set_text(partition.mount)
-        usage.progressbar.value = tonumber(partition.perc)
+        usage_progressbar.value = tonumber(partition.perc)
         usage:set_text(math.floor(partition.used / 1024 / 1024) .. "/" .. math.floor(partition.size / 1024 / 1024) .. "GB(" ..
             math.floor(partition.perc) .. "%)")
     end)
