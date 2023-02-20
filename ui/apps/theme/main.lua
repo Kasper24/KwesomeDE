@@ -20,7 +20,6 @@ local function wallpaper_widget(wallpaper)
     local button = wibox.widget {
         widget = widgets.button.text.state,
         forced_height = dpi(40),
-        halign = "left",
         text_normal_bg = beautiful.colors.on_background,
         size = 12,
         text = theme_daemon:get_short_wallpaper_name(wallpaper),
