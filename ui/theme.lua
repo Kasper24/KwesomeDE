@@ -150,7 +150,6 @@ local function icons()
             right = { icon = "" },
         },
         chevron = {
-            up = { icon = "" },
             down = { icon = "" },
             right = { icon = "" },
         },
@@ -176,8 +175,6 @@ local function icons()
         vim = { icon = "" },
         emacs = { icon = "" },
 
-        play = { icon = "" },
-        pause = { icon = "" },
         forward = { icon = "" },
         backward = { icon = "" },
         _repeat = { icon = "" },
@@ -203,10 +200,6 @@ local function icons()
         suspend = { icon = "" },
         exit = { icon = "" },
         lock = { icon = "" },
-
-        triangle = { icon = "" },
-        circle = { icon = "" },
-        square = { icon = "" },
 
         code_pull_request = { icon = "︁" },
         commit = { icon = "" },
