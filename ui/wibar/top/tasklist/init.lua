@@ -198,7 +198,7 @@ local function new()
     }
 
     local task_list = wibox.widget {
-        layout = wibox.layout.manual,
+        layout = wibox.layout.manual
     }
 
     capi.client.connect_signal("manage", function(client)
