@@ -210,7 +210,7 @@ local function new()
     capi.client.connect_signal("unmanage", function(client)
         task_list:remove_widgets(client.tasklist_widget)
 
-        if #helpers.client.find(client.class) == 0 then
+        if #helpers.client.find({class = client.class}) == 0 then
             if favorites_daemon:is_favorite(client) and favorites[client.class] == nil then
                 local command = favorites_daemon:get_favorite_command(client)
                 favorites:add(favorite_widget(favorites, command, client.class))
