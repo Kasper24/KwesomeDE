@@ -4,12 +4,11 @@ local Gdk = lgi.require("Gdk", "3.0")
 local DesktopAppInfo = Gio.DesktopAppInfo
 local AppInfo = Gio.DesktopAppInfo
 local awful = require("awful")
+local ruled = require("ruled")
 local gtable = require("gears.table")
 local gmath = require("gears.math")
 local beautiful = require("beautiful")
-local icon_theme = require("helpers.icon_theme")
 local dpi = beautiful.xresources.apply_dpi
-local string = string
 local ipairs = ipairs
 local pairs = pairs
 local table = table
@@ -24,10 +23,10 @@ local _client = {}
 
 function _client.find(rule)
     local function matcher(c)
-        return awful.rules.match(c, rule)
+        return ruled.client.match(c, rule)
     end
-    local clients = client.get()
-    local findex = gtable.hasitem(clients, client.focus) or 1
+    local clients = capi.client.get()
+    local findex = gtable.hasitem(clients, capi.client.focus) or 1
     local start = gmath.cycle(#clients, findex + 1)
 
     local matches = {}
