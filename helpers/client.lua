@@ -1,11 +1,15 @@
 local lgi = require("lgi")
-local Gio = require("lgi").Gio
+local Gio = lgi.Gio
 local Gdk = lgi.require("Gdk", "3.0")
+local DesktopAppInfo = Gio.DesktopAppInfo
+local AppInfo = Gio.DesktopAppInfo
 local awful = require("awful")
 local gtable = require("gears.table")
 local gmath = require("gears.math")
 local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
+local string = string
+local ipairs = ipairs
 local pairs = pairs
 local table = table
 local math = math
@@ -33,65 +37,64 @@ function _client.find(rule)
     return matches
 end
 
--- Maximizes client and also respects gaps
-function _client.maximize(c)
-    c.maximized = not c.maximized
-    if c.maximized then
-        awful.placement.maximize(c, {
-            honor_padding = true,
-            honor_workarea = true,
-            margins = beautiful.useless_gap * 2
-        })
-
-    end
-    c:raise()
-end
-
 function _client.move_to_edge(c, direction)
-    -- local workarea = awful.screen.focused().workarea
-    -- local client_geometry = c:geometry()
+    local screen = awful.screen.focused()
+    local workarea = screen.workarea
+    local useless_gap = screen.selected_tag.gap
+
     if direction == "up" then
-        local old_x = c:geometry().x
-        awful.placement.top(c, {
-            honor_padding = true,
-            honor_workarea = true,
-            honor_padding = true
+        c:geometry({
+            nil,
+            y = workarea.y + useless_gap * 2,
+            nil,
+            nil
         })
-        c.x = old_x
-        -- c:geometry({ nil, y = workarea.y + beautiful.screen_margin * 2, nil, nil })
     elseif direction == "down" then
-        local old_x = c:geometry().x
-        awful.placement.bottom(c, {
-            honor_padding = true,
-            honor_workarea = true,
-            honor_padding = true
+        c:geometry({
+            nil,
+            y = workarea.height + workarea.y - c:geometry().height - useless_gap * 2 - (beautiful.border_width or 0) *
+                2,
+            nil,
+            nil
         })
-        c.x = old_x
-        -- c:geometry({ nil, y = workarea.height + workarea.y - client_geometry.height - beautiful.screen_margin * 2 - beautiful.border_width * 2, nil, nil })
     elseif direction == "left" then
-        local old_y = c:geometry().y
-        awful.placement.left(c, {
-            honor_padding = true,
-            honor_workarea = true,
-            honor_padding = true
+        c:geometry({
+            x = workarea.x + useless_gap * 2,
+            nil,
+            nil,
+            nil
         })
-        c.y = old_y
-        -- c:geometry({ x = workarea.x + beautiful.screen_margin * 2, nil, nil, nil })
     elseif direction == "right" then
-        local old_y = c:geometry().y
-        awful.placement.right(c, {
-            honor_padding = true,
-            honor_workarea = true,
-            honor_padding = true
+        c:geometry({
+            x = workarea.width + workarea.x - c:geometry().width - useless_gap * 2 - (beautiful.border_width or 0) *
+                2,
+            nil,
+            nil,
+            nil
         })
-        c.y = old_y
-        -- c:geometry({ x = workarea.width + workarea.x - client_geometry.width - beautiful.screen_margin * 2 - beautiful.border_width * 2, nil, nil, nil })
     end
 end
 
--- Resize DWIM (Do What I Mean)
--- Resize client or factor
-function _client.resize_dwim(c, direction)
+function _client.move(c, direction)
+    -- Move client DWIM (Do What I Mean)
+    -- Move to edge if the client / layout is floating
+    -- Swap by index if maximized
+    -- Else swap client by direction
+
+    if c.floating or (awful.layout.get(capi.mouse.screen) == awful.layout.suit.floating) then
+        _client.move_to_edge(c, direction)
+    elseif awful.layout.get(capi.mouse.screen) == awful.layout.suit.max then
+        if direction == "up" or direction == "left" then
+            awful.client.swap.byidx(-1, c)
+        elseif direction == "down" or direction == "right" then
+            awful.client.swap.byidx(1, c)
+        end
+    else
+        awful.client.swap.bydirection(direction, c, nil)
+    end
+end
+
+function _client.resize(c, direction)
     local floating_resize_amount = dpi(20)
     local tiling_resize_factor = 0.05
 
@@ -115,102 +118,6 @@ function _client.resize_dwim(c, direction)
         elseif direction == "right" then
             awful.tag.incmwfact(tiling_resize_factor)
         end
-    end
-end
-
--- Move client to screen edge, respecting the screen workarea
-function _client.move_to_edge(c, direction)
-    local workarea = awful.screen.focused().workarea
-    if direction == "up" then
-        c:geometry({
-            nil,
-            y = workarea.y + beautiful.useless_gap * 2,
-            nil,
-            nil
-        })
-    elseif direction == "down" then
-        c:geometry({
-            nil,
-            y = workarea.height + workarea.y - c:geometry().height - beautiful.useless_gap * 2 - beautiful.border_width *
-                2,
-            nil,
-            nil
-        })
-    elseif direction == "left" then
-        c:geometry({
-            x = workarea.x + beautiful.useless_gap * 2,
-            nil,
-            nil,
-            nil
-        })
-    elseif direction == "right" then
-        c:geometry({
-            x = workarea.width + workarea.x - c:geometry().width - beautiful.useless_gap * 2 - beautiful.border_width *
-                2,
-            nil,
-            nil,
-            nil
-        })
-    end
-end
-
--- Move client DWIM (Do What I Mean)
--- Move to edge if the client / layout is floating
--- Swap by index if maximized
--- Else swap client by direction
-function _client.move_client_dwim(c, direction)
-    if c.floating or (awful.layout.get(capi.mouse.screen) == awful.layout.suit.floating) then
-        _client.move_to_edge(c, direction)
-    elseif awful.layout.get(capi.mouse.screen) == awful.layout.suit.max then
-        if direction == "up" or direction == "left" then
-            awful.client.swap.byidx(-1, c)
-        elseif direction == "down" or direction == "right" then
-            awful.client.swap.byidx(1, c)
-        end
-    else
-        awful.client.swap.bydirection(direction, c, nil)
-    end
-end
-
-function _client.float_and_edge_snap(c, direction)
-    -- if not c.floating then
-    --     c.floating = true
-    -- end
-    c.floating = true
-    local workarea = awful.screen.focused().workarea
-    if direction == "up" then
-        local axis = "horizontally"
-        local f = awful.placement.scale + awful.placement.top + (axis and awful.placement["maximize_" .. axis] or nil)
-        local geo = f(capi.client.focus, {
-            honor_padding = true,
-            honor_workarea = true,
-            to_percent = 0.5
-        })
-    elseif direction == "down" then
-        local axis = "horizontally"
-        local f = awful.placement.scale + awful.placement.bottom +
-                      (axis and awful.placement["maximize_" .. axis] or nil)
-        local geo = f(capi.client.focus, {
-            honor_padding = true,
-            honor_workarea = true,
-            to_percent = 0.5
-        })
-    elseif direction == "left" then
-        local axis = "vertically"
-        local f = awful.placement.scale + awful.placement.left + (axis and awful.placement["maximize_" .. axis] or nil)
-        local geo = f(client.focus, {
-            honor_padding = true,
-            honor_workarea = true,
-            to_percent = 0.5
-        })
-    elseif direction == "right" then
-        local axis = "vertically"
-        local f = awful.placement.scale + awful.placement.right + (axis and awful.placement["maximize_" .. axis] or nil)
-        local geo = f(capi.client.focus, {
-            honor_padding = true,
-            honor_workarea = true,
-            to_percent = 0.5
-        })
     end
 end
 
@@ -377,94 +284,72 @@ function _client.get_client_index(client)
     end
 end
 
-local function get_appinfo_by_command(client, apps)
-    local pid = client.pid
-    if pid ~= nil then
-        local handle = io.popen(string.format("ps -p %d -o comm=", pid))
-        local pid_command = handle:read("*a"):gsub("^%s*(.-)%s*$", "%1")
-        handle:close()
+function _client.get_desktop_app_info(client)
+    local app_list = AppInfo.get_all()
 
-        for _, app in ipairs(apps) do
-            local executable = app:get_executable()
-            if executable and executable:find(pid_command, 1, true) then
-                return app
-            end
-        end
-    end
-end
+    local class = string.lower(client.class)
+    local name = string.lower(client.name)
 
-local function get_appinfo_by_iconname(client, apps)
-    local icon_name = client.icon_name and client.icon_name:lower() or nil
-    if icon_name ~= nil then
-        for _, app in ipairs(apps) do
-            local name = app:get_name():lower()
-            if name and name:find(icon_name, 1, true) then
-                return app
-            end
-        end
-    end
-end
+    for _, app in ipairs(app_list) do
+        local id = app:get_id()
+        local desktop_app_info = DesktopAppInfo.new(id)
+        if desktop_app_info then
+            local props = {
+                id:gsub(".desktop", ""),
+                desktop_app_info:get_string("Name"),
+                desktop_app_info:get_filename(),
+                desktop_app_info:get_startup_wm_class(),
+                desktop_app_info:get_string("Icon"),
+                desktop_app_info:get_string("Exec"),
+                desktop_app_info:get_string("Keywords")
+            }
 
-local name_lookup = {
-    ["jetbrains-studio"] = "android-studio"
-}
-
-local function get_appinfo_by_class(client, apps)
-    if client.class ~= nil then
-        local class = name_lookup[client.class] or client.class:lower()
-
-        -- Try to remove dashes
-        local class_1 = class:gsub("[%-]", "")
-
-        -- Try to replace dashes with dot
-        local class_2 = class:gsub("[%-]", ".")
-
-        -- Try to match only the first word
-        local class_3 = class:match("(.-)-") or class
-        class_3 = class_3:match("(.-)%.") or class_3
-        class_3 = class_3:match("(.-)%s+") or class_3
-
-        local possible_icon_names = {class, class_3, class_2, class_1}
-        for _, app in ipairs(apps) do
-            local id = app:get_id():lower()
-            for _, possible_icon_name in ipairs(possible_icon_names) do
-                if id and id:find(possible_icon_name, 1, true) then
-                    return app
+            for _, prop in ipairs(props) do
+                if prop ~= nil and (prop:lower() == class or prop:lower() == name) then
+                    return desktop_app_info
                 end
             end
         end
-    end
-end
-
-function _client.get_appinfo(client)
-    local apps = Gio.AppInfo.get_all()
-
-    return get_appinfo_by_command(client, apps) or get_appinfo_by_iconname(client, apps) or
-        get_appinfo_by_class(client, apps)
-end
-
-function _client.get_desktopappinfo(client)
-    local app_info = _client.get_appinfo(client)
-    if app_info ~= nil then
-        return Gio.DesktopAppInfo.new(app_info:get_id())
     end
 end
 
 function _client.get_actions(client)
+    if client.desktop_app_info == nil then
+        return {}
+    end
+
     local actions = {}
-    local desktop_app_info = _client.get_desktopappinfo(client)
-    if desktop_app_info ~= nil then
-        for _, action in ipairs(desktop_app_info:list_actions()) do
-            table.insert(actions,
-            {
-                name = desktop_app_info:get_action_name(action),
-                launch = function()
-                    desktop_app_info:launch_action(action)
-                end
-            })
+    for _, action in ipairs(client.desktop_app_info:list_actions()) do
+        table.insert(actions,
+        {
+            name = client.desktop_app_info:get_action_name(action),
+            launch = function()
+                client.desktop_app_info:launch_action(action)
+            end
+        })
+    end
+
+    return actions
+end
+
+function _client.get_font_icon(...)
+    local args = { ... }
+
+    for _, arg in ipairs(args) do
+        if arg then
+            arg = arg:lower()
+            arg = arg:gsub("_", "")
+            arg = arg:gsub("%s+", "")
+            arg = arg:gsub("-", "")
+            arg = arg:gsub("%.", "")
+            local icon = beautiful.app_icons[arg]
+            if icon then
+                return icon
+            end
         end
     end
-    return actions
+
+    return beautiful.icons.window
 end
 
 return _client

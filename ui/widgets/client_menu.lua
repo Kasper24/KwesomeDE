@@ -5,7 +5,6 @@
 local awful = require("awful")
 local mwidget = require("ui.widgets.menu")
 local favorites_daemon = require("daemons.system.favorites")
-local helpers = require("helpers")
 local setmetatable = setmetatable
 local ipairs = ipairs
 
@@ -101,8 +100,7 @@ local function new(client)
         }
     }
 
-    local actions = helpers.client.get_actions(client)
-    for index, action in ipairs(actions) do
+    for index, action in ipairs(client.actions) do
         menu:add(mwidget.button {
             text = action.name,
             on_press = function()
@@ -110,7 +108,7 @@ local function new(client)
             end
         }, 3 + index)
 
-        if index == #actions then
+        if index == #client.actions then
             menu:add(mwidget.separator(), 4 + index)
         end
     end

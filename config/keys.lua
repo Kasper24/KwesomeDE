@@ -260,7 +260,7 @@ capi.client.connect_signal("request::default_keybindings", function()
             group = "client",
             description = "move up",
             on_press = function(c)
-                helpers.client.move_client_dwim(c, "up")
+                helpers.client.move(c, "up")
             end
         }, -- Move down
         awful.key {
@@ -269,7 +269,7 @@ capi.client.connect_signal("request::default_keybindings", function()
             group = "client",
             description = "move down",
             on_press = function(c)
-                helpers.client.move_client_dwim(c, "down")
+                helpers.client.move(c, "down")
             end
         }, -- Move left
         awful.key {
@@ -278,7 +278,7 @@ capi.client.connect_signal("request::default_keybindings", function()
             group = "client",
             description = "move left",
             on_press = function(c)
-                helpers.client.move_client_dwim(c, "left")
+                helpers.client.move(c, "left")
             end
         }, -- Move right
         awful.key {
@@ -287,7 +287,7 @@ capi.client.connect_signal("request::default_keybindings", function()
             group = "client",
             description = "move right",
             on_press = function(c)
-                helpers.client.move_client_dwim(c, "right")
+                helpers.client.move(c, "right")
             end
         }, -- Resize up
         awful.key {
@@ -297,7 +297,7 @@ capi.client.connect_signal("request::default_keybindings", function()
             description = "resize up",
             on_press = function(c)
                 if c.can_resize ~= false then
-                    helpers.client.resize_dwim(c, "up")
+                    helpers.client.resize(c, "up")
                 end
             end
         }, -- Resize down
@@ -308,7 +308,7 @@ capi.client.connect_signal("request::default_keybindings", function()
             description = "resize down",
             on_press = function(c)
                 if c.can_resize ~= false then
-                    helpers.client.resize_dwim(c, "down")
+                    helpers.client.resize(c, "down")
                 end
             end
         }, -- Resize left
@@ -319,7 +319,7 @@ capi.client.connect_signal("request::default_keybindings", function()
             description = "resize left",
             on_press = function(c)
                 if c.can_resize ~= false then
-                    helpers.client.resize_dwim(c, "left")
+                    helpers.client.resize(c, "left")
                 end
             end
         }, -- Resize right
@@ -330,7 +330,7 @@ capi.client.connect_signal("request::default_keybindings", function()
             description = "resize right",
             on_press = function(c)
                 if c.can_resize ~= false then
-                    helpers.client.resize_dwim(c, "right")
+                    helpers.client.resize(c, "right")
                 end
             end
         }, -- Focus up

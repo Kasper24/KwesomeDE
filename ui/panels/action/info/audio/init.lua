@@ -30,7 +30,7 @@ local function application_widget(args)
     args.on_slider_moved = args.on_slider_moved or nil
     args.on_removed_cb = args.on_removed_cb or nil
 
-    local font_icon = beautiful.get_font_icon_for_app_name(args.application.name)
+    local font_icon = helpers.client.get_font_icon(args.application.name)
     local icon = nil
     if font_icon == nil then
         icon = wibox.widget {

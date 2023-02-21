@@ -43,7 +43,6 @@ local function client_widget(self, client)
         {
             widget = widgets.button.elevated.state,
             id = "button",
-            on_by_default = is_selected,
             normal_bg = beautiful.colors.background,
             normal_border_width = dpi(5),
             normal_border_color = beautiful.colors.surface,
@@ -171,24 +170,17 @@ local function new()
         end
     end)
 
-    capi.client.connect_signal("scanned", function()
-        for _, client in ipairs(helpers.client.get_sorted_clients()) do
-            client.window_switcher_widget = client_widget(widget, client)
-            clients_layout:add(client.window_switcher_widget)
+    capi.client.connect_signal("ui::ready", function(client)
+        if client.window_switcher_widget then
+            clients_layout:remove_widgets(client.window_switcher_widget)
         end
-
-        capi.client.connect_signal("tagged", function(client)
-            if client.window_switcher_widget then
-                clients_layout:remove_widgets(client.window_switcher_widget)
-            end
-            client.window_switcher_widget = client_widget(widget, client)
-            local client_index = helpers.client.get_client_index(client)
-            if #clients_layout.children < client_index then
-                clients_layout:add(client.window_switcher_widget)
-            else
-                clients_layout:insert(client_index, client.window_switcher_widget)
-            end
-        end)
+        client.window_switcher_widget = client_widget(widget, client)
+        local client_index = helpers.client.get_client_index(client)
+        if #clients_layout.children < client_index then
+            clients_layout:add(client.window_switcher_widget)
+        else
+            clients_layout:insert(client_index, client.window_switcher_widget)
+        end
     end)
 
     capi.client.connect_signal("focus", function(client)

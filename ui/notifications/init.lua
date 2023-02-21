@@ -369,7 +369,7 @@ naughty.connect_signal("added", function(n)
     end
 
     if n._private.app_font_icon == nil then
-        n.app_font_icon = beautiful.get_font_icon_for_app_name(n.app_name)
+        n.app_font_icon = helpers.client.get_font_icon(n.app_name)
     else
         n.app_font_icon = n._private.app_font_icon
     end

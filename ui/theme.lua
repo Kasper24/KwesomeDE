@@ -2,14 +2,16 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-local gfs = require("gears.filesystem")
+local gfilesystem = require("gears.filesystem")
 local gcolor = require("gears.color")
 local beautiful = require("beautiful")
 local theme_daemon = require("daemons.system.theme")
-local color_libary = require("external.color")
 local helpers = require("helpers")
 local filesystem = require("external.filesystem")
+local color_libary = require("external.color")
+local layout_machi = require("external.layout-machi")
 local dpi = beautiful.xresources.apply_dpi
+local pairs = pairs
 local math = math
 
 local theme = {}
@@ -55,6 +57,7 @@ local function colors()
         on_error = colors[1],
         on_accent = colors[1]
     }
+
     function theme.colors.random_accent_color(accent_colors)
         accent_colors = accent_colors or colors
 
@@ -77,13 +80,16 @@ local function colors()
     end
 end
 
-local function icons()
-    local font_awesome_6_solid_font_name = "Font Awesome 6 Pro Solid "
-    local font_awesome_6_brands_font_name = "Font Awesome 6 Brands "
-    local nerd_font_name = "Nerd Font Mono "
+local function fonts()
+    theme.font_name = "Iosevka "
+    theme.font = theme.font_name .. 12
+    theme.secondary_font_name = "Oswald Medium "
+    theme.secondary_font = theme.secondary_font_name .. 12
+    theme.font_awesome_6_brands_font_name = "Font Awesome 6 Brands "
+end
 
-    theme.icons =
-    {
+local function icons()
+    theme.icons = {
         thermometer = {
             quarter = { icon = "︁", size = 30 },
             half = { icon = "", size = 30 },
@@ -99,8 +105,8 @@ local function icons()
             wired = { icon = "" },
         },
         bluetooth = {
-            on = { icon = "", font = nerd_font_name },
-            off = { icon = "", font = nerd_font_name },
+            on = { icon = "", font = "Nerd Font Mono " },
+            off = { icon = "", font = "Nerd Font Mono " },
         },
         battery = {
             bolt = { icon = "" },
@@ -151,19 +157,19 @@ local function icons()
         window = { icon = "" },
         file_manager = { icon = "" },
         terminal = { icon = "" },
-        firefox = { icon = "︁", font = font_awesome_6_brands_font_name },
-        chrome = { icon = "", font = font_awesome_6_brands_font_name },
+        firefox = { icon = "︁", font = theme.font_awesome_6_brands_font_name },
+        chrome = { icon = "", font = theme.font_awesome_6_brands_font_name },
         code = { icon = "", size = 25 },
-        git = { icon = "", font = font_awesome_6_brands_font_name },
-        gitkraken = { icon = "︁", font = font_awesome_6_brands_font_name },
-        discord = { icon = "︁", font = font_awesome_6_brands_font_name },
-        telegram = { icon = "︁", font = font_awesome_6_brands_font_name },
-        spotify = { icon = "", font = font_awesome_6_brands_font_name },
-        steam = { icon = "︁", font = font_awesome_6_brands_font_name },
+        git = { icon = "", font = theme.font_awesome_6_brands_font_name },
+        gitkraken = { icon = "︁", font = theme.font_awesome_6_brands_font_name },
+        discord = { icon = "︁", font = theme.font_awesome_6_brands_font_name },
+        telegram = { icon = "︁", font = theme.font_awesome_6_brands_font_name },
+        spotify = { icon = "", font = theme.font_awesome_6_brands_font_name },
+        steam = { icon = "︁", font = theme.font_awesome_6_brands_font_name },
         vscode = { icon = "﬏", size = 40 },
-        github = { icon = "", font = font_awesome_6_brands_font_name },
-        gitlab = { icon = "", font = font_awesome_6_brands_font_name },
-        youtube = { icon = "", font = font_awesome_6_brands_font_name },
+        github = { icon = "", font = theme.font_awesome_6_brands_font_name },
+        gitlab = { icon = "", font = theme.font_awesome_6_brands_font_name },
+        youtube = { icon = "", font = theme.font_awesome_6_brands_font_name },
         nvidia = { icon = "︁" },
         system_monitor = { icon = "︁" },
         calculator = { icon = "🖩︁" },
@@ -257,7 +263,7 @@ local function icons()
         laptop_code = { icon = "" },
         location_dot = { icon = "" },
         server = { icon = "" },
-        usb = { icon = "", font = font_awesome_6_brands_font_name },
+        usb = { icon = "", font = theme.font_awesome_6_brands_font_name },
         usb_drive = { icon = "" },
         signal_stream = { icon = "" },
         car_battery =  { icon = "" },
@@ -271,30 +277,7 @@ local function icons()
         theme.icons.gamepad_alt, theme.icons.lights_holiday
     }
 
-    local function set_icon_default_props(icon, color)
-        if icon.color == nil then
-            icon.color = color or theme.colors.random_accent_color()
-        end
-        if icon.font == nil then
-            icon.font = font_awesome_6_solid_font_name
-        end
-        if icon.size == nil then
-            icon.size = 20
-        end
-    end
-
-    for _, icon in pairs(theme.icons) do
-        if icon.icon == nil then
-            local color = theme.colors.random_accent_color()
-            for _, _icon in pairs(icon) do
-                set_icon_default_props(_icon, color)
-            end
-        else
-            set_icon_default_props(icon)
-        end
-    end
-
-    theme.app_to_font_icon_lookup = {
+    theme.app_icons = {
         ["kitty"] = theme.icons.laptop_code,
         ["alacritty"] = theme.icons.laptop_code,
         ["termite"] = theme.icons.laptop_code,
@@ -367,30 +350,37 @@ local function icons()
         ["obs"] = theme.icons.video
     }
 
-    function theme.get_font_icon_for_app_name(name)
-        if name then
-            name = name:lower()
-            name = name:gsub("_", "")
-            name = name:gsub("%s+", "")
-            name = name:gsub("-", "")
-            name = name:gsub("%.", "")
-        else
-            return theme.icons.window
+    local function set_icon_default_props(icon, color)
+        if icon.color == nil then
+            icon.color = color or theme.colors.random_accent_color()
         end
+        if icon.font == nil then
+            icon.font = "Font Awesome 6 Pro Solid "
+        end
+        if icon.size == nil then
+            icon.size = 20
+        end
+    end
 
-        return theme.app_to_font_icon_lookup[name] or theme.icons.window
+    for _, icon in pairs(theme.icons) do
+        if icon.icon == nil then
+            local color = theme.colors.random_accent_color()
+            for _, _icon in pairs(icon) do
+                set_icon_default_props(_icon, color)
+            end
+        else
+            set_icon_default_props(icon)
+        end
     end
 end
 
 local function assets()
     local assets_folder = filesystem.filesystem.get_awesome_config_dir("ui/assets")
-
     theme.profile_icon = assets_folder .. "profile.png"
     theme.mountain_background = assets_folder .. "mountain.png"
     theme.overview = assets_folder .. "overview.png"
 
-    local themes_path = gfs.get_themes_dir()
-
+    local themes_path = gfilesystem.get_themes_dir()
     theme.layout_fairh = themes_path.."default/layouts/fairhw.png"
     theme.layout_fairv = themes_path.."default/layouts/fairvw.png"
     theme.layout_floating  = themes_path.."default/layouts/floatingw.png"
@@ -407,28 +397,16 @@ local function assets()
     theme.layout_cornerne = themes_path.."default/layouts/cornernew.png"
     theme.layout_cornersw = themes_path.."default/layouts/cornersww.png"
     theme.layout_cornerse = themes_path.."default/layouts/cornersew.png"
+    theme.layout_machi = gcolor.recolor_image(layout_machi.get_icon(), theme.colors.on_background)
     theme.fg_normal = theme.colors.on_background -- bling uses this to recolor their layout icons
     beautiful.theme_assets.recolor_layout(theme, theme.colors.on_background)
 end
 
-local function defaults()
-    theme.useless_gap = theme_daemon:get_useless_gap()
-    theme.font_name = "Iosevka "
-    theme.font = theme.font_name .. 12
-    theme.secondary_font_name = "Oswald Medium "
-    theme.secondary_font = theme.secondary_font_name .. 12
-    theme.border_width = 0
-    theme.border_color = theme.colors.surface
-    theme.border_radius = theme_daemon:get_ui_border_radius()
-end
-
-local function systray()
-    theme.bg_systray = theme.colors.background
+local function widgets()
+    theme.bg_systray = theme.colors.transparent
     theme.systray_icon_spacing = dpi(20)
     theme.systray_max_rows = 3
-end
 
-local function tabbed()
     theme.tabbed_spawn_in_tab = false -- whether a new client should spawn into the focused tabbing container
     theme.tabbar_ontop = true
     theme.tabbar_radius = 0 -- border radius of the tabbar
@@ -441,6 +419,7 @@ local function tabbed()
     theme.tabbar_fg_normal = theme.colors.on_background
     theme.tabbar_fg_focus = theme.colors.background
     theme.tabbar_disable = false
+
     theme.mstab_bar_ontop = false -- whether you want to allow the bar to be ontop of clients
     theme.mstab_dont_resize_slaves = false -- whether the tabbed stack windows should be smaller than the
     theme.mstab_bar_padding = dpi(0) -- how much padding there should be between clients and your tabbar
@@ -448,9 +427,7 @@ local function tabbed()
     theme.mstab_bar_height = dpi(60) -- height of the tabbar
     theme.mstab_tabbar_position = "top" -- position of the tabbar (mstab currently does not support left,right)
     theme.mstab_tabbar_style = "default" -- style of the tabbar ("default", "boxes" or "modern")
-end
 
-local function machi()
     theme.machi_editor_border_color = theme.border_color_active
     theme.machi_editor_border_opacity = 0.75
     theme.machi_editor_active_color = theme.colors.background
@@ -466,16 +443,12 @@ local function machi()
     theme.machi_switcher_box_opacity = 0.85
     theme.machi_switcher_fill_color_hl = theme.colors.background
     theme.machi_switcher_fill_hl_opacity = 1
-
-    theme.layout_machi = gcolor.recolor_image(require("external.layout-machi").get_icon(), theme.colors.on_background)
 end
 
 colors()
+fonts()
 icons()
 assets()
-defaults()
-systray()
-tabbed()
-machi()
+widgets()
 
 return theme

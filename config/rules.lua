@@ -2,6 +2,7 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
+local DesktopAppInfo = require("lgi").Gio.DesktopAppInfo
 local awful = require("awful")
 local gtimer = require("gears.timer")
 local ruled = require("ruled")
@@ -270,33 +271,35 @@ local apps = {
 
 require("awful.autofocus")
 
-capi.client.connect_signal("mouse::enter", function(client)
-    if not client.fullscreen then
-        client:activate{
-            context = "mouse_enter",
-            raise = false
-        }
-    end
-end)
-
-capi.client.connect_signal("manage", function(client)
+capi.client.connect_signal("request::manage", function(client)
     if not capi.awesome.startup then
         client:to_secondary_section()
     end
 end)
 
-capi.client.connect_signal("tagged", function(client)
-    client.font_icon = beautiful.get_font_icon_for_app_name(client.class)
-end)
+capi.client.connect_signal("manage", function(client)
+    if client.desktop_app_info == nil then
+        client.desktop_app_info = helpers.client.get_desktop_app_info(client)
+    end
+    if client.actions == nil then
+        client.actions = helpers.client.get_actions(client)
+    end
+    if client.font_icon == nil then
+        client.font_icon = helpers.client.get_font_icon(client.class, client.name)
+    end
 
-capi.client.connect_signal("property::class", function(client)
-    client.font_icon = beautiful.get_font_icon_for_app_name(client.class)
+    capi.client.emit_signal("ui::ready", client)
+
+    capi.client.connect_signal("tagged", function(client)
+        if client.font_icon then
+            capi.client.emit_signal("ui::ready", client)
+        end
+    end)
 end)
 
 capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
     for _, client in ipairs(capi.client.get()) do
-        client.font_icon = beautiful.get_font_icon_for_app_name(client.class)
-        client:emit_signal("property::font_icon", client)
+        client.font_icon = helpers.client.get_font_icon(client.class, client.name)
     end
 end)
 
@@ -305,6 +308,15 @@ capi.client.connect_signal("property::floating", function(client)
         client.ontop = true
     else
         client.ontop = false
+    end
+end)
+
+capi.client.connect_signal("mouse::enter", function(client)
+    if not client.fullscreen then
+        client:activate{
+            context = "mouse_enter",
+            raise = false
+        }
     end
 end)
 

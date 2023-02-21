@@ -26,7 +26,7 @@ local favorites = {}
 local function favorite_widget(layout, command, class)
     favorites[class] = true
 
-    local font_icon = beautiful.get_font_icon_for_app_name(class)
+    local font_icon = helpers.client.get_font_icon(class)
 
     local menu = widgets.menu {
         widgets.menu.button {
@@ -232,24 +232,17 @@ local function new()
         end
     end)
 
-    capi.client.connect_signal("scanned", function()
-        for _, client in ipairs(helpers.client.get_sorted_clients()) do
-            client.tasklist_widget = client_widget(client)
-            task_list:add(client.tasklist_widget)
+    capi.client.connect_signal("ui::ready", function(client)
+        if client.tasklist_widget then
+            task_list:remove_widgets(client.tasklist_widget)
         end
-
-        capi.client.connect_signal("tagged", function(client)
-            if client.tasklist_widget then
-                task_list:remove_widgets(client.tasklist_widget)
-            end
-            client.tasklist_widget = client_widget(client)
-            local client_index = helpers.client.get_client_index(client)
-            if #task_list.children < client_index then
-                task_list:add(client.tasklist_widget)
-            else
-                task_list:insert(client_index, client.tasklist_widget)
-            end
-        end)
+        client.tasklist_widget = client_widget(client)
+        local client_index = helpers.client.get_client_index(client)
+        if #task_list.children < client_index then
+            task_list:add(client.tasklist_widget)
+        else
+            task_list:insert(client_index, client.tasklist_widget)
+        end
     end)
 
     for class, command in pairs(favorites_daemon:get_favorites()) do

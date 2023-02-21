@@ -362,7 +362,7 @@ function menu.checkbox_button(args)
     args.icon = args.icon or nil
     args.image = args.image
     args.text = args.text or ""
-    args.handle_active_color = args.handle_active_color or beautiful.colors.random_accent_color()
+    args.handle_active_color = args.handle_active_color or nil
     args.on_by_default = args.on_by_default or nil
     args.on_press = args.on_press or nil
 
