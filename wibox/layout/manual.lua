@@ -164,6 +164,32 @@ function manual_layout:remove_widgets(...)
     return #args > 0 and ret
 end
 
+function manual_layout:replace_widget(widget, widget2, recursive)
+    local idx, l = self:index(widget, recursive)
+
+    if idx and l then
+        l:set(idx, widget2)
+        return true
+    end
+
+    return false
+end
+
+function manual_layout:set(index, widget2)
+    if (not widget2) or (not self._private.widgets[index]) then return false end
+
+    base.check_widget(widget2)
+
+    local w = self._private.widgets[index]
+
+    self._private.widgets[index] = widget2
+
+    self:emit_signal("widget::layout_changed")
+    self:emit_signal("widget::replaced", widget2, w, index)
+
+    return true
+end
+
 function manual_layout:add(...)
     local wdgs = {}
     local old_count = #self._private.widgets
