@@ -286,6 +286,9 @@ capi.client.connect_signal("manage", function(client)
     capi.client.emit_signal("ui::ready", client)
 
     capi.client.connect_signal("tagged", function(client)
+        -- Tagged gets emitted before 'manage' when launching a client
+        -- so with this check this code will only run once the 'manage'
+        -- signal was emitted
         if client.index then
             client.index = helpers.client.get_client_index(client)
             capi.client.emit_signal("ui::ready", client)
