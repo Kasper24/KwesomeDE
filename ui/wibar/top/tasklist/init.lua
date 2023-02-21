@@ -232,16 +232,16 @@ local function new()
         end
     end)
 
-    capi.client.connect_signal("ui::ready", function(client)
+    capi.client.connect_signal("property::index", function(client)
         if client.tasklist_widget then
             task_list:remove_widgets(client.tasklist_widget)
         end
         client.tasklist_widget = client_widget(client)
-        local client_index = helpers.client.get_client_index(client)
-        if #task_list.children < client_index then
+
+        if #task_list.children < client.index then
             task_list:add(client.tasklist_widget)
         else
-            task_list:insert(client_index, client.tasklist_widget)
+            task_list:insert(client.index, client.tasklist_widget)
         end
     end)
 

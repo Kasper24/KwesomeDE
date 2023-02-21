@@ -278,20 +278,16 @@ capi.client.connect_signal("request::manage", function(client)
 end)
 
 capi.client.connect_signal("manage", function(client)
-    if client.desktop_app_info == nil then
-        client.desktop_app_info = helpers.client.get_desktop_app_info(client)
-    end
-    if client.actions == nil then
-        client.actions = helpers.client.get_actions(client)
-    end
-    if client.font_icon == nil then
-        client.font_icon = helpers.client.get_font_icon(client.class, client.name)
-    end
+    client.desktop_app_info = helpers.client.get_desktop_app_info(client)
+    client.actions = helpers.client.get_actions(client)
+    client.font_icon = helpers.client.get_font_icon(client.class, client.name)
+    client.index = helpers.client.get_client_index(client)
 
     capi.client.emit_signal("ui::ready", client)
 
     capi.client.connect_signal("tagged", function(client)
-        if client.font_icon then
+        if client.index then
+            client.index = helpers.client.get_client_index(client)
             capi.client.emit_signal("ui::ready", client)
         end
     end)

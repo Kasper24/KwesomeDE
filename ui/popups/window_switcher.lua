@@ -170,16 +170,15 @@ local function new()
         end
     end)
 
-    capi.client.connect_signal("ui::ready", function(client)
+    capi.client.connect_signal("property::index", function(client)
         if client.window_switcher_widget then
             clients_layout:remove_widgets(client.window_switcher_widget)
         end
         client.window_switcher_widget = client_widget(widget, client)
-        local client_index = helpers.client.get_client_index(client)
-        if #clients_layout.children < client_index then
+        if #clients_layout.children < client.index then
             clients_layout:add(client.window_switcher_widget)
         else
-            clients_layout:insert(client_index, client.window_switcher_widget)
+            clients_layout:insert(client.index, client.window_switcher_widget)
         end
     end)
 
