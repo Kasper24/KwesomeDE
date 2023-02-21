@@ -288,26 +288,32 @@ end
 function _client.get_desktop_app_info(client)
     local app_list = AppInfo.get_all()
 
-    local class = string.lower(client.class)
-    local name = string.lower(client.name)
+    local client_props = {
+        client.icon_name,
+        client.class,
+        client.name
+    }
 
     for _, app in ipairs(app_list) do
-        local id = app:get_id()
-        local desktop_app_info = DesktopAppInfo.new(id)
-        if desktop_app_info then
-            local props = {
-                id:gsub(".desktop", ""), -- file name omitting .desktop
-                desktop_app_info:get_string("Name"), -- Declared inside the desktop file
-                desktop_app_info:get_filename(), -- full path to file
-                desktop_app_info:get_startup_wm_class(),
-                desktop_app_info:get_string("Icon"),
-                desktop_app_info:get_string("Exec"),
-                desktop_app_info:get_string("Keywords")
-            }
+        if app:should_show() then
+            local id = app:get_id()
+            local desktop_app_info = DesktopAppInfo.new(id)
+            if desktop_app_info then
+                local desktop_app_props = {
+                    desktop_app_info:get_startup_wm_class(),
+                    id:gsub(".desktop", ""), -- file name omitting .desktop
+                    desktop_app_info:get_string("Name"), -- Declared inside the desktop file
+                    desktop_app_info:get_string("Icon"),
+                    desktop_app_info:get_string("Exec"),
+                }
 
-            for _, prop in ipairs(props) do
-                if prop ~= nil and (prop:lower() == class or prop:lower() == name) then
-                    return desktop_app_info, id
+                for _, desktop_app_prop in ipairs(desktop_app_props) do
+                    for _, client_prop in ipairs(client_props) do
+                        if desktop_app_prop ~= nil and client_prop ~= nil and
+                           desktop_app_prop:lower() == client_prop:lower() then
+                            return desktop_app_info, id
+                        end
+                    end
                 end
             end
         end
