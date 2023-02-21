@@ -209,21 +209,6 @@ function _client.get_dominant_color(client)
     return color
 end
 
-function _client.get_sorted_clients()
-    local clients = capi.client.get()
-
-    table.sort(clients, function(a, b)
-        if a.first_tag == b.first_tag then
-            local a_data = _client.idx(a)
-            local b_data = _client.idx(b)
-            return a_data.col + a_data.idx < b_data.col + b_data.idx
-        end
-        return a.first_tag.index < b.first_tag.index
-    end)
-
-    return clients
-end
-
 function _client.idx(c)
     c = c or capi.client.focus
     if not c then return end
@@ -276,6 +261,21 @@ function _client.idx(c)
     return {idx = idx, col=col, num=percol}
 end
 
+function _client.get_sorted_clients()
+    local clients = capi.client.get()
+
+    table.sort(clients, function(a, b)
+        if a.first_tag == b.first_tag then
+            local a_data = _client.idx(a)
+            local b_data = _client.idx(b)
+            return a_data.col + a_data.idx < b_data.col + b_data.idx
+        end
+        return a.first_tag.index < b.first_tag.index
+    end)
+
+    return clients
+end
+
 function _client.get_client_index(client)
     for index, client1 in ipairs(_client.get_sorted_clients()) do
         if client == client1 then
@@ -288,9 +288,9 @@ function _client.get_desktop_app_info(client)
     local app_list = AppInfo.get_all()
 
     local client_props = {
-        client.icon_name,
-        client.class,
-        client.name
+        client.icon_name or false,
+        client.class or false,
+        client.name or false
     }
 
     for _, app in ipairs(app_list) do
@@ -299,18 +299,25 @@ function _client.get_desktop_app_info(client)
             local desktop_app_info = DesktopAppInfo.new(id)
             if desktop_app_info then
                 local desktop_app_props = {
-                    desktop_app_info:get_startup_wm_class(),
-                    id:gsub(".desktop", ""), -- file name omitting .desktop
-                    desktop_app_info:get_string("Name"), -- Declared inside the desktop file
-                    desktop_app_info:get_string("Icon"),
-                    desktop_app_info:get_string("Exec"),
+                    desktop_app_info:get_startup_wm_class() or false,
+                    id:gsub(".desktop", "") or false, -- file name omitting .desktop
+                    desktop_app_info:get_string("Name") or false, -- Declared inside the desktop file
+                    desktop_app_info:get_string("Icon") or false,
+                    desktop_app_info:get_string("Exec") or false,
                 }
 
                 for _, desktop_app_prop in ipairs(desktop_app_props) do
                     for _, client_prop in ipairs(client_props) do
-                        if desktop_app_prop ~= nil and client_prop ~= nil and
-                           desktop_app_prop:lower() == client_prop:lower() then
-                            return desktop_app_info, id
+                        if desktop_app_prop and client_prop and desktop_app_prop:lower() == client_prop:lower() then
+                            return {
+                                startup_wm_class = desktop_app_props[1],
+                                id = desktop_app_props[2],
+                                name = desktop_app_props[3],
+                                icon = desktop_app_props[4],
+                                exec = desktop_app_props[5],
+                                desktop_app_info = desktop_app_info,
+                                actions = desktop_app_info:list_actions()
+                            }
                         end
                     end
                 end
@@ -320,12 +327,13 @@ function _client.get_desktop_app_info(client)
 end
 
 function _client.get_actions(client)
+    local actions = {}
+
     if client.desktop_app_info == nil then
-        return {}
+        return actions
     end
 
-    local actions = {}
-    for _, action in ipairs(client.desktop_app_info:list_actions()) do
+    for _, action in ipairs(client.desktop_app_info.actions) do
         table.insert(actions,
         {
             name = client.desktop_app_info:get_action_name(action),
@@ -339,7 +347,7 @@ function _client.get_actions(client)
 end
 
 function _client.get_icon(client, icon_theme, icon_size)
-    local icon = client.desktop_app_info:get_string("Icon")
+    local icon = client.desktop_app_info.icon
     if icon ~= nil then
         return icon_theme.get_icon_path(icon, icon_theme, icon_size)
     end

@@ -2,11 +2,9 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-local DesktopAppInfo = require("lgi").Gio.DesktopAppInfo
 local awful = require("awful")
 local gtimer = require("gears.timer")
 local ruled = require("ruled")
-local beautiful = require("beautiful")
 local picom_daemon = require("daemons.system.picom")
 local theme_daemon = require("daemons.system.theme")
 local ncmpcpp_titlebar = require("ui.titlebar.ncmpcpp")
@@ -278,14 +276,19 @@ capi.client.connect_signal("request::manage", function(client)
 end)
 
 capi.client.connect_signal("manage", function(client)
-    local desktop_app_info, id = helpers.client.get_desktop_app_info(client)
-    client.desktop_app_info = desktop_app_info
-    client.desktop_app_info_id = id
+    client.desktop_app_info = helpers.client.get_desktop_app_info(client)
     client.actions = helpers.client.get_actions(client)
     -- client.icon = helpers.client.get_icon(client) -- not used
     client.font_icon = helpers.client.get_font_icon(client.class, client.name)
     client.index = helpers.client.get_client_index(client)
 end)
+
+capi.client.connect_signal("unmanage", function()
+    for _, client in ipairs(capi.client.get()) do
+        client.index = helpers.client.get_client_index(client)
+    end
+end)
+
 
 capi.client.connect_signal("tagged", function(client)
     if client.index then
