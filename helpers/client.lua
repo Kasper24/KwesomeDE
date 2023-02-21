@@ -296,9 +296,9 @@ function _client.get_desktop_app_info(client)
         local desktop_app_info = DesktopAppInfo.new(id)
         if desktop_app_info then
             local props = {
-                id:gsub(".desktop", ""),
-                desktop_app_info:get_string("Name"),
-                desktop_app_info:get_filename(),
+                id:gsub(".desktop", ""), -- file name omitting .desktop
+                desktop_app_info:get_string("Name"), -- Declared inside the desktop file
+                desktop_app_info:get_filename(), -- full path to file
                 desktop_app_info:get_startup_wm_class(),
                 desktop_app_info:get_string("Icon"),
                 desktop_app_info:get_string("Exec"),
@@ -307,7 +307,7 @@ function _client.get_desktop_app_info(client)
 
             for _, prop in ipairs(props) do
                 if prop ~= nil and (prop:lower() == class or prop:lower() == name) then
-                    return desktop_app_info
+                    return desktop_app_info, id
                 end
             end
         end

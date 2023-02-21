@@ -278,7 +278,9 @@ capi.client.connect_signal("request::manage", function(client)
 end)
 
 capi.client.connect_signal("manage", function(client)
-    client.desktop_app_info = helpers.client.get_desktop_app_info(client)
+    local desktop_app_info, id = helpers.client.get_desktop_app_info(client)
+    client.desktop_app_info = desktop_app_info
+    client.desktop_app_info_id = id
     client.actions = helpers.client.get_actions(client)
     -- client.icon = helpers.client.get_icon(client) -- not used
     client.font_icon = helpers.client.get_font_icon(client.class, client.name)
