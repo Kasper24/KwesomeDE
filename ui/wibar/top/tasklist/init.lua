@@ -192,23 +192,18 @@ local function client_widget(client)
 end
 
 local function new()
-    local favorites = wibox.widget {
-        layout = wibox.layout.fixed.horizontal,
-        spacing = dpi(15)
-    }
-
-    local task_list = wibox.widget {
+    local tasklist_layout = wibox.widget {
         layout = wibox.layout.manual
     }
 
     capi.client.connect_signal("manage", function(client)
         if tasklist_daemon:is_favorite(client) then
-            task_list:remove_widgets(client.favorite_widget)
+            tasklist_layout:remove_widgets(client.favorite_widget)
         end
     end)
 
     capi.client.connect_signal("unmanage", function(client)
-        task_list:remove_widgets(client.tasklist_widget)
+        tasklist_layout:remove_widgets(client.tasklist_widget)
 
         -- if #helpers.client.find({class = client.class}) == 0 then
         --     if tasklist_daemon:is_favorite(client) and favorites[client.class] == nil then
@@ -220,10 +215,10 @@ local function new()
     capi.client.connect_signal("property::index", function(client)
         local pos = (client.index - 1) * 80
         if client.tasklist_widget then
-            task_list:move_widget(client.tasklist_widget, { x = pos, y = 0})
+            tasklist_layout:move_widget(client.tasklist_widget, { x = pos, y = 0})
         else
             client.tasklist_widget = client_widget(client)
-            task_list:add_at(client.tasklist_widget, { x = pos, y = 0})
+            tasklist_layout:add_at(client.tasklist_widget, { x = pos, y = 0})
         end
     end)
 
@@ -231,12 +226,7 @@ local function new()
         -- favorites:add(favorite_widget(favorites, command, class))
     -- end
 
-    return wibox.widget {
-        layout = wibox.layout.fixed.horizontal,
-        spacing = dpi(5),
-        -- favorites,
-        task_list
-    }
+    return tasklist_layout
 end
 
 function tasklist.mt:__call(...)
