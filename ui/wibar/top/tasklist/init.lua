@@ -193,13 +193,12 @@ end
 
 local function new()
     local favorites = wibox.widget {
-        layout = widgets.overflow.horizontal,
+        layout = wibox.layout.fixed.horizontal,
         spacing = dpi(15)
     }
 
     local task_list = wibox.widget {
-        layout = widgets.overflow.horizontal,
-        spacing = dpi(15)
+        layout = wibox.layout.manual,
     }
 
     capi.client.connect_signal("manage", function(client)
@@ -211,37 +210,21 @@ local function new()
     capi.client.connect_signal("unmanage", function(client)
         task_list:remove_widgets(client.tasklist_widget)
 
-        for _, c in ipairs(capi.client.get()) do
-            if c.class == client.class then
-                return
+        if #helpers.client.find(client.class) == 0 then
+            if favorites_daemon:is_favorite(client) and favorites[client.class] == nil then
+                local command = favorites_daemon:get_favorite_command(client)
+                favorites:add(favorite_widget(favorites, command, client.class))
             end
-        end
-
-        if favorites_daemon:is_favorite(client) and favorites[client.class] == nil then
-            local command = favorites_daemon:get_favorite_command(client)
-            favorites:add(favorite_widget(favorites, command, client.class))
-        end
-    end)
-
-    capi.client.connect_signal("swapped", function(client, other_client, is_source)
-        if is_source then
-            local client_index = helpers.client.get_client_index(client)
-            local other_client_index = helpers.client.get_client_index(other_client)
-            task_list:set(client_index, client.tasklist_widget)
-            task_list:set(other_client_index, other_client.tasklist_widget)
         end
     end)
 
     capi.client.connect_signal("property::index", function(client)
+        local pos = (client.index - 1) * 80
         if client.tasklist_widget then
-            task_list:remove_widgets(client.tasklist_widget)
-        end
-        client.tasklist_widget = client_widget(client)
-
-        if #task_list.children < client.index then
-            task_list:add(client.tasklist_widget)
+            task_list:move_widget(client.tasklist_widget, { x = pos, y = 0})
         else
-            task_list:insert(client.index, client.tasklist_widget)
+            client.tasklist_widget = client_widget(client)
+            task_list:add_at(client.tasklist_widget, { x = pos, y = 0})
         end
     end)
 
@@ -251,7 +234,7 @@ local function new()
 
     return wibox.widget {
         layout = wibox.layout.fixed.horizontal,
-        spacing = dpi(20),
+        spacing = dpi(5),
         favorites,
         task_list
     }

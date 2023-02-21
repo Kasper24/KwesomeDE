@@ -141,9 +141,8 @@ local function new()
             widget = wibox.container.margin,
             margins = dpi(15),
             {
-                layout = wibox.layout.fixed.horizontal,
+                layout = wibox.layout.manual,
                 id = "clients",
-                spacing = dpi(15)
             }
         }
     }
@@ -161,24 +160,13 @@ local function new()
         clients_layout:remove_widgets(client.window_switcher_widget)
     end)
 
-    capi.client.connect_signal("swapped", function(client, other_client, is_source)
-        if is_source then
-            local client_index = helpers.client.get_client_index(client)
-            local other_client_index = helpers.client.get_client_index(other_client)
-            clients_layout:set(client_index, client.window_switcher_widget)
-            clients_layout:set(other_client_index, other_client.window_switcher_widget)
-        end
-    end)
-
     capi.client.connect_signal("property::index", function(client)
+        local pos = (client.index - 1) * 300
         if client.window_switcher_widget then
-            clients_layout:remove_widgets(client.window_switcher_widget)
-        end
-        client.window_switcher_widget = client_widget(widget, client)
-        if #clients_layout.children < client.index then
-            clients_layout:add(client.window_switcher_widget)
+            clients_layout:move_widget(client.window_switcher_widget, { x = pos, y = 0})
         else
-            clients_layout:insert(client.index, client.window_switcher_widget)
+            client.window_switcher_widget = client_widget(widget, client)
+            clients_layout:add_at(client.window_switcher_widget, { x = pos, y = 0})
         end
     end)
 
