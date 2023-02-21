@@ -4,7 +4,7 @@
 -------------------------------------------
 local awful = require("awful")
 local mwidget = require("ui.widgets.menu")
-local favorites_daemon = require("daemons.system.favorites")
+local tasklist_daemon = require("daemons.system.tasklist")
 local setmetatable = setmetatable
 local ipairs = ipairs
 
@@ -58,16 +58,16 @@ local function new(client)
     }
 
     local pin_to_taskbar_button = mwidget.checkbox_button {
-        state = favorites_daemon:is_favorite(client),
+        state = tasklist_daemon:is_favorite(client),
         handle_active_color = client.font_icon.color,
         text = "Pin to Taskbar",
         on_press = function(self)
-            if favorites_daemon:is_favorite(client) then
+            if tasklist_daemon:is_favorite(client) then
                 self:turn_off()
-                favorites_daemon:remove_favorite(client)
+                tasklist_daemon:remove_favorite(client)
             else
                 self:turn_on()
-                favorites_daemon:add_favorite(client)
+                tasklist_daemon:add_favorite(client)
             end
         end
     }

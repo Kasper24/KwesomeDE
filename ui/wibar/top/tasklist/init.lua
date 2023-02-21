@@ -8,7 +8,7 @@ local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local task_preview = require("ui.popups.task_preview")
 local beautiful = require("beautiful")
-local favorites_daemon = require("daemons.system.favorites")
+local tasklist_daemon = require("daemons.system.tasklist")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local ipairs = ipairs
@@ -39,7 +39,7 @@ local function favorite_widget(layout, command, class)
         widgets.menu.button {
             text = "Unpin from Taskbar",
             on_press = function()
-                favorites_daemon:remove_favorite{class = class}
+                tasklist_daemon:remove_favorite{class = class}
             end
         }
     }
@@ -67,10 +67,10 @@ local function favorite_widget(layout, command, class)
         }
     }
 
-    favorites_daemon:dynamic_connect_signal(class .. "::removed", function()
+    tasklist_daemon:dynamic_connect_signal(class .. "::removed", function()
         layout:remove_widgets(button)
         menu:hide()
-        favorites_daemon:dynamic_disconnect_signals(class .. "::removed")
+        tasklist_daemon:dynamic_disconnect_signals(class .. "::removed")
     end)
 
     capi.client.connect_signal("manage", function(c)
@@ -202,20 +202,19 @@ local function new()
     }
 
     capi.client.connect_signal("manage", function(client)
-        if favorites_daemon:is_favorite(client) then
-            favorites:remove(client.favorite_widget)
+        if tasklist_daemon:is_favorite(client) then
+            task_list:remove_widgets(client.favorite_widget)
         end
     end)
 
     capi.client.connect_signal("unmanage", function(client)
         task_list:remove_widgets(client.tasklist_widget)
 
-        if #helpers.client.find({class = client.class}) == 0 then
-            if favorites_daemon:is_favorite(client) and favorites[client.class] == nil then
-                local command = favorites_daemon:get_favorite_command(client)
-                favorites:add(favorite_widget(favorites, command, client.class))
-            end
-        end
+        -- if #helpers.client.find({class = client.class}) == 0 then
+        --     if tasklist_daemon:is_favorite(client) and favorites[client.class] == nil then
+        --         favorites:add(favorite_widget(favorites, command, client.class))
+        --     end
+        -- end
     end)
 
     capi.client.connect_signal("property::index", function(client)
@@ -228,14 +227,14 @@ local function new()
         end
     end)
 
-    for class, command in pairs(favorites_daemon:get_favorites()) do
-        favorites:add(favorite_widget(favorites, command, class))
-    end
+    -- for _, favorite in ipairs(tasklist_daemon:get_favorites()) do
+        -- favorites:add(favorite_widget(favorites, command, class))
+    -- end
 
     return wibox.widget {
         layout = wibox.layout.fixed.horizontal,
         spacing = dpi(5),
-        favorites,
+        -- favorites,
         task_list
     }
 end
