@@ -7,6 +7,7 @@ local awful = require("awful")
 local gtable = require("gears.table")
 local gmath = require("gears.math")
 local beautiful = require("beautiful")
+local icon_theme = require("helpers.icon_theme")
 local dpi = beautiful.xresources.apply_dpi
 local string = string
 local ipairs = ipairs
@@ -330,6 +331,15 @@ function _client.get_actions(client)
     end
 
     return actions
+end
+
+function _client.get_icon(client, icon_theme, icon_size)
+    local icon = client.desktop_app_info:get_string("Icon")
+    if icon ~= nil then
+        return icon_theme.get_icon_path(icon, icon_theme, icon_size)
+    end
+
+    return icon_theme.choose_icon({"window", "window-manager", "xfwm4-default", "window_list"}, icon_theme, icon_size)
 end
 
 function _client.get_font_icon(...)

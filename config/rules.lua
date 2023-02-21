@@ -280,6 +280,7 @@ end)
 capi.client.connect_signal("manage", function(client)
     client.desktop_app_info = helpers.client.get_desktop_app_info(client)
     client.actions = helpers.client.get_actions(client)
+    -- client.icon = helpers.client.get_icon(client) -- not used
     client.font_icon = helpers.client.get_font_icon(client.class, client.name)
     client.index = helpers.client.get_client_index(client)
 
