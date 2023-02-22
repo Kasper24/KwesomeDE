@@ -41,15 +41,6 @@ function _misc.tag_back_and_forth(tag_index)
     end
 end
 
-function _misc.round(number, decimals)
-    local power = 10 ^ decimals
-    return math.floor(number * power) / power
-end
-
-function _misc.round_by_factor(number, factor)
-    return math.floor(number / factor + 0.5) * factor
-end
-
 function _misc.sleep(time)
     local t = os.clock()
     while os.clock() - t <= time do
@@ -67,13 +58,17 @@ function _misc.should_show_notification()
     return show
 end
 
+function _misc.round(number, decimals)
+    local power = 10 ^ decimals
+    return math.floor(number * power) / power
+end
+
+function _misc.round_by_factor(number, factor)
+    return math.floor(number / factor + 0.5) * factor
+end
+
 function _misc.convert_range(old_value, old_min, old_max, new_min, new_max)
     return ((old_value - old_min) / (old_max - old_min)) * (new_max - new_min) + new_min
 end
-
-function _misc.round_to_decimal_places(num, num_decimal_places)
-    local mult = 10^(num_decimal_places or 0)
-    return math.floor(num * mult + 0.5) / mult
-  end
 
 return _misc
