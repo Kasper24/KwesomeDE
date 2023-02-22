@@ -40,7 +40,8 @@ function picom:turn_on(save)
             helpers.table.remove_value(properties, "animation-stiffness")
             helpers.table.remove_value(properties, "animation-dampening")
             helpers.table.remove_value(properties, "animation-window-mass")
-            helpers.table.remove_value("animations")
+            helpers.table.remove_value(bool_properties, "animations")
+            helpers.table.remove_value(bool_properties, "animation-clamping")
         end
 
         cmd = cmd .. "--config " .. CONFIG_PATH .. " "
