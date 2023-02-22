@@ -54,7 +54,7 @@ local instance = nil
 
 function record:set_resolution(resolution)
     self._private.resolution = resolution
-    helpers.settings:set_value("record-resolution", self._private.resolution)
+    helpers.settings["record-resolution"] = self._private.resolution
 end
 
 function record:get_resolution()
@@ -63,7 +63,7 @@ end
 
 function record:set_fps(fps)
     self._private.fps = fps
-    helpers.settings:set_value("record-fps", self._private.fps)
+    helpers.settings["record-fps"] = self._private.fps
 end
 
 function record:get_fps()
@@ -72,7 +72,7 @@ end
 
 function record:set_delay(delay)
     self._private.delay = delay
-    helpers.settings:set_value("record-delay", self._private.delay)
+    helpers.settings["record-delay"] = self._private.delay
 end
 
 function record:get_delay()
@@ -86,13 +86,13 @@ end
 function record:set_folder(folder)
     if folder then
         self._private.folder = folder
-        helpers.settings:set_value("record-folder", folder)
+        helpers.settings["record-folder"] = folder
     else
         awful.spawn.easy_async(FILE_PICKER_SCRIPT, function(stdout)
             stdout = helpers.string.trim(stdout)
             if stdout ~= "" and stdout ~= nil then
                 self._private.folder = stdout
-                helpers.settings:set_value("record-folder", stdout)
+                helpers.settings["record-folder"] = stdout
                 self:emit_signal("folder::updated", stdout)
             end
         end)
@@ -105,7 +105,7 @@ end
 
 function record:set_format(format)
     self._private.format = format
-    helpers.settings:set_value("record-format", self._private.format)
+    helpers.settings["record-format"] = self._private.format
 end
 
 function record:set_audio_source(audio_source)
@@ -178,11 +178,11 @@ local function new()
 
     ret._private = {}
 
-    ret._private.resolution = helpers.settings:get_value("record-resolution")
-    ret._private.fps = helpers.settings:get_value("record-fps")
-    ret._private.delay = helpers.settings:get_value("record-delay")
-    ret._private.folder = helpers.settings:get_value("record-folder"):gsub("~", os.getenv("HOME"))
-    ret._private.format = helpers.settings:get_value("record-format")
+    ret._private.resolution = helpers.settings["record-resolution"]
+    ret._private.fps = helpers.settings["record-fps"]
+    ret._private.delay = helpers.settings["record-delay"]
+    ret._private.folder = helpers.settings["record-folder"]:gsub("~", os.getenv("HOME"))
+    ret._private.format = helpers.settings["record-format"]
 
     ret._private.is_recording = false
 

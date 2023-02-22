@@ -23,7 +23,7 @@ local UPDATE_INTERVAL = 60 * 30 -- 30 mins
 
 function gitlab:set_host(host)
     self._private.host = host
-    helpers.settings:set_value("gitlab-host", self._private.host)
+    helpers.settings["gitlab-host"] = host
 end
 
 function gitlab:get_host()
@@ -32,7 +32,7 @@ end
 
 function gitlab:set_access_token(access_token)
     self._private.access_token = access_token
-    helpers.settings:set_value("gitlab-access-token", self._private.access_token)
+    helpers.settings["gitlab-access-token"] = access_token
 end
 
 function gitlab:get_access_token()
@@ -95,8 +95,8 @@ local function new()
     gtable.crush(ret, gitlab, true)
 
     ret._private = {}
-    ret._private.access_token = helpers.settings:get_value("gitlab-access-token")
-    ret._private.host = helpers.settings:get_value("gitlab-host")
+    ret._private.access_token = helpers.settings["gitlab-access-token"]
+    ret._private.host = helpers.settings["gitlab-host"]
 
     if ret._private.access_token ~= "" then
         ret:refresh()

@@ -14,6 +14,7 @@ local hotkeys_popup = require("ui.popups.hotkeys")
 local power_popup = require("ui.popups.power")
 local theme_app = require("ui.apps.theme")
 local beautiful = require("beautiful")
+local helpers = require("helpers")
 local ipairs = ipairs
 local capi = {
     awesome = awesome,
@@ -187,7 +188,7 @@ local function widget()
             icon = beautiful.icons.gear,
             text = "Settings",
             on_press = function()
-                awful.spawn("dconf-editor", false)
+                helpers.settings:open_setting_file()
             end
         },
         widgets.menu.button {

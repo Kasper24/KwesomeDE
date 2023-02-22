@@ -708,11 +708,11 @@ ruled.client.connect_signal("request::rules", function()
             theme_daemon:set_ui_animations(false, false)
             picom_daemon:turn_off(false)
             c:connect_signal("unmanage", function()
-                if helpers.settings:get_value("theme-ui-animations") ~= false then
+                if helpers.settings["theme-ui-animations"] ~= false then
                     theme_daemon:set_ui_animations(true, false)
                 end
 
-                if helpers.settings:get_value("picom") ~= false then
+                if helpers.settings["picom"] ~= false then
                     picom_daemon:turn_on(false)
                 end
             end)

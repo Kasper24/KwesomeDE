@@ -18,17 +18,17 @@ local instance = nil
 local VERSION = 0
 
 function system:set_need_setup_off()
-    return helpers.settings:set_value("need-setup", false)
+    helpers.settings["need-setup"] = false
 end
 
 function system:does_need_setup()
-    return helpers.settings:get_value("need-setup", VERSION)
+    return helpers.settings["need-setup"]
 end
 
 function system:is_new_version()
-    local version = tonumber(helpers.settings:get_value("version", VERSION))
-    if version ~= VERSION then
-        helpers.settings:set_value("version", VERSION)
+    local version = helpers.settings["version"]
+    if version < VERSION then
+        helpers.settings["version"] = VERSION
         return true
     end
 
@@ -37,7 +37,7 @@ end
 
 function system:set_password(password)
     self._private.password = password
-    helpers.settings:set_value("password", self._private.password)
+    helpers.settings["password"] = password
 end
 
 function system:get_password()
@@ -86,7 +86,7 @@ local function new()
     gtable.crush(ret, system, true)
 
     ret._private = {}
-    ret._private.password = helpers.settings:get_value("password")
+    ret._private.password = helpers.settings["password"]
 
     gtimer.poller {
         timeout = 60,

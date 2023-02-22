@@ -25,7 +25,7 @@ function radio:turn_on()
     awful.spawn("rfkill block all", false)
 
     self._private.airplane_state = true
-    helpers.settings:set_value("airplane", true)
+    helpers.settings["airplane"] =  true
     self:emit_signal("state", true)
 end
 
@@ -33,7 +33,7 @@ function radio:turn_off()
     awful.spawn("rfkill unblock all", false)
 
     self._private.airplane_state = false
-    helpers.settings:set_value("airplane", false)
+    helpers.settings["airplane"] =  false
     self:emit_signal("state", false)
 end
 
@@ -44,7 +44,7 @@ local function new()
     ret._private = {}
 
     gtimer.delayed_call(function()
-        local airplane = helpers.settings:get_value("airplane")
+        local airplane = helpers.settings["airplane"]
         if airplane == true then
             ret:turn_on()
         elseif airplane == false then

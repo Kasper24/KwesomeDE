@@ -57,7 +57,7 @@ local FILE_PICKER_SCRIPT = [[ lua -e "
 
 function screenshot:set_show_cursor(state)
     self._private.show_cursor = state
-    helpers.settings:set_value("screenshot-show-cursor", state)
+    helpers.settings["screenshot-show-cursor"] = state
 end
 
 function screenshot:get_show_cursor()
@@ -66,7 +66,7 @@ end
 
 function screenshot:set_delay(delay)
     self._private.delay = delay
-    helpers.settings:set_value("screenshot-delay", self._private.delay)
+    helpers.settings["screenshot-delay"] = delay
 end
 
 function screenshot:get_delay()
@@ -76,13 +76,13 @@ end
 function screenshot:set_folder(folder)
     if folder then
         self._private.folder = folder
-        helpers.settings:set_value("screenshot-folder", folder)
+        helpers.settings["screenshot-folder"] = folder
     else
         awful.spawn.easy_async(FILE_PICKER_SCRIPT, function(stdout)
             stdout = helpers.string.trim(stdout)
             if stdout ~= "" and stdout ~= nil then
                 self._private.folder = stdout
-                helpers.settings:set_value("screenshot-folder", stdout)
+                helpers.settings["screenshot-folder"] = stdout
                 self:emit_signal("folder::updated", stdout)
             end
         end)
@@ -158,9 +158,9 @@ local function new()
 
     ret._private = {}
     ret._private.screenshot_method = "selection"
-    ret._private.delay = helpers.settings:get_value("screenshot-delay")
-    ret._private.show_cursor = helpers.settings:get_value("screenshot-show-cursor")
-    ret._private.folder = helpers.settings:get_value("screenshot-folder"):gsub("~", os.getenv("HOME"))
+    ret._private.delay = helpers.settings["screenshot-delay"]
+    ret._private.show_cursor = helpers.settings["screenshot-show-cursor"]
+    ret._private.folder = helpers.settings["screenshot-folder"]:gsub("~", os.getenv("HOME"))
 
     return ret
 end

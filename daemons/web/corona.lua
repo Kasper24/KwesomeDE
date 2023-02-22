@@ -22,7 +22,7 @@ local UPDATE_INTERVAL = 60 * 30 -- 30 mins
 
 function corona:set_country(country)
     self._private.country = country
-    helpers.settings:set_value("corona.country", self._private.country)
+    helpers.settings["corona.country"] = country
 end
 
 function corona:get_country()
@@ -60,7 +60,7 @@ local function new()
     gtable.crush(ret, corona, true)
 
     ret._private = {}
-    ret._private.country = helpers.settings:get_value("corona.country")
+    ret._private.country = helpers.settings["corona.country"]
 
     if ret._private.country ~= nil then
         ret:refresh()

@@ -3,38 +3,69 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 local Gio = require("lgi").Gio
-local GLib = require("lgi").GLib
+local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
-local tostring = tostring
+local gtimer = require("gears.timer")
+local filesystem = require("external.filesystem")
+local json = require("external.json")
 
 local settings = {}
 local instance = nil
 
-function settings:set_value(key, value)
-    local old_value = self.settings:get_value(key)
-    -- print("Setting: " .. key .. " to: " .. tostring(value) .. " from:" .. tostring(old_value.value))
-    self.settings:set_value(key, GLib.Variant(old_value.type, value))
+local DATA_PATH = filesystem.filesystem.get_cache_dir("settings") .. "data.json"
+
+local function is_settings_file_readable()
+    local gfile = Gio.File.new_for_path(DATA_PATH)
+    local gfileinfo = gfile:query_info(
+        "standard::type,access::can-read,time::modified",
+        Gio.FileQueryInfoFlags.NONE
+    )
+    return gfileinfo ~= nil and gfileinfo:get_file_type() ~= "DIRECTORY" and
+            gfileinfo:get_attribute_boolean("access::can-read")
 end
 
-function settings:get_value(key)
-    -- print("key: " .. tostring(key) .. " value: " .. tostring(self.settings:get_value(key).value))
-    return self.settings:get_value(key).value
-end
-
-function settings:get_direct(key)
-    return self.settings:get_value(key)
+function settings:open_setting_file()
+    awful.spawn("xdg-open " ..  DATA_PATH, false)
 end
 
 local function new()
     local ret = gobject {}
     gtable.crush(ret, settings, true)
 
-    local SettingsSchemaSource = Gio.SettingsSchemaSource
-    local path = debug.getinfo(1).source:match("@?(.*/)") .. "../config/gschemas"
-    local schema_source = SettingsSchemaSource.new_from_directory(path, SettingsSchemaSource.get_default(), false)
-    local schema = schema_source.lookup(schema_source, "org.awesome.settings", false)
-    ret.settings = Gio.Settings.new_full(schema)
+    local path = DATA_PATH
+    if is_settings_file_readable() == false then
+        path = filesystem.filesystem.get_awesome_config_dir("config/settings") .. "data.json"
+    end
+    ret.settings = json.decode(Gio.File.new_for_path(path):load_contents())
+
+    local file = filesystem.file.new_for_path(DATA_PATH)
+    ret.save_timer = gtimer
+    {
+        timeout = 1,
+        autostart = false,
+        call_now = false,
+        single_shot = true,
+        callback = function()
+            file:write(json.encode(ret.settings))
+        end
+    }
+
+    local mt = {
+        __index = function(self, key)
+            local value = self.settings[key].value or self.settings[key].default
+            if type(value) == "table" then
+                value = gtable.clone(value, true)
+            end
+            return value
+        end,
+        __newindex = function(self, key, value)
+            self.settings[key].value = value
+            self.save_timer:again()
+        end
+    }
+
+    setmetatable(ret, mt)
 
     return ret
 end

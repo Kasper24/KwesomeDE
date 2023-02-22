@@ -125,14 +125,13 @@ yay/paru -S awesome-git
 | fortune-mod                             | Fortune daemon (right now that daemon is unused)          |
 | imagemagick                             | Used to generate colors from wallpapers                   |
 | libgudev                                | Used for USB notifications                                |
-| dconf-editor                            | Used as a settings manager                                |
 | neofetch                                | Used to display system info                               |
 
 **Arch Linux (and other Arch-based distributions)**
    ```sh
       pacman -Sy kitty networkmanager blueman pipewire pipewire-pulse lm_sensors inotify-tools
       redshift maim ffmpeg xclip upower brightnessctl playerctl fortune-mod
-      imagemagick libgudev dconf-editor neofetch --needed
+      imagemagick libgudev neofetch --needed
    ```
    Assuming your **AUR Helper** is [yay](https://github.com/Jguer/yay) or [paru](https://github.com/Morganamilo/paru).
    ```sh

@@ -28,7 +28,7 @@ local EVENTS_DATA_PATH = EVENTS_PATH .. "data.json"
 
 function github:set_username(username)
     self._private.username = username
-    helpers.settings:set_value("github-username", self._private.username)
+    helpers.settings["github-username"] = username
 end
 
 function github:get_username()
@@ -203,7 +203,7 @@ local function new()
     gtable.crush(ret, github, true)
 
     ret._private = {}
-    ret._private.username = helpers.settings:get_value("github-username")
+    ret._private.username = helpers.settings["github-username"]
 
     if ret._private.username ~= "" then
         ret:refresh()

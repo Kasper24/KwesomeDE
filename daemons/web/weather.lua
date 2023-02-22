@@ -20,7 +20,7 @@ local UPDATE_INTERVAL = 60 * 30 -- 30 mins
 
 function weather:set_api_key(api_key)
     self._private.api_key = api_key
-    helpers.settings:set_value("weather-api-key", self._private.api_key)
+    helpers.settings["weather-api-key"] = api_key
 end
 
 function weather:get_api_key()
@@ -29,7 +29,7 @@ end
 
 function weather:set_unit(unit)
     self._private.unit = unit
-    helpers.settings:set_value("weather-unit", self._private.unit)
+    helpers.settings["weather-unit"] = unit
 end
 
 function weather:get_unit()
@@ -38,7 +38,7 @@ end
 
 function weather:set_coordinate_x(coordinate_x)
     self._private.coordinate_x = coordinate_x
-    helpers.settings:set_value("weather-latitude", self._private.coordinate_x)
+    helpers.settings["weather-latitude"] = coordinate_x
 end
 
 function weather:get_coordinate_x()
@@ -47,7 +47,7 @@ end
 
 function weather:set_coordinate_y(coordinate_y)
     self._private.coordinate_y = coordinate_y
-    helpers.settings:set_value("weather-longitude", self._private.coordinate_y)
+    helpers.settings["weather-longitude"] = coordinate_y
 end
 
 function weather:get_coordinate_y()
@@ -87,10 +87,10 @@ local function new()
     ret._private = {}
 
     -- "metric" for Celcius, "imperial" for Fahrenheit
-    ret._private.unit = helpers.settings:get_value("weather-unit")
-    ret._private.api_key = helpers.settings:get_value("weather-api-key")
-    ret._private.coordinate_x = helpers.settings:get_value("weather-latitude")
-    ret._private.coordinate_y = helpers.settings:get_value("weather-longitude")
+    ret._private.unit = helpers.settings["weather-unit"]
+    ret._private.api_key = helpers.settings["weather-api-key"]
+    ret._private.coordinate_x = helpers.settings["weather-latitude"]
+    ret._private.coordinate_y = helpers.settings["weather-longitude"]
 
     if ret._private.api_key ~= "" and ret._private.coordinate_x ~= "" and ret._private.coordinate_y ~= "" then
         ret:refresh()

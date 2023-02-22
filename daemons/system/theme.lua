@@ -14,7 +14,6 @@ local system_daemon = require("daemons.system.system")
 local color_libary = require("external.color")
 local helpers = require("helpers")
 local filesystem = require("external.filesystem")
-local tonumber = tonumber
 local string = string
 local ipairs = ipairs
 local pairs = pairs
@@ -632,21 +631,17 @@ end
 
 --Colorschemes
 function theme:save_colorscheme()
-    helpers.settings:set_value("theme-colorschemes", self._private.colorschemes)
+    helpers.settings["theme-colorschemes"] = self._private.colorschemes
 end
 
 function theme:get_colorschemes()
     if self._private.colorschemes == nil then
-        local colorscheme_from_gsettings = helpers.settings:get_direct("theme-colorschemes")
-        local colorschemes = {}
-        for path, colorscheme in colorscheme_from_gsettings:pairs() do
+        self._private.colorschemes = {}
+        local colorschemes = helpers.settings["theme-colorschemes"]
+        for path, colorscheme in pairs(colorschemes) do
             path = path:gsub("~", os.getenv("HOME"))
-            colorschemes[path] = {}
-            for index, color in colorscheme:ipairs() do
-                colorschemes[path][index] = color
-            end
+            self._private.colorschemes[path] = colorscheme
         end
-        self._private.colorschemes = colorschemes
     end
 
     return self._private.colorschemes
@@ -677,10 +672,10 @@ end
 -- Wallpaper
 function theme:set_wallpaper(wallpaper, type)
     self._private.active_wallpaper = wallpaper
-    helpers.settings:set_value("theme-active-wallpaper", wallpaper)
+    helpers.settings["theme-active-wallpaper"] = wallpaper
 
     self._private.wallpaper_type = type
-    helpers.settings:set_value("theme-wallpaper-type", type)
+    helpers.settings["theme-wallpaper-type"] = type
 
     for s in capi.screen do
         if self:get_wallpaper_type() == "image" then
@@ -715,7 +710,7 @@ end
 
 function theme:get_wallpaper_type()
     if self._private.wallpaper_type == nil then
-        self._private.wallpaper_type = helpers.settings:get_value("theme-wallpaper-type")
+        self._private.wallpaper_type = helpers.settings["theme-wallpaper-type"]
     end
 
     return self._private.wallpaper_type
@@ -723,7 +718,7 @@ end
 
 function theme:get_active_wallpaper()
     if self._private.active_wallpaper == nil then
-        self._private.active_wallpaper = helpers.settings:get_value("theme-active-wallpaper"):gsub("~", os.getenv("HOME"))
+        self._private.active_wallpaper = helpers.settings["theme-active-wallpaper"]:gsub("~", os.getenv("HOME"))
     end
 
     return self._private.active_wallpaper
@@ -740,7 +735,7 @@ end
 -- Active colorscheme
 function theme:set_colorscheme(colorscheme)
     self._private.active_colorscheme = colorscheme
-    helpers.settings:set_value("theme-active-colorscheme", colorscheme)
+    helpers.settings["theme-active-colorscheme"] = colorscheme
 
     self:save_colorscheme()
 
@@ -752,7 +747,7 @@ end
 
 function theme:get_active_colorscheme()
     if self._private.active_colorscheme == nil then
-        self._private.active_colorscheme = helpers.settings:get_value("theme-active-colorscheme"):gsub("~", os.getenv("HOME"))
+        self._private.active_colorscheme = helpers.settings["theme-active-colorscheme"]:gsub("~", os.getenv("HOME"))
     end
 
     return self._private.active_colorscheme
@@ -779,12 +774,12 @@ end
 -- UI dpi
 function theme:set_dpi(dpi)
     self._private.dpi = dpi
-    helpers.settings:set_value("theme-dpi", dpi)
+    helpers.settings["theme-dpi"] = dpi
 end
 
 function theme:get_dpi()
     if self._private.dpi == nil then
-        self._private.dpi = tonumber(helpers.settings:get_value("theme-dpi"))
+        self._private.dpi = helpers.settings["theme-dpi"]
     end
 
     return self._private.dpi
@@ -793,13 +788,13 @@ end
 -- UI opacity
 function theme:set_ui_opacity(opacity)
     self._private.ui_opacity = opacity
-    helpers.settings:set_value("theme-ui-opacity", opacity)
+    helpers.settings["theme-ui-opacity"] = opacity
     reload_awesome_colorscheme()
 end
 
 function theme:get_ui_opacity()
     if self._private.ui_opacity == nil then
-        self._private.ui_opacity = helpers.settings:get_value("theme-ui-opacity")
+        self._private.ui_opacity = helpers.settings["theme-ui-opacity"]
     end
 
     return self._private.ui_opacity
@@ -808,13 +803,13 @@ end
 -- UI border radius
 function theme:set_ui_border_radius(border_radius)
     self._private.ui_border_radius = border_radius
-    helpers.settings:set_value("theme-ui-border-radius", border_radius)
+    helpers.settings["theme-ui-border-radius"] = border_radius
     reload_awesome_colorscheme()
 end
 
 function theme:get_ui_border_radius()
     if self._private.ui_border_radius == nil then
-        self._private.ui_border_radius = tonumber(helpers.settings:get_value("theme-ui-border-radius"))
+        self._private.ui_border_radius = helpers.settings["theme-ui-border-radius"]
     end
 
     return self._private.ui_border_radius
@@ -832,13 +827,13 @@ function theme:set_useless_gap(useless_gap, save)
 
     self._private.useless_gap = useless_gap
     if save ~= false then
-        helpers.settings:set_value("theme-useless-gap", useless_gap)
+        helpers.settings["theme-useless-gap"] = useless_gap
     end
 end
 
 function theme:get_useless_gap()
     if self._private.useless_gap == nil then
-        self._private.useless_gap = tonumber(helpers.settings:get_value("theme-useless-gap"))
+        self._private.useless_gap = helpers.settings["theme-useless-gap"]
     end
 
     return self._private.useless_gap
@@ -858,13 +853,13 @@ function theme:set_client_gap(client_gap, save)
 
     self._private.client_gap = client_gap
     if save ~= false then
-        helpers.settings:set_value("theme-client-gap", client_gap)
+        helpers.settings["theme-client-gap"] = client_gap
     end
 end
 
 function theme:get_client_gap()
     if self._private.client_gap == nil then
-        self._private.client_gap = tonumber(helpers.settings:get_value("theme-client-gap"))
+        self._private.client_gap = helpers.settings["theme-client-gap"]
     end
 
     return self._private.client_gap
@@ -876,13 +871,13 @@ function theme:set_ui_animations(animations, save)
 
     if save ~= false then
         self._private.ui_animations = animations
-        helpers.settings:set_value("theme-ui-animations", animations)
+        helpers.settings["theme-ui-animations"] = animations
     end
 end
 
 function theme:get_ui_animations()
     if self._private.ui_animations == nil then
-        self._private.ui_animations = helpers.settings:get_value("theme-ui-animations")
+        self._private.ui_animations = helpers.settings["theme-ui-animations"]
     end
 
     return self._private.ui_animations
@@ -891,12 +886,12 @@ end
 function theme:set_ui_animations_framerate(framerate)
     helpers.animation:set_framerate(framerate)
     self._private.ui_animations = framerate
-    helpers.settings:set_value("theme-ui-animations-framerate", framerate)
+    helpers.settings["theme-ui-animations-framerate"] = framerate
 end
 
 function theme:get_ui_animations_framerate()
     if self._private.get_ui_animations_framerate == nil then
-        self._private.get_ui_animations_framerate = helpers.settings:get_value("theme-ui-animations-framerate")
+        self._private.get_ui_animations_framerate = helpers.settings["theme-ui-animations-framerate"]
     end
 
     return self._private.get_ui_animations_framerate
@@ -905,12 +900,12 @@ end
 -- Command after generation
 function theme:set_command_after_generation(command_after_generation)
     self._private.command_after_generation = command_after_generation
-    helpers.settings:set_value("theme-command-after-generation", command_after_generation)
+    helpers.settings["theme-command-after-generation"] = command_after_generation
 end
 
 function theme:get_command_after_generation()
     if self._private.command_after_generation == nil then
-        self._private.command_after_generation = helpers.settings:get_value("theme-command-after-generation")
+        self._private.command_after_generation = helpers.settings["theme-command-after-generation"]
     end
 
     return self._private.command_after_generation

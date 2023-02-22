@@ -14,7 +14,7 @@ local instance = nil
 function redshift:turn_on(skip_check)
     local function turn_on()
         awful.spawn.with_shell("redshift -l 0:0 -t 4500:4500 -r &>/dev/null &")
-        helpers.settings:set_value("redshift", true)
+        helpers.settings["redshift"] = true
     end
 
     if skip_check ~= true then
@@ -31,7 +31,7 @@ end
 function redshift:turn_off(skip_check)
     local function turn_off()
         awful.spawn.with_shell("redshift -x && pkill redshift && killall redshift")
-        helpers.settings:set_value("redshift", false)
+        helpers.settings["redshift"] = false
     end
 
     if skip_check ~= true then
@@ -63,9 +63,9 @@ local function new()
     ret._private.state = -1
 
     gtimer.delayed_call(function()
-        if helpers.settings:get_value("redshift") == true then
+        if helpers.settings["redshift"] == true then
             ret:turn_on()
-        elseif helpers.settings:get_value("redshift") == false then
+        elseif helpers.settings["redshift"] == false then
             -- ret:turn_off()
         end
 

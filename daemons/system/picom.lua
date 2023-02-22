@@ -59,7 +59,7 @@ function picom:turn_on(save)
     end)
 
     if save == true then
-        helpers.settings:set_value("picom", true)
+        helpers.settings["picom"] = true
     end
 end
 
@@ -70,7 +70,7 @@ function picom:turn_off(save)
 
     awful.spawn("pkill -f picom", false)
     if save == true then
-        helpers.settings:set_value("picom", false)
+        helpers.settings["picom"] = false
     end
 end
 
@@ -92,7 +92,7 @@ local function build_properties(prototype, properties)
                     end
 
                     self._private[prop] = value
-                    helpers.settings:set_value("picom-" .. prop, value)
+                    helpers.settings["picom-" .. prop] = value
                     self._private.refreshing = true
                     self._private.refresh_timer:again()
                 end
@@ -115,10 +115,10 @@ local function new()
     ret._private.state = -1
 
     for _, prop in ipairs(properties) do
-        ret._private[prop] = helpers.settings:get_value("picom-" .. prop)
+        ret._private[prop] = helpers.settings["picom-" .. prop]
     end
     for _, prop in ipairs(bool_properties) do
-        ret._private[prop] = helpers.settings:get_value("picom-" .. prop)
+        ret._private[prop] = helpers.settings["picom-" .. prop]
     end
 
     ret._private.refresh_timer = gtimer {
@@ -131,9 +131,9 @@ local function new()
         end
     }
 
-    if helpers.settings:get_value("picom") == true then
+    if helpers.settings["picom"] == true then
         ret:turn_on()
-    elseif helpers.settings:get_value("picom") == false then
+    elseif helpers.settings["picom"] == false then
         ret:turn_off()
     end
 
