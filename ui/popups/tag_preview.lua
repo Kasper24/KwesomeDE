@@ -51,8 +51,11 @@ function tag_preview:show(t, args)
 
     -- save_tag_thumbnail(t)
     self.widget.image = t.thumbnail or theme_daemon:get_wallpaper_surface()
+    self.visible = true
+end
 
-    self:_show()
+function tag_preview:hide()
+    self.visible = false
 end
 
 function tag_preview:toggle(t, args)
@@ -73,7 +76,7 @@ local function new()
         image = theme_daemon:get_wallpaper_surface()
     }
 
-    local widget = widgets.animated_popup {
+    local widget = widgets.popup {
         visible = false,
         ontop = true,
         shape = helpers.ui.rrect(),
@@ -84,7 +87,6 @@ local function new()
         widget = thumbnail
     }
 
-    widget._show = widget.show
     gtable.crush(widget, tag_preview, true)
 
     capi.client.connect_signal("property::fullscreen", function(c)

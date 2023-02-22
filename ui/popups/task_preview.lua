@@ -41,7 +41,11 @@ function task_preview:show(c, args)
     self.widget:get_children_by_id("name")[1]:set_text(c.name)
     self.widget:get_children_by_id("thumbnail")[1]:set_client(c)
 
-    self:_show()
+    self.visible = true
+end
+
+function task_preview:hide()
+    self.visible = false
 end
 
 function task_preview:toggle(c, args)
@@ -53,7 +57,7 @@ function task_preview:toggle(c, args)
 end
 
 local function new()
-    local widget = widgets.animated_popup {
+    local widget = widgets.popup {
         visible = false,
         ontop = true,
         shape = function(cr, width, height)
@@ -96,7 +100,6 @@ local function new()
         }
     }
 
-    widget._show = widget.show
     gtable.crush(widget, task_preview, true)
 
     capi.client.connect_signal("property::fullscreen", function(c)
