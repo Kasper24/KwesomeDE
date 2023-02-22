@@ -27,7 +27,6 @@ function app:hide()
         self._private.client:kill()
     end
     self._private.visible = false
-    self:emit_signal("visibility", false)
 end
 
 function app:toggle()
