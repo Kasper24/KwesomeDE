@@ -114,8 +114,14 @@ local function new()
     gtimer.poller {
         timeout = 15,
         callback = function()
-            if first_time or not ret._private.slim then
+            if first_time then
+                update(ret)
+                slim_update(ret)
                 first_time = false
+                return
+            end
+
+            if ret._private.slim then
                 update(ret)
             else
                 slim_update(ret)
