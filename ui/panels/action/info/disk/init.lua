@@ -104,8 +104,8 @@ local function new()
     return widgets.animated_panel {
         ontop = true,
         visible = false,
-        minimum_width = dpi(480),
-        maximum_width = dpi(480),
+        minimum_width = dpi(500),
+        maximum_width = dpi(500),
         placement = function(widget)
             awful.placement.bottom_right(widget, {
                 honor_workarea = true,

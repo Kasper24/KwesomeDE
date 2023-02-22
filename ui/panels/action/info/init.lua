@@ -18,7 +18,7 @@ local brightness_daemon = require("daemons.system.brightness")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
-local ipairs = ipairs
+local tonumber = tonumber
 
 local info = {
     mt = {}
@@ -121,11 +121,9 @@ local function disk()
         disk_popup:toggle()
     end)
 
-    disk_daemon:connect_signal("update", function(self, disks)
-        for _, entry in ipairs(disks) do
-            if entry.mount == "/" then
-                widget:set_value(tonumber(entry.perc))
-            end
+    disk_daemon:connect_signal("partition", function(self, disk)
+        if disk.mount == "/" then
+            widget:set_value(tonumber(disk.perc))
         end
     end)
 
