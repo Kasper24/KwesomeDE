@@ -134,6 +134,7 @@ local function new(args)
         bar:emit_signal("widget::redraw_needed")
 
 		local value = helpers.misc.convert_range(bar.pos, 0, 1, args.minimum, args.maximum)
+		value = helpers.misc.round(value, 2)
 		if args.round then
 			value = gmath.round(value)
 		end
@@ -158,6 +159,7 @@ local function new(args)
 			bar.pos = math.max(math.min(lpos, 1), 0)
 			bar:emit_signal("widget::redraw_needed")
 			local value = helpers.misc.convert_range(bar.pos, 0, 1, args.minimum, args.maximum)
+			value = helpers.misc.round(value, 2)
 			if args.round then
 				value = gmath.round(value)
 			end
@@ -192,7 +194,12 @@ local function new(args)
 	end
 
 	function widget:get_value()
-		return helpers.misc.convert_range(bar.pos, 0, 1, args.minimum, args.maximum)
+		local value = helpers.misc.convert_range(bar.pos, 0, 1, args.minimum, args.maximum)
+		value = helpers.misc.round(value, 2)
+		if args.round then
+			value = gmath.round(value)
+		end
+		return value
 	end
 
 	function widget:set_maximum(maximum)

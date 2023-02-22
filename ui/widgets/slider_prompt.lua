@@ -28,12 +28,7 @@ local function new(args)
 	prompt:set_only_numbers(true)
 	prompt:set_round(args.round)
 	prompt:set_halign("center")
-
-	local text_value = helpers.misc.round_to_decimal_places(args.value, 2)
-	if args.round then
-		text_value = gmath.round(text_value)
-	end
-	prompt:set_text(tostring(text_value))
+	prompt:set_text(tostring(slider:get_value()))
 
 	local widget = wibox.widget {
 		layout = wibox.layout.fixed.horizontal,
@@ -82,11 +77,7 @@ local function new(args)
 	end)
 
 	slider:connect_signal("property::value", function(self, value)
-		local text_value = helpers.misc.round_to_decimal_places(value, 2)
-		if args.round then
-			text_value = gmath.round(text_value)
-		end
-		prompt:set_text(tostring(text_value))
+		prompt:set_text(tostring(value))
         widget:emit_signal('property::value', value)
     end)
 
