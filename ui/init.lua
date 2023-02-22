@@ -19,7 +19,7 @@ capi.client.connect_signal("scanned", function()
 
         welcome_app:connect_signal("visibility", function(self, visible)
             if visible == false then
-                theme_app:show()
+                theme_app:toggle()
             end
         end)
     end
