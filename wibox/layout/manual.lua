@@ -139,7 +139,6 @@ function manual_layout:remove(index)
     table.remove(self._private.widgets, index)
     table.remove(self._private.pos, index)
 
-    print("removed " .. index)
     self:emit_signal("widget::layout_changed")
 
     return true
