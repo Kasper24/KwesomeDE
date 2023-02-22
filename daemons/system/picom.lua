@@ -54,9 +54,8 @@ function picom:turn_on(save)
             end
         end
 
-        awful.spawn.easy_async(cmd, function()
-            self._private.refreshing = false
-        end)
+        awful.spawn(cmd)
+        self._private.refreshing = false
     end)
 
     if save == true then
@@ -132,7 +131,7 @@ local function new()
         end
     }
 
-    if helpers.settings["picom"] == true then
+    if helpers.settings["picom"] == true and capi.awesome.composite_manager_running == false then
         ret:turn_on()
     elseif helpers.settings["picom"] == false then
         ret:turn_off()
