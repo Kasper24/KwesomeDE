@@ -15,8 +15,6 @@ local capi = {
 }
 
 capi.client.connect_signal("request::titlebars", function(client)
-    local color = helpers.client.get_dominant_color(client)
-
     local font_icon = wibox.widget {
         widget = widgets.client_font_icon,
         halign = "center",
@@ -107,7 +105,7 @@ capi.client.connect_signal("request::titlebars", function(client)
     local titlebar = widgets.titlebar(client, {
         position = "top",
         size = dpi(35),
-        bg = color,
+        bg = client.domiant_color,
         font = beautiful.font_name .. 12
     })
     titlebar:setup{
@@ -198,7 +196,7 @@ capi.client.connect_signal("request::titlebars", function(client)
         }
     }
 
-    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
-        titlebar:set_bg(helpers.client.get_dominant_color(client))
+    capi.awesome.connect_signal("property::domiant_color", function(client)
+        titlebar:set_bg(client.domiant_color)
     end)
 end)

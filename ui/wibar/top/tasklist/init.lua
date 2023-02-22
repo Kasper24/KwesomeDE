@@ -3,7 +3,6 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 local awful = require("awful")
-local gtimer = require("gears.timer")
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local task_preview = require("ui.popups.task_preview")
@@ -11,8 +10,6 @@ local beautiful = require("beautiful")
 local tasklist_daemon = require("daemons.system.tasklist")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
-local ipairs = ipairs
-local pairs = pairs
 local capi = {
     client = client
 }
@@ -21,39 +18,35 @@ local tasklist = {
     mt = {}
 }
 
-local favorites = {}
+local favorite_widgets = {}
 
-local function favorite_widget(layout, command, class)
-    favorites[class] = true
-
-    local font_icon = helpers.client.get_font_icon(class)
-
+local function favorite_widget(favorite)
     local menu = widgets.menu {
         widgets.menu.button {
-            icon = font_icon,
-            text = class,
+            icon = favorite.font_icon,
+            text = favorite.class,
             on_press = function()
-                awful.spawn(command, false)
+                awful.spawn(favorite.exec, false)
             end
         },
         widgets.menu.button {
             text = "Unpin from Taskbar",
             on_press = function()
-                tasklist_daemon:remove_favorite{class = class}
+                tasklist_daemon:remove_favorite{class = favorite.class}
             end
         }
     }
 
-    local button = wibox.widget {
+    local widget = wibox.widget {
         widget = wibox.container.margin,
         forced_width = dpi(80),
         margins = dpi(5),
         {
             widget = widgets.button.text.state,
-            icon = font_icon,
+            icon = favorite.font_icon,
             on_release = function()
                 menu:hide()
-                awful.spawn(command, false)
+                awful.spawn(favorite.exec, false)
             end,
             on_secondary_press = function(self)
                 menu:toggle{
@@ -67,21 +60,11 @@ local function favorite_widget(layout, command, class)
         }
     }
 
-    tasklist_daemon:dynamic_connect_signal(class .. "::removed", function()
-        layout:remove_widgets(button)
+    function widget:hide_menu()
         menu:hide()
-        tasklist_daemon:dynamic_disconnect_signals(class .. "::removed")
-    end)
+    end
 
-    capi.client.connect_signal("manage", function(c)
-        if c.class == class then
-            layout:remove_widgets(button)
-            menu:hide()
-            favorites[class] = nil
-        end
-    end)
-
-    return button
+    return widget
 end
 
 local function client_widget(client)
@@ -90,6 +73,8 @@ local function client_widget(client)
     local button = wibox.widget {
         widget = wibox.container.margin,
         margins = dpi(5),
+        forced_width = dpi(70),
+        forced_height = dpi(70),
         {
             widget = widgets.button.text.state,
             id = "button",
@@ -196,35 +181,44 @@ local function new()
         layout = wibox.layout.manual
     }
 
-    capi.client.connect_signal("manage", function(client)
-        if tasklist_daemon:is_favorite(client) then
-            tasklist_layout:remove_widgets(client.favorite_widget)
-        end
+    tasklist_daemon:connect_signal("client::new", function(self, client)
+        -- client.tasklist_widget = client_widget(client)
+        -- tasklist_layout:add_at(client.tasklist_widget, { x = 0, y = 0})
     end)
 
-    capi.client.connect_signal("unmanage", function(client)
-        tasklist_layout:remove_widgets(client.tasklist_widget)
-
-        -- if #helpers.client.find({class = client.class}) == 0 then
-        --     if tasklist_daemon:is_favorite(client) and favorites[client.class] == nil then
-        --         favorites:add(favorite_widget(favorites, command, client.class))
-        --     end
-        -- end
-    end)
-
-    capi.client.connect_signal("property::index", function(client)
-        local pos = (client.index - 1) * 80
-        if client.tasklist_widget then
-            tasklist_layout:move_widget(client.tasklist_widget, { x = pos, y = 0})
-        else
+    tasklist_daemon:connect_signal("update::position", function(self, client, pos)
+        if client.tasklist_widget == nil then
             client.tasklist_widget = client_widget(client)
-            tasklist_layout:add_at(client.tasklist_widget, { x = pos, y = 0})
+            tasklist_layout:add_at(client.tasklist_widget, { x =  pos * 80, y = 0})
+        else
+            tasklist_layout:move_widget(client.tasklist_widget, { x = pos * 80, y = 0})
         end
     end)
 
-    -- for _, favorite in ipairs(tasklist_daemon:get_favorites()) do
-        -- favorites:add(favorite_widget(favorites, command, class))
-    -- end
+    tasklist_daemon:connect_signal("client::removed", function(self, client)
+        tasklist_layout:remove_widgets(client.tasklist_widget)
+    end)
+
+    -- tasklist_daemon:connect_signal("favorite::new", function(self, favorite)
+    --     local pos = (favorite.index - 1) * 80
+    --     favorite_widgets[favorite.class] = favorite_widget(favorite)
+    --     tasklist_layout:add_at(favorite_widgets[favorite.class], { x = pos, y = 0})
+    -- end)
+
+    -- tasklist_daemon:connect_signal("favorite::removed", function(self, favorite)
+    --     favorite_widgets[favorite.class]:hide_menu()
+    --     tasklist_layout:remove_widgets(favorite_widgets[favorite.class])
+    -- end)
+
+    -- tasklist_daemon:connect_signal("favorite::app::opened", function(self, client)
+    --     favorite_widgets[client.favorite.class]:hide_menu()
+    --     client.tasklist_widget = client_widget(client)
+    --     tasklist_layout:replace_widget(favorite_widgets[client.favorite.class], client.tasklist_widget)
+    -- end)
+
+    -- tasklist_daemon:connect_signal("favorite::app::closed", function(self, client)
+    --     tasklist_layout:replace_widget(client.tasklist_widget, favorite_widgets[client.favorite.class])
+    -- end)
 
     return tasklist_layout
 end

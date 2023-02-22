@@ -58,11 +58,11 @@ local function new(client)
     }
 
     local pin_to_taskbar_button = mwidget.checkbox_button {
-        state = tasklist_daemon:is_favorite(client),
+        state = client.favorite ~= nil,
         handle_active_color = client.font_icon.color,
         text = "Pin to Taskbar",
         on_press = function(self)
-            if tasklist_daemon:is_favorite(client) then
+            if client.favorite ~= nil then
                 self:turn_off()
                 tasklist_daemon:remove_favorite(client)
             else

@@ -95,7 +95,8 @@ function window_switcher:select_client(client)
 end
 
 function window_switcher:cycle_clients(increase)
-    local client = gtable.cycle_value(helpers.client.get_sorted_clients(), self._private.selected_client, (increase and 1 or -1))
+    --TODO
+    -- local client = gtable.cycle_value(helpers.client.get_sorted_clients(), self._private.selected_client, (increase and 1 or -1))
     self:select_client(client)
 end
 
@@ -156,23 +157,24 @@ local function new()
 
     local clients_layout = widget.widget:get_children_by_id("clients")[1]
 
-    capi.client.connect_signal("unmanage", function(client)
-        clients_layout:remove_widgets(client.window_switcher_widget)
-    end)
+    --TODO
+    -- capi.client.connect_signal("unmanage", function(client)
+    --     clients_layout:remove_widgets(client.window_switcher_widget)
+    -- end)
 
-    capi.client.connect_signal("property::index", function(client)
-        local pos = (client.index - 1) * 300
-        if client.window_switcher_widget then
-            clients_layout:move_widget(client.window_switcher_widget, { x = pos, y = 0})
-        else
-            client.window_switcher_widget = client_widget(widget, client)
-            clients_layout:add_at(client.window_switcher_widget, { x = pos, y = 0})
-        end
-    end)
+    -- capi.client.connect_signal("property::index", function(client)
+    --     local pos = (client.index - 1) * 300
+    --     if client.window_switcher_widget then
+    --         clients_layout:move_widget(client.window_switcher_widget, { x = pos, y = 0})
+    --     else
+    --         client.window_switcher_widget = client_widget(widget, client)
+    --         clients_layout:add_at(client.window_switcher_widget, { x = pos, y = 0})
+    --     end
+    -- end)
 
-    capi.client.connect_signal("focus", function(client)
-        widget._private.focused_client = client
-    end)
+    -- capi.client.connect_signal("focus", function(client)
+    --     widget._private.focused_client = client
+    -- end)
 
     return widget
 end

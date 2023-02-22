@@ -9,7 +9,6 @@ local picom_daemon = require("daemons.system.picom")
 local theme_daemon = require("daemons.system.theme")
 local ncmpcpp_titlebar = require("ui.titlebar.ncmpcpp")
 local helpers = require("helpers")
-local ipairs = ipairs
 local capi = {
     awesome = awesome,
     client = client
@@ -272,44 +271,6 @@ require("awful.autofocus")
 capi.client.connect_signal("request::manage", function(client)
     if not capi.awesome.startup then
         client:to_secondary_section()
-    end
-end)
-
-capi.client.connect_signal("manage", function(client)
-    client.desktop_app_info = helpers.client.get_desktop_app_info(client)
-    client.actions = helpers.client.get_actions(client)
-    -- client.icon = helpers.client.get_icon(client) -- not used
-    client.font_icon = helpers.client.get_font_icon(client.class, client.name)
-    client.index = helpers.client.get_client_index(client)
-end)
-
-capi.client.connect_signal("unmanage", function()
-    for _, client in ipairs(capi.client.get()) do
-        client.index = helpers.client.get_client_index(client)
-    end
-end)
-
-
-capi.client.connect_signal("tagged", function(client)
-    if client.index then
-        client.index = helpers.client.get_client_index(client)
-    end
-end)
-
-capi.client.connect_signal("swapped", function(client, other_client, is_source)
-    if is_source then
-        if client.index then
-            client.index = helpers.client.get_client_index(client)
-        end
-        if other_client.index then
-            other_client.index = helpers.client.get_client_index(other_client)
-        end
-    end
-end)
-
-capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
-    for _, client in ipairs(capi.client.get()) do
-        client.font_icon = helpers.client.get_font_icon(client.class, client.name)
     end
 end)
 
