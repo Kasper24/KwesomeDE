@@ -9,6 +9,7 @@ local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local filesystem = require("external.filesystem")
 local json = require("external.json")
+local type = type
 
 local settings = {}
 local instance = nil
@@ -53,7 +54,11 @@ local function new()
 
     local mt = {
         __index = function(self, key)
-            local value = self.settings[key].value or self.settings[key].default
+            local value = self.settings[key].value
+            if value == nil then
+                value = self.settings[key].default
+            end
+
             if type(value) == "table" then
                 value = gtable.clone(value, true)
             end
