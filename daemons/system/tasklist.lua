@@ -368,7 +368,7 @@ local function new()
     ret._private.pinned_apps_with_userdata = {}
 
     capi.client.connect_signal("scanned", function()
-        capi.client.connect_signal("manage", function(client)
+        capi.client.connect_signal("request::manage", function(client)
             on_client_added(ret, client)
         end)
 
@@ -381,7 +381,7 @@ local function new()
         end
     end)
 
-    capi.client.connect_signal("unmanage", function(client)
+    capi.client.connect_signal("request::unmanage", function(client)
         on_client_removed(ret, client)
     end)
 
