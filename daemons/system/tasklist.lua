@@ -29,7 +29,7 @@ local instance = nil
 
 local function update_positions(self)
     local pos = 0
-    for _, pinned_app in ipairs(self._private.pinned_apps) do
+    for _, pinned_app in ipairs(self._private.pinned_apps_with_userdata) do
         if #helpers.client.find({class = pinned_app.class}) == 0 then
             self:emit_signal("pinned_app::pos", pinned_app, pos)
             pos = pos + 1
@@ -64,11 +64,12 @@ local function sort_clients(self)
 end
 
 local function on_pinned_app_added(self, pinned_app)
-    pinned_app.desktop_app_info = self:get_desktop_app_info(pinned_app)
-    pinned_app.actions = self:get_actions(pinned_app)
-    pinned_app.icon = self:get_icon(pinned_app) -- not used
-    pinned_app.font_icon = self:get_font_icon(pinned_app.class, pinned_app.name)
-    pinned_app.widget = nil
+    local cloned_pinned_app = gtable.clone(pinned_app, true)
+    cloned_pinned_app.desktop_app_info = self:get_desktop_app_info(pinned_app)
+    cloned_pinned_app.actions = self:get_actions(cloned_pinned_app)
+    cloned_pinned_app.icon = self:get_icon(pinned_app) -- not used
+    cloned_pinned_app.font_icon = self:get_font_icon(pinned_app.class, pinned_app.name)
+    table.insert(self._private.pinned_apps_with_userdata, cloned_pinned_app)
     update_positions(self)
 end
 
@@ -322,9 +323,11 @@ function tasklist:add_pinned_app(app)
 end
 
 function tasklist:remove_pinned_app(pinned_app)
-    for i, pinned_app2 in ipairs(self._private.pinned_apps) do
+    for index, pinned_app2 in ipairs(self._private.pinned_apps) do
         if pinned_app2.class == pinned_app.class then
-            table.remove(self._private.pinned_apps, i)
+            pinned_app.favorite = false
+            table.remove(self._private.pinned_apps_with_userdata, index)
+            table.remove(self._private.pinned_apps, index)
             self:emit_signal("pinned_app::removed", pinned_app)
             break
         end
@@ -341,6 +344,7 @@ local function new()
     ret._private = {}
     ret._private.clients = {}
     ret._private.pinned_apps = helpers.settings["favorite-apps"]
+    ret._private.pinned_apps_with_userdata = {}
 
     capi.client.connect_signal("unmanage", function(client)
         on_client_removed(ret, client)
