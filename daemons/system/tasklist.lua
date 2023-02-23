@@ -38,29 +38,19 @@ local function update_positions(self)
             self:emit_signal("pinned_app::removed", pinned_app)
         end
     end
-    for _, client in ipairs(self._private.clients) do
-        self:emit_signal("client::pos", client, pos, pos_without_pinned_apps)
-        pos_without_pinned_apps = pos_without_pinned_apps + 1
-        pos = pos + 1
+    for index, client in ipairs(self._private.clients) do
+        if client.managed then
+            self:emit_signal("client::pos", self._private.clients[index], pos, pos_without_pinned_apps)
+            pos_without_pinned_apps = pos_without_pinned_apps + 1
+            pos = pos + 1
+        end
     end
 end
 
 local function sort_clients(self)
+    self._private.clients = capi.client.get()
+
     table.sort(self._private.clients, function(a, b)
-        local a_is_valid = pcall(function()
-            return a.valid
-        end) and a.valid
-        if a == nil or not a_is_valid then
-            return false
-        end
-
-        local b_is_valid = pcall(function()
-            return b.valid
-        end) and b.valid
-        if b == nil or not b_is_valid then
-            return true
-        end
-
         if a.first_tag == nil then
             return false
         elseif b.first_tag == nil then
@@ -115,19 +105,12 @@ local function on_client_added(self, client)
         end
     end
 
-    table.insert(self._private.clients, client)
     on_client_updated(self)
 end
 
 local function on_client_removed(self, client)
-    for index, client2 in ipairs(self._private.clients) do
-        if client2.pid == client.pid then
-            table.remove(self._private.clients, index)
-            break
-        end
-    end
-    on_client_updated(self)
     self:emit_signal("client::removed", client)
+    on_client_updated(self)
 end
 
 function tasklist:get_dominant_color(client)
