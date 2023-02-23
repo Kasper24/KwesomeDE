@@ -155,24 +155,4 @@ function _client.float_and_resize(c, width, height)
     c:raise()
 end
 
-function _client.get_font_icon(...)
-    local args = { ... }
-
-    for _, arg in ipairs(args) do
-        if arg then
-            arg = arg:lower()
-            arg = arg:gsub("_", "")
-            arg = arg:gsub("%s+", "")
-            arg = arg:gsub("-", "")
-            arg = arg:gsub("%.", "")
-            local icon = beautiful.app_icons[arg]
-            if icon then
-                return icon
-            end
-        end
-    end
-
-    return beautiful.icons.window
-end
-
 return _client

@@ -7,6 +7,7 @@ local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
 local audio_daemon = require("daemons.hardware.audio")
+local tasklist_daemon = require("daemons.system.tasklist")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 
@@ -30,7 +31,7 @@ local function application_widget(args)
     args.on_slider_moved = args.on_slider_moved or nil
     args.on_removed_cb = args.on_removed_cb or nil
 
-    local font_icon = helpers.client.get_font_icon(args.application.name)
+    local font_icon = tasklist_daemon:get_font_icon(args.application.name)
     local icon = nil
     if font_icon == nil then
         icon = wibox.widget {

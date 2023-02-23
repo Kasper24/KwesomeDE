@@ -5,6 +5,7 @@
 local wibox = require("wibox")
 local beautiful = require("beautiful")
 local widgets = require("ui.widgets")
+local tasklist_daemon = require("daemons.system.tasklist")
 local bling = require("external.bling")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
@@ -95,7 +96,7 @@ local function new()
                     spacing = dpi(15),
                     {
                         widget = widgets.text,
-                        icon = helpers.client.get_font_icon(app.id, app.name, app.startup_wm_class, app.icon, app.icon_name)
+                        icon = tasklist_daemon:get_font_icon(app.id, app.name, app.startup_wm_class, app.icon, app.icon_name)
                     },
                     {
                         widget = widgets.text,
