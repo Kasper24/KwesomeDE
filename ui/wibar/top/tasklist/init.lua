@@ -35,6 +35,19 @@ local function pinned_app_widget(pinned_app)
         }
     }
 
+    for index, action in ipairs(pinned_app.actions) do
+        if index == 1 then
+            menu:add(widgets.menu.separator())
+        end
+
+        menu:add(widgets.menu.button {
+            text = action.name,
+            on_press = function()
+                action.launch()
+            end
+        })
+    end
+
     local widget = wibox.widget {
         widget = wibox.container.margin,
         forced_width = dpi(70),
