@@ -64,10 +64,10 @@ local function new(client)
         on_press = function(self)
             if client.favorite ~= nil then
                 self:turn_off()
-                tasklist_daemon:remove_favorite(client)
+                tasklist_daemon:remove_pinned_app(client)
             else
                 self:turn_on()
-                tasklist_daemon:add_favorite(client)
+                tasklist_daemon:add_pinned_app(client)
             end
         end
     }

@@ -18,35 +18,34 @@ local tasklist = {
     mt = {}
 }
 
-local favorite_widgets = {}
-
-local function favorite_widget(favorite)
+local function pinned_app_widget(pinned_app)
     local menu = widgets.menu {
         widgets.menu.button {
-            icon = favorite.font_icon,
-            text = favorite.class,
+            icon = pinned_app.font_icon,
+            text = pinned_app.class,
             on_press = function()
-                awful.spawn(favorite.exec, false)
+                awful.spawn(pinned_app.exec, false)
             end
         },
         widgets.menu.button {
             text = "Unpin from Taskbar",
             on_press = function()
-                tasklist_daemon:remove_favorite{class = favorite.class}
+                tasklist_daemon:remove_pinned_app(pinned_app)
             end
         }
     }
 
     local widget = wibox.widget {
         widget = wibox.container.margin,
-        forced_width = dpi(80),
+        forced_width = dpi(70),
+        forced_height = dpi(70),
         margins = dpi(5),
         {
             widget = widgets.button.text.state,
-            icon = favorite.font_icon,
+            icon = pinned_app.font_icon,
             on_release = function()
                 menu:hide()
-                awful.spawn(favorite.exec, false)
+                awful.spawn(pinned_app.exec, false)
             end,
             on_secondary_press = function(self)
                 menu:toggle{
@@ -149,7 +148,6 @@ local function client_widget(client)
 
     local widget = wibox.widget {
         widget = wibox.layout.stack,
-        forced_width = dpi(80),
         button,
         indicator
     }
@@ -181,12 +179,7 @@ local function new()
         layout = wibox.layout.manual
     }
 
-    tasklist_daemon:connect_signal("client::new", function(self, client)
-        -- client.tasklist_widget = client_widget(client)
-        -- tasklist_layout:add_at(client.tasklist_widget, { x = 0, y = 0})
-    end)
-
-    tasklist_daemon:connect_signal("update::position", function(self, client, pos)
+    tasklist_daemon:connect_signal("client::pos", function(self, client, pos)
         if client.tasklist_widget == nil then
             client.tasklist_widget = client_widget(client)
             tasklist_layout:add_at(client.tasklist_widget, { x =  pos * 80, y = 0})
@@ -197,28 +190,22 @@ local function new()
 
     tasklist_daemon:connect_signal("client::removed", function(self, client)
         tasklist_layout:remove_widgets(client.tasklist_widget)
+        client.tasklist_widget = nil
     end)
 
-    -- tasklist_daemon:connect_signal("favorite::new", function(self, favorite)
-    --     local pos = (favorite.index - 1) * 80
-    --     favorite_widgets[favorite.class] = favorite_widget(favorite)
-    --     tasklist_layout:add_at(favorite_widgets[favorite.class], { x = pos, y = 0})
-    -- end)
+    tasklist_daemon:connect_signal("pinned_app::pos", function(self, pinned_app, pos)
+        if pinned_app.widget == nil then
+            pinned_app.widget = pinned_app_widget(pinned_app)
+            tasklist_layout:add_at(pinned_app.widget, { x =  pos * 80, y = 0})
+        else
+            tasklist_layout:move_widget(pinned_app.widget, { x = pos * 80, y = 0})
+        end
+    end)
 
-    -- tasklist_daemon:connect_signal("favorite::removed", function(self, favorite)
-    --     favorite_widgets[favorite.class]:hide_menu()
-    --     tasklist_layout:remove_widgets(favorite_widgets[favorite.class])
-    -- end)
-
-    -- tasklist_daemon:connect_signal("favorite::app::opened", function(self, client)
-    --     favorite_widgets[client.favorite.class]:hide_menu()
-    --     client.tasklist_widget = client_widget(client)
-    --     tasklist_layout:replace_widget(favorite_widgets[client.favorite.class], client.tasklist_widget)
-    -- end)
-
-    -- tasklist_daemon:connect_signal("favorite::app::closed", function(self, client)
-    --     tasklist_layout:replace_widget(client.tasklist_widget, favorite_widgets[client.favorite.class])
-    -- end)
+    tasklist_daemon:connect_signal("pinned_app::removed", function(self, pinned_app)
+        tasklist_layout:remove_widgets(pinned_app.widget)
+        pinned_app.widget = nil
+    end)
 
     return tasklist_layout
 end

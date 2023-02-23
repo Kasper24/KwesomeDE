@@ -10,7 +10,6 @@ local AppInfo = Gio.AppInfo
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
-local gtimer = require("gears.timer")
 local beautiful = require("beautiful")
 local helpers = require("helpers")
 local floor = math.floor
@@ -31,31 +30,17 @@ local instance = nil
 local function update_positions(self)
     local pos = 0
     for _, pinned_app in ipairs(self._private.pinned_apps) do
-        self:emit_signal("update::position", pinned_app, pos)
-        pos = pos + 1
+        if #helpers.client.find({class = pinned_app.class}) == 0 then
+            self:emit_signal("pinned_app::pos", pinned_app, pos)
+            pos = pos + 1
+        else
+            self:emit_signal("pinned_app::removed", pinned_app)
+        end
     end
     for _, client in ipairs(self._private.clients) do
-        self:emit_signal("update::position", client, pos)
+        self:emit_signal("client::pos", client, pos)
         pos = pos + 1
     end
-end
-
-local function add_favorite(self, client, exec)
-    table.insert(self._private.pinned_apps, {
-        icon_name = --client.desktop_app_info.icon or
-                    -- client.icon_name or
-                    client.class,
-        class =     --client.desktop_app_info.startup_wm_class or
-                    --client.desktop_app_info.id or
-                    client.class,
-        name =      --client.desktop_app_info.name or
-                    client.name,
-        exec =      exec
-    })
-
-    helpers.settings["favorite-apps"] = self._private.pinned_apps
-
-    update_positions(self)
 end
 
 local function sort_clients(self)
@@ -78,39 +63,45 @@ local function sort_clients(self)
     end)
 end
 
+local function on_pinned_app_added(self, pinned_app)
+    pinned_app.desktop_app_info = self:get_desktop_app_info(pinned_app)
+    pinned_app.actions = self:get_actions(pinned_app)
+    pinned_app.icon = self:get_icon(pinned_app) -- not used
+    pinned_app.font_icon = self:get_font_icon(pinned_app.class, pinned_app.name)
+    pinned_app.widget = nil
+    update_positions(self)
+end
+
 local function on_client_updated(self)
     sort_clients(self)
     update_positions(self)
 end
 
 local function on_client_added(self, client)
+    for _, favorite in ipairs(self._private.pinned_apps) do
+        if client.class == favorite.class then
+            client.favorite = favorite
+        end
+    end
+
     client.managed = true
     client.desktop_app_info = self:get_desktop_app_info(client)
     client.actions = self:get_actions(client)
     client.icon = self:get_icon(client) -- not used
     client.font_icon = self:get_font_icon(client.class, client.name)
-    client.favorite = self:get_favorite(client)
     client.domiant_color = self:get_dominant_color(client)
     table.insert(self._private.clients, client)
     on_client_updated(self)
-
-    -- if client.favorite and  #helpers.client.find({class = client.class}) == 1 and not awesome.startup then
-    --     self:emit_signal("favorite::app::opened", client)
-    -- else
-    --     self:emit_signal("client::new", client)
-    -- end
 end
 
 local function on_client_removed(self, client)
-    helpers.table.remove_value(self._private.clients, client)
+    for index, client2 in ipairs(self._private.clients) do
+        if client2.pid == client.pid then
+            table.remove(self._private.clients, index)
+        end
+    end
     on_client_updated(self)
     self:emit_signal("client::removed", client)
-
-    -- if client.favorite and #helpers.client.find({class = client.class}) == 0 then
-    --     self:emit_signal("favorite::app::closed", client)
-    -- else
-    --     self:emit_signal("client::removed", client)
-    -- end
 end
 
 function tasklist:get_dominant_color(client)
@@ -300,29 +291,44 @@ function tasklist:get_font_icon(...)
     return beautiful.icons.window
 end
 
-function tasklist:add_favorite(client)
-    if client.pid then
-        awful.spawn.easy_async(string.format("ps -p %d -o args=", client.pid), function(stdout)
-            add_favorite(self, client, stdout)
+local function add_pinned_app(self, client, exec)
+    local pinned_app = {
+        icon_name = --client.desktop_app_info.icon or
+                    -- client.icon_name or
+                    client.class,
+        class =     --client.desktop_app_info.startup_wm_class or
+                    --client.desktop_app_info.id or
+                    client.class,
+        name =      --client.desktop_app_info.name or
+                    client.name,
+        exec =      exec
+    }
+    table.insert(self._private.pinned_apps, pinned_app)
+    helpers.settings["favorite-apps"] = self._private.pinned_apps
+    on_pinned_app_added(self, pinned_app)
+end
+
+function tasklist:add_pinned_app(app)
+    if app.pid then
+        awful.spawn.easy_async(string.format("ps -p %d -o args=", app.pid), function(stdout)
+            add_pinned_app(self, app, stdout)
         end)
     else
-        add_favorite(self, client, client.desktop_app_info.exec)
+        add_pinned_app(self, app, app.desktop_app_info.exec)
     end
 end
 
-function tasklist:remove_favorite(client)
-    --TODO FIX
-    table.remove(self._private.pinned_apps, client.index)
-    helpers.settings["favorite-apps"] = self._private.pinned_apps
-    self:emit_signal(client.class .. "::removed")
-end
-
-function tasklist:get_favorite(client)
-    for _, favorite in ipairs(self._private.pinned_apps) do
-        if client.class == favorite.class then
-            return favorite
+function tasklist:remove_pinned_app(pinned_app)
+    for i, pinned_app2 in ipairs(self._private.pinned_apps) do
+        if pinned_app2.class == pinned_app.class then
+            table.remove(self._private.pinned_apps, i)
+            self:emit_signal("pinned_app::removed", pinned_app)
+            break
         end
     end
+
+    helpers.settings["favorite-apps"] = self._private.pinned_apps
+    update_positions(self)
 end
 
 local function new()
@@ -376,15 +382,8 @@ local function new()
             on_client_added(ret, client)
         end
 
-        for index, favorite in ipairs(ret._private.pinned_apps) do
-            if #helpers.client.find({class = favorite.class}) == 0 then
-                favorite.desktop_app_info = ret:get_desktop_app_info(favorite)
-                favorite.actions = ret:get_actions(favorite)
-                favorite.icon = ret:get_icon(favorite) -- not used
-                favorite.font_icon = ret:get_font_icon(favorite.class, favorite.name)
-                favorite.index = index
-                ret:emit_signal("favorite::new", favorite)
-            end
+        for _, pinned_app in ipairs(ret._private.pinned_apps) do
+            on_pinned_app_added(ret, pinned_app)
         end
     end)
 

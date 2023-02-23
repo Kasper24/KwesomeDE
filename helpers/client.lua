@@ -17,12 +17,8 @@ function _client.find(rule)
     local function matcher(c)
         return ruled.client.match(c, rule)
     end
-    local clients = capi.client.get()
-    local findex = gtable.hasitem(clients, capi.client.focus) or 1
-    local start = gmath.cycle(#clients, findex + 1)
-
     local matches = {}
-    for c in awful.client.iterate(matcher, start) do
+    for c in awful.client.iterate(matcher) do
         matches[#matches + 1] = c
     end
 
