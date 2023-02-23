@@ -29,6 +29,7 @@ local instance = nil
 
 local function update_positions(self)
     local pos = 0
+    local pos_without_pinned_apps = 0
     for _, pinned_app in ipairs(self._private.pinned_apps_with_userdata) do
         if #helpers.client.find({class = pinned_app.class}) == 0 then
             self:emit_signal("pinned_app::pos", pinned_app, pos)
@@ -38,7 +39,8 @@ local function update_positions(self)
         end
     end
     for _, client in ipairs(self._private.clients) do
-        self:emit_signal("client::pos", client, pos)
+        self:emit_signal("client::pos", client, pos, pos_without_pinned_apps)
+        pos_without_pinned_apps = pos_without_pinned_apps + 1
         pos = pos + 1
     end
 end
@@ -356,6 +358,10 @@ function tasklist:remove_pinned_app(pinned_app)
 
     helpers.settings["favorite-apps"] = self._private.pinned_apps
     update_positions(self)
+end
+
+function tasklist:get_clients()
+    return self._private.clients
 end
 
 local function new()
