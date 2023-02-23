@@ -78,18 +78,20 @@ local function on_client_updated(self)
 end
 
 local function on_client_added(self, client)
-    for _, favorite in ipairs(self._private.pinned_apps) do
-        if client.class == favorite.class then
-            client.favorite = favorite
-        end
-    end
-
     client.managed = true
+    client.favorite = false
     client.desktop_app_info = self:get_desktop_app_info(client)
     client.actions = self:get_actions(client)
     client.icon = self:get_icon(client) -- not used
     client.font_icon = self:get_font_icon(client.class, client.name)
     client.domiant_color = self:get_dominant_color(client)
+
+    for _, favorite in ipairs(self._private.pinned_apps) do
+        if client.class == favorite.class then
+            client.favorite = true
+        end
+    end
+
     table.insert(self._private.clients, client)
     on_client_updated(self)
 end
@@ -310,6 +312,7 @@ end
 
 function tasklist:add_pinned_app(app)
     if app.pid then
+        app.favorite = true
         awful.spawn.easy_async(string.format("ps -p %d -o args=", app.pid), function(stdout)
             add_pinned_app(self, app, stdout)
         end)
