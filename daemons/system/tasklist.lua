@@ -347,6 +347,20 @@ local function new()
     ret._private.pinned_apps = helpers.settings["favorite-apps"]
     ret._private.pinned_apps_with_userdata = {}
 
+    capi.client.connect_signal("scanned", function()
+        capi.client.connect_signal("manage", function(client)
+            on_client_added(ret, client)
+        end)
+
+        for _, client in ipairs(capi.client.get()) do
+            on_client_added(ret, client)
+        end
+
+        for _, pinned_app in ipairs(ret._private.pinned_apps) do
+            on_pinned_app_added(ret, pinned_app)
+        end
+    end)
+
     capi.client.connect_signal("unmanage", function(client)
         on_client_removed(ret, client)
     end)
@@ -378,20 +392,6 @@ local function new()
     capi.client.connect_signal("swapped", function(client, other_client, is_source)
         if client.managed then
             on_client_updated(ret)
-        end
-    end)
-
-    capi.client.connect_signal("scanned", function()
-        capi.client.connect_signal("manage", function(client)
-            on_client_added(ret, client)
-        end)
-
-        for _, client in ipairs(capi.client.get()) do
-            on_client_added(ret, client)
-        end
-
-        for _, pinned_app in ipairs(ret._private.pinned_apps) do
-            on_pinned_app_added(ret, pinned_app)
         end
     end)
 
