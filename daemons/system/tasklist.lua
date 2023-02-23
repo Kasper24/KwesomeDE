@@ -45,6 +45,20 @@ end
 
 local function sort_clients(self)
     table.sort(self._private.clients, function(a, b)
+        local a_is_valid = pcall(function()
+            return a.valid
+        end) and a.valid
+        if a == nil or not a_is_valid then
+            return false
+        end
+
+        local b_is_valid = pcall(function()
+            return b.valid
+        end) and b.valid
+        if b == nil or not b_is_valid then
+            return true
+        end
+
         if a.first_tag == nil then
             return false
         elseif b.first_tag == nil then
