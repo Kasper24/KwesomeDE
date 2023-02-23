@@ -86,9 +86,13 @@ local function client_widget(self, client)
 end
 
 function window_switcher:select_client(client)
-    if self._private.selected_client then
+    local is_valid = pcall(function()
+        return self._private.selected_client.valid
+    end) and self._private.selected_client.valid
+    if self._private.selected_client ~= nil and is_valid then
         self._private.selected_client.window_switcher_widget:get_children_by_id("button")[1]:turn_off()
     end
+
     if client.window_switcher_widget then
         client.window_switcher_widget:get_children_by_id("button")[1]:turn_on()
         self._private.selected_client = client
