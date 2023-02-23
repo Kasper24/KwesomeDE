@@ -45,6 +45,12 @@ end
 
 local function sort_clients(self)
     table.sort(self._private.clients, function(a, b)
+        if a.first_tag == nil then
+            return false
+        elseif b.first_tag == nil then
+            return true
+        end
+
         if a.first_tag == b.first_tag then
             if a.floating ~= b.floating then
                 return not a.floating
