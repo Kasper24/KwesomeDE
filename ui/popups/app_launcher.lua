@@ -26,6 +26,8 @@ end
 local function new()
     local app_on_accent_color = beautiful.colors.random_accent_color()
 
+
+
     local app_launcher = bling.widget.app_launcher {
         bg = beautiful.colors.background,
         widget_template = wibox.widget {
@@ -78,29 +80,41 @@ local function new()
                 }
             }
         },
+
         app_template = function(app)
-            local button = wibox.widget {
-                widget = widgets.button.text.state,
+            local widget = wibox.widget {
+                widget = widgets.button.elevated.state,
+                id = "button",
                 forced_width = dpi(500),
                 forced_height = dpi(60),
                 paddings = dpi(15),
                 halign = "left",
-                size = 12,
-                on_normal_bg = app_on_accent_color,
-                text_normal_bg = beautiful.colors.on_background,
-                text_on_normal_bg = beautiful.colors.on_accent,
-                text = app.name
+                text = app.name,
+                child = {
+                    layout = wibox.layout.fixed.horizontal,
+                    spacing = dpi(15),
+                    {
+                        widget = widgets.text,
+                        icon = helpers.client.get_font_icon(app.id, app.name, app.startup_wm_class, app.icon, app.icon_name)
+                    },
+                    {
+                        widget = widgets.text,
+                        size = 12,
+                        color = beautiful.colors.on_background,
+                        text = app.name
+                    }
+                }
             }
 
-            button:connect_signal("selected", function()
-                button:turn_on()
+            widget:connect_signal("selected", function()
+                widget:turn_on()
             end)
 
-            button:connect_signal("unselected", function()
-                button:turn_off()
+            widget:connect_signal("unselected", function()
+                widget:turn_off()
             end)
 
-            return button
+            return widget
         end
     }
 
