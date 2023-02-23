@@ -101,6 +101,7 @@ local function on_client_removed(self, client)
     for index, client2 in ipairs(self._private.clients) do
         if client2.pid == client.pid then
             table.remove(self._private.clients, index)
+            break
         end
     end
     on_client_updated(self)
