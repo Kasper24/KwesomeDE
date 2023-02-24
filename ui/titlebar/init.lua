@@ -19,7 +19,8 @@ capi.client.connect_signal("request::titlebars", function(client)
         widget = widgets.client_font_icon,
         halign = "center",
         client = client,
-        scale = 0.8
+        scale = 0.8,
+        color = client.font_icon.color
     }
 
     local title = wibox.widget {
@@ -31,11 +32,12 @@ capi.client.connect_signal("request::titlebars", function(client)
     }
 
     local minimize = wibox.widget {
-        widget = widgets.button.elevated.normal,
+        widget = widgets.button.elevated.state,
         forced_width = dpi(20),
         forced_height = dpi(20),
         normal_shape = gshape.isosceles_triangle,
-        normal_bg = client.font_icon.color,
+        normal_bg = beautiful.colors.surface,
+        on_normal_bg = client.font_icon.color,
         hover_bg = beautiful.colors.on_background,
         press_bg = beautiful.colors.on_background,
         on_release = function(self)
@@ -44,13 +46,14 @@ capi.client.connect_signal("request::titlebars", function(client)
     }
 
     local maximize = wibox.widget {
-        widget = widgets.button.elevated.normal,
+        widget = widgets.button.elevated.state,
         forced_width = dpi(20),
         forced_height = dpi(20),
         normal_shape = function(cr, width, hegiht)
             gshape.rounded_rect(cr, width, hegiht, 5)
         end,
-        normal_bg = client.font_icon.color,
+        normal_bg = beautiful.colors.surface,
+        on_normal_bg = client.font_icon.color,
         hover_bg = beautiful.colors.on_background,
         press_bg = beautiful.colors.on_background,
         on_release = function(self)
@@ -60,11 +63,12 @@ capi.client.connect_signal("request::titlebars", function(client)
     }
 
     local close = wibox.widget {
-        widget = widgets.button.elevated.normal,
+        widget = widgets.button.elevated.state,
         forced_width = dpi(20),
         forced_height = dpi(20),
         normal_shape = gshape.circle,
-        normal_bg = client.font_icon.color,
+        normal_bg = beautiful.colors.surface,
+        on_normal_bg = client.font_icon.color,
         hover_bg = beautiful.colors.on_background,
         press_bg = beautiful.colors.on_background,
         on_release = function()
@@ -73,31 +77,15 @@ capi.client.connect_signal("request::titlebars", function(client)
     }
 
     client:connect_signal("focus", function()
-        font_icon:set_color(client.font_icon.color)
-        title:set_color(beautiful.colors.on_background)
-        minimize:set_normal_bg(client.font_icon.color)
-        maximize:set_normal_bg(client.font_icon.color)
-        close:set_normal_bg(client.font_icon.color)
+        minimize:turn_on()
+        maximize:turn_on()
+        close:turn_on()
     end)
 
     client:connect_signal("unfocus", function()
-        font_icon:set_color(beautiful.colors.surface_no_opacity)
-        title:set_color(beautiful.colors.surface_no_opacity)
-        minimize:set_normal_bg(beautiful.colors.surface)
-        maximize:set_normal_bg(beautiful.colors.surface)
-        close:set_normal_bg(beautiful.colors.surface)
-    end)
-
-    client:connect_signal("property::font_icon", function()
-        if client.active then
-            minimize:set_normal_bg(client.font_icon.color)
-            maximize:set_normal_bg(client.font_icon.color)
-            close:set_normal_bg(client.font_icon.color)
-        else
-            minimize:set_normal_bg(beautiful.colors.surface)
-            maximize:set_normal_bg(beautiful.colors.surface)
-            close:set_normal_bg(beautiful.colors.surface)
-        end
+        minimize:turn_off()
+        maximize:turn_off()
+        close:turn_off()
     end)
 
     local menu = widgets.client_menu(client)
@@ -105,7 +93,7 @@ capi.client.connect_signal("request::titlebars", function(client)
     local titlebar = widgets.titlebar(client, {
         position = "top",
         size = dpi(35),
-        bg = client.domiant_color,
+        bg = beautiful.colors.background,
         font = beautiful.font_name .. 12
     })
     titlebar:setup{
@@ -196,7 +184,7 @@ capi.client.connect_signal("request::titlebars", function(client)
         }
     }
 
-    capi.awesome.connect_signal("property::domiant_color", function(client)
-        titlebar:set_bg(client.domiant_color)
+    capi.awesome.connect_signal("colorscheme::changed", function()
+        titlebar:set_bg(beautiful.colors.background)
     end)
 end)

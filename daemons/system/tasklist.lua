@@ -125,7 +125,6 @@ local function on_client_added(self, client)
     client.actions = self:get_actions(client.desktop_app_info)
     client.icon = self:get_icon(client.desktop_app_info) -- not used
     client.font_icon = self:get_font_icon(client.class, client.name)
-    client.domiant_color = self:get_dominant_color(client)
     client.managed = true
 
     on_client_updated(self)
@@ -134,48 +133,6 @@ end
 local function on_client_removed(self, client)
     self:emit_signal("client::removed", client)
     on_client_updated(self)
-end
-
-function tasklist:get_dominant_color(client)
-    local color
-    -- gsurface(client.content):write_to_png(
-    --     "/home/mutex/nice/" .. client.class .. "_" .. client.instance .. ".png")
-    local pb
-    local bytes
-    local tally = {}
-    local screenshot = awful.screenshot {
-        client = client
-    }
-    screenshot:refresh()
-    local content = screenshot.surface
-    local cgeo = client:geometry()
-    local x_offset = 2
-    local y_offset = 2
-    local x_lim = math.floor(cgeo.width / 2)
-    for x_pos = 0, x_lim, 2 do
-        for y_pos = 0, 8, 1 do
-            pb = Gdk.pixbuf_get_from_surface(content, x_offset + x_pos, y_offset + y_pos, 1, 1)
-            bytes = pb:get_pixels()
-            color = "#" .. bytes:gsub(".", function(c)
-                return ("%02x"):format(c:byte())
-            end)
-            if not tally[color] then
-                tally[color] = 1
-            else
-                tally[color] = tally[color] + 1
-            end
-        end
-    end
-    local mode
-    local mode_c = 0
-    for kolor, kount in pairs(tally) do
-        if kount > mode_c then
-            mode_c = kount
-            mode = kolor
-        end
-    end
-    color = mode
-    return color
 end
 
 function tasklist:idx(client)
