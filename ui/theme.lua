@@ -171,7 +171,7 @@ local function icons()
         youtube = { icon = "", font = theme.font_awesome_6_brands_font_name },
         nvidia = { icon = "︁" },
         system_monitor = { icon = "︁" },
-        calculator = { icon = "🖩︁" },
+        calculator = { icon = "" },
         vim = { icon = "" },
         emacs = { icon = "" },
 
