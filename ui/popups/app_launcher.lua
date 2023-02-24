@@ -167,13 +167,14 @@ local function new()
         easing = helpers.animation.easing.outExpo,
         duration = 0.5,
         update = function(_, pos)
-            app_launcher._private.widget.widget.forced_height = pos
+            app_launcher:get_widget().widget.forced_height = pos
         end,
         signals = {
             ["ended"] = function()
                 if app_launcher._private.state == false then
-                    app_launcher._private.widget.visible = false
-                    app_launcher._private.prompt:set_text("")
+                    app_launcher:get_widget().visible = false
+                    app_launcher:get_prompt():set_text("")
+                    app_launcher:reset()
                 end
             end
         }
@@ -181,8 +182,8 @@ local function new()
 
     function app_launcher:show()
         app_launcher._private.state = true
-        app_launcher._private.widget.visible = true
-        app_launcher._private.prompt:start()
+        app_launcher:get_widget().visible = true
+        app_launcher:get_prompt():start()
         app_launcher:emit_signal("visibility", true)
 
         animation.easing = helpers.animation.easing.outExpo
@@ -191,7 +192,7 @@ local function new()
 
     function app_launcher:hide()
         app_launcher._private.state = false
-        app_launcher._private.prompt:stop()
+        app_launcher:get_prompt():stop()
         app_launcher:emit_signal("visibility", false)
 
         animation.easing = helpers.animation.easing.inExpo
