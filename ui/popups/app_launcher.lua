@@ -19,27 +19,31 @@ local function new()
     local app_launcher = bling.widget.app_launcher {
         bg = beautiful.colors.background,
         widget_template = wibox.widget {
-            layout = wibox.layout.fixed.horizontal,
+            layout = wibox.layout.stack,
             {
-                layout = wibox.layout.stack,
+                widget = widgets.wallpaper,
+                forced_width = dpi(600),
+            },
+            {
+                widget = widgets.background,
+                bg = beautiful.colors.background_blur,
+            },
+            {
+                widget = wibox.container.margin,
+                margins = dpi(15),
                 {
-                    widget = widgets.wallpaper,
-                    forced_width = dpi(800),
-                    forced_height = dpi(300),
-                },
-                {
-                    widget = wibox.container.margin,
-                    margins = dpi(15),
+                    layout = wibox.layout.fixed.vertical,
+                    spacing = dpi(15),
                     {
                         widget = wibox.container.place,
                         halign = "left",
                         valign = "top",
                         {
                             widget = widgets.background,
-                            forced_width = dpi(770),
+                            forced_width = dpi(650),
                             forced_height = dpi(60),
                             shape = helpers.ui.rrect(),
-                            bg = beautiful.colors.background,
+                            bg = beautiful.colors.surface_no_opacity,
                             {
                                 widget = wibox.container.margin,
                                 margins = dpi(15),
@@ -51,24 +55,19 @@ local function new()
                                 }
                             }
                         }
+                    },
+                    {
+                        layout = wibox.layout.grid,
+                        id = "grid_role",
+                        orientation = "horizontal",
+                        homogeneous = true,
+                        spacing = dpi(15),
+                        forced_num_cols = 5,
+                        forced_num_rows = 3,
                     }
                 }
             },
-            {
-                widget = wibox.container.margin,
-                margins = dpi(15),
-                {
-                    layout = wibox.layout.grid,
-                    id = "grid_role",
-                    orientation = "horizontal",
-                    homogeneous = true,
-                    spacing = dpi(15),
-                    forced_num_cols = 1,
-                    forced_num_rows = 7,
-                }
-            }
         },
-
         app_template = function(app)
             local font_icon = tasklist_daemon:get_font_icon(app.id:gsub(".desktop", ""),
                 app.name,
@@ -116,26 +115,37 @@ local function new()
             local widget = wibox.widget {
                 widget = widgets.button.elevated.state,
                 id = "button",
-                forced_width = dpi(500),
-                forced_height = dpi(60),
+                forced_width = dpi(120),
+                forced_height = dpi(120),
                 paddings = dpi(15),
-                halign = "left",
+                halign = "center",
                 text = app.name,
                 on_secondary_press = function()
                     menu:toggle()
                 end,
                 child = {
-                    layout = wibox.layout.fixed.horizontal,
+                    layout = wibox.layout.fixed.vertical,
                     spacing = dpi(15),
                     {
-                        widget = widgets.text,
-                        icon = font_icon
+                        widget = wibox.container.place,
+                        halign = "center",
+                        valign = "center",
+                        {
+                            widget = widgets.text,
+                            size = 40,
+                            icon = font_icon
+                        },
                     },
                     {
-                        widget = widgets.text,
-                        size = 12,
-                        color = beautiful.colors.on_background,
-                        text = app.name
+                        widget = wibox.container.place,
+                        halign = "center",
+                        valign = "center",
+                        {
+                            widget = widgets.text,
+                            size = 12,
+                            color = beautiful.colors.on_background,
+                            text = app.name
+                        }
                     }
                 }
             }
@@ -157,7 +167,7 @@ local function new()
         easing = helpers.animation.easing.outExpo,
         duration = 0.5,
         update = function(_, pos)
-            app_launcher._private.widget.widget.forced_width = pos
+            app_launcher._private.widget.widget.forced_height = pos
         end,
         signals = {
             ["ended"] = function()
@@ -176,7 +186,7 @@ local function new()
         app_launcher:emit_signal("visibility", true)
 
         animation.easing = helpers.animation.easing.outExpo
-        animation:set(dpi(1300))
+        animation:set(dpi(500))
     end
 
     function app_launcher:hide()
