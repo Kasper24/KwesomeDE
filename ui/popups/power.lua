@@ -106,11 +106,6 @@ local function button(icon, text, on_release)
 end
 
 local function widget(self)
-    local blur = wibox.widget {
-        widget = widgets.background,
-        bg = beautiful.colors.background_blur
-    }
-
     local picture = wibox.widget {
         widget = wibox.widget.imagebox,
         halign = "center",
@@ -175,7 +170,6 @@ local function widget(self)
     return wibox.widget {
         widget = wibox.layout.stack,
         widgets.wallpaper,
-        blur,
         {
             widget = wibox.container.place,
             halign = "center",

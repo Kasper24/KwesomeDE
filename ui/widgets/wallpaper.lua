@@ -22,6 +22,11 @@ local function new()
         image = theme_daemon:get_wallpaper_surface()
     }
 
+    capi.awesome.connect_signal("wallpaper::blurred::changed", function()
+        widget.image = theme_daemon:get_blurred_wallpaper_path()
+    end)
+
+    -- Bluring takes time, show the unblured version until then
     capi.awesome.connect_signal("wallpaper::changed", function()
         widget.image = theme_daemon:get_wallpaper_surface()
     end)

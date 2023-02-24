@@ -33,7 +33,8 @@ local WALLPAPERS_PATH = filesystem.filesystem.get_awesome_config_dir("ui/assets/
 local GTK_THEME_PATH = filesystem.filesystem.get_awesome_config_dir("config/FlatColor")
 local INSTALLED_GTK_THEME_PATH = os.getenv("HOME") .. "/.local/share/themes/"
 local BASE_TEMPLATES_PATH = filesystem.filesystem.get_awesome_config_dir("config/templates")
-local BACKGROUND_PATH = filesystem.filesystem.get_cache_dir("") .. "wallpaper"
+local BACKGROUND_PATH = filesystem.filesystem.get_cache_dir("") .. "wallpaper.png"
+local BLURRED_BACKGROUND_PATH = filesystem.filesystem.get_cache_dir("") .. "blurred_wallpaper.png"
 local GENERATED_TEMPLATES_PATH = filesystem.filesystem.get_cache_dir("templates")
 local WAL_CACHE_PATH = filesystem.filesystem.get_xdg_cache_home("wal")
 
@@ -701,11 +702,19 @@ function theme:set_wallpaper(wallpaper, type)
         capi.screen.primary.geometry.height
     )
 
+    awful.spawn.easy_async(string.format("convert -filter Gaussian -blur 0x10 %s %s", BACKGROUND_PATH, BLURRED_BACKGROUND_PATH), function()
+        capi.awesome.emit_signal("wallpaper::blurred::changed")
+    end)
+
     capi.awesome.emit_signal("wallpaper::changed")
 end
 
 function theme:get_wallpaper_surface()
     return self._private.wallpaper_surface
+end
+
+function theme:get_blurred_wallpaper_path()
+    return BLURRED_BACKGROUND_PATH
 end
 
 function theme:get_wallpaper_type()
