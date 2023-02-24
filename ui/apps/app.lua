@@ -42,7 +42,10 @@ function app:get_client()
 end
 
 function app:set_hidden(hidden)
-    self:get_client().hidden = hidden
+    local client = self:get_client()
+    if client then
+        client.hidden = hidden
+    end
 end
 
 function app:set_widget(widget)
