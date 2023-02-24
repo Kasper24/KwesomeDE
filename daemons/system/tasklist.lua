@@ -85,10 +85,10 @@ local function on_pinned_app_added(self, pinned_app)
         cloned_pinned_app.actions = self:get_actions(cloned_pinned_app.desktop_app_info)
         cloned_pinned_app.icon = self:get_icon(cloned_pinned_app.desktop_app_info) -- not used
         cloned_pinned_app.class = cloned_pinned_app.desktop_app_info:get_string("Name")
-
         cloned_pinned_app.terminal = cloned_pinned_app.desktop_app_info:get_string("Terminal") == "true" and true or false
         cloned_pinned_app.exec = cloned_pinned_app.desktop_app_info:get_string("Exec")
         cloned_pinned_app.font_icon = self:get_font_icon(
+            cloned_pinned_app.desktop_app_info_id:gsub(".desktop", ""),
             cloned_pinned_app.desktop_app_info:get_string("Name"),
             cloned_pinned_app.desktop_app_info:get_string("Icon"),
             cloned_pinned_app.desktop_app_info:get_startup_wm_class()
@@ -109,6 +109,7 @@ local function on_pinned_app_added(self, pinned_app)
         end
     end
 
+    self:emit_signal("pinned_app::added", cloned_pinned_app)
     table.insert(self._private.pinned_apps_with_userdata, cloned_pinned_app)
     update_positions(self)
 end
