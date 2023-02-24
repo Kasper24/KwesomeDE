@@ -27,8 +27,6 @@ end
 local function new()
     local app_on_accent_color = beautiful.colors.random_accent_color()
 
-
-
     local app_launcher = bling.widget.app_launcher {
         bg = beautiful.colors.background,
         widget_template = wibox.widget {
@@ -49,7 +47,7 @@ local function new()
                         valign = "top",
                         {
                             widget = widgets.background,
-                            forced_width = dpi(750),
+                            forced_width = dpi(770),
                             forced_height = dpi(60),
                             shape = helpers.ui.rrect(),
                             bg = beautiful.colors.background,
@@ -83,6 +81,50 @@ local function new()
         },
 
         app_template = function(app)
+            local font_icon = tasklist_daemon:get_font_icon(app.id:gsub(".desktop", ""),
+                app.name,
+                app.startup_wm_class,
+                app.icon,
+                app.icon_name
+            )
+
+            local menu = widgets.menu {
+                widgets.menu.button {
+                    icon = font_icon,
+                    text = app.name,
+                    on_press = function()
+                        app:spawn()
+                    end
+                },
+                widgets.menu.checkbox_button {
+                    state = tasklist_daemon:is_app_pinned{id = app.id},
+                    handle_active_color = font_icon.color,
+                    text = "Pin App",
+                    on_press = function(self)
+                        if tasklist_daemon:is_app_pinned{id = app.id} then
+                            self:turn_off()
+                            tasklist_daemon:remove_pinned_app{id = app.id}
+                        else
+                            self:turn_on()
+                            tasklist_daemon:add_pinned_app{id = app.id}
+                        end
+                    end
+                }
+            }
+
+            for index, action in ipairs(app.desktop_app_info:list_actions()) do
+                if index == 1 then
+                    menu:add(widgets.menu.separator())
+                end
+
+                menu:add(widgets.menu.button {
+                    text = app.desktop_app_info:get_action_name(action),
+                    on_press = function()
+                        app.desktop_app_info:launch_action(action)
+                    end
+                })
+            end
+
             local widget = wibox.widget {
                 widget = widgets.button.elevated.state,
                 id = "button",
@@ -91,12 +133,15 @@ local function new()
                 paddings = dpi(15),
                 halign = "left",
                 text = app.name,
+                on_secondary_press = function()
+                    menu:toggle()
+                end,
                 child = {
                     layout = wibox.layout.fixed.horizontal,
                     spacing = dpi(15),
                     {
                         widget = widgets.text,
-                        icon = tasklist_daemon:get_font_icon(app.id, app.name, app.startup_wm_class, app.icon, app.icon_name)
+                        icon = font_icon
                     },
                     {
                         widget = widgets.text,

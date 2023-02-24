@@ -28,9 +28,9 @@ local function pinned_app_widget(pinned_app)
             end
         },
         widgets.menu.button {
-            text = "Unpin from Taskbar",
+            text = "Unpin App",
             on_press = function()
-                tasklist_daemon:remove_pinned_app(pinned_app)
+                tasklist_daemon:remove_pinned_app{id = pinned_app.desktop_app_info_id, class = pinned_app.class}
             end
         }
     }

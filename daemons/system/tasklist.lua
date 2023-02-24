@@ -77,10 +77,20 @@ end
 
 local function on_pinned_app_added(self, pinned_app)
     local cloned_pinned_app = gtable.clone(pinned_app, true)
-    cloned_pinned_app.desktop_app_info = self:get_desktop_app_info(pinned_app)
-    cloned_pinned_app.actions = self:get_actions(cloned_pinned_app)
-    cloned_pinned_app.icon = self:get_icon(pinned_app) -- not used
-    cloned_pinned_app.font_icon = self:get_font_icon(pinned_app.class, pinned_app.name)
+    if cloned_pinned_app.desktop_app_info_id then
+        cloned_pinned_app.desktop_app_info = DesktopAppInfo.new(cloned_pinned_app.desktop_app_info_id)
+        cloned_pinned_app.actions = self:get_actions(cloned_pinned_app.desktop_app_info)
+        cloned_pinned_app.icon = self:get_icon(cloned_pinned_app.desktop_app_info) -- not used
+        cloned_pinned_app.class = cloned_pinned_app.desktop_app_info:get_string("Name")
+
+        local name = cloned_pinned_app.desktop_app_info:get_string("Name")
+        local icon_name= cloned_pinned_app.desktop_app_info:get_string("Icon")
+        local startup_wm_class = cloned_pinned_app.desktop_app_info:get_startup_wm_class()
+        cloned_pinned_app.font_icon = self:get_font_icon(name, icon_name, startup_wm_class)
+    else
+        cloned_pinned_app.font_icon = self:get_font_icon(pinned_app.class, pinned_app.name)
+    end
+
     table.insert(self._private.pinned_apps_with_userdata, cloned_pinned_app)
     update_positions(self)
 end
@@ -91,19 +101,14 @@ local function on_client_updated(self)
 end
 
 local function on_client_added(self, client)
-    client.managed = true
-    client.favorite = false
-    client.desktop_app_info = self:get_desktop_app_info(client)
-    client.actions = self:get_actions(client)
-    client.icon = self:get_icon(client) -- not used
+    local desktop_app_info, id = self:get_desktop_app_info(client)
+    client.desktop_app_info = desktop_app_info
+    client.desktop_app_info_id = id
+    client.actions = self:get_actions(client.desktop_app_info)
+    client.icon = self:get_icon(client.desktop_app_info) -- not used
     client.font_icon = self:get_font_icon(client.class, client.name)
     client.domiant_color = self:get_dominant_color(client)
-
-    for _, favorite in ipairs(self._private.pinned_apps) do
-        if client.class == favorite.class then
-            client.favorite = true
-        end
-    end
+    client.managed = true
 
     on_client_updated(self)
 end
@@ -223,7 +228,7 @@ function tasklist:get_desktop_app_info(client)
             if desktop_app_info then
                 local desktop_app_props = {
                     desktop_app_info:get_startup_wm_class() or false,
-                    id:gsub(".desktop", "") or false, -- file name omitting .desktop
+                    id:gsub(".desktop", ""), -- file name omitting .desktop
                     desktop_app_info:get_string("Name") or false, -- Declared inside the desktop file
                     desktop_app_info:get_string("Icon") or false,
                     desktop_app_info:get_string("Exec") or false,
@@ -232,15 +237,7 @@ function tasklist:get_desktop_app_info(client)
                 for _, desktop_app_prop in ipairs(desktop_app_props) do
                     for _, client_prop in ipairs(client_props) do
                         if desktop_app_prop and client_prop and desktop_app_prop:lower() == client_prop:lower() then
-                            return {
-                                startup_wm_class = desktop_app_props[1],
-                                id = desktop_app_props[2],
-                                name = desktop_app_props[3],
-                                icon = desktop_app_props[4],
-                                exec = desktop_app_props[5],
-                                desktop_app_info = desktop_app_info,
-                                actions = desktop_app_info:list_actions()
-                            }
+                            return desktop_app_info, id
                         end
                     end
                 end
@@ -249,19 +246,15 @@ function tasklist:get_desktop_app_info(client)
     end
 end
 
-function tasklist:get_actions(client)
+function tasklist:get_actions(desktop_app_info)
     local actions = {}
 
-    if client.desktop_app_info == nil then
-        return actions
-    end
-
-    for _, action in ipairs(client.desktop_app_info.actions) do
+    for _, action in ipairs(desktop_app_info:list_actions()) do
         table.insert(actions,
         {
-            name = client.desktop_app_info.desktop_app_info:get_action_name(action),
+            name = client.desktop_app_info:get_action_name(action),
             launch = function()
-                client.desktop_app_info.desktop_app_info:launch_action(action)
+                client.desktop_app_info:launch_action(action)
             end
         })
     end
@@ -269,12 +262,10 @@ function tasklist:get_actions(client)
     return actions
 end
 
-function tasklist:get_icon(client)
-    if client.desktop_app_info then
-        local icon = client.desktop_app_info.icon
-        if icon ~= nil then
-            return helpers.icon_theme.get_icon_path(icon)
-        end
+function tasklist:get_icon(desktop_app_info)
+    local icon = desktop_app_info:get_string("Icon")
+    if icon ~= nil then
+        return helpers.icon_theme.get_icon_path(icon)
     end
 
     return helpers.icon_theme.choose_icon({"window", "window-manager", "xfwm4-default", "window_list"})
@@ -300,42 +291,69 @@ function tasklist:get_font_icon(...)
     return beautiful.icons.window
 end
 
-local function add_pinned_app(self, client, exec)
-    local pinned_app = {
-        icon_name = --client.desktop_app_info.icon or
-                    -- client.icon_name or
-                    client.class,
-        class =     --client.desktop_app_info.startup_wm_class or
-                    --client.desktop_app_info.id or
-                    client.class,
-        name =      --client.desktop_app_info.name or
-                    client.name,
-        exec =      exec
-    }
-    table.insert(self._private.pinned_apps, pinned_app)
-    helpers.settings["favorite-apps"] = self._private.pinned_apps
-    on_pinned_app_added(self, pinned_app)
+function tasklist:is_app_pinned(args)
+    for _, pinned_app in ipairs(self._private.pinned_apps) do
+        if args.id and args.id == pinned_app.desktop_app_info_id then
+            return true
+        elseif args.class and args.class == pinned_app.class then
+            return true
+        end
+    end
+
+    return false
 end
 
-function tasklist:add_pinned_app(app)
-    if app.pid then
-        app.favorite = true
-        awful.spawn.easy_async(string.format("ps -p %d -o args=", app.pid), function(stdout)
-            add_pinned_app(self, app, stdout)
-        end)
+function tasklist:toggle_app_pinned(args)
+    if self:is_app_pinned(args) then
+        self:remove_pinned_app(args)
     else
-        add_pinned_app(self, app, app.desktop_app_info.exec)
+        self:add_pinned_app(args)
     end
 end
 
-function tasklist:remove_pinned_app(pinned_app)
-    for index, pinned_app2 in ipairs(self._private.pinned_apps) do
-        if pinned_app2.class == pinned_app.class then
-            pinned_app.favorite = false
-            table.remove(self._private.pinned_apps_with_userdata, index)
-            table.remove(self._private.pinned_apps, index)
-            self:emit_signal("pinned_app::removed", pinned_app)
-            break
+function tasklist:add_pinned_app(args)
+    if args.id then
+        local pinned_app = {
+            desktop_app_info_id = args.id,
+        }
+        table.insert(self._private.pinned_apps, pinned_app)
+        helpers.settings["favorite-apps"] = self._private.pinned_apps
+        print(helpers.table.dump(args))
+
+        on_pinned_app_added(self, pinned_app)
+    elseif args.client then
+        awful.spawn.easy_async(string.format("ps -p %d -o args=", args.client.pid), function(stdout)
+            local pinned_app = {
+                icon_name = args.client.icon_name,
+                class = args.client.class,
+                name = args.client.name,
+                exec = stdout
+            }
+            table.insert(self._private.pinned_apps, pinned_app)
+            helpers.settings["favorite-apps"] = self._private.pinned_apps
+            on_pinned_app_added(self, pinned_app)
+        end)
+    end
+end
+
+function tasklist:remove_pinned_app(args)
+    if args.id then
+        for index, pinned_app in ipairs(self._private.pinned_apps) do
+            if pinned_app.desktop_app_info_id == args.id then
+                self:emit_signal("pinned_app::removed", self._private.pinned_apps_with_userdata[index])
+                table.remove(self._private.pinned_apps_with_userdata, index)
+                table.remove(self._private.pinned_apps, index)
+                break
+            end
+        end
+    elseif args.class then
+        for index, pinned_app in ipairs(self._private.pinned_apps) do
+            if pinned_app.class == args.class then
+                self:emit_signal("pinned_app::removed", self._private.pinned_apps_with_userdata[index])
+                table.remove(self._private.pinned_apps_with_userdata, index)
+                table.remove(self._private.pinned_apps, index)
+                break
+            end
         end
     end
 
