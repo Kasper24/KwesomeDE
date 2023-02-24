@@ -12,6 +12,7 @@ local gobject = require("gears.object")
 local gtable = require("gears.table")
 local beautiful = require("beautiful")
 local helpers = require("helpers")
+local filesystem = require("external.filesystem")
 local floor = math.floor
 local string = string
 local table = table
@@ -23,6 +24,8 @@ local capi = {
     root = root,
     client = client,
 }
+
+local AWESOME_SENSIBLE_TERMINAL_PATH = filesystem.filesystem.get_awesome_config_dir("scripts") .. "awesome-sensible-terminal"
 
 local tasklist = {}
 local instance = nil
@@ -83,12 +86,27 @@ local function on_pinned_app_added(self, pinned_app)
         cloned_pinned_app.icon = self:get_icon(cloned_pinned_app.desktop_app_info) -- not used
         cloned_pinned_app.class = cloned_pinned_app.desktop_app_info:get_string("Name")
 
-        local name = cloned_pinned_app.desktop_app_info:get_string("Name")
-        local icon_name= cloned_pinned_app.desktop_app_info:get_string("Icon")
-        local startup_wm_class = cloned_pinned_app.desktop_app_info:get_startup_wm_class()
-        cloned_pinned_app.font_icon = self:get_font_icon(name, icon_name, startup_wm_class)
+        cloned_pinned_app.terminal = cloned_pinned_app.desktop_app_info:get_string("Terminal") == "true" and true or false
+        cloned_pinned_app.exec = cloned_pinned_app.desktop_app_info:get_string("Exec")
+        cloned_pinned_app.font_icon = self:get_font_icon(
+            cloned_pinned_app.desktop_app_info:get_string("Name"),
+            cloned_pinned_app.desktop_app_info:get_string("Icon"),
+            cloned_pinned_app.desktop_app_info:get_startup_wm_class()
+        )
+
+        function cloned_pinned_app:spawn()
+            if self.terminal == true then
+                awful.spawn.with_shell(AWESOME_SENSIBLE_TERMINAL_PATH .. " -e " .. self.exec)
+            else
+                awful.spawn(self.exec)
+            end
+        end
     else
         cloned_pinned_app.font_icon = self:get_font_icon(pinned_app.class, pinned_app.name)
+
+        function cloned_pinned_app:spawn()
+            awful.spawn(cloned_pinned_app.exec)
+        end
     end
 
     table.insert(self._private.pinned_apps_with_userdata, cloned_pinned_app)
@@ -249,12 +267,16 @@ end
 function tasklist:get_actions(desktop_app_info)
     local actions = {}
 
+    if desktop_app_info == nil then
+        return actions
+    end
+
     for _, action in ipairs(desktop_app_info:list_actions()) do
         table.insert(actions,
         {
-            name = client.desktop_app_info:get_action_name(action),
+            name = desktop_app_info:get_action_name(action),
             launch = function()
-                client.desktop_app_info:launch_action(action)
+                desktop_app_info:launch_action(action)
             end
         })
     end
@@ -263,9 +285,11 @@ function tasklist:get_actions(desktop_app_info)
 end
 
 function tasklist:get_icon(desktop_app_info)
-    local icon = desktop_app_info:get_string("Icon")
-    if icon ~= nil then
-        return helpers.icon_theme.get_icon_path(icon)
+    if desktop_app_info then
+        local icon = desktop_app_info:get_string("Icon")
+        if icon ~= nil then
+            return helpers.icon_theme.get_icon_path(icon)
+        end
     end
 
     return helpers.icon_theme.choose_icon({"window", "window-manager", "xfwm4-default", "window_list"})

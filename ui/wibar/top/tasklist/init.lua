@@ -24,7 +24,7 @@ local function pinned_app_widget(pinned_app)
             icon = pinned_app.font_icon,
             text = pinned_app.class,
             on_press = function()
-                awful.spawn(pinned_app.exec, false)
+                pinned_app:spawn()
             end
         },
         widgets.menu.button {
@@ -58,7 +58,7 @@ local function pinned_app_widget(pinned_app)
             icon = pinned_app.font_icon,
             on_release = function()
                 menu:hide()
-                awful.spawn(pinned_app.exec, false)
+                pinned_app:spawn()
             end,
             on_secondary_press = function(self)
                 menu:toggle{
