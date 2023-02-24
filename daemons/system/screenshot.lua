@@ -126,13 +126,11 @@ function screenshot:screenshot()
         awful.spawn.easy_async_with_shell(command, function(stdout, stderr)
             local file = filesystem.file.new_for_path(self._private.folder .. file_name)
             file:exists(function(error, exists)
-                if error == nil then
-                    if exists == true then
-                        self:copy_screenshot(self._private.folder .. file_name)
-                        self:emit_signal("ended", self._private.folder, file_name)
-                    else
-                        self:emit_signal("error::create_file", stderr)
-                    end
+                if error == nil and exists == true then
+                    self:copy_screenshot(self._private.folder .. file_name)
+                    self:emit_signal("ended", self._private.folder, file_name)
+                else
+                    self:emit_signal("error::create_file", stderr)
                 end
             end)
         end)

@@ -116,10 +116,8 @@ function record:stop_video()
     awful.spawn.easy_async("killall ffmpeg", function()
         local file = filesystem.file.new_for_path(self._private.folder .. self._private.file_name)
         file:exists(function(error, exists)
-            if error == nil then
-                if exists == false then
-                    self:emit_signal("error::create_file", stderr)
-                end
+            if error ~= nil or exists == false then
+                self:emit_signal("error::create_file", error)
             end
 
             self._private.is_recording = false
