@@ -118,6 +118,9 @@ function screenshot:screenshot()
                 self:emit_signal("error::create_file", "No focused client")
                 return
             end
+        elseif self._private.screenshot_method == "color_picker" then
+            self:pick_color()
+            return
         end
 
         awful.spawn.easy_async_with_shell(command, function(stdout, stderr)
@@ -125,9 +128,8 @@ function screenshot:screenshot()
             file:exists(function(error, exists)
                 if error == nil then
                     if exists == true then
-                        awful.spawn("xclip -selection clipboard -t image/png -i " .. self._private.folder .. file_name,
-                            false)
-                        self:emit_signal("ended", self._private.screenshot_method, self._private.folder, file_name)
+                        self:copy_screenshot(self._private.folder .. file_name)
+                        self:emit_signal("ended", self._private.folder, file_name)
                     else
                         self:emit_signal("error::create_file", stderr)
                     end
@@ -156,10 +158,22 @@ function screenshot:screenshot()
     end)
 end
 
+function screenshot:pick_color()
+    awful.spawn.easy_async("xcolor", function(stdout, stderr)
+        stdout = helpers.string.trim(stdout)
+        self:copy_color(stdout)
+        self:emit_signal("color::picked", stdout)
+    end)
+end
+
 function screenshot:copy_screenshot(path)
     local image = GdkPixbuf.Pixbuf.new_from_file(path)
     self._private.clipboard:set_image(image)
     self._private.clipboard:store()
+end
+
+function screenshot:copy_color(color)
+    self._private.clipboard:set_text(color, -1)
 end
 
 local function new()

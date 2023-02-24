@@ -15,11 +15,7 @@ local error_icons = {"system-error", "dialog-error", "aptdaemon-error", "arch-er
                      "ownCloud_error", "script-error", "state-error", "stock_dialog-error", "SuggestionError",
                      "yum-indicator-error"}
 
-screenshot_daemon:connect_signal("ended", function(self, screenshot_method, screenshot_directory, file_name)
-    if screenshot_method == "flameshot" then
-        return
-    end
-
+screenshot_daemon:connect_signal("ended", function(self, folder, file_name)
     local view_file = naughty.action {
         name = "View"
     }
@@ -31,11 +27,11 @@ screenshot_daemon:connect_signal("ended", function(self, screenshot_method, scre
     }
 
     view_file:connect_signal("invoked", function()
-        awful.spawn("xdg-open " .. screenshot_directory .. file_name, false)
+        awful.spawn("xdg-open " .. folder .. file_name, false)
     end)
 
     open_dir:connect_signal("invoked", function()
-        awful.spawn("xdg-open " .. screenshot_directory, false)
+        awful.spawn("xdg-open " .. folder, false)
     end)
 
     copy:connect_signal("invoked", function()
@@ -46,10 +42,30 @@ screenshot_daemon:connect_signal("ended", function(self, screenshot_method, scre
         app_font_icon = beautiful.icons.camera_retro,
         app_icon = icons,
         app_name = "Screenshot",
-        icon = screenshot_directory .. file_name,
+        icon = folder .. file_name,
         title = "Screenshot taken",
-        message = "Screenshot saved to " .. screenshot_directory .. file_name,
+        message = "Screenshot saved to " .. folder .. file_name,
         actions = {view_file, open_dir, copy}
+    }
+end)
+
+screenshot_daemon:connect_signal("color::picked", function(self, color)
+    local copy = naughty.action {
+        name = "Copy"
+    }
+
+    copy:connect_signal("invoked", function()
+        screenshot_daemon:copy_color(color)
+    end)
+
+    naughty.notification {
+        app_font_icon = beautiful.icons.camera_retro,
+        app_icon = icons,
+        app_name = "Screenshot",
+        color = color,
+        title = "Color picked",
+        message = color,
+        actions = { copy }
     }
 end)
 

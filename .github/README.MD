@@ -117,8 +117,8 @@ yay/paru -S awesome-git
 | redshift                                | Blue light toggle                                         |
 | inotify-tools                           | Daemons that monitor filesystem events                    |
 | maim                                    | Screenshot widget                                         |
+| xcolor                                  | Used for color picking                                    |
 | ffmpeg                                  | Record widget                                             |
-| farge                                   | Color picker keybind                                      |
 | picom                                   | Compositor widget/notifcations                            |
 | playerctl                               | Media daemon and controls                                 |
 | fortune-mod                             | Fortune daemon (unused, but might change)                 |
@@ -128,11 +128,11 @@ yay/paru -S awesome-git
 **Arch Linux (and other Arch-based distributions)**
    ```sh
       pacman -Sy networkmanager blueman pipewire pipewire-pulse libgudev upower lm_sensors brightnessctl
-      redshift inotify-tools  maim ffmpeg playerctl fortune-mod imagemagick neofetch --needed
+      redshift inotify-tools maim xcolor ffmpeg playerctl fortune-mod imagemagick neofetch --needed
    ```
    Assuming your **AUR Helper** is [yay](https://github.com/Jguer/yay) or [paru](https://github.com/Morganamilo/paru).
    ```sh
-      yay/paru -Sy picom-animations-git farge-git --needed
+      yay/paru -Sy picom-animations-git --needed
    ```
 </details>
 

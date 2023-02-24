@@ -49,12 +49,14 @@ local function new(self, layout)
     local selection_button = nil
     local screen_button = nil
     local window_button = nil
+    local color_picker_button = nil
 
     selection_button = button(beautiful.icons.scissors, "Selection", function()
         screenshot_daemon:set_screenshot_method("selection")
         selection_button:turn_on()
         screen_button:turn_off()
         window_button:turn_off()
+        color_picker_button:turn_off()
     end, true)
 
     screen_button = button(beautiful.icons.computer, "Screen", function()
@@ -62,6 +64,7 @@ local function new(self, layout)
         selection_button:turn_off()
         screen_button:turn_on()
         window_button:turn_off()
+        color_picker_button:turn_off()
     end)
 
     window_button = button(beautiful.icons.window, "Window", function()
@@ -69,6 +72,15 @@ local function new(self, layout)
         selection_button:turn_off()
         screen_button:turn_off()
         window_button:turn_on()
+        color_picker_button:turn_off()
+    end)
+
+    color_picker_button = button(beautiful.icons.palette, "Pick Color", function()
+        screenshot_daemon:set_screenshot_method("color_picker")
+        selection_button:turn_off()
+        screen_button:turn_off()
+        window_button:turn_off()
+        color_picker_button:turn_on()
     end)
 
     local title = wibox.widget {
@@ -135,7 +147,8 @@ local function new(self, layout)
                 spacing = dpi(15),
                 selection_button,
                 screen_button,
-                window_button
+                window_button,
+                color_picker_button
             },
             screenshot_button
         }

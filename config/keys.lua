@@ -15,6 +15,7 @@ local audio_daemon = require("daemons.hardware.audio")
 local brightness_daemon = require("daemons.system.brightness")
 local rgb_daemon = require("daemons.hardware.rgb")
 local theme_daemon = require("daemons.system.theme")
+local screenshot_daemon = require("daemons.system.screenshot")
 local helpers = require("helpers")
 local bling = require("external.bling")
 local machi = require("external.layout-machi")
@@ -738,23 +739,33 @@ awful.keyboard.append_global_keybindings({ -- Toogle media
         on_press = function()
             brightness_daemon:decrease_brightness(5)
         end
-    }, -- Screenshot widget
+    }, -- Toggle Screenshot widget
     awful.key {
         modifiers = {},
         key = "Print",
         group = "media",
-        description = "screenshot widget",
+        description = "toggle screenshot widget",
         on_press = function()
             screenshot_widget:show()
         end
-    }, -- Color picker
+    }, -- Take a screenshot
     awful.key {
-        modifiers = {keys.mod},
-        key = "p",
+        modifiers = { keys.mod },
+        key = "Print",
+        group = "media",
+        description = "take a screenshot",
+        on_press = function()
+            screenshot_daemon:screenshot()
+        end
+    },
+    -- Pick a coilor
+    awful.key {
+        modifiers = {keys.alt},
+        key = "Print",
         group = "media",
         description = "color picker",
         on_press = function()
-            awful.spawn("farge --notify", false)
+            screenshot_daemon:pick_color()
         end
     }, awful.key {
         modifiers = {keys.mod, keys.ctrl},

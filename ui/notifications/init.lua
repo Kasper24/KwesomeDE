@@ -91,7 +91,16 @@ local function app_icon_widget(n)
 end
 
 local function icon_widget(n)
-    if n.font_icon == nil then
+    if n._private.color then
+        print(n._private.color)
+        return wibox.widget {
+            widget = widgets.background,
+            forced_width = dpi(40),
+            forced_height = dpi(40),
+            shape = helpers.ui.rrect(),
+            bg = n._private.color,
+        }
+    elseif n.font_icon == nil then
         return wibox.widget {
             widget = wibox.container.constraint,
             strategy = "max",

@@ -22,7 +22,7 @@ local function new()
     local app = app {
         title ="Screenshot",
         class = "Screenshot",
-        width = dpi(420),
+        width = dpi(560),
         height = dpi(280),
     }
     local stack = wibox.layout.stack()
