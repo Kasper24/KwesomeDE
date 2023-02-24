@@ -109,28 +109,26 @@ yay/paru -S awesome-git
 |-----------------------------------------|-----------------------------------------------------------|
 | networkmanager                          | Network notifcations, applet/wibar widget                 |
 | blueman                                 | Bluetooth notifcations, applet/wibar widget               |
-| pactl                                   | Audio notifcations, applet/wibar widget                   |
-| pipewire+pipewire-pulse/pulsaudio       | Used by pactl                                             |
+| pipewire-pulse/pulsaudio + pactl        | Audio notifcations, applet/wibar widget                   |
+| libgudev                                | Used for USB notifications                                |
+| upower                                  | Battery notifications/widgets                             |
 | lm_sensors                              | CPU Temperature                                           |
-| inotify-tools                           | Daemons that monitor filesystem events                    |
+| brightnessctl                           | Brightness daemon and widget                              |
 | redshift                                | Blue light toggle                                         |
+| inotify-tools                           | Daemons that monitor filesystem events                    |
 | maim                                    | Screenshot widget                                         |
 | ffmpeg                                  | Record widget                                             |
 | farge                                   | Color picker keybind                                      |
-| upower                                  | Battery notifications/widgets                             |
 | picom                                   | Compositor widget/notifcations                            |
-| brightnessctl                           | Brightness daemon and widget                              |
 | playerctl                               | Media daemon and controls                                 |
-| fortune-mod                             | Fortune daemon (right now that daemon is unused)          |
+| fortune-mod                             | Fortune daemon (unused, but might change)                 |
 | imagemagick                             | Used to generate colors from wallpapers                   |
-| libgudev                                | Used for USB notifications                                |
 | neofetch                                | Used to display system info                               |
 
 **Arch Linux (and other Arch-based distributions)**
    ```sh
-      pacman -Sy kitty networkmanager blueman pipewire pipewire-pulse lm_sensors inotify-tools
-      redshift maim ffmpeg upower brightnessctl playerctl fortune-mod
-      imagemagick libgudev neofetch --needed
+      pacman -Sy networkmanager blueman pipewire pipewire-pulse libgudev upower lm_sensors brightnessctl
+      redshift inotify-tools  maim ffmpeg playerctl fortune-mod imagemagick neofetch --needed
    ```
    Assuming your **AUR Helper** is [yay](https://github.com/Jguer/yay) or [paru](https://github.com/Morganamilo/paru).
    ```sh
