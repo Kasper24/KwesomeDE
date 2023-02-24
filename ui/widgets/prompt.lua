@@ -472,6 +472,9 @@ local function new()
         wp.label_color = old_colorscheme_to_new_map[wp.label_color]
         wp.text_color = old_colorscheme_to_new_map[wp.text_color]
         wp.cursor_color = old_colorscheme_to_new_map[wp.cursor_color]
+        if wp.icon and wp.icon.color then
+            wp.icon.color = old_colorscheme_to_new_map[wp.icon.color]
+        end
         generate_markup(widget)
     end)
 
