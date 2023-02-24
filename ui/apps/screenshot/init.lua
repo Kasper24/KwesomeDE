@@ -31,51 +31,6 @@ local function new()
     stack:add(require(path .. ".settings")(stack))
     app:set_widget(stack)
 
-
-    ruled.client.connect_signal("request::rules", function()
-        ruled.client.append_rule {
-            rule = {
-                class = "awesome-app-screenshot"
-            },
-            properties = {
-                floating = true,
-                width = dpi(420),
-                height = 1,
-                placement = awful.placement.centered
-            },
-            callback = function(c)
-                ret._private.client = c
-
-                c:connect_signal("unmanage", function()
-                    ret._private.visible = false
-                    ret._private.client = nil
-                end)
-
-                c.custom_titlebar = true
-                c.can_resize = false
-                c.can_tile = false
-
-                -- Settings placement in properties doesn't work
-                c.x = (c.screen.geometry.width / 2) - (dpi(550) / 2)
-                c.y = (c.screen.geometry.height / 2) - (dpi(280) / 2)
-
-                local titlebar = widgets.titlebar(c, {
-                    position = "top",
-                    size = dpi(280),
-                    bg = beautiful.colors.background
-                })
-                titlebar:setup{widget = stack}
-
-                capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
-                    titlebar:set_bg(beautiful.colors.background)
-                end)
-
-                ret._private.visible = true
-                ret:emit_signal("visibility", true)
-            end
-        }
-    end)
-
     screenshot_daemon:connect_signal("started", function()
         app:set_hidden(true)
     end)
