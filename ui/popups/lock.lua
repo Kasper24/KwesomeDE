@@ -16,6 +16,8 @@ local os = os
 local lock = {}
 local instance = nil
 
+local accent_color = beautiful.colors.random_accent_color()
+
 function lock:show()
     self.widget.screen = awful.screen.focused()
     self.widget.visible = true
@@ -90,13 +92,15 @@ local function widget(self)
         widget = widgets.prompt,
         forced_width = dpi(450),
         forced_height = dpi(50),
-        on_normal_bg = beautiful.colors.background,
-        on_hover_bg = beautiful.colors.background,
-        on_press_bg = beautiful.colors.background,
         reset_on_stop = true,
         always_on = true,
         obscure = true,
-        icon = beautiful.icons.lock
+        icon = {
+            font = beautiful.icons.lock.font,
+            size = beautiful.icons.lock.size,
+            icon = beautiful.icons.lock.icon,
+            color = accent_color
+        } ,
     }
 
     self._private.prompt:connect_signal("key::press", function(self, mod, key, text)
@@ -108,7 +112,7 @@ local function widget(self)
     local toggle_password_obscure_button = wibox.widget {
         widget = widgets.checkbox,
         state = true,
-        handle_active_color = beautiful.colors.on_background,
+        handle_active_color = accent_color,
         on_turn_on = function()
             self._private.prompt:set_obscure(true)
         end,
@@ -128,7 +132,10 @@ local function widget(self)
 
     local shutdown_button = wibox.widget {
         widget = widgets.button.text.normal,
+        forced_width = dpi(100),
+        forced_height = dpi(100),
         icon = beautiful.icons.poweroff,
+        text_normal_bg = accent_color,
         size = 40,
         on_release = function()
             system_daemon:shutdown()
@@ -137,7 +144,10 @@ local function widget(self)
 
     local restart_button = wibox.widget {
         widget = widgets.button.text.normal,
+        forced_width = dpi(100),
+        forced_height = dpi(100),
         icon = beautiful.icons.reboot,
+        text_normal_bg = accent_color,
         size = 40,
         on_release = function()
             system_daemon:restart()
@@ -146,7 +156,10 @@ local function widget(self)
 
     local suspend_button = wibox.widget {
         widget = widgets.button.text.normal,
+        forced_width = dpi(100),
+        forced_height = dpi(100),
         icon = beautiful.icons.suspend,
+        text_normal_bg = accent_color,
         size = 40,
         on_release = function()
             system_daemon:suspend()
@@ -155,7 +168,10 @@ local function widget(self)
 
     local exit_button = wibox.widget {
         widget = widgets.button.text.normal,
+        forced_width = dpi(100),
+        forced_height = dpi(100),
         icon = beautiful.icons.exit,
+        text_normal_bg = accent_color,
         size = 40,
         on_release = function()
             system_daemon:exit()
