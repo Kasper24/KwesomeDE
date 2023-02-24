@@ -299,7 +299,6 @@ function tasklist:add_pinned_app(args)
         }
         table.insert(self._private.pinned_apps, pinned_app)
         helpers.settings["favorite-apps"] = self._private.pinned_apps
-        print(helpers.table.dump(args))
 
         on_pinned_app_added(self, pinned_app)
     elseif args.client then
