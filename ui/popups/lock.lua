@@ -224,6 +224,10 @@ local function new()
         ret:hide()
     end)
 
+    system_daemon:connect_signal("wrong_password", function()
+        ret._private.prompt:set_text("")
+    end)
+
     return ret
 end
 
