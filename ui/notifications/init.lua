@@ -334,15 +334,6 @@ end
 
 ruled.notification.connect_signal("request::rules", function()
     ruled.notification.append_rule {
-        rule = {},
-        properties = {
-            screen = awful.screen.preferred,
-            position = "top_right",
-            implicit_timeout = 5,
-            resident = true
-        }
-    }
-    ruled.notification.append_rule {
         rule = {
             app_name = "networkmanager-dmenu"
         },
