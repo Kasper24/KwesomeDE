@@ -15,18 +15,7 @@ local capi = {
 
 local instance = nil
 
-local function fake_widget(image)
-    return wibox.widget {
-        widget = wibox.widget.imagebox,
-        forced_width = dpi(800),
-        forced_height = dpi(300),
-        image = image
-    }
-end
-
 local function new()
-    local app_on_accent_color = beautiful.colors.random_accent_color()
-
     local app_launcher = bling.widget.app_launcher {
         bg = beautiful.colors.background,
         widget_template = wibox.widget {
@@ -84,7 +73,6 @@ local function new()
             local font_icon = tasklist_daemon:get_font_icon(app.id:gsub(".desktop", ""),
                 app.name,
                 app.startup_wm_class,
-                app.icon,
                 app.icon_name
             )
 
@@ -92,7 +80,7 @@ local function new()
                 widgets.menu.button {
                     icon = font_icon,
                     text = app.name,
-                    on_press = function()
+                    on_press = function(self)
                         app:spawn()
                     end
                 },
@@ -199,6 +187,17 @@ local function new()
         animation.easing = helpers.animation.easing.inExpo
         animation:set(1)
     end
+
+    local pinned_apps = {}
+    tasklist_daemon:connect_signal("pinned_app::added", function(self, pinned_app)
+        table.insert(pinned_apps, pinned_app.desktop_app_info_id)
+        app_launcher:set_favorites(pinned_apps)
+    end)
+
+    tasklist_daemon:connect_signal("pinned_app::removed", function(self, pinned_app)
+        helpers.table.remove_value(pinned_apps, pinned_app.desktop_app_info_id)
+        app_launcher:set_favorites(pinned_apps)
+    end)
 
     capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
         app_launcher._private.widget.widget.bg = old_colorscheme_to_new_map[beautiful.colors.background]
