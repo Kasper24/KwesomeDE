@@ -403,13 +403,6 @@ local function new()
         end
     end)
 
-    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
-        for _, client in ipairs(capi.client.get()) do
-            client.font_icon = ret:get_font_icon(client.class, client.name)
-            client.domiant_color = ret:get_dominant_color(client)
-        end
-    end)
-
     return ret
 end
 

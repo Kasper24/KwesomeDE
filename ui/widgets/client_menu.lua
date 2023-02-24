@@ -24,10 +24,6 @@ local function client_checkbox_button(client, property, text, on_press)
         end
     }
 
-    client:connect_signal("property::font_icon", function(client)
-        button:set_handle_active_color(client.font_icon.color)
-    end)
-
     client:connect_signal("property::" .. property, function()
         if client[property] then
             button:turn_on()
@@ -112,11 +108,6 @@ local function new(client)
             menu:add(mwidget.separator(), 4 + index)
         end
     end
-
-    client:connect_signal("property::font_icon", function(client)
-        client_icon_button:set_icon(client.font_icon)
-        pin_to_taskbar_button:set_handle_active_color(client.font_icon.color)
-    end)
 
     -- At the time this funciton runs client.custom_titlebar is still nil
     -- so check if that property change and if so remove the titlebar toggle button
