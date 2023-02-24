@@ -736,109 +736,6 @@ local function email_page(on_next_pressed, on_previous_pressed)
     }
 end
 
-local function password_page(on_next_pressed, on_previous_pressed)
-    local icon = wibox.widget {
-        widget = widgets.text,
-        halign = "center",
-        size = 120,
-        icon = beautiful.icons.lock,
-        size = 120
-    }
-
-    local title = wibox.widget {
-        widget = widgets.text,
-        halign = "center",
-        size = 30,
-        text = "Password"
-    }
-
-    local description = wibox.widget {
-        widget = widgets.text,
-        halign = "center",
-        size = 13,
-        text = "Please pick a password for the lock screen."
-    }
-
-    local password_prompt = wibox.widget {
-        widget = widgets.prompt,
-        forced_width = dpi(300),
-        forced_height = dpi(50),
-        reset_on_stop = false,
-        label = "Password: ",
-        icon_color = beautiful.colors.on_background,
-        icon = beautiful.icons.lock,
-        text_color = beautiful.colors.on_background,
-        text = system_daemon:get_password() or ""
-    }
-
-    local back_button = wibox.widget {
-        widget = widgets.button.text.normal,
-        text_normal_bg = accent_color,
-        size = 13,
-        text = "Back",
-        on_press = function()
-            on_previous_pressed()
-        end
-    }
-
-    local next_button = wibox.widget {
-        widget = widgets.button.text.normal,
-        text_normal_bg = accent_color,
-        size = 13,
-        text = "Next",
-        on_press = function()
-            system_daemon:set_password(password_prompt:get_text())
-            on_next_pressed()
-        end
-    }
-
-    return wibox.widget {
-        widget = wibox.container.margin,
-        margins = dpi(15),
-        {
-            layout = wibox.layout.align.vertical,
-            {
-                layout = wibox.layout.fixed.vertical,
-                spacing = dpi(20),
-                icon,
-                title,
-                description,
-                {
-                    widget = wibox.container.place,
-                    halign = "center",
-                    valign = "center",
-                    password_prompt
-                }
-            },
-            nil,
-            {
-                layout = wibox.layout.align.horizontal,
-                expand = "outside",
-                back_button,
-                {
-                    widget = wibox.container.margin,
-                    margins = {
-                        left = dpi(20),
-                        right = dpi(20)
-                    },
-                    {
-                        layout = wibox.layout.fixed.horizontal,
-                        spacing = dpi(30),
-                        indicator(false),
-                        indicator(true),
-                        indicator(false),
-                        indicator(false),
-                        indicator(false),
-                        indicator(false),
-                        indicator(false)
-                    }
-                },
-                next_button
-            }
-        }
-    }
-end
-
 local function welcome_page(on_next_pressed, on_previous_pressed)
     local icon = wibox.widget {
         widget = wibox.widget.imagebox,
@@ -926,7 +823,6 @@ end
 local function widget(self)
     local stack = {}
     local _welcome_page = {}
-    local _password_page = {}
     local _email_page = {}
     local _github_page = {}
     local _gitlab_page = {}
@@ -934,21 +830,15 @@ local function widget(self)
     local _last_page = {}
 
     _welcome_page = welcome_page(function()
-        stack:raise_widget(_password_page)
-    end, function()
-        self:hide()
-    end)
-
-    _password_page = password_page(function()
         stack:raise_widget(_email_page)
     end, function()
-        stack:raise_widget(_welcome_page)
+        self:hide()
     end)
 
     _email_page = email_page(function()
         stack:raise_widget(_github_page)
     end, function()
-        stack:raise_widget(_password_page)
+        stack:raise_widget(_welcome_page)
     end)
 
     _github_page = github_page(function()
@@ -977,7 +867,6 @@ local function widget(self)
         layout = wibox.layout.stack,
         top_only = true,
         _welcome_page,
-        _password_page,
         _email_page,
         _github_page,
         _gitlab_page,

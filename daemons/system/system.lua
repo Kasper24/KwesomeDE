@@ -8,9 +8,14 @@ local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local notification_daemon = require("daemons.system.notifications")
 local helpers = require("helpers")
+local filesystem = require("external.filesystem")
 local capi = {
     awesome = awesome
 }
+
+local PATH = filesystem.filesystem.get_awesome_config_dir("external/pam")
+package.cpath = package.cpath .. ";" .. PATH  .. "?.so;"
+local pam = require('liblua_pam')
 
 local system = {}
 local instance = nil
@@ -33,15 +38,6 @@ function system:is_new_version()
     end
 
     return false
-end
-
-function system:set_password(password)
-    self._private.password = password
-    helpers.settings["password"] = password
-end
-
-function system:get_password()
-    return self._private.password
 end
 
 function system:shutdown()
@@ -67,17 +63,12 @@ function system:lock()
 end
 
 function system:unlock(password)
-    if self._private.password == nil then
+    local pam_auth = pam:auth_current_user(password)
+    if pam_auth then
         notification_daemon:unblock_on_unlocked()
         self:emit_signal("unlock")
     else
-        local result = password == self._private.password
-        if result == true then
-            notification_daemon:unblock_on_unlocked()
-            self:emit_signal("unlock")
-        else
-            self:emit_signal("wrong_password")
-        end
+        self:emit_signal("wrong_password")
     end
 end
 
@@ -86,7 +77,6 @@ local function new()
     gtable.crush(ret, system, true)
 
     ret._private = {}
-    ret._private.password = helpers.settings["password"]
 
     gtimer.poller {
         timeout = 60,
