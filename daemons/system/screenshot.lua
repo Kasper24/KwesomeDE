@@ -2,6 +2,10 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
+local lgi = require('lgi')
+local Gtk = lgi.require('Gtk', '3.0')
+local Gdk = lgi.require('Gdk', '3.0')
+local GdkPixbuf = lgi.GdkPixbuf
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
@@ -152,11 +156,19 @@ function screenshot:screenshot()
     end)
 end
 
+function screenshot:copy_screenshot(path)
+    local image = GdkPixbuf.Pixbuf.new_from_file(path)
+    self._private.clipboard:set_image(image)
+    self._private.clipboard:store()
+end
+
 local function new()
     local ret = gobject {}
     gtable.crush(ret, screenshot, true)
 
     ret._private = {}
+    ret._private.clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
+
     ret._private.screenshot_method = "selection"
     ret._private.delay = helpers.settings["screenshot-delay"]
     ret._private.show_cursor = helpers.settings["screenshot-show-cursor"]

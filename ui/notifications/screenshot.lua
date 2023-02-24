@@ -39,7 +39,7 @@ screenshot_daemon:connect_signal("ended", function(self, screenshot_method, scre
     end)
 
     copy:connect_signal("invoked", function()
-        awful.spawn("xclip -selection clipboard -t image/png -i " .. screenshot_directory .. file_name, false)
+        screenshot_daemon:copy_screenshot(folder .. file_name)
     end)
 
     naughty.notification {
