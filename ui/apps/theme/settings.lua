@@ -148,7 +148,7 @@ local function theme_checkbox(key)
     }
 end
 
-local function theme_slider(text, initial_value, maximum, round, on_changed)
+local function theme_slider(text, initial_value, maximum, round, on_changed, minimum)
     local name = wibox.widget {
         widget = widgets.text,
         forced_width = dpi(190),
@@ -160,6 +160,7 @@ local function theme_slider(text, initial_value, maximum, round, on_changed)
         slider_width = dpi(410),
         round = round,
         value = initial_value,
+        minimum = minimum or 0,
         maximum = maximum,
         bar_active_color = beautiful.icons.spraycan.color,
     }
@@ -232,7 +233,7 @@ local function new(layout)
         end),
         theme_slider("UI Animations FPS: ", theme_daemon:get_ui_animations_framerate(), 360, true, function(value)
             theme_daemon:set_ui_animations_framerate(value)
-        end),
+        end, 1),
         theme_checkbox("animations"),
         separator(),
         picom_slider("active-opacity", 1, false, 0.1),
