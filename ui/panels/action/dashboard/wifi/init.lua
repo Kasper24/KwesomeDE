@@ -31,6 +31,7 @@ local function access_point_widget(layout, access_point)
     local lock_icon = wibox.widget {
         widget = widgets.text,
         icon = beautiful.icons.lock,
+        color = beautiful.icons.network.wifi_off.color,
         size = 20
     }
 
