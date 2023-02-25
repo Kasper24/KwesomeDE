@@ -53,8 +53,9 @@ local function tag_sub_menu()
 
     for _, tag in ipairs(capi.root.tags()) do
         local button = widgets.menu.checkbox_button {
+            icon = tag.font_icon,
             text = tag.name,
-            handle_active_color = beautiful.icons.tag.color,
+            handle_active_color = tag.font_icon.color,
             on_press = function()
                 tag:view_only()
             end
