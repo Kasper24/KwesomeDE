@@ -9,10 +9,68 @@ local tag_preview = require("ui.popups.tag_preview")
 local beautiful = require("beautiful")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
+local ipairs = ipairs
+local capi = {
+    client = client
+}
 
 local taglist = {
     mt = {}
 }
+
+local function tag_menu(tag)
+    local menu = widgets.menu {
+        widgets.menu.button {
+            icon = tag.font_icon,
+            text = tag.index,
+            on_press = function()
+                tag:view_only()
+            end
+        },
+        widgets.menu.button {
+            text = "Toggle tag",
+            on_press = function()
+                awful.tag.viewtoggle(tag)
+            end
+        },
+        widgets.menu.button {
+            text = "Move focused client",
+            on_press = function()
+                local focused_client = capi.client.focus
+                if focused_client then
+                    focused_client:move_to_tag(tag)
+                end
+            end
+        },
+        widgets.menu.button {
+            text = "Toggle focused client",
+            on_press = function()
+                local focused_client = capi.client.focus
+                if focused_client then
+                    focused_client:toggle_tag(tag)
+                end
+            end
+        },
+        widgets.menu.button {
+            text = "Move all clients",
+            on_press = function()
+                for _, client in ipairs(capi.client.get()) do
+                    client:move_to_tag(tag)
+                end
+            end
+        },
+        widgets.menu.button {
+            text = "Toggle all clients",
+            on_press = function()
+                for _, client in ipairs(capi.client.get()) do
+                    client:toggle_tag(tag)
+                end
+            end
+        },
+    }
+
+    return menu
+end
 
 local function update_taglist(self, tag)
     if #tag:clients() == 0 then
@@ -29,10 +87,12 @@ local function update_taglist(self, tag)
 end
 
 local function tag_widget(self, tag, index)
+    local menu = tag_menu(tag)
+
     local button = wibox.widget {
         widget = widgets.button.text.state,
         id = "button",
-        icon = tag.icon,
+        icon = tag.font_icon,
         on_hover = function()
             if #tag:clients() > 0 then
                 tag_preview:show(tag, {
@@ -48,17 +108,18 @@ local function tag_widget(self, tag, index)
         on_leave = function()
             tag_preview:hide()
         end,
-        on_release = function(self, lx, ly, button, mods, find_widgets_result)
-            if button == 1 then
-                helpers.misc.tag_back_and_forth(tag.index)
-                tag_preview:hide()
-            elseif button == 3 then
-                awful.tag.viewtoggle(tag)
-            elseif button == 4 then
-                awful.tag.viewnext(tag.screen)
-            elseif button == 5 then
-                awful.tag.viewprev(tag.screen)
-            end
+        on_release = function()
+            helpers.misc.tag_back_and_forth(tag.index)
+            tag_preview:hide()
+        end,
+        on_secondary_release = function()
+            menu:toggle()
+        end,
+        on_scroll_up = function()
+            awful.tag.viewprev(tag.screen)
+        end,
+        on_scroll_down = function()
+            awful.tag.viewnext(tag.screen)
         end
     }
 
@@ -71,7 +132,7 @@ local function tag_widget(self, tag, index)
             id = "background",
             forced_width = dpi(5),
             shape = helpers.ui.rrect(),
-            bg = tag.icon.color
+            bg = tag.font_icon.color
         }
     }
 
