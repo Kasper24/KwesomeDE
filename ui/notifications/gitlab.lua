@@ -23,7 +23,7 @@ gitlab_daemon:connect_signal("new_mr", function(self, mr)
         app_font_icon = beautiful.icons.gitlab,
         app_icon = icons,
         app_name = "Gitlab",
-        font_icon = beautiful.icons.envelope,
+        font_icon = beautiful.icons.code_branch,
         icon = icons,
         title = mr.title,
         text = mr.description,

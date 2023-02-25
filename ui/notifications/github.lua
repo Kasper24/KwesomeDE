@@ -45,7 +45,7 @@ github_daemon:connect_signal("new_pr", function(self, pr)
         app_font_icon = beautiful.icons.github,
         app_icon = icons,
         app_name = "Github",
-        font_icon = beautiful.icons.envelope,
+        font_icon = beautiful.icons.code_branch,
         icon = icons,
         title = pr.title,
         text = pr.body,
