@@ -1,4 +1,5 @@
 local awful = require("awful")
+local ruled = require("ruled")
 local gtimer = require("gears.timer")
 local math = math
 local os = os
@@ -28,7 +29,7 @@ function _misc.tag_back_and_forth(tag_index)
         end
 
         local urgent_clients = function(c)
-            return awful.rules.match(c, {
+            return ruled.client.match(c, {
                 urgent = true,
                 first_tag = tag
             })
