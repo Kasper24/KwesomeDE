@@ -114,6 +114,7 @@ local function tag_widget(self, tag, index)
         end,
         on_secondary_release = function()
             menu:toggle()
+            tag_preview:hide()
         end,
         on_scroll_up = function()
             awful.tag.viewprev(tag.screen)
