@@ -371,7 +371,7 @@ function menu.checkbox_button(args)
         icon = wibox.widget {
             widget = twidget,
             size = args.icon.size * 0.5,
-            text = args.icon
+            icon = args.icon
         }
     elseif args.image ~= nil then
         icon = wibox.widget {
