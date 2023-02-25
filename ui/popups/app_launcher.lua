@@ -9,26 +9,26 @@ local tasklist_daemon = require("daemons.system.tasklist")
 local bling = require("external.bling")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
+local ipairs = ipairs
 local capi = {
     awesome = awesome
 }
 
 local instance = nil
 
-local function app(app)
-    local font_icon = tasklist_daemon:get_font_icon(app.id:gsub(".desktop", ""),
-        app.name,
-        app.exec,
-        app.startup_wm_class,
-        app.icon_name
-    )
-
+local function app_menu(app, font_icon)
     local menu = widgets.menu {
         widgets.menu.button {
             icon = font_icon,
             text = app.name,
             on_press = function(self)
-                app:spawn()
+                app:run()
+            end
+        },
+        widgets.menu.button {
+            text = "Run as Root",
+            on_press = function(self)
+                app:run_as_root()
             end
         },
         widgets.menu.checkbox_button {
@@ -60,6 +60,19 @@ local function app(app)
         })
     end
 
+    return menu
+end
+
+local function app(app, app_launcher)
+    local font_icon = tasklist_daemon:get_font_icon(app.id:gsub(".desktop", ""),
+        app.name,
+        app.exec,
+        app.startup_wm_class,
+        app.icon_name
+    )
+
+    local menu = app_menu(app, font_icon)
+
     local widget = wibox.widget {
         widget = widgets.button.elevated.state,
         id = "button",
@@ -69,6 +82,7 @@ local function app(app)
         halign = "center",
         text = app.name,
         on_secondary_press = function()
+            app:select()
             menu:toggle()
         end,
         child = {
@@ -98,12 +112,26 @@ local function app(app)
         }
     }
 
-    widget:connect_signal("selected", function()
+    widget:connect_signal("select", function()
+        menu:hide()
         widget:turn_on()
     end)
 
-    widget:connect_signal("unselected", function()
+    widget:connect_signal("unselect", function()
+        menu:hide()
         widget:turn_off()
+    end)
+
+    app_launcher:connect_signal("scroll", function()
+        menu:hide()
+    end)
+
+    app_launcher:connect_signal("page::forward", function()
+        menu:hide()
+    end)
+
+    app_launcher:connect_signal("page::backward", function()
+        menu:hide()
     end)
 
     return widget
