@@ -29,10 +29,10 @@
         "summary": "Password",
         "description": "The lockscreen password (not secured)"
     },
-    "favorite-apps": {
+    "pinned-apps": {
         "default": [],
-        "summary": "Favorite apps",
-        "description": "Your most loved apps"
+        "summary": "Pinned apps",
+        "description": "Pinned apps on the tasklist and app launcher"
     },
     "picom": {
         "default": true,

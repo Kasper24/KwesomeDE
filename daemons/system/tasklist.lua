@@ -299,7 +299,7 @@ function tasklist:add_pinned_app(args)
             desktop_app_info_id = args.id,
         }
         table.insert(self._private.pinned_apps, pinned_app)
-        helpers.settings["favorite-apps"] = self._private.pinned_apps
+        helpers.settings["pinned-apps"] = self._private.pinned_apps
 
         on_pinned_app_added(self, pinned_app)
     elseif args.client then
@@ -311,7 +311,7 @@ function tasklist:add_pinned_app(args)
                 exec = stdout
             }
             table.insert(self._private.pinned_apps, pinned_app)
-            helpers.settings["favorite-apps"] = self._private.pinned_apps
+            helpers.settings["pinned-apps"] = self._private.pinned_apps
             on_pinned_app_added(self, pinned_app)
         end)
     end
@@ -338,7 +338,7 @@ function tasklist:remove_pinned_app(args)
         end
     end
 
-    helpers.settings["favorite-apps"] = self._private.pinned_apps
+    helpers.settings["pinned-apps"] = self._private.pinned_apps
     update_positions(self)
 end
 
@@ -352,7 +352,7 @@ local function new()
 
     ret._private = {}
     ret._private.clients = {}
-    ret._private.pinned_apps = helpers.settings["favorite-apps"]
+    ret._private.pinned_apps = helpers.settings["pinned-apps"]
     ret._private.pinned_apps_with_userdata = {}
 
     capi.client.connect_signal("scanned", function()
