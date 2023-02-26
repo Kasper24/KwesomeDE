@@ -37,7 +37,7 @@ end
 
 function github:get_event_info(event)
     local action_string = event.type
-    local icon = "repo.svg"
+    local icon = beautiful.icons.github
     local link = "http://github.com/" .. event.repo.name
 
     if (event.type == "PullRequestEvent") then
@@ -57,6 +57,10 @@ function github:get_event_info(event)
         action_string = event.payload.action == "created" and "commented in issue" or event.payload.action ..
                             " a comment in"
         link = event.payload.issue.html_url
+        icon = beautiful.icons.message
+    elseif (event.type == "CommitCommentEvent") then
+        action_string =  "commented at commit"
+        link = event.payload.comment.html_url
         icon = beautiful.icons.message
     elseif (event.type == "WatchEvent") then
         action_string = "starred"
