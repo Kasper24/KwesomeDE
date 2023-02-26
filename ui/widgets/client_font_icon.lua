@@ -12,18 +12,11 @@ local client_font_icon = {
 
 function client_font_icon:set_client(client)
     self:set_icon(client.font_icon)
-    self:set_size(client.font_icon.size * self._private.scale)
-end
-
-function client_font_icon:set_scale(scale)
-    self._private.scale = scale
 end
 
 local function new()
     local widget = twidget()
     gtable.crush(widget, client_font_icon, true)
-
-    widget._private.scale = 1
 
     return widget
 end

@@ -19,7 +19,7 @@ capi.client.connect_signal("request::titlebars", function(client)
         widget = widgets.client_font_icon,
         halign = "center",
         client = client,
-        scale = 0.8,
+        scale = 0.7,
         color = client.font_icon.color
     }
 

@@ -20,7 +20,7 @@ function client_thumbnail:set_client(client)
     -- local preview = self:get_children_by_id("preview")[1]
 
     fake_preview:set_client(client)
-    fake_preview:set_size(client.font_icon.size * 2)
+    fake_preview:set_scale(2)
 
     -- Real previews disabled until I can stop it from hogging the RAM
 
