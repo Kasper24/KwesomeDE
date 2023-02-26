@@ -112,8 +112,15 @@ local function tag_widget(self, tag, index)
             helpers.misc.tag_back_and_forth(tag.index)
             tag_preview:hide()
         end,
-        on_secondary_release = function()
-            menu:toggle()
+        on_secondary_release = function(self)
+            menu:toggle{
+                wibox = awful.screen.focused().left_wibar,
+                widget = self,
+                offset = {
+                    x = dpi(70),
+                    y = dpi(70),
+                }
+            }
             tag_preview:hide()
         end,
         on_scroll_up = function()
