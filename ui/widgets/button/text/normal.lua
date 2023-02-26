@@ -19,12 +19,10 @@ local text_button_normal = {
 local properties = {"text_bg", "text_hover_bg", "text_press_bg"}
 
 local text_properties = {
-    "font_family", "font_weight", "font_stretch", "font_variant",
-    "scale", "size",
-    "bold", "italic", "underline", "strikethrough",
+    "font_family", "font_weight", "font_stretch", "font_variant", "bold", "italic",
     "color","underline_color", "strikethrough_color",
-    "letter_spacing", "gravity", "gravity_hint", "insert_hyphens", "text_transform", "line_height",
-    "text", "icon"
+    "letter_spacing", "gravity", "gravity_hint", "insert_hyphens", "text_transform", "line_height", "underline", "strikethrough",
+    "scale", "size", "text", "icon"
 }
 
 local function build_properties(prototype, prop_names)
