@@ -37,6 +37,7 @@ local BACKGROUND_PATH = filesystem.filesystem.get_cache_dir("") .. "wallpaper.pn
 local BLURRED_BACKGROUND_PATH = filesystem.filesystem.get_cache_dir("") .. "blurred_wallpaper.png"
 local GENERATED_TEMPLATES_PATH = filesystem.filesystem.get_cache_dir("templates")
 local WAL_CACHE_PATH = filesystem.filesystem.get_xdg_cache_home("wal")
+local RUN_AS_ROOT_SCRIPT_PATH = filesystem.filesystem.get_awesome_config_dir("scripts") .. "run-as-root.sh"
 
 local COLOR_PICKER_SCRIPT = [[ lua -e "local lgi = require('lgi')
 local Gtk = lgi.require('Gtk', '3.0')
@@ -396,14 +397,18 @@ local function generate_templates(self)
 
                     -- Backwards compatibility with wal/wpgtk
                     local file = filesystem.file.new_for_path(WAL_CACHE_PATH .. name)
-                    file:write(output)
-
-                    -- Save to addiontal location specified in the template file
-                    for _, path in ipairs(copy_to) do
-                        path = path:gsub("~", os.getenv("HOME"))
-                        local file = filesystem.file.new_for_path(path)
-                        file:write(output)
-                    end
+                    file:write(output, function()
+                        -- Save to addiontal location specified in the template file
+                        for _, path in ipairs(copy_to) do
+                            path = path:gsub("~", os.getenv("HOME"))
+                            if path:match(os.getenv("HOME")) then
+                                local file = filesystem.file.new_for_path(path)
+                                file:write(output)
+                            else
+                                awful.spawn.with_shell(RUN_AS_ROOT_SCRIPT_PATH .. " 'cp -r " .. WAL_CACHE_PATH .. name .. " " .. path.. "'")
+                            end
+                        end
+                    end)
                 end
             end)
         end
