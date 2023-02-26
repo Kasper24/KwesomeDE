@@ -397,6 +397,12 @@ local function new()
         end
     end)
 
+    capi.client.connect_signal("property::class", function(client)
+        if client.managed then
+            on_client_added(ret, client)
+        end
+    end)
+
     capi.client.connect_signal("swapped", function(client, other_client, is_source)
         if client.managed then
             on_client_updated(ret)
