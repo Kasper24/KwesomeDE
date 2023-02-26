@@ -1,3 +1,4 @@
+local gmath = require("gears.math")
 local color_libary = require("external.color")
 local tonumber = tonumber
 local string = string
@@ -10,11 +11,6 @@ local random = math.random
 local format = string.format
 
 local _color = {}
-
-local function round(x, p)
-    local power = 10 ^ (p or 0)
-    return (x * power + 0.5 - (x * power + 0.5) % 1) / power
-end
 
 -- Returns a value that is clipped to interval edges if it falls outside the interval
 local function clip(num, min_num, max_num)
@@ -179,9 +175,9 @@ function _color.pywal_blend(color1, color2)
     }
 
     return color_libary.color{
-        r = round(0.5 * color1.r + 0.5 * color2.r),
-        g = round(0.5 * color1.g + 0.5 * color2.g),
-        b = round(0.5 * color1.b + 0.5 * color2.b)
+        r = gmath.round(0.5 * color1.r + 0.5 * color2.r),
+        g = gmath.round(0.5 * color1.g + 0.5 * color2.g),
+        b = gmath.round(0.5 * color1.b + 0.5 * color2.b)
     }.hex
 end
 
@@ -213,9 +209,9 @@ function _color.pywal_lighten(color, amount)
         hex = color
     }
 
-    color.r = round(color.r + (255 - color.r) * amount)
-    color.g = round(color.g + (255 - color.g) * amount)
-    color.b = round(color.b + (255 - color.b) * amount)
+    color.r = gmath.round(color.r + (255 - color.r) * amount)
+    color.g = gmath.round(color.g + (255 - color.g) * amount)
+    color.b = gmath.round(color.b + (255 - color.b) * amount)
 
     return color.hex
 end
@@ -225,9 +221,9 @@ function _color.pywal_darken(color, amount)
         hex = color
     }
 
-    color.r = round(color.r * (1 - amount))
-    color.g = round(color.g * (1 - amount))
-    color.b = round(color.b * (1 - amount))
+    color.r = gmath.round(color.r * (1 - amount))
+    color.g = gmath.round(color.g * (1 - amount))
+    color.b = gmath.round(color.b * (1 - amount))
 
     return color.hex
 end

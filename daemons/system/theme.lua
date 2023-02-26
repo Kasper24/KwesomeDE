@@ -2,6 +2,7 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
+local unpack = unpack or table.unpack -- luacheck: globals unpack (compatibility with Lua 5.1)
 local Gio = require("lgi").Gio
 local awful = require("awful")
 local gobject = require("gears.object")
@@ -69,18 +70,18 @@ local function generate_colorscheme(self, wallpaper, reset, light)
     local color_count = 16
 
     local function imagemagick()
-        local colors = {}
+        local raw_colors = {}
         local cmd = string.format("magick %s -resize 25%% -colors %d -unique-colors txt:-", wallpaper, color_count)
         awful.spawn.easy_async_with_shell(cmd, function(stdout)
             for line in stdout:gmatch("[^\r\n]+") do
                 local hex = line:match("#(.*) s")
                 if hex ~= nil then
                     hex = "#" .. string.sub(hex, 1, 6)
-                    table.insert(colors, hex)
+                    table.insert(raw_colors, hex)
                 end
             end
 
-            if #colors < 16 then
+            if #raw_colors < 16 then
                 if color_count < 37 then
                     print("Imagemagick couldn't generate a palette. Trying a larger palette size " .. color_count)
                     color_count = color_count + 1
@@ -93,47 +94,37 @@ local function generate_colorscheme(self, wallpaper, reset, light)
                 end
             end
 
-            for index = 2, 9 do
-                colors[index] = colors[index + 7]
-            end
-
-            for index = 10, 15 do
-                colors[index] = colors[index - 8]
-            end
-
+            local colors = {unpack(raw_colors, 1, 1), unpack(raw_colors, 9, 16), unpack(raw_colors, 9, #raw_colors-1)}
             if light == true then
-                local color1 = colors[1]
-                local color8 = colors[8]
-
                 for _, color in ipairs(colors) do
                     color = helpers.color.pywal_saturate_color(color, 0.5)
                 end
 
-                colors[1] = helpers.color.pywal_lighten(colors[16], 0.5)
-                colors[8] = color1
-                colors[9] = helpers.color.pywal_darken(colors[16], 0.3)
-                colors[16] = colors[8]
+                colors[1] = helpers.color.pywal_lighten(raw_colors[#raw_colors], 0.85)
+                colors[8] = raw_colors[1]
+                colors[9] = helpers.color.pywal_darken(raw_colors[#raw_colors], 0.4)
+                colors[16] = raw_colors[1]
             else
                 if string.sub(colors[1], 2, 2) ~= "0" then
                     colors[1] = helpers.color.pywal_darken(colors[1], 0.4)
                 end
                 colors[8] = helpers.color.pywal_blend(colors[8], "#EEEEEE")
                 colors[9] = helpers.color.pywal_darken(colors[8], 0.3)
-                colors[16] = colors[8]
+                colors[16] = helpers.color.pywal_blend(colors[16], "#EEEEEE")
             end
 
-            local added_sat = light == true and 0.5 or 0.3
-            local sign = light == true and -1 or 1
+            local added_sat = light and 0.5 or 0.3
+            local sign = light and -1 or 1
 
             for index = 10, 15 do
                 local color = color_libary.color {
                     hex = colors[index - 8]
                 }
-                colors[index] = helpers.color.pywal_alter_brightness(colors[index - 8], sign * color.l * 0.3, added_sat)
+                colors[index] = helpers.color.pywal_alter_brightness(colors[index - 8], (sign * color.l * 0.3) / 255, added_sat)
             end
 
             colors[9] = helpers.color.pywal_alter_brightness(colors[1], sign * 0.098039216)
-            colors[16] = helpers.color.pywal_alter_brightness(colors[8], sign * 0.098039216)
+            colors[16] = helpers.color.pywal_alter_brightness(colors[8], sign * 0.235294118)
 
             self:emit_signal("colorscheme::generated", colors)
             self:emit_signal("wallpaper::selected", wallpaper)
