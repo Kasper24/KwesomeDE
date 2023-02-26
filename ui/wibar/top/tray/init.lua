@@ -56,6 +56,7 @@ local function system_tray()
             forced_width = dpi(50),
             forced_height = dpi(50),
             icon = beautiful.icons.chevron.down,
+            text_normal_bg = beautiful.icons.envelope.color,
             on_turn_on = function()
                 system_tray:show()
             end,
@@ -71,6 +72,7 @@ local function network()
         widget = widgets.text,
         halign = "center",
         icon = beautiful.icons.network.wifi_off,
+        color = beautiful.icons.envelope.color,
         size = 17
     }
 
@@ -100,6 +102,7 @@ local function bluetooth()
         widget = widgets.text,
         halign = "center",
         icon = beautiful.icons.bluetooth.on,
+        color = beautiful.icons.envelope.color,
         size = 17
     }
 
@@ -119,6 +122,7 @@ local function volume()
         widget = widgets.text,
         halign = "center",
         icon = beautiful.icons.volume.normal,
+        color = beautiful.icons.envelope.color,
         size = 17
     }
 

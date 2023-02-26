@@ -17,7 +17,6 @@ local time = {
 }
 
 local function new()
-    local accent_color = beautiful.colors.random_accent_color()
     local clock = wibox.widget {
         widget = wibox.widget.textclock,
         format = "%d %b %H:%M",
@@ -26,13 +25,12 @@ local function new()
         font = beautiful.font_name .. dpi(14)
     }
 
-    clock.markup = helpers.ui.colorize_text(clock.text, accent_color)
+    clock.markup = helpers.ui.colorize_text(clock.text, beautiful.icons.envelope.color)
     clock:connect_signal("widget::redraw_needed", function()
-        clock.markup = helpers.ui.colorize_text(clock.text, accent_color)
+        clock.markup = helpers.ui.colorize_text(clock.text, beautiful.icons.envelope.color)
     end)
 
     capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
-        accent_color = old_colorscheme_to_new_map[accent_color]
         clock:emit_signal("widget::redraw_needed")
     end)
 

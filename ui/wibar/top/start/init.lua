@@ -77,8 +77,8 @@ local function draw()
 end
 
 local function new()
-    local on_color = beautiful.colors.random_accent_color()
-    local off_color = beautiful.colors.on_background
+    local on_color = beautiful.icons.envelope.color
+    local off_color = beautiful.icons.envelope.color
 
     local widget = wibox.widget {
         widget = wibox.widget.make_base_widget,
