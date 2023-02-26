@@ -93,7 +93,7 @@ capi.client.connect_signal("request::titlebars", function(client)
     local titlebar = widgets.titlebar(client, {
         position = "top",
         size = dpi(35),
-        bg = beautiful.colors.background,
+        bg = beautiful.colors.background_no_opacity,
     })
     titlebar:setup{
         layout = wibox.layout.align.horizontal,
@@ -184,6 +184,6 @@ capi.client.connect_signal("request::titlebars", function(client)
     }
 
     capi.awesome.connect_signal("colorscheme::changed", function()
-        titlebar:set_bg(beautiful.colors.background)
+        titlebar:set_bg(beautiful.colors.background_no_opacity)
     end)
 end)
