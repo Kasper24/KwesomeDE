@@ -19,7 +19,7 @@ local tasklist = {
     mt = {}
 }
 
-local function pinned_app_widget(pinned_app)
+local function pinned_app_menu(pinned_app)
     local menu = widgets.menu {
         widgets.menu.button {
             icon = pinned_app.font_icon,
@@ -34,6 +34,7 @@ local function pinned_app_widget(pinned_app)
                 pinned_app:run_as_root()
             end
         },
+        widgets.menu.separator(),
         widgets.menu.button {
             text = "Unpin App",
             on_press = function()
@@ -54,6 +55,12 @@ local function pinned_app_widget(pinned_app)
             end
         })
     end
+
+    return menu
+end
+
+local function pinned_app_widget(pinned_app)
+    local menu = pinned_app_menu(pinned_app)
 
     local widget = wibox.widget {
         widget = wibox.container.margin,
