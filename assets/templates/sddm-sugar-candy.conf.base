@@ -1,3 +1,4 @@
+user=kasper
 copy_to=/usr/share/sddm/themes/sugar-candy/theme.conf
 
 [General]

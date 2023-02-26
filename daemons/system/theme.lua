@@ -337,6 +337,7 @@ local function generate_templates(self)
             file:read(function(error, content)
                 if error == nil then
                     local lines = {}
+                    local users = {}
                     local copy_to = {}
 
                     if content ~= nil then
@@ -348,6 +349,11 @@ local function generate_templates(self)
                                 line = line:gsub("}}", "}")
                             end
 
+                            if line:match("user=") then
+                                local user = line:gsub("user=", "")
+                                table.insert(users, user)
+                                line = ""
+                            end
                             if line:match("copy_to=") then
                                 local path = line:gsub("copy_to=", "")
                                 table.insert(copy_to, path)
@@ -384,6 +390,17 @@ local function generate_templates(self)
 
                             table.insert(lines, line)
                         end
+                    end
+
+                    local same_user = false
+                    for _, user in ipairs(users) do
+                        if user == os.getenv("USER") then
+                            same_user = true
+                        end
+                    end
+
+                    if same_user == false then
+                        return
                     end
 
                     -- Store the output as a string
