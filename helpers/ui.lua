@@ -1,5 +1,6 @@
 local gshape = require("gears.shape")
 local gmatrix = require("gears.matrix")
+local beautiful = require("beautiful")
 local ipairs = ipairs
 
 local _ui = {}
@@ -8,16 +9,16 @@ function _ui.colorize_text(text, color)
     return "<span foreground='" .. color .. "'>" .. text .. "</span>"
 end
 
-function _ui.rrect(radius)
+function _ui.rrect()
     return function(cr, width, height)
-        local radius = require("beautiful").border_radius
+        local radius = beautiful.border_radius
         gshape.rounded_rect(cr, width, height, radius)
     end
 end
 
 function _ui.prrect(tl, tr, br, bl)
     return function(cr, width, height)
-        local radius = require("beautiful").border_radius
+        local radius = beautiful.border_radius
         gshape.partially_rounded_rect(cr, width, height, tl, tr, br, bl, radius)
     end
 end
