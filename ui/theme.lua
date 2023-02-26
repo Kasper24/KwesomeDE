@@ -388,8 +388,7 @@ local function icons()
 end
 
 local function assets()
-    local assets_folder = filesystem.filesystem.get_awesome_config_dir("ui/assets")
-    theme.profile_icon = assets_folder .. "profile.png"
+    local assets_folder = filesystem.filesystem.get_awesome_config_dir("assets/images")
     theme.mountain_background = assets_folder .. "mountain.png"
     theme.overview = assets_folder .. "overview.png"
 

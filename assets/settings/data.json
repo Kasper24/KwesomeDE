@@ -131,7 +131,7 @@
     },
     "theme-colorschemes": {
         "default": {
-            "~/.config/awesome/ui/assets/wallpapers/52_by_gydw1n_dblxpwi.jpg": [
+            "~/.config/awesome/assets/wallpapers/52_by_gydw1n_dblxpwi.jpg": [
                 "#010610",
                 "#2C5F9A",
                 "#2972E4",
@@ -149,7 +149,7 @@
                 "#A2CEFF",
                 "#D3EFF8"
             ],
-            "~/.config/awesome/ui/assets/wallpapers/mysterious.jpg": [
+            "~/.config/awesome/assets/wallpapers/mysterious.jpg": [
                 "#05142D",
                 "#78899F",
                 "#8A98AC",
@@ -172,12 +172,12 @@
         "description": "All the generated colorschemes"
     },
     "theme-active-colorscheme": {
-        "default": "~/.config/awesome/ui/assets/wallpapers/mysterious.jpg",
+        "default": "~/.config/awesome/assets/wallpapers/mysterious.jpg",
         "summary": "Active colorscheme",
         "description": "The active colorscheme"
     },
     "theme-active-wallpaper": {
-        "default": "~/.config/awesome/ui/assets/wallpapers/mysterious.jpg",
+        "default": "~/.config/awesome/assets/wallpapers/mysterious.jpg",
         "summary": "Active wallpaper",
         "description": "The active wallpaper"
     },

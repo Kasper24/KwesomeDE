@@ -29,16 +29,16 @@ local capi = {
 local theme = {}
 local instance = nil
 
-local WALLPAPERS_PATH = filesystem.filesystem.get_awesome_config_dir("ui/assets/wallpapers")
-local GTK_THEME_PATH = filesystem.filesystem.get_awesome_config_dir("config/FlatColor")
+local WALLPAPERS_PATH = filesystem.filesystem.get_awesome_config_dir("assets/wallpapers")
+local GTK_THEME_PATH = filesystem.filesystem.get_awesome_config_dir("assets/FlatColor")
 local INSTALLED_GTK_THEME_PATH = os.getenv("HOME") .. "/.local/share/themes/"
-local BASE_TEMPLATES_PATH = filesystem.filesystem.get_awesome_config_dir("config/templates")
+local BASE_TEMPLATES_PATH = filesystem.filesystem.get_awesome_config_dir("assets/templates")
 local BACKGROUND_PATH = filesystem.filesystem.get_cache_dir("") .. "wallpaper.png"
 local BLURRED_BACKGROUND_PATH = filesystem.filesystem.get_cache_dir("") .. "blurred_wallpaper.png"
 local GENERATED_TEMPLATES_PATH = filesystem.filesystem.get_cache_dir("templates")
 local WAL_CACHE_PATH = filesystem.filesystem.get_xdg_cache_home("wal")
 local RUN_AS_ROOT_SCRIPT_PATH = filesystem.filesystem.get_awesome_config_dir("scripts") .. "run-as-root.sh"
-local DEFAULT_PROFILE_IMAGE_PATH = filesystem.filesystem.get_awesome_config_dir("ui/assets") .. "profile.png"
+local DEFAULT_PROFILE_IMAGE_PATH = filesystem.filesystem.get_awesome_config_dir("assets/images") .. "profile.png"
 
 local COLOR_PICKER_SCRIPT = [[ lua -e "local lgi = require('lgi')
 local Gtk = lgi.require('Gtk', '3.0')

@@ -15,7 +15,7 @@ local settings = {}
 local instance = nil
 
 local DATA_PATH = filesystem.filesystem.get_cache_dir("settings") .. "data.json"
-local DEFAULT_DATA_PATH = filesystem.filesystem.get_awesome_config_dir("config/settings") .. "data.json"
+local DEFAULT_DATA_PATH = filesystem.filesystem.get_awesome_config_dir("assets/settings") .. "data.json"
 
 local function is_settings_file_readable()
     local gfile = Gio.File.new_for_path(DATA_PATH)
