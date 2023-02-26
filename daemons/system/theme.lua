@@ -352,14 +352,15 @@ local function generate_templates(self)
                     end
 
                     local same_user = false
-                    for _, user in ipairs(users) do
-                        if user == os.getenv("USER") then
-                            same_user = true
+                    if #users > 0 then
+                        for _, user in ipairs(users) do
+                            if user == os.getenv("USER") then
+                                same_user = true
+                            end
                         end
-                    end
-
-                    if same_user == false then
-                        return
+                        if same_user == false then
+                            return
+                        end
                     end
 
                     -- Store the output as a string
