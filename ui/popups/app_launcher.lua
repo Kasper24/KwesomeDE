@@ -94,7 +94,7 @@ local function app(app, app_launcher)
                 valign = "center",
                 {
                     widget = widgets.text,
-                    size = 40,
+                    scale = 2,
                     icon = font_icon
                 },
             },
