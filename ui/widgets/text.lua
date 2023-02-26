@@ -2,8 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-local lgi = require("lgi")
-local Pango = lgi.Pango
 local gtable = require("gears.table")
 local gstring = require("gears.string")
 local wibox = require("wibox")
@@ -143,10 +141,10 @@ local function new(hot_reload)
 
     -- Setup default values
     wp.defaults = {}
+    wp.defaults.font = beautiful.font_name
     wp.defaults.font_weight = "normal"
     wp.defaults.font_stretch = "normal"
     wp.defaults.font_variant = "normal"
-    wp.defaults.font = beautiful.font_name
     wp.defaults.size = 20
     wp.defaults.scale = 1
     wp.defaults.color = beautiful.colors.on_background

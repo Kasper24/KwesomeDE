@@ -94,7 +94,6 @@ capi.client.connect_signal("request::titlebars", function(client)
         position = "top",
         size = dpi(35),
         bg = beautiful.colors.background,
-        font = beautiful.font_name .. 12
     })
     titlebar:setup{
         layout = wibox.layout.align.horizontal,
