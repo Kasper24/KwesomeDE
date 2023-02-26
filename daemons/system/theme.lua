@@ -38,6 +38,7 @@ local BLURRED_BACKGROUND_PATH = filesystem.filesystem.get_cache_dir("") .. "blur
 local GENERATED_TEMPLATES_PATH = filesystem.filesystem.get_cache_dir("templates")
 local WAL_CACHE_PATH = filesystem.filesystem.get_xdg_cache_home("wal")
 local RUN_AS_ROOT_SCRIPT_PATH = filesystem.filesystem.get_awesome_config_dir("scripts") .. "run-as-root.sh"
+local DEFAULT_PROFILE_IMAGE_PATH = filesystem.filesystem.get_awesome_config_dir("ui/assets") .. "profile.png"
 
 local COLOR_PICKER_SCRIPT = [[ lua -e "local lgi = require('lgi')
 local Gtk = lgi.require('Gtk', '3.0')
@@ -635,6 +636,26 @@ local function watch_wallpaper_changes(self)
     end)
 end
 
+local function setup_profile_image(self)
+    if self:get_profile_image(true) == "none" then
+        local profile_image = filesystem.file.new_for_path(os.getenv("HOME") .. "/.face")
+        profile_image:exists(function(error, exists)
+            if error == nil and exists == true then
+                self:set_profile_image(os.getenv("HOME") .. "/.face")
+            else
+                profile_image = filesystem.file.new_for_path("/var/lib/AccountService/icons/" .. os.getenv("USER"))
+                profile_image:exists(function(error, exists)
+                    if error == nil and exists == true then
+                        self:set_profile_image("/var/lib/AccountService/icons/" .. os.getenv("USER"))
+                    else
+                        self:set_profile_image(DEFAULT_PROFILE_IMAGE_PATH)
+                    end
+                end)
+            end
+        end)
+    end
+end
+
 --Colorschemes
 function theme:save_colorscheme()
     helpers.settings["theme-colorschemes"] = self._private.colorschemes
@@ -783,6 +804,25 @@ end
 
 function theme:get_selected_colorscheme_colors()
     return self:get_colorschemes()[self:get_selected_colorscheme()]
+end
+
+-- UI profile image
+function theme:set_profile_image(profile_image)
+    self._private.profile_image = profile_image
+    helpers.settings["theme-profile-image"] = profile_image
+    self:emit_signal("profile_image", profile_image)
+end
+
+function theme:get_profile_image(internal)
+    if self._private.profile_image == nil then
+        self._private.profile_image = helpers.settings["theme-profile-image"]
+    end
+    -- If it's none, return the default until the setup_profile_image function finishes running
+    if self._private.profile_image == "none" and (internal == false or internal == nil) then
+        return DEFAULT_PROFILE_IMAGE_PATH
+    end
+
+    return self._private.profile_image
 end
 
 -- UI dpi
@@ -943,6 +983,7 @@ local function new()
 
     scan_wallpapers(ret)
     watch_wallpaper_changes(ret)
+    setup_profile_image(ret)
 
     return ret
 end

@@ -15,6 +15,7 @@ local settings = {}
 local instance = nil
 
 local DATA_PATH = filesystem.filesystem.get_cache_dir("settings") .. "data.json"
+local DEFAULT_DATA_PATH = filesystem.filesystem.get_awesome_config_dir("config/settings") .. "data.json"
 
 local function is_settings_file_readable()
     local gfile = Gio.File.new_for_path(DATA_PATH)
@@ -34,11 +35,12 @@ local function new()
     local ret = gobject {}
     gtable.crush(ret, settings, true)
 
-    local path = DATA_PATH
-    if is_settings_file_readable() == false then
-        path = filesystem.filesystem.get_awesome_config_dir("config/settings") .. "data.json"
+    if is_settings_file_readable() == true then
+        ret.settings = json.decode(Gio.File.new_for_path(DATA_PATH):load_contents())
+    else
+        ret.settings = json.decode(Gio.File.new_for_path(DEFAULT_DATA_PATH):load_contents())
     end
-    ret.settings = json.decode(Gio.File.new_for_path(path):load_contents())
+    ret.default_settings = json.decode(Gio.File.new_for_path(DEFAULT_DATA_PATH):load_contents())
 
     local file = filesystem.file.new_for_path(DATA_PATH)
     ret.save_timer = gtimer
@@ -54,6 +56,10 @@ local function new()
 
     local mt = {
         __index = function(self, key)
+            if self.settings[key] == nil then
+                self.settings[key] = self.default_settings[key]
+            end
+
             local value = self.settings[key].value
             if value == nil then
                 value = self.settings[key].default
@@ -65,6 +71,10 @@ local function new()
             return value
         end,
         __newindex = function(self, key, value)
+            if self.settings[key] == nil then
+                self.settings[key] = self.default_settings[key]
+            end
+
             self.settings[key].value = value
             self.save_timer:again()
         end

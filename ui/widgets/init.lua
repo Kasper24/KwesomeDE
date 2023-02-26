@@ -21,6 +21,7 @@ return {
     playerctl = require(... .. ".playerctl"),
     piechart = require(... .. ".piechart"),
     popup = require(... .. ".popup"),
+    profile = require(... .. ".profile"),
     progressbar = require(... .. ".progressbar"),
     prompt = require(... .. ".prompt"),
     screen_mask = require(... .. ".screen_mask"),

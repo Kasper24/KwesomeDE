@@ -26,12 +26,11 @@ awful.screen.connect_for_each_screen(function(s)
     end
 
     local picture = wibox.widget {
-        widget = wibox.widget.imagebox,
+        widget = widgets.profile,
         halign = "center",
         clip_shape = helpers.ui.rrect(),
         forced_height = dpi(180),
         forced_width = dpi(180),
-        image = beautiful.profile_icon
     }
 
     local name = wibox.widget {

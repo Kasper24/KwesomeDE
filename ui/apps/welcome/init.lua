@@ -738,11 +738,10 @@ end
 
 local function welcome_page(on_next_pressed, on_previous_pressed)
     local icon = wibox.widget {
-        widget = wibox.widget.imagebox,
+        widget = widgets.profile,
         halign = "center",
         forced_height = dpi(140),
         forced_width = dpi(140),
-        image = beautiful.profile_icon
     }
 
     local title = wibox.widget {

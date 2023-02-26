@@ -201,6 +201,11 @@
         "summary": "UI border raidus",
         "description": "The border radius of AwesomeWM UI elements"
     },
+    "theme-profile-image": {
+        "default": "none",
+        "summary": "UI profile image",
+        "description": "The user profile image"
+    },
     "theme-dpi": {
         "default": 96,
         "summary": "UI DPI",
