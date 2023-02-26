@@ -10,6 +10,7 @@ local beautiful = require("beautiful")
 local tasklist_daemon = require("daemons.system.tasklist")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
+local ipairs = ipairs
 local capi = {
     client = client
 }
@@ -24,13 +25,19 @@ local function pinned_app_widget(pinned_app)
             icon = pinned_app.font_icon,
             text = pinned_app.class,
             on_press = function()
-                pinned_app:spawn()
+                pinned_app:run()
+            end
+        },
+        widgets.menu.button {
+            text = "Run as Root",
+            on_press = function()
+                pinned_app:run_as_root()
             end
         },
         widgets.menu.button {
             text = "Unpin App",
             on_press = function()
-                tasklist_daemon:remove_pinned_app{id = pinned_app.desktop_app_info_id, class = pinned_app.class}
+                tasklist_daemon:remove_pinned_app(pinned_app.class)
             end
         }
     }
@@ -164,6 +171,10 @@ local function client_widget(client)
         button,
         indicator
     }
+
+    client:connect_signal("property::font_icon", function()
+        button:get_children_by_id("button")[1]:set_icon(client.font_icon)
+    end)
 
     client:connect_signal("focus", function()
         button:get_children_by_id("button")[1]:turn_on()

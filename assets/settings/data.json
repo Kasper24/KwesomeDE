@@ -32,7 +32,12 @@
     "pinned-apps": {
         "default": [],
         "summary": "Pinned apps",
-        "description": "Pinned apps on the tasklist and app launcher"
+        "description": "Pinned apps on the tasklist"
+    },
+    "app-launcher-pinned-apps": {
+        "default": [],
+        "summary": "App launcher pinned apps",
+        "description": "Pinned apps on the app launcher"
     },
     "picom": {
         "default": true,

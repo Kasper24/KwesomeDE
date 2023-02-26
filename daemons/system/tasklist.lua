@@ -25,7 +25,7 @@ local capi = {
     client = client,
 }
 
-local AWESOME_SENSIBLE_TERMINAL_PATH = filesystem.filesystem.get_awesome_config_dir("scripts") .. "awesome-sensible-terminal"
+local RUN_AS_ROOT_SCRIPT_PATH = filesystem.filesystem.get_awesome_config_dir("scripts") .. "run-as-root.sh"
 
 local tasklist = {}
 local instance = nil
@@ -34,7 +34,7 @@ local function update_positions(self)
     local pos = 0
     local pos_without_pinned_apps = 0
     for _, pinned_app in ipairs(self._private.pinned_apps_with_userdata) do
-        if #helpers.client.find({class = pinned_app.class}) == 0 then
+        if  #helpers.client.find({class = pinned_app.class}) == 0 then
             self:emit_signal("pinned_app::pos", pinned_app, pos)
             pos = pos + 1
         else
@@ -81,32 +81,17 @@ end
 local function on_pinned_app_added(self, pinned_app)
     local cloned_pinned_app = gtable.clone(pinned_app, true)
     if cloned_pinned_app.desktop_app_info_id then
-        cloned_pinned_app.desktop_app_info = DesktopAppInfo.new(cloned_pinned_app.desktop_app_info_id)
-        cloned_pinned_app.actions = self:get_actions(cloned_pinned_app.desktop_app_info)
-        cloned_pinned_app.icon = self:get_icon(cloned_pinned_app.desktop_app_info) -- not used
-        cloned_pinned_app.class = cloned_pinned_app.desktop_app_info:get_string("Name")
-        cloned_pinned_app.terminal = cloned_pinned_app.desktop_app_info:get_string("Terminal") == "true" and true or false
-        cloned_pinned_app.exec = cloned_pinned_app.desktop_app_info:get_string("Exec")
-        cloned_pinned_app.font_icon = self:get_font_icon(
-            cloned_pinned_app.desktop_app_info_id:gsub(".desktop", ""),
-            cloned_pinned_app.desktop_app_info:get_string("Name"),
-            cloned_pinned_app.desktop_app_info:get_string("Icon"),
-            cloned_pinned_app.desktop_app_info:get_startup_wm_class()
-        )
+        local desktop_app_info = DesktopAppInfo.new(cloned_pinned_app.desktop_app_info_id)
+        cloned_pinned_app.desktop_app_info = desktop_app_info
+        cloned_pinned_app.actions = self:get_actions(desktop_app_info)
+    end
+    cloned_pinned_app.font_icon = self:get_font_icon(pinned_app.class, pinned_app.name)
 
-        function cloned_pinned_app:spawn()
-            if self.terminal == true then
-                awful.spawn.with_shell(AWESOME_SENSIBLE_TERMINAL_PATH .. " -e " .. self.exec)
-            else
-                awful.spawn(self.exec)
-            end
-        end
-    else
-        cloned_pinned_app.font_icon = self:get_font_icon(pinned_app.class, pinned_app.name)
-
-        function cloned_pinned_app:spawn()
-            awful.spawn(cloned_pinned_app.exec)
-        end
+    function cloned_pinned_app:run()
+        awful.spawn(cloned_pinned_app.exec)
+    end
+    function cloned_pinned_app:run_as_root()
+        awful.spawn.with_shell(RUN_AS_ROOT_SCRIPT_PATH .. " " .. cloned_pinned_app.exec)
     end
 
     self:emit_signal("pinned_app::added", cloned_pinned_app)
@@ -273,11 +258,9 @@ function tasklist:get_font_icon(...)
     return beautiful.icons.window
 end
 
-function tasklist:is_app_pinned(args)
+function tasklist:is_app_pinned(class)
     for _, pinned_app in ipairs(self._private.pinned_apps) do
-        if args.id and args.id == pinned_app.desktop_app_info_id then
-            return true
-        elseif args.class and args.class == pinned_app.class then
+        if class == pinned_app.class then
             return true
         end
     end
@@ -285,56 +268,28 @@ function tasklist:is_app_pinned(args)
     return false
 end
 
-function tasklist:toggle_app_pinned(args)
-    if self:is_app_pinned(args) then
-        self:remove_pinned_app(args)
-    else
-        self:add_pinned_app(args)
-    end
-end
-
-function tasklist:add_pinned_app(args)
-    if args.id then
+function tasklist:add_pinned_app(client)
+    awful.spawn.easy_async(string.format("ps -p %d -o args=", client.pid), function(stdout)
         local pinned_app = {
-            desktop_app_info_id = args.id,
+            desktop_app_info_id = client.desktop_app_info_id,
+            icon_name = client.icon_name,
+            class = client.class,
+            name = client.name,
+            exec = stdout
         }
         table.insert(self._private.pinned_apps, pinned_app)
         helpers.settings["pinned-apps"] = self._private.pinned_apps
-
         on_pinned_app_added(self, pinned_app)
-    elseif args.client then
-        awful.spawn.easy_async(string.format("ps -p %d -o args=", args.client.pid), function(stdout)
-            local pinned_app = {
-                icon_name = args.client.icon_name,
-                class = args.client.class,
-                name = args.client.name,
-                exec = stdout
-            }
-            table.insert(self._private.pinned_apps, pinned_app)
-            helpers.settings["pinned-apps"] = self._private.pinned_apps
-            on_pinned_app_added(self, pinned_app)
-        end)
-    end
+    end)
 end
 
-function tasklist:remove_pinned_app(args)
-    if args.id then
-        for index, pinned_app in ipairs(self._private.pinned_apps) do
-            if pinned_app.desktop_app_info_id == args.id then
-                self:emit_signal("pinned_app::removed", self._private.pinned_apps_with_userdata[index])
-                table.remove(self._private.pinned_apps_with_userdata, index)
-                table.remove(self._private.pinned_apps, index)
-                break
-            end
-        end
-    elseif args.class then
-        for index, pinned_app in ipairs(self._private.pinned_apps) do
-            if pinned_app.class == args.class then
-                self:emit_signal("pinned_app::removed", self._private.pinned_apps_with_userdata[index])
-                table.remove(self._private.pinned_apps_with_userdata, index)
-                table.remove(self._private.pinned_apps, index)
-                break
-            end
+function tasklist:remove_pinned_app(class)
+    for index, pinned_app in ipairs(self._private.pinned_apps) do
+        if pinned_app.class == class then
+            self:emit_signal("pinned_app::removed", self._private.pinned_apps_with_userdata[index])
+            table.remove(self._private.pinned_apps_with_userdata, index)
+            table.remove(self._private.pinned_apps, index)
+            break
         end
     end
 

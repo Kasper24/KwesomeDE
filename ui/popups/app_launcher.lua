@@ -6,10 +6,12 @@ local wibox = require("wibox")
 local beautiful = require("beautiful")
 local widgets = require("ui.widgets")
 local tasklist_daemon = require("daemons.system.tasklist")
+local app_launcher_daemon = require("daemons.system.app_launcher")
 local bling = require("external.bling")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local ipairs = ipairs
+local table = table
 local capi = {
     awesome = awesome
 }
@@ -32,16 +34,16 @@ local function app_menu(app, font_icon)
             end
         },
         widgets.menu.checkbox_button {
-            state = tasklist_daemon:is_app_pinned{id = app.id},
+            state = app_launcher_daemon:is_app_pinned(app.id),
             handle_active_color = font_icon.color,
             text = "Pin App",
             on_press = function(self)
-                if tasklist_daemon:is_app_pinned{id = app.id} then
+                if app_launcher_daemon:is_app_pinned(app.id) then
                     self:turn_off()
-                    tasklist_daemon:remove_pinned_app{id = app.id}
+                    app_launcher_daemon:remove_pinned_app(app.id)
                 else
                     self:turn_on()
-                    tasklist_daemon:add_pinned_app{id = app.id}
+                    app_launcher_daemon:add_pinned_app(app.id)
                 end
             end
         }
@@ -231,13 +233,13 @@ local function new()
     end
 
     local pinned_apps = {}
-    tasklist_daemon:connect_signal("pinned_app::added", function(self, pinned_app)
-        table.insert(pinned_apps, pinned_app.desktop_app_info_id)
+    app_launcher_daemon:connect_signal("pinned_app::added", function(self, pinned_app)
+        table.insert(pinned_apps, pinned_app.id)
         app_launcher:set_favorites(pinned_apps)
     end)
 
-    tasklist_daemon:connect_signal("pinned_app::removed", function(self, pinned_app)
-        helpers.table.remove_value(pinned_apps, pinned_app.desktop_app_info_id)
+    app_launcher_daemon:connect_signal("pinned_app::removed", function(self, pinned_app)
+        helpers.table.remove_value(pinned_apps, pinned_app.id)
         app_launcher:set_favorites(pinned_apps)
     end)
 
