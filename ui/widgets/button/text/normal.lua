@@ -18,7 +18,14 @@ local text_button_normal = {
 
 local properties = {"text_bg", "text_hover_bg", "text_press_bg"}
 
-local text_properties = {"bold", "italic", "size", "color", "text", "icon", "font"}
+local text_properties = {
+    "font_family", "font_weight", "font_stretch", "font_variant",
+    "scale", "size",
+    "bold", "italic", "underline", "strikethrough",
+    "color","underline_color", "strikethrough_color",
+    "letter_spacing", "gravity", "gravity_hint", "insert_hyphens", "text_transform", "line_height",
+    "text", "icon"
+}
 
 local function build_properties(prototype, prop_names)
     for _, prop in ipairs(prop_names) do
