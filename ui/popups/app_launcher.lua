@@ -144,6 +144,7 @@ local function new()
         bg = beautiful.colors.background,
         widget_template = wibox.widget {
             layout = wibox.layout.stack,
+            forced_height = 1,
             {
                 widget = widgets.wallpaper,
                 forced_width = dpi(600),
