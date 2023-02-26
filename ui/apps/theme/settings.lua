@@ -120,6 +120,48 @@ local function picom_slider(key, maximum, round, minimum)
     }
 end
 
+local function profile_image()
+    local title = wibox.widget {
+        widget = widgets.text,
+        forced_width = dpi(190),
+        size = 15,
+        text = "Profile image:"
+    }
+
+    local folder_prompt = wibox.widget {
+        widget = widgets.prompt,
+        forced_width = dpi(410),
+        text = theme_daemon:get_profile_image()
+    }
+
+    folder_prompt:connect_signal("text::changed", function(self, text)
+        theme_daemon:set_profile_image(text)
+    end)
+
+    local set_folder_button = wibox.widget {
+        widget = widgets.button.text.normal,
+        size = 15,
+        text_normal_bg = beautiful.colors.on_background,
+        text = "...",
+        on_press = function()
+            theme_daemon:set_profile_image_with_file_picker()
+        end
+    }
+
+    theme_daemon:connect_signal("profile_image", function(self, profile_image)
+        folder_prompt:set_text(profile_image)
+    end)
+
+    return wibox.widget {
+        layout = wibox.layout.fixed.horizontal,
+        forced_height = dpi(35),
+        spacing = dpi(15),
+        title,
+        folder_prompt,
+        set_folder_button
+    }
+end
+
 local function theme_checkbox(key)
     local name = wibox.widget {
         widget = widgets.text,
@@ -205,6 +247,7 @@ local function new(layout)
         separator(),
         command_after_generation(),
         separator(),
+        profile_image(),
         {
             layout = wibox.layout.fixed.vertical,
             forced_height = dpi(60),

@@ -38,50 +38,9 @@ local BLURRED_BACKGROUND_PATH = filesystem.filesystem.get_cache_dir("") .. "blur
 local GENERATED_TEMPLATES_PATH = filesystem.filesystem.get_cache_dir("templates")
 local WAL_CACHE_PATH = filesystem.filesystem.get_xdg_cache_home("wal")
 local RUN_AS_ROOT_SCRIPT_PATH = filesystem.filesystem.get_awesome_config_dir("scripts") .. "run-as-root.sh"
+local FILE_PICKER_SCRIPT_PATH = filesystem.filesystem.get_awesome_config_dir("scripts") .. "file-picker.lua"
+local COLOR_PICKER_SCRIPT_PATH = filesystem.filesystem.get_awesome_config_dir("scripts") .. "color-picker.lua"
 local DEFAULT_PROFILE_IMAGE_PATH = filesystem.filesystem.get_awesome_config_dir("assets/images") .. "profile.png"
-
-local COLOR_PICKER_SCRIPT = [[ lua -e "local lgi = require('lgi')
-local Gtk = lgi.require('Gtk', '3.0')
-local format = string.format
-local floor = math.floor
-
-local App = Gtk.Application({
-    application_id = 'GtkColorPicker'
-})
-
-local function rgba_to_hex(color)
-    local r = floor(color.red * 255)
-    local g = floor(color.green * 255)
-    local b = floor(color.blue * 255)
-
-    return '#' .. format('%02x%02x%02x', r, g, b)
-end
-
-function App:on_startup()
-    local Dialog  = Gtk.ColorSelectionDialog({
-        title = 'Pick a Color',
-    })
-    Dialog:set_wmclass('Color Picker', 'Color Picker')
-
-    self:add_window(Dialog)
-end
-
-function App:on_activate()
-    local Res = self.active_window:run()
-
-    if Res == Gtk.ResponseType.OK then
-        local color = self.active_window:get_color_selection():get_current_rgba()
-        print(rgba_to_hex(color))
-        self.active_window:destroy()
-    elseif Res == Gtk.ResponseType.CANCEL then
-        self.active_window:destroy()
-    else
-        self.active_window:destroy()
-    end
-end
-
-return App:run()
-"]]
 
 local PICTURES_MIMETYPES = {
     ["application/pdf"] = "lximage", -- AI
@@ -704,7 +663,7 @@ function theme:toggle_dark_light()
 end
 
 function theme:edit_color(index)
-    awful.spawn.easy_async(COLOR_PICKER_SCRIPT, function(stdout)
+    awful.spawn.easy_async(COLOR_PICKER_SCRIPT_PATH, function(stdout)
         stdout = helpers.string.trim(stdout)
         if stdout ~= "" and stdout ~= nil then
             self:get_selected_colorscheme_colors()[index] = stdout
@@ -828,6 +787,15 @@ function theme:set_profile_image(profile_image)
     self._private.profile_image = profile_image
     helpers.settings["theme-profile-image"] = profile_image
     self:emit_signal("profile_image", profile_image)
+end
+
+function theme:set_profile_image_with_file_picker()
+    awful.spawn.easy_async(FILE_PICKER_SCRIPT_PATH, function(stdout)
+        stdout = helpers.string.trim(stdout)
+        if stdout ~= "" and stdout ~= nil then
+            self:set_profile_image(stdout)
+        end
+    end)
 end
 
 function theme:get_profile_image(internal)

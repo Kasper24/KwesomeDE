@@ -293,6 +293,7 @@ local function icons()
         ["emacs"] = theme.icons.emacs,
         ["eog"] = theme.icons.image,
         ["feh"] = theme.icons.image,
+        ["filepicker"] = theme.icons.file_manager,
         ["files"] = theme.icons.file_manager,
         ["firefox"] = theme.icons.firefox,
         ["flameshot"] = theme.icons.camera_retro,
