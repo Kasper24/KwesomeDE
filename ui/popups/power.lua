@@ -77,7 +77,6 @@ local function button(icon, text, on_release)
         widget = widgets.button.text.normal,
         forced_width = dpi(120),
         forced_height = dpi(120),
-        normal_bg = beautiful.colors.background,
         text_normal_bg = icon.color,
         normal_border_width = dpi(0),
         hover_border_width = dpi(10),
