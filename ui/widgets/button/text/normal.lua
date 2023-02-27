@@ -17,7 +17,7 @@ local text_button_normal = {
     mt = {}
 }
 
-local properties = {"text_bg", "text_hover_bg", "text_press_bg"}
+local properties = {"text_normal_bg"}
 local text_properties = {
     "font_family", "font_weight", "font_stretch", "font_variant", "bold", "italic",
     "color","underline_color", "strikethrough_color",
