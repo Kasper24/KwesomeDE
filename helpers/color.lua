@@ -1,4 +1,5 @@
 local gmath = require("gears.math")
+local clip = require("helpers.misc").clip
 local color_libary = require("external.color")
 local tonumber = tonumber
 local string = string
@@ -11,11 +12,6 @@ local random = math.random
 local format = string.format
 
 local _color = {}
-
--- Returns a value that is clipped to interval edges if it falls outside the interval
-local function clip(num, min_num, max_num)
-    return max(min(num, max_num), min_num)
-end
 
 -- Converts the given hex color to rgba
 function _color.hex_to_rgb(color)

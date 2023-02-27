@@ -2,6 +2,8 @@ local awful = require("awful")
 local ruled = require("ruled")
 local gtimer = require("gears.timer")
 local math = math
+local max = math.max
+local min = math.min
 local os = os
 local capi = {
     awesome = awesome,
@@ -70,6 +72,10 @@ end
 
 function _misc.convert_range(old_value, old_min, old_max, new_min, new_max)
     return ((old_value - old_min) / (old_max - old_min)) * (new_max - new_min) + new_min
+end
+
+function _misc.clip(num, min_num, max_num)
+    return max(min(num, max_num), min_num)
 end
 
 return _misc
