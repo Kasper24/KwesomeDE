@@ -10,6 +10,7 @@ local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 local ipairs = ipairs
+local table = table
 local capi = {
     awesome = awesome,
     root = root,
@@ -53,6 +54,32 @@ local function build_properties(prototype, prop_names)
     end
 end
 
+function elevated_button_normal:build_animable_child_anims(child, skip_check)
+    local wp = self._private
+    if child.text_normal_bg or child.text_on_normal_bg or skip_check == true then
+        table.insert(wp.animable_childs, {
+            widget = child,
+            original_size = child:get_size(),
+            color_anim = helpers.animation:new{
+                easing = helpers.animation.easing.linear,
+                duration = 0.2,
+                update = function(self, pos)
+                    child:set_color(pos)
+                end
+            },
+            size_anim = helpers.animation:new{
+                pos = child:get_size(),
+                easing = helpers.animation.easing.linear,
+                duration = 0.125,
+                update = function(self, pos)
+                    child:set_size(pos)
+                end
+            }
+        })
+        self:effect(true)
+    end
+end
+
 function elevated_button_normal:effect(instant)
     local wp = self._private
     local on_prefix = wp.state and "on_" or ""
@@ -72,23 +99,37 @@ function elevated_button_normal:effect(instant)
     end
 
     if instant == true then
-        wp.animation:stop()
+        wp.anim:stop()
         self.bg = bg
         self.border_width = border_width
         self.border_color = border_color
-        wp.animation.pos = {
+        wp.anim.pos = {
             bg = bg,
             border_width = border_width,
             border_color = border_color,
             state_layer_opacity = state_layer_opacity
         }
+        for _, child in ipairs(wp.animable_childs) do
+            local child_bg = child.widget._private["text_" .. on_prefix .. "normal" .. "_" .. "bg"]
+            child.color_anim.pos = child_bg
+            child.widget:set_color(child_bg)
+        end
     else
-        wp.animation:set{
+        wp.anim:set{
             bg = bg,
             border_width = border_width,
             border_color = border_color,
             state_layer_opacity = state_layer_opacity
         }
+        for _, child in ipairs(wp.animable_childs) do
+            local child_bg = child.widget._private["text_" .. on_prefix .. "normal" .. "_" .. "bg"]
+            child.color_anim:set(child_bg)
+            if wp.old_mode ~= "press" and wp.mode == "press" then
+                child.size_anim:set(child.original_size / 1.5)
+            elseif wp.old_mode == "press" and wp.mode ~= "press" then
+                child.size_anim:set(child.original_size)
+            end
+        end
     end
     self.shape = shape
 
@@ -98,6 +139,8 @@ function elevated_button_normal:effect(instant)
 end
 
 function elevated_button_normal:set_widget(new_widget)
+    local wp = self._private
+
     local widget = wibox.widget {
         layout = wibox.layout.stack,
         -- {
@@ -118,20 +161,31 @@ function elevated_button_normal:set_widget(new_widget)
         {
             widget = wibox.container.place,
             id = "place",
-            halign = self._private.halign or "center",
-            valign = self._private.valign or "center",
+            halign = wp.halign or "center",
+            valign = wp.valign or "center",
             {
                 widget = wibox.container.margin,
                 id = "paddings",
-                margins = self._private.paddings or dpi(10),
+                margins = wp.paddings or dpi(10),
                 new_widget
             }
         }
     }
 
-    self._private.widget = widget
-    self._private.content_widget = new_widget
-    self._private.state_layer = widget:get_children_by_id("state_layer")[1]
+    wp.widget = widget
+    wp.content_widget = new_widget
+    wp.state_layer = widget:get_children_by_id("state_layer")[1]
+    wp.animable_childs = {}
+
+    if wp.color_animation == nil then
+        if new_widget.all_children then
+            for _, child in ipairs(new_widget.all_children) do
+                self:build_animable_child_anims(child)
+            end
+        end
+        self:build_animable_child_anims(new_widget)
+    end
+
     self:emit_signal("property::widget")
     self:emit_signal("widget::layout_changed")
 end
@@ -233,7 +287,8 @@ local function new(is_state)
     wp.on_scroll_up = nil
     wp.on_scroll_down = nil
 
-    wp.animation = helpers.animation:new{
+    wp.animable_childs = {}
+    wp.anim = helpers.animation:new{
         easing = helpers.animation.easing.linear,
         duration = 0.2,
         update = function(self, pos)
@@ -251,9 +306,9 @@ local function new(is_state)
             wibox.cursor = wp.hover_cursor or wp.defaults.hover_cursor
         end
 
+        wp.old_mode = wp.mode
         wp.mode = "hover"
         self:effect()
-        widget:emit_signal("event", "hover")
 
         if wp.on_hover ~= nil then
             wp.on_hover(self, find_widgets_result)
@@ -261,19 +316,15 @@ local function new(is_state)
     end)
 
     widget:connect_signal("mouse::leave", function(self, find_widgets_result)
-        if widget.button ~= nil then
-            widget:emit_signal("event", "release")
-        end
-
         capi.root.cursor("left_ptr")
         local wibox = capi.mouse.current_wibox
         if wibox then
             wibox.cursor = "left_ptr"
         end
 
+        wp.old_mode = wp.mode
         wp.mode = "normal"
         self:effect()
-        widget:emit_signal("event", "leave")
 
         if wp.on_leave ~= nil then
             wp.on_leave(self, find_widgets_result)
@@ -287,17 +338,17 @@ local function new(is_state)
             end
 
             if button == 1 then
+                wp.old_mode = wp.mode
                 wp.mode = "press"
                 self:effect()
-                widget:emit_signal("event", "press")
 
                 if wp.on_press then
                     wp.on_press(self, lx, ly, button, mods, find_widgets_result)
                 end
             elseif button == 3 and (wp.on_secondary_press or wp.on_secondary_release) then
+                wp.old_mode = wp.mode
                 wp.mode = "press"
                 self:effect()
-                widget:emit_signal("event", "secondary_press")
 
                 if wp.on_secondary_press then
                     wp.on_secondary_press(self, lx, ly, button, mods, find_widgets_result)
@@ -307,25 +358,21 @@ local function new(is_state)
             elseif button == 5 and wp.on_scroll_down then
                 wp.on_scroll_down(self, lx, ly, button, mods, find_widgets_result)
             end
-
-            widget.button = button
         end)
 
         widget:connect_signal("button::release", function(self, lx, ly, button, mods, find_widgets_result)
-            widget.button = nil
-
             if button == 1 then
+                wp.old_mode = wp.mode
                 wp.mode = "hover"
                 self:effect()
-                widget:emit_signal("event", "release")
 
                 if wp.on_release then
                     wp.on_release(self, lx, ly, button, mods, find_widgets_result)
                 end
             elseif button == 3 and (wp.on_secondary_release or wp.on_secondary_press) then
+                wp.old_mode = wp.mode
                 wp.mode = "hover"
                 self:effect()
-                widget:emit_signal("event", "secondary_release")
 
                 if wp.on_secondary_release then
                     wp.on_secondary_release(self, lx, ly, button, mods, find_widgets_result)

@@ -173,17 +173,17 @@ local function new()
         end
 
         if button == 1 then
+            wp.old_mode = wp.mode
             wp.mode = "press"
             self:effect()
-            widget:emit_signal("event", "press")
 
             if wp.on_press then
                 wp.on_press(self, lx, ly, button, mods, find_widgets_result)
             end
         elseif button == 3 and (wp.on_secondary_press or wp.on_secondary_release) then
+            wp.old_mode = wp.mode
             wp.mode = "press"
             self:effect()
-            widget:emit_signal("event", "secondary_press")
 
             if wp.on_secondary_press then
                 wp.on_secondary_press(self, lx, ly, button, mods, find_widgets_result)
@@ -199,9 +199,9 @@ local function new()
 
     widget:connect_signal("button::release", function(self, lx, ly, button, mods, find_widgets_result)
         if button == 1 then
+            wp.old_mode = wp.mode
             wp.mode = "hover"
             self:effect()
-            widget:emit_signal("event", "release")
 
             if wp.state == true then
                 if wp.on_turn_off then
@@ -219,9 +219,9 @@ local function new()
                 end
             end
         elseif button == 3 and (wp.on_secondary_release or wp.on_secondary_press) then
+            wp.old_mode = wp.mode
             wp.mode = "hover"
             self:effect()
-            widget:emit_signal("event", "secondary_release")
 
             if wp.on_secondary_release then
                 wp.on_secondary_release(self, lx, ly, button, mods, find_widgets_result)

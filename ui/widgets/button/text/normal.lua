@@ -69,11 +69,19 @@ function text_button_normal:text_effect(instant)
     local bg = wp[key .. "bg"] or wp.defaults[key .. "bg"]
 
     if instant == true then
-        wp.color_animation:stop()
-        wp.color_animation.pos = bg
+        wp.color_anim:stop()
+        wp.color_anim.pos = bg
+        wp.size_anim.pos = wp.original_size
         self:get_content_widget():set_color(bg)
     else
-        wp.color_animation:set(bg)
+        wp.color_anim:set(bg)
+        if wp.original_size then
+            if wp.old_mode ~= "press" and wp.mode == "press" then
+                wp.size_anim:set(wp.original_size / 1.5)
+            elseif wp.old_mode == "press" and wp.mode ~= "press" then
+                wp.size_anim:set(wp.original_size)
+            end
+        end
     end
 end
 
@@ -84,17 +92,19 @@ function text_button_normal:set_text_normal_bg(text_normal_bg)
 end
 
 function text_button_normal:set_icon(icon)
+    local wp = self._private
     self:get_content_widget():set_icon(icon)
-    self.orginal_size = self:get_content_widget():get_size()
+    wp.original_size = self:get_content_widget():get_size()
 
-    if self._private.text_normal_bg == nil then
+    if wp.text_normal_bg == nil then
         self:set_text_normal_bg(icon.color)
     end
 end
 
 function text_button_normal:set_size(size)
+    local wp = self._private
     self:get_content_widget():set_size(size)
-    self.orginal_size = self:get_content_widget():get_size()
+    wp.original_size = self:get_content_widget():get_size()
 end
 
 local function new(is_state)
@@ -109,7 +119,7 @@ local function new(is_state)
     wp.defaults.text_normal_bg = beautiful.colors.random_accent_color()
 
     -- Setup animations
-    wp.color_animation = helpers.animation:new{
+    wp.color_anim = helpers.animation:new{
         easing = helpers.animation.easing.linear,
         duration = 0.2,
         update = function(self, pos)
@@ -117,7 +127,7 @@ local function new(is_state)
         end
     }
 
-    wp.size_animation = helpers.animation:new{
+    wp.size_anim = helpers.animation:new{
         pos = widget:get_content_widget():get_size(),
         easing = helpers.animation.easing.linear,
         duration = 0.125,
@@ -126,26 +136,9 @@ local function new(is_state)
         end
     }
 
-    local first_run = true
-    widget:connect_signal("event", function(self, event)
-        if first_run == true then
-            wp.size_animation.pos = widget.orginal_size
-            first_run = false
-        end
-
-        if widget:get_content_widget():get_icon() then
-            if event == "press" or event == "secondary_press" then
-                wp.size_animation:set(widget.orginal_size / 1.5)
-            elseif event == "release" or event == "secondary_release" then
-                wp.size_animation:set(widget.orginal_size)
-            end
-        end
-    end)
-
     capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
         wp.text_normal_bg = old_colorscheme_to_new_map[wp.text_normal_bg] or
                                 old_colorscheme_to_new_map[wp.defaults.text_normal_bg]
-
         wp.text_on_normal_bg = old_colorscheme_to_new_map[wp.text_on_normal_bg] or
                                 old_colorscheme_to_new_map[wp.defaults.text_on_normal_bg] or
                                 helpers.color.button_color(wp.text_normal_bg, 0.2)
