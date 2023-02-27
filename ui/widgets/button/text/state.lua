@@ -12,7 +12,7 @@ local text_button_state = {
     mt = {}
 }
 
-local properties = {"text_on_normal_bg", "text_on_hover_bg", "text_on_press_bg"}
+local properties = {"text_on_normal_bg"}
 
 local function build_properties(prototype, prop_names)
     for _, prop in ipairs(prop_names) do

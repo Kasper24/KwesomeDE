@@ -23,7 +23,7 @@ local elevated_button_normal = {
 local properties = {
     "halign", "valign",
     "hover_cursor",
-    "normal_bg", "hover_bg", "press_bg",
+    "normal_bg",
     "normal_shape", "hover_shape", "press_shape",
     "normal_border_width", "hover_border_width", "press_border_width",
     "normal_border_color", "hover_border_color", "press_border_color",

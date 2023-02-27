@@ -13,7 +13,7 @@ local elevated_button_state = {
 }
 
 local properties = {
-    "on_normal_bg", "on_hover_bg", "on_press_bg",
+    "on_normal_bg",
     "on_normal_shape", "on_hover_shape", "on_press_shape",
     "on_normal_border_width", "on_hover_border_width", "on_press_border_width",
     "on_normal_border_color", "on_hover_border_color", "on_press_border_color",
