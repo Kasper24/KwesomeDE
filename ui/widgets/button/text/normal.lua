@@ -65,7 +65,7 @@ end
 function text_button_normal:text_effect(instant)
     local wp = self._private
     local on_prefix = wp.state and "on_" or ""
-    local key = "text_" .. on_prefix .. wp.mode .. "_"
+    local key = "text_" .. on_prefix .. "normal" .. "_"
     local bg = wp[key .. "bg"] or wp.defaults[key .. "bg"]
 
     if instant == true then
@@ -80,8 +80,6 @@ end
 function text_button_normal:set_text_normal_bg(text_normal_bg)
     local wp = self._private
     wp.text_normal_bg = text_normal_bg
-    wp.defaults.text_hover_bg = helpers.color.button_color(text_normal_bg, 0.1)
-    wp.defaults.text_press_bg = helpers.color.button_color(text_normal_bg, 0.2)
     self:text_effect(true)
 end
 
@@ -110,8 +108,6 @@ local function new(is_state)
 
     -- Setup default values
     wp.defaults.text_normal_bg = beautiful.colors.random_accent_color()
-    wp.defaults.text_hover_bg = helpers.color.button_color(wp.defaults.text_normal_bg, 0.1)
-    wp.defaults.text_press_bg = helpers.color.button_color(wp.defaults.text_normal_bg, 0.2)
 
     -- Setup animations
     widget.color_animation = helpers.animation:new{
@@ -150,22 +146,10 @@ local function new(is_state)
     capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
         wp.text_normal_bg = old_colorscheme_to_new_map[wp.text_normal_bg] or
                                 old_colorscheme_to_new_map[wp.defaults.text_normal_bg]
-        wp.text_hover_bg = old_colorscheme_to_new_map[wp.text_hover_bg] or
-                            old_colorscheme_to_new_map[wp.defaults.text_hover_bg] or
-                            helpers.color.button_color(wp.text_normal_bg, 0.1)
-        wp.text_press_bg = old_colorscheme_to_new_map[wp.text_press_bg] or
-                            old_colorscheme_to_new_map[wp.defaults.text_press_bg] or
-                            helpers.color.button_color(wp.text_normal_bg, 0.2)
 
         wp.text_on_normal_bg = old_colorscheme_to_new_map[wp.text_on_normal_bg] or
                                 old_colorscheme_to_new_map[wp.defaults.text_on_normal_bg] or
                                 helpers.color.button_color(wp.text_normal_bg, 0.2)
-        wp.text_on_hover_bg = old_colorscheme_to_new_map[wp.text_on_hover_bg] or
-                                old_colorscheme_to_new_map[wp.defaults.text_on_hover_bg] or
-                                helpers.color.button_color(wp.text_on_normal_bg, 0.1)
-        wp.text_on_press_bg = old_colorscheme_to_new_map[wp.text_on_press_bg] or
-                                old_colorscheme_to_new_map[wp.defaults.text_on_press_bg] or
-                                helpers.color.button_color(wp.text_on_normal_bg, 0.2)
 
         widget:text_effect(true)
     end)

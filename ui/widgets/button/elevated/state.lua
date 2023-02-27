@@ -70,8 +70,6 @@ end
 function elevated_button_state:set_normal_bg(normal_bg)
     local wp = self._private
     wp.normal_bg = normal_bg
-    wp.defaults.hover_bg = helpers.color.button_color(normal_bg, 0.1)
-    wp.defaults.press_bg = helpers.color.button_color(normal_bg, 0.2)
     self:effect(true)
 
     if wp.on_normal_bg == nil then
@@ -118,8 +116,6 @@ end
 function elevated_button_state:set_on_normal_bg(on_normal_bg)
     local wp = self._private
     wp.on_normal_bg = on_normal_bg
-    wp.defaults.on_hover_bg = helpers.color.button_color(on_normal_bg, 0.1)
-    wp.defaults.on_press_bg = helpers.color.button_color(on_normal_bg, 0.2)
     self:effect(true)
 end
 
@@ -155,8 +151,6 @@ local function new()
     wp.state = false
 
     wp.defaults.on_normal_bg = helpers.color.button_color(wp.defaults.normal_bg, 0.2)
-    wp.defaults.on_hover_bg = helpers.color.button_color(wp.defaults.on_normal_bg, 0.1)
-    wp.defaults.on_press_bg = helpers.color.button_color(wp.defaults.on_normal_bg, 0.2)
 
     wp.defaults.on_normal_shape = wp.defaults.normal_shape
     wp.defaults.on_hover_shape = wp.defaults.normal_shape

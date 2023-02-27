@@ -37,8 +37,6 @@ end
 function text_button_state:set_text_normal_bg(text_normal_bg)
     local wp = self._private
     wp.text_normal_bg = text_normal_bg
-    wp.defaults.text_hover_bg = helpers.color.button_color(text_normal_bg, 0.1)
-    wp.defaults.text_press_bg = helpers.color.button_color(text_normal_bg, 0.2)
     self:text_effect(true)
 
     if self._private.text_on_normal_bg == nil then
@@ -49,8 +47,6 @@ end
 function text_button_state:set_text_on_normal_bg(text_on_normal_bg)
     local wp = self._private
     wp.text_on_normal_bg = text_on_normal_bg
-    wp.defaults.text_on_hover_bg = helpers.color.button_color(text_on_normal_bg, 0.1)
-    wp.defaults.text_on_press_bg = helpers.color.button_color(text_on_normal_bg, 0.2)
     self:text_effect(true)
 end
 
@@ -71,8 +67,6 @@ local function new()
 
     -- Setup default values
     wp.defaults.text_on_normal_bg = helpers.color.button_color(wp.defaults.text_normal_bg, 0.2)
-    wp.defaults.text_on_hover_bg = helpers.color.button_color(wp.defaults.text_on_normal_bg, 0.1)
-    wp.defaults.text_on_press_bg = helpers.color.button_color(wp.defaults.text_on_normal_bg, 0.2)
 
     widget:text_effect(true)
 

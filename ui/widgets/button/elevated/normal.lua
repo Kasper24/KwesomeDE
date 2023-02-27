@@ -4,6 +4,7 @@
 -------------------------------------------
 local gtable = require("gears.table")
 local wibox = require("wibox")
+local bwidget = require("ui.widgets.background")
 local beautiful = require("beautiful")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
@@ -56,11 +57,19 @@ function elevated_button_normal:effect(instant)
     local wp = self._private
     local on_prefix = wp.state and "on_" or ""
     local key = on_prefix .. wp.mode .. "_"
+    local bg_key = on_prefix .. "normal" .. "_" .. "bg"
 
-    local bg = wp[key .. "bg"] or wp.defaults[key .. "bg"]
+    local bg = wp[bg_key] or wp.defaults[bg_key]
     local shape = wp[key .. "shape"] or wp.defaults[key .. "shape"]
     local border_width = wp[key .. "border_width"] or wp.defaults[key .. "border_width"]
     local border_color = wp[key .. "border_color"] or wp.defaults[key .. "border_color"]
+
+    local state_layer_opacity = 0
+    if wp.mode == "hover" then
+        state_layer_opacity = 0.08
+    elseif wp.mode == "press" then
+        state_layer_opacity = 0.12
+    end
 
     if instant == true then
         self.animation:stop()
@@ -70,13 +79,15 @@ function elevated_button_normal:effect(instant)
         self.animation.pos = {
             color = helpers.color.hex_to_rgb(bg),
             border_width = border_width,
-            border_color = helpers.color.hex_to_rgb(border_color)
+            border_color = helpers.color.hex_to_rgb(border_color),
+            state_layer_opacity = state_layer_opacity
         }
     else
         self.animation:set{
             color = helpers.color.hex_to_rgb(bg),
             border_width = border_width,
-            border_color = helpers.color.hex_to_rgb(border_color)
+            border_color = helpers.color.hex_to_rgb(border_color),
+            state_layer_opacity = state_layer_opacity
         }
     end
     self.shape = shape
@@ -88,31 +99,56 @@ end
 
 function elevated_button_normal:set_widget(widget)
     local widget = wibox.widget {
-        widget = wibox.container.place,
-        halign = self._private.halign or "center",
-        valign = self._private.valign or "center",
+        layout = wibox.layout.stack,
+        -- {
+        --     widget = wibox.widget.base.make_widget,
+        --     radius = 5,
+        --     draw = function(self, __, cr, width, height)
+        --         cr:set_source(require("gears.color")("#FFFFFF"))
+        --         cr:arc(width / 2, height / 2, self.radius, 0, 2 * math.pi)
+        --         cr:fill()
+        --     end,
+        -- },
         {
-            widget = wibox.container.margin,
-            id = "paddings",
-            margins = self._private.paddings or dpi(10),
-            widget
+            widget = bwidget,
+            id = "state_layer",
+            bg = beautiful.colors.on_background,
+            opacity = 0,
+        },
+        {
+            widget = wibox.container.place,
+            id = "place",
+            halign = self._private.halign or "center",
+            valign = self._private.valign or "center",
+            {
+                widget = wibox.container.margin,
+                id = "paddings",
+                margins = self._private.paddings or dpi(10),
+                widget
+            }
         }
     }
 
     self._private.widget = widget
+    self._private.content_widget = widget:get_children_by_id("paddings")[1].children[1]
+    self._private.state_layer = widget:get_children_by_id("state_layer")[1]
     self:emit_signal("property::widget")
     self:emit_signal("widget::layout_changed")
 end
 
 function elevated_button_normal:get_content_widget()
-    return self:get_widget():get_children_by_id("paddings")[1].children[1]
+    return self._private.content_widget
+end
+
+function elevated_button_normal:get_state_layer()
+    return self._private.state_layer
 end
 
 function elevated_button_normal:set_halign(halign)
     local widget = self:get_widget()
     if widget then
         self._private.halign = halign
-        widget:set_halign(halign)
+        widget:get_children_by_id("place")[1].halign = halign
     end
 end
 
@@ -120,7 +156,7 @@ function elevated_button_normal:set_valign(valign)
     local widget = self:get_widget()
     if widget then
         self._private.valign = valign
-        widget:set_valign(valign)
+        widget:get_children_by_id("place")[1].valign = valign
     end
 end
 
@@ -135,8 +171,6 @@ end
 function elevated_button_normal:set_normal_bg(normal_bg)
     local wp = self._private
     wp.normal_bg = normal_bg
-    wp.defaults.hover_bg = helpers.color.button_color(normal_bg, 0.1)
-    wp.defaults.press_bg = helpers.color.button_color(normal_bg, 0.2)
     self:effect(true)
 end
 
@@ -171,14 +205,12 @@ local function new(is_state)
     local wp = widget._private
     wp.mode = "normal"
 
+    -- Setup default values
     wp.defaults = {}
 
-    -- Setup default values
     wp.defaults.hover_cursor = "hand2"
 
     wp.defaults.normal_bg = beautiful.colors.transparent
-    wp.defaults.hover_bg = helpers.color.button_color(wp.defaults.normal_bg, 0.1)
-    wp.defaults.press_bg = helpers.color.button_color(wp.defaults.normal_bg, 0.2)
 
     wp.defaults.normal_shape = helpers.ui.rrect()
     wp.defaults.hover_shape = wp.defaults.normal_shape
@@ -201,7 +233,6 @@ local function new(is_state)
     wp.on_scroll_up = nil
     wp.on_scroll_down = nil
 
-    -- Color/Border animations
     widget.animation = helpers.animation:new{
         easing = helpers.animation.easing.linear,
         duration = 0.2,
@@ -209,6 +240,7 @@ local function new(is_state)
             widget.bg = helpers.color.rgb_to_hex(pos.color)
             widget.border_width = pos.border_width
             widget.border_color = helpers.color.rgb_to_hex(pos.border_color)
+            widget:get_state_layer().opacity = pos.state_layer_opacity
         end
     }
 
@@ -307,11 +339,8 @@ local function new(is_state)
 
         wp.normal_bg = old_colorscheme_to_new_map[wp.normal_bg] or
                     old_colorscheme_to_new_map[wp.defaults.normal_bg]
-        wp.hover_bg = old_colorscheme_to_new_map[wp.hover_bg] or
-                    old_colorscheme_to_new_map[wp.defaults.hover_bg] or
-                    helpers.color.button_color(wp.normal_bg, 0.1)
-        wp.press_bg = old_colorscheme_to_new_map[wp.press_bg] or
-                    old_colorscheme_to_new_map[wp.defaults.press_bg] or
+        wp.on_normal_bg = old_colorscheme_to_new_map[wp.on_normal_bg] or
+                    old_colorscheme_to_new_map[wp.defaults.on_normal_bg] or
                     helpers.color.button_color(wp.normal_bg, 0.2)
 
         wp.normal_border_color = old_colorscheme_to_new_map[wp.normal_border_color] or
@@ -320,16 +349,6 @@ local function new(is_state)
                                 old_colorscheme_to_new_map[wp.defaults.hover_border_color]
         wp.press_border_color = old_colorscheme_to_new_map[wp.press_border_color] or
                                 old_colorscheme_to_new_map[wp.defaults.press_border_color]
-
-        wp.on_normal_bg = old_colorscheme_to_new_map[wp.on_normal_bg] or
-                        old_colorscheme_to_new_map[wp.defaults.on_normal_bg] or
-                        helpers.color.button_color(wp.normal_bg, 0.2)
-        wp.on_hover_bg = old_colorscheme_to_new_map[wp.on_hover_bg] or
-                        old_colorscheme_to_new_map[wp.defaults.on_hover_bg] or
-                        helpers.color.button_color(wp.on_normal_bg, 0.1)
-        wp.on_press_bg = old_colorscheme_to_new_map[wp.on_press_bg] or
-                        old_colorscheme_to_new_map[wp.defaults.on_press_bg] or
-                        helpers.color.button_color(wp.on_normal_bg, 0.2)
 
         wp.on_normal_border_color = old_colorscheme_to_new_map[wp.on_normal_border_color] or
                                     old_colorscheme_to_new_map[wp.defaults.on_normal_border_color]
