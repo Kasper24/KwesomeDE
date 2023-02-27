@@ -19,6 +19,7 @@ local string = string
 local ipairs = ipairs
 local pairs = pairs
 local table = table
+local math = math
 local os = os
 local capi = {
     awesome = awesome,
@@ -57,6 +58,33 @@ local PICTURES_MIMETYPES = {
     ["image/tiff"] = "lximage", -- TIFF
     ["image/webp"] = "lximage" -- webp
 }
+
+local function distance(hex_src, hex_tgt)
+    local color_1 = color_libary.color {
+        hex = hex_src
+    }
+    local color_2 = color_libary.color {
+        hex = hex_tgt
+    }
+
+    return math.sqrt((color_2.r - color_1.r)^2 + (color_2.g - color_1.g)^2 + (color_2.b - color_1.b)^2)
+end
+
+local function closestColor(colors, reference)
+    local minDistance = math.huge
+    local closest
+    local closestIndex
+    for i, color in ipairs(colors) do
+      local d = distance(color, reference)
+      if d < minDistance then
+        minDistance = d
+        closest = color
+        closestIndex = i
+      end
+    end
+    table.remove(colors, closestIndex)
+    return closest
+  end
 
 local function generate_colorscheme(self, wallpaper, reset, light)
     if self:get_colorschemes()[wallpaper] ~= nil and reset ~= true then
@@ -112,6 +140,14 @@ local function generate_colorscheme(self, wallpaper, reset, light)
                 colors[9] = helpers.color.pywal_darken(colors[8], 0.3)
                 colors[16] = helpers.color.pywal_blend(colors[16], "#EEEEEE")
             end
+
+            local sorted_colors = gtable.clone({unpack(colors, 2, 7)})
+            colors[2] = closestColor(sorted_colors, "#FF0000")
+            colors[3] = closestColor(sorted_colors, "#00FF00")
+            colors[4] = closestColor(sorted_colors, "#FFFF00")
+            colors[5] = closestColor(sorted_colors, "#800080")
+            colors[6] = closestColor(sorted_colors, "#FF00FF")
+            colors[7] = closestColor(sorted_colors, "#0000FF")
 
             local added_sat = light and 0.5 or 0.3
             local sign = light and -1 or 1
