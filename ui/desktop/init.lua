@@ -145,19 +145,19 @@ local function desktop_icon(self, pos, path, name, mimetype)
     local menu = widgets.menu {widgets.menu.button {
         icon = beautiful.icons.launcher,
         text = "Launch",
-        on_press = function()
+        on_release = function()
             awful.spawn("xdg-open " .. path, false)
         end
     }, widgets.menu.button {
         icon = beautiful.icons.trash,
         text = "Move to Trash",
-        on_press = function()
+        on_release = function()
             awful.spawn("trash-put " .. path, false)
         end
     }, widgets.menu.button {
         icon = beautiful.icons.xmark_fw,
         text = "Delete",
-        on_press = function()
+        on_release = function()
             local file = filesystem.file.new_for_path(path)
             file:delete()
         end
@@ -171,11 +171,12 @@ local function desktop_icon(self, pos, path, name, mimetype)
         x = pos.x,
         y = pos.y,
         bg = beautiful.colors.transparent,
-        widget = widgets.button.elevated.state {
+        widget = wibox.widget {
+            widget = widgets.button.elevated.state,
             normal_bg = beautiful.colors.transparent,
             forced_width = dpi(100),
             forced_height = dpi(100),
-            on_press = function(self)
+            on_release = function(self)
                 helpers.input.tap_or_drag{
                     on_tap = function()
                         awful.spawn("xdg-open " .. path, false)
@@ -189,7 +190,7 @@ local function desktop_icon(self, pos, path, name, mimetype)
                 widget.ontop = false
                 on_drag_end(widget, path)
             end,
-            on_secondary_press = function()
+            on_secondary_release = function()
                 menu:toggle{}
             end,
             child = wibox.widget {

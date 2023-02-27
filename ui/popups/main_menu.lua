@@ -33,7 +33,7 @@ local function recent_places_sub_menu(recent_places)
     for _, place in ipairs(recent_places) do
         menu:add(widgets.menu.button {
             text = place.title,
-            on_press = function()
+            on_release = function()
                 awful.spawn("xdg-open " .. place.path, false)
             end
         })
@@ -56,7 +56,7 @@ local function tag_sub_menu()
             icon = tag.font_icon,
             text = tag.name,
             handle_active_color = tag.font_icon.color,
-            on_press = function()
+            on_release = function()
                 tag:view_only()
             end
         }
@@ -90,7 +90,7 @@ local function layout_sub_menu()
             text = layout.name,
             image = beautiful["layout_" .. (layout.name or "")],
             handle_active_color = beautiful.icons.table_layout.color,
-            on_press = function()
+            on_release = function()
                 awful.screen.focused().selected_tag.layout = layout
             end
         }
@@ -126,35 +126,35 @@ local function widget()
         widgets.menu.button {
             icon = beautiful.icons.launcher,
             text = "Applicaitons",
-            on_press = function()
+            on_release = function()
                 app_launcher:show()
             end
         },
         widgets.menu.button {
             icon = beautiful.icons.industry,
             text = "Action Panel",
-            on_press = function()
+            on_release = function()
                 action_panel:toggle()
             end
         },
         widgets.menu.button {
             icon = beautiful.icons.message,
             text = "Notification Panel",
-            on_press = function()
+            on_release = function()
                 notification_panel:toggle()
             end
         },
         widgets.menu.button {
             icon = beautiful.icons.calendar,
             text = "Info Panel",
-            on_press = function()
+            on_release = function()
                 info_panel:toggle()
             end
         },
         widgets.menu.button {
             icon = beautiful.icons.keyboard,
             text = "Keybinds",
-            on_press = function()
+            on_release = function()
                 hotkeys_popup.show_help()
             end
         },
@@ -162,14 +162,14 @@ local function widget()
         widgets.menu.button {
             icon = beautiful.icons.camera_retro,
             text = "Screenshot",
-            on_press = function()
+            on_release = function()
                 screenshot_app:show()
             end
         },
         widgets.menu.button {
             icon = beautiful.icons.video,
             text = "Record",
-            on_press = function()
+            on_release = function()
                 record_app:show()
             end
         },
@@ -188,14 +188,14 @@ local function widget()
         widgets.menu.button {
             icon = beautiful.icons.gear,
             text = "Settings",
-            on_press = function()
+            on_release = function()
                 helpers.settings:open_setting_file()
             end
         },
         widgets.menu.button {
             icon = beautiful.icons.spraycan,
             text = "Theme",
-            on_press = function()
+            on_release = function()
                 theme_app:show()
             end
         },
@@ -203,14 +203,14 @@ local function widget()
         widgets.menu.button {
             icon = beautiful.icons.reboot,
             text = "Restart",
-            on_press = function()
+            on_release = function()
                 capi.awesome.restart()
             end
         },
         widgets.menu.button {
             icon = beautiful.icons.exit,
             text = "Exit",
-            on_press = function()
+            on_release = function()
                 power_popup:show()
             end
         }

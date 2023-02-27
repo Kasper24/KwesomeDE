@@ -43,7 +43,7 @@ local function device_widget(device, path)
         text_normal_bg = beautiful.colors.on_surface,
         size = 12,
         text = "Cancel",
-        on_press = function()
+        on_release = function()
             widget:get_children_by_id("button")[1]:turn_off()
             anim:set(dpi(60))
         end
@@ -55,7 +55,7 @@ local function device_widget(device, path)
         text_normal_bg = beautiful.colors.on_surface,
         size = 12,
         text = device:is_connected() == true and "Disconnect" or "Connect",
-        on_press = function()
+        on_release = function()
             device:toggle_connect()
         end
     }
@@ -66,7 +66,7 @@ local function device_widget(device, path)
         text_normal_bg = beautiful.colors.on_surface,
         size = 12,
         text = device:is_trusted() == true and "Untrust" or "Trust",
-        on_press = function()
+        on_release = function()
             device:toggle_trust()
         end
     }
@@ -77,7 +77,7 @@ local function device_widget(device, path)
         text_normal_bg = beautiful.colors.on_surface,
         size = 12,
         text = device:is_paired() == true and "Unpair" or "Pair",
-        on_press = function()
+        on_release = function()
             device:toggle_pair()
         end
     }
@@ -90,7 +90,7 @@ local function device_widget(device, path)
             widget = widgets.button.elevated.state,
             on_normal_bg = beautiful.colors.transparent,
             id = "button",
-            on_press = function(self)
+            on_release = function(self)
                 if self._private.state == false then
                     capi.awesome.emit_signal("bluetooth_device_widget::expanded", widget)
                     anim:set(dpi(130))
@@ -157,7 +157,7 @@ local function new()
         text_normal_bg = beautiful.colors.on_background,
         icon = beautiful.icons.arrow_rotate_right,
         size = 15,
-        on_press = function()
+        on_release = function()
             bluetooth_daemon:scan()
         end
     }
@@ -167,7 +167,7 @@ local function new()
         text_normal_bg = beautiful.colors.on_background,
         icon = beautiful.icons.gear,
         size = 15,
-        on_press = function()
+        on_release = function()
             bluetooth_daemon:open_settings()
         end
     }

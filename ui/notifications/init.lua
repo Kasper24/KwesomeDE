@@ -134,7 +134,7 @@ local function actions_widget(n)
             normal_bg = beautiful.colors.surface,
             text_normal_bg = beautiful.colors.on_surface,
             text = action.name,
-            on_press = function()
+            on_release = function()
                 action:invoke()
             end
         }

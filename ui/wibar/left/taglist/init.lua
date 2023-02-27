@@ -23,19 +23,19 @@ local function tag_menu(tag)
         widgets.menu.button {
             icon = tag.font_icon,
             text = tag.index,
-            on_press = function()
+            on_release = function()
                 tag:view_only()
             end
         },
         widgets.menu.button {
             text = "Toggle tag",
-            on_press = function()
+            on_release = function()
                 awful.tag.viewtoggle(tag)
             end
         },
         widgets.menu.button {
             text = "Move focused client",
-            on_press = function()
+            on_release = function()
                 local focused_client = capi.client.focus
                 if focused_client then
                     focused_client:move_to_tag(tag)
@@ -44,7 +44,7 @@ local function tag_menu(tag)
         },
         widgets.menu.button {
             text = "Toggle focused client",
-            on_press = function()
+            on_release = function()
                 local focused_client = capi.client.focus
                 if focused_client then
                     focused_client:toggle_tag(tag)
@@ -53,7 +53,7 @@ local function tag_menu(tag)
         },
         widgets.menu.button {
             text = "Move all clients",
-            on_press = function()
+            on_release = function()
                 for _, client in ipairs(capi.client.get()) do
                     client:move_to_tag(tag)
                 end
@@ -61,7 +61,7 @@ local function tag_menu(tag)
         },
         widgets.menu.button {
             text = "Toggle all clients",
-            on_press = function()
+            on_release = function()
                 for _, client in ipairs(capi.client.get()) do
                     client:toggle_tag(tag)
                 end

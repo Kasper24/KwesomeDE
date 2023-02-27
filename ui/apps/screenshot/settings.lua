@@ -93,7 +93,7 @@ local function folder()
         size = 15,
         text_normal_bg = beautiful.colors.on_background,
         text = "...",
-        on_press = function()
+        on_release = function()
             screenshot_daemon:set_folder()
         end
     }

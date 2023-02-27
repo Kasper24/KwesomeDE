@@ -24,20 +24,20 @@ local function pinned_app_menu(pinned_app)
         widgets.menu.button {
             icon = pinned_app.font_icon,
             text = pinned_app.class,
-            on_press = function()
+            on_release = function()
                 pinned_app:run()
             end
         },
         widgets.menu.button {
             text = "Run as Root",
-            on_press = function()
+            on_release = function()
                 pinned_app:run_as_root()
             end
         },
         widgets.menu.separator(),
         widgets.menu.button {
             text = "Unpin App",
-            on_press = function()
+            on_release = function()
                 tasklist_daemon:remove_pinned_app(pinned_app.class)
             end
         }
@@ -50,7 +50,7 @@ local function pinned_app_menu(pinned_app)
 
         menu:add(widgets.menu.button {
             text = action.name,
-            on_press = function()
+            on_release = function()
                 action.launch()
             end
         })
@@ -74,7 +74,7 @@ local function pinned_app_widget(pinned_app)
                 menu:hide()
                 pinned_app:spawn()
             end,
-            on_secondary_press = function(self)
+            on_secondary_release = function(self)
                 menu:toggle{
                     wibox = awful.screen.focused().top_wibar,
                     widget = self,
@@ -138,7 +138,7 @@ local function client_widget(client)
                     client:tags({awful.screen.focused().selected_tag})
                 end
             end,
-            on_secondary_press = function(self)
+            on_secondary_release = function(self)
                 task_preview:hide()
                 menu:toggle{
                     wibox = awful.screen.focused().top_wibar,

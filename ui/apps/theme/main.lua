@@ -23,7 +23,7 @@ local function wallpaper_widget(wallpaper)
         text_normal_bg = beautiful.colors.on_background,
         size = 12,
         text = theme_daemon:get_short_wallpaper_name(wallpaper),
-        on_press = function()
+        on_release = function()
             theme_daemon:set_selected_colorscheme(wallpaper)
         end
     }
@@ -67,7 +67,7 @@ local function color_button(index)
         },
         {
             widget = widgets.button.elevated.normal,
-            on_press = function()
+            on_release = function()
                 theme_daemon:edit_color(index)
             end,
             child = {
@@ -447,7 +447,7 @@ local function widget(self)
         text_normal_bg = beautiful.colors.on_accent,
         size = 15,
         text = "Light",
-        on_press = function()
+        on_release = function()
             theme_daemon:toggle_dark_light()
         end
     }
@@ -458,7 +458,7 @@ local function widget(self)
         text_normal_bg = beautiful.colors.on_accent,
         size = 15,
         text = "Reset Colorscheme",
-        on_press = function()
+        on_release = function()
             theme_daemon:reset_colorscheme()
         end
     }
@@ -469,7 +469,7 @@ local function widget(self)
         text_normal_bg = beautiful.colors.on_accent,
         size = 15,
         text = "Save Colorscheme",
-        on_press = function()
+        on_release = function()
             theme_daemon:save_colorscheme()
         end
     }
@@ -480,7 +480,7 @@ local function widget(self)
         text_normal_bg = beautiful.colors.on_accent,
         size = 15,
         text = "Set Wallpaper",
-        on_press = function()
+        on_release = function()
             theme_daemon:set_wallpaper(theme_daemon:get_selected_colorscheme(), self._private.selected_tab)
         end
     }
@@ -491,7 +491,7 @@ local function widget(self)
         text_normal_bg = beautiful.colors.on_accent,
         size = 15,
         text = "Set Colorscheme",
-        on_press = function()
+        on_release = function()
             theme_daemon:set_colorscheme(theme_daemon:get_selected_colorscheme())
         end
     }
@@ -502,7 +502,7 @@ local function widget(self)
         text_normal_bg = beautiful.colors.on_accent,
         size = 15,
         text = "Set Both",
-        on_press = function()
+        on_release = function()
             theme_daemon:set_wallpaper(theme_daemon:get_selected_colorscheme(), self._private.selected_tab)
             theme_daemon:set_colorscheme(theme_daemon:get_selected_colorscheme())
         end

@@ -68,7 +68,7 @@ local function application_widget(args)
         icon = beautiful.icons.volume.off,
         size = 12,
         halign = "right",
-        on_press = function()
+        on_release = function()
             args.on_mute_press()
         end
     }
@@ -160,7 +160,7 @@ local function device_widget(args)
         text_on_normal_bg = beautiful.colors.on_accent,
         icon = beautiful.icons.volume.off,
         size = 12,
-        on_press = function()
+        on_release = function()
             args.on_mute_press()
         end
     }
@@ -175,7 +175,7 @@ local function device_widget(args)
         text_on_normal_bg = beautiful.colors.on_accent,
         icon = beautiful.icons.check,
         size = 12,
-        on_press = function()
+        on_release = function()
             args.on_default_press()
         end
     }

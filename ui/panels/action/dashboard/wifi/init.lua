@@ -87,7 +87,7 @@ local function access_point_widget(layout, access_point)
         text_normal_bg = beautiful.colors.on_surface,
         size = 12,
         text = "Cancel",
-        on_press = function()
+        on_release = function()
             prompt:stop()
             widget:get_children_by_id("button")[1]:turn_off()
             anim:set(dpi(65))
@@ -100,7 +100,7 @@ local function access_point_widget(layout, access_point)
         text_normal_bg = beautiful.colors.on_surface,
         size = 12,
         text = access_point:is_active() == true and "Disconnect" or "Connect",
-        on_press = function()
+        on_release = function()
             access_point:toggle(prompt:get_text(), auto_connect_checkbox:get_state())
         end
     }
@@ -156,7 +156,7 @@ local function access_point_widget(layout, access_point)
             widget = widgets.button.elevated.state,
             on_normal_bg = beautiful.colors.transparent,
             id = "button",
-            on_press = function(self)
+            on_release = function(self)
                 if self._private.state == false then
                     capi.awesome.emit_signal("access_point_widget::expanded", widget)
                     prompt:start()
@@ -229,7 +229,7 @@ local function new()
         text_normal_bg = beautiful.colors.on_background,
         icon = beautiful.icons.arrow_rotate_right,
         size = 15,
-        on_press = function()
+        on_release = function()
             network_daemon:scan_access_points()
         end
     }
@@ -239,7 +239,7 @@ local function new()
         text_normal_bg = beautiful.colors.on_background,
         icon = beautiful.icons.gear,
         size = 15,
-        on_press = function()
+        on_release = function()
             network_daemon:open_settings()
         end
     }

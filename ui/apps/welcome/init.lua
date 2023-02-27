@@ -63,7 +63,7 @@ For more information visit the following links.]]
         size = 13,
         text_normal_bg = accent_color,
         text = "Github...",
-        on_press = function()
+        on_release = function()
             awful.spawn("xdg-open ", false)
         end
     }
@@ -74,7 +74,7 @@ For more information visit the following links.]]
         size = 13,
         text_normal_bg = accent_color,
         text = "Reddit...",
-        on_press = function()
+        on_release = function()
             awful.spawn("xdg-open ", false)
         end
     }
@@ -85,7 +85,7 @@ For more information visit the following links.]]
         size = 13,
         text_normal_bg = accent_color,
         text = "Awesome...",
-        on_press = function()
+        on_release = function()
             awful.spawn("xdg-open https://awesomewm.org/apidoc/", false)
         end
     }
@@ -95,7 +95,7 @@ For more information visit the following links.]]
         text_normal_bg = accent_color,
         size = 13,
         text = "Finish",
-        on_press = function()
+        on_release = function()
             on_next_pressed()
             system_daemon:set_need_setup_off()
         end
@@ -157,7 +157,7 @@ local function weather_page(on_next_pressed, on_previous_pressed)
         size = 13,
         text_normal_bg = beautiful.colors.on_background,
         text = "1. Sign up and login on OpenWeatherMap.",
-        on_press = function()
+        on_release = function()
             awful.spawn("xdg-open https://home.openweathermap.org/users/sign_up", false)
         end
     }
@@ -167,7 +167,7 @@ local function weather_page(on_next_pressed, on_previous_pressed)
         size = 13,
         text_normal_bg = beautiful.colors.on_background,
         text = "2. Visit the API key tab",
-        on_press = function()
+        on_release = function()
             awful.spawn("xdg-open https://home.openweathermap.org/api_keys", false)
         end
     }
@@ -242,7 +242,7 @@ local function weather_page(on_next_pressed, on_previous_pressed)
         text_normal_bg = accent_color,
         size = 13,
         text = "Back",
-        on_press = function()
+        on_release = function()
             on_previous_pressed()
         end
     }
@@ -252,7 +252,7 @@ local function weather_page(on_next_pressed, on_previous_pressed)
         text_normal_bg = accent_color,
         size = 13,
         text = "Next",
-        on_press = function()
+        on_release = function()
             weather_daemon:set_unit(unit_dropdown:get_value())
             weather_daemon:set_api_key(api_key_prompt:get_text())
             weather_daemon:set_coordinate_x(coordinate_x_prompt:get_text())
@@ -355,7 +355,7 @@ local function gitlab_page(on_next_pressed, on_previous_pressed)
         size = 13,
         text_normal_bg = beautiful.colors.on_background,
         text = "1. Login on GitLab.",
-        on_press = function()
+        on_release = function()
             awful.spawn("xdg-open https://gitlab.com", false)
         end
     }
@@ -365,7 +365,7 @@ local function gitlab_page(on_next_pressed, on_previous_pressed)
         size = 13,
         text_normal_bg = beautiful.colors.on_background,
         text = "2. Visit the access tokens tab.",
-        on_press = function()
+        on_release = function()
             awful.spawn("xdg-open https://gitlab.com/-/profile/personal_access_tokens", false)
         end
     }
@@ -420,7 +420,7 @@ local function gitlab_page(on_next_pressed, on_previous_pressed)
         text_normal_bg = accent_color,
         size = 13,
         text = "Back",
-        on_press = function()
+        on_release = function()
             on_previous_pressed()
         end
     }
@@ -430,7 +430,7 @@ local function gitlab_page(on_next_pressed, on_previous_pressed)
         text_normal_bg = accent_color,
         size = 13,
         text = "Next",
-        on_press = function()
+        on_release = function()
             gitlab_daemon:set_access_token(access_token_prompt:get_text())
             gitlab_daemon:set_host(host_prompt:get_text())
             gitlab_daemon:refresh()
@@ -534,7 +534,7 @@ local function github_page(on_next_pressed, on_previous_pressed)
         text_normal_bg = accent_color,
         size = 13,
         text = "Back",
-        on_press = function()
+        on_release = function()
             on_previous_pressed()
         end
     }
@@ -544,7 +544,7 @@ local function github_page(on_next_pressed, on_previous_pressed)
         text_normal_bg = accent_color,
         size = 13,
         text = "Next",
-        on_press = function()
+        on_release = function()
             github_daemon:set_username(username_prompt:get_text())
             github_daemon:refresh()
             on_next_pressed()
@@ -661,7 +661,7 @@ local function email_page(on_next_pressed, on_previous_pressed)
         text_normal_bg = accent_color,
         size = 13,
         text = "Back",
-        on_press = function()
+        on_release = function()
             on_previous_pressed()
         end
     }
@@ -671,7 +671,7 @@ local function email_page(on_next_pressed, on_previous_pressed)
         text_normal_bg = accent_color,
         size = 13,
         text = "Next",
-        on_press = function()
+        on_release = function()
             email_daemon:update_net_rc(machine_prompt:get_text(), login_prompt:get_text(), password_prompt:get_text())
             on_next_pressed()
         end
@@ -763,7 +763,7 @@ local function welcome_page(on_next_pressed, on_previous_pressed)
         text_normal_bg = accent_color,
         size = 13,
         text = "Quit",
-        on_press = function()
+        on_release = function()
             on_previous_pressed()
         end
     }
@@ -773,7 +773,7 @@ local function welcome_page(on_next_pressed, on_previous_pressed)
         text_normal_bg = accent_color,
         size = 13,
         text = "Next",
-        on_press = function()
+        on_release = function()
             on_next_pressed()
         end
     }

@@ -302,7 +302,7 @@ function menu.button(args)
     args.icon = args.icon or nil
     args.image = args.image
     args.text = args.text or ""
-    args.on_press = args.on_press or nil
+    args.on_release = args.on_release or nil
 
     local icon = nil
 
@@ -334,7 +334,7 @@ function menu.button(args)
             id = "button",
             on_release = function(self)
                 self.menu:hide(true)
-                args.on_press(self, text_widget)
+                args.on_release(self, text_widget)
             end,
             on_hover = function(self)
                 self.menu:hide_children_menus()
@@ -364,7 +364,7 @@ function menu.checkbox_button(args)
     args.text = args.text or ""
     args.handle_active_color = args.handle_active_color or nil
     args.on_by_default = args.on_by_default or nil
-    args.on_press = args.on_press or nil
+    args.on_release = args.on_release or nil
 
     local icon = nil
     if args.icon ~= nil then
@@ -403,7 +403,7 @@ function menu.checkbox_button(args)
                 widget = ebwidget.normal,
                 id = "button",
                 on_release = function()
-                    args.on_press(widget)
+                    args.on_release(widget)
                 end,
                 on_hover = function(self)
                     self.menu:hide_children_menus()

@@ -12,14 +12,14 @@ local client_menu = {
     mt = {}
 }
 
-local function client_checkbox_button(client, property, text, on_press)
+local function client_checkbox_button(client, property, text, on_release)
     local button = mwidget.checkbox_button {
         handle_active_color = client.font_icon.color,
         text = text,
-        on_press = function()
+        on_release = function()
             client[property] = not client[property]
-            if on_press ~= nil then
-                on_press()
+            if on_release then
+                on_release()
             end
         end
     }
@@ -48,7 +48,7 @@ local function new(client)
     local client_icon_button = mwidget.button {
         icon = client.font_icon,
         text = client.class,
-        on_press = function()
+        on_release = function()
             client:jump_to()
         end
     }
@@ -57,7 +57,7 @@ local function new(client)
         state = tasklist_daemon:is_app_pinned(client.class),
         handle_active_color = client.font_icon.color,
         text = "Pin App",
-        on_press = function(self)
+        on_release = function(self)
             if tasklist_daemon:is_app_pinned(client.class) then
                 self:turn_off()
                 tasklist_daemon:remove_pinned_app(client.class)
@@ -90,7 +90,7 @@ local function new(client)
         client_checkbox_button(client, "floating", "Floating"),
         mwidget.button {
             text = "Close",
-            on_press = function()
+            on_release = function()
                 client:kill()
             end
         }
@@ -99,7 +99,7 @@ local function new(client)
     for index, action in ipairs(client.actions) do
         menu:add(mwidget.button {
             text = action.name,
-            on_press = function()
+            on_release = function()
                 action.launch()
             end
         }, 3 + index)

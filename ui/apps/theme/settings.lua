@@ -143,7 +143,7 @@ local function profile_image()
         size = 15,
         text_normal_bg = beautiful.colors.on_background,
         text = "...",
-        on_press = function()
+        on_release = function()
             theme_daemon:set_profile_image_with_file_picker()
         end
     }

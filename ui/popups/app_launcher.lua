@@ -23,13 +23,13 @@ local function app_menu(app, font_icon)
         widgets.menu.button {
             icon = font_icon,
             text = app.name,
-            on_press = function(self)
+            on_release = function(self)
                 app:run()
             end
         },
         widgets.menu.button {
             text = "Run as Root",
-            on_press = function(self)
+            on_release = function(self)
                 app:run_as_root()
             end
         },
@@ -37,7 +37,7 @@ local function app_menu(app, font_icon)
             state = app_launcher_daemon:is_app_pinned(app.id),
             handle_active_color = font_icon.color,
             text = "Pin App",
-            on_press = function(self)
+            on_release = function(self)
                 if app_launcher_daemon:is_app_pinned(app.id) then
                     self:turn_off()
                     app_launcher_daemon:remove_pinned_app(app.id)
@@ -56,7 +56,7 @@ local function app_menu(app, font_icon)
 
         menu:add(widgets.menu.button {
             text = app.desktop_app_info:get_action_name(action),
-            on_press = function()
+            on_release = function()
                 app.desktop_app_info:launch_action(action)
             end
         })
@@ -83,7 +83,7 @@ local function app(app, app_launcher)
         paddings = dpi(15),
         halign = "center",
         text = app.name,
-        on_secondary_press = function()
+        on_secondary_release = function()
             app:select()
             menu:toggle()
         end,

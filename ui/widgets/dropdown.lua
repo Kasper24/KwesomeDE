@@ -21,7 +21,7 @@ end
 function dropdown:add(key, value)
     return self.menu:add(wmenu.button {
         text = key,
-        on_press = function()
+        on_release = function()
             self.on_value_selected(value)
             self:set_text(self.prompt .. key)
         end
@@ -56,7 +56,7 @@ local function new(args)
         size = 12,
         text = args.prompt .. args.initial_value,
         text_normal_bg = beautiful.colors.on_background,
-        on_press = function()
+        on_release = function()
             menu:toggle()
         end
     }
@@ -67,7 +67,7 @@ local function new(args)
     for key, value in pairs(args.values) do
         menu:add(wmenu.button {
             text = key,
-            on_press = function()
+            on_release = function()
                 args.on_value_selected(value)
                 dropdown_button:set_text(args.prompt .. key)
             end
