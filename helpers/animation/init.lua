@@ -133,7 +133,7 @@ function animation:set(args)
     args = args or {}
 
     -- Awestoer/Rubbto compatibility
-    -- I'd rather this always be a table, but Awestoer/Rubbto
+    -- I'd rather this always be a table, but Awestore/Rubbto
     -- except the :set() method to have 1 number value parameter
     -- used to set the target
     local is_table = type(args) == "table"
