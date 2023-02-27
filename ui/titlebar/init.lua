@@ -38,8 +38,6 @@ capi.client.connect_signal("request::titlebars", function(client)
         normal_shape = gshape.isosceles_triangle,
         normal_bg = beautiful.colors.surface,
         on_normal_bg = client.font_icon.color,
-        hover_bg = beautiful.colors.on_background,
-        press_bg = beautiful.colors.on_background,
         on_release = function(self)
             client.minimized = not client.minimized
         end
@@ -54,8 +52,6 @@ capi.client.connect_signal("request::titlebars", function(client)
         end,
         normal_bg = beautiful.colors.surface,
         on_normal_bg = client.font_icon.color,
-        hover_bg = beautiful.colors.on_background,
-        press_bg = beautiful.colors.on_background,
         on_release = function(self)
             client.maximized = not client.maximized
             client:raise()
@@ -69,8 +65,6 @@ capi.client.connect_signal("request::titlebars", function(client)
         normal_shape = gshape.circle,
         normal_bg = beautiful.colors.surface,
         on_normal_bg = client.font_icon.color,
-        hover_bg = beautiful.colors.on_background,
-        press_bg = beautiful.colors.on_background,
         on_release = function()
             client:kill()
         end
