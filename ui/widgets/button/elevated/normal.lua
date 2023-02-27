@@ -145,25 +145,25 @@ function elevated_button_normal:get_state_layer()
 end
 
 function elevated_button_normal:set_halign(halign)
+    self._private.halign = halign
     local widget = self:get_widget()
     if widget then
-        self._private.halign = halign
         widget:get_children_by_id("place")[1].halign = halign
     end
 end
 
 function elevated_button_normal:set_valign(valign)
+    self._private.valign = valign
     local widget = self:get_widget()
     if widget then
-        self._private.valign = valign
         widget:get_children_by_id("place")[1].valign = valign
     end
 end
 
 function elevated_button_normal:set_paddings(paddings)
+    self._private.paddings = paddings
     local widget = self:get_widget()
     if widget then
-        self._private.paddings = paddings
         widget:get_children_by_id("paddings")[1].margins = paddings
     end
 end
