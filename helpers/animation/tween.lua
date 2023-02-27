@@ -11,8 +11,7 @@
 -- d = duration == running time. How much time has passed *right now*
 local gobject = require("gears.object")
 local gtable = require("gears.table")
-local clip = require("helpers.misc").clip
-local color_libary = require("external.color")
+local hcolor = require("helpers.color")
 local tostring = tostring
 local assert = assert
 local table = table
@@ -446,15 +445,15 @@ local function performEasingOnSubject(subject, target, initial, clock, duration,
 end
 
 local function performEasingOnColor(initial, target, clock, duration, easing)
-    local initial_color = color_libary.color { hex = initial }
-    local target_color = color_libary.color { hex = target }
+    local initial_color = hcolor.hex_to_rgb(initial)
+    local target_color = hcolor.hex_to_rgb(target)
 
-    local h = easing(clock, initial_color.h, target_color.h - initial_color.h, duration)
-    local s = easing(clock, initial_color.s, target_color.s - initial_color.s, duration)
-    local l = easing(clock, initial_color.l, target_color.l - initial_color.l, duration)
+    local r = easing(clock, initial_color.r, target_color.r - initial_color.r, duration)
+    local g = easing(clock, initial_color.g, target_color.g - initial_color.g, duration)
+    local b = easing(clock, initial_color.b, target_color.b - initial_color.b, duration)
     local a = easing(clock, initial_color.a, target_color.a - initial_color.a, duration)
 
-    return color_libary.color { h = clip(h, 0, 360), s = clip(s, 0, 1), l = clip(l, 0, 1), a = clip(a, 0, 255) }.hex
+    return hcolor.rgb_to_hex({r = r, g = g, b = b, a = a})
 end
 
 local function performEasing(table, initial, target, clock, duration, easing)
