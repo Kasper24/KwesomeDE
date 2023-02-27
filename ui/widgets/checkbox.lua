@@ -59,7 +59,7 @@ function checkbox:turn_on()
 
     wp.animation:set{
         handle_offset = done_ball_position + wp.handle_offset,
-        handle_color = helpers.color.hex_to_rgb(wp.handle_active_color),
+        handle_color = wp.handle_active_color,
     }
 
     if wp.on_turn_on ~= nil then
@@ -73,7 +73,7 @@ function checkbox:turn_off()
 
     wp.animation:set{
         handle_offset = -wp.handle_offset,
-        handle_color = helpers.color.hex_to_rgb(beautiful.colors.background),
+        handle_color = beautiful.colors.background,
     }
 
     if wp.on_turn_off ~= nil then
@@ -179,11 +179,11 @@ local function new()
         easing = helpers.animation.easing.inOutQuad,
         pos = {
             handle_offset = -wp.handle_offset,
-            handle_color = helpers.color.hex_to_rgb(beautiful.colors.on_background)
+            handle_color = beautiful.colors.on_background
         },
         update = function(self, pos)
             wp.handle_layout:move(1, { x = pos.handle_offset, y = 0 })
-            wp.background.bg = helpers.color.rgb_to_hex(pos.handle_color)
+            wp.background.bg = pos.handle_color
         end
     }
 

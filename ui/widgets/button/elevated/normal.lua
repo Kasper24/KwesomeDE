@@ -77,16 +77,17 @@ function elevated_button_normal:effect(instant)
         self.border_width = border_width
         self.border_color = border_color
         self.animation.pos = {
-            color = helpers.color.hex_to_rgb(bg),
+            color = bg,
             border_width = border_width,
-            border_color = helpers.color.hex_to_rgb(border_color),
+            border_color = border_color,
             state_layer_opacity = state_layer_opacity
         }
     else
+        self.animation:abort()
         self.animation:set{
-            color = helpers.color.hex_to_rgb(bg),
+            color = bg,
             border_width = border_width,
-            border_color = helpers.color.hex_to_rgb(border_color),
+            border_color = border_color,
             state_layer_opacity = state_layer_opacity
         }
     end
@@ -237,9 +238,9 @@ local function new(is_state)
         easing = helpers.animation.easing.linear,
         duration = 0.2,
         update = function(self, pos)
-            widget.bg = helpers.color.rgb_to_hex(pos.color)
+            widget.bg = pos.color
             widget.border_width = pos.border_width
-            widget.border_color = helpers.color.rgb_to_hex(pos.border_color)
+            widget.border_color = pos.border_color
             widget:get_state_layer().opacity = pos.state_layer_opacity
         end
     }

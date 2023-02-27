@@ -70,10 +70,10 @@ function text_button_normal:text_effect(instant)
 
     if instant == true then
         self.color_animation:stop()
-        self.color_animation.pos = helpers.color.hex_to_rgb(bg)
+        self.color_animation.pos = bg
         self.text_widget:set_color(bg)
     else
-        self.color_animation:set(helpers.color.hex_to_rgb(bg))
+        self.color_animation:set(bg)
     end
 end
 
@@ -114,7 +114,7 @@ local function new(is_state)
         easing = helpers.animation.easing.linear,
         duration = 0.2,
         update = function(self, pos)
-            widget.text_widget:set_color(helpers.color.rgb_to_hex(pos))
+            widget.text_widget:set_color(pos)
         end
     }
 

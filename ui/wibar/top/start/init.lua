@@ -2,6 +2,7 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
+local gcolor = require("gears.color")
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local app_launcher = require("ui.popups.app_launcher")
@@ -19,7 +20,7 @@ local start = {
 
 local function draw()
     return function(self, __, cr, ___, height)
-        cr:set_source_rgb(self.color.r / 255, self.color.g / 255, self.color.b / 255)
+        cr:set_source(gcolor(self.color))
         cr:set_line_width(0.1 * height)
 
         -- top, middle, bottom, left, right, radius, radius/2 pi*2
@@ -77,15 +78,15 @@ local function draw()
 end
 
 local function new()
-    local on_color = beautiful.icons.envelope.color
     local off_color = beautiful.icons.envelope.color
+    local on_color = beautiful.colors.background_no_opacity
 
     local widget = wibox.widget {
         widget = wibox.widget.make_base_widget,
         forced_width = dpi(45),
         forced_height = dpi(60),
         pos = 0,
-        color = helpers.color.hex_to_rgb(off_color),
+        color = off_color,
         draw = draw(),
         fit = function(_, _, _, height)
             return height, height
@@ -103,7 +104,7 @@ local function new()
     local animation = helpers.animation:new{
         pos = {
             height = 0,
-            color = helpers.color.hex_to_rgb(off_color)
+            color = off_color
         },
         easing = helpers.animation.easing.linear,
         duration = 0.5,
@@ -116,23 +117,18 @@ local function new()
 
     app_launcher:connect_signal("visibility", function(self, visibility)
         if visibility == true then
-            animation:set{
-                height = 1,
-                color = helpers.color.hex_to_rgb(on_color)
-            }
+            button:turn_on()
+            animation:set{height = 1, color = on_color}
         else
-            animation:set{
-                height = 0,
-                color = helpers.color.hex_to_rgb(off_color)
-            }
+            button:turn_off()
+            animation:set{height = 0, color = off_color}
         end
     end)
 
     capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
         on_color = old_colorscheme_to_new_map[on_color]
         off_color = old_colorscheme_to_new_map[off_color]
-        local color = animation.pos.height == 1 and on_color or off_color
-        widget.color = helpers.color.hex_to_rgb(color)
+        widget.color = animation.pos.height == 1 and on_color or off_color
         widget:emit_signal("widget::redraw_needed")
     end)
 
