@@ -8,6 +8,7 @@ local beautiful = require("beautiful")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
+local ipairs = ipairs
 local capi = {
     awesome = awesome,
     root = root,
@@ -79,6 +80,10 @@ function elevated_button_normal:effect(instant)
         }
     end
     self.shape = shape
+
+    if self.text_effect then
+        self:text_effect(instant)
+    end
 end
 
 function elevated_button_normal:set_child(child)
@@ -218,12 +223,11 @@ local function new(is_state)
     end)
 
     widget:connect_signal("mouse::leave", function(self, find_widgets_result)
-        capi.root.cursor("left_ptr")
-
         if widget.button ~= nil then
             widget:emit_signal("event", "release")
         end
 
+        capi.root.cursor("left_ptr")
         local wibox = capi.mouse.current_wibox
         if wibox then
             wibox.cursor = "left_ptr"
@@ -244,57 +248,53 @@ local function new(is_state)
                 return
             end
 
-            widget.button = button
-
             if button == 1 then
                 wp.mode = "press"
                 self:effect()
                 widget:emit_signal("event", "press")
 
-                if wp.on_press ~= nil then
+                if wp.on_press then
                     wp.on_press(self, lx, ly, button, mods, find_widgets_result)
                 end
-            elseif button == 3 then
-                if wp.on_secondary_press ~= nil then
-                    wp.mode = "press"
-                    self:effect()
-                    widget:emit_signal("event", "secondary_press")
+            elseif button == 3 and (wp.on_secondary_press or wp.on_secondary_release) then
+                wp.mode = "press"
+                self:effect()
+                widget:emit_signal("event", "secondary_press")
+
+                if wp.on_secondary_press then
                     wp.on_secondary_press(self, lx, ly, button, mods, find_widgets_result)
                 end
-            elseif button == 4 then
-                if wp.on_scroll_up ~= nil then
-                    wp.on_scroll_up(self, lx, ly, button, mods, find_widgets_result)
-                end
-            elseif button == 5 then
-                if wp.on_scroll_down ~= nil then
-                    wp.on_scroll_down(self, lx, ly, button, mods, find_widgets_result)
-                end
+            elseif button == 4 and wp.on_scroll_up then
+                wp.on_scroll_up(self, lx, ly, button, mods, find_widgets_result)
+            elseif button == 5 and wp.on_scroll_down then
+                wp.on_scroll_down(self, lx, ly, button, mods, find_widgets_result)
             end
+
+            widget.button = button
         end)
 
         widget:connect_signal("button::release", function(self, lx, ly, button, mods, find_widgets_result)
             widget.button = nil
 
             if button == 1 then
-                wp.mode = "normal"
+                wp.mode = "hover"
                 self:effect()
                 widget:emit_signal("event", "release")
 
-                if wp.on_release ~= nil then
+                if wp.on_release then
                     wp.on_release(self, lx, ly, button, mods, find_widgets_result)
                 end
-            elseif button == 3 then
-                if wp.on_secondary_release ~= nil then
-                    wp.mode = "normal"
-                    self:effect()
-                    widget:emit_signal("event", "secondary_release")
+            elseif button == 3 and (wp.on_secondary_release or wp.on_secondary_press) then
+                wp.mode = "hover"
+                self:effect()
+                widget:emit_signal("event", "secondary_release")
+
+                if wp.on_secondary_release then
                     wp.on_secondary_release(self, lx, ly, button, mods, find_widgets_result)
                 end
             end
         end)
     end
-
-    widget:effect(true)
 
     capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
         widget:emit_signal("widget::redraw_needed")
@@ -334,6 +334,8 @@ local function new(is_state)
 
         widget:effect(true)
     end)
+
+    widget:effect(true)
 
     return widget
 end

@@ -8,6 +8,7 @@ local ebwidget = require("ui.widgets.button.elevated")
 local beautiful = require("beautiful")
 local helpers = require("helpers")
 local setmetatable = setmetatable
+local ipairs = ipairs
 local capi = {
     awesome = awesome
 }
@@ -17,7 +18,6 @@ local text_button_normal = {
 }
 
 local properties = {"text_bg", "text_hover_bg", "text_press_bg"}
-
 local text_properties = {
     "font_family", "font_weight", "font_stretch", "font_variant", "bold", "italic",
     "color","underline_color", "strikethrough_color",
@@ -132,14 +132,11 @@ local function new(is_state)
     }
 
     local first_run = true
-
     widget:connect_signal("event", function(self, event)
         if first_run == true then
             widget.size_animation.pos = widget.orginal_size
             first_run = false
         end
-
-        self:text_effect()
 
         if widget.text_widget._private.icon then
             if event == "press" or event == "secondary_press" then
@@ -149,8 +146,6 @@ local function new(is_state)
             end
         end
     end)
-
-    widget:text_effect(true)
 
     capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
         wp.text_normal_bg = old_colorscheme_to_new_map[wp.text_normal_bg] or
@@ -174,6 +169,8 @@ local function new(is_state)
 
         widget:text_effect(true)
     end)
+
+    widget:text_effect(true)
 
     return widget
 end

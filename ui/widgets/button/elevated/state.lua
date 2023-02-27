@@ -6,18 +6,19 @@ local gtable = require("gears.table")
 local ebnwidget = require("ui.widgets.button.elevated.normal")
 local helpers = require("helpers")
 local setmetatable = setmetatable
-local capi = {
-    awesome = awesome
-}
+local ipairs = ipairs
 
 local elevated_button_state = {
     mt = {}
 }
 
-local properties = {"on_normal_bg", "on_hover_bg", "on_press_bg", "on_normal_shape", "on_hover_shape", "on_press_shape",
-                    "on_normal_border_width", "on_hover_border_width", "on_press_border_width",
-                    "on_normal_border_color", "on_hover_border_color", "on_press_border_color", "on_turn_on",
-                    "on_turn_off"}
+local properties = {
+    "on_normal_bg", "on_hover_bg", "on_press_bg",
+    "on_normal_shape", "on_hover_shape", "on_press_shape",
+    "on_normal_border_width", "on_hover_border_width", "on_press_border_width",
+    "on_normal_border_color", "on_hover_border_color", "on_press_border_color",
+    "on_turn_on", "on_turn_off"
+}
 
 local function build_properties(prototype, prop_names)
     for _, prop in ipairs(prop_names) do
@@ -47,18 +48,14 @@ end
 
 function elevated_button_state:turn_on()
     local wp = self._private
-    wp.mode = "normal"
     wp.state = true
     self:effect()
-    self:emit_signal("event", "on")
 end
 
 function elevated_button_state:turn_off()
     local wp = self._private
-    wp.mode = "normal"
     wp.state = false
     self:effect()
-    self:emit_signal("event", "off")
 end
 
 function elevated_button_state:toggle()
@@ -181,52 +178,58 @@ local function new()
             return
         end
 
-        widget.button = button
-
         if button == 1 then
+            wp.mode = "press"
+            self:effect()
+            widget:emit_signal("event", "press")
+
+            if wp.on_press then
+                wp.on_press(self, lx, ly, button, mods, find_widgets_result)
+            end
+        elseif button == 3 and (wp.on_secondary_press or wp.on_secondary_release) then
+            wp.mode = "press"
+            self:effect()
+            widget:emit_signal("event", "secondary_press")
+
+            if wp.on_secondary_press then
+                wp.on_secondary_press(self, lx, ly, button, mods, find_widgets_result)
+            end
+        elseif button == 4 and wp.on_scroll_up then
+            wp.on_scroll_up(self, lx, ly, button, mods, find_widgets_result)
+        elseif button == 5 and wp.on_scroll_down then
+            wp.on_scroll_down(self, lx, ly, button, mods, find_widgets_result)
+        end
+
+        widget.button = button
+    end)
+
+    widget:connect_signal("button::release", function(self, lx, ly, button, mods, find_widgets_result)
+        if button == 1 then
+            wp.mode = "hover"
+            self:effect()
+            widget:emit_signal("event", "release")
+
             if wp.state == true then
                 if wp.on_turn_off then
                     widget:turn_off()
                     wp.on_turn_off(self, lx, ly, button, mods, find_widgets_result)
-                elseif wp.on_press then
-                    wp.on_press(self, lx, ly, button, mods, find_widgets_result)
+                elseif wp.on_release then
+                    wp.on_release(self, lx, ly, button, mods, find_widgets_result)
                 end
             else
                 if wp.on_turn_on then
                     widget:turn_on()
                     wp.on_turn_on(self, lx, ly, button, mods, find_widgets_result)
-                elseif wp.on_press then
-                    wp.on_press(self, lx, ly, button, mods, find_widgets_result)
+                elseif wp.on_release then
+                    wp.on_release(self, lx, ly, button, mods, find_widgets_result)
                 end
             end
-
-            widget:emit_signal("event", "press")
-        elseif button == 3 and wp.on_secondary_press ~= nil then
-            widget:emit_signal("event", "secondary_press")
-            wp.on_secondary_press(self, lx, ly, button, mods, find_widgets_result)
-        elseif button == 4 and wp.on_scroll_up ~= nil then
-            wp.on_scroll_up(self, lx, ly, button, mods, find_widgets_result)
-        elseif button == 5 and wp.on_scroll_down ~= nil then
-            wp.on_scroll_down(self, lx, ly, button, mods, find_widgets_result)
-        end
-    end)
-
-    widget:connect_signal("button::release", function(self, lx, ly, button, mods, find_widgets_result)
-        if button == 1 then
-            wp.mode = "normal"
+        elseif button == 3 and (wp.on_secondary_release or wp.on_secondary_press) then
+            wp.mode = "hover"
             self:effect()
-            widget:emit_signal("event", "release")
+            widget:emit_signal("event", "secondary_release")
 
-            if wp.on_release ~= nil then
-                wp.on_release(self, lx, ly, button, mods, find_widgets_result)
-            end
-        elseif button == 3 then
-            wp.mode = "normal"
-            self:effect()
-            widget:emit_signal("event", "release")
-
-            if wp.on_secondary_release ~= nil then
-                widget:emit_signal("event", "secondary_release")
+            if wp.on_secondary_release then
                 wp.on_secondary_release(self, lx, ly, button, mods, find_widgets_result)
             end
         end

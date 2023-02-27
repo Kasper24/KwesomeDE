@@ -6,9 +6,7 @@ local gtable = require("gears.table")
 local tbnwidget = require("ui.widgets.button.text.normal")
 local helpers = require("helpers")
 local setmetatable = setmetatable
-local capi = {
-    awesome = awesome
-}
+local ipairs = ipairs
 
 local text_button_state = {
     mt = {}
