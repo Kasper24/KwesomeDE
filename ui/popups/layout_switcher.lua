@@ -31,7 +31,7 @@ local function layout_widget(self, layout)
     {
         widget = widgets.button.elevated.state,
         layout_name = layout.name,
-        on_turn_on = function()
+        on_release = function()
             awful.screen.focused().selected_tag.layout = layout
         end,
         child = {
