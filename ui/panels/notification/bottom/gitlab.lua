@@ -26,7 +26,7 @@ local function mr_widget(mr)
         on_release = function()
             awful.spawn("xdg-open " .. mr.author.web_url, false)
         end,
-        child = wibox.widget {
+        {
             widget = wibox.widget.imagebox,
             clip_shape = helpers.ui.rrect(),
             image = gitlab_daemon:get_avatars_path() .. mr.author.id
@@ -96,7 +96,7 @@ local function mr_widget(mr)
         on_release = function()
             awful.spawn("xdg-open " .. mr.web_url, false)
         end,
-        child = wibox.widget {
+        {
             layout = wibox.layout.fixed.horizontal,
             {
                 layout = wibox.layout.flex.vertical,

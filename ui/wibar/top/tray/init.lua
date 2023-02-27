@@ -167,7 +167,7 @@ local function custom_tray()
             on_release = function()
                 action_panel:toggle()
             end,
-            child = layout
+            layout
         }
     }
 

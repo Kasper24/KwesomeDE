@@ -193,7 +193,7 @@ local function desktop_icon(self, pos, path, name, mimetype)
             on_secondary_release = function()
                 menu:toggle{}
             end,
-            child = wibox.widget {
+            {
                 layout = wibox.layout.fixed.vertical,
                 spacing = dpi(15),
                 {

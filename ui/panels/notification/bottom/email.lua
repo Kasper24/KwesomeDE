@@ -67,7 +67,7 @@ local function email_widget(email)
         on_release = function()
             email_daemon:open(email)
         end,
-        child = wibox.widget {
+        {
             layout = wibox.layout.fixed.vertical,
             spacing = dpi(5),
             author,

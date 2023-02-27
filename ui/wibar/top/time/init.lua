@@ -43,7 +43,7 @@ local function new()
             on_release = function()
                 info_panel:toggle()
             end,
-            child = clock
+            clock
         }
     }
 

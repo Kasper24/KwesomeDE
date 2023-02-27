@@ -34,7 +34,7 @@ local function layout_widget(self, layout)
         on_release = function()
             awful.screen.focused().selected_tag.layout = layout
         end,
-        child = {
+        {
             layout = wibox.layout.fixed.horizontal,
             forced_width = dpi(230),
             forced_height = dpi(50),

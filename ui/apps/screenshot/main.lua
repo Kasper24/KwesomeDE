@@ -36,7 +36,7 @@ local function button(icon, text, on_release, on_by_default)
         on_release = function(self)
             on_release(self)
         end,
-        child = wibox.widget {
+        {
             layout = wibox.layout.fixed.vertical,
             spacing = dpi(15),
             icon,

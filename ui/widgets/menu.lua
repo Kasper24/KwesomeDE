@@ -278,7 +278,7 @@ function menu.sub_menu_button(args)
                 }
                 self:turn_on()
             end,
-            child = {
+            {
                 layout = wibox.layout.align.horizontal,
                 forced_width = dpi(270),
                 {
@@ -339,7 +339,7 @@ function menu.button(args)
             on_hover = function(self)
                 self.menu:hide_children_menus()
             end,
-            child = {
+            {
                 layout = wibox.layout.fixed.horizontal,
                 forced_width = dpi(270),
                 spacing = dpi(15),
@@ -408,7 +408,7 @@ function menu.checkbox_button(args)
                 on_hover = function(self)
                     self.menu:hide_children_menus()
                 end,
-                child = {
+                {
                     layout = wibox.layout.align.horizontal,
                     forced_width = dpi(270),
                     {

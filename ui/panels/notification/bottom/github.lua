@@ -66,7 +66,7 @@ local function event_widget(event)
     local avatar = wibox.widget {
         widget = widgets.button.elevated.normal,
         normal_shape = gshape.circle,
-        child = {
+        {
             widget = wibox.widget.imagebox,
             forced_width = dpi(40),
             forced_height = dpi(40),
@@ -119,7 +119,7 @@ local function event_widget(event)
         on_release = function()
             awful.spawn("xdg-open " .. action_and_link.link, false)
         end,
-        child = {
+        {
             layout = wibox.layout.fixed.vertical,
             {
                 layout = wibox.layout.fixed.horizontal,
@@ -191,7 +191,7 @@ local function pr_widget(pr)
         on_release = function()
             awful.spawn("xdg-open " .. pr.user.html_url, false)
         end,
-        child = {
+        {
             widget = wibox.widget.imagebox,
             forced_width = dpi(40),
             forced_height = dpi(40),
@@ -238,7 +238,7 @@ local function pr_widget(pr)
         on_release = function()
             awful.spawn("xdg-open " .. pr.html_url, false)
         end,
-        child = wibox.widget {
+        {
             layout = wibox.layout.fixed.vertical,
             spacing = dpi(5),
             repo_and_title,

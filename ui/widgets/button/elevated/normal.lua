@@ -86,23 +86,21 @@ function elevated_button_normal:effect(instant)
     end
 end
 
-function elevated_button_normal:set_child(child)
-    local child_widget = wibox.widget {
+function elevated_button_normal:set_widget(widget)
+    local widget = wibox.widget {
         widget = wibox.container.place,
         halign = self._private.halign or "center",
         valign = self._private.valign or "center",
         {
             widget = wibox.container.margin,
             margins = self._private.paddings or dpi(10),
-            child
+            widget
         }
     }
-    self._private.child = child
-    self:set_widget(child_widget)
-end
 
-function elevated_button_normal:get_child()
-    return self._private.child
+    self._private.widget = widget
+    self:emit_signal("property::widget")
+    self:emit_signal("widget::layout_changed")
 end
 
 function elevated_button_normal:set_halign(halign)

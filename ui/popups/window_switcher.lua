@@ -51,7 +51,7 @@ local function client_widget(self, client)
             on_release = function()
                 self:select_client(client)
             end,
-            child = {
+            {
                 widget = wibox.container.margin,
                 margins = dpi(15),
                 {

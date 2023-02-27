@@ -102,7 +102,7 @@ end
 local function new(is_state)
     local widget = is_state and ebwidget.state {} or ebwidget.normal {}
     widget.text_widget = twidget(false)
-    widget:set_child(widget.text_widget)
+    widget:set_widget(widget.text_widget)
 
     gtable.crush(widget, text_button_normal, true)
 

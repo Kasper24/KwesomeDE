@@ -164,7 +164,7 @@ local function access_point_widget(layout, access_point)
                     self:turn_on()
                 end
             end,
-            child = {
+            {
                 layout = wibox.layout.fixed.vertical,
                 spacing = dpi(15),
                 {

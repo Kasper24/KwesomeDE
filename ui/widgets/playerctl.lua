@@ -468,7 +468,7 @@ function playerctl.play(daemon)
         on_release = function()
             playerctl_daemon:play_pause()
         end,
-        child = widget
+        widget
     }
 
     local play_pause_animation = helpers.animation:new{

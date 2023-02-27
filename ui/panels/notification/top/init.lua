@@ -195,7 +195,7 @@ local function notification_group(notification)
         on_turn_off = function()
             widget.height = dpi(70)
         end,
-        child = {
+        {
             layout = wibox.layout.fixed.horizontal,
             spacing = dpi(15),
             icon,

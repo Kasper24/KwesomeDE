@@ -97,7 +97,7 @@ local function new()
         on_release = function()
             app_launcher:toggle()
         end,
-        child = widget
+        widget
     }
 
     local animation = helpers.animation:new{

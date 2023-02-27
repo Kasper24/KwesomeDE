@@ -70,7 +70,7 @@ local function color_button(index)
             on_release = function()
                 theme_daemon:edit_color(index)
             end,
-            child = {
+            {
                 layout = wibox.layout.stack,
                 background,
                 color_text

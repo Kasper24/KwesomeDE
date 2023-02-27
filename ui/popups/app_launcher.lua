@@ -87,7 +87,7 @@ local function app(app, app_launcher)
             app:select()
             menu:toggle()
         end,
-        child = {
+        {
             layout = wibox.layout.fixed.vertical,
             spacing = dpi(15),
             {
