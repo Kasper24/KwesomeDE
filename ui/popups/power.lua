@@ -83,8 +83,6 @@ local function button(icon, text, on_release)
         hover_border_width = dpi(10),
         press_border_width = dpi(10),
         normal_border_color = icon.color,
-        hover_border_color = icon.color,
-        press_border_color = icon.color,
         icon = icon,
         size = 40,
         on_release = on_release
