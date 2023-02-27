@@ -2,13 +2,13 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
+local unpack = unpack or table.unpack -- luacheck: globals unpack (compatibility with Lua 5.1)
 local gfilesystem = require("gears.filesystem")
 local gcolor = require("gears.color")
 local beautiful = require("beautiful")
 local theme_daemon = require("daemons.system.theme")
 local helpers = require("helpers")
 local filesystem = require("external.filesystem")
-local color_libary = require("external.color")
 local layout_machi = require("external.layout-machi")
 local dpi = beautiful.xresources.apply_dpi
 local pairs = pairs
@@ -60,23 +60,8 @@ local function colors()
 
     function theme.colors.random_accent_color(accent_colors)
         accent_colors = accent_colors or colors
-
-        local color_1 = color_libary.color {
-            hex = accent_colors[10] -- Bright red
-        }
-        local color_2 = color_libary.color {
-            hex = accent_colors[11] -- Bright green
-        }
-
-        local accents = {}
-        if math.abs(color_1.h - color_2.h) < 50 then
-            accents = {accent_colors[10], accent_colors[11], accent_colors[12], accent_colors[13], accent_colors[14], accent_colors[15]}
-        else
-            accents = {accent_colors[13], accent_colors[14]}
-        end
-
-        local i = math.random(1, #accents)
-        return accents[i]
+        local accents = {unpack(accent_colors, 10, 15)}
+        return accents[math.random(1, #accents)]
     end
 end
 
