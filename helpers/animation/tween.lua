@@ -18,6 +18,7 @@ local assert = assert
 local table = table
 local pairs = pairs
 local error = error
+
 local type = type
 
 local tween = {
@@ -444,6 +445,18 @@ local function performEasingOnSubject(subject, target, initial, clock, duration,
     end
 end
 
+local function performEasingOnColor(initial, target, clock, duration, easing)
+    local initial_color = color_libary.color { hex = initial }
+    local target_color = color_libary.color { hex = target }
+
+    local h = easing(clock, initial_color.h, target_color.h - initial_color.h, duration)
+    local s = easing(clock, initial_color.s, target_color.s - initial_color.s, duration)
+    local l = easing(clock, initial_color.l, target_color.l - initial_color.l, duration)
+    local a = easing(clock, initial_color.a, target_color.a - initial_color.a, duration)
+
+    return color_libary.color { h = clip(h, 0, 360), s = clip(s, 0, 1), l = clip(l, 0, 1), a = clip(a, 0, 255) }.hex
+end
+
 local function performEasing(table, initial, target, clock, duration, easing)
     if type(target) == "table" then
         local t, b, c, d
@@ -452,15 +465,7 @@ local function performEasing(table, initial, target, clock, duration, easing)
                 table[k] = {}
                 performEasing(table[k], initial[k], target, clock, duration, easing)
             elseif type(target) == "string" and target:sub(1, 1) =="#" then
-                    local initial_color = color_libary.color { hex = initial[k] }
-                    local target_color = color_libary.color { hex = target }
-
-                    local h = easing(clock, initial_color.h, target_color.h - initial_color.h, duration)
-                    local s = easing(clock, initial_color.s, target_color.s - initial_color.s, duration)
-                    local l = easing(clock, initial_color.l, target_color.l - initial_color.l, duration)
-                    local a = easing(clock, initial_color.a, target_color.a - initial_color.a, duration)
-
-                    table[k] = color_libary.color { h = clip(h, 0, 360), s = clip(s, 0, 1), l = clip(l, 0, 1), a = clip(a, 0, 1) }.hex
+                table[k] = performEasingOnColor(initial[k], target, clock, duration, easing)
             else
                 t, b, c, d = clock, initial[k], target - initial[k], duration
                 table[k] = easing(t, b, c, d)
@@ -468,6 +473,8 @@ local function performEasing(table, initial, target, clock, duration, easing)
         end
 
         return table
+    elseif type(target) == "string" and target:sub(1, 1) =="#" then
+        return performEasingOnColor(initial, target, clock, duration, easing)
     else
         local t, b, c, d = clock, initial, target - initial, duration
         return easing(t, b, c, d)
