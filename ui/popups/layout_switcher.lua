@@ -73,7 +73,7 @@ local function new()
         visible = false,
         shape = helpers.ui.rrect(),
         bg = beautiful.colors.background,
-        maximum_height = dpi(700),
+        maximum_height = dpi(715),
         widget = wibox.widget {
             widget = wibox.container.margin,
             margins = dpi(25),
