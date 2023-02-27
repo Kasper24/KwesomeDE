@@ -72,19 +72,18 @@ function elevated_button_normal:effect(instant)
     end
 
     if instant == true then
-        self.animation:stop()
+        wp.animation:stop()
         self.bg = bg
         self.border_width = border_width
         self.border_color = border_color
-        self.animation.pos = {
+        wp.animation.pos = {
             bg = bg,
             border_width = border_width,
             border_color = border_color,
             state_layer_opacity = state_layer_opacity
         }
     else
-        self.animation:abort()
-        self.animation:set{
+        wp.animation:set{
             bg = bg,
             border_width = border_width,
             border_color = border_color,
@@ -98,7 +97,7 @@ function elevated_button_normal:effect(instant)
     end
 end
 
-function elevated_button_normal:set_widget(widget)
+function elevated_button_normal:set_widget(new_widget)
     local widget = wibox.widget {
         layout = wibox.layout.stack,
         -- {
@@ -125,13 +124,13 @@ function elevated_button_normal:set_widget(widget)
                 widget = wibox.container.margin,
                 id = "paddings",
                 margins = self._private.paddings or dpi(10),
-                widget
+                new_widget
             }
         }
     }
 
     self._private.widget = widget
-    self._private.content_widget = widget:get_children_by_id("paddings")[1].children[1]
+    self._private.content_widget = new_widget
     self._private.state_layer = widget:get_children_by_id("state_layer")[1]
     self:emit_signal("property::widget")
     self:emit_signal("widget::layout_changed")
@@ -234,7 +233,7 @@ local function new(is_state)
     wp.on_scroll_up = nil
     wp.on_scroll_down = nil
 
-    widget.animation = helpers.animation:new{
+    wp.animation = helpers.animation:new{
         easing = helpers.animation.easing.linear,
         duration = 0.2,
         update = function(self, pos)

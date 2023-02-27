@@ -69,11 +69,11 @@ function text_button_normal:text_effect(instant)
     local bg = wp[key .. "bg"] or wp.defaults[key .. "bg"]
 
     if instant == true then
-        self.color_animation:stop()
-        self.color_animation.pos = bg
-        self.text_widget:set_color(bg)
+        wp.color_animation:stop()
+        wp.color_animation.pos = bg
+        self:get_content_widget():set_color(bg)
     else
-        self.color_animation:set(bg)
+        wp.color_animation:set(bg)
     end
 end
 
@@ -84,8 +84,8 @@ function text_button_normal:set_text_normal_bg(text_normal_bg)
 end
 
 function text_button_normal:set_icon(icon)
-    self.text_widget:set_icon(icon)
-    self.orginal_size = self.text_widget:get_size()
+    self:get_content_widget():set_icon(icon)
+    self.orginal_size = self:get_content_widget():get_size()
 
     if self._private.text_normal_bg == nil then
         self:set_text_normal_bg(icon.color)
@@ -93,14 +93,13 @@ function text_button_normal:set_icon(icon)
 end
 
 function text_button_normal:set_size(size)
-    self.text_widget:set_size(size)
-    self.orginal_size = self.text_widget:get_size()
+    self:get_content_widget():set_size(size)
+    self.orginal_size = self:get_content_widget():get_size()
 end
 
 local function new(is_state)
     local widget = is_state and ebwidget.state {} or ebwidget.normal {}
-    widget.text_widget = twidget(false)
-    widget:set_widget(widget.text_widget)
+    widget:set_widget(twidget(false))
 
     gtable.crush(widget, text_button_normal, true)
 
@@ -110,35 +109,35 @@ local function new(is_state)
     wp.defaults.text_normal_bg = beautiful.colors.random_accent_color()
 
     -- Setup animations
-    widget.color_animation = helpers.animation:new{
+    wp.color_animation = helpers.animation:new{
         easing = helpers.animation.easing.linear,
         duration = 0.2,
         update = function(self, pos)
-            widget.text_widget:set_color(pos)
+            widget:get_content_widget():set_color(pos)
         end
     }
 
-    widget.size_animation = helpers.animation:new{
-        pos = widget.text_widget:get_size(),
+    wp.size_animation = helpers.animation:new{
+        pos = widget:get_content_widget():get_size(),
         easing = helpers.animation.easing.linear,
         duration = 0.125,
         update = function(self, pos)
-            widget.text_widget:set_size(pos)
+            widget:get_content_widget():set_size(pos)
         end
     }
 
     local first_run = true
     widget:connect_signal("event", function(self, event)
         if first_run == true then
-            widget.size_animation.pos = widget.orginal_size
+            wp.size_animation.pos = widget.orginal_size
             first_run = false
         end
 
-        if widget.text_widget._private.icon then
+        if widget:get_content_widget():get_icon() then
             if event == "press" or event == "secondary_press" then
-                widget.size_animation:set(widget.orginal_size / 1.5)
+                wp.size_animation:set(widget.orginal_size / 1.5)
             elseif event == "release" or event == "secondary_release" then
-                widget.size_animation:set(widget.orginal_size)
+                wp.size_animation:set(widget.orginal_size)
             end
         end
     end)
