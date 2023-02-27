@@ -5,7 +5,6 @@
 local gtable = require("gears.table")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
-local theme_daemon = require("daemons.system.theme")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
