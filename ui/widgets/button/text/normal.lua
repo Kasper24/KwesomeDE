@@ -49,13 +49,13 @@ local function build_text_properties(prototype, prop_names)
     for _, prop in ipairs(prop_names) do
         if not prototype["set_" .. prop] then
             prototype["set_" .. prop] = function(self, value)
-                local text_widget = self.children[1].children[1].children[1]
+                local text_widget = self:get_content_widget()
                 text_widget["set_" .. prop](text_widget, value)
             end
         end
         if not prototype["get_" .. prop] then
             prototype["get_" .. prop] = function(self)
-                local text_widget = self.children[1].children[1].children[1]
+                local text_widget = self:get_content_widget()
                 return text_widget["get_" .. prop](text_widget)
             end
         end
