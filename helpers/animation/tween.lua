@@ -11,6 +11,14 @@
 -- d = duration == running time. How much time has passed *right now*
 local gobject = require("gears.object")
 local gtable = require("gears.table")
+local clip = require("helpers.misc").clip
+local color_libary = require("external.color")
+local tostring = tostring
+local assert = assert
+local table = table
+local pairs = pairs
+local error = error
+local type = type
 
 local tween = {
     _VERSION = 'tween 2.1.1',
@@ -439,12 +447,22 @@ end
 local function performEasing(table, initial, target, clock, duration, easing)
     if type(target) == "table" then
         local t, b, c, d
-        for k, v in pairs(target) do
-            if type(v) == 'table' then
+        for k, target in pairs(target) do
+            if type(target) == 'table' then
                 table[k] = {}
-                performEasing(table[k], initial[k], v, clock, duration, easing)
+                performEasing(table[k], initial[k], target, clock, duration, easing)
+            elseif type(target) == "string" and target:sub(1, 1) =="#" then
+                    local initial_color = color_libary.color { hex = initial[k] }
+                    local target_color = color_libary.color { hex = target }
+
+                    local h = easing(clock, initial_color.h, target_color.h - initial_color.h, duration)
+                    local s = easing(clock, initial_color.s, target_color.s - initial_color.s, duration)
+                    local l = easing(clock, initial_color.l, target_color.l - initial_color.l, duration)
+                    local a = easing(clock, initial_color.a, target_color.a - initial_color.a, duration)
+
+                    table[k] = color_libary.color { h = clip(h, 0, 360), s = clip(s, 0, 1), l = clip(l, 0, 1), a = clip(a, 0, 1) }.hex
             else
-                t, b, c, d = clock, initial[k], v - initial[k], duration
+                t, b, c, d = clock, initial[k], target - initial[k], duration
                 table[k] = easing(t, b, c, d)
             end
         end
