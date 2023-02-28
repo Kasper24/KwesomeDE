@@ -100,8 +100,13 @@ function window_switcher:select_client(client)
 end
 
 function window_switcher:cycle_clients(increase)
-    local client = gtable.cycle_value(tasklist_daemon:get_clients(), self._private.selected_client, (increase and 1 or -1))
-    self:select_client(client)
+    local clients = tasklist_daemon:get_clients()
+    if #clients > 1 then
+        local client = gtable.cycle_value(clients, self._private.selected_client, (increase and 1 or -1))
+        self:select_client(client)
+    elseif #clients == 1 then
+        self:select_client(clients[1])
+    end
 end
 
 function window_switcher:show()
