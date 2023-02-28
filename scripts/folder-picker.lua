@@ -8,14 +8,20 @@ local App = Gtk.Application({
 })
 
 function App:on_startup()
+    local folder_path = arg[1]
+
     local Dialog  = Gtk.FileChooserDialog({
         title = 'Select a folder',
-        action = Gtk.FileChooserAction.SELECT_FOLDER
+        action = Gtk.FileChooserAction.SELECT_FOLDER,
     })
 
     Dialog:add_button('Open', Gtk.ResponseType.OK)
     Dialog:add_button('Cancel', Gtk.ResponseType.CANCEL)
     Dialog:set_wmclass('Folder Picker', 'Folder Picker')
+
+    if folder_path then
+        Dialog:set_current_folder(folder_path)
+    end
 
     self:add_window(Dialog)
 end

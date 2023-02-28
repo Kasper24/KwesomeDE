@@ -52,7 +52,7 @@ function record:set_folder(folder)
         self._private.folder = folder
         helpers.settings["record-folder"] = folder
     else
-        awful.spawn.easy_async(FOLDER_PICKER_SCRIPT_PATH, function(stdout)
+        awful.spawn.easy_async(FOLDER_PICKER_SCRIPT_PATH .. " '" .. self._private.folder .. "'", function(stdout)
             stdout = helpers.string.trim(stdout)
             if stdout ~= "" and stdout ~= nil then
                 self._private.folder = stdout
