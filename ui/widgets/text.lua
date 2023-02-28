@@ -12,7 +12,9 @@ local setmetatable = setmetatable
 local tostring = tostring
 local ipairs = ipairs
 local string = string
+local math = math
 local ceil = math.ceil
+local max = math.max
 local capi = {
     awesome = awesome
 }
@@ -70,7 +72,7 @@ local function generate_markup(self)
     local font_weight = wp.font_weight or wp.defaults.font_weight
     local font_stretch = wp.font_stretch or wp.defaults.font_stretch
     local font_variant = wp.font_variant or wp.defaults.font_variant
-    local size = wp.size or wp.defaults.size
+    local size = max((wp.size or wp.defaults.size), 1)
     local scale = wp.scale or wp.defaults.scale
     local color = wp.color or wp.defaults.color
     local underline = wp.underline or wp.defaults.underline
