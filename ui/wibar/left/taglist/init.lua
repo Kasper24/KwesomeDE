@@ -134,29 +134,29 @@ local function tag_widget(self, tag, index)
     }
 
     local indicator = wibox.widget {
-        widget = wibox.container.place,
-        halign = "right",
-        valign = "center",
-        {
-            widget = widgets.background,
-            id = "background",
-            forced_width = dpi(5),
-            shape = helpers.ui.rrect(),
-            bg = tag.font_icon.color
-        }
+        widget = widgets.background,
+        id = "background",
+        forced_width = dpi(5),
+        shape = helpers.ui.rrect(),
+        bg = tag.font_icon.color
     }
 
     local stack = wibox.widget {
         widget = wibox.layout.stack,
         button,
-        indicator
+        {
+            widget = wibox.container.place,
+            halign = "right",
+            valign = "center",
+            indicator
+        }
     }
 
     self.indicator_animation = helpers.animation:new{
         duration = 0.2,
         easing = helpers.animation.easing.linear,
         update = function(self, pos)
-            indicator.children[1].forced_height = pos
+            indicator.forced_height = pos
         end
     }
 
