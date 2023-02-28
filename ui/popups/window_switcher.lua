@@ -105,7 +105,7 @@ function window_switcher:cycle_clients(increase)
 end
 
 function window_switcher:show()
-    if #capi.client.get() == 0 then
+    if #tasklist_daemon:get_clients() == 0 then
         return
     end
 
@@ -113,7 +113,7 @@ function window_switcher:show()
         self:select_client(self._private.focused_client)
     end
 
-    local clients = #capi.client.get()
+    local clients = #tasklist_daemon:get_clients()
     self:_show(clients * dpi(300) + clients * dpi(15))
 end
 
