@@ -15,12 +15,12 @@ local client_thumbnail = {
     mt = {}
 }
 
-function client_thumbnail:set_client(client)
-    local fake_preview = self:get_children_by_id("fake_preview")[1]
+-- function client_thumbnail:set_client(client)
+    -- local fake_preview = self:get_children_by_id("fake_preview")[1]
     -- local preview = self:get_children_by_id("preview")[1]
 
-    fake_preview:set_client(client)
-    fake_preview:set_scale(2)
+    -- self:set_client(client)
+    -- self:set_scale(2)
 
     -- Real previews disabled until I can stop it from hogging the RAM
 
@@ -68,33 +68,43 @@ function client_thumbnail:set_client(client)
     -- if client.thumbnail then
     --     self:raise_widget(preview)
     -- end
-end
+-- end
 
 local function new()
     local widget = wibox.widget {
-        layout = wibox.layout.stack,
-        {
-            widget = cfiwidget,
-            id = "fake_preview",
-            forced_width = dpi(300),
-            forced_height = dpi(300),
-            halign = "center",
-            valign = "center",
-        },
-        {
-            layout = wibox.layout.fixed.vertical,
-            id = "preview",
-            {
-                widget = wibox.container.constraint,
-                mode = "max",
-                width = dpi(300),
-                {
-                    widget = wibox.widget.imagebox,
-                    id = "image",
-                }
-            }
-        }
+        widget = cfiwidget,
+        id = "fake_preview",
+        forced_width = dpi(300),
+        forced_height = dpi(300),
+        halign = "center",
+        valign = "center",
+        scale = 2,
     }
+
+    -- local widget = wibox.widget {
+    --     layout = wibox.layout.stack,
+    --     {
+    --         widget = cfiwidget,
+    --         id = "fake_preview",
+    --         forced_width = dpi(300),
+    --         forced_height = dpi(300),
+    --         halign = "center",
+    --         valign = "center",
+    --     },
+    --     {
+    --         layout = wibox.layout.fixed.vertical,
+    --         id = "preview",
+    --         {
+    --             widget = wibox.container.constraint,
+    --             mode = "max",
+    --             width = dpi(300),
+    --             {
+    --                 widget = wibox.widget.imagebox,
+    --                 id = "image",
+    --             }
+    --         }
+    --     }
+    -- }
     gtable.crush(widget, client_thumbnail, true)
 
     return widget
