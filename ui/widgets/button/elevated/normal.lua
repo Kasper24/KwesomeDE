@@ -164,17 +164,9 @@ function elevated_button_normal:set_widget(new_widget)
             radius = 0,
             draw = function(self, __, cr, width, height)
                 cr:set_source_rgba(1, 1, 1, 0.2)
-
-                cr:save()
                 cr:translate(self.x, self.y)
                 cr:arc(0, 0, self.radius, 0, pi * 2)
                 cr:fill()
-                cr:restore()
-
-                -- clip the circle to the bounds of the button
-                cr:rectangle(0, 0, width, height)
-                cr:clip()
-                cr:reset_clip()
             end,
         },
         {
