@@ -170,6 +170,9 @@ local function new()
         if client.window_switcher_widget == nil then
             client.window_switcher_widget = client_widget(widget, client)
             clients_layout:add_at(client.window_switcher_widget, { x =  pos_without_pinned_apps * 310, y = 0})
+            if widget.visible then
+                widget:_show(#tasklist_daemon:get_clients() * dpi(300) + #tasklist_daemon:get_clients() * dpi(15), true)
+            end
         else
             clients_layout:move_widget(client.window_switcher_widget, { x = pos_without_pinned_apps * 310, y = 0})
         end

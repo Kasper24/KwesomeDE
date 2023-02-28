@@ -13,8 +13,8 @@ local animated_popup = {
     mt = {}
 }
 
-function animated_popup:show(value)
-    if self.state == true then
+function animated_popup:show(value, reshow)
+    if self.state == true and reshow ~= true then
         return
     end
     self.state = true
