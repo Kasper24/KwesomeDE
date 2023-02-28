@@ -261,11 +261,11 @@ local function generate_sequences(colors)
     sequences = sequences .. set_special(708, colors[1], 0)
 
     local file = filesystem.file.new_for_path(GENERATED_TEMPLATES_PATH .. "sequences")
-    file:write(string)
+    file:write(sequences)
 
     -- Backwards compatibility with wal/wpgtk
     local file = filesystem.file.new_for_path(WAL_CACHE_PATH .. "sequences")
-    file:write(string)
+    file:write(sequences)
 
     for index = 0, 9 do
         local file = filesystem.file.new_for_path("/dev/pts/" .. index)

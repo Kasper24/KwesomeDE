@@ -20,6 +20,13 @@ local function new()
         widget_bg = bg
     end)
 
+    function widget:set_normal_bg(normal_bg)
+        self._private.normal_bg = normal_bg
+    end
+    function widget:set_on_normal_bg(on_normal_bg)
+        self._private.on_normal_bg = on_normal_bg
+    end
+
     capi.awesome.connect_signal("colorscheme::changed", function( old_colorscheme_to_new_map)
         widget.bg = old_colorscheme_to_new_map[widget_bg]
         widget.border_color = old_colorscheme_to_new_map[widget.border_color]
