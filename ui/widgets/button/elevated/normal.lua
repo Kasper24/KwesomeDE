@@ -127,8 +127,8 @@ function elevated_button_normal:effect(instant)
         if wp.old_mode ~= "press" and wp.mode == "press" then
             self:get_ripple_layer().x = wp.lx
             self:get_ripple_layer().y = wp.ly
-            wp.ripple_anim.pos = 0
-            wp.ripple_anim:set(wp.widget_width)
+            wp.ripple_anim.pos = {radius = 0, opacity = 0}
+            wp.ripple_anim:set({radius = wp.widget_width, opacity = 0.5})
         elseif wp.old_mode == "press" and wp.mode ~= "press" then
             wp.ripple_anim:stop()
             self:get_ripple_layer().radius = 0
@@ -162,9 +162,8 @@ function elevated_button_normal:set_widget(new_widget)
             x = 0,
             y = 0,
             radius = 0,
-            opacity = 0.5,
             draw = function(self, __, cr, width, height)
-                cr:set_source(gcolor(beautiful.colors.on_background))
+                cr:set_source(gcolor.change_opacity(beautiful.colors.on_background, self.opacity))
                 cr:translate(self.x, self.y)
                 cr:arc(0, 0, self.radius, 0, pi * 2)
                 cr:fill()
@@ -325,7 +324,8 @@ local function new(is_state)
         easing = helpers.animation.easing.linear,
         duration = 0.4,
         update = function(self, pos)
-            widget:get_ripple_layer().radius = pos
+            widget:get_ripple_layer().radius = pos.radius
+            widget:get_ripple_layer().opacity = pos.opacity
             widget:get_ripple_layer():emit_signal("widget::redraw_needed")
         end
     }
