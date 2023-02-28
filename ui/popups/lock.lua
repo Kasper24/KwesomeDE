@@ -72,19 +72,15 @@ local function widget(self)
     }
 
     local clock = wibox.widget {
-        widget = wibox.widget.textclock,
-        align = "center",
-        valign = "center",
+        widget = widgets.textclock,
         format = "%H:%M",
-        font = beautiful.font_name .. dpi(60)
+        size = 60
     }
 
     local date = wibox.widget {
-        widget = wibox.widget.textclock,
-        align = "center",
-        valign = "center",
+        widget = widgets.textclock,
         format = "%d" .. helpers.string.day_ordinal_number() .. " of %B, %A",
-        font = beautiful.font_name .. dpi(30)
+        size = 30
     }
 
     self._private.prompt = wibox.widget {

@@ -30,6 +30,7 @@ return {
     slider = require(... .. ".slider"),
     spinning_circle = require(... .. ".spinning_circle"),
     text = require(... .. ".text"),
+    textclock = require(... .. ".textclock"),
     titlebar = require(... .. ".titlebar"),
     wallpaper = require(... .. ".wallpaper")
 }

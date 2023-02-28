@@ -19,15 +19,11 @@ local calendar = {
 
 local function new()
     local hour = wibox.widget {
-        widget = wibox.widget.textclock,
+        widget = widgets.textclock,
         format = "%H",
-        font = beautiful.font_name .. dpi(50)
+        size = 50,
+        color = beautiful.colors.on_background
     }
-    local hour_accent_color = beautiful.colors.on_background
-    hour.markup = helpers.ui.colorize_text(hour.text, hour_accent_color)
-    hour:connect_signal("widget::redraw_needed", function()
-        hour.markup = helpers.ui.colorize_text(hour.text, hour_accent_color)
-    end)
 
     local dots = wibox.widget {
         widget = wibox.container.place,
@@ -60,15 +56,11 @@ local function new()
     }
 
     local minute = wibox.widget {
-        widget = wibox.widget.textclock,
+        widget = widgets.textclock,
         format = "%M",
-        font = beautiful.font_name .. dpi(50)
+        size = 50,
+        color = beautiful.colors.on_background
     }
-    local minute_accent_color = beautiful.colors.on_background
-    minute.markup = helpers.ui.colorize_text(minute.text, minute_accent_color)
-    minute:connect_signal("widget::redraw_needed", function()
-        minute.markup = helpers.ui.colorize_text(minute.text, minute_accent_color)
-    end)
 
     local time = wibox.widget {
         widget = wibox.container.place,
@@ -83,27 +75,11 @@ local function new()
     }
 
     local date = wibox.widget {
-        widget = wibox.widget.textclock,
+        widget = widgets.textclock,
         format = "%A, %b, %d",
-        align = "center",
-        valign = "center",
-        font = beautiful.font_name .. dpi(20)
+        size = 2,
+        color = beautiful.colors.random_accent_color()
     }
-
-    local date_accent_color = beautiful.colors.random_accent_color()
-    date.markup = helpers.ui.colorize_text(date.text, date_accent_color)
-    date:connect_signal("widget::redraw_needed", function()
-        date.markup = helpers.ui.colorize_text(date.text, date_accent_color)
-    end)
-
-    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
-        hour_accent_color = old_colorscheme_to_new_map[hour_accent_color]
-        minute_accent_color = old_colorscheme_to_new_map[minute_accent_color]
-        date_accent_color = old_colorscheme_to_new_map[date_accent_color]
-        hour:emit_signal("widget::redraw_needed")
-        minute:emit_signal("widget::redraw_needed")
-        date:emit_signal("widget::redraw_needed")
-    end)
 
     return wibox.widget {
         layout = wibox.layout.fixed.vertical,
