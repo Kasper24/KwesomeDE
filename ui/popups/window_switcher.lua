@@ -110,16 +110,18 @@ function window_switcher:cycle_clients(increase)
 end
 
 function window_switcher:show()
-    if #tasklist_daemon:get_clients() == 0 then
+    local clients = tasklist_daemon:get_clients()
+    if #clients == 0 then
         return
     end
 
     if self._private.focused_client then
         self:select_client(self._private.focused_client)
+    else
+        self:select_client(clients[1])
     end
 
-    local clients = #tasklist_daemon:get_clients()
-    self:_show(clients * dpi(300) + clients * dpi(15))
+    self:_show(#clients * dpi(300) + #clients * dpi(15))
 end
 
 function window_switcher:hide(focus)
@@ -184,7 +186,11 @@ local function new()
     end)
 
     capi.client.connect_signal("focus", function(client)
-        widget:select_client(client)
+        widget._private.focused_client = client
+    end)
+
+    capi.client.connect_signal("unfocus", function()
+        widget._private.focused_client = nil
     end)
 
     return widget
