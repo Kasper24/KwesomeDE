@@ -98,14 +98,16 @@ local function client_widget(client)
 
     local button = wibox.widget {
         widget = wibox.container.margin,
-        margins = dpi(5),
-        forced_width = dpi(70),
-        forced_height = dpi(70),
+        margins = { top = dpi(5), bottom = dpi(10), left = dpi(10), right = dpi(10)},
+        forced_width = dpi(80),
+        forced_height = dpi(80),
         {
             widget = widgets.button.text.state,
             id = "button",
             on_by_default = capi.client.focus == client,
             icon = client.font_icon,
+            on_normal_bg=  client.font_icon.color,
+            text_on_normal_bg = beautiful.colors.transparent,
             on_hover = function(self)
                 task_preview:show(client, {
                     wibox = awful.screen.focused().top_wibar,
