@@ -72,7 +72,7 @@ local function pinned_app_widget(pinned_app)
             icon = pinned_app.font_icon,
             on_release = function()
                 menu:hide()
-                pinned_app:spawn()
+                pinned_app:run()
             end,
             on_secondary_release = function(self)
                 menu:toggle{
