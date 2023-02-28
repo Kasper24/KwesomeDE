@@ -255,8 +255,8 @@ local function new()
         }
     }
 
-    widget:connect_signal("visibility", function(visibile)
-        if visibile then
+    widget:connect_signal("visibility", function(visible)
+        if visible then
             cpu_daemon:set_slim(false)
         else
             cpu_daemon:set_slim(true)
