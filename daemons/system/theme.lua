@@ -124,7 +124,15 @@ local function generate_colorscheme(self, wallpaper, reset, light)
                 end
             end
 
-            local colors = {unpack(raw_colors, 1, 1), unpack(raw_colors, 9, 16), unpack(raw_colors, 9, #raw_colors-1)}
+            local colors = raw_colors
+            for index = 2, 9 do
+                colors[index] = colors[index + 7]
+            end
+
+            for index = 10, 15 do
+                colors[index] = colors[index - 8]
+            end
+
             if light == true then
                 for _, color in ipairs(colors) do
                     color = helpers.color.pywal_saturate_color(color, 0.5)
