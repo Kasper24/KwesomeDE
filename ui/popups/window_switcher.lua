@@ -44,10 +44,8 @@ local function client_widget(self, client)
         {
             widget = widgets.button.elevated.state,
             id = "button",
-            normal_bg = beautiful.colors.background,
-            normal_border_width = dpi(5),
-            normal_border_color = beautiful.colors.surface,
-            on_normal_border_color = client.font_icon.color,
+            normal_bg = beautiful.colors.surface,
+            on_normal_bg = client.font_icon.color,
             on_release = function()
                 self:select_client(client)
             end,
@@ -65,6 +63,8 @@ local function client_widget(self, client)
                             widget = widgets.client_font_icon,
                             halign = "center",
                             valign = "center",
+                            text_normal_bg = client.font_icon.color,
+                            text_on_normal_bg = beautiful.colors.transparent,
                             client = client
                         },
                         {
@@ -72,11 +72,15 @@ local function client_widget(self, client)
                             halign = "center",
                             valign = "center",
                             size = 15,
+                            text_normal_bg = beautiful.colors.on_background,
+                            text_on_normal_bg = beautiful.colors.transparent,
                             text = client.name
                         }
                     },
                     {
                         widget = widgets.client_thumbnail,
+                        text_normal_bg = client.font_icon.color,
+                        text_on_normal_bg = beautiful.colors.transparent,
                         client = client
                     }
                 }
