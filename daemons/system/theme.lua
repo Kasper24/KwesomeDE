@@ -699,7 +699,7 @@ function theme:toggle_dark_light()
 end
 
 function theme:edit_color(index)
-    awful.spawn.easy_async(COLOR_PICKER_SCRIPT_PATH, function(stdout)
+    awful.spawn.easy_async(COLOR_PICKER_SCRIPT_PATH .. " '" .. self:get_selected_colorscheme_colors()[index] .. "'", function(stdout)
         stdout = helpers.string.trim(stdout)
         if stdout ~= "" and stdout ~= nil then
             self:get_selected_colorscheme_colors()[index] = stdout
