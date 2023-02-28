@@ -35,6 +35,7 @@ local WALLPAPERS_PATH = filesystem.filesystem.get_awesome_config_dir("assets/wal
 local GTK_THEME_FLAT_COLOR_PATH = filesystem.filesystem.get_awesome_config_dir("assets/gtk-themes/FlatColor")
 local GTK_THEME_LINEA_NORD_COLOR = filesystem.filesystem.get_awesome_config_dir("assets/gtk-themes/linea-nord-color")
 local GTK_THEME_ALTO_COLOR = filesystem.filesystem.get_awesome_config_dir("assets/gtk-themes/alto-gtk")
+local GTK_CONFIG_FILE_PATH = filesystem.filesystem.get_xdg_config_dir("gtk-3.0") .. "settings.ini"
 local INSTALLED_GTK_THEMES_PATH = os.getenv("HOME") .. "/.local/share/themes/"
 local BASE_TEMPLATES_PATH = filesystem.filesystem.get_awesome_config_dir("assets/templates")
 local BACKGROUND_PATH = filesystem.filesystem.get_cache_dir("") .. "wallpaper.png"
@@ -185,34 +186,42 @@ end
 
 local function reload_gtk()
     local refresh_gsettings = [[ gsettings set org.gnome.desktop.interface \
-gtk-theme 'FlatColor' && sleep 0.1 && gsettings set \
-org.gnome.desktop.interface gtk-theme 'FlatColor'
+gtk-theme '%s' && sleep 0.1 && gsettings set \
+org.gnome.desktop.interface gtk-theme '%s'
 ]]
 
     local refresh_xfsettings = [[ xfconf-query -c xsettings -p /Net/ThemeName -s \
-'FlatColor' && sleep 0.1 && xfconf-query -c xsettings -p \
-/Net/ThemeName -s 'FlatColor'
+'%s' && sleep 0.1 && xfconf-query -c xsettings -p \
+/Net/ThemeName -s '%s'
 ]]
 
-    helpers.run.is_installed("gsettings", function(is_installed)
-        if is_installed == true then
-            awful.spawn.with_shell(refresh_gsettings)
-        end
-    end)
+    local file = filesystem.file.new_for_path(GTK_CONFIG_FILE_PATH)
+    file:read(function(error, content)
+        if error == nil then
+            local gtk_theme = content:match("gtk%-theme%-name=([^\n]+)")
 
-    helpers.run.is_installed("xfconf-query", function(is_installed)
-        if is_installed == true then
-            awful.spawn.with_shell(refresh_xfsettings)
-        end
-    end)
+            helpers.run.is_installed("gsettings", function(is_installed)
+                if is_installed == true then
+                    awful.spawn.with_shell(string.format(refresh_gsettings, gtk_theme, gtk_theme))
+                end
+            end)
 
-    helpers.run.is_installed("xsettingsd", function(is_installed)
-        if is_installed == true then
-            local path = os.tmpname()
-            local file = filesystem.file.new_for_path(path)
-            file:write('Net/ThemeName "FlatColor" \n', function(error)
-                if error == nil then
-                    awful.spawn(string.format("timeout 0.2s xsettingsd -c %s", path), false)
+            helpers.run.is_installed("xfconf-query", function(is_installed)
+                if is_installed == true then
+                    awful.spawn.with_shell(string.format(refresh_xfsettings, gtk_theme, gtk_theme))
+                end
+            end)
+
+            helpers.run.is_installed("xsettingsd", function(is_installed)
+                if is_installed == true then
+                    local path = os.tmpname()
+                    local file = filesystem.file.new_for_path(path)
+
+                    file:write(string.format('Net/ThemeName "%s" \n', gtk_theme), function(error)
+                        if error == nil then
+                            awful.spawn(string.format("timeout 0.2s xsettingsd -c %s", path), false)
+                        end
+                    end)
                 end
             end)
         end
