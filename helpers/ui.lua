@@ -5,10 +5,6 @@ local ipairs = ipairs
 
 local _ui = {}
 
-function _ui.colorize_text(text, color)
-    return "<span foreground='" .. color .. "'>" .. text .. "</span>"
-end
-
 function _ui.rrect()
     return function(cr, width, height)
         local radius = beautiful.border_radius
