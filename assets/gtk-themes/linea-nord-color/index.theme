@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=X-GNOME-Metatheme
+Name=Linea Nord Color
+Comment=GTK Theme
+Encoding=UTF-8
+
+[X-GNOME-Metatheme]
+GtkTheme=Linea Nord Color
+MetacityTheme=Linea Nord Color
+IconTheme=Luna-Light
+CursorTheme=Luna
+CursorSize=24

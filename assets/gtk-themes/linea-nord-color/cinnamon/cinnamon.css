@@ -1,0 +1,447 @@
+*{color: white; icon-size: 16px; selection-background-color: rgba(255,255,255, 0.15); selected-color: white;}
+
+#panel,
+.menu-application-button:highlighted { font-weight: bold;}
+
+.calendar-day-heading{color: rgba(255,255,255, 0.5); padding-top: 16px;}
+
+.popup-subtitle-menu-item,
+.calendar-other-month-day,
+.calendar-week-number,
+.datemenu-date-label,
+.menu-category-button-greyed *,
+.menu-selected-app-box  *,
+.run-dialog-label,
+.popup-menu-item:insensitive *,
+.popup-inactive-menu-item *,
+.popup-menu-item:insensitive,
+.popup-inactive-menu-item{color: rgba(255,255,255, 0.35);}
+
+.menu-category-button-greyed StIcon {opacity: 0.5;}
+
+/* Size of elements */
+
+#notification { spacing-rows: 10px; spacing-columns: 10px; margin-from-right-edge-of-screen: 20px; width: 34em; }
+
+.applet-box{padding: 0 10px; spacing: 8px;}
+.applet-box.vertical{padding: 10px 0;}
+
+.window-list-item-box{spacing: 6px;}
+
+.window-list-item-box.top,
+.window-list-item-box.bottom { padding: 0 6px; }
+.window-list-item-box.left,
+.window-list-item-box.right { padding: 6px 0; }
+
+.sound-player StButton:small{padding: 0;}
+
+StScrollBar StButton{padding: 3px;}
+
+.menu-category-button,
+.menu-category-button-selected,
+.menu-application-button,
+.menu-application-button-selected,
+.menu-category-button-greyed,
+#Tooltip {padding: 6px;}
+
+StEntry,
+.menu-favorites-box,
+.menu-favorites-button,
+.menu-applications-inner-box,
+.menu-applications-outer-box,
+#notification,
+StButton.notification-applet-padding,
+.switcher-list,
+.window-caption,
+#LookingGlassDialog,
+.calendar,
+.calendar StButton,
+.calendar-week-number,
+.datemenu-date-label,
+.info-osd,
+.osd-window,
+.window-list-preview,
+.sound-player StButton
+{padding: 8px;}
+
+.popup-menu-item{padding: 6px 20px;}
+
+.modal-dialog { padding: 20px; }
+
+.menu-application-button-label:ltr,
+.menu-application-button-label:rtl,
+.menu-category-button-label:ltr,
+.menu-category-button-label:rtl{ padding: 0 6px;}
+
+.menu-search-box:ltr,
+.menu-categories-box{ padding-left: 16px;}
+.menu-categories-box{ padding-top: 8px;}
+
+.notification-button,
+.modal-dialog StButton {margin: 0 4px;}
+
+.notification-button{padding: 6px;}
+
+.modal-dialog StButton {padding: 6px 64px;}
+
+.run-dialog-entry{ width: 20em;}
+.run-dialog{padding: 0px 16px; padding-top: 8px;}
+
+.popup-separator-menu-item { -margin-horizontal: 1.5em;	height: 1px;}
+
+.switcher-list .thumbnail { width: 260px;}
+
+.workspace-thumbnails {spacing: 14px;}
+
+.workspace-close-button {-cinnamon-close-overlap: 32px; }
+
+.sound-player StBoxLayout,
+.popup-menu-item {  spacing: 1em;}
+
+.popup-menu-content { padding: 4px 0;}
+
+.modal-dialog-button-box { spacing: 21px; padding-top: 21px;}
+
+.keyboard-layout,
+.keyboard-row { spacing: 10px;}
+
+.osd-window .level {height: 8px;}
+
+.menu{margin: 8px;}
+
+.sound-player-overlay { padding: 12px;}
+
+.menu-selected-app-box { padding: 8px; text-align: right;}
+
+/* Background */
+
+#notification StButton,
+.switcher-list StButton,
+.grouped-window-list-thumbnail-menu StButton,
+.calendar StButton,
+.sound-player StButton:small,
+StButton.notification-applet-padding,
+StButton.notification-applet-padding:hover,
+StButton.notification-applet-padding:active,
+StButton.notification-applet-padding:checked,
+.sound-player-overlay StButton,
+StButton.popup-menu-item,
+.window-list-preview .window-close,
+.window-list-preview .window-close:hover,
+.window-list-preview .window-close:active,
+.window-list-preview .window-close:checked{background-color: transparent; border-color: transparent; box-shadow: none;}
+
+#panel,
+.sound-player-overlay{background-color: rgba(46,57,63, 0.8);}
+
+StEntry,
+.menu-favorites-box,
+#notification,
+.menu #notification
+{background-color: #374852;}
+
+StButton,
+#notification .notification-button
+{background-color: transparent;}
+
+.menu,
+.popup-combo-menu,
+.modal-dialog,
+.switcher-list,
+.expo-background,
+#LookingGlassDialog,
+#keyboard,
+.info-osd,
+.osd-window,
+.window-list-preview,
+.grouped-window-list-badge,
+.workspace-close-button,
+.workspace-close-button:hover,
+.workspace-close-button:active,
+.workspace-close-button:checked,
+.window-close,
+.window-close:hover,
+.window-close:active,
+.window-close:checked{background-color: #2e393f;}
+
+.popup-sub-menu{ background-color: rgba(255,255,255, 0.05);}
+
+StButton,
+#notification .notification-button{box-shadow: none;}
+
+StButton:hover,
+#notification .notification-button:hover
+{}
+
+StButton:active,
+StButton:checked,
+#notification .notification-button:active,
+#notification .notification-button:checked
+{box-shadow: inset 0 0 0 9999px rgba(255,255,255, 0.1);}
+
+/*.applet-box:hover,*/
+.popup-menu-item:active,
+.menu-favorites-button:hover,
+.menu-category-button-selected,
+.menu-application-button-selected,/*
+.grouped-window-list-item-box:hover,
+.grouped-window-list-item-box:active:hover,
+.window-list-item-box:hover,
+.window-list-item-box:active:hover,*/
+.workspace-graph .workspace,
+.osd-window .level,
+.panelLeft:dnd,
+.panelCenter:dnd,
+.panelRight:dnd,
+.sound-player StButton:small:hover,
+.sound-player-overlay StButton:hover,
+.calendar-change-month-back:hover,
+.calendar-change-month-forward:hover
+{ background-color: rgba(255,255,255, 0.1); box-shadow: none;}
+
+.window-list-item-box:focus,
+.window-list-item-box:active:focus,
+.grouped-window-list-item-box:focus,
+.grouped-window-list-item-box:active:focus,
+.workspace-graph .workspace:active,
+.panel-dummy:entered,
+.sound-player StButton:small:active,
+.sound-player-overlay StButton:active,
+.calendar-change-month-back:active,
+.calendar-change-month-forward:active
+{ background-color: rgba(255,255,255, 0.15); box-shadow: none;}
+
+.window-list-item-box,
+.grouped-window-list-item-box:active{ background-color: rgba(0,0/**/,0, 0.01);}
+
+.panel-bottom .window-list-item-box:focus,
+.panel-bottom .grouped-window-list-item-box:active{ box-shadow: inset 0 -2px white;}
+
+.panel-top .window-list-item-box:focus,
+.panel-top .grouped-window-list-item-box:active{ box-shadow: inset 0 2px white;}
+
+.panel-right .window-list-item-box:focus,
+.panel-right .grouped-window-list-item-box:active{ box-shadow: inset -2px 0 white;}
+
+.panel-left .window-list-item-box:focus,
+.panel-left .grouped-window-list-item-box:active{ box-shadow: inset 2px 0 white;}
+
+.progress{background-color: rgba(51,185,84,0.5);}
+
+.panel-dummy{ background-color: rgba(255,255,255, 0.5);}
+
+/* Borders */
+
+.menu,
+.popup-combo-menu,
+.modal-dialog,
+.menu #notification,
+.menu-favorites-box,
+StButton,
+StEntry,
+.grouped-window-list-badge,
+.switcher-list,
+#LookingGlassDialog,
+.info-osd,
+.osd-window,
+.window-list-preview,
+.workspace-close-button,
+.window-close,
+#notification .notification-button
+{border: 1px solid;}
+
+.panel-bottom,
+.menu-selected-app-box{border-top: 1px solid;}
+.panel-top{border-bottom: 1px solid;}
+.panel-left{border-right: 1px solid;}
+.panel-right{border-left: 1px solid;}
+
+.menu,
+.popup-combo-menu,
+.modal-dialog,
+.menu #notification,
+.menu-favorites-box,
+StButton,
+StEntry,
+.grouped-window-list-badge,
+.switcher-list,
+#LookingGlassDialog,
+.info-osd,
+.osd-window,
+.window-list-preview,
+.workspace-close-button,
+.window-close,
+#notification .notification-button,
+.panel-bottom,
+.panel-top,
+.panel-left,
+.panel-right
+{border-color: rgba(255,255/**/,255, 0.2);}
+
+.popup-separator-menu-item{background-color: rgba(255,255/**/,255, 0.2);}
+
+/* Border Radius */
+
+StEntry,
+StButton,
+#Tooltip,
+#notification
+{border-radius: 3px;}
+
+.osd-window .level,
+.osd-window .level-bar,
+.menu,
+.popup-combo-menu,
+.modal-dialog,
+.menu-favorites-button,
+.menu-favorites-box,
+.switcher-list,
+.menu-category-button-selected,
+.menu-application-button-selected,
+.window-caption,
+#LookingGlassDialog,
+.info-osd,
+.osd-window{border-radius: 4px;}
+
+StScrollBar StButton{border-radius: 9999px; border-color: transparent; background-clip: border-box;}
+
+.grouped-window-list-badge,
+.workspace-close-button,
+.window-close{border-radius: 9999px;}
+
+.workspace-graph .workspace .windows {
+	-active-window-background: rgba(140, 140, 140, 1.0);
+	-active-window-border: rgba(0, 0, 0, 0.7);
+	-inactive-window-background: rgba(140, 140, 140, 1.0);
+	-inactive-window-border: rgba(0, 0, 0, 0.7);
+}
+
+.workspace-graph .workspace:active .windows {
+	-active-window-background: rgba(255, 255, 255, 1.0);
+	-active-window-border: rgba(0, 0, 0, 0.9);
+	-inactive-window-background: rgba(140, 140, 140, 1.0);
+	-inactive-window-border: rgba(0, 0, 0, 0.7);
+}
+
+.popup-slider-menu-item {
+    height: 1em;
+    -slider-height: 6px;
+    -slider-background-color: rgba(255,255,255, 0.2);
+    -slider-active-background-color: white;
+    -slider-border-width: 1px;
+    -slider-handle-radius: 0em;
+}
+
+.osd-window .level-bar,
+StScrollBar StButton,
+StScrollBar StButton:hover,
+StScrollBar StButton:active,
+StScrollBar StButton:checked
+{background-color: white; box-shadow: none;}
+
+/* Images */
+
+.workspace-close-button,
+.window-close { background-image: url("../general/dark-close-window.svg"); height: 32px; width: 32px;}
+
+.workspace-add-button {
+	background-image: url("../general/dark-add-workspace.svg");
+	height: 200px;
+	width: 48px;
+	transition-duration: 300;
+}
+
+.calendar-change-month-back,
+.calendar-change-month-forward:rtl{background-image: url("../general/dark-calendar-arrow-left.svg");}
+.calendar-change-month-back:rtl,
+.calendar-change-month-forward {background-image: url("../general/dark-calendar-arrow-right.svg");}
+
+.ripple-box {
+	width: 104px;
+	height: 104px;
+	background-image: url("../general/corner-ripple.svg");
+}
+.ripple-box:rtl {
+	background-image: url("../general/corner-ripple.svg");
+}
+
+/* Check Boxes */
+.check-box CinnamonGenericContainer {
+    spacing: .2em;
+}
+
+.toggle-switch { width: 16px;  height: 16px;}
+
+.check-box StBin,
+.check-box:focus StBin {
+    width: 16px;
+    height: 16px;
+    background-image: url("../general/dark-checkbox-off.svg");
+}
+
+.check-box:checked StBin,
+.check-box:focus:checked StBin{
+    background-image: url("../general/dark-checkbox.svg");
+}
+
+.check-box StLabel {  font-weight: normal; }
+
+.radiobutton CinnamonGenericContainer {
+    spacing: .2em;
+    height: 18px;
+    padding-top: 2px;
+}
+
+.radiobutton StBin,
+.radiobutton:focus StBin {
+    width: 16px;
+    height: 16px;
+    background-image: url("../general/dark-radiobutton-off.svg");
+    border-radius: 9999px;
+}
+
+.radiobutton:checked StBin,
+.radiobutton:focus:checked StBin { background-image: url("../general/dark-radiobutton.svg"); }
+
+.radiobutton StLabel {
+    padding-top: 4px;
+    box-shadow: none;
+}
+
+.toggle-switch-us,
+.toggle-switch-intl {
+    width: 32px;
+    height: 16px;
+    background-image: url("../general/dark-switch-off.svg");
+}
+
+.toggle-switch-us:checked,
+.toggle-switch-intl:checked{ background-image: url("../general/dark-switch-on.svg"); }
+
+.tile-preview,
+.tile-hud {	background-color: rgba(100,100,100, 0.3); border: 1px solid rgba(100,100,100, 0.5);}
+
+.applet-separator-line {
+    width: 1px;
+    background: rgba(255,255,255, 0.2);
+}
+
+.applet-separator-line-vertical {
+    border: 0px solid rgba(255,255,255, 0.2);
+    border-bottom-width: 1px;
+}
+
+/* this is for user applet */
+.user-label { color: white;}
+
+.user-icon{border: 2px solid white;}
+
+/* Tooltip */
+
+#Tooltip,
+.window-caption
+{background-color: rgba(0,/**/0,0, 0.8); border: 1px solid rgba(255,/**/255,255, 0.2);}
+
+* #Tooltip,
+.window-caption *{color: rgba(255,/**/255,255, 1.0);}
+

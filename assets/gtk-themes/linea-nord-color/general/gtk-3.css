@@ -1,0 +1,215 @@
+/* GTK3 */
+
+*{
+	-GtkToolButton-icon-spacing: 4;
+	-GtkTextView-error-underline-color: @error_color;
+	-GtkScrolledWindow-scrollbar-spacing: 0;
+	-GtkToolItemGroup-expander-size: 11;
+	-GtkWidget-text-handle-width: 20;
+	-GtkWidget-text-handle-height: 20;
+	-GtkDialog-button-spacing: 4;
+	-GtkDialog-action-area-border: 0;
+	-GtkScrollbar-has-backward-stepper: false;
+	-GtkScrollbar-has-forward-stepper: false;
+	outline-color: alpha(currentcolor,0.3);
+	outline-style: dashed;
+	outline-offset: -3px;
+	outline-width: 1px;
+	-gtk-outline-radius: 4.0px;
+}
+
+frame > border,
+.frame
+{border: 1px solid @gtk_borders;}
+
+button.circular{ -gtk-outline-radius: 9999px;}
+
+*:disabled {-gtk-icon-effect: dim;}
+
+.needs-attention > label{
+ animation: needs_attention 150ms ease-in;
+ background-image: -gtk-gradient(radial, center center, 0, center center, 0.5, to(@textColorPrimary), to(transparent)), -gtk-gradient(radial, center center, 0, center center, 0.5, to(transparent), to(transparent));
+ background-size: 6px 6px, 6px 6px;
+ background-repeat: no-repeat; background-position: right 3px, right 4px;
+}
+
+/* Entries */
+
+entry image.left {
+	padding-left: 0;
+	padding-right: 5px;
+}
+
+entry image.right {
+	padding-right: 0;
+	padding-left: 5px;
+}
+
+/* Overshoot */
+
+scrolledwindow overshoot.top {background-image: radial-gradient(farthest-side at top, alpha(@gtk_selected_bg_color,0.2) 25%, alpha(@gtk_selected_bg_color,0.2)), radial-gradient(farthest-side at top, transparent, transparent); background-size: 100% 25%, 100% 50%; background-repeat: no-repeat; background-position: top; background-color: transparent; border: none; box-shadow: none;}
+
+scrolledwindow overshoot.bottom {background-image: radial-gradient(farthest-side at top, alpha(@gtk_selected_bg_color,0.2) 25%, alpha(@gtk_selected_bg_color,0.2)), radial-gradient(farthest-side at bottom, transparent, transparent); background-size: 100% 25%, 100% 50%; background-repeat: no-repeat; background-position: bottom; background-color: transparent; border: none; box-shadow: none;}
+
+scrolledwindow overshoot.left { background-image: radial-gradient(farthest-side at left, alpha(@gtk_selected_bg_color,0.2) 25%, alpha(@gtk_selected_bg_color,0.2)), radial-gradient(farthest-side at left, transparent, transparent); background-size: 25% 100%, 50% 100%; background-repeat: no-repeat; background-position: left; background-color: transparent; border: none; box-shadow: none; }
+
+scrolledwindow overshoot.right { background-image: radial-gradient(farthest-side at left, alpha(@gtk_selected_bg_color,0.2) 25%, alpha(@gtk_selected_bg_color,0.2)), radial-gradient(farthest-side at right, transparent, transparent); background-size: 25% 100%, 50% 100%; background-repeat: no-repeat; background-position: right; background-color: transparent; border: none; box-shadow: none; }
+
+/* Separators */
+
+stacksidebar.sidebar:dir(ltr) list,
+stacksidebar.sidebar.left list,
+stacksidebar.sidebar.left:dir(rtl) list,
+.sidebar:dir(ltr),
+.sidebar.left,
+.sidebar.left:dir(rtl)
+{
+	border-right: 1px solid @gtk_borders;
+	border-left-style: none;
+	min-width: 0;
+}
+
+stacksidebar.sidebar:dir(rtl) list,
+stacksidebar.sidebar.right list,
+.sidebar:dir(rtl),
+.sidebar.right
+{
+	border-left: 1px solid @gtk_borders;
+	border-right-style: none;
+	min-width: 0;
+}
+
+/* Menus */
+
+menubar,
+.menubar { -GtkWidget-window-dragging: true;}
+
+toolbar { -GtkWidget-window-dragging: false;}
+
+popover.background
+{ border: 1px solid @gtk_transparent_borders; 	box-shadow: 0 1px 2px @gtk_menu_shadow; }
+
+menu,
+.menu,
+popover.background
+{background-color: @gtk_bg_color;}
+
+/* Tooltips */
+
+tooltip.background { background-color: alpha(black,0.9); background-clip: padding-box; }
+
+tooltip.background.csd:first-child,
+tooltip.background.csd:last-child,
+tooltip.background.csd decoration
+{border-radius: 4.0px;}
+
+tooltip.background label { padding: 0px;}
+tooltip.background.csd decoration { padding: 0; box-shadow: 0 0 0 1px alpha(white,0.2); }
+tooltip * { background-color: transparent;	color: white;}
+
+/* Scale Marks */
+scale value {
+	color: alpha(currentColor,0.4);
+}
+
+scale marks {
+	color: alpha(currentColor,0.4);
+}
+
+scale marks.top {
+	margin-bottom: 1px;
+	margin-top: -4px;
+}
+
+scale marks.bottom {
+	margin-top: 1px;
+	margin-bottom: -4px;
+}
+
+scale marks.top {
+	margin-right: 1px;
+	margin-left: -4px;
+}
+
+scale marks.bottom {
+	margin-left: 1px;
+	margin-right: -4px;
+}
+
+scale.fine-tune marks.top {
+	margin-bottom: 0px;
+	margin-top: -2px;
+}
+
+scale.fine-tune marks.bottom {
+	margin-top: 0px;
+	margin-bottom: -2px;
+}
+
+scale.fine-tune marks.top {
+	margin-right: 0px;
+	margin-left: -2px;
+}
+
+scale.fine-tune marks.bottom {
+	margin-left: 0px;
+	margin-right: -2px;
+}
+
+scale.horizontal indicator {
+	min-height: 8px;
+	min-width: 1px;
+}
+
+.horizontal.fine-tune indicator {
+	min-height: 2px;
+}
+
+.vertical indicator {
+	min-height: 1px;
+	min-width: 8px;
+}
+
+scale.vertical.fine-tune indicator {	min-width: 2px;}
+
+/* Desktops */
+.places-treeview {
+  -NemoPlacesTreeView-disk-full-bg-color: mix(@gtk_bg_color,@gtk_fg_color,0.3);
+  -NemoPlacesTreeView-disk-full-fg-color: @gtk_fg_color;
+  -NemoPlacesTreeView-disk-full-bar-width: 2px;
+  -NemoPlacesTreeView-disk-full-bar-radius: 0;
+  -NemoPlacesTreeView-disk-full-bottom-padding: 1px;
+  -NemoPlacesTreeView-disk-full-max-length: 80px;
+}
+
+.budgie-session-dialog, .budgie-polkit-dialog{-gtk-icon-style: regular;}
+
+na-tray-applet {-NaTrayApplet-icon-padding: 4px; -NaTrayApplet-icon-size: 16;}
+
+/* Windows Decorations */
+
+decoration{ box-shadow: 0 2px 6px @gtk_shadow,0 0 0 1px @gtk_transparent_borders; margin: 6px;}
+
+decoration:backdrop{ box-shadow: 0 2px 6px alpha(@gtk_shadow,0.5),0 0 0 1px @gtk_transparent_borders;}
+
+dialog decoration,
+messagedialog decoration{ box-shadow: 0 2px 4px @gtk_shadow,0 0 0 1px @gtk_transparent_borders;}
+
+dialog decoration:backdrop,
+messagedialog decoration:backdrop{ box-shadow: 0 2px 4px alpha(@gtk_shadow,0.5),0 0 0 1px @gtk_transparent_borders;}
+
+.csd.popup decoration {box-shadow: 0 1px 2px @gtk_menu_shadow; border-radius: 4.0px; }
+
+.ssd decoration{box-shadow: 0 0 0 1px @gtk_transparent_borders;}
+
+.window-frame, .window-frame:backdrop {
+    box-shadow: 0 0 0 black; /* removes shadow completely */
+    border-style: none;
+    margin: 1px; /* this retains the ability to resize with the mouse, if 1px is too narrow, set some higher values */
+    border-radius: 0;
+}
+
+decoration, decoration:backdrop {
+box-shadow: none;
+margin: 2px;
+}

@@ -1,0 +1,395 @@
+*{text-shadow: none; icon-shadow: none;}
+
+.prompt-dialog-error-label {color: orange;}
+ StEntry StIcon.capslock-warning { warning-color: orange;}
+
+.popup-menu,
+.popup-menu-item.selected,
+.popup-menu-item:active,
+.popup-inactive-menu-item,
+.calendar,
+.events-button,
+.world-clocks-button,
+.weather-button,
+.calendar .calendar-month-label,
+.calendar .calendar-day-base.calendar-day-heading,
+.calendar .calendar-nonwork-day,
+.calendar .calendar-day-with-events.calendar-work-day,
+.datemenu-today-button,
+.datemenu-today-button:hover,
+.datemenu-today-button:focus,
+.datemenu-today-button:active,
+.calendar .calendar-day-base:active,
+.calendar .calendar-day-base:checked,
+.calendar .calendar-day-base:selected,
+.calendar .calendar-today,
+.events-button .events-title,
+.world-clocks-button .world-clocks-header,
+.weather-button .weather-header,
+.message,
+.message .message-close-button,
+.message-media-control,
+.message-list .button,
+.notification-banner StButton,
+.modal-dialog,
+.dialog-list,
+.modal-dialog StButton,
+.modal-dialog StEntry,
+.nm-dialog-item:selected,
+.osd-window,
+.switcher-list,
+.switcher-list .item-box:selected,
+.switcher-arrow,
+.popup-menu .button,
+.popup-menu StEntry
+{color: white;}
+
+.calendar .calendar-other-month-day,
+.calendar .calendar-week-number,
+.world-clocks-button .world-clocks-time,
+.world-clocks-button .world-clocks-timezone,
+.weather-button .weather-forecast-time,
+.message .message-secondary-bin > .event-time,
+.message-media-control:insensitive
+{color: rgba(255,255,255, 0.3);}
+
+.popup-menu-item:insensitive,
+.popup-inactive-menu-item:insensitive,
+.events-button .event-time,
+.world-clocks-button .world-clocks-city,
+.message .message-body,
+.message-list .button:insensitive,
+.modal-dialog StButton:insensitive,
+.modal-dialog StEntry:insensitive,
+StEntry StLabel.hint-text,
+.popup-menu StEntry:insensitive
+{color: rgba(255,255,255, 0.5);}
+
+.calendar .calendar-day-with-events {text-decoration: underline;}
+
+.search-entry,
+.dash-label,
+#panel,
+#panel.solid,
+#panel:overview,
+#panel.solid:overview,
+.panel-button,
+.keyboard-key
+{color: white;}
+
+.search-entry StLabel.hint-text
+{color: rgba(255,255,255, 0.5);}
+
+/* Light */
+
+.datemenu-today-button,
+.calendar .calendar-week-number,
+.calendar .pager-button:focus,
+.datemenu-today-button:focus,
+.calendar .calendar-day-base:focus,
+.message-media-control:focus,
+.message-media-control:selected,
+.message StButton.message-close-button,
+.audio-device-selection-dialog .audio-selection-box StButton,
+.app-well-app.app-folder,
+.app-folder-dialog .folder-name-container .edit-folder-button,
+.app-folder-dialog StEntry,
+.panel-button .clock,
+.panel-button,
+.keyboard-key.default-key,
+.keyboard-key.default-key:hover
+{background-color: transparent; box-shadow: none; border-color: transparent;}
+
+.modal-dialog StButton,
+.message-list .button,
+.notification-banner StButton
+{background-color: transparent;}
+
+.calendar,
+.events-button,
+.world-clocks-button,
+.weather-button,
+.message,
+.dialog-list,
+.nm-dialog-scroll-view,
+.modal-dialog StEntry,
+.popup-menu .button,
+.popup-menu StEntry,
+.popup-sub-menu
+{background-color: #374852; box-shadow: none;}
+
+.modal-dialog
+{background-color: #2e393f;}
+
+.osd-window,
+.switcher-list
+{background-color: rgba(0,0,0, 0.8);}
+
+/* States */
+.message-list .button:hover,
+.notification-banner StButton:hover,
+.modal-dialog StButton:hover,
+.popup-menu .button:hover,
+.message-list .button,
+.notification-banner StButton,
+.modal-dialog StButton,
+.popup-menu .button
+{box-shadow: none;}
+
+.message-list .button:active,
+.message-list .button:checked,
+.notification-banner StButton:active,
+.notification-banner StButton:checked,
+.modal-dialog StButton:active,
+.modal-dialog StButton:checked,
+.popup-menu .button:active,
+.popup-menu .button:checked
+{box-shadow: inset 0 0 0 9999px rgba(255,255,255, 0.1);}
+
+/* Flat */
+.calendar .pager-button:hover,
+.datemenu-today-button:hover,
+.calendar .calendar-day-base:hover,
+.message-media-control:hover,
+.message StButton.message-close-button:hover,
+.audio-device-selection-dialog .audio-selection-box StButton:hover,
+.switcher-list .item-box:outlined
+{background-color: rgba(255,255,255, 0.0); box-shadow: none;}
+
+.popup-menu-item.selected,
+.popup-menu-item:checked,
+.popup-menu-item:active
+{background-color: rgba(255,255,255, 0.1); box-shadow: none;}
+
+.calendar .pager-button:active,
+.datemenu-today-button:active,
+.calendar .calendar-day-base:active,
+.calendar .calendar-day-base:checked,
+.calendar .calendar-day-base:selected,
+.message-media-control:active,
+.message StButton.message-close-button:active,
+.nm-dialog-item:selected,
+.audio-device-selection-dialog .audio-selection-box StButton:active,
+.switcher-list .item-box:selected
+{background-color: rgba(255,255,255, 0.15); box-shadow: none;}	
+
+.popup-separator-menu-item .popup-separator-menu-item-separator,
+.calendar .calendar-today,
+.calendar .calendar-today:hover,
+.calendar .calendar-today:selected
+{background-color: rgba(255,255,255, 0.2); box-shadow: none;}
+
+.message-list .button:insensitive,
+.modal-dialog StButton:insensitive
+{background-color: transparent; box-shadow: none;}
+
+/* Dark */
+
+.dash-label,
+.dash-background
+{background-color: rgba(0,0,0, 0.8);}
+
+#overviewGroup,
+.app-folder-dialog,
+#keyboard
+{ background-color: #2e393f; }
+
+.workspace-background{box-shadow: 0 0 8px rgba(0,/**/0,0, 0.3);}
+
+#keyboard{box-shadow: inset 0 1px rgba(255,/**/255,255, 0.15);}
+
+.search-entry,
+.search-section-content,
+.keyboard-key
+{ border-color: transparent; box-shadow: none;}
+
+.list-search-result:focus,
+.search-provider-icon:focus,
+.list-search-result:hover,
+.search-provider-icon:hover,
+.list-search-result:selected,
+.search-provider-icon:selected,
+.show-apps:hover .overview-icon,
+.show-apps:selected .overview-icon,
+.show-apps:focus .overview-icon,
+.app-well-app:hover .overview-icon,
+.app-well-app:selected .overview-icon,
+.grid-search-result:hover .overview-icon,
+.grid-search-result:selected .overview-icon,
+.app-well-app:focus .overview-icon,
+.grid-search-result:focus .overview-icon,
+.app-folder-dialog .folder-name-container .edit-folder-button:hover,
+.keyboard-key,
+.keyboard-key:hover,
+.keyboard-key.default-key:active,
+.tile-preview
+{background-color: rgba(255,255,255, 0.1);}
+
+.search-entry,
+.search-section-content,
+.list-search-result:active,
+.search-provider-icon:active,
+.list-search-result:checked,
+.search-provider-icon:checked,
+.show-apps:active .overview-icon,
+.show-apps:checked .overview-icon,
+.show-apps:focus .overview-icon,
+.show-apps:checked .overview-icon,
+.app-well-app:active .overview-icon,
+.app-well-app:checked .overview-icon,
+.grid-search-result:active .overview-icon,
+.grid-search-result:checked .overview-icon,
+.app-folder-dialog .folder-name-container .edit-folder-button:active,
+.app-folder-dialog .folder-name-container .edit-folder-button:checked,
+.keyboard-key:active,
+.dash-separator
+{background-color: rgba(255,255,255, 0.15); }
+
+/* Borders */
+.panel-button,
+.keyboard-key
+{border: none;}
+
+.notification-banner StButton,
+.modal-dialog,
+.modal-dialog StButton,
+.modal-dialog StEntry,
+.osd-window,
+.switcher-list,
+.popup-menu .button,
+.dash-label,
+.dash-background,
+.app-folder-dialog,
+.app-folder-dialog StEntry,
+.tile-preview,
+.popup-menu StEntry
+{border: 1px solid;}
+
+.datemenu-calendar-column,
+.popup-sub-menu,
+.calendar,
+.events-button,
+.world-clocks-button,
+.weather-button,
+.message,
+.message-list .button,
+.notification-banner StButton,
+.modal-dialog,
+.modal-dialog StButton,
+.nm-dialog-scroll-view,
+.modal-dialog StEntry,
+.osd-window,
+.switcher-list,
+.popup-menu .button,
+.popup-menu StEntry
+{border-color: rgba(255,255,255, 0.2);}
+
+.dash-label,
+.dash-background,
+.app-folder-dialog,
+.tile-preview
+{border-color: rgba(255,255,255, 0.2);}
+
+/* Sizes */
+.notification-banner StButton{margin: 8px;}
+
+.popup-separator-menu-item .popup-separator-menu-item-separator {margin: 6px 0px;}
+
+.modal-dialog,
+#LookingGlassDialog .notebook-tab StButton
+{padding: 8px;}
+
+StButton.modal-dialog-linked-button {margin: 0 8px;}
+
+/* Radius */
+
+ #panel .panel-corner{-panel-corner-opacity: 0;}
+
+.message-media-control,
+.panel-button,
+#keyboard
+{border-radius: 0;}
+
+StButton,
+StEntry,
+.calendar,
+.window-caption,
+.dash-label,
+.switcher-list StButton,
+.overview-icon
+{ border-radius: 4px;}
+
+.modal-dialog,
+.dash-background,
+.osd-window,
+.app-folder-dialog,
+.switcher-list,
+.search-section-content
+{border-radius: 4px;}
+
+.window-close,
+.search-entry,
+.app-folder-dialog .folder-name-container .edit-folder-button,
+StScrollBar StButton
+{border-radius: 9999px;}
+
+.calendar .calendar-day-base{ width: 32px; height: 32px; border-radius: 18px; border: 1px solid transparent;}
+
+.message-media-control:last-child:ltr { border-radius: 0 3px 3px 0; }
+.message-media-control:last-child:rtl { border-radius: 3px 0 0 3px; }
+
+/* Popovers */
+.popup-menu-boxpointer,
+.candidate-popup-boxpointer {
+	-arrow-border-radius: 6px;
+	-arrow-background-color: #2e393f;
+	-arrow-border-color: rgba(255,255,255, 0.2);
+}
+
+/* Slider */
+.slider{-barlevel-height: 7px;}
+.osd-window .level{-barlevel-height: 8px;}
+
+.slider,
+.osd-window .level{
+	-barlevel-background-color: rgba(255,255,255, 0.1);
+	-barlevel-border-width: 0px;
+	-barlevel-border-color: transparent;
+	-barlevel-active-background-color: white;
+	-barlevel-active-border-color: transparent;
+	-barlevel-overdrive-color: red;
+	-barlevel-overdrive-border-color: red;
+	-barlevel-overdrive-separator-width: 2px;
+	-slider-handle-radius: 0px;
+	-slider-handle-border-width: 0px;
+	-slider-handle-border-color: red;
+	color: transparent;
+	}
+	
+/* Switchers */
+.toggle-switch{height: 16px; width: 32px;}
+
+.toggle-switch,
+.toggle-switch-us{background-image: url("../general/dark-switch-off.svg");}
+
+.toggle-switch:checked,
+.toggle-switch-us:checked{background-image: url("../general/dark-switch-on.svg");}
+
+.check-box StBin{height: 16px; width: 16px;}
+
+.check-box StBin,
+.check-box:focus StBin{background-image: url("../general/dark-checkbox-off.svg");}
+
+.check-box:checked StBin,
+.check-box:focus:checked StBin{background-image: url("../general/dark-checkbox.svg");}
+
+/* Scrollbars */
+.modal-dialog StScrollBar StButton,
+.popup-menu StScrollBar StButton
+,
+
+#overviewGroup StScrollBar StButton
+{background-color: #fff; border: none; box-shadow: none;}
+
+
+

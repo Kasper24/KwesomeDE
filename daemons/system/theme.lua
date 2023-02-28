@@ -32,8 +32,9 @@ local theme = {}
 local instance = nil
 
 local WALLPAPERS_PATH = filesystem.filesystem.get_awesome_config_dir("assets/wallpapers")
-local GTK_THEME_PATH = filesystem.filesystem.get_awesome_config_dir("assets/FlatColor")
-local INSTALLED_GTK_THEME_PATH = os.getenv("HOME") .. "/.local/share/themes/"
+local GTK_THEME_FLAT_COLOR_PATH = filesystem.filesystem.get_awesome_config_dir("assets/gtk-themes/FlatColor")
+local GTK_THEME_LINEA_NORD_COLOR = filesystem.filesystem.get_awesome_config_dir("assets/gtk-themes/linea-nord-color")
+local INSTALLED_GTK_THEMES_PATH = os.getenv("HOME") .. "/.local/share/themes/"
 local BASE_TEMPLATES_PATH = filesystem.filesystem.get_awesome_config_dir("assets/templates")
 local BACKGROUND_PATH = filesystem.filesystem.get_cache_dir("") .. "wallpaper.png"
 local BLURRED_BACKGROUND_PATH = filesystem.filesystem.get_cache_dir("") .. "blurred_wallpaper.png"
@@ -425,7 +426,8 @@ local function generate_templates(self)
 end
 
 local function install_gtk_theme()
-    awful.spawn(string.format("cp -r %s %s", GTK_THEME_PATH, INSTALLED_GTK_THEME_PATH), false)
+    awful.spawn(string.format("cp -r %s %s", GTK_THEME_FLAT_COLOR_PATH, INSTALLED_GTK_THEMES_PATH), false)
+    awful.spawn(string.format("cp -r %s %s", GTK_THEME_LINEA_NORD_COLOR, INSTALLED_GTK_THEMES_PATH), false)
 end
 
 local function image_wallpaper(self, screen)

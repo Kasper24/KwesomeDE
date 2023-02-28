@@ -1,0 +1,245 @@
+gtk_color_scheme = "fg_color:#fff\nbg_color:#2e393f\nbase_color:#374852\ntext_color:#fff\nselected_bg_color:#628297\nselected_fg_color:#fff\ntooltip_bg_color:#000\ntooltip_fg_color:#fff\nborder_color:#555"
+
+style "default"
+{
+	xthickness = 2
+	ythickness = 2
+
+	GtkEntry::cursor_color    = @fg_color
+	GtkEntry::cursor_aspect_ratio = 0.05
+
+	GtkRange::stepper-size = 20
+	GtkScale       ::slider-length        = 20
+	GtkScale       ::trough-side-details  = 0	       # 0 = thin slider, >0 = thick slider
+
+	GtkTextView::cursor_aspect_ratio = 0.1
+	GtkTextView::cursor_color    = @fg_color
+
+	GtkTreeView::expander-size = 16
+
+	GtkWidget::focus-padding = 0
+	GtkWidget::interior_focus = 2
+	GtkWidget::link-color = @selected_bg_color
+	GtkWidget::visited-link-color = shade(0.8,@selected_bg_color)
+	  
+	GtkToolbar     :: shadow-type		= GTK_SHADOW_NONE
+	GtkMenuBar     :: shadow-type        = GTK_SHADOW_NONE
+	  
+	GtkToolbar     ::internal-padding     = 4
+	  
+	GtkScrollbar		::has-backward-stepper              = 0  
+	GtkScrollbar		::has-forward-stepper               = 0
+	
+	GtkCheckButton ::indicator-size       = 16
+
+	GtkProgressBar		::min-vertical-bar-width            = 6
+	GtkProgressBar		::min-horizontal-bar-height         = 6
+
+	fg[NORMAL]      = @fg_color # this is the color of borders
+	text[NORMAL]    = @fg_color
+	fg[PRELIGHT]    = @fg_color
+	text[PRELIGHT]  = @fg_color
+	fg[ACTIVE]      = @fg_color
+	text[ACTIVE]    = @fg_color
+	fg[SELECTED]    = @fg_color
+	text[SELECTED]  = @fg_color
+	fg[INSENSITIVE]  = mix(0.5, @base_color, @fg_color)
+	text[INSENSITIVE] = mix(0.5, @base_color, @fg_color)
+  
+	bg[NORMAL]      = @bg_color
+	base[NORMAL]    = @base_color
+	bg[PRELIGHT]    = @bg_color
+	base[PRELIGHT]  = @bg_color
+	bg[ACTIVE]      = mix(0.2,@fg_color,@bg_color)
+	base[ACTIVE]    = mix(0.1,@fg_color,@base_color)
+	bg[SELECTED]    = @selected_bg_color
+	base[SELECTED]  = mix(0.1,@fg_color,@base_color)
+	bg[INSENSITIVE] = @bg_color
+	base[INSENSITIVE] = @bg_color
+	
+	engine "murrine" 
+{
+	contrast = 0.0
+	arrowstyle = 2 #to draw filled arrows.
+	glazestyle          = 0     # 0 = flat highlight, 1 = curved highlight, 2 = concave style, 3 = top curved highlight, 4 = beryl highlight
+	gradient_shades     = {1.0, 1.0, 1.0, 1.0} # default: {1.1,1.0,1.0,1.1}
+	highlight_shade     = 1.0  # set highlight amount for buttons or widgets
+	lightborder_shade   = 1.0   # sets lightborder amount for buttons or widgets
+	lightborderstyle    = 1     # 0 = lightborder on top side, 1 = lightborder on all sides
+	focusstyle			= 1
+	reliefstyle	     = 0
+	menustyle           = 0
+	menubaritemstyle    = 0     # 0 = menuitem look, 1 = button look
+	menubarstyle        = 0     # 0 = flat, 1 = glassy, 2 = gradient, 3 = striped
+	menuitemstyle       = 0     # 0 = flat, 1 = glassy, 2 = striped
+	progressbarstyle        = 0
+	border_shades = { 1.0, 1.0 } # this for light borders
+}
+
+}
+
+style "entry"
+{
+	xthickness = 4
+	ythickness = 4
+
+	engine "murrine" {border_shades = { 1.5, 1.5 }}
+}
+
+style "button"
+{
+	xthickness = 4
+	ythickness = 4
+
+	engine "murrine" { roundness = 3 	border_shades = { 1.5, 1.5 } }
+
+	bg[NORMAL] =  @bg_color
+	bg[PRELIGHT] = @bg_color
+	bg[ACTIVE] = mix(0.2, @fg_color,@bg_color)
+}
+
+style "radiocheck" 
+{
+	text[NORMAL]   = @selected_fg_color            # Text in window
+	text[PRELIGHT] = @selected_fg_color            # Text on Mouseover
+	text[ACTIVE]   = @selected_fg_color             # Text on click
+
+	bg[SELECTED] = @selected_bg_color
+}
+
+style "progressbar" 
+{
+	xthickness = 0
+	ythickness = 0
+	
+	engine "murrine" {}
+	
+	fg[PRELIGHT] = @selected_fg_color
+}
+
+style "scale"
+{
+	GtkRange       ::slider-width  = 14
+	GtkScale       ::slider-length = 14
+	GtkScale		    ::trough-side-details = 1
+	
+	engine "murrine" {roundness = 4 	border_shades = { 1.5, 1.5 }}
+	
+	bg[NORMAL] = @base_color
+	bg[PRELIGHT] = @base_color
+}
+
+style "menubar" 
+{
+}
+
+style "menubaritem" 
+{
+	fg[NORMAL] = @fg_color
+}
+
+style "menu" 
+{
+	xthickness = 1
+	ythickness = 4
+
+	bg[NORMAL]	= @bg_color
+
+}
+
+style "menuitem" 
+{
+	xthickness = 4
+	ythickness = 4
+
+	engine "murrine" { contrast = 0.0}
+
+	bg[SELECTED] = mix(0.1,@fg_color,@bg_color)
+	
+	text[NORMAL]	= @fg_color
+	text[PRELIGHT] = @fg_color
+	fg[PRELIGHT] = @fg_color
+}
+
+style "menu-separator"
+{
+	GtkSeparatorMenuItem::horizontal-padding = 0
+	GtkWidget::wide-separators = 1
+	GtkWidget::separator-width = 1
+	GtkWidget::separator-height = 1
+	xthickness = 1
+	ythickness = 2
+	
+	engine "hcengine" { edge_thickness = 1}
+	fg[NORMAL] = @border_color
+}
+
+style "separator"
+{
+	engine "hcengine" { edge_thickness = 1}
+	fg[NORMAL] = @border_color
+}
+
+style "toolbar" 
+{
+
+}
+
+style "scrollbar" 
+{
+	engine "murrine" {	border_shades = { 1.65, 1.65 } gradient_shades     = {1.0, 1.0, 1.0, 1.0} }
+	bg[SELECTED] = mix(0.5,@fg_color, @base_color)
+}
+
+style "notebook"
+{
+	xthickness	= 5
+	ythickness	= 2
+
+	bg[NORMAL] = @base_color
+	bg[ACTIVE] = @bg_color
+}
+
+style "notebook_viewport" {
+	bg[NORMAL] = @base_color
+}
+
+style "tooltips" 
+{
+	xthickness	= 6
+	ythickness	= 6
+
+	bg[NORMAL] = @tooltip_bg_color
+	fg[NORMAL] = @tooltip_fg_color
+}
+
+class "GtkWidget" style "default"
+
+class "GtkEntry" style "entry"
+widget_class "*<GtkButton>"	style "button"
+class "GtkRadio*" style "radiocheck"
+class "GtkCheck*" style "radiocheck"
+widget_class "*<GtkProgressBar>" style "progressbar"
+class "GtkScale" style "scale"
+
+class "GtkFrame" style "separator"
+class "GtkSeparator" style "separator"
+class "GtkVSeparator" style "separator"
+class "GtkHSeparator" style "separator"
+class "GtkSeparatorToolItem" style "separator"
+
+class "GtkMenuBar" style "menubar"
+widget_class "*MenuBar.*" style "menubaritem"
+class "GtkMenu" style "menu"
+widget_class "*<GtkMenuItem>*" style "menuitem"
+widget_class "*<GtkSeparatorMenuItem>*" style "menu-separator"
+
+class "GtkToolbar" style "toolbar"
+class "GtkScrollbar" style "scrollbar"
+widget "gtk-tooltip*" style "tooltips"
+
+widget_class "*<GtkNotebook>*<GtkEventBox>" style "notebook"
+widget_class "*<GtkNotebook>*<GtkDrawingArea>" style "notebook"
+widget_class "*<GtkNotebook>*<GtkLayout>" style "notebook"
+widget_class "*<GtkNotebook>*<GtkScrolledWindow>*<GtkViewport>" style "notebook_viewport"
+widget_class "*<GtkNotebook>" style "notebook"

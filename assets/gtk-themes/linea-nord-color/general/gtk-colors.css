@@ -1,0 +1,140 @@
+
+/* This share with dark mode */
+
+/**********
+ * Colors *
+ **********/
+ 
+@define-color gtk_sidebar_color mix(@gtk_bg_color,@gtk_fg_color,0.01);
+
+@define-color warning_color #f6d32d;
+@define-color error_color #e01b24;
+@define-color success_color #33d17a;
+
+@define-color panel_bg shade(@gtk_titlebar_bg_color,0.95);
+@define-color panel_fg @gtk_titlebar_fg_color;
+
+@define-color theme_fg_color @gtk_fg_color;
+@define-color theme_text_color @gtk_fg_color;
+@define-color theme_bg_color @gtk_bg_color;
+@define-color theme_base_color @gtk_base_color;
+
+@define-color theme_unfocused_fg_color @gtk_fg_color;
+@define-color theme_unfocused_text_color @gtk_fg_color;
+@define-color theme_unfocused_bg_color @gtk_bg_color;
+@define-color theme_unfocused_base_color @gtk_base_color;
+
+@define-color fg_color @gtk_fg_color;
+@define-color text_color @gtk_fg_color;
+@define-color bg_color @gtk_bg_color;
+@define-color base_color @gtk_base_color;
+@define-color text_view_bg @gtk_base_color;
+@define-color content_view_bg @gtk_base_color;
+
+@define-color insensitive_bg_color transparent;
+@define-color insensitive_fg_color alpha(@gtk_fg_color,0.5);
+@define-color insensitive_base_color @gtk_base_color;
+@define-color unfocused_insensitive_color @insensitive_fg_color;
+
+@define-color borders @gtk_borders;
+@define-color unfocused_borders @gtk_borders;
+@define-color border_color @gtk_borders;
+
+@define-color selected_bg_color @gtk_selected_bg_color;
+@define-color selected_fg_color @gtk_selected_fg_color;
+@define-color theme_selected_bg_color @gtk_selected_bg_color;
+@define-color theme_selected_fg_color @gtk_selected_fg_color;
+@define-color theme_unfocused_selected_bg_color @gtk_selected_bg_color;
+@define-color theme_unfocused_selected_fg_color @gtk_selected_fg_color;
+
+@define-color placeholder_text_color #A8A8A8;
+@define-color link_color @gtk_selected_bg_color;
+
+@define-color budgie_tasklist_indicator_color @panel_fg;
+@define-color budgie_tasklist_indicator_color_active @gtk_selected_bg_color;
+@define-color budgie_tasklist_indicator_color_active_window @panel_fg;
+@define-color budgie_tasklist_indicator_color_attention @error_color;
+
+@define-color metacity_theme @gtk_titlebar_bg_color;
+@define-color metacity_theme_unfocused @gtk_titlebar_bg_backdrop_color;
+
+@define-color B_metacity mix(@gtk_titlebar_bg_color,@gtk_transparent_borders,0.25);
+@define-color D_B_metacity mix(@gtk_bg_color,@gtk_transparent_borders,0.25);
+
+@define-color H_metacity @gtk_titlebar_highlight;
+
+@define-color wm_title @gtk_titlebar_fg_color;
+@define-color wm_unfocused_title alpha(@gtk_titlebar_fg_color,0.5);
+
+@define-color D_title @gtk_fg_color;
+@define-color D_title_unfocused mix(@gtk_fg_color,@gtk_bg_color,0.5);
+
+@define-color m_button_hover alpha(@gtk_selected_bg_color,0.8);
+@define-color m_button_active	alpha(@gtk_selected_bg_color,0.8);
+
+@define-color tab_base_color @gtk_base_color;
+@define-color colorAccent @gtk_selected_bg_color;
+@define-color accent_color @gtk_selected_bg_color;
+@define-color menu_separator @gtk_borders;
+
+@define-color STRAWBERRY_100 #ff8c82;
+@define-color STRAWBERRY_300 #ed5353;
+@define-color STRAWBERRY_500 #c6262e;
+@define-color STRAWBERRY_700 #a10705;
+@define-color STRAWBERRY_900 #7a0000;
+@define-color ORANGE_100 #ffc27d;
+@define-color ORANGE_300 #ffa154;
+@define-color ORANGE_500 #f37329;
+@define-color ORANGE_700 #cc3b02;
+@define-color ORANGE_900 #a62100;
+@define-color BANANA_100 #fff394;
+@define-color BANANA_300 #ffe16b;
+@define-color BANANA_500 #f9c440;
+@define-color BANANA_700 #d48e15;
+@define-color BANANA_900 #ad5f00;
+@define-color LIME_100 #d1ff82;
+@define-color LIME_300 #9bdb4d;
+@define-color LIME_500 #68b723;
+@define-color LIME_700 #3a9104;
+@define-color LIME_900 #206b00;
+@define-color MINT_100 #89ffdd;
+@define-color MINT_300 #43d6b5;
+@define-color MINT_500 #28bca3;
+@define-color MINT_700 #0e9a83;
+@define-color MINT_900 #007367;
+@define-color BLUEBERRY_100 #8cd5ff;
+@define-color BLUEBERRY_300 #64baff;
+@define-color BLUEBERRY_500 #3689e6;
+@define-color BLUEBERRY_700 #0d52bf;
+@define-color BLUEBERRY_900 #002e99;
+@define-color BUBBLEGUM_100 #fe9ab8;
+@define-color BUBBLEGUM_300 #f4679d;
+@define-color BUBBLEGUM_500 #de3e80;
+@define-color BUBBLEGUM_700 #bc245d;
+@define-color BUBBLEGUM_900 #910e38;
+@define-color GRAPE_100 #e4c6fa;
+@define-color GRAPE_300 #cd9ef7;
+@define-color GRAPE_500 #a56de2;
+@define-color GRAPE_700 #7239b3;
+@define-color GRAPE_900 #452981;
+@define-color COCOA_100 #a3907c;
+@define-color COCOA_300 #8a715e;
+@define-color COCOA_500 #715344;
+@define-color COCOA_700 #57392d;
+@define-color COCOA_900 #3d211b;
+@define-color SILVER_100 #fafafa;
+@define-color SILVER_300 #d4d4d4;
+@define-color SILVER_500 #abacae;
+@define-color SILVER_700 #7e8087;
+@define-color SILVER_900 #555761;
+@define-color SLATE_100 #95a3ab;
+@define-color SLATE_300 #667885;
+@define-color SLATE_500 #485a6c;
+@define-color SLATE_700 #273445;
+@define-color SLATE_900 #0e141f;
+@define-color BLACK_100 #666;
+@define-color BLACK_300 #4d4d4d;
+@define-color BLACK_500 #333;
+@define-color BLACK_700 #1a1a1a;
+@define-color BLACK_900 #000;
+

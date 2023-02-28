@@ -1,0 +1,213 @@
+/* GTK4 */
+
+window.aboutdialog image.large-icons { -gtk-icon-size: 128px; }
+
+check,radio { -gtk-icon-size: 16px; }
+
+frame,
+.frame
+{border: 1px solid @gtk_borders;}
+
+/* Headerbars */
+
+window.background.csd{border-radius: 4.0px;}
+
+windowcontrols { border-spacing: 6px; }
+
+windowcontrols:not(.empty).start:dir(ltr),
+windowcontrols:not(.empty).end:dir(rtl) { margin-right: 6px; }
+
+windowcontrols:not(.empty).start:dir(rtl),
+windowcontrols:not(.empty).end:dir(ltr) { margin-left: 6px; }
+
+headerbar > windowhandle > box,
+headerbar > windowhandle > box > box.start,
+headerbar > windowhandle > box > box.end { border-spacing: 4px; }
+
+/* Messagedialogs */
+
+window.dialog.message label.title { font-weight: 800; font-size: 10pt; }
+window.dialog.message box.dialog-vbox.vertical { border-spacing: 10px; }
+
+/* Toolbars */
+
+.toolbar{
+	border-spacing: 4px;
+	padding: 4px;
+	border-style: solid;
+	border-color: @gtk_borders;
+	border-radius: 0;
+	border-width: 1px 0 1px 0;
+}
+
+statusbar { padding: 6px 10px 6px 10px; }
+
+shortcuts-section { margin: 24px; }
+
+infobar > revealer > box { padding: 8px; border-spacing: 10px; } 
+
+/* Menus */
+
+popover.background{ background-color: transparent; border: none;}
+
+popover.background > arrow,
+popover.background > contents
+{ border: 1px solid @gtk_transparent_borders; box-shadow: 0 1px 2px @gtk_menu_shadow; }
+
+popover.background > arrow,
+popover.background > contents
+{background-color: @gtk_bg_color;}
+
+popover.menu.background > contents .linked button:first-child{ margin-left: 4px; }
+popover.menu.background > contents .linked button:last-child{ margin-right: 4px; }
+
+/* Tooltips */
+
+tooltip { padding: 4px; border-radius: 4.0px; box-shadow: none; }
+tooltip.background { background-color: alpha(black,0.9); background-clip: padding-box; border: 1px solid alpha(white,0.2); color: white; }
+tooltip > box { border-spacing: 6px; }
+
+/* Entry */
+
+searchbar > revealer > box entry{ margin: 8px;}
+
+spinbutton.vertical > text,
+spinbutton:not(.vertical),
+entry { outline: 0 solid transparent; outline-offset: 4px; }
+
+spinbutton.vertical > text:focus-within,
+spinbutton:focus-within:not(.vertical),
+entry:focus-within { outline-color: @gtk_selected_bg_color; outline-width: 2px; outline-offset: -2px; }
+
+spinbutton.vertical > text.error,
+spinbutton.error:not(.vertical),
+entry.error { outline: 0 solid transparent; outline-offset: 4px; color: @error_color;  }
+
+spinbutton.vertical > text.error:focus-within,
+spinbutton.error:focus-within:not(.vertical),
+entry.error:focus-within { outline-color: @error_color; outline-width: 2px; outline-offset: -2px; }
+
+spinbutton.vertical > text.error > selection,
+spinbutton.error:not(.vertical) > selection,
+entry.error > selection { background-color: @error_color; color: white; }
+
+spinbutton.vertical > text.warning,
+spinbutton.warning:not(.vertical),
+entry.warning { outline: 0 solid transparent; outline-offset: 4px; color: @warning_color; }
+
+spinbutton.vertical > text.warning:focus-within,
+spinbutton.warning:focus-within:not(.vertical),
+entry.warning:focus-within { outline-color: @warning_color; outline-width: 2px; outline-offset: -2px; }
+
+spinbutton.vertical > text.warning > selection,
+spinbutton.warning:not(.vertical) > selection,
+entry.warning > selection { background-color: @warning_color; color: white; }
+
+/* Overshoot */
+
+scrolledwindow > overshoot.top {background-image: radial-gradient(farthest-side at top, alpha(@gtk_selected_bg_color,0.2) 25%, alpha(@gtk_selected_bg_color,0.2)), radial-gradient(farthest-side at top, transparent, transparent); background-size: 100% 25%, 100% 50%; background-repeat: no-repeat; background-position: top; background-color: transparent; border: none; box-shadow: none;}
+
+scrolledwindow > overshoot.bottom {background-image: radial-gradient(farthest-side at top, alpha(@gtk_selected_bg_color,0.2) 25%, alpha(@gtk_selected_bg_color,0.2)), radial-gradient(farthest-side at bottom, transparent, transparent); background-size: 100% 25%, 100% 50%; background-repeat: no-repeat; background-position: bottom; background-color: transparent; border: none; box-shadow: none;}
+
+scrolledwindow > overshoot.left { background-image: radial-gradient(farthest-side at left, alpha(@gtk_selected_bg_color,0.2) 25%, alpha(@gtk_selected_bg_color,0.2)), radial-gradient(farthest-side at left, transparent, transparent); background-size: 25% 100%, 50% 100%; background-repeat: no-repeat; background-position: left; background-color: transparent; border: none; box-shadow: none; }
+
+scrolledwindow > overshoot.right { background-image: radial-gradient(farthest-side at left, alpha(@gtk_selected_bg_color,0.2) 25%, alpha(@gtk_selected_bg_color,0.2)), radial-gradient(farthest-side at right, transparent, transparent); background-size: 25% 100%, 50% 100%; background-repeat: no-repeat; background-position: right; background-color: transparent; border: none; box-shadow: none; }
+
+/* Separators */
+
+.sidebar:not(separator):dir(ltr),
+.sidebar:not(separator).left,
+.sidebar:not(separator).left:dir(rtl)
+{
+	border-right: 1px solid @gtk_borders;
+	border-left-style: none;
+	min-width: 0;
+}
+
+.sidebar:not(separator):dir(rtl),
+.sidebar:not(separator).right
+{
+	border-left: 1px solid @gtk_borders;
+	border-right-style: none;
+	min-width: 0;
+}
+
+columnview.column-separators > listview > row > cell { border-right: 1px solid @gtk_borders; }
+
+/* Typography */
+
+.large-title { font-weight: 300; font-size: 24pt; }
+
+.title-1 { font-weight: 800; font-size: 20pt; }
+
+.title-2 { font-weight: 800; font-size: 15pt; }
+
+.title-3 { font-weight: 700; font-size: 15pt; }
+
+.title-4 { font-weight: 700; font-size: 13pt; }
+
+.heading { font-weight: 700; font-size: 11pt; }
+
+.body { font-weight: 400; font-size: 11pt; }
+
+.caption-heading { font-weight: 700; font-size: 9pt; }
+
+.caption { font-weight: 400; font-size: 9pt; }
+
+/* Scale Marks */
+scale > value { color: alpha(currentColor,0.55); font-feature-settings: "tnum"; }
+
+scale.horizontal > marks { color: alpha(currentColor,0.55); }
+
+scale.horizontal > marks.top { margin-bottom: 6px; }
+
+scale.horizontal > marks.bottom { margin-top: 6px; }
+
+scale.horizontal > marks indicator { background-color: currentColor; min-height: 6px; min-width: 1px; }
+
+scale.horizontal > value.left { margin-right: 9px; }
+
+scale.horizontal > value.right { margin-left: 9px; }
+
+scale.horizontal.fine-tune > marks.top { margin-top: 3px; }
+
+scale.horizontal.fine-tune > marks.bottom { margin-bottom: 3px; }
+
+scale.horizontal.fine-tune > marks indicator { min-height: 3px; }
+
+scale.vertical > marks { color: alpha(currentColor,0.55); }
+
+scale.vertical > marks.top { margin-right: 6px; }
+
+scale.vertical > marks.bottom { margin-left: 6px; }
+
+scale.vertical > marks indicator { background-color: currentColor; min-height: 1px; min-width: 6px; }
+
+scale.vertical > value.top { margin-bottom: 9px; }
+
+scale.vertical > value.bottom { margin-top: 9px; }
+
+scale.vertical.fine-tune > marks.top { margin-left: 3px; }
+
+scale.vertical.fine-tune > marks.bottom { margin-right: 3px; }
+
+scale.vertical.fine-tune > marks indicator { min-height: 3px; }
+
+/***********************
+ * Windows Decorations *
+ ***********************/
+
+window.csd{ box-shadow: 0 2px 6px @gtk_shadow,0 0 0 1px @gtk_transparent_borders; margin: 6px;}
+
+window.csd:backdrop{ box-shadow: 0 2px 6px alpha(@gtk_shadow,0.5),0 0 0 1px @gtk_transparent_borders;}
+
+dialog decoration,
+messagedialog decoration{ box-shadow: 0 2px 4px @gtk_shadow,0 0 0 1px @gtk_transparent_borders;}
+
+dialog decoration:backdrop,
+messagedialog decoration:backdrop{ box-shadow: 0 2px 4px alpha(@gtk_shadow,0.5),0 0 0 1px @gtk_transparent_borders;}
+
+.csd.popup decoration {box-shadow: 0 1px 2px @gtk_menu_shadow; border-radius: 4.0px; }
+
+.ssd decoration{box-shadow: 0 0 0 1px @gtk_transparent_borders;}
+

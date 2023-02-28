@@ -1,0 +1,60 @@
+
+@import url("gtk-version.css");
+@import url("../general/gtk-colors.css");
+@import url("../general/widgets.css");
+@import url("../general/titlebar.css");
+
+@define-color gtk_titlebar_bg_color mix(@gtk_bg_color,black,0.1);
+
+@define-color gtk_fg_color black;
+@define-color gtk_text_color @gtk_fg_color;
+@define-color gtk_bg_color shade(@gtk_base_color,0.93);
+@define-color gtk_base_color #fff;
+
+@define-color gtk_button_color transparent;
+@define-color gtk_widget_color alpha(currentcolor,0.1);
+
+@define-color gtk_shadow alpha(black,0.3);
+@define-color gtk_button_shadow alpha(@gtk_shadow,0.15);
+@define-color gtk_menu_shadow alpha(@gtk_shadow,0.3);
+
+@define-color text_shadow_color alpha(@panel_bg,0.5);
+
+@define-color gtk_borders mix(@gtk_bg_color,black,0.25);
+@define-color gtk_transparent_borders alpha(black,0.25);
+
+@define-color gtk_selected_bg_color #3584e4;
+@define-color gtk_selected_fg_color white;
+
+@define-color gtk_highlight alpha(white,0.3);
+@define-color gtk_titlebar_highlight alpha(white,0.5);
+
+check,
+radio,
+treeview.view.content-view.check:not(list),
+iconview.content-view.check:not(list),
+.content-view:not(list) check,
+.view check:not(:checked):selected,
+.view radio:not(:checked):selected,
+check.view:not(treeview):not(:checked):selected,
+radio.view:not(treeview):not(:checked):selected,
+progressbar trough
+{background-clip: padding-box;}
+check:checked,
+check:indeterminate,
+radio:checked,
+radio:indeterminate,
+treeview.view check:checked,
+treeview.view check:indeterminate,
+treeview.view radio:checked,
+treeview.view radio:indeterminate,
+treeview.view.content-view.check:not(list):checked,
+iconview.content-view.check:not(list):checked,
+.content-view:not(list) check:checked,
+switch,
+progressbar progress,
+levelbar block,
+scale highlight,
+button.suggested-action,
+button.destructive-action
+{background-clip: border-box;}
