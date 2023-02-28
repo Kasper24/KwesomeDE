@@ -152,7 +152,7 @@ function elevated_button_normal:effect(instant)
             elseif child.bg_anim then
                 local child_bg = child.widget._private[on_prefix .. "normal_bg"]
                 child.bg_anim.pos = child_bg
-                child.bg = child_bg
+                child.widget.bg = child_bg
             end
         end
     else
