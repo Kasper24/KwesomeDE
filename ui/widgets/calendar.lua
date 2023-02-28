@@ -104,7 +104,7 @@ function calendar:set_date(date)
 
     local current_date = os.date("*t")
     for day = 1, month_days do
-        local is_current = day == current_date.day and date.month == current_date.month
+        local is_current = day == current_date.day and date.month == current_date.month and date.year == current_date.year
         self:emit_signal(index .. "::updated", day, is_current, false)
         index = index + 1
     end
