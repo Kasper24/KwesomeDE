@@ -3,7 +3,7 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 local gtable = require("gears.table")
-local gshape = require("gears.shape")
+local gcolor = require("gears.color")
 local wibox = require("wibox")
 local bwidget = require("ui.widgets.background")
 local beautiful = require("beautiful")
@@ -162,8 +162,9 @@ function elevated_button_normal:set_widget(new_widget)
             x = 0,
             y = 0,
             radius = 0,
+            opacity = 0.5,
             draw = function(self, __, cr, width, height)
-                cr:set_source_rgba(1, 1, 1, 0.2)
+                cr:set_source(gcolor(beautiful.colors.on_background))
                 cr:translate(self.x, self.y)
                 cr:arc(0, 0, self.radius, 0, pi * 2)
                 cr:fill()
@@ -322,7 +323,7 @@ local function new(is_state)
     }
     wp.ripple_anim = helpers.animation:new{
         easing = helpers.animation.easing.linear,
-        duration = 0.5,
+        duration = 0.4,
         update = function(self, pos)
             widget:get_ripple_layer().radius = pos
             widget:get_ripple_layer():emit_signal("widget::redraw_needed")
