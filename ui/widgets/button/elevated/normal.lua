@@ -3,6 +3,7 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 local gtable = require("gears.table")
+local gshape = require("gears.shape")
 local wibox = require("wibox")
 local bwidget = require("ui.widgets.background")
 local beautiful = require("beautiful")
@@ -11,6 +12,8 @@ local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 local ipairs = ipairs
 local table = table
+local math = math
+local pi = math.pi
 local capi = {
     awesome = awesome,
     root = root,
@@ -121,6 +124,16 @@ function elevated_button_normal:effect(instant)
             border_color = border_color,
             state_layer_opacity = state_layer_opacity
         }
+        if wp.old_mode ~= "press" and wp.mode == "press" then
+            self:get_ripple_layer().x = wp.lx
+            self:get_ripple_layer().y = wp.ly
+            wp.ripple_anim.pos = 0
+            wp.ripple_anim:set(wp.widget_width)
+        elseif wp.old_mode == "press" and wp.mode ~= "press" then
+            wp.ripple_anim:stop()
+            self:get_ripple_layer().radius = 0
+            self:get_ripple_layer():emit_signal("widget::redraw_needed")
+        end
         for _, child in ipairs(wp.animable_childs) do
             local child_bg = child.widget._private["text_" .. on_prefix .. "normal" .. "_" .. "bg"]
             child.color_anim:set(child_bg)
@@ -143,15 +156,27 @@ function elevated_button_normal:set_widget(new_widget)
 
     local widget = wibox.widget {
         layout = wibox.layout.stack,
-        -- {
-        --     widget = wibox.widget.base.make_widget,
-        --     radius = 5,
-        --     draw = function(self, __, cr, width, height)
-        --         cr:set_source(require("gears.color")("#FFFFFF"))
-        --         cr:arc(width / 2, height / 2, self.radius, 0, 2 * math.pi)
-        --         cr:fill()
-        --     end,
-        -- },
+        {
+            widget = wibox.widget.base.make_widget,
+            id = "ripple_layer",
+            x = 0,
+            y = 0,
+            radius = 0,
+            draw = function(self, __, cr, width, height)
+                cr:set_source_rgba(1, 1, 1, 0.2)
+
+                cr:save()
+                cr:translate(self.x, self.y)
+                cr:arc(0, 0, self.radius, 0, pi * 2)
+                cr:fill()
+                cr:restore()
+
+                -- clip the circle to the bounds of the button
+                cr:rectangle(0, 0, width, height)
+                cr:clip()
+                cr:reset_clip()
+            end,
+        },
         {
             widget = bwidget,
             id = "state_layer",
@@ -174,6 +199,7 @@ function elevated_button_normal:set_widget(new_widget)
 
     wp.widget = widget
     wp.content_widget = new_widget
+    wp.ripple_layer = widget:get_children_by_id("ripple_layer")[1]
     wp.state_layer = widget:get_children_by_id("state_layer")[1]
     wp.animable_childs = {}
 
@@ -192,6 +218,10 @@ end
 
 function elevated_button_normal:get_content_widget()
     return self._private.content_widget
+end
+
+function elevated_button_normal:get_ripple_layer()
+    return self._private.ripple_layer
 end
 
 function elevated_button_normal:get_state_layer()
@@ -298,6 +328,14 @@ local function new(is_state)
             widget:get_state_layer().opacity = pos.state_layer_opacity
         end
     }
+    wp.ripple_anim = helpers.animation:new{
+        easing = helpers.animation.easing.linear,
+        duration = 0.5,
+        update = function(self, pos)
+            widget:get_ripple_layer().radius = pos
+            widget:get_ripple_layer():emit_signal("widget::redraw_needed")
+        end
+    }
 
     widget:connect_signal("mouse::enter", function(self, find_widgets_result)
         capi.root.cursor(wp.hover_cursor or wp.defaults.hover_cursor)
@@ -340,6 +378,9 @@ local function new(is_state)
             if button == 1 then
                 wp.old_mode = wp.mode
                 wp.mode = "press"
+                wp.lx = lx
+                wp.ly = ly
+                wp.widget_width = find_widgets_result.widget_width
                 self:effect()
 
                 if wp.on_press then
@@ -348,6 +389,9 @@ local function new(is_state)
             elseif button == 3 and (wp.on_secondary_press or wp.on_secondary_release) then
                 wp.old_mode = wp.mode
                 wp.mode = "press"
+                wp.lx = lx
+                wp.ly = ly
+                wp.widget_width = find_widgets_result.widget_width
                 self:effect()
 
                 if wp.on_secondary_press then

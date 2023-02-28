@@ -175,6 +175,9 @@ local function new()
         if button == 1 then
             wp.old_mode = wp.mode
             wp.mode = "press"
+            wp.lx = lx
+            wp.ly = ly
+            wp.widget_width = find_widgets_result.widget_width
             self:effect()
 
             if wp.on_press then
@@ -183,6 +186,9 @@ local function new()
         elseif button == 3 and (wp.on_secondary_press or wp.on_secondary_release) then
             wp.old_mode = wp.mode
             wp.mode = "press"
+            wp.lx = lx
+            wp.ly = ly
+            wp.widget_width = find_widgets_result.widget_width
             self:effect()
 
             if wp.on_secondary_press then
@@ -201,6 +207,8 @@ local function new()
         if button == 1 then
             wp.old_mode = wp.mode
             wp.mode = "hover"
+            wp.lx = lx
+            wp.ly = ly
             self:effect()
 
             if wp.state == true then
