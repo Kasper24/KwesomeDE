@@ -1,0 +1,36 @@
+/*********
+ * entry *
+ *********/
+entry {
+    padding: 8px;
+    border-radius: 4px;
+    background-image: none;
+    color: @fg_color;
+    border: 1px solid @inactive;
+    margin: 4px;
+}
+
+entry:active,
+entry:focus {
+	border-color: @selected_bg_color;
+}
+
+entry:selected,
+entry:selected:focus,
+entry selection {
+    color: @selected_fg_color;
+}
+
+entry:disabled {
+    background-color: transparent;
+    border-color: rgba(255, 255, 255, 0.1);
+    color: mix(@text_color, transparent, 0.50);
+}
+
+entry.progressbar {
+    border-width: 0;
+    border-radius: 0;
+    background-color: @active;
+    background-image: none;
+    color: @fg_color;
+}
