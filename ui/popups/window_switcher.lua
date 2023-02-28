@@ -10,7 +10,7 @@ local beautiful = require("beautiful")
 local tasklist_daemon = require("daemons.system.tasklist")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
-local ipairs = ipairs
+local pcall = pcall
 local capi = {
     client = client
 }
