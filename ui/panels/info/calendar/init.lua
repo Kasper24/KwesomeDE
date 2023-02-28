@@ -77,7 +77,8 @@ local function new()
     local date = wibox.widget {
         widget = widgets.textclock,
         format = "%A, %b, %d",
-        size = 2,
+        halign = "center",
+        size = 20,
         color = beautiful.colors.random_accent_color()
     }
 
