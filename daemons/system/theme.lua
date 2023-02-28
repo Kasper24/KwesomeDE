@@ -269,9 +269,13 @@ local function generate_sequences(colors)
     local file = filesystem.file.new_for_path(WAL_CACHE_PATH .. "sequences")
     file:write(sequences)
 
-    for index = 0, 9 do
+    for index = 0, 20 do
         local file = filesystem.file.new_for_path("/dev/pts/" .. index)
-        file:write_root(sequences)
+        file:exists(function(error, exists)
+            if error == nil and exists == true then
+                file:write_root(sequences)
+            end
+        end)
     end
 end
 
