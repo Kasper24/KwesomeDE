@@ -57,9 +57,9 @@ local function build_properties(prototype, prop_names)
     end
 end
 
-function elevated_button_normal:build_animable_child_anims(child, skip_check)
+function elevated_button_normal:build_animable_child_anims(child)
     local wp = self._private
-    if child.text_normal_bg or child.text_on_normal_bg or skip_check == true then
+    if child._private.text_normal_bg or child._private.text_on_normal_bg then
         table.insert(wp.animable_childs, {
             widget = child,
             original_size = child:get_size(),
@@ -80,6 +80,38 @@ function elevated_button_normal:build_animable_child_anims(child, skip_check)
             }
         })
         self:effect(true)
+        capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+            local wp = child._private
+            wp.text_normal_bg = old_colorscheme_to_new_map[wp.text_normal_bg] or
+                                    old_colorscheme_to_new_map[wp.defaults.text_normal_bg]
+            wp.text_on_normal_bg = old_colorscheme_to_new_map[wp.text_on_normal_bg] or
+                                    old_colorscheme_to_new_map[wp.defaults.text_on_normal_bg] or
+                                    helpers.color.button_color(wp.text_normal_bg, 0.2)
+
+            self:effect(true)
+        end)
+    elseif child._private.normal_bg or child._private.on_normal_bg then
+        table.insert(wp.animable_childs, {
+            widget = child,
+            bg_anim = helpers.animation:new{
+                easing = helpers.animation.easing.linear,
+                duration = 0.2,
+                update = function(self, pos)
+                    child.bg = pos
+                end
+            },
+        })
+        self:effect(true)
+        capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+            local wp = child._private
+            wp.normal_bg = old_colorscheme_to_new_map[wp.normal_bg] or
+                                    old_colorscheme_to_new_map[wp.defaults.normal_bg]
+            wp.on_normal_bg = old_colorscheme_to_new_map[wp.on_normal_bg] or
+                                    old_colorscheme_to_new_map[wp.defaults.on_normal_bg] or
+                                    helpers.color.button_color(wp.normal_bg, 0.2)
+
+            self:effect(true)
+        end)
     end
 end
 
@@ -113,9 +145,15 @@ function elevated_button_normal:effect(instant)
             state_layer_opacity = state_layer_opacity
         }
         for _, child in ipairs(wp.animable_childs) do
-            local child_bg = child.widget._private["text_" .. on_prefix .. "normal" .. "_" .. "bg"]
-            child.color_anim.pos = child_bg
-            child.widget:set_color(child_bg)
+            if child.color_anim then
+                local child_color = child.widget._private["text_" .. on_prefix .. "normal" .. "_" .. "bg"]
+                child.color_anim.pos = child_color
+                child.widget:set_color(child_color)
+            elseif child.bg_anim then
+                local child_bg = child.widget._private[on_prefix .. "normal" .. "_" .. "bg"]
+                child.bg_anim.pos = child_bg
+                child.bg = child_bg
+            end
         end
     else
         wp.anim:set{
@@ -135,12 +173,17 @@ function elevated_button_normal:effect(instant)
             self:get_ripple_layer():emit_signal("widget::redraw_needed")
         end
         for _, child in ipairs(wp.animable_childs) do
-            local child_bg = child.widget._private["text_" .. on_prefix .. "normal" .. "_" .. "bg"]
-            child.color_anim:set(child_bg)
-            if wp.old_mode ~= "press" and wp.mode == "press" then
-                child.size_anim:set(child.original_size / 1.5)
-            elseif wp.old_mode == "press" and wp.mode ~= "press" then
-                child.size_anim:set(child.original_size)
+            if child.color_anim then
+                local child_color = child.widget._private["text_" .. on_prefix .. "normal" .. "_" .. "bg"]
+                child.color_anim:set(child_color)
+                if wp.old_mode ~= "press" and wp.mode == "press" then
+                    child.size_anim:set(child.original_size / 1.5)
+                elseif wp.old_mode == "press" and wp.mode ~= "press" then
+                    child.size_anim:set(child.original_size)
+                end
+            elseif child.bg_anim then
+                local child_bg = child.widget._private[on_prefix .. "normal" .. "_" .. "bg"]
+                child.bg_anim:set(child_bg)
             end
         end
     end
