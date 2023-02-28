@@ -93,6 +93,8 @@ local function tag_widget(self, tag, index)
         widget = widgets.button.text.state,
         id = "button",
         icon = tag.font_icon,
+        on_normal_bg = tag.font_icon.color,
+        text_on_normal_bg = beautiful.colors.transparent,
         on_hover = function()
             if #tag:clients() > 0 then
                 tag_preview:show(tag, {

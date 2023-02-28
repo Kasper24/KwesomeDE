@@ -16,7 +16,9 @@ local function button(icon, text, on_release, on_by_default)
     local icon = wibox.widget {
         widget = widgets.text,
         halign = "center",
-        color = beautiful.colors.on_surface,
+        color = beautiful.icons.camera_retro.color,
+        text_normal_bg = beautiful.icons.camera_retro.color,
+        text_on_normal_bg = beautiful.colors.transparent,
         icon = icon
     }
 
@@ -24,6 +26,9 @@ local function button(icon, text, on_release, on_by_default)
         widget = widgets.text,
         halign = "center",
         size = 12,
+        color = beautiful.colors.on_surface,
+        text_normal_bg = beautiful.colors.on_surface,
+        text_on_normal_bg = beautiful.colors.transparent,
         text = text
     }
 
@@ -33,6 +38,7 @@ local function button(icon, text, on_release, on_by_default)
         forced_width = dpi(120),
         forced_height = dpi(120),
         normal_bg = beautiful.colors.surface,
+        on_normal_bg = beautiful.icons.camera_retro.color,
         on_release = function(self)
             on_release(self)
         end,

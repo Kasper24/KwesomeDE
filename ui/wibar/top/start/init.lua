@@ -95,6 +95,7 @@ local function new()
 
     local button = wibox.widget {
         widget = widgets.button.elevated.state,
+        on_normal_bg = beautiful.icons.envelope.color,
         on_release = function()
             app_launcher:toggle()
         end,
@@ -107,7 +108,7 @@ local function new()
             color = off_color
         },
         easing = helpers.animation.easing.linear,
-        duration = 0.5,
+        duration = 0.2,
         update = function(self, pos)
             widget.pos = pos.height
             widget.color = pos.color

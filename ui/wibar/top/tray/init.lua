@@ -57,6 +57,8 @@ local function system_tray()
             forced_height = dpi(50),
             icon = beautiful.icons.chevron.down,
             text_normal_bg = beautiful.icons.envelope.color,
+            on_normal_bg = beautiful.icons.envelope.color,
+            text_on_normal_bg = beautiful.colors.transparent,
             on_turn_on = function()
                 system_tray:show()
             end,
@@ -70,9 +72,13 @@ end
 local function network()
     local widget = wibox.widget {
         widget = widgets.text,
+        forced_width = dpi(30),
+        forced_height = dpi(25),
         halign = "center",
         icon = beautiful.icons.network.wifi_off,
         color = beautiful.icons.envelope.color,
+        text_normal_bg = beautiful.icons.envelope.color,
+        text_on_normal_bg = beautiful.colors.transparent,
         size = 17
     }
 
@@ -100,9 +106,13 @@ end
 local function bluetooth()
     local widget = wibox.widget {
         widget = widgets.text,
+        forced_width = dpi(30),
+        forced_height = dpi(30),
         halign = "center",
         icon = beautiful.icons.bluetooth.on,
         color = beautiful.icons.envelope.color,
+        text_normal_bg = beautiful.icons.envelope.color,
+        text_on_normal_bg = beautiful.colors.transparent,
         size = 17
     }
 
@@ -120,9 +130,13 @@ end
 local function volume()
     local widget = wibox.widget {
         widget = widgets.text,
+        forced_width = dpi(30),
+        forced_height = dpi(30),
         halign = "center",
         icon = beautiful.icons.volume.normal,
         color = beautiful.icons.envelope.color,
+        text_normal_bg = beautiful.icons.envelope.color,
+        text_on_normal_bg = beautiful.colors.transparent,
         size = 17
     }
 
@@ -144,7 +158,8 @@ end
 local function custom_tray()
     local layout = wibox.widget {
         layout = wibox.layout.fixed.horizontal,
-        spacing = dpi(20),
+        forced_width = dpi(120),
+        spacing = dpi(15),
         network(),
         bluetooth(),
         volume()
@@ -163,6 +178,7 @@ local function custom_tray()
         margins = dpi(5),
         {
             widget = widgets.button.elevated.state,
+            on_normal_bg = beautiful.icons.envelope.color,
             id = "button",
             on_release = function()
                 action_panel:toggle()

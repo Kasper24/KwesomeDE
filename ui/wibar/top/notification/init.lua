@@ -22,6 +22,8 @@ local function new()
             forced_width = dpi(50),
             forced_height = dpi(50),
             icon = beautiful.icons.envelope,
+            on_normal_bg = beautiful.icons.envelope.color,
+            text_on_normal_bg = beautiful.colors.transparent,
             on_release = function()
                 notification_panel:toggle()
             end
