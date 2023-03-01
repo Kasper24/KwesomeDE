@@ -82,7 +82,7 @@ local function app(app, app_launcher)
         forced_height = dpi(120),
         paddings = dpi(15),
         halign = "center",
-        text = app.name,
+        on_normal_bg = font_icon.color,
         on_secondary_release = function()
             app:select()
             menu:toggle()
@@ -97,6 +97,8 @@ local function app(app, app_launcher)
                 {
                     widget = widgets.text,
                     scale = 2,
+                    text_normal_bg = font_icon.color,
+                    text_on_normal_bg = beautiful.colors.transparent,
                     icon = font_icon
                 },
             },
@@ -107,7 +109,8 @@ local function app(app, app_launcher)
                 {
                     widget = widgets.text,
                     size = 12,
-                    color = beautiful.colors.on_background,
+                    text_normal_bg = beautiful.colors.on_background,
+                    text_on_normal_bg = beautiful.colors.transparent,
                     text = app.name
                 }
             }

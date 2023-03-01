@@ -1,0 +1,36 @@
+{
+	"camera" : 
+	{
+		"center" : "-83.140 -123.288 -1.000",
+		"eye" : "-83.140 -123.288 0.000",
+		"up" : "0.000 1.000 0.000"
+	},
+	"general" : 
+	{
+		"ambientcolor" : "0.3 0.3 0.3",
+		"bloom" : false,
+		"camerafade" : true,
+		"clearcolor" : "0.7 0.7 0.7",
+		"orthogonalprojection" : 
+		{
+			"height" : 1024,
+			"width" : 1024
+		},
+		"skylightcolor" : "0.3 0.3 0.3"
+	},
+	"objects" : 
+	[
+		{
+			"angles" : "0.000 0.000 0.000",
+			"id" : 12,
+			"image" : null,
+			"model" : null,
+			"name" : "Fireworks 2",
+			"origin" : "480.288 187.839 0.000",
+			"parallaxDepth" : "1.000 1.000",
+			"particle" : "particles/presets/fireworks2.json",
+			"particlesrc" : null,
+			"scale" : "1.000 1.000 1.000"
+		}
+	]
+}

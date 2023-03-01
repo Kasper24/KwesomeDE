@@ -1,0 +1,16 @@
+{
+	"general" : 
+	{
+		"ambientcolor" : "0.3 0.3 0.3",
+		"bloom" : false,
+		"camerafade" : true,
+		"clearcolor" : "0.7 0.7 0.7",
+		"orthogonalprojection" : 
+		{
+			"height" : 512,
+			"width" : 512
+		},
+		"skylightcolor" : "0.3 0.3 0.3"
+	},
+	"objects" : []
+}
