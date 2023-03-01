@@ -176,10 +176,12 @@ function elevated_button_normal:effect(instant)
             if child.color_anim then
                 local child_color = child.widget._private["text_" .. on_prefix .. "normal" .. "_" .. "bg"]
                 child.color_anim:set(child_color)
-                if wp.old_mode ~= "press" and wp.mode == "press" then
-                    child.size_anim:set(child.original_size / 1.5)
-                elseif wp.old_mode == "press" and wp.mode ~= "press" then
-                    child.size_anim:set(child.original_size)
+                if child.widget:get_icon() then
+                    if wp.old_mode ~= "press" and wp.mode == "press" then
+                        child.size_anim:set(child.original_size / 1.5)
+                    elseif wp.old_mode == "press" and wp.mode ~= "press" then
+                        child.size_anim:set(child.original_size)
+                    end
                 end
             elseif child.bg_anim then
                 local child_bg = child.widget._private[on_prefix .. "normal" .. "_" .. "bg"]
