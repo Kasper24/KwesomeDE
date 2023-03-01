@@ -283,7 +283,7 @@ capi.client.connect_signal("property::floating", function(client)
 end)
 
 capi.client.connect_signal("mouse::enter", function(client)
-    if not client.fullscreen then
+    if not client.fullscreen and client.can_focus ~= false then
         client:activate{
             context = "mouse_enter",
             raise = false

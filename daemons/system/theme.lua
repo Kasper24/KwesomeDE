@@ -15,11 +15,13 @@ local system_daemon = require("daemons.system.system")
 local color_libary = require("external.color")
 local helpers = require("helpers")
 local filesystem = require("external.filesystem")
+local json = require("external.json")
 local string = string
 local ipairs = ipairs
 local pairs = pairs
 local table = table
 local math = math
+local type = type
 local os = os
 local capi = {
     awesome = awesome,
@@ -46,6 +48,8 @@ local RUN_AS_ROOT_SCRIPT_PATH = filesystem.filesystem.get_awesome_config_dir("sc
 local FILE_PICKER_SCRIPT_PATH = filesystem.filesystem.get_awesome_config_dir("scripts") .. "file-picker.lua"
 local COLOR_PICKER_SCRIPT_PATH = filesystem.filesystem.get_awesome_config_dir("scripts") .. "color-picker.lua"
 local DEFAULT_PROFILE_IMAGE_PATH = filesystem.filesystem.get_awesome_config_dir("assets/images") .. "profile.png"
+local WE_PATH = filesystem.filesystem.get_awesome_config_dir("assets/wallpaper-engine")
+local WE_ASSETS_PATH = WE_PATH .. "assets"
 
 local PICTURES_MIMETYPES = {
     ["application/pdf"] = "lximage", -- AI
@@ -621,8 +625,81 @@ local function binary_wallpaper(self, screen)
     }
 end
 
+local function get_we_wallpaper_id(path)
+    local last_slash_pos = path:find("/[^/]*$")
+    if last_slash_pos then
+      local prefix = path:sub(1, last_slash_pos - 1)
+      local second_to_last_slash_pos = prefix:find("/[^/]*$")
+
+      if second_to_last_slash_pos then
+        local substring = prefix:sub(second_to_last_slash_pos + 1, last_slash_pos - 1)
+        return substring
+      end
+    end
+end
+
+local function we_wallpaper(self, screen)
+    local id = get_we_wallpaper_id(self:get_active_wallpaper())
+    local cmd = string.format("cd %s && ./linux-wallpaperengine --assets-dir %s %s --fps 144 --screenshot %s", WE_PATH, WE_ASSETS_PATH, id, BACKGROUND_PATH)
+    local pid = awful.spawn.with_shell(cmd, false)
+    awful.spawn.with_shell(string.format(
+        [[xdotool search --sync --all --pid %s --name '.*' set_window --classname "%s" set_window --class "%s"]],
+        pid,
+        "linux-wallpaper-engine",
+        "linux-wallpaper-engine"
+    ))
+
+    gtimer.start_new(1, function()
+        local widget = wibox.widget {
+            widget = wibox.widget.imagebox,
+            resize = true,
+            horizontal_fit_policy = "fit",
+            vertical_fit_policy = "fit",
+            image = BACKGROUND_PATH
+        }
+
+        self._private.wallpaper_surface = wibox.widget.draw_to_image_surface(
+            widget,
+            capi.screen.primary.geometry.width,
+            capi.screen.primary.geometry.height
+        )
+
+        return false
+    end)
+
+    gtimer.start_new(0.1, function()
+        for _, client in ipairs(client.get()) do
+            -- The props might not get set the first time, so only stop if they did
+            if client.class == "linux-wallpaper-engine" and client.width == screen.geometry.width then
+                return false
+            end
+
+            if client.class == "linux-wallpaper-engine" then
+                client.floating = true
+                client.screen = screen
+                client.below = true
+                client.sticky = true
+                client.skip_taskbar = true
+                client.can_move = false
+                client.can_resize = false
+                client.can_focus = false
+                client.width = screen.geometry.width
+                client.height = screen.geometry.height
+                client.x = 0
+                client.y = 0
+
+                client:connect_signal("button::press", function(self, x, y, button)
+                    capi.awesome.emit_signal("root::pressed", button)
+                end)
+            end
+        end
+        return true
+    end)
+end
+
 local function scan_wallpapers(self)
     local wallpapers = {}
+    local we_wallpapers = {}
 
     -- Make sure Awesome doesn't work too hard adding widgets
     -- if there are more changes coming soon
@@ -644,6 +721,23 @@ local function scan_wallpapers(self)
         end
     }
 
+    local emit_we_signal_timer = gtimer {
+        timeout = 0.5,
+        autostart = false,
+        single_shot = true,
+        callback = function()
+            if #wallpapers == 0 then
+                self:emit_signal("we_wallpapers::empty")
+            else
+                table.sort(we_wallpapers, function(a, b)
+                    return a.title < b.title
+                end)
+
+                self:emit_signal("we_wallpapers", we_wallpapers)
+            end
+        end
+    }
+
     filesystem.filesystem.iterate_contents(WALLPAPERS_PATH, function(file)
         local wallpaper_path = WALLPAPERS_PATH .. file:get_name()
         local mimetype = Gio.content_type_guess(wallpaper_path)
@@ -652,6 +746,28 @@ local function scan_wallpapers(self)
         end
     end, {}, function()
         emit_signal_timer:again()
+    end)
+
+    filesystem.filesystem.iterate_contents("/home/kasper/Games/steamapps/workshop/content/431960", function(file, path, name)
+        if type(path) == "string" then
+            local mimetype = Gio.content_type_guess(path)
+            if PICTURES_MIMETYPES[mimetype] ~= nil then
+                local json_path = path:gsub("/" .. name, "") .. "/project.json"
+                local json_file = filesystem.file.new_for_path(json_path)
+                json_file:exists(function(error, exists)
+                    if error == nil and exists then
+                        json_file:read(function(error, content)
+                            if error == nil then
+                                local title = json.decode(content).title
+                                table.insert(we_wallpapers, { path = path, title = title})
+                            end
+                        end)
+                    end
+                end)
+            end
+        end
+    end, {}, function()
+        emit_we_signal_timer:again()
     end)
 end
 
@@ -733,6 +849,8 @@ function theme:set_wallpaper(wallpaper, type)
     self._private.wallpaper_type = type
     helpers.settings["theme-wallpaper-type"] = type
 
+    awful.spawn("pkill -f linux-wallpaperengine")
+
     for s in capi.screen do
         if self:get_wallpaper_type() == "image" then
             image_wallpaper(self, s)
@@ -742,20 +860,24 @@ function theme:set_wallpaper(wallpaper, type)
             digital_sun_wallpaper(self, s)
         elseif self:get_wallpaper_type() == "binary" then
             binary_wallpaper(self, s)
+        elseif self:get_wallpaper_type() == "we" then
+            we_wallpaper(self, s)
         end
     end
 
-    self._private.wallpaper_surface = wibox.widget.draw_to_image_surface(
-        self._private.wallpaper_widget,
-        capi.screen.primary.geometry.width,
-        capi.screen.primary.geometry.height
-    )
-    wibox.widget.draw_to_svg_file(
-        self._private.wallpaper_widget,
-        BACKGROUND_PATH,
-        capi.screen.primary.geometry.width,
-        capi.screen.primary.geometry.height
-    )
+    if self:get_wallpaper_type() ~= "we" then
+        self._private.wallpaper_surface = wibox.widget.draw_to_image_surface(
+            self._private.wallpaper_widget,
+            capi.screen.primary.geometry.width,
+            capi.screen.primary.geometry.height
+        )
+        wibox.widget.draw_to_svg_file(
+            self._private.wallpaper_widget,
+            BACKGROUND_PATH,
+            capi.screen.primary.geometry.width,
+            capi.screen.primary.geometry.height
+        )
+    end
 
     awful.spawn.easy_async(string.format("convert -filter Gaussian -blur 0x10 %s %s", BACKGROUND_PATH, BLURRED_BACKGROUND_PATH), function()
         capi.awesome.emit_signal("wallpaper::blurred::changed")

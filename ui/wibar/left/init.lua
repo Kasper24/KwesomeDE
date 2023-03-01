@@ -17,6 +17,7 @@ local taglist = require(path .. ".taglist")
 
 awful.screen.connect_for_each_screen(function(s)
     s.left_wibar = widgets.popup {
+        ontop = true,
         screen = s,
         y = dpi(65),
         maximum_width = dpi(65),

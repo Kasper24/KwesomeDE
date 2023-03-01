@@ -18,6 +18,7 @@ local notification = require(path .. ".notification")
 awful.screen.connect_for_each_screen(function(s)
     -- Using popup instead of the wibar widget because it has some edge case bugs with detecting mouse input correctly
     s.top_wibar = widgets.popup {
+        ontop = true,
         screen = s,
         maximum_height = dpi(65),
         minimum_width = s.geometry.width,

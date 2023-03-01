@@ -83,21 +83,25 @@ capi.client.connect_signal("request::default_mousebindings", function()
             modifiers = {},
             button = 1,
             on_press = function(c)
-                c:activate{
-                    context = "mouse_click"
-                }
+                if c.can_focus ~= false then
+                    c:activate{
+                        context = "mouse_click"
+                    }
+                end
             end
         }, -- Make a client floating and move it
         awful.button {
             modifiers = {keys.mod},
             button = 1,
             on_press = function(c)
-                c.floating = true
-                c.maximized = false
-                c:activate{
-                    context = "mouse_click",
-                    action = "mouse_move"
-                }
+                if c.can_move ~= false then
+                    c.floating = true
+                    c.maximized = false
+                    c:activate{
+                        context = "mouse_click",
+                        action = "mouse_move"
+                    }
+                end
             end
         }, -- Make a client floating and resize it
         awful.button {
@@ -781,12 +785,17 @@ awful.keyboard.append_global_keybindings({ -- Toogle media
 -- =============================================================================
 --  UI
 -- =============================================================================
+capi.awesome.connect_signal("root::pressed", function(button)
+    if button == 3 then
+        main_menu:toggle()
+    end
+end)
+
 awful.mouse.append_global_mousebindings({
     awful.button({"Any"}, 1, function()
         capi.awesome.emit_signal("root::pressed", 1)
     end),
     awful.button({"Any"}, 3, function()
-        main_menu:toggle()
         capi.awesome.emit_signal("root::pressed", 3)
     end)
 })
