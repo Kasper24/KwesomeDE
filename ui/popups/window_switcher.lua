@@ -190,7 +190,9 @@ local function new()
     end)
 
     capi.client.connect_signal("focus", function(client)
-        widget._private.focused_client = client
+        if client.can_focus ~= false then
+            widget._private.focused_client = client
+        end
     end)
 
     capi.client.connect_signal("unfocus", function()
