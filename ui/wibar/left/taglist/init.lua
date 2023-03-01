@@ -76,7 +76,7 @@ local function update_taglist(self, tag)
     local clients = tag:clients()
     if #clients == 0 then
         self.indicator_animation:set(dpi(0))
-    elseif (#clients == 1 and clients[1].class ~= "linux-wallpaper-engine") or #clients > 1 then
+    elseif (#clients == 1 and clients[1].skip_taskbar ~= true) or #clients > 1 then
         self.indicator_animation:set(dpi(40))
     end
 

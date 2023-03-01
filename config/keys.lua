@@ -794,7 +794,7 @@ capi.awesome.connect_signal("root::pressed", function(button)
 end)
 
 capi.client.connect_signal("button::press", function(client, x, y, button)
-    if client.class == "linux-wallpaper-engine" then
+    if client.fake_root == true then
         capi.awesome.emit_signal("root::pressed", button)
     end
 end)

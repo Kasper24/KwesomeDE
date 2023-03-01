@@ -42,7 +42,7 @@ local function update_positions(self)
         end
     end
     for index, client in ipairs(self._private.clients) do
-        if client.managed and client.skip_taskbar ~= true and client.class ~= "linux-wallpaper-engine" then
+        if client.managed then
             self:emit_signal("client::pos", self._private.clients[index], pos, pos_without_pinned_apps)
             pos_without_pinned_apps = pos_without_pinned_apps + 1
             pos = pos + 1
@@ -52,6 +52,11 @@ end
 
 local function sort_clients(self)
     self._private.clients = capi.client.get()
+    for index, client in ipairs(self._private.clients) do
+        if client.skip_taskbar == true then
+            table.remove(self._private.clients, index)
+        end
+    end
 
     table.sort(self._private.clients, function(a, b)
         if a.first_tag == nil then
