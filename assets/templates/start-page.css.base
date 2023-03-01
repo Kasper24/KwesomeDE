@@ -1,7 +1,6 @@
 /* Custom Variables | Color Scheme */
 
 user=kasper
-copy_to=/usr/share/start-page/styles.css
 
 :root {{
   --primary: {color1};
