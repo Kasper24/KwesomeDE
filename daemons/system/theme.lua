@@ -676,10 +676,12 @@ local function we_wallpaper(self, screen)
                 client.below = true
                 client.sticky = true
                 client.skip_taskbar = true
+                client.can_tile = false
                 client.can_move = false
                 client.can_resize = false
                 client.can_focus = false
                 client.can_kill = false
+                client.fake_root = true
                 client.width = screen.geometry.width
                 client.height = screen.geometry.height
                 client.x = 0
