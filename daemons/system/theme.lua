@@ -640,7 +640,13 @@ end
 
 local function we_wallpaper(self, screen)
     local id = get_we_wallpaper_id(self:get_active_wallpaper())
-    local cmd = string.format("cd %s && ./linux-wallpaperengine --assets-dir %s %s --fps 144 --screenshot %s", WE_PATH, WE_ASSETS_PATH, id, BACKGROUND_PATH)
+    local cmd = string.format("cd %s && ./linux-wallpaperengine --assets-dir %s %s --fps %s--screenshot %s",
+        WE_PATH,
+        self:get_wallpaper_engine_assets_folder(),
+        self:get_wallpaper_engine_workshop_folder() .. "/" .. id,
+        self:get_wallpaper_engine_fps(),
+        BACKGROUND_PATH
+    )
     local pid = awful.spawn.with_shell(cmd, false)
     awful.spawn.with_shell(string.format(
         [[xdotool search --sync --all --pid %s --name '.*' set_window --classname "%s" set_window --class "%s"]],
@@ -765,7 +771,7 @@ local function scan_wallpapers(self)
         emit_both_signal_timer:again()
     end)
 
-    filesystem.filesystem.iterate_contents("/home/kasper/Games/steamapps/workshop/content/431960", function(file, path, name)
+    filesystem.filesystem.iterate_contents(self:get_wallpaper_engine_workshop_folder(), function(file, path, name)
         if type(path) == "string" then
             local mimetype = Gio.content_type_guess(path)
             if PICTURES_MIMETYPES[mimetype] ~= nil then
@@ -1141,6 +1147,49 @@ function theme:get_command_after_generation()
     end
 
     return self._private.command_after_generation
+end
+
+-- Wallpaper engine assets folder
+function theme:set_wallpaper_engine_assets_folder(wallpaper_engine_assets_folder)
+    self._private.wallpaper_engine_assets_folder = wallpaper_engine_assets_folder
+    helpers.settings["theme-we-assets-folder"] = wallpaper_engine_assets_folder
+end
+
+function theme:get_wallpaper_engine_assets_folder()
+    if self._private.wallpaper_engine_assets_folder == nil then
+        self._private.wallpaper_engine_assets_folder = helpers.settings["theme-we-assets-folder"]:gsub("~", os.getenv("HOME"))
+    end
+
+    return self._private.wallpaper_engine_assets_folder
+end
+
+-- Wallpaper engine assets folder
+function theme:set_wallpaper_engine_workshop_folder(wallpaper_engine_workshop_folder)
+    self._private.wallpaper_engine_workshop_folder = wallpaper_engine_workshop_folder
+    helpers.settings["theme-we-workshop-folder"] = wallpaper_engine_workshop_folder
+    scan_wallpapers(self)
+end
+
+function theme:get_wallpaper_engine_workshop_folder()
+    if self._private.wallpaper_engine_workshop_folder == nil then
+        self._private.wallpaper_engine_workshop_folder = helpers.settings["theme-we-workshop-folder"]:gsub("~", os.getenv("HOME"))
+    end
+
+    return self._private.wallpaper_engine_workshop_folder
+end
+
+-- Wallpaper engine fps
+function theme:set_wallpaper_engine_fps(wallpaper_engine_fps)
+    self._private.wallpaper_engine_fps = wallpaper_engine_fps
+    helpers.settings["theme-we-fps"] = wallpaper_engine_fps
+end
+
+function theme:get_wallpaper_engine_fps()
+    if self._private.wallpaper_engine_fps == nil then
+        self._private.wallpaper_engine_fps = helpers.settings["theme-we-fps"]
+    end
+
+    return self._private.wallpaper_engine_fps
 end
 
 local function new()

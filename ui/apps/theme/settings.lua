@@ -2,20 +2,22 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-local gshape = require("gears.shape")
-local gmath = require("gears.math")
+local awful = require("awful")
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
 local theme_daemon = require("daemons.system.theme")
 local picom_daemon = require("daemons.system.picom")
 local helpers = require("helpers")
+local filesystem = require("external.filesystem")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 
 local settings = {
     mt = {}
 }
+
+local FOLDER_PICKER_SCRIPT_PATH = filesystem.filesystem.get_awesome_config_dir("scripts") .. "folder-picker.lua"
 
 local function separator()
     return wibox.widget {
@@ -162,6 +164,50 @@ local function profile_image()
     }
 end
 
+local function folder_picker(text, initial_value, on_changed)
+    local title = wibox.widget {
+        widget = widgets.text,
+        forced_width = dpi(190),
+        size = 15,
+        text = text
+    }
+
+    local folder_prompt = wibox.widget {
+        widget = widgets.prompt,
+        forced_width = dpi(410),
+        text = initial_value
+    }
+
+    folder_prompt:connect_signal("text::changed", function(self, text)
+        on_changed(text)
+    end)
+
+    local set_folder_button = wibox.widget {
+        widget = widgets.button.text.normal,
+        size = 15,
+        text_normal_bg = beautiful.colors.on_background,
+        text = "...",
+        on_release = function()
+            awful.spawn.easy_async(FOLDER_PICKER_SCRIPT_PATH .. " '" .. text .. "'", function(stdout)
+                stdout = helpers.string.trim(stdout)
+                if stdout ~= "" and stdout ~= nil then
+                    on_changed(stdout)
+                    folder_prompt:set_text(stdout)
+                end
+            end)
+        end
+    }
+
+    return wibox.widget {
+        layout = wibox.layout.fixed.horizontal,
+        forced_height = dpi(35),
+        spacing = dpi(15),
+        title,
+        folder_prompt,
+        set_folder_button
+    }
+end
+
 local function theme_checkbox(key)
     local name = wibox.widget {
         widget = widgets.text,
@@ -278,6 +324,16 @@ local function new(layout)
             theme_daemon:set_ui_animations_framerate(value)
         end, 1),
         theme_checkbox("animations"),
+        separator(),
+        folder_picker("WP Engine Assets Folder: ", theme_daemon:get_wallpaper_engine_assets_folder(), function(folder)
+            theme_daemon:set_wallpaper_engine_assets_folder(folder)
+        end),
+        folder_picker("WP Engine Workshop Folder: ", theme_daemon:get_wallpaper_engine_workshop_folder(), function(folder)
+            theme_daemon:set_wallpaper_engine_workshop_folder(folder)
+        end),
+        theme_slider("WP Engine FPS: ", theme_daemon:get_wallpaper_engine_fps(),360, true, function(value)
+            theme_daemon:set_wallpaper_engine_fps(value)
+        end, 1),
         separator(),
         picom_slider("active-opacity", 1, false, 0.1),
         picom_slider("inactive-opacity", 1, false, 0.1),

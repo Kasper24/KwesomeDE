@@ -236,6 +236,21 @@
         "summary": "UI animations framerate",
         "description": "The framerate of the UI animations"
     },
+    "theme-we-workshop-folder": {
+        "default": "",
+        "summary": "Wallpaper engine workshop folder",
+        "description": "The framerate of the UI animations"
+    },
+    "theme-we-assets-folder": {
+        "default": "~/.config/awesome/assets/wallpaper-engine/assets",
+        "summary": "Wallpaper engine assets folder",
+        "description": "The framerate of the UI animations"
+    },
+    "theme-we-fps": {
+        "default": 60,
+        "summary": "Wallpaper engine fps",
+        "description": "The framerate of the UI animations"
+    },
     "screenshot-show-cursor": {
         "default": true,
         "summary": "Screenshot show cursor",
