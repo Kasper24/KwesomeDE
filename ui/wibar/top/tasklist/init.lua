@@ -218,6 +218,7 @@ local function new()
 
     tasklist_daemon:connect_signal("client::removed", function(self, client)
         tasklist_layout:remove_widgets(client.tasklist_widget)
+        collectgarbage("collect")
         client.tasklist_widget = nil
     end)
 

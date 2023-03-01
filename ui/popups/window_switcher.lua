@@ -186,6 +186,7 @@ local function new()
 
     tasklist_daemon:connect_signal("client::removed", function(self, client)
         clients_layout:remove_widgets(client.window_switcher_widget)
+        collectgarbage("collect")
         client.window_switcher_widget = nil
     end)
 

@@ -92,16 +92,19 @@ function playerctl.art_opacity(daemon)
             image = nil
             art.image = image_with_gradient(theme_daemon:get_wallpaper_path())
         end
+        collectgarbage("collect")
     end)
 
     playerctl_daemon:connect_signal("no_players", function()
         art.image = image_with_gradient(theme_daemon:get_wallpaper_path())
         image = nil
+        collectgarbage("collect")
     end)
 
     capi.awesome.connect_signal("wallpaper::changed", function()
         if not image then
             art.image = image_with_gradient(theme_daemon:get_wallpaper_path())
+            collectgarbage("collect")
         end
     end)
 
@@ -111,6 +114,7 @@ function playerctl.art_opacity(daemon)
         else
             art.image = image_with_gradient(image)
         end
+        collectgarbage("collect")
     end)
 
 

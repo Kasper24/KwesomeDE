@@ -51,6 +51,7 @@ function tag_preview:show(t, args)
 
     -- save_tag_thumbnail(t)
     self.widget.image = t.thumbnail or theme_daemon:get_wallpaper_path()
+    collectgarbage("collect")
     self.visible = true
 end
 
