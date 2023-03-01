@@ -322,6 +322,24 @@ ruled.client.connect_signal("request::rules", function()
         end
     }
 
+    ruled.client.append_rule {
+        rule_any = {
+            class = {"linux-wallpaper-engine"}
+        },
+        properties = {
+            floating = true,
+            below = true,
+            sticky = true,
+            skip_taskbar = true,
+            can_tile = false,
+            can_move = false,
+            can_resize = false,
+            can_focus = false,
+            can_kill = false,
+            fake_root = true
+        }
+    }
+
     -- Floating clients
     ruled.client.append_rule {
         rule_any = {
