@@ -80,7 +80,7 @@ function playerctl.art_opacity(daemon)
         opacity = 0.6,
         horizontal_fit_policy = "fit",
         vertical_fit_policy = "fit",
-        image = image_with_gradient(theme_daemon:get_wallpaper_surface()),
+        image = image_with_gradient(theme_daemon:get_wallpaper_path()),
     }
 
     local image = false
@@ -90,24 +90,24 @@ function playerctl.art_opacity(daemon)
             art.image = image_with_gradient(album_path)
         else
             image = nil
-            art.image = image_with_gradient(theme_daemon:get_wallpaper_surface())
+            art.image = image_with_gradient(theme_daemon:get_wallpaper_path())
         end
     end)
 
     playerctl_daemon:connect_signal("no_players", function()
-        art.image = image_with_gradient(theme_daemon:get_wallpaper_surface())
+        art.image = image_with_gradient(theme_daemon:get_wallpaper_path())
         image = nil
     end)
 
     capi.awesome.connect_signal("wallpaper::changed", function()
         if not image then
-            art.image = image_with_gradient(theme_daemon:get_wallpaper_surface())
+            art.image = image_with_gradient(theme_daemon:get_wallpaper_path())
         end
     end)
 
     capi.awesome.connect_signal("colorscheme::changed", function()
         if not image then
-            art.image = image_with_gradient(theme_daemon:get_wallpaper_surface())
+            art.image = image_with_gradient(theme_daemon:get_wallpaper_path())
         else
             art.image = image_with_gradient(image)
         end

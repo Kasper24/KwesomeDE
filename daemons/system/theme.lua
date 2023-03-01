@@ -40,8 +40,8 @@ local GTK_THEME_ALTO_COLOR = filesystem.filesystem.get_awesome_config_dir("asset
 local GTK_CONFIG_FILE_PATH = filesystem.filesystem.get_xdg_config_dir("gtk-3.0") .. "settings.ini"
 local INSTALLED_GTK_THEMES_PATH = os.getenv("HOME") .. "/.local/share/themes/"
 local BASE_TEMPLATES_PATH = filesystem.filesystem.get_awesome_config_dir("assets/templates")
-local BACKGROUND_PATH = filesystem.filesystem.get_cache_dir("") .. "wallpaper.png"
-local BLURRED_BACKGROUND_PATH = filesystem.filesystem.get_cache_dir("") .. "blurred_wallpaper.png"
+local BACKGROUND_PATH = filesystem.filesystem.get_cache_dir() .. "wallpaper.png"
+local BLURRED_BACKGROUND_PATH = filesystem.filesystem.get_cache_dir() .. "blurred_wallpaper.png"
 local GENERATED_TEMPLATES_PATH = filesystem.filesystem.get_cache_dir("templates")
 local WAL_CACHE_PATH = filesystem.filesystem.get_xdg_cache_home("wal")
 local RUN_AS_ROOT_SCRIPT_PATH = filesystem.filesystem.get_awesome_config_dir("scripts") .. "run-as-root.sh"
@@ -456,6 +456,13 @@ local function install_gtk_theme()
     awful.spawn(string.format("cp -r %s %s", GTK_THEME_ALTO_COLOR, INSTALLED_GTK_THEMES_PATH), false)
 end
 
+local function on_wallpaper_changed()
+    gtimer.start_new(1, function()
+        capi.awesome.emit_signal("wallpaper::changed", BACKGROUND_PATH)
+        return false
+    end)
+end
+
 local function image_wallpaper(self, screen)
     local widget = wibox.widget {
         widget = wibox.widget.imagebox,
@@ -639,12 +646,11 @@ end
 
 local function we_wallpaper(self, screen)
     local id = get_we_wallpaper_id(self:get_active_wallpaper())
-    local cmd = string.format("cd %s && ./linux-wallpaperengine --assets-dir %s %s --fps %s--screenshot %s",
+    local cmd = string.format("cd %s && ./linux-wallpaperengine --assets-dir %s %s --fps %s",
         WE_PATH,
         self:get_wallpaper_engine_assets_folder(),
         self:get_wallpaper_engine_workshop_folder() .. "/" .. id,
-        self:get_wallpaper_engine_fps(),
-        BACKGROUND_PATH
+        self:get_wallpaper_engine_fps()
     )
     local pid = awful.spawn.with_shell(cmd, false)
     awful.spawn.with_shell(string.format(
@@ -654,28 +660,13 @@ local function we_wallpaper(self, screen)
         "linux-wallpaper-engine"
     ))
 
-    gtimer.start_new(1, function()
-        local widget = wibox.widget {
-            widget = wibox.widget.imagebox,
-            resize = true,
-            horizontal_fit_policy = "fit",
-            vertical_fit_policy = "fit",
-            image = BACKGROUND_PATH
-        }
-
-        self._private.wallpaper_surface = wibox.widget.draw_to_image_surface(
-            widget,
-            capi.screen.primary.geometry.width,
-            capi.screen.primary.geometry.height
-        )
-
-        return false
-    end)
-
     gtimer.start_new(0.1, function()
         for _, client in ipairs(capi.client.get()) do
             -- The props might not get set the first time, so only stop if they did
             if client.class == "linux-wallpaper-engine" and client.width == screen.geometry.width then
+                awful.spawn.easy_async(string.format("maim -i %s %s", client.window, BACKGROUND_PATH), function()
+                    on_wallpaper_changed()
+                end)
                 return false
             end
 
@@ -688,6 +679,7 @@ local function we_wallpaper(self, screen)
                 client.can_move = false
                 client.can_resize = false
                 client.can_focus = false
+                client.can_kill = false
                 client.width = screen.geometry.width
                 client.height = screen.geometry.height
                 client.x = 0
@@ -794,12 +786,12 @@ local function scan_wallpapers(self)
     end)
 end
 
-local function watch_wallpaper_changes(self)
-    local wallpaper_watcher = helpers.inotify:watch(WALLPAPERS_PATH,
+local function watch_wallpapers_changes(self)
+    local wallpapers_watcher = helpers.inotify:watch(WALLPAPERS_PATH,
         {helpers.inotify.Events.create, helpers.inotify.Events.delete, helpers.inotify.Events.moved_from,
          helpers.inotify.Events.moved_to})
 
-    wallpaper_watcher:connect_signal("event", function()
+        wallpapers_watcher:connect_signal("event", function()
         scan_wallpapers(self)
     end)
 end
@@ -889,28 +881,18 @@ function theme:set_wallpaper(wallpaper, type)
     end
 
     if self:get_wallpaper_type() ~= "we" then
-        self._private.wallpaper_surface = wibox.widget.draw_to_image_surface(
-            self._private.wallpaper_widget,
-            capi.screen.primary.geometry.width,
-            capi.screen.primary.geometry.height
-        )
         wibox.widget.draw_to_svg_file(
             self._private.wallpaper_widget,
             BACKGROUND_PATH,
             capi.screen.primary.geometry.width,
             capi.screen.primary.geometry.height
         )
+        on_wallpaper_changed()
     end
-
-    awful.spawn.easy_async(string.format("convert -filter Gaussian -blur 0x10 %s %s", BACKGROUND_PATH, BLURRED_BACKGROUND_PATH), function()
-        capi.awesome.emit_signal("wallpaper::blurred::changed")
-    end)
-
-    capi.awesome.emit_signal("wallpaper::changed")
 end
 
-function theme:get_wallpaper_surface()
-    return self._private.wallpaper_surface
+function theme:get_wallpaper_path()
+    return BACKGROUND_PATH
 end
 
 function theme:get_blurred_wallpaper_path()
@@ -1201,15 +1183,17 @@ local function new()
         ret:set_client_gap(ret:get_client_gap(), false)
         ret:set_ui_animations(ret:get_ui_animations())
         ret:set_ui_animations_framerate(ret:get_ui_animations_framerate())
-        ret:set_wallpaper(ret:get_active_wallpaper(), ret:get_wallpaper_type())
-        if system_daemon:is_new_version() or system_daemon:does_need_setup() then
-            ret:set_colorscheme(ret:get_active_colorscheme())
-        end
+        helpers.run.is_running("linux-wallpaperengine", function(is_running)
+            if is_running and ret:get_wallpaper_type() == "we" then
+                return
+            end
+            ret:set_wallpaper(ret:get_active_wallpaper(), ret:get_wallpaper_type())
+        end)
     end)
 
-    scan_wallpapers(ret)
-    watch_wallpaper_changes(ret)
     setup_profile_image(ret)
+    scan_wallpapers(ret)
+    watch_wallpapers_changes(ret)
 
     return ret
 end

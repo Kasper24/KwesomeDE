@@ -129,7 +129,9 @@ capi.client.connect_signal("request::default_keybindings", function()
             group = "client",
             description = "close",
             on_press = function(c)
-                c:kill()
+                if c.can_kill ~= false then
+                    c:kill()
+                end
             end
         }, -- Toggle titlebar
         awful.key {

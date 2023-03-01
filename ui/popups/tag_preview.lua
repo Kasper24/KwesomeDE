@@ -50,7 +50,7 @@ function tag_preview:show(t, args)
     end
 
     -- save_tag_thumbnail(t)
-    self.widget.image = t.thumbnail or theme_daemon:get_wallpaper_surface()
+    self.widget.image = t.thumbnail or theme_daemon:get_wallpaper_path()
     self.visible = true
 end
 
@@ -73,7 +73,7 @@ local function new()
         forced_height = dpi(150),
         horizontal_fit_policy = "fit",
         vertical_fit_policy = "fit",
-        image = theme_daemon:get_wallpaper_surface()
+        image = theme_daemon:get_wallpaper_path()
     }
 
     local widget = widgets.popup {
