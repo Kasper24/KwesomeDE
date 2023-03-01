@@ -42,7 +42,7 @@ function power:show()
         elseif key == "e" then
             system_daemon:exit()
         elseif key == "l" then
-            self:hide()
+            self:hide(false)
             system_daemon:lock()
         elseif key == "p" then
             system_daemon:shutdown()
@@ -56,12 +56,14 @@ function power:show()
     self:emit_signal("visibility", true)
 end
 
-function power:hide()
+function power:hide(emit_signal)
     awful.keygrabber.stop(self._private.grabber)
 
     self.widget.visible = false
 
-    self:emit_signal("visibility", false)
+    if emit_signal ~= false then
+        self:emit_signal("visibility", false)
+    end
 end
 
 function power:toggle()
@@ -149,7 +151,8 @@ local function widget(self)
         system_daemon:exit()
     end)
     local lock = button(beautiful.icons.lock, "Lock", function()
-        self:hide()
+        self.widget.visible = false
+        self:hide(false)
         system_daemon:lock()
     end)
 
@@ -169,20 +172,15 @@ local function widget(self)
     }
 
     return wibox.widget {
-        widget = wibox.layout.stack,
-        widgets.wallpaper,
-        blur,
+        widget = wibox.container.place,
+        halign = "center",
+        valign = "center",
         {
-            widget = wibox.container.place,
-            halign = "center",
-            valign = "center",
-            {
-                layout = wibox.layout.fixed.vertical,
-                spacing = dpi(15),
-                user,
-                greeter,
-                buttons
-            }
+            layout = wibox.layout.fixed.vertical,
+            spacing = dpi(15),
+            user,
+            greeter,
+            buttons
         }
     }
 end

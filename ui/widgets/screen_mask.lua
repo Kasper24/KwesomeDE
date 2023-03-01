@@ -7,7 +7,6 @@ local wibox = require("wibox")
 local beautiful = require("beautiful")
 local pwidget = require("ui.widgets.popup")
 local bwidget = require("ui.widgets.background")
-local wwidget = require("ui.widgets.wallpaper")
 local setmetatable = setmetatable
 
 local screen_mask = {
@@ -25,11 +24,8 @@ local function new(screen)
         placement = awful.placement.maximize,
         visible = false,
         ontop = true,
-        widget = {
-            widget = wibox.layout.stack,
-            wwidget,
-            blur
-        }
+        bg = beautiful.colors.background,
+        widget = wibox.container.background()
     }
 end
 

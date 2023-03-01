@@ -5,9 +5,11 @@
 local awful = require("awful")
 local gtimer = require("gears.timer")
 local ruled = require("ruled")
+local power_popup = require("ui.popups.power")
+local lock_popup = require("ui.popups.lock")
+local ncmpcpp_titlebar = require("ui.titlebar.ncmpcpp")
 local picom_daemon = require("daemons.system.picom")
 local theme_daemon = require("daemons.system.theme")
-local ncmpcpp_titlebar = require("ui.titlebar.ncmpcpp")
 local helpers = require("helpers")
 local capi = {
     awesome = awesome,
@@ -267,6 +269,35 @@ local apps = {
 }
 
 require("awful.autofocus")
+
+power_popup:connect_signal("visibility", function(self, visibie)
+    print(visibie)
+    if visibie then
+        for _, client in ipairs(capi.client.get()) do
+            if client.fake_root ~= true then
+                client.hidden = true
+            end
+        end
+    else
+        for _, client in ipairs(capi.client.get()) do
+            client.hidden = false
+        end
+    end
+end)
+
+lock_popup:connect_signal("visibility", function(self, visibie)
+    if visibie then
+        for _, client in ipairs(capi.client.get()) do
+            if client.fake_root ~= true then
+                client.hidden = true
+            end
+        end
+    else
+        for _, client in ipairs(capi.client.get()) do
+            client.hidden = false
+        end
+    end
+end)
 
 capi.client.connect_signal("request::manage", function(client)
     if not capi.awesome.startup then

@@ -176,8 +176,6 @@ local function widget(self)
 
     return wibox.widget {
         widget = wibox.layout.stack,
-        widgets.wallpaper,
-        blur,
         {
             widget = wibox.container.place,
             halign = "center",

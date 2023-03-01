@@ -32,5 +32,4 @@ return {
     text = require(... .. ".text"),
     textclock = require(... .. ".textclock"),
     titlebar = require(... .. ".titlebar"),
-    wallpaper = require(... .. ".wallpaper")
 }
