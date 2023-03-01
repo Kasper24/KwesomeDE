@@ -6,6 +6,7 @@ local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local hstring = require("helpers.string")
+local hrun = require("helpers.run")
 local string = string
 local ipairs = ipairs
 local type = type
@@ -38,6 +39,7 @@ function inotify:watch(path, events)
     local ret = gobject {}
 
     local command = string.format("inotifywait -m %s", path)
+
     if type(events) == "table" then
         for _, event in ipairs(events) do
             command = command .. " -e " .. event
@@ -46,35 +48,37 @@ function inotify:watch(path, events)
         command = command .. " -e " .. events
     end
 
-    local pid = awful.spawn.with_line_callback(command, {
-        stdout = function(line)
-            -- There are 2 possible print formats:
-            ---- 1: When watching a directory and there's a new event on a file
-            ---- path_to_directory/ event file
-            ---- 2: When watching a file and there's a new event
-            ---- path_to_file event
+    hrun.is_running(command, function(is_running)
+        if is_running == false and DEBUG ~= true then
+            awful.spawn("pkill -f '" ..  command .. "'")
 
-            -- 1:
-            local event = line:match(path .. "/ (.-) ")
-            if event ~= nil then
-                event = hstring.trim(event)
-                local file = line:match(path .. "/ " .. event .. " (.*)")
-                ret:emit_signal("event", event:lower(), path .. "/" .. file, file)
-                -- 2:
-            else
-                event = hstring.trim(line:match(path .. " (.* )"))
-                ret:emit_signal("event", event:lower(), path .. "/")
-            end
+            ret.pid = awful.spawn.with_line_callback(command, {
+                stdout = function(line)
+                    -- There are 2 possible print formats:
+                    ---- 1: When watching a directory and there's a new event on a file
+                    ---- path_to_directory/ event file
+                    ---- 2: When watching a file and there's a new event
+                    ---- path_to_file event
+
+                    -- 1:
+                    local event = line:match(path .. "/ (.-) ")
+                    if event ~= nil then
+                        event = hstring.trim(event)
+                        local file = line:match(path .. "/ " .. event .. " (.*)")
+                        ret:emit_signal("event", event:lower(), path .. "/" .. file, file)
+                        -- 2:
+                    else
+                        event = hstring.trim(line:match(path .. " (.* )"))
+                        ret:emit_signal("event", event:lower(), path .. "/")
+                    end
+                end
+            })
         end
-    })
+    end)
 
     function ret:stop()
-        awful.spawn("kill -9 " .. pid, false)
+        awful.spawn("kill -9 " .. self.pid, false)
     end
-
-    capi.awesome.connect_signal("exit", function()
-        ret:stop()
-    end)
 
     return ret
 end
