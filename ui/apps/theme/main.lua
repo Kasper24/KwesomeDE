@@ -114,6 +114,7 @@ local function image_tab()
 
     theme_daemon:connect_signal("wallpaper::selected", function(_, wallpaper)
         image.image = wallpaper
+        collectgarbage("collect")
     end)
 
     return image
@@ -232,6 +233,7 @@ local function digital_sun_tab()
         sun.colors = new_colors
         sun:emit_signal("widget::redraw_needed")
         image.image = wibox.widget.draw_to_image_surface(sun, 1000, 370)
+        collectgarbage("collect")
     end)
 
     return image
@@ -591,27 +593,19 @@ local function wallpapers_widget(self)
         stack:raise_widget(widget)
     end)
 
-    theme_daemon:connect_signal("wallpapers", function(self, wallpapers, we_wallpaper)
-        spinning_circle:start()
-        stack:raise_widget(spinning_circle)
-
+    theme_daemon:connect_signal("wallpapers", function(self, wallpapers)
         wallpapers_layout:reset()
         theme_daemon:dynamic_disconnect_signals("wallpaper::selected")
         collectgarbage("collect")
 
-        for _, wallpaper in ipairs(wallpapers) do
-            wallpapers_layout:add(wallpaper_widget(wallpaper, theme_daemon:get_short_wallpaper_name(wallpaper)))
+        if #wallpapers > 0 then
+            for _, wallpaper in ipairs(wallpapers) do
+                wallpapers_layout:add(wallpaper_widget(wallpaper, theme_daemon:get_short_wallpaper_name(wallpaper)))
+            end
+            stack:raise_widget(widget)
+        else
+            stack:raise_widget(empty_wallpapers)
         end
-
-        stack:raise_widget(widget)
-        spinning_circle:stop()
-    end)
-
-    theme_daemon:connect_signal("wallpapers::empty", function()
-        stack:raise_widget(empty_wallpapers)
-        wallpapers_layout:reset()
-        theme_daemon:dynamic_disconnect_signals("wallpaper::selected")
-        collectgarbage("collect")
     end)
 
     for i = 1, 16 do
@@ -787,30 +781,22 @@ local function wallpapers_both_widget(self)
         stack:raise_widget(widget)
     end)
 
-    theme_daemon:connect_signal("wallpapers::both", function(self, wallpapers, we_wallpapers)
-        spinning_circle:start()
-        stack:raise_widget(spinning_circle)
-
+    theme_daemon:connect_signal("wallpapers", function(self, wallpapers, we_wallpapers)
         wallpapers_layout:reset()
         theme_daemon:dynamic_disconnect_signals("wallpaper::selected")
         collectgarbage("collect")
 
-        for _, wallpaper in ipairs(wallpapers) do
-            wallpapers_layout:add(wallpaper_widget(wallpaper, theme_daemon:get_short_wallpaper_name(wallpaper)))
+        if #wallpapers > 0 or #we_wallpapers > 0 then
+            for _, wallpaper in ipairs(wallpapers) do
+                wallpapers_layout:add(wallpaper_widget(wallpaper, theme_daemon:get_short_wallpaper_name(wallpaper)))
+            end
+            for _, wallpaper in ipairs(we_wallpapers) do
+                wallpapers_layout:add(wallpaper_widget(wallpaper.path, wallpaper.title))
+            end
+            stack:raise_widget(widget)
+        else
+            stack:raise_widget(empty_wallpapers)
         end
-        for _, wallpaper in ipairs(we_wallpapers) do
-            wallpapers_layout:add(wallpaper_widget(wallpaper.path, wallpaper.title))
-        end
-
-        stack:raise_widget(widget)
-        spinning_circle:stop()
-    end)
-
-    theme_daemon:connect_signal("wallpapers::both::empty", function()
-        stack:raise_widget(empty_wallpapers)
-        wallpapers_layout:reset()
-        theme_daemon:dynamic_disconnect_signals("wallpaper::selected")
-        collectgarbage("collect")
     end)
 
     for i = 1, 16 do
@@ -986,27 +972,19 @@ local function we_widget(self)
         stack:raise_widget(widget)
     end)
 
-    theme_daemon:connect_signal("wallpapers::we", function(self, wallpapers)
-        spinning_circle:start()
-        stack:raise_widget(spinning_circle)
-
+    theme_daemon:connect_signal("wallpapers", function(self, _, we_wallpapers)
         wallpapers_layout:reset()
         theme_daemon:dynamic_disconnect_signals("wallpaper::selected")
         collectgarbage("collect")
 
-        for _, wallpaper in ipairs(wallpapers) do
-            wallpapers_layout:add(wallpaper_widget(wallpaper.path, wallpaper.title))
+        if #we_wallpapers > 0 then
+            for _, wallpaper in ipairs(we_wallpapers) do
+                wallpapers_layout:add(wallpaper_widget(wallpaper.path, wallpaper.title))
+            end
+            stack:raise_widget(widget)
+        else
+            stack:raise_widget(empty_wallpapers)
         end
-
-        stack:raise_widget(widget)
-        spinning_circle:stop()
-    end)
-
-    theme_daemon:connect_signal("wallpapers::we::empty", function()
-        stack:raise_widget(empty_wallpapers)
-        wallpapers_layout:reset()
-        theme_daemon:dynamic_disconnect_signals("wallpaper::selected")
-        collectgarbage("collect")
     end)
 
     for i = 1, 16 do

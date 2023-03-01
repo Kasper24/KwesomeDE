@@ -695,63 +695,24 @@ local function we_wallpaper(self, screen)
 end
 
 local function scan_wallpapers(self)
-    local wallpapers = {}
-    local we_wallpapers = {}
+    self._private.wallpapers = {}
+    self._private.we_wallpapers = {}
 
-    -- Make sure Awesome doesn't work too hard adding widgets
-    -- if there are more changes coming soon
     local emit_signal_timer = gtimer {
         timeout = 0.5,
         autostart = false,
         single_shot = true,
         callback = function()
-            if #wallpapers == 0 then
-                self:emit_signal("wallpapers::empty")
-            else
-                table.sort(wallpapers, function(a, b)
-                    return a < b
-                end)
+            table.sort(self._private.wallpapers, function(a, b)
+                return a < b
+            end)
 
-                self:set_selected_colorscheme(self:get_selected_colorscheme())
-                self:emit_signal("wallpapers", wallpapers)
-            end
-        end
-    }
+            table.sort(self._private.we_wallpapers, function(a, b)
+                return a.title < b.title
+            end)
 
-    local emit_we_signal_timer = gtimer {
-        timeout = 0.5,
-        autostart = false,
-        single_shot = true,
-        callback = function()
-            if #we_wallpapers == 0 then
-                self:emit_signal("wallpapers::we::empty")
-            else
-                table.sort(we_wallpapers, function(a, b)
-                    return a.title < b.title
-                end)
-
-                self:emit_signal("wallpapers::we", we_wallpapers)
-            end
-        end
-    }
-
-    local emit_both_signal_timer = gtimer {
-        timeout = 0.5,
-        autostart = false,
-        single_shot = true,
-        callback = function()
-            if #wallpapers == 0 and #we_wallpapers == 0 then
-                self:emit_signal("wallpapers::both::empty")
-            else
-                table.sort(wallpapers, function(a, b)
-                    return a < b
-                end)
-                table.sort(we_wallpapers, function(a, b)
-                    return a.title < b.title
-                end)
-
-                self:emit_signal("wallpapers::both", wallpapers, we_wallpapers)
-            end
+            self:set_selected_colorscheme(self:get_selected_colorscheme())
+            self:emit_signal("wallpapers", self._private.wallpapers, self._private.we_wallpapers)
         end
     }
 
@@ -759,11 +720,10 @@ local function scan_wallpapers(self)
         local wallpaper_path = WALLPAPERS_PATH .. file:get_name()
         local mimetype = Gio.content_type_guess(wallpaper_path)
         if PICTURES_MIMETYPES[mimetype] ~= nil then
-            table.insert(wallpapers, wallpaper_path)
+            table.insert(self._private.wallpapers, wallpaper_path)
         end
     end, {}, function()
         emit_signal_timer:again()
-        emit_both_signal_timer:again()
     end)
 
     filesystem.filesystem.iterate_contents(self:get_wallpaper_engine_workshop_folder(), function(file, path, name)
@@ -777,7 +737,7 @@ local function scan_wallpapers(self)
                         json_file:read(function(error, content)
                             if error == nil then
                                 local title = json.decode(content).title
-                                table.insert(we_wallpapers, { path = path, title = title})
+                                table.insert(self._private.we_wallpapers, { path = path, title = title})
                             end
                         end)
                     end
@@ -785,8 +745,6 @@ local function scan_wallpapers(self)
             end
         end
     end, {}, function()
-        emit_we_signal_timer:again()
-        emit_both_signal_timer:again()
     end)
 end
 
@@ -794,8 +752,7 @@ local function watch_wallpapers_changes(self)
     local wallpapers_watcher = helpers.inotify:watch(WALLPAPERS_PATH,
         {helpers.inotify.Events.create, helpers.inotify.Events.delete, helpers.inotify.Events.moved_from,
          helpers.inotify.Events.moved_to})
-
-        wallpapers_watcher:connect_signal("event", function()
+    wallpapers_watcher:connect_signal("event", function()
         scan_wallpapers(self)
     end)
 end
