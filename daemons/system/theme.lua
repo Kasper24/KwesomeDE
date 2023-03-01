@@ -49,7 +49,6 @@ local FILE_PICKER_SCRIPT_PATH = filesystem.filesystem.get_awesome_config_dir("sc
 local COLOR_PICKER_SCRIPT_PATH = filesystem.filesystem.get_awesome_config_dir("scripts") .. "color-picker.lua"
 local DEFAULT_PROFILE_IMAGE_PATH = filesystem.filesystem.get_awesome_config_dir("assets/images") .. "profile.png"
 local WE_PATH = filesystem.filesystem.get_awesome_config_dir("assets/wallpaper-engine")
-local WE_ASSETS_PATH = WE_PATH .. "assets"
 
 local PICTURES_MIMETYPES = {
     ["application/pdf"] = "lximage", -- AI
@@ -77,7 +76,7 @@ local function distance(hex_src, hex_tgt)
     return math.sqrt((color_2.r - color_1.r)^2 + (color_2.g - color_1.g)^2 + (color_2.b - color_1.b)^2)
 end
 
-local function closestColor(colors, reference)
+local function closet_color(colors, reference)
     local minDistance = math.huge
     local closest
     local closestIndex
@@ -157,12 +156,12 @@ local function generate_colorscheme(self, wallpaper, reset, light)
             end
 
             local sorted_colors = gtable.clone({unpack(colors, 2, 7)})
-            colors[2] = closestColor(sorted_colors, "#FF0000")
-            colors[3] = closestColor(sorted_colors, "#00FF00")
-            colors[4] = closestColor(sorted_colors, "#FFFF00")
-            colors[5] = closestColor(sorted_colors, "#800080")
-            colors[6] = closestColor(sorted_colors, "#FF00FF")
-            colors[7] = closestColor(sorted_colors, "#0000FF")
+            colors[2] = closet_color(sorted_colors, "#FF0000")
+            colors[3] = closet_color(sorted_colors, "#00FF00")
+            colors[4] = closet_color(sorted_colors, "#FFFF00")
+            colors[5] = closet_color(sorted_colors, "#800080")
+            colors[6] = closet_color(sorted_colors, "#FF00FF")
+            colors[7] = closet_color(sorted_colors, "#0000FF")
 
             local added_sat = light and 0.5 or 0.3
             local sign = light and -1 or 1
@@ -674,7 +673,7 @@ local function we_wallpaper(self, screen)
     end)
 
     gtimer.start_new(0.1, function()
-        for _, client in ipairs(client.get()) do
+        for _, client in ipairs(capi.client.get()) do
             -- The props might not get set the first time, so only stop if they did
             if client.class == "linux-wallpaper-engine" and client.width == screen.geometry.width then
                 return false
@@ -728,7 +727,7 @@ local function scan_wallpapers(self)
         autostart = false,
         single_shot = true,
         callback = function()
-            if #wallpapers == 0 then
+            if #we_wallpapers == 0 then
                 self:emit_signal("wallpapers::we::empty")
             else
                 table.sort(we_wallpapers, function(a, b)
