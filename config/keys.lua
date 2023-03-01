@@ -791,6 +791,12 @@ capi.awesome.connect_signal("root::pressed", function(button)
     end
 end)
 
+capi.client.connect_signal("button::press", function(client, x, y, button)
+    if client.class == "linux-wallpaper-engine" then
+        capi.awesome.emit_signal("root::pressed", button)
+    end
+end)
+
 awful.mouse.append_global_mousebindings({
     awful.button({"Any"}, 1, function()
         capi.awesome.emit_signal("root::pressed", 1)

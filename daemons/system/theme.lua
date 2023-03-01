@@ -687,10 +687,6 @@ local function we_wallpaper(self, screen)
                 client.height = screen.geometry.height
                 client.x = 0
                 client.y = 0
-
-                client:connect_signal("button::press", function(self, x, y, button)
-                    capi.awesome.emit_signal("root::pressed", button)
-                end)
             end
         end
         return true
