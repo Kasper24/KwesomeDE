@@ -74,6 +74,7 @@ local function widget(self)
     local clock = wibox.widget {
         widget = widgets.textclock,
         format = "%H:%M",
+        halign = "center",
         size = 60
     }
 
