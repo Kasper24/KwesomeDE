@@ -787,6 +787,18 @@ awful.keyboard.append_global_keybindings({ -- Toogle media
 -- =============================================================================
 --  UI
 -- =============================================================================
+awful.keyboard.append_global_keybindings({ -- View desktop
+    awful.key {
+        modifiers = { "Any" },
+        key = "Escape",
+        group = "ui",
+        description = "hide panels",
+        on_press = function()
+            capi.awesome.emit_signal("root::pressed", button)
+        end
+    }
+})
+
 capi.awesome.connect_signal("root::pressed", function(button)
     if button == 3 then
         main_menu:toggle()
