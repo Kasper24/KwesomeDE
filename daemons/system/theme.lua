@@ -723,13 +723,33 @@ local function scan_wallpapers(self)
         single_shot = true,
         callback = function()
             if #wallpapers == 0 then
-                self:emit_signal("we_wallpapers::empty")
+                self:emit_signal("wallpapers::we::empty")
             else
                 table.sort(we_wallpapers, function(a, b)
                     return a.title < b.title
                 end)
 
-                self:emit_signal("we_wallpapers", we_wallpapers)
+                self:emit_signal("wallpapers::we", we_wallpapers)
+            end
+        end
+    }
+
+    local emit_both_signal_timer = gtimer {
+        timeout = 0.5,
+        autostart = false,
+        single_shot = true,
+        callback = function()
+            if #wallpapers == 0 and #we_wallpapers == 0 then
+                self:emit_signal("wallpapers::both::empty")
+            else
+                table.sort(wallpapers, function(a, b)
+                    return a < b
+                end)
+                table.sort(we_wallpapers, function(a, b)
+                    return a.title < b.title
+                end)
+
+                self:emit_signal("wallpapers::both", wallpapers, we_wallpapers)
             end
         end
     }
@@ -742,6 +762,7 @@ local function scan_wallpapers(self)
         end
     end, {}, function()
         emit_signal_timer:again()
+        emit_both_signal_timer:again()
     end)
 
     filesystem.filesystem.iterate_contents("/home/kasper/Games/steamapps/workshop/content/431960", function(file, path, name)
@@ -764,6 +785,7 @@ local function scan_wallpapers(self)
         end
     end, {}, function()
         emit_we_signal_timer:again()
+        emit_both_signal_timer:again()
     end)
 end
 

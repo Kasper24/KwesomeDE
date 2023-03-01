@@ -9,6 +9,7 @@ local beautiful = require("beautiful")
 local theme_daemon = require("daemons.system.theme")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
+local collectgarbage = collectgarbage
 local setmetatable = setmetatable
 local ipairs = ipairs
 
@@ -16,20 +17,20 @@ local main = {
     mt = {}
 }
 
-local function wallpaper_widget(wallpaper)
+local function wallpaper_widget(path, name)
     local button = wibox.widget {
         widget = widgets.button.text.state,
         forced_height = dpi(40),
         text_normal_bg = beautiful.colors.on_background,
         size = 12,
-        text = theme_daemon:get_short_wallpaper_name(wallpaper),
+        text = name,
         on_release = function()
-            theme_daemon:set_selected_colorscheme(wallpaper)
+            theme_daemon:set_selected_colorscheme(path)
         end
     }
 
-    theme_daemon:dynamic_connect_signal("wallpaper::selected", function(self, new_wallpaper)
-        if wallpaper == new_wallpaper then
+    theme_daemon:dynamic_connect_signal("wallpaper::selected", function(self, new_path)
+        if path == new_path then
             button:turn_on()
         else
             button:turn_off()
@@ -292,17 +293,19 @@ local function tabs(self)
     local _mountain_button = {}
     local _digital_sun_button = {}
     local _binary_button = {}
+    local _we_button = {}
 
     local _stack = {}
     local _image_tab = image_tab()
     local _mountain_tab = mountain_tab()
     local _digital_sun_tab = digital_sun_tab()
     local _binary_tab = binary_tab()
+    local _we_tab = image_tab()
 
     _image_button = wibox.widget {
         widget = widgets.button.text.state,
         on_by_default = true,
-        size = 15,
+        size = 13,
         on_normal_bg = beautiful.icons.spraycan.color,
         text_normal_bg = beautiful.colors.on_background,
         text_on_normal_bg = beautiful.colors.on_accent,
@@ -313,13 +316,15 @@ local function tabs(self)
             _mountain_button:turn_off()
             _digital_sun_button:turn_off()
             _binary_button:turn_off()
+            _we_button:turn_off()
+            self:emit_signal("show::wallpapers")
             _stack:raise_widget(_image_tab)
         end
     }
 
     _mountain_button = wibox.widget {
         widget = widgets.button.text.state,
-        size = 15,
+        size = 13,
         on_normal_bg = beautiful.icons.spraycan.color,
         text_normal_bg = beautiful.colors.on_background,
         text_on_normal_bg = beautiful.colors.on_accent,
@@ -330,13 +335,15 @@ local function tabs(self)
             _mountain_button:turn_on()
             _digital_sun_button:turn_off()
             _binary_button:turn_off()
+            _we_button:turn_off()
+            self:emit_signal("show::both")
             _stack:raise_widget(_mountain_tab)
         end
     }
 
     _digital_sun_button = wibox.widget {
         widget = widgets.button.text.state,
-        size = 15,
+        size = 13,
         on_normal_bg = beautiful.icons.spraycan.color,
         text_normal_bg = beautiful.colors.on_background,
         text_on_normal_bg = beautiful.colors.on_accent,
@@ -347,13 +354,15 @@ local function tabs(self)
             _mountain_button:turn_off()
             _digital_sun_button:turn_on()
             _binary_button:turn_off()
+            _we_button:turn_off()
+            self:emit_signal("show::both")
             _stack:raise_widget(_digital_sun_tab)
         end
     }
 
     _binary_button = wibox.widget {
         widget = widgets.button.text.state,
-        size = 15,
+        size = 13,
         on_normal_bg = beautiful.icons.spraycan.color,
         text_normal_bg = beautiful.colors.on_background,
         text_on_normal_bg = beautiful.colors.on_accent,
@@ -364,7 +373,28 @@ local function tabs(self)
             _mountain_button:turn_off()
             _digital_sun_button:turn_off()
             _binary_button:turn_on()
+            _we_button:turn_off()
+            self:emit_signal("show::both")
             _stack:raise_widget(_binary_tab)
+        end
+    }
+
+    _we_button = wibox.widget {
+        widget = widgets.button.text.state,
+        size = 13,
+        on_normal_bg = beautiful.icons.spraycan.color,
+        text_normal_bg = beautiful.colors.on_background,
+        text_on_normal_bg = beautiful.colors.on_accent,
+        text = "WP Engine",
+        on_release = function()
+            self._private.selected_tab = "we"
+            _image_button:turn_off()
+            _mountain_button:turn_off()
+            _digital_sun_button:turn_off()
+            _binary_button:turn_off()
+            _we_button:turn_on()
+            self:emit_signal("show::we")
+            _stack:raise_widget(_we_tab)
         end
     }
 
@@ -375,7 +405,8 @@ local function tabs(self)
         _image_tab,
         _mountain_tab,
         _digital_sun_tab,
-        _binary_tab
+        _binary_tab,
+        _we_tab
     }
 
     return wibox.widget {
@@ -387,13 +418,14 @@ local function tabs(self)
             _image_button,
             _mountain_button,
             _digital_sun_button,
-            _binary_button
+            _binary_button,
+            _we_button
         },
         _stack,
     }
 end
 
-local function widget(self)
+local function wallpapers_widget(self)
     local colors = wibox.widget {
         widget = wibox.layout.grid,
         spacing = dpi(15),
@@ -559,7 +591,7 @@ local function widget(self)
         stack:raise_widget(widget)
     end)
 
-    theme_daemon:connect_signal("wallpapers", function(self, wallpapers)
+    theme_daemon:connect_signal("wallpapers", function(self, wallpapers, we_wallpaper)
         spinning_circle:start()
         stack:raise_widget(spinning_circle)
 
@@ -568,7 +600,7 @@ local function widget(self)
         collectgarbage("collect")
 
         for _, wallpaper in ipairs(wallpapers) do
-            wallpapers_layout:add(wallpaper_widget(wallpaper))
+            wallpapers_layout:add(wallpaper_widget(wallpaper, theme_daemon:get_short_wallpaper_name(wallpaper)))
         end
 
         stack:raise_widget(widget)
@@ -576,6 +608,401 @@ local function widget(self)
     end)
 
     theme_daemon:connect_signal("wallpapers::empty", function()
+        stack:raise_widget(empty_wallpapers)
+        wallpapers_layout:reset()
+        theme_daemon:dynamic_disconnect_signals("wallpaper::selected")
+        collectgarbage("collect")
+    end)
+
+    for i = 1, 16 do
+        colors:add(color_button(i))
+    end
+
+    return stack
+end
+
+local function wallpapers_both_widget(self)
+    local colors = wibox.widget {
+        widget = wibox.layout.grid,
+        spacing = dpi(15),
+        forced_num_rows = 2,
+        forced_num_cols = 8,
+        expand = true
+    }
+
+    local empty_wallpapers = wibox.widget {
+        widget = wibox.container.margin,
+        margins = {
+            top = dpi(250)
+        },
+        {
+            layout = wibox.layout.fixed.vertical,
+            spacing = dpi(15),
+            {
+                widget = widgets.text,
+                halign = "center",
+                icon = beautiful.icons.spraycan,
+                size = 50
+            },
+            {
+                widget = widgets.text,
+                halign = "center",
+                size = 15,
+                text = "It's empty out here ):"
+            }
+        }
+    }
+
+    local spinning_circle = widgets.spinning_circle {
+        forced_width = dpi(250),
+        forced_height = dpi(250),
+        thickness = dpi(30),
+        run_by_default = false
+    }
+
+    local wallpapers_layout = wibox.widget {
+        layout = widgets.overflow.vertical,
+        forced_height = dpi(250),
+        spacing = dpi(3),
+        scrollbar_widget = widgets.scrollbar,
+        scrollbar_width = dpi(3),
+        step = 50
+    }
+
+    local light_dark = wibox.widget {
+        widget = widgets.button.text.normal,
+        normal_bg = beautiful.icons.spraycan.color,
+        text_normal_bg = beautiful.colors.on_accent,
+        size = 15,
+        text = "Light",
+        on_release = function()
+            theme_daemon:toggle_dark_light()
+        end
+    }
+
+    local reset_colorscheme = wibox.widget {
+        widget = widgets.button.text.normal,
+        normal_bg = beautiful.icons.spraycan.color,
+        text_normal_bg = beautiful.colors.on_accent,
+        size = 15,
+        text = "Reset Colorscheme",
+        on_release = function()
+            theme_daemon:reset_colorscheme()
+        end
+    }
+
+    local save_colorscheme = wibox.widget {
+        widget = widgets.button.text.normal,
+        normal_bg = beautiful.icons.spraycan.color,
+        text_normal_bg = beautiful.colors.on_accent,
+        size = 15,
+        text = "Save Colorscheme",
+        on_release = function()
+            theme_daemon:save_colorscheme()
+        end
+    }
+
+    local set_wallpaper = wibox.widget {
+        widget = widgets.button.text.normal,
+        normal_bg = beautiful.icons.spraycan.color,
+        text_normal_bg = beautiful.colors.on_accent,
+        size = 15,
+        text = "Set Wallpaper",
+        on_release = function()
+            theme_daemon:set_wallpaper(theme_daemon:get_selected_colorscheme(), self._private.selected_tab)
+        end
+    }
+
+    local set_colorscheme = wibox.widget {
+        widget = widgets.button.text.normal,
+        normal_bg = beautiful.icons.spraycan.color,
+        text_normal_bg = beautiful.colors.on_accent,
+        size = 15,
+        text = "Set Colorscheme",
+        on_release = function()
+            theme_daemon:set_colorscheme(theme_daemon:get_selected_colorscheme())
+        end
+    }
+
+    local set_both = wibox.widget {
+        widget = widgets.button.text.normal,
+        normal_bg = beautiful.icons.spraycan.color,
+        text_normal_bg = beautiful.colors.on_accent,
+        size = 15,
+        text = "Set Both",
+        on_release = function()
+            theme_daemon:set_wallpaper(theme_daemon:get_selected_colorscheme(), self._private.selected_tab)
+            theme_daemon:set_colorscheme(theme_daemon:get_selected_colorscheme())
+        end
+    }
+
+    local widget = wibox.widget {
+        layout = wibox.layout.fixed.vertical,
+        spacing = dpi(15),
+        colors,
+        wallpapers_layout,
+        {
+            layout = wibox.layout.grid,
+            spacing = dpi(10),
+            forced_num_rows = 3,
+            forced_num_cols = 3,
+            horizontal_expand = true,
+            light_dark,
+            reset_colorscheme,
+            save_colorscheme,
+            set_wallpaper,
+            set_colorscheme,
+            set_both
+        }
+    }
+
+    local stack = wibox.widget {
+        layout = wibox.layout.stack,
+        top_only = true,
+        empty_wallpapers,
+        spinning_circle,
+        widget
+    }
+
+    theme_daemon:connect_signal("colorscheme::generated", function(self, colors)
+        if helpers.color.is_dark(colors[1]) then
+            light_dark:set_text("Light")
+        else
+            light_dark:set_text("Dark")
+        end
+    end)
+
+    theme_daemon:connect_signal("colorscheme::generating", function()
+        spinning_circle:start()
+        stack:raise_widget(spinning_circle)
+    end)
+
+    theme_daemon:connect_signal("colorscheme::failed_to_generate", function()
+        spinning_circle:stop()
+        stack:raise_widget(widget)
+    end)
+
+    theme_daemon:connect_signal("wallpaper::selected", function()
+        spinning_circle:stop()
+        stack:raise_widget(widget)
+    end)
+
+    theme_daemon:connect_signal("wallpapers::both", function(self, wallpapers, we_wallpapers)
+        spinning_circle:start()
+        stack:raise_widget(spinning_circle)
+
+        wallpapers_layout:reset()
+        theme_daemon:dynamic_disconnect_signals("wallpaper::selected")
+        collectgarbage("collect")
+
+        for _, wallpaper in ipairs(wallpapers) do
+            wallpapers_layout:add(wallpaper_widget(wallpaper, theme_daemon:get_short_wallpaper_name(wallpaper)))
+        end
+        for _, wallpaper in ipairs(we_wallpapers) do
+            wallpapers_layout:add(wallpaper_widget(wallpaper.path, wallpaper.title))
+        end
+
+        stack:raise_widget(widget)
+        spinning_circle:stop()
+    end)
+
+    theme_daemon:connect_signal("wallpapers::both::empty", function()
+        stack:raise_widget(empty_wallpapers)
+        wallpapers_layout:reset()
+        theme_daemon:dynamic_disconnect_signals("wallpaper::selected")
+        collectgarbage("collect")
+    end)
+
+    for i = 1, 16 do
+        colors:add(color_button(i))
+    end
+
+    return stack
+end
+
+local function we_widget(self)
+    local colors = wibox.widget {
+        widget = wibox.layout.grid,
+        spacing = dpi(15),
+        forced_num_rows = 2,
+        forced_num_cols = 8,
+        expand = true
+    }
+
+    local empty_wallpapers = wibox.widget {
+        widget = wibox.container.margin,
+        margins = {
+            top = dpi(250)
+        },
+        {
+            layout = wibox.layout.fixed.vertical,
+            spacing = dpi(15),
+            {
+                widget = widgets.text,
+                halign = "center",
+                icon = beautiful.icons.spraycan,
+                size = 50
+            },
+            {
+                widget = widgets.text,
+                halign = "center",
+                size = 15,
+                text = "It's empty out here ):"
+            }
+        }
+    }
+
+    local spinning_circle = widgets.spinning_circle {
+        forced_width = dpi(250),
+        forced_height = dpi(250),
+        thickness = dpi(30),
+        run_by_default = false
+    }
+
+    local wallpapers_layout = wibox.widget {
+        layout = widgets.overflow.vertical,
+        forced_height = dpi(250),
+        spacing = dpi(3),
+        scrollbar_widget = widgets.scrollbar,
+        scrollbar_width = dpi(3),
+        step = 50
+    }
+
+    local light_dark = wibox.widget {
+        widget = widgets.button.text.normal,
+        normal_bg = beautiful.icons.spraycan.color,
+        text_normal_bg = beautiful.colors.on_accent,
+        size = 15,
+        text = "Light",
+        on_release = function()
+            theme_daemon:toggle_dark_light()
+        end
+    }
+
+    local reset_colorscheme = wibox.widget {
+        widget = widgets.button.text.normal,
+        normal_bg = beautiful.icons.spraycan.color,
+        text_normal_bg = beautiful.colors.on_accent,
+        size = 15,
+        text = "Reset Colorscheme",
+        on_release = function()
+            theme_daemon:reset_colorscheme()
+        end
+    }
+
+    local save_colorscheme = wibox.widget {
+        widget = widgets.button.text.normal,
+        normal_bg = beautiful.icons.spraycan.color,
+        text_normal_bg = beautiful.colors.on_accent,
+        size = 15,
+        text = "Save Colorscheme",
+        on_release = function()
+            theme_daemon:save_colorscheme()
+        end
+    }
+
+    local set_wallpaper = wibox.widget {
+        widget = widgets.button.text.normal,
+        normal_bg = beautiful.icons.spraycan.color,
+        text_normal_bg = beautiful.colors.on_accent,
+        size = 15,
+        text = "Set Wallpaper",
+        on_release = function()
+            theme_daemon:set_wallpaper(theme_daemon:get_selected_colorscheme(), self._private.selected_tab)
+        end
+    }
+
+    local set_colorscheme = wibox.widget {
+        widget = widgets.button.text.normal,
+        normal_bg = beautiful.icons.spraycan.color,
+        text_normal_bg = beautiful.colors.on_accent,
+        size = 15,
+        text = "Set Colorscheme",
+        on_release = function()
+            theme_daemon:set_colorscheme(theme_daemon:get_selected_colorscheme())
+        end
+    }
+
+    local set_both = wibox.widget {
+        widget = widgets.button.text.normal,
+        normal_bg = beautiful.icons.spraycan.color,
+        text_normal_bg = beautiful.colors.on_accent,
+        size = 15,
+        text = "Set Both",
+        on_release = function()
+            theme_daemon:set_wallpaper(theme_daemon:get_selected_colorscheme(), self._private.selected_tab)
+            theme_daemon:set_colorscheme(theme_daemon:get_selected_colorscheme())
+        end
+    }
+
+    local widget = wibox.widget {
+        layout = wibox.layout.fixed.vertical,
+        spacing = dpi(15),
+        colors,
+        wallpapers_layout,
+        {
+            layout = wibox.layout.grid,
+            spacing = dpi(10),
+            forced_num_rows = 3,
+            forced_num_cols = 3,
+            horizontal_expand = true,
+            light_dark,
+            reset_colorscheme,
+            save_colorscheme,
+            set_wallpaper,
+            set_colorscheme,
+            set_both
+        }
+    }
+
+    local stack = wibox.widget {
+        layout = wibox.layout.stack,
+        top_only = true,
+        empty_wallpapers,
+        spinning_circle,
+        widget
+    }
+
+    theme_daemon:connect_signal("colorscheme::generated", function(self, colors)
+        if helpers.color.is_dark(colors[1]) then
+            light_dark:set_text("Light")
+        else
+            light_dark:set_text("Dark")
+        end
+    end)
+
+    theme_daemon:connect_signal("colorscheme::generating", function()
+        spinning_circle:start()
+        stack:raise_widget(spinning_circle)
+    end)
+
+    theme_daemon:connect_signal("colorscheme::failed_to_generate", function()
+        spinning_circle:stop()
+        stack:raise_widget(widget)
+    end)
+
+    theme_daemon:connect_signal("wallpaper::selected", function()
+        spinning_circle:stop()
+        stack:raise_widget(widget)
+    end)
+
+    theme_daemon:connect_signal("wallpapers::we", function(self, wallpapers)
+        spinning_circle:start()
+        stack:raise_widget(spinning_circle)
+
+        wallpapers_layout:reset()
+        theme_daemon:dynamic_disconnect_signals("wallpaper::selected")
+        collectgarbage("collect")
+
+        for _, wallpaper in ipairs(wallpapers) do
+            wallpapers_layout:add(wallpaper_widget(wallpaper.path, wallpaper.title))
+        end
+
+        stack:raise_widget(widget)
+        spinning_circle:stop()
+    end)
+
+    theme_daemon:connect_signal("wallpapers::we::empty", function()
         stack:raise_widget(empty_wallpapers)
         wallpapers_layout:reset()
         theme_daemon:dynamic_disconnect_signals("wallpaper::selected")
@@ -620,6 +1047,33 @@ local function new(self, layout)
         end
     }
 
+    local _wallpaper_widget = wallpapers_widget(self)
+    local _wallpapers_both_widget = wallpapers_both_widget(self)
+    local _we_widget = we_widget(self)
+
+    local stack = wibox.widget {
+        layout = wibox.layout.stack,
+        top_only = true,
+        _wallpaper_widget,
+        _wallpapers_both_widget,
+        _we_widget,
+    }
+
+    self:connect_signal("show::wallpapers", function()
+        stack:raise_widget(_wallpaper_widget)
+        print('1')
+    end)
+
+    self:connect_signal("show::both", function()
+        stack:raise_widget(_wallpapers_both_widget)
+        print('2')
+    end)
+
+    self:connect_signal("show::we", function()
+        stack:raise_widget(_we_widget)
+        print('3')
+    end)
+
     return wibox.widget {
         layout = wibox.layout.fixed.vertical,
         spacing = dpi(15),
@@ -635,7 +1089,7 @@ local function new(self, layout)
             }
         },
         tabs(self),
-        widget(self)
+        stack
     }
 end
 
