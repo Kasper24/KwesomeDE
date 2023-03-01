@@ -127,6 +127,7 @@ local function new()
     end)
 
     capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+        animation:stop()
         on_color = old_colorscheme_to_new_map[on_color]
         off_color = old_colorscheme_to_new_map[off_color]
         widget.color = animation.pos.height == 1 and on_color or off_color

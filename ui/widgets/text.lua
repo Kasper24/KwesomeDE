@@ -170,11 +170,13 @@ local function new(hot_reload)
             if wp.color then
                 wp.color = old_colorscheme_to_new_map[wp.color]
             elseif wp.defaults.color then
-                    -- TODO - Fix notif center icon not hot reloading
-                    local new_color = old_colorscheme_to_new_map[wp.defaults.color]
-                    if new_color then
-                        wp.defaults.color = new_color
-                    end
+                -- TODO - Fix notif center icon not hot reloading
+                local new_color = old_colorscheme_to_new_map[wp.defaults.color]
+                if new_color then
+                    wp.defaults.color = new_color
+                else
+                    wp.defaults.color = beautiful.colors.random_accent_color()
+                end
             end
 
             generate_markup(widget)
