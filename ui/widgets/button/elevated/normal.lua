@@ -26,7 +26,7 @@ local elevated_button_normal = {
 
 local properties = {
     "halign", "valign",
-    "hover_cursor",
+    "hover_cursor", "disabled",
     "normal_bg",
     "normal_shape", "hover_shape", "press_shape",
     "normal_border_width", "hover_border_width", "press_border_width",
@@ -376,6 +376,10 @@ local function new(is_state)
     }
 
     widget:connect_signal("mouse::enter", function(self, find_widgets_result)
+        if wp.disabled == true then
+            return
+        end
+
         capi.root.cursor(wp.hover_cursor or wp.defaults.hover_cursor)
         local wibox = capi.mouse.current_wibox
         if wibox then
@@ -392,6 +396,10 @@ local function new(is_state)
     end)
 
     widget:connect_signal("mouse::leave", function(self, find_widgets_result)
+        if wp.disabled == true then
+            return
+        end
+
         capi.root.cursor("left_ptr")
         local wibox = capi.mouse.current_wibox
         if wibox then
