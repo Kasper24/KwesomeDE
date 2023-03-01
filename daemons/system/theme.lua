@@ -48,7 +48,7 @@ local RUN_AS_ROOT_SCRIPT_PATH = filesystem.filesystem.get_awesome_config_dir("sc
 local FILE_PICKER_SCRIPT_PATH = filesystem.filesystem.get_awesome_config_dir("scripts") .. "file-picker.lua"
 local COLOR_PICKER_SCRIPT_PATH = filesystem.filesystem.get_awesome_config_dir("scripts") .. "color-picker.lua"
 local DEFAULT_PROFILE_IMAGE_PATH = filesystem.filesystem.get_awesome_config_dir("assets/images") .. "profile.png"
-local WE_PATH = filesystem.filesystem.get_awesome_config_dir("assets/wallpaper-engine")
+local WE_PATH = filesystem.filesystem.get_awesome_config_dir("assets/wallpaper-engine/binary")
 
 local PICTURES_MIMETYPES = {
     ["application/pdf"] = "lximage", -- AI

@@ -149,55 +149,43 @@ local function new()
     local app_launcher = bling.widget.app_launcher {
         bg = beautiful.colors.background,
         widget_template = wibox.widget {
-            layout = wibox.layout.stack,
-            forced_height = 1,
+            widget = wibox.container.margin,
+            margins = dpi(15),
             {
-                widget = widgets.wallpaper,
-                forced_width = dpi(600),
-            },
-            {
-                widget = widgets.background,
-                bg = beautiful.colors.background_blur,
-            },
-            {
-                widget = wibox.container.margin,
-                margins = dpi(15),
+                layout = wibox.layout.fixed.vertical,
+                spacing = dpi(15),
                 {
-                    layout = wibox.layout.fixed.vertical,
-                    spacing = dpi(15),
+                    widget = wibox.container.place,
+                    halign = "left",
+                    valign = "top",
                     {
-                        widget = wibox.container.place,
-                        halign = "left",
-                        valign = "top",
+                        widget = widgets.background,
+                        forced_width = dpi(650),
+                        forced_height = dpi(60),
+                        shape = helpers.ui.rrect(),
+                        bg = beautiful.colors.surface_no_opacity,
                         {
-                            widget = widgets.background,
-                            forced_width = dpi(650),
-                            forced_height = dpi(60),
-                            shape = helpers.ui.rrect(),
-                            bg = beautiful.colors.surface_no_opacity,
+                            widget = wibox.container.margin,
+                            margins = dpi(15),
                             {
-                                widget = wibox.container.margin,
-                                margins = dpi(15),
-                                {
-                                    widget = widgets.prompt,
-                                    id = "prompt_role",
-                                    always_on = true,
-                                    icon = beautiful.icons.firefox,
-                                }
+                                widget = widgets.prompt,
+                                id = "prompt_role",
+                                always_on = true,
+                                icon = beautiful.icons.firefox,
                             }
                         }
-                    },
-                    {
-                        layout = wibox.layout.grid,
-                        id = "grid_role",
-                        orientation = "horizontal",
-                        homogeneous = true,
-                        spacing = dpi(15),
-                        forced_num_cols = 5,
-                        forced_num_rows = 3,
                     }
+                },
+                {
+                    layout = wibox.layout.grid,
+                    id = "grid_role",
+                    orientation = "horizontal",
+                    homogeneous = true,
+                    spacing = dpi(15),
+                    forced_num_cols = 5,
+                    forced_num_rows = 3,
                 }
-            },
+            }
         },
         app_template = app
     }
