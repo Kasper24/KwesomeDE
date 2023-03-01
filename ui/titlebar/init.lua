@@ -35,6 +35,7 @@ capi.client.connect_signal("request::titlebars", function(client)
         widget = widgets.button.elevated.state,
         forced_width = dpi(20),
         forced_height = dpi(20),
+        on_by_default = capi.client.focus == client,
         normal_shape = gshape.isosceles_triangle,
         normal_bg = beautiful.colors.surface,
         on_normal_bg = client.font_icon.color,
@@ -47,6 +48,7 @@ capi.client.connect_signal("request::titlebars", function(client)
         widget = widgets.button.elevated.state,
         forced_width = dpi(20),
         forced_height = dpi(20),
+        on_by_default = capi.client.focus == client,
         normal_shape = function(cr, width, hegiht)
             gshape.rounded_rect(cr, width, hegiht, 5)
         end,
@@ -62,6 +64,7 @@ capi.client.connect_signal("request::titlebars", function(client)
         widget = widgets.button.elevated.state,
         forced_width = dpi(20),
         forced_height = dpi(20),
+        on_by_default = capi.client.focus == client,
         normal_shape = gshape.circle,
         normal_bg = beautiful.colors.surface,
         on_normal_bg = client.font_icon.color,
