@@ -323,6 +323,8 @@ local function new(is_state)
     local widget = wibox.container.background()
     gtable.crush(widget, elevated_button_normal, true)
 
+    widget:set_widget(wibox.container.margin())
+
     local wp = widget._private
     wp.mode = "normal"
 
