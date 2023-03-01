@@ -16,11 +16,17 @@ local capi = {
 
 capi.client.connect_signal("request::titlebars", function(client)
     local font_icon = wibox.widget {
-        widget = widgets.client_font_icon,
+        widget = widgets.button.text.state,
         halign = "center",
-        client = client,
+        disabled = true,
+        paddings = 0,
+        on_by_default = capi.client.focus == client,
+        icon = client.font_icon,
         scale = 0.7,
-        color = client.font_icon.color
+        normal_bg = beautiful.colors.background,
+        on_normal_bg = beautiful.colors.background,
+        text_normal_bg = beautiful.colors.on_background,
+        text_on_normal_bg = client.font_icon.color,
     }
 
     local title = wibox.widget {
@@ -74,12 +80,14 @@ capi.client.connect_signal("request::titlebars", function(client)
     }
 
     client:connect_signal("focus", function()
+        font_icon:turn_on()
         minimize:turn_on()
         maximize:turn_on()
         close:turn_on()
     end)
 
     client:connect_signal("unfocus", function()
+        font_icon:turn_off()
         minimize:turn_off()
         maximize:turn_off()
         close:turn_off()
