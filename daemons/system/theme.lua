@@ -41,7 +41,6 @@ local GTK_CONFIG_FILE_PATH = filesystem.filesystem.get_xdg_config_dir("gtk-3.0")
 local INSTALLED_GTK_THEMES_PATH = os.getenv("HOME") .. "/.local/share/themes/"
 local BASE_TEMPLATES_PATH = filesystem.filesystem.get_awesome_config_dir("assets/templates")
 local BACKGROUND_PATH = filesystem.filesystem.get_cache_dir() .. "wallpaper.png"
-local BLURRED_BACKGROUND_PATH = filesystem.filesystem.get_cache_dir() .. "blurred_wallpaper.png"
 local GENERATED_TEMPLATES_PATH = filesystem.filesystem.get_cache_dir("templates")
 local WAL_CACHE_PATH = filesystem.filesystem.get_xdg_cache_home("wal")
 local RUN_AS_ROOT_SCRIPT_PATH = filesystem.filesystem.get_awesome_config_dir("scripts") .. "run-as-root.sh"
@@ -854,10 +853,6 @@ end
 
 function theme:get_wallpaper_path()
     return BACKGROUND_PATH
-end
-
-function theme:get_blurred_wallpaper_path()
-    return BLURRED_BACKGROUND_PATH
 end
 
 function theme:get_wallpaper_type()
