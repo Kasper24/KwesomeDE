@@ -138,12 +138,14 @@ local function generate_colorscheme(self, wallpaper, reset, light)
             end
 
             if light == true then
+                local color1 = colors[1]
+
                 for _, color in ipairs(colors) do
                     color = helpers.color.pywal_saturate_color(color, 0.5)
                 end
 
                 colors[1] = helpers.color.pywal_lighten(raw_colors[#raw_colors], 0.85)
-                colors[8] = raw_colors[1]
+                colors[8] = color1
                 colors[9] = helpers.color.pywal_darken(raw_colors[#raw_colors], 0.4)
                 colors[16] = raw_colors[1]
             else
