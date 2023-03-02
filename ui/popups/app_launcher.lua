@@ -238,6 +238,15 @@ local function new()
         app_launcher:set_favorites(pinned_apps)
     end)
 
+    app_launcher:get_grid():connect_signal("button::press", function(grid, lx, ly, button, mods, find_widgets_result)
+        if button == 1 or button == 3 then
+            local selected_app = app_launcher:get_selected_app_widget()
+            if selected_app then
+                selected_app:unselect()
+            end
+        end
+    end)
+
     capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
         app_launcher._private.widget.widget.bg = old_colorscheme_to_new_map[beautiful.colors.background]
     end)
