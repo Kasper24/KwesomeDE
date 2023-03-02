@@ -50,7 +50,7 @@ function inotify:watch(path, events)
 
     hrun.is_running(command, function(is_running)
         if is_running == false and DEBUG ~= true then
-            awful.spawn("pkill -f '" ..  command .. "'")
+            awful.spawn("pkill -f '" ..  command .. "'", false)
 
             ret.pid = awful.spawn.with_line_callback(command, {
                 stdout = function(line)
