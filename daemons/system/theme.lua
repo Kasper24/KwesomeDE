@@ -647,50 +647,21 @@ end
 
 local function we_wallpaper(self, screen)
     local id = get_we_wallpaper_id(self:get_active_wallpaper())
-    local cmd = string.format("cd %s && ./linux-wallpaperengine --assets-dir %s %s --fps %s",
+    local cmd = string.format("cd %s && ./linux-wallpaperengine --assets-dir %s %s --fps %s --class linux-wallpaperengine --x %s --y %s --width %s --height %s",
         WE_PATH,
         self:get_wallpaper_engine_assets_folder(),
         self:get_wallpaper_engine_workshop_folder() .. "/" .. id,
-        self:get_wallpaper_engine_fps()
+        self:get_wallpaper_engine_fps(),
+        screen.geometry.x,
+        screen.geometry.y,
+        screen.geometry.width,
+        screen.geometry.height
     )
-    local pid = awful.spawn.with_shell(cmd, false)
-    awful.spawn.with_shell(string.format(
-        [[xdotool search --sync --all --pid %s --name '.*' set_window --classname "%s" set_window --class "%s"]],
-        pid,
-        "linux-wallpaper-engine",
-        "linux-wallpaper-engine"
-    ))
 
-    gtimer.start_new(0.1, function()
-        for _, client in ipairs(capi.client.get()) do
-            -- The props might not get set the first time, so only stop if they did
-            if client.class == "linux-wallpaper-engine" and client.width == screen.geometry.width then
-                awful.spawn.easy_async(string.format("maim -i %s %s", client.window, BACKGROUND_PATH), function()
-                    on_wallpaper_changed()
-                end)
-                return false
-            end
-
-            if client.class == "linux-wallpaper-engine" then
-                client.floating = true
-                client.screen = screen
-                client.below = true
-                client.sticky = true
-                client.skip_taskbar = true
-                client.can_tile = false
-                client.can_move = false
-                client.can_resize = false
-                client.can_focus = false
-                client.can_kill = false
-                client.fake_root = true
-                client.width = screen.geometry.width
-                client.height = screen.geometry.height
-                client.x = 0
-                client.y = 0
-            end
-        end
-        return true
+    awful.spawn.easy_async_with_shell(cmd, function()
+        on_wallpaper_changed()
     end)
+
 end
 
 local function scan_wallpapers(self)

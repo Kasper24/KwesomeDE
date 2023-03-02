@@ -355,7 +355,7 @@ ruled.client.connect_signal("request::rules", function()
 
     ruled.client.append_rule {
         rule_any = {
-            class = {"linux-wallpaper-engine"}
+            class = {"linux-wallpaperengine"}
         },
         properties = {
             floating = true,
