@@ -647,7 +647,7 @@ end
 
 local function we_wallpaper(self, screen)
     local id = get_we_wallpaper_id(self:get_active_wallpaper())
-    local cmd = string.format("cd %s && ./linux-wallpaperengine --assets-dir %s %s --fps %s --class linux-wallpaperengine --x %s --y %s --width %s --height %s",
+    local cmd = string.format("cd %s && ./linux-wallpaperengine --assets-dir %s %s --fps %s --class linux-wallpaperengine --x %s --y %s --width %s --height %s --screenshot %s",
         WE_PATH,
         self:get_wallpaper_engine_assets_folder(),
         self:get_wallpaper_engine_workshop_folder() .. "/" .. id,
@@ -655,13 +655,13 @@ local function we_wallpaper(self, screen)
         screen.geometry.x,
         screen.geometry.y,
         screen.geometry.width,
-        screen.geometry.height
+        screen.geometry.height,
+        BACKGROUND_PATH
     )
-
-    awful.spawn.easy_async_with_shell(cmd, function()
+    awful.spawn.with_shell(cmd)
+    gtimer.start_new(2, function()
         on_wallpaper_changed()
     end)
-
 end
 
 local function scan_wallpapers(self)
