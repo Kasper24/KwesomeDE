@@ -51,7 +51,7 @@ theme_daemon:connect_signal("wallpaper_engine::error", function(self, error)
         app_font_icon = beautiful.icons.spraycan,
         app_name = "Wallpaper Engine",
         font_icon = beautiful.icons.circle_exclamation,
-        title = "Failed to start",
+        title = "Error",
         text = error
     }
 end)
