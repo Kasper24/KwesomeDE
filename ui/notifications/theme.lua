@@ -45,3 +45,13 @@ theme_daemon:connect_signal("colorscheme::failed_to_generate", function(self, wa
         text = wallpaper
     }
 end)
+
+theme_daemon:connect_signal("wallpaper_engine::error", function(self, error)
+    naughty.notification {
+        app_font_icon = beautiful.icons.spraycan,
+        app_name = "Wallpaper Engine",
+        font_icon = beautiful.icons.circle_exclamation,
+        title = "Failed to start",
+        text = error
+    }
+end)

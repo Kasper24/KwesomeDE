@@ -658,9 +658,20 @@ local function we_wallpaper(self, screen)
         screen.geometry.height,
         BACKGROUND_PATH
     )
-    awful.spawn.with_shell(cmd)
-    gtimer.start_new(2, function()
-        on_wallpaper_changed()
+    awful.spawn.easy_async_with_shell(cmd, function(stdout, stderr)
+        stderr = helpers.string.trim(stderr)
+        if stderr ~= "" then
+            self:emit_signal("wallpaper_engine::error", stderr)
+        else
+            -- I'm not sure why, but running wallpaper engine inside easy_async_with_shell
+            -- results in weird issues, so using it only for error handling then kill it
+            -- and spawn a new one using .spawn
+            awful.spawn("pkill -f linux-wallpaperengine")
+            awful.spawn.with_shell(cmd)
+            gtimer.start_new(2, function()
+                on_wallpaper_changed()
+            end)
+        end
     end)
 end
 
