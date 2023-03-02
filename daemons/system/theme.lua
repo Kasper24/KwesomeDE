@@ -666,7 +666,7 @@ local function we_wallpaper(self, screen)
             -- I'm not sure why, but running wallpaper engine inside easy_async_with_shell
             -- results in weird issues, so using it only for error handling then kill it
             -- and spawn a new one using .spawn
-            awful.spawn("pkill -f linux-wallpaperengine")
+            awful.spawn("pkill -f linux-wallpaperengine", false)
             awful.spawn.with_shell(cmd)
             gtimer.start_new(2, function()
                 on_wallpaper_changed()
@@ -806,7 +806,7 @@ function theme:set_wallpaper(wallpaper, type)
     self._private.wallpaper_type = type
     helpers.settings["theme-wallpaper-type"] = type
 
-    awful.spawn("pkill -f linux-wallpaperengine")
+    awful.spawn("pkill -f linux-wallpaperengine", false)
 
     for s in capi.screen do
         if self:get_wallpaper_type() == "image" then

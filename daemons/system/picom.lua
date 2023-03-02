@@ -54,7 +54,7 @@ function picom:turn_on(save)
             end
         end
 
-        awful.spawn(cmd)
+        awful.spawn(cmd, false)
         self._private.refreshing = false
     end)
 
