@@ -239,7 +239,7 @@ local function new()
     end)
 
     app_launcher:get_grid():connect_signal("button::press", function(grid, lx, ly, button, mods, find_widgets_result)
-        if button == 1 or button == 3 then
+        if button == 3 then
             local selected_app = app_launcher:get_selected_app_widget()
             if selected_app then
                 selected_app:unselect()
