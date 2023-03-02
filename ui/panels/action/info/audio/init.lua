@@ -109,6 +109,7 @@ local function application_widget(args)
         audio_daemon:dynamic_disconnect_signals(args.type .. "::" .. args.application.id .. "::removed")
         audio_daemon:dynamic_disconnect_signals(args.type .. "::" .. args.application.id .. "::icon_name")
         audio_daemon:dynamic_disconnect_signals(args.type .. "::" .. args.application.id .. "::updated")
+        slider:dynamic_disconnect_signals("property::value")
     end)
 
     audio_daemon:dynamic_connect_signal(args.type .. "::" .. args.application.id .. "::icon_name", function(self, icon_name)
@@ -126,7 +127,7 @@ local function application_widget(args)
         end
     end)
 
-    slider:connect_signal("property::value", function(self, value, instant)
+    slider:dynamic_connect_signal("property::value", function(self, value, instant)
         args.on_slider_moved(value)
     end)
 
@@ -215,6 +216,7 @@ local function device_widget(args)
         args.on_removed_cb(widget)
         audio_daemon:dynamic_disconnect_signals(args.type .. "::" .. args.device.id .. "::removed")
         audio_daemon:dynamic_disconnect_signals(args.type .. "::" .. args.device.id .. "::updated")
+        slider:dynamic_disconnect_signals("property::value")
     end)
 
     audio_daemon:dynamic_connect_signal(args.type .. "::" .. args.device.id .. "::updated", function(self, device)
@@ -232,7 +234,7 @@ local function device_widget(args)
         end
     end)
 
-    slider:connect_signal("property::value", function(self, value, instant)
+    slider:dynamic_connect_signal("property::value", function(self, value, instant)
         args.on_slider_moved(value)
     end)
 
