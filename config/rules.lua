@@ -358,6 +358,8 @@ ruled.client.connect_signal("request::rules", function()
             class = {"linux-wallpaperengine"}
         },
         properties = {
+            x = 0,
+            y = 0,
             floating = true,
             below = true,
             sticky = true,
