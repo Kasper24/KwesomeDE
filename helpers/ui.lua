@@ -1,11 +1,12 @@
 local lgi = require('lgi')
+local Gdk = lgi.require('Gdk', '3.0')
 local GdkPixbuf = lgi.GdkPixbuf
-local gsurface = require("gears.surface")
 local gshape = require("gears.shape")
 local gmatrix = require("gears.matrix")
 local beautiful = require("beautiful")
 local ipairs = ipairs
 local floor = math.floor
+local type = type
 local capi = {
     awesome = awesome
 }
@@ -52,19 +53,27 @@ function _ui.get_widget_geometry(wibox, widget)
     return _get_widget_geometry(wibox._drawable._widget_hierarchy, widget)
 end
 
-function _ui.adjust_image_res(path, height, width)
-    -- Load the original image file
-    local pixbuf = GdkPixbuf.Pixbuf.new_from_file(path)
+function _ui.adjust_image_res(image, width, height)
+    local pixbuf = nil
+    if type(image) == "string" then
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file(image)
+    else
+        pixbuf = Gdk.pixbuf_get_from_surface(image, 0, 0, image:get_width(), image:get_height())
+    end
 
     -- Scale down the image
     local scaled_pixbuf = pixbuf:scale_simple(width, height, GdkPixbuf.InterpType.BILINEAR)
 
-    return capi.awesome.pixbuf_to_surface(scaled_pixbuf._native, path)
+    return capi.awesome.pixbuf_to_surface(scaled_pixbuf._native, image)
 end
 
-function _ui.adjust_image_res_by_ratio(path, ratio)
-    -- Load the original image file
-    local pixbuf = GdkPixbuf.Pixbuf.new_from_file(path)
+function _ui.adjust_image_res_by_ratio(image, ratio)
+    local pixbuf = nil
+    if type(image) == "string" then
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file(image)
+    else
+        pixbuf = Gdk.pixbuf_get_from_surface(image, 0, 0, image:get_width(), image:get_height())
+    end
 
     -- Get the original image dimensions
     local width = pixbuf:get_width()
@@ -77,7 +86,7 @@ function _ui.adjust_image_res_by_ratio(path, ratio)
     -- Scale down the image
     local scaled_pixbuf = pixbuf:scale_simple(new_width, new_height, GdkPixbuf.InterpType.BILINEAR)
 
-    return capi.awesome.pixbuf_to_surface(scaled_pixbuf._native, path)
+    return capi.awesome.pixbuf_to_surface(scaled_pixbuf._native, image)
 end
 
 return _ui
