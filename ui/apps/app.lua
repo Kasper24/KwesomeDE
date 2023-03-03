@@ -50,6 +50,12 @@ end
 
 function app:set_widget(widget)
     self._private.widget = widget
+
+    if self._private.titlebar then
+        self._private.titlebar:setup{
+            widget = widget
+        }
+    end
 end
 
 local function new(args)
@@ -120,9 +126,11 @@ local function new(args)
                     size = ret._private.height,
                     bg = beautiful.colors.background
                 })
-                ret._private.titlebar:setup{
-                    widget = ret._private.widget
-                }
+                if ret._private.widget then
+                    ret._private.titlebar:setup{
+                        widget = ret._private.widget
+                    }
+                end
 
                 capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
                     ret._private.titlebar:set_bg(beautiful.colors.background)
