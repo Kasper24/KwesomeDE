@@ -79,6 +79,18 @@ end
 local function image_tab()
     local layout = wibox.widget {
         layout = widgets.rofi_grid,
+        sort_fn = function(a, b)
+            return a.title:lower() < b.title:lower()
+        end,
+        search_fn = function(text, entry)
+            if helpers.fzy.has_match(text, entry.title) then
+                return true
+            end
+            return false
+        end,
+        search_sort_fn = function(text, a, b)
+            return helpers.string.levenshtein(text, a.title) < helpers.string.levenshtein(text, b.title)
+        end,
         widget_template = wibox.widget {
             layout = wibox.layout.fixed.vertical,
             spacing = dpi(15),
@@ -166,15 +178,6 @@ local function image_tab()
             end)
 
             return widget
-        end,
-        search_fn = function(text, entry)
-            if helpers.fzy.has_match(text, entry.title) then
-                return true
-            end
-            return false
-        end,
-        search_sort_fn = function(text, a, b)
-            return helpers.string.levenshtein(text, a.title) < helpers.string.levenshtein(text, b.title)
         end
     }
 
@@ -192,6 +195,18 @@ end
 local function mountain_tab()
     local layout = wibox.widget {
         layout = widgets.rofi_grid,
+        sort_fn = function(a, b)
+            return a.title:lower() < b.title:lower()
+        end,
+        search_fn = function(text, entry)
+            if helpers.fzy.has_match(text, entry.title) then
+                return true
+            end
+            return false
+        end,
+        search_sort_fn = function(text, a, b)
+            return helpers.string.levenshtein(text, a.title) < helpers.string.levenshtein(text, b.title)
+        end,
         widget_template = wibox.widget {
             layout = wibox.layout.fixed.vertical,
             spacing = dpi(15),
@@ -314,15 +329,6 @@ local function mountain_tab()
             end)
 
             return widget
-        end,
-        search_fn = function(text, entry)
-            if helpers.fzy.has_match(text, entry.title) then
-                return true
-            end
-            return false
-        end,
-        search_sort_fn = function(text, a, b)
-            return helpers.string.levenshtein(text, a.title) < helpers.string.levenshtein(text, b.title)
         end
     }
 
@@ -340,6 +346,18 @@ end
 local function digital_sun_tab()
     local layout = wibox.widget {
         layout = widgets.rofi_grid,
+        sort_fn = function(a, b)
+            return a.title:lower() < b.title:lower()
+        end,
+        search_fn = function(text, entry)
+            if helpers.fzy.has_match(text, entry.title) then
+                return true
+            end
+            return false
+        end,
+        search_sort_fn = function(text, a, b)
+            return helpers.string.levenshtein(text, a.title) < helpers.string.levenshtein(text, b.title)
+        end,
         widget_template = wibox.widget {
             layout = wibox.layout.fixed.vertical,
             spacing = dpi(15),
@@ -493,15 +511,6 @@ local function digital_sun_tab()
             end)
 
             return widget
-        end,
-        search_fn = function(text, entry)
-            if helpers.fzy.has_match(text, entry.title) then
-                return true
-            end
-            return false
-        end,
-        search_sort_fn = function(text, a, b)
-            return helpers.string.levenshtein(text, a.title) < helpers.string.levenshtein(text, b.title)
         end
     }
 
@@ -531,6 +540,18 @@ local function binary_tab()
 
     local layout = wibox.widget {
         layout = widgets.rofi_grid,
+        sort_fn = function(a, b)
+            return a.title:lower() < b.title:lower()
+        end,
+        search_fn = function(text, entry)
+            if helpers.fzy.has_match(text, entry.title) then
+                return true
+            end
+            return false
+        end,
+        search_sort_fn = function(text, a, b)
+            return helpers.string.levenshtein(text, a.title) < helpers.string.levenshtein(text, b.title)
+        end,
         widget_template = wibox.widget {
             layout = wibox.layout.fixed.vertical,
             spacing = dpi(15),
@@ -649,15 +670,6 @@ local function binary_tab()
             end)
 
             return widget
-        end,
-        search_fn = function(text, entry)
-            if helpers.fzy.has_match(text, entry.title) then
-                return true
-            end
-            return false
-        end,
-        search_sort_fn = function(text, a, b)
-            return helpers.string.levenshtein(text, a.title) < helpers.string.levenshtein(text, b.title)
         end
     }
 
