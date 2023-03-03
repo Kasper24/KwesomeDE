@@ -36,7 +36,7 @@ theme_daemon:connect_signal("wallpapers_paths::already_exists", function(self, w
     }
 end)
 
-theme_daemon:connect_signal("colorscheme::failed_to_generate", function(self, wallpaper)
+theme_daemon:connect_signal("colorscheme::generation::error", function(self, wallpaper)
     naughty.notification {
         app_font_icon = beautiful.icons.spraycan,
         app_name = "Theme",

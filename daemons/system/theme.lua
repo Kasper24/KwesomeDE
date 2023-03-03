@@ -93,12 +93,11 @@ local function closet_color(colors, reference)
 
 local function generate_colorscheme(self, wallpaper, reset, light)
     if self:get_colorschemes()[wallpaper] ~= nil and reset ~= true then
-        self:emit_signal("colorscheme::generated", self:get_colorschemes()[wallpaper])
-        self:emit_signal("wallpaper::selected", wallpaper)
+        self:emit_signal("colorscheme::generation::success", self:get_colorschemes()[wallpaper], wallpaper, false)
         return
     end
 
-    self:emit_signal("colorscheme::generating")
+    self:emit_signal("colorscheme::generation::start")
 
     local color_count = 16
 
@@ -122,7 +121,7 @@ local function generate_colorscheme(self, wallpaper, reset, light)
                     return
                 else
                     print("Imagemagick couldn't generate a suitable palette.")
-                    self:emit_signal("colorscheme::failed_to_generate", wallpaper)
+                    self:emit_signal("colorscheme::generation::error", wallpaper)
                     return
                 end
             end
@@ -177,8 +176,7 @@ local function generate_colorscheme(self, wallpaper, reset, light)
             colors[9] = helpers.color.pywal_alter_brightness(colors[1], sign * 0.098039216)
             colors[16] = helpers.color.pywal_alter_brightness(colors[8], sign * 0.235294118)
 
-            self:emit_signal("colorscheme::generated", colors)
-            self:emit_signal("wallpaper::selected", wallpaper)
+            self:emit_signal("colorscheme::generation::success", colors, wallpaper, true)
 
             self:get_colorschemes()[wallpaper] = colors
             self:save_colorscheme()
@@ -692,8 +690,11 @@ local function scan_wallpapers(self)
                 return a.title < b.title
             end)
 
-            self:set_selected_colorscheme(self:get_selected_colorscheme())
-            self:emit_signal("wallpapers", self._private.wallpapers, self._private.we_wallpapers)
+            self:emit_signal("wallpapers",
+                self._private.wallpapers,
+                self._private.we_wallpapers,
+                {unpack(self._private.wallpapers), unpack(self._private.we_wallpapers)}
+            )
         end
     }
 
@@ -793,7 +794,7 @@ function theme:edit_color(index)
         stdout = helpers.string.trim(stdout)
         if stdout ~= "" and stdout ~= nil then
             self:get_selected_colorscheme_colors()[index] = stdout
-            self:emit_signal("color::" .. index .. "::updated", stdout)
+            self:emit_signal("colorscheme::generation::success", self:get_selected_colorscheme_colors(), self:get_selected_colorscheme(), true)
         end
     end)
 end
@@ -863,6 +864,10 @@ end
 
 function theme:get_we_wallpapers()
     return self._private.we_wallpapers
+end
+
+function theme:get_wallpapers_and_we_wallpapers()
+    return {unpack(self._private.wallpapers), unpack(self._private.we_wallpapers)}
 end
 
 -- Active colorscheme
