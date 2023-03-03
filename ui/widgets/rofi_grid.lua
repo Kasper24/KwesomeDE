@@ -192,7 +192,7 @@ function rofi_grid:search()
     else
         for _, entry in ipairs(self._private.entries) do
             text = text:gsub( "%W", "" )
-            if self.search_fn(text:lower(), self:get_entries()) then
+            if self.search_fn(text:lower(), entry) then
                 table.insert(self._private.matched_entries, entry)
             end
         end
