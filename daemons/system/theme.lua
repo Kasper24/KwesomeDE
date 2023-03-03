@@ -685,7 +685,7 @@ local function scan_wallpapers(self)
         single_shot = true,
         callback = function()
             table.sort(self._private.wallpapers, function(a, b)
-                return a < b
+                return a.title < b.title
             end)
 
             table.sort(self._private.we_wallpapers, function(a, b)
@@ -701,7 +701,7 @@ local function scan_wallpapers(self)
         local wallpaper_path = WALLPAPERS_PATH .. file:get_name()
         local mimetype = Gio.content_type_guess(wallpaper_path)
         if PICTURES_MIMETYPES[mimetype] ~= nil then
-            table.insert(self._private.wallpapers, wallpaper_path)
+            table.insert(self._private.wallpapers, { path = wallpaper_path, title = wallpaper_path:gsub(WALLPAPERS_PATH, "") })
         end
     end, {}, function()
         emit_signal_timer:again()
@@ -857,8 +857,12 @@ function theme:get_active_wallpaper_colors()
     return self:get_colorschemes()[self:get_active_wallpaper()]
 end
 
-function theme:get_short_wallpaper_name(wallpaper_path)
-    return wallpaper_path:gsub(WALLPAPERS_PATH, "")
+function theme:get_wallpapers()
+    return self._private.wallpapers
+end
+
+function theme:get_we_wallpapers()
+    return self._private.we_wallpapers
 end
 
 -- Active colorscheme
