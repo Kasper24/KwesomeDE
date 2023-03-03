@@ -54,7 +54,7 @@ local function crop_surface(ratio, surf)
 end
 
 local function image_with_gradient(image)
-    local in_surf = gsurface.load_uncached(image)
+    local in_surf = gsurface.load_uncached(helpers.ui.adjust_image_res(image, 500, 225))
     local surf = crop_surface(2, in_surf)
 
     local cr = cairo.Context(surf)
