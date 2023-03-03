@@ -385,8 +385,13 @@ function rofi_grid:reset()
         end
     end
 
-    local entry = self:get_grid():get_widgets_at(1, 1)[1]
-    entry:select()
+    local entry = self:get_grid():get_widgets_at(1, 1)
+    if entry then
+        entry = entry[1]
+        if entry then
+            entry:select()
+        end
+    end
 
     self:get_prompt():set_text("")
 end
