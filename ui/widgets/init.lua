@@ -24,6 +24,7 @@ return {
     profile = require(... .. ".profile"),
     progressbar = require(... .. ".progressbar"),
     prompt = require(... .. ".prompt"),
+    rofi_grid = require(... .. ".rofi_grid"),
     screen_mask = require(... .. ".screen_mask"),
     scrollbar = require(... .. ".scrollbar"),
     slider_prompt = require(... .. ".slider_prompt"),
