@@ -38,29 +38,47 @@ local function build_properties(prototype, prop_names)
 end
 
 local function scroll(self, dir)
-    if #self:get_grid().children < 1 then
+    local grid = self:get_grid()
+    if #grid.children < 1 then
         self._private.selected_widget = nil
         return
     end
 
     local next_widget_index = nil
     local if_cant_scroll_func = nil
+    local grid_orientation = grid:get_orientation()
 
     if dir == "up" then
-        next_widget_index = self:get_grid():index(self:get_selected_widget()) - 1
+        if grid_orientation == "horizontal" then
+            next_widget_index = grid:index(self:get_selected_widget()) - 1
+        elseif grid_orientation == "vertical" then
+            next_widget_index = grid:index(self:get_selected_widget()) - grid.forced_num_cols
+        end
         if_cant_scroll_func = function() self:page_backward("up") end
     elseif dir == "down" then
-        next_widget_index = self:get_grid():index(self:get_selected_widget()) + 1
+        if grid_orientation == "horizontal" then
+            next_widget_index = grid:index(self:get_selected_widget()) + 1
+        elseif grid_orientation == "vertical" then
+            next_widget_index = grid:index(self:get_selected_widget()) + grid.forced_num_cols
+        end
         if_cant_scroll_func = function() self:page_forward("down") end
     elseif dir == "left" then
-        next_widget_index = self:get_grid():index(self:get_selected_widget()) - self:get_grid().forced_num_rows
+        if grid_orientation == "horizontal" then
+            next_widget_index = grid:index(self:get_selected_widget()) - grid.forced_num_rows
+        elseif grid_orientation == "vertical" then
+            next_widget_index = grid:index(self:get_selected_widget()) - 1
+        end
         if_cant_scroll_func = function() self:page_backward("left") end
     elseif dir == "right" then
-        next_widget_index = self:get_grid():index(self:get_selected_widget()) + self:get_grid().forced_num_rows
+        if grid_orientation == "horizontal" then
+            next_widget_index = grid:index(self:get_selected_widget()) + grid.forced_num_rows
+        elseif grid_orientation == "vertical" then
+            next_widget_index = grid:index(self:get_selected_widget()) + 1
+        end
         if_cant_scroll_func = function() self:page_forward("right") end
     end
 
-    local next_widget = self:get_grid().children[next_widget_index]
+    local next_widget = grid.children[next_widget_index]
     if next_widget then
         next_widget:select()
         self:emit_signal("scroll", dir)
