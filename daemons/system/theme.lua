@@ -870,6 +870,17 @@ function theme:get_wallpapers_and_we_wallpapers()
     return {unpack(self._private.wallpapers), unpack(self._private.we_wallpapers)}
 end
 
+function theme:preview_we_wallpaper(we_wallpaper)
+    local id = get_we_wallpaper_id(we_wallpaper)
+    local cmd = string.format("cd %s && ./linux-wallpaperengine --assets-dir %s %s --fps %s",
+        WE_PATH,
+        self:get_wallpaper_engine_assets_folder(),
+        self:get_wallpaper_engine_workshop_folder() .. "/" .. id,
+        self:get_wallpaper_engine_fps()
+    )
+    awful.spawn.with_shell(cmd)
+end
+
 -- Active colorscheme
 function theme:set_colorscheme(colorscheme)
     self._private.active_colorscheme = colorscheme

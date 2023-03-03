@@ -715,6 +715,15 @@ local function we_tab()
             }
         },
         entry_template = function(entry)
+            local menu = widgets.menu {
+                widgets.menu.button {
+                    text = "Preview",
+                    on_release = function()
+                        theme_daemon:preview_we_wallpaper(entry.path)
+                    end
+                }
+            }
+
             local widget = nil
             local button = wibox.widget {
                 widget = widgets.button.elevated.state,
@@ -725,6 +734,9 @@ local function we_tab()
                 halign = "center",
                 on_release = function()
                     widget:select()
+                end,
+                on_secondary_release = function()
+                    menu:toggle()
                 end,
                 {
                     widget = wibox.widget.imagebox,
