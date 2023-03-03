@@ -133,12 +133,7 @@ local function new(args)
 		bar.pos = math.min(math.max(((x - args.bar_height) / effwidth), 0), 1)
         bar:emit_signal("widget::redraw_needed")
 
-		local value = helpers.misc.convert_range(bar.pos, 0, 1, args.minimum, args.maximum)
-		value = helpers.misc.round(value, 2)
-		if args.round then
-			value = gmath.round(value)
-		end
-		widget:emit_signal("property::value", value)
+		widget:emit_signal("property::value", widget:get_value())
 
 		capi.mousegrabber.run(function(mouse)
 			--stop (and emit signal) if you release mouse 1
@@ -158,12 +153,7 @@ local function new(args)
 			--make sure target \in (0, 1)
 			bar.pos = math.max(math.min(lpos, 1), 0)
 			bar:emit_signal("widget::redraw_needed")
-			local value = helpers.misc.convert_range(bar.pos, 0, 1, args.minimum, args.maximum)
-			value = helpers.misc.round(value, 2)
-			if args.round then
-				value = gmath.round(value)
-			end
-			widget:emit_signal("property::value", value)
+			widget:emit_signal("property::value", widget:get_value())
 
 			return true
 		end,"fleur")
@@ -200,6 +190,10 @@ local function new(args)
 			value = gmath.round(value)
 		end
 		return value
+	end
+
+	function widget:set_minimum(minimum)
+        args.minimum = minimum
 	end
 
 	function widget:set_maximum(maximum)
