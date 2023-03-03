@@ -10,6 +10,8 @@ local dpi = beautiful.xresources.apply_dpi
 local instance = nil
 
 local path = ...
+local main = require(path .. ".main")
+local settings = require(path .. ".settings")
 
 local function new()
     local app = app {
@@ -18,18 +20,25 @@ local function new()
         width = dpi(800),
         height = dpi(1060),
     }
-    local stack = wibox.layout.stack()
-    stack:set_top_only(true)
-    stack:add(require(path .. ".main")(app, stack))
-    stack:add(require(path .. ".settings")(stack))
+    app:connect_signal("visibility", function(self, visible)
+        if visible == true then
+            local stack = wibox.layout.stack()
+            stack:set_top_only(true)
+            stack:add(main(app, stack))
+            stack:add(settings(stack))
 
-    local widget = wibox.widget {
-        widget = wibox.container.margin,
-        margins = dpi(15),
-        stack
-    }
+            local widget = wibox.widget {
+                widget = wibox.container.margin,
+                margins = dpi(15),
+                stack
+            }
 
-    app:set_widget(widget)
+            app:set_widget(widget)
+        else
+            app:set_widget(wibox.container.background())
+            collectgarbage("collect")
+        end
+    end)
 
     return app
 end
