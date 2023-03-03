@@ -10,7 +10,7 @@ local math = math
 local rofi_grid  = { mt = {} }
 
 local properties = {
-    "entries",
+    "entries", "page",
     "widget_template", "entry_template",
     "sort_fn", "search_fn", "search_sort_fn",
     "sort_alphabetically","reverse_sort_alphabetically,",
@@ -113,6 +113,7 @@ local function entry_widget(self, entry)
     function entry:select() widget:select() end
     function entry:unselect() widget:unselect() end
     function entry:is_selected() widget:is_selected() end
+    entry.widget = widget
 
     return widget
 end
@@ -369,6 +370,32 @@ function rofi_grid:page_backward(dir)
     self:emit_signal("page::backward", dir, self:get_current_page(), self:get_pages_count())
 end
 
+function rofi_grid:set_page(page)
+    self:get_grid():reset()
+    self._private.matched_entries = self._private.entries
+    self._private.entries_per_page = self._private.max_entries_per_page
+    self._private.pages_count = math.ceil(#self._private.entries / self._private.entries_per_page)
+    self._private.current_page = page
+
+    local max_entry_index_to_include = self._private.entries_per_page * self:get_current_page()
+    local min_entry_index_to_include = max_entry_index_to_include - self._private.entries_per_page
+
+    for index, entry in ipairs(self._private.matched_entries) do
+        -- Only add widgets that are between this range (part of the current page)
+        if index > min_entry_index_to_include and index <= max_entry_index_to_include then
+            self:get_grid():add(entry_widget(self, entry))
+        end
+    end
+
+    local entry = self:get_grid():get_widgets_at(1, 1)
+    if entry then
+        entry = entry[1]
+        if entry then
+            entry:select()
+        end
+    end
+end
+
 function rofi_grid:reset()
     self:get_grid():reset()
     self._private.matched_entries = self._private.entries
@@ -418,6 +445,14 @@ end
 
 function rofi_grid:get_selected_widget()
     return self._private.selected_widget
+end
+
+function rofi_grid:get_page_for_entry(entry)
+    for index, matched_entry in ipairs(self._private.matched_entries) do
+        if matched_entry == entry then
+            return math.floor((index - 1) / self._private.entries_per_page) + 1
+        end
+    end
 end
 
 local function new()
