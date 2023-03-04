@@ -41,8 +41,8 @@ theme_daemon:connect_signal("colorscheme::generation::error", function(self, wal
         app_font_icon = beautiful.icons.spraycan,
         app_name = "Theme",
         font_icon = beautiful.icons.circle_exclamation,
-        title = "Failed to generate colorscheme",
-        text = wallpaper
+        title = wallpaper,
+        text = "Failed to generate a colorscheme, using a default colorscheme"
     }
 end)
 

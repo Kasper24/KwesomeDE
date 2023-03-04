@@ -120,8 +120,32 @@ local function generate_colorscheme(self, wallpaper, reset, light)
                     imagemagick()
                     return
                 else
-                    print("Imagemagick couldn't generate a suitable palette.")
+                    print("Imagemagick couldn't generate a suitable palette, using a default colorscheme instead")
                     self:emit_signal("colorscheme::generation::error", wallpaper)
+                    local colors = {
+                        "#2E3440",
+                        "#88C0D0",
+                        "#BF616A",
+                        "#5E81AC",
+                        "#EBCB8B",
+                        "#A3BE8C",
+                        "#D08770",
+                        "#E5E9F0",
+                        "#4C566A",
+                        "#88C0D0",
+                        "#BF616A",
+                        "#5E81AC",
+                        "#EBCB8B",
+                        "#A3BE8C",
+                        "#D08770",
+                        "#8FBCBB"
+                    }
+                    self:get_colorschemes()[wallpaper] = colors
+                    self:save_colorscheme()
+
+                    if wallpaper == self:get_selected_colorscheme() then
+                        self:emit_signal("colorscheme::generation::success", colors, wallpaper, true)
+                    end
                     return
                 end
             end
@@ -176,10 +200,9 @@ local function generate_colorscheme(self, wallpaper, reset, light)
             colors[9] = helpers.color.pywal_alter_brightness(colors[1], sign * 0.098039216)
             colors[16] = helpers.color.pywal_alter_brightness(colors[8], sign * 0.235294118)
 
-            self:emit_signal("colorscheme::generation::success", colors, wallpaper, true)
-
             self:get_colorschemes()[wallpaper] = colors
             self:save_colorscheme()
+            self:emit_signal("colorscheme::generation::success", colors, wallpaper, true)
         end)
     end
 
