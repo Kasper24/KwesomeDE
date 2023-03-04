@@ -196,7 +196,7 @@ function rofi_grid:refresh()
     self:get_grid():reset()
     collectgarbage("collect")
 
-    for index, entry in ipairs(self._private.matched_entries) do
+    for index, entry in ipairs(self:get_matched_entries()) do
         -- Only add widgets that are between this range (part of the current page)
         if index > min_entry_index_to_include and index <= max_entry_index_to_include then
             self:get_grid():add(entry_widget(self, entry))
@@ -220,11 +220,11 @@ function rofi_grid:search()
         for _, entry in ipairs(self._private.entries) do
             text = text:gsub( "%W", "" )
             if self.search_fn(text:lower(), entry) then
-                table.insert(self._private.matched_entries, entry)
+                table.insert(self:get_matched_entries(), entry)
             end
         end
 
-        table.sort(self._private.matched_entries, function(a, b)
+        table.sort(self:get_matched_entries(), function(a, b)
             self._private.search_sort_fn(text, a, b)
         end)
     end
@@ -236,10 +236,10 @@ function rofi_grid:search()
     end
 
     -- Recalculate the entrys per page based on the current matched entrys
-    self._private.entries_per_page = math.min(#self._private.matched_entries, self._private.max_entries_per_page)
+    self._private.entries_per_page = math.min(#self:get_matched_entries(), self._private.max_entries_per_page)
 
     -- Recalculate the pages count based on the current entrys per page
-    self._private.pages_count = math.ceil(math.max(1, #self._private.matched_entries) / math.max(1, self._private.entries_per_page))
+    self._private.pages_count = math.ceil(math.max(1, #self:get_matched_entries()) / math.max(1, self._private.entries_per_page))
 
     -- Page should be 1 after a search
     self._private.current_page = 1
@@ -289,7 +289,7 @@ function rofi_grid:page_forward(dir)
         min_entry_index_to_include = self._private.entries_per_page * self:get_current_page()
         self._private.current_page = self:get_current_page() + 1
         max_entry_index_to_include = self._private.entries_per_page * self:get_current_page()
-    elseif self._private.wrap_page_scrolling and #self._private.matched_entries >= self._private.max_entries_per_page then
+    elseif self._private.wrap_page_scrolling and #self:get_matched_entries() >= self._private.max_entries_per_page then
         self._private.current_page = 1
         min_entry_index_to_include = 0
         max_entry_index_to_include = self._private.entries_per_page
@@ -307,7 +307,7 @@ function rofi_grid:page_forward(dir)
     self:get_grid():reset()
     collectgarbage("collect")
 
-    for index, entry in ipairs(self._private.matched_entries) do
+    for index, entry in ipairs(self:get_matched_entries()) do
         -- Only add widgets that are between this range (part of the current page)
         if index > min_entry_index_to_include and index <= max_entry_index_to_include then
             self:get_grid():add(entry_widget(self, entry))
@@ -336,7 +336,7 @@ end
 function rofi_grid:page_backward(dir)
     if self:get_current_page() > 1 then
         self._private.current_page = self:get_current_page() - 1
-    elseif self._private.wrap_page_scrolling and #self._private.matched_entries >= self._private.max_entries_per_page then
+    elseif self._private.wrap_page_scrolling and #self:get_matched_entries() >= self._private.max_entries_per_page then
         self._private.current_page = self:get_pages_count()
     elseif self._private.wrap_entry_scrolling then
         local entry = self:get_grid().children[#self:get_grid().children]
@@ -355,7 +355,7 @@ function rofi_grid:page_backward(dir)
     local max_entry_index_to_include = self._private.entries_per_page * self:get_current_page()
     local min_entry_index_to_include = max_entry_index_to_include - self._private.entries_per_page
 
-    for index, entry in ipairs(self._private.matched_entries) do
+    for index, entry in ipairs(self:get_matched_entries()) do
         -- Only add widgets that are between this range (part of the current page)
         if index > min_entry_index_to_include and index <= max_entry_index_to_include then
             self:get_grid():add(entry_widget(self, entry))
@@ -389,7 +389,7 @@ function rofi_grid:set_page(page)
     local max_entry_index_to_include = self._private.entries_per_page * self:get_current_page()
     local min_entry_index_to_include = max_entry_index_to_include - self._private.entries_per_page
 
-    for index, entry in ipairs(self._private.matched_entries) do
+    for index, entry in ipairs(self:get_matched_entries()) do
         -- Only add widgets that are between this range (part of the current page)
         if index > min_entry_index_to_include and index <= max_entry_index_to_include then
             self:get_grid():add(entry_widget(self, entry))
@@ -446,6 +446,10 @@ end
 
 function rofi_grid:get_current_page()
     return self._private.current_page
+end
+
+function rofi_grid:get_matched_entries()
+    return self._private.matched_entries
 end
 
 function rofi_grid:get_text()
