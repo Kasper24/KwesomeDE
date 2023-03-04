@@ -1,6 +1,9 @@
 local lgi = require('lgi')
 local Gdk = lgi.require('Gdk', '3.0')
 local GdkPixbuf = lgi.GdkPixbuf
+local cairo = require("lgi").cairo
+local gsurface = require("gears.surface")
+local gcolor = require("gears.color")
 local gshape = require("gears.shape")
 local gmatrix = require("gears.matrix")
 local beautiful = require("beautiful")
@@ -87,6 +90,51 @@ function _ui.adjust_image_res_by_ratio(image, ratio)
     local scaled_pixbuf = pixbuf:scale_simple(new_width, new_height, GdkPixbuf.InterpType.BILINEAR)
 
     return capi.awesome.pixbuf_to_surface(scaled_pixbuf._native, image)
+end
+
+function _ui.crop_surface(surface, ratio)
+    local old_w, old_h = gsurface.get_size(surface)
+    local old_ratio = old_w/old_h
+
+    if old_ratio == ratio then return surface end
+
+    local new_h = old_h
+    local new_w = old_w
+    local offset_h, offset_w = 0, 0
+    if (old_ratio < ratio) then
+        new_h = old_w * (1/ratio)
+        offset_h = (old_h - new_h)/2
+    else
+        new_w = old_h * ratio
+        offset_w = (old_w - new_w)/2
+    end
+
+    local out_surface = cairo.ImageSurface(cairo.Format.ARGB32, new_w, new_h)
+    local cr = cairo.Context(out_surface)
+    cr:set_source_surface(surface, -offset_w, -offset_h)
+    cr.operator = cairo.Operator.SOURCE
+    cr:paint()
+
+    return out_surface
+end
+
+function _ui.add_gradient_to_surface(image, colors)
+    local in_surface = gsurface.load_uncached(image)
+    local surface = _ui.crop_surface(in_surface, 2)
+
+    local cr = cairo.Context(surface)
+    local w, h = gsurface.get_size(surface)
+    cr:rectangle(0, 0, w, h)
+
+    local pat_h = cairo.Pattern.create_linear(0, 0, w, 0)
+
+    for _, color in ipairs(colors) do
+        pat_h:add_color_stop_rgba(color.stop, gcolor.parse_color(color.color))
+    end
+    cr:set_source(pat_h)
+    cr:fill()
+
+    return surface
 end
 
 return _ui

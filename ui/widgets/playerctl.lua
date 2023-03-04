@@ -26,93 +26,73 @@ local capi = {
 
 local playerctl = {}
 
-local function crop_surface(ratio, surf)
-    local old_w, old_h = gsurface.get_size(surf)
-    local old_ratio = old_w/old_h
-
-    if old_ratio == ratio then return surf end
-
-    local new_h = old_h
-    local new_w = old_w
-    local offset_h, offset_w = 0, 0
-    -- quick mafs
-    if (old_ratio < ratio) then
-        new_h = old_w * (1/ratio)
-        offset_h = (old_h - new_h)/2
-    else
-        new_w = old_h * ratio
-        offset_w = (old_w - new_w)/2
-    end
-
-    local out_surf = cairo.ImageSurface(cairo.Format.ARGB32, new_w, new_h)
-    local cr = cairo.Context(out_surf)
-    cr:set_source_surface(surf, -offset_w, -offset_h)
-    cr.operator = cairo.Operator.SOURCE
-    cr:paint()
-
-    return out_surf
-end
-
-local function image_with_gradient(image)
-    local in_surf = gsurface.load_uncached(helpers.ui.adjust_image_res(image, 500, 225))
-    local surf = crop_surface(2, in_surf)
-
-    local cr = cairo.Context(surf)
-    local w, h = gsurface.get_size(surf)
-    cr:rectangle(0, 0, w, h)
-
-    local pat_h = cairo.Pattern.create_linear(0, 0, w, 0)
-    pat_h:add_color_stop_rgba(0 ,gcolor.parse_color(beautiful.colors.background_no_opacity))
-    pat_h:add_color_stop_rgba(0.3 ,gcolor.parse_color(beautiful.colors.background_no_opacity .. "CC"))
-    pat_h:add_color_stop_rgba(0.7 ,gcolor.parse_color(beautiful.colors.background_no_opacity .. "BB"))
-    pat_h:add_color_stop_rgba(1 ,gcolor.parse_color(beautiful.colors.background_no_opacity .. "99"))
-    cr:set_source(pat_h)
-    cr:fill()
-
-    return surf
-end
-
 function playerctl.art_opacity(daemon)
     local playerctl_daemon = daemon or general_playerctl_daemon
+
+    local function colors()
+        return {
+            {
+                stop = 0,
+                color = beautiful.colors.background_no_opacity
+            },
+            {
+                stop = 0.3,
+                color = beautiful.colors.background_no_opacity  .. "CC"
+            },
+            {
+                stop = 0.7,
+                color = beautiful.colors.background_no_opacity  .. "BB"
+            },
+            {
+                stop = 1,
+                color = beautiful.colors.background_no_opacity  .. "99"
+            }
+        }
+    end
+
+    local function image_surface(path)
+        local adjusted_image = helpers.ui.adjust_image_res(path, 500, 225)
+        return helpers.ui.add_gradient_to_surface(adjusted_image, colors())
+    end
 
     local art = wibox.widget{
         widget = wibox.widget.imagebox,
         opacity = 0.6,
         horizontal_fit_policy = "fit",
         vertical_fit_policy = "fit",
-        image = image_with_gradient(theme_daemon:get_wallpaper_path()),
+        image = image_surface(theme_daemon:get_wallpaper_path()),
     }
 
     local image = false
     playerctl_daemon:connect_signal("metadata", function(_, title, artist, album_path, _, new, player_name)
         if album_path ~= "" then
             image = album_path
-            art.image = image_with_gradient(album_path)
+            art.image = image_surface(album_path)
         else
             image = nil
-            art.image = image_with_gradient(theme_daemon:get_wallpaper_path())
+            art.image = image_surface(theme_daemon:get_wallpaper_path())
         end
         collectgarbage("collect")
     end)
 
     playerctl_daemon:connect_signal("no_players", function()
-        art.image = image_with_gradient(theme_daemon:get_wallpaper_path())
+        art.image = image_surface(theme_daemon:get_wallpaper_path())
         image = nil
         collectgarbage("collect")
     end)
 
     capi.awesome.connect_signal("wallpaper::changed", function()
         if not image then
-            art.image = image_with_gradient(theme_daemon:get_wallpaper_path())
+            art.image = image_surface(theme_daemon:get_wallpaper_path())
             collectgarbage("collect")
         end
     end)
 
     capi.awesome.connect_signal("colorscheme::changed", function()
         if not image then
-            art.image = image_with_gradient(theme_daemon:get_wallpaper_path())
+            art.image = image_surface(theme_daemon:get_wallpaper_path())
         else
-            art.image = image_with_gradient(image)
+            art.image = image_surface(image)
         end
         collectgarbage("collect")
     end)
