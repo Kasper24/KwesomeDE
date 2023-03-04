@@ -801,13 +801,14 @@ end
 
 -- Wallpaper
 function theme:set_wallpaper(wallpaper, type)
+    awful.spawn("pkill -f linux-wallpaperengine", false)
+
     self._private.active_wallpaper = wallpaper
     helpers.settings["theme-active-wallpaper"] = wallpaper
 
+    type = type or self:get_selected_tab()
     self._private.wallpaper_type = type
     helpers.settings["theme-wallpaper-type"] = type
-
-    awful.spawn("pkill -f linux-wallpaperengine", false)
 
     for s in capi.screen do
         if self:get_wallpaper_type() == "image" then
@@ -910,16 +911,59 @@ end
 
 -- Selected colorscheme
 function theme:set_selected_colorscheme(colorscheme)
-    self._private.selected_colorscheme = colorscheme
+    if self._private[self:get_selected_tab()] == nil then
+        self._private[self:get_selected_tab()] = {}
+    end
+
+    self._private[self:get_selected_tab()].selected_colorscheme = colorscheme
     generate_colorscheme(self, colorscheme)
 end
 
 function theme:get_selected_colorscheme()
-    return self._private.selected_colorscheme or self:get_active_colorscheme()
+    return self._private[self:get_selected_tab()].selected_colorscheme
 end
 
 function theme:get_selected_colorscheme_colors()
     return self:get_colorschemes()[self:get_selected_colorscheme()]
+end
+
+function theme:set_selected_tab(tab)
+    self._private.selected_tab = tab
+    if tab == "image" then
+        if self._private["image"] == nil then
+            self:set_selected_colorscheme(self:get_wallpapers()[1].path)
+        else
+            self:set_selected_colorscheme(self:get_selected_colorscheme())
+        end
+    elseif tab == "mountain" then
+        if self._private["mountain"] == nil then
+            self:set_selected_colorscheme(self:get_wallpapers_and_we_wallpapers()[1].path)
+        else
+            self:set_selected_colorscheme(self:get_selected_colorscheme())
+        end
+    elseif tab == "digital_sun" then
+        if self._private["digital_sun"] == nil then
+            self:set_selected_colorscheme(self:get_wallpapers_and_we_wallpapers()[1].path)
+        else
+            self:set_selected_colorscheme(self:get_selected_colorscheme())
+        end
+    elseif tab == "binary" then
+        if self._private["binary"] == nil then
+            self:set_selected_colorscheme(self:get_wallpapers_and_we_wallpapers()[1].path)
+        else
+            self:set_selected_colorscheme(self:get_selected_colorscheme())
+        end
+    elseif tab == "we" then
+        if self._private["we"] == nil then
+            self:set_selected_colorscheme(self:get_we_wallpapers()[1].path)
+        else
+            self:set_selected_colorscheme(self:get_selected_colorscheme())
+        end
+    end
+end
+
+function theme:get_selected_tab()
+    return self._private.selected_tab or "image"
 end
 
 -- UI profile image

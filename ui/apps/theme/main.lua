@@ -634,8 +634,6 @@ local function we_tab(theme_app)
 end
 
 local function tabs(theme_app)
-    theme_app._private.selected_tab = "image"
-
     local _image_button = {}
     local _mountain_button = {}
     local _digital_sun_button = {}
@@ -658,7 +656,7 @@ local function tabs(theme_app)
         text_on_normal_bg = beautiful.colors.on_accent,
         text = "Image",
         on_release = function()
-            theme_app._private.selected_tab = "image"
+            theme_daemon:set_selected_tab("image")
             _image_button:turn_on()
             _mountain_button:turn_off()
             _digital_sun_button:turn_off()
@@ -676,7 +674,7 @@ local function tabs(theme_app)
         text_on_normal_bg = beautiful.colors.on_accent,
         text = "Mountain",
         on_release = function()
-            theme_app._private.selected_tab = "mountain"
+            theme_daemon:set_selected_tab("mountain")
             _image_button:turn_off()
             _mountain_button:turn_on()
             _digital_sun_button:turn_off()
@@ -694,7 +692,7 @@ local function tabs(theme_app)
         text_on_normal_bg = beautiful.colors.on_accent,
         text = "Digital Sun",
         on_release = function()
-            theme_app._private.selected_tab = "digital_sun"
+            theme_daemon:set_selected_tab("digital_sun")
             _image_button:turn_off()
             _mountain_button:turn_off()
             _digital_sun_button:turn_on()
@@ -712,7 +710,7 @@ local function tabs(theme_app)
         text_on_normal_bg = beautiful.colors.on_accent,
         text = "Binary",
         on_release = function()
-            theme_app._private.selected_tab = "binary"
+            theme_daemon:set_selected_tab("binary")
             _image_button:turn_off()
             _mountain_button:turn_off()
             _digital_sun_button:turn_off()
@@ -730,7 +728,7 @@ local function tabs(theme_app)
         text_on_normal_bg = beautiful.colors.on_accent,
         text = "WP Engine",
         on_release = function()
-            theme_app._private.selected_tab = "we"
+            theme_daemon:set_selected_tab("we")
             _image_button:turn_off()
             _mountain_button:turn_off()
             _digital_sun_button:turn_off()
@@ -846,7 +844,7 @@ local function widget(theme_app)
         size = 15,
         text = "Set Wallpaper",
         on_release = function()
-            theme_daemon:set_wallpaper(theme_daemon:get_selected_colorscheme(), theme_app._private.selected_tab)
+            theme_daemon:set_wallpaper(theme_daemon:get_selected_colorscheme())
         end
     }
 
@@ -868,7 +866,7 @@ local function widget(theme_app)
         size = 15,
         text = "Set Both",
         on_release = function()
-            theme_daemon:set_wallpaper(theme_daemon:get_selected_colorscheme(), theme_app._private.selected_tab)
+            theme_daemon:set_wallpaper(theme_daemon:get_selected_colorscheme())
             theme_daemon:set_colorscheme(theme_daemon:get_selected_colorscheme())
         end
     }
@@ -958,7 +956,7 @@ local function new(theme_app, layout)
         end
     }
 
-    return wibox.widget {
+    local widget = wibox.widget {
         layout = wibox.layout.fixed.vertical,
         spacing = dpi(15),
         {
@@ -975,6 +973,10 @@ local function new(theme_app, layout)
         tabs(theme_app),
         widget(theme_app)
     }
+
+    theme_daemon:set_selected_tab("image")
+
+    return widget
 end
 
 function main.mt:__call(self, layout)
