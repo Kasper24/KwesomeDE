@@ -13,7 +13,7 @@ local function setup_system_tools()
     helpers.run.run_once_grep("parcellite")
     helpers.run.run_once_grep("kdeconnect-indicator")
     helpers.run.run_once_grep("mopidy")
-    gtimer.start_new(3, function()
+    gtimer.start_new(10, function()
         helpers.run.run_once_grep("openrgb")
         return false
     end)
