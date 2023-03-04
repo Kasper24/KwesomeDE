@@ -1215,12 +1215,10 @@ local function new()
         ret:set_client_gap(ret:get_client_gap(), false)
         ret:set_ui_animations(ret:get_ui_animations())
         ret:set_ui_animations_framerate(ret:get_ui_animations_framerate())
-        helpers.run.is_running("linux-wallpaperengine", function(is_running)
-            if is_running and ret:get_wallpaper_type() == "we" then
-                return
-            end
-            ret:set_wallpaper(ret:get_active_wallpaper(), ret:get_wallpaper_type())
-        end)
+        if #helpers.client.find({class = "linux-wallpaperengine"}) > 0 and ret:get_wallpaper_type() == "we" then
+            return
+        end
+        ret:set_wallpaper(ret:get_active_wallpaper(), ret:get_wallpaper_type())
     end)
 
     setup_profile_image(ret)
