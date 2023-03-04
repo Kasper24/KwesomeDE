@@ -731,7 +731,7 @@ local function we_tab()
                 widgets.menu.button {
                     text = "Preview",
                     on_release = function()
-                        theme_daemon:preview_we_wallpaper(entry.path)
+                        theme_daemon:preview_we_wallpaper(entry.path, theme_app:get_client():geometry())
                     end
                 }
             }

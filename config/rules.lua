@@ -373,6 +373,16 @@ ruled.client.connect_signal("request::rules", function()
         }
     }
 
+    ruled.client.append_rule {
+        rule_any = {
+            class = {"linux-wallpaperengine-preview"}
+        },
+        properties = {
+            floating = true,
+        }
+    }
+
+
     -- Floating clients
     ruled.client.append_rule {
         rule_any = {
