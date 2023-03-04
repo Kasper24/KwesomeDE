@@ -114,6 +114,7 @@ local function entry_widget(self, entry)
     function entry:unselect() widget:unselect() end
     function entry:is_selected() widget:is_selected() end
     entry.widget = widget
+    widget.entry = entry
 
     return widget
 end
@@ -264,6 +265,18 @@ function rofi_grid:search()
     self:emit_signal("search", self:get_text(), self:get_current_page(), self:get_pages_count())
 end
 
+function rofi_grid:set_selected_entry(index)
+    local selected_widget_index = self:get_grid():index(self:get_selected_widget())
+    if index == selected_widget_index then
+        return
+    end
+
+    local page = self:get_page_of_index(index)
+    if self:get_current_page() ~= page then
+        self:set_page(page)
+    end
+
+    self:get_entry_of_index(index).widget:select()
 end
 
 function rofi_grid:scroll_up(page_dir)
@@ -281,6 +294,7 @@ end
 function rofi_grid:scroll_right(page_dir)
     scroll(self, "right", page_dir)
 end
+
 function rofi_grid:page_forward(dir)
     local min_entry_index_to_include = 0
     local max_entry_index_to_include = self._private.entries_per_page
@@ -294,8 +308,9 @@ function rofi_grid:page_forward(dir)
         min_entry_index_to_include = 0
         max_entry_index_to_include = self._private.entries_per_page
     elseif self._private.wrap_entry_scrolling then
-        local entry = self:get_grid():get_widgets_at(1, 1)[1]
-        entry:select()
+        local widget = self:get_grid():get_widgets_at(1, 1)[1]
+        widget:select()
+        self:emit_signal("scroll", dir, self:get_index_of_entry(widget.entry), widget, widget.entry)
         return
     else
         return
@@ -330,7 +345,7 @@ function rofi_grid:page_forward(dir)
         entry:select()
     end
 
-    self:emit_signal("page::forward", dir, self:get_current_page(), self:get_pages_count())
+    self:emit_signal("page::forward", dir, self:get_index_of_entry(self:get_selected_widget().entry), self:get_current_page(), self:get_pages_count())
 end
 
 function rofi_grid:page_backward(dir)
@@ -339,8 +354,9 @@ function rofi_grid:page_backward(dir)
     elseif self._private.wrap_page_scrolling and #self:get_matched_entries() >= self._private.max_entries_per_page then
         self._private.current_page = self:get_pages_count()
     elseif self._private.wrap_entry_scrolling then
-        local entry = self:get_grid().children[#self:get_grid().children]
-        entry:select()
+        local widget = self:get_grid().children[#self:get_grid().children]
+        widget:select()
+        self:emit_signal("scroll", dir, self:get_index_of_entry(widget.entry), widget, widget.entry)
         return
     else
         return
@@ -376,7 +392,7 @@ function rofi_grid:page_backward(dir)
     end
     entry:select()
 
-    self:emit_signal("page::backward", dir, self:get_current_page(), self:get_pages_count())
+    self:emit_signal("page::backward", dir, self:get_index_of_entry(self:get_selected_widget().entry), self:get_current_page(), self:get_pages_count())
 end
 
 function rofi_grid:set_page(page)
@@ -440,6 +456,10 @@ function rofi_grid:get_grid()
     return self._private.grid
 end
 
+function rofi_grid:get_entries_per_page()
+    return self._private.entries_per_page
+end
+
 function rofi_grid:get_pages_count()
     return self._private.pages_count
 end
@@ -460,12 +480,24 @@ function rofi_grid:get_selected_widget()
     return self._private.selected_widget
 end
 
-function rofi_grid:get_page_for_entry(entry)
-    for index, matched_entry in ipairs(self._private.matched_entries) do
+function rofi_grid:get_page_of_entry(entry)
+    return math.floor((self:get_index_of_entry(entry) - 1) / self._private.entries_per_page) + 1
+end
+
+function rofi_grid:get_page_of_index(index)
+    return math.floor((index - 1) / self._private.entries_per_page) + 1
+end
+
+function rofi_grid:get_index_of_entry(entry)
+    for index, matched_entry in ipairs(self:get_matched_entries()) do
         if matched_entry == entry then
-            return math.floor((index - 1) / self._private.entries_per_page) + 1
+            return index
         end
     end
+end
+
+function rofi_grid:get_entry_of_index(index)
+    return self:get_matched_entries()[index]
 end
 
 local function new()
@@ -487,7 +519,7 @@ local function new()
     wp.pages_count = 0
     wp.current_page = 1
     wp.search_timer = gtimer {
-        timeout = 0.05,
+        timeout = 0.35,
         call_now = false,
         autostart = false,
         single_shot = true,
