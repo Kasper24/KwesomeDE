@@ -906,7 +906,12 @@ function theme:get_active_colorscheme()
 end
 
 function theme:get_active_colorscheme_colors()
-    return self:get_colorschemes()[self:get_active_colorscheme()]
+    local colorscheme_colors = self:get_colorschemes()[self:get_active_colorscheme()]
+    if colorscheme_colors == nil then
+        local default_colorscheme = helpers.settings:get_default_value("theme-active-colorscheme")
+        return helpers.settings:get_default_value("theme-colorschemes")[default_colorscheme]
+    end
+    return colorscheme_colors
 end
 
 -- Selected colorscheme

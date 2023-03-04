@@ -31,6 +31,10 @@ function settings:open_setting_file()
     awful.spawn("xdg-open " ..  DATA_PATH, false)
 end
 
+function settings:get_default_value(key)
+    return self.default_settings[key].default
+end
+
 local function new()
     local ret = gobject {}
     gtable.crush(ret, settings, true)
