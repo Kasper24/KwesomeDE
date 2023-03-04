@@ -208,15 +208,7 @@ function persistent:recreate_clients()
     for pid, client in pairs(self.restored_settings.clients) do
         index = index + 1
 
-        local has_class = false
-
-        for _, c in ipairs(capi.client.get()) do
-            if client.class == c.class then
-                has_class = true
-            end
-        end
-
-        if has_class == false then
+        if #helpers.client.find({class = client.class}) == 0 then
             local new_pid = awful.spawn(client.command, false)
             self.restored_settings.new_clients[tostring(new_pid)] = self.restored_settings.clients[pid]
             self.restored_settings.clients[pid] = nil
