@@ -71,52 +71,52 @@ function tag_preview:toggle(t, args)
 end
 
 local function new()
-    local default_thumbnail = helpers.ui.adjust_image_res(theme_daemon:get_wallpaper_path(), 300, 150)
-    local thumbnail = wibox.widget {
-        widget = wibox.widget.imagebox,
-        forced_width = dpi(300),
-        forced_height = dpi(150),
-        horizontal_fit_policy = "fit",
-        vertical_fit_policy = "fit",
-        image = default_thumbnail,
-        default_thumbnail = default_thumbnail
-    }
+    -- local default_thumbnail = helpers.ui.adjust_image_res(theme_daemon:get_wallpaper_path(), 300, 150)
+    -- local thumbnail = wibox.widget {
+    --     widget = wibox.widget.imagebox,
+    --     forced_width = dpi(300),
+    --     forced_height = dpi(150),
+    --     horizontal_fit_policy = "fit",
+    --     vertical_fit_policy = "fit",
+    --     image = default_thumbnail,
+    --     default_thumbnail = default_thumbnail
+    -- }
 
-    local widget = widgets.popup {
-        visible = false,
-        ontop = true,
-        shape = helpers.ui.rrect(),
-        maximum_width = dpi(300),
-        maximum_height = dpi(150),
-        animate_method = "width",
-        bg = beautiful.colors.background,
-        widget = thumbnail
-    }
-    widget.default_thumbnail = helpers.ui.adjust_image_res(theme_daemon:get_wallpaper_path(), 300, 150)
+    -- local widget = widgets.popup {
+    --     visible = false,
+    --     ontop = true,
+    --     shape = helpers.ui.rrect(),
+    --     maximum_width = dpi(300),
+    --     maximum_height = dpi(150),
+    --     animate_method = "width",
+    --     bg = beautiful.colors.background,
+    --     widget = thumbnail
+    -- }
+    -- widget.default_thumbnail = helpers.ui.adjust_image_res(theme_daemon:get_wallpaper_path(), 300, 150)
 
-    gtable.crush(widget, tag_preview, true)
+    -- gtable.crush(widget, tag_preview, true)
 
-    capi.client.connect_signal("property::fullscreen", function(c)
-        if c.fullscreen then
-            widget:hide()
-        end
-    end)
+    -- capi.client.connect_signal("property::fullscreen", function(c)
+    --     if c.fullscreen then
+    --         widget:hide()
+    --     end
+    -- end)
 
-    capi.client.connect_signal("focus", function(c)
-        if c.fullscreen then
-            widget:hide()
-        end
-    end)
+    -- capi.client.connect_signal("focus", function(c)
+    --     if c.fullscreen then
+    --         widget:hide()
+    --     end
+    -- end)
 
-    capi.tag.connect_signal("property::selected", function(t)
-        -- Wait a little bit so it won't screenshot the previous tag
-        gtimer.start_new(0.4, function()
-            save_tag_thumbnail(t)
-            return false
-        end)
-    end)
+    -- capi.tag.connect_signal("property::selected", function(t)
+    --     -- Wait a little bit so it won't screenshot the previous tag
+    --     gtimer.start_new(0.4, function()
+    --         save_tag_thumbnail(t)
+    --         return false
+    --     end)
+    -- end)
 
-    return widget
+    -- return widget
 end
 
 if not instance then

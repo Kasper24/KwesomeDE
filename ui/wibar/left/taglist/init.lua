@@ -5,7 +5,7 @@
 local awful = require("awful")
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
-local tag_preview = require("ui.popups.tag_preview")
+-- local tag_preview = require("ui.popups.tag_preview")
 local beautiful = require("beautiful")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
@@ -109,11 +109,11 @@ local function tag_widget(self, tag, index)
         --     end
         -- end,
         on_leave = function()
-            tag_preview:hide()
+            -- tag_preview:hide()
         end,
         on_release = function()
             helpers.misc.tag_back_and_forth(tag.index)
-            tag_preview:hide()
+            -- tag_preview:hide()
         end,
         on_secondary_release = function(self)
             menu:toggle{
@@ -124,7 +124,7 @@ local function tag_widget(self, tag, index)
                     y = dpi(70),
                 }
             }
-            tag_preview:hide()
+            -- tag_preview:hide()
         end,
         on_scroll_up = function()
             awful.tag.viewprev(tag.screen)
