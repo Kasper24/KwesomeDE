@@ -373,7 +373,7 @@ local function new()
     end)
 
     capi.client.connect_signal("swapped", function(client, other_client, is_source)
-        if client.managed then
+        if client.managed and is_source then
             on_client_updated(ret)
         end
     end)
