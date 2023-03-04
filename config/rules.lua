@@ -384,7 +384,9 @@ ruled.client.connect_signal("request::rules", function()
             can_tile = false,
             can_move = false,
             can_resize = false,
+            is_fixed = true,
             can_focus = false,
+            focusable = false,
             can_kill = false,
             fake_root = true
         }
