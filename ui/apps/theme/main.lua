@@ -9,7 +9,6 @@ local beautiful = require("beautiful")
 local theme_daemon = require("daemons.system.theme")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
-local collectgarbage = collectgarbage
 local setmetatable = setmetatable
 local table = table
 local math = math
@@ -76,7 +75,22 @@ local function color_button(index)
     return color_button
 end
 
-local function image_tab()
+local function wallpapers_grid(wallpapers_key, entry_template)
+    local slider = wibox.widget {
+        widget = wibox.widget.slider,
+        forced_width = dpi(5),
+        minimum = 1,
+        value = 1,
+        bar_shape = helpers.ui.rrect(),
+        bar_height= 3,
+        bar_color = beautiful.colors.transparent,
+        bar_active_color = beautiful.colors.transparent,
+        handle_width = dpi(50),
+        handle_color = beautiful.bg_normal,
+        handle_shape = helpers.ui.rrect(),
+        handle_color = beautiful.colors.on_background
+    }
+
     local layout = wibox.widget {
         layout = widgets.rofi_grid,
         sort_fn = function(a, b)
@@ -89,7 +103,7 @@ local function image_tab()
             return false
         end,
         search_sort_fn = function(text, a, b)
-            return helpers.string.levenshtein(text, a.title) < helpers.string.levenshtein(text, b.title)
+            return helpers.fzy.score(text, a.title) < helpers.fzy.score(text, b.title)
         end,
         widget_template = wibox.widget {
             layout = wibox.layout.fixed.vertical,
@@ -121,21 +135,72 @@ local function image_tab()
                 }
             },
             {
-                layout = wibox.layout.grid,
-                id = "grid_role",
-                orientation = "horizontal",
-                homogeneous = true,
-                spacing = dpi(5),
-                forced_num_cols = 5,
-                forced_num_rows = 4,
+                layout = wibox.layout.fixed.horizontal,
+                spacing = dpi(10),
+                {
+                    layout = wibox.layout.grid,
+                    forced_width = dpi(750),
+                    id = "grid_role",
+                    orientation = "horizontal",
+                    homogeneous = true,
+                    spacing = dpi(5),
+                    forced_num_cols = 5,
+                    forced_num_rows = 4,
+                },
+                {
+                    layout = wibox.container.rotate,
+                    direction = 'west',
+                    slider
+                }
             }
         },
-        entry_template = function(entry)
+        entry_template = entry_template
+    }
+
+    theme_daemon:connect_signal("wallpapers", function()
+        layout:set_entries(theme_daemon["get_" .. wallpapers_key](theme_daemon))
+        slider:set_maximum(#theme_daemon["get_" .. wallpapers_key](theme_daemon))
+        slider:set_value(1)
+    end)
+
+    layout:connect_signal("scroll", function(self, dir, new_index, widget, entry)
+        slider:set_value(new_index)
+    end)
+
+    layout:connect_signal("page::forward", function(self, dir, new_index, widget, entry)
+        slider:set_value(new_index)
+    end)
+
+    layout:connect_signal("page::backward", function(self, dir, new_index, widget, entry)
+        slider:set_value(new_index)
+    end)
+
+    layout:connect_signal("search", function(self, dir, increamant, widget, entry)
+        slider:set_value(1)
+        slider:set_maximum(#layout:get_matched_entries())
+    end)
+
+    slider:connect_signal("property::value", function(self, value, instant)
+        if instant ~= true then
+            layout:set_selected_entry(value)
+        end
+    end)
+
+    layout:set_entries(theme_daemon["get_" .. wallpapers_key](theme_daemon))
+    slider:set_maximum(#layout:get_matched_entries())
+
+    return layout
+end
+
+local function image_tab()
+    local layout = wallpapers_grid(
+        "wallpapers",
+        function(entry)
             local widget = nil
             local button = wibox.widget {
                 widget = widgets.button.elevated.state,
                 id = "button",
-                forced_width = dpi(150),
+                forced_width = dpi(146),
                 forced_height = dpi(100),
                 on_normal_bg = beautiful.icons.spraycan.color,
                 halign = "center",
@@ -146,7 +211,7 @@ local function image_tab()
                     widget = wibox.widget.imagebox,
                     horizontal_fit_policy = "fit",
                     vertical_fit_policy = "fit",
-                    forced_width = dpi(150),
+                    forced_width = dpi(146),
                     forced_height = dpi(100),
                     image = helpers.ui.adjust_image_res(entry.path, 100, 70)
                 }
@@ -179,81 +244,22 @@ local function image_tab()
 
             return widget
         end
-    }
-
-    theme_daemon:connect_signal("wallpapers", function(self, wallpapers, _)
-        layout:get_grid():reset()
-        collectgarbage("collect")
-        layout:set_entries(wallpapers)
-    end)
-
-    layout:set_entries(theme_daemon:get_wallpapers())
+    )
 
     return layout
 end
 
 local function mountain_tab()
-    local layout = wibox.widget {
-        layout = widgets.rofi_grid,
-        sort_fn = function(a, b)
-            return a.title:lower() < b.title:lower()
-        end,
-        search_fn = function(text, entry)
-            if helpers.fzy.has_match(text, entry.title) then
-                return true
-            end
-            return false
-        end,
-        search_sort_fn = function(text, a, b)
-            return helpers.string.levenshtein(text, a.title) < helpers.string.levenshtein(text, b.title)
-        end,
-        widget_template = wibox.widget {
-            layout = wibox.layout.fixed.vertical,
-            spacing = dpi(15),
-            {
-                widget = wibox.container.place,
-                halign = "left",
-                valign = "top",
-                {
-                    widget = widgets.background,
-                    forced_width = dpi(800),
-                    forced_height = dpi(50),
-                    shape = helpers.ui.rrect(),
-                    bg = beautiful.colors.surface_no_opacity,
-                    {
-                        widget = wibox.container.margin,
-                        margins = dpi(15),
-                        {
-                            widget = widgets.prompt,
-                            id = "prompt_role",
-                            icon = {
-                                font = beautiful.icons.firefox.font,
-                                size = 15,
-                                color = beautiful.icons.spraycan.color,
-                                icon = beautiful.icons.firefox.icon,
-                            }
-                        }
-                    }
-                }
-            },
-            {
-                layout = wibox.layout.grid,
-                id = "grid_role",
-                orientation = "horizontal",
-                homogeneous = true,
-                spacing = dpi(5),
-                forced_num_cols = 5,
-                forced_num_rows = 4,
-            }
-        },
-        entry_template = function(entry)
+    local layout = wallpapers_grid(
+        "wallpapers_and_we_wallpapers",
+        function(entry, rofi_grid)
             local colors = theme_daemon:get_colorschemes()[entry.path]
 
             local widget = nil
             local button = wibox.widget {
                 widget = widgets.button.elevated.state,
                 id = "button",
-                forced_width = dpi(150),
+                forced_width = dpi(146),
                 forced_height = dpi(100),
                 on_normal_bg = beautiful.icons.spraycan.color,
                 halign = "center",
@@ -278,7 +284,7 @@ local function mountain_tab()
                     },
                     {
                         widget = wibox.widget.imagebox,
-                        forced_width = dpi(150),
+                        forced_width = dpi(146),
                         forced_height = dpi(100),
                         horizontal_fit_policy = "fit",
                         vertical_fit_policy = "fit",
@@ -330,74 +336,15 @@ local function mountain_tab()
 
             return widget
         end
-    }
-
-    theme_daemon:connect_signal("wallpapers", function(self, _, __, wallppaers_and_we_wallpapers)
-        layout:get_grid():reset()
-        collectgarbage("collect")
-        layout:set_entries(wallppaers_and_we_wallpapers)
-    end)
-
-    layout:set_entries(theme_daemon:get_wallpapers_and_we_wallpapers())
+    )
 
     return layout
 end
 
 local function digital_sun_tab()
-    local layout = wibox.widget {
-        layout = widgets.rofi_grid,
-        sort_fn = function(a, b)
-            return a.title:lower() < b.title:lower()
-        end,
-        search_fn = function(text, entry)
-            if helpers.fzy.has_match(text, entry.title) then
-                return true
-            end
-            return false
-        end,
-        search_sort_fn = function(text, a, b)
-            return helpers.string.levenshtein(text, a.title) < helpers.string.levenshtein(text, b.title)
-        end,
-        widget_template = wibox.widget {
-            layout = wibox.layout.fixed.vertical,
-            spacing = dpi(15),
-            {
-                widget = wibox.container.place,
-                halign = "left",
-                valign = "top",
-                {
-                    widget = widgets.background,
-                    forced_width = dpi(800),
-                    forced_height = dpi(50),
-                    shape = helpers.ui.rrect(),
-                    bg = beautiful.colors.surface_no_opacity,
-                    {
-                        widget = wibox.container.margin,
-                        margins = dpi(15),
-                        {
-                            widget = widgets.prompt,
-                            id = "prompt_role",
-                            icon = {
-                                font = beautiful.icons.firefox.font,
-                                size = 15,
-                                color = beautiful.icons.spraycan.color,
-                                icon = beautiful.icons.firefox.icon,
-                            }
-                        }
-                    }
-                }
-            },
-            {
-                layout = wibox.layout.grid,
-                id = "grid_role",
-                orientation = "horizontal",
-                homogeneous = true,
-                spacing = dpi(5),
-                forced_num_cols = 5,
-                forced_num_rows = 4,
-            }
-        },
-        entry_template = function(entry)
+    local layout = wallpapers_grid(
+        "wallpapers_and_we_wallpapers",
+        function(entry, rofi_grid)
             local colors = theme_daemon:get_colorschemes()[entry.path] or theme_daemon:get_active_colorscheme_colors()
             local sun = wibox.widget {
                 background_color_1 = colors[1],
@@ -464,7 +411,7 @@ local function digital_sun_tab()
             local button = wibox.widget {
                 widget = widgets.button.elevated.state,
                 id = "button",
-                forced_width = dpi(150),
+                forced_width = dpi(146),
                 forced_height = dpi(100),
                 on_normal_bg = beautiful.icons.spraycan.color,
                 halign = "center",
@@ -512,15 +459,7 @@ local function digital_sun_tab()
 
             return widget
         end
-    }
-
-    theme_daemon:connect_signal("wallpapers", function(self, _, __, wallppaers_and_we_wallpapers)
-        layout:get_grid():reset()
-        collectgarbage("collect")
-        layout:set_entries(wallppaers_and_we_wallpapers)
-    end)
-
-    layout:set_entries(theme_daemon:get_wallpapers_and_we_wallpapers())
+    )
 
     return layout
 end
@@ -538,67 +477,16 @@ local function binary_tab()
         return table.concat(ret)
     end
 
-    local layout = wibox.widget {
-        layout = widgets.rofi_grid,
-        sort_fn = function(a, b)
-            return a.title:lower() < b.title:lower()
-        end,
-        search_fn = function(text, entry)
-            if helpers.fzy.has_match(text, entry.title) then
-                return true
-            end
-            return false
-        end,
-        search_sort_fn = function(text, a, b)
-            return helpers.string.levenshtein(text, a.title) < helpers.string.levenshtein(text, b.title)
-        end,
-        widget_template = wibox.widget {
-            layout = wibox.layout.fixed.vertical,
-            spacing = dpi(15),
-            {
-                widget = wibox.container.place,
-                halign = "left",
-                valign = "top",
-                {
-                    widget = widgets.background,
-                    forced_width = dpi(800),
-                    forced_height = dpi(50),
-                    shape = helpers.ui.rrect(),
-                    bg = beautiful.colors.surface_no_opacity,
-                    {
-                        widget = wibox.container.margin,
-                        margins = dpi(15),
-                        {
-                            widget = widgets.prompt,
-                            id = "prompt_role",
-                            icon = {
-                                font = beautiful.icons.firefox.font,
-                                size = 15,
-                                color = beautiful.icons.spraycan.color,
-                                icon = beautiful.icons.firefox.icon,
-                            }
-                        }
-                    }
-                }
-            },
-            {
-                layout = wibox.layout.grid,
-                id = "grid_role",
-                orientation = "horizontal",
-                homogeneous = true,
-                spacing = dpi(5),
-                forced_num_cols = 5,
-                forced_num_rows = 4,
-            }
-        },
-        entry_template = function(entry)
+    local layout = wallpapers_grid(
+        "wallpapers_and_we_wallpapers",
+        function(entry, rofi_grid)
             local colors = theme_daemon:get_colorschemes()[entry.path] or theme_daemon:get_active_colorscheme_colors()
 
             local widget = nil
             local button = wibox.widget {
                 widget = widgets.button.elevated.state,
                 id = "button",
-                forced_width = dpi(150),
+                forced_width = dpi(146),
                 forced_height = dpi(100),
                 on_normal_bg = beautiful.icons.spraycan.color,
                 halign = "center",
@@ -607,7 +495,7 @@ local function binary_tab()
                 end,
                 {
                     widget = wibox.container.background,
-                    forced_width = dpi(150),
+                    forced_width = dpi(146),
                     forced_height = dpi(100),
                     id = "background",
                     bg = colors[1],
@@ -671,62 +559,15 @@ local function binary_tab()
 
             return widget
         end
-    }
-
-    theme_daemon:connect_signal("wallpapers", function(self, _, __, wallppaers_and_we_wallpapers)
-        layout:get_grid():reset()
-        collectgarbage("collect")
-        layout:set_entries(wallppaers_and_we_wallpapers)
-    end)
-
-    layout:set_entries(theme_daemon:get_wallpapers_and_we_wallpapers())
+    )
 
     return layout
 end
 
-local function we_tab()
-    local layout = wibox.widget {
-        layout = widgets.rofi_grid,
-        widget_template = wibox.widget {
-            layout = wibox.layout.fixed.vertical,
-            spacing = dpi(15),
-            {
-                widget = wibox.container.place,
-                halign = "left",
-                valign = "top",
-                {
-                    widget = widgets.background,
-                    forced_width = dpi(800),
-                    forced_height = dpi(50),
-                    shape = helpers.ui.rrect(),
-                    bg = beautiful.colors.surface_no_opacity,
-                    {
-                        widget = wibox.container.margin,
-                        margins = dpi(15),
-                        {
-                            widget = widgets.prompt,
-                            id = "prompt_role",
-                            icon = {
-                                font = beautiful.icons.firefox.font,
-                                size = 15,
-                                color = beautiful.icons.firefox.color,
-                                icon = beautiful.icons.firefox.icon,
-                            }
-                        }
-                    }
-                }
-            },
-            {
-                layout = wibox.layout.grid,
-                id = "grid_role",
-                orientation = "horizontal",
-                homogeneous = true,
-                spacing = dpi(5),
-                forced_num_cols = 5,
-                forced_num_rows = 4,
-            }
-        },
-        entry_template = function(entry)
+local function we_tab(theme_app)
+    local layout = wallpapers_grid(
+        "we_wallpapers",
+        function(entry, rofi_grid)
             local menu = widgets.menu {
                 widgets.menu.button {
                     text = "Preview",
@@ -740,7 +581,7 @@ local function we_tab()
             local button = wibox.widget {
                 widget = widgets.button.elevated.state,
                 id = "button",
-                forced_width = dpi(150),
+                forced_width = dpi(146),
                 forced_height = dpi(100),
                 on_normal_bg = beautiful.icons.spraycan.color,
                 halign = "center",
@@ -754,7 +595,7 @@ local function we_tab()
                     widget = wibox.widget.imagebox,
                     horizontal_fit_policy = "fit",
                     vertical_fit_policy = "fit",
-                    forced_width = dpi(150),
+                    forced_width = dpi(146),
                     forced_height = dpi(100),
                     image = helpers.ui.adjust_image_res(entry.path, 100, 70)
                 }
@@ -786,31 +627,14 @@ local function we_tab()
             end)
 
             return widget
-        end,
-        search_fn = function(text, entry)
-            if helpers.fzy.has_match(text, entry.title) then
-                return true
-            end
-            return false
-        end,
-        search_sort_fn = function(text, a, b)
-            return helpers.string.levenshtein(text, a.title) < helpers.string.levenshtein(text, b.title)
         end
-    }
-
-    theme_daemon:connect_signal("wallpapers", function(self, _, we_wallpapers)
-        layout:get_grid():reset()
-        collectgarbage("collect")
-        layout:set_entries(we_wallpapers)
-    end)
-
-    layout:set_entries(theme_daemon:get_we_wallpapers())
+    )
 
     return layout
 end
 
-local function tabs(self)
-    self._private.selected_tab = "image"
+local function tabs(theme_app)
+    theme_app._private.selected_tab = "image"
 
     local _image_button = {}
     local _mountain_button = {}
@@ -823,7 +647,7 @@ local function tabs(self)
     local _mountain_tab = mountain_tab()
     local _digital_sun_tab = digital_sun_tab()
     local _binary_tab = binary_tab()
-    local _we_tab = we_tab()
+    local _we_tab = we_tab(theme_app)
 
     _image_button = wibox.widget {
         widget = widgets.button.text.state,
@@ -834,7 +658,7 @@ local function tabs(self)
         text_on_normal_bg = beautiful.colors.on_accent,
         text = "Image",
         on_release = function()
-            self._private.selected_tab = "image"
+            theme_app._private.selected_tab = "image"
             _image_button:turn_on()
             _mountain_button:turn_off()
             _digital_sun_button:turn_off()
@@ -852,7 +676,7 @@ local function tabs(self)
         text_on_normal_bg = beautiful.colors.on_accent,
         text = "Mountain",
         on_release = function()
-            self._private.selected_tab = "mountain"
+            theme_app._private.selected_tab = "mountain"
             _image_button:turn_off()
             _mountain_button:turn_on()
             _digital_sun_button:turn_off()
@@ -870,7 +694,7 @@ local function tabs(self)
         text_on_normal_bg = beautiful.colors.on_accent,
         text = "Digital Sun",
         on_release = function()
-            self._private.selected_tab = "digital_sun"
+            theme_app._private.selected_tab = "digital_sun"
             _image_button:turn_off()
             _mountain_button:turn_off()
             _digital_sun_button:turn_on()
@@ -888,7 +712,7 @@ local function tabs(self)
         text_on_normal_bg = beautiful.colors.on_accent,
         text = "Binary",
         on_release = function()
-            self._private.selected_tab = "binary"
+            theme_app._private.selected_tab = "binary"
             _image_button:turn_off()
             _mountain_button:turn_off()
             _digital_sun_button:turn_off()
@@ -906,7 +730,7 @@ local function tabs(self)
         text_on_normal_bg = beautiful.colors.on_accent,
         text = "WP Engine",
         on_release = function()
-            self._private.selected_tab = "we"
+            theme_app._private.selected_tab = "we"
             _image_button:turn_off()
             _mountain_button:turn_off()
             _digital_sun_button:turn_off()
@@ -943,7 +767,7 @@ local function tabs(self)
     }
 end
 
-local function widget(self)
+local function widget(theme_app)
     local colors = wibox.widget {
         widget = wibox.layout.grid,
         spacing = dpi(15),
@@ -1022,7 +846,7 @@ local function widget(self)
         size = 15,
         text = "Set Wallpaper",
         on_release = function()
-            theme_daemon:set_wallpaper(theme_daemon:get_selected_colorscheme(), self._private.selected_tab)
+            theme_daemon:set_wallpaper(theme_daemon:get_selected_colorscheme(), theme_app._private.selected_tab)
         end
     }
 
@@ -1044,7 +868,7 @@ local function widget(self)
         size = 15,
         text = "Set Both",
         on_release = function()
-            theme_daemon:set_wallpaper(theme_daemon:get_selected_colorscheme(), self._private.selected_tab)
+            theme_daemon:set_wallpaper(theme_daemon:get_selected_colorscheme(), theme_app._private.selected_tab)
             theme_daemon:set_colorscheme(theme_daemon:get_selected_colorscheme())
         end
     }
@@ -1103,7 +927,7 @@ local function widget(self)
     return stack
 end
 
-local function new(self, layout)
+local function new(theme_app, layout)
     local title = wibox.widget {
         widget = widgets.text,
         bold = true,
@@ -1130,7 +954,7 @@ local function new(self, layout)
         text_normal_bg = beautiful.icons.spraycan.color,
         icon = beautiful.icons.xmark,
         on_release = function()
-            self:hide()
+            theme_app:hide()
         end
     }
 
@@ -1148,8 +972,8 @@ local function new(self, layout)
                 close_button
             }
         },
-        tabs(self),
-        widget(self)
+        tabs(theme_app),
+        widget(theme_app)
     }
 end
 
