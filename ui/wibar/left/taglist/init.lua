@@ -96,18 +96,18 @@ local function tag_widget(self, tag, index)
         icon = tag.font_icon,
         on_normal_bg = tag.font_icon.color,
         text_on_normal_bg = beautiful.colors.transparent,
-        on_hover = function()
-            if #tag:clients() > 0 then
-                tag_preview:show(tag, {
-                    wibox = awful.screen.focused().left_wibar,
-                    widget = self,
-                    offset = {
-                        x = dpi(70),
-                        y = dpi(70)
-                    }
-                })
-            end
-        end,
+        -- on_hover = function()
+        --     if #tag:clients() > 0 then
+        --         tag_preview:show(tag, {
+        --             wibox = awful.screen.focused().left_wibar,
+        --             widget = self,
+        --             offset = {
+        --                 x = dpi(70),
+        --                 y = dpi(70)
+        --             }
+        --         })
+        --     end
+        -- end,
         on_leave = function()
             tag_preview:hide()
         end,
