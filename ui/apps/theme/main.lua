@@ -61,15 +61,17 @@ local function color_button(index)
         }
     }
 
-    theme_daemon:connect_signal("colorscheme::generation::success", function(self, colors)
-        local color = colors[index]
-        if helpers.color.is_dark(color) then
-            color_text:set_color(beautiful.colors.white)
-        else
-            color_text:set_color(beautiful.colors.black)
+    theme_daemon:connect_signal("colorscheme::generation::success", function(self, colors, wallpaper)
+        if wallpaper == theme_daemon:get_selected_colorscheme() then
+            local color = colors[index]
+            if helpers.color.is_dark(color) then
+                color_text:set_color(beautiful.colors.white)
+            else
+                color_text:set_color(beautiful.colors.black)
+            end
+            color_text:set_text(color)
+            background.bg = color
         end
-        color_text:set_text(color)
-        background.bg = color
     end)
 
     return color_button
