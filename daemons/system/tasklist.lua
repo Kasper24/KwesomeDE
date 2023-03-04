@@ -4,12 +4,12 @@
 -------------------------------------------
 local lgi = require("lgi")
 local Gio = lgi.Gio
-local Gdk = lgi.require("Gdk", "3.0")
 local DesktopAppInfo = Gio.DesktopAppInfo
 local AppInfo = Gio.AppInfo
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
+local gtimer = require("gears.timer")
 local beautiful = require("beautiful")
 local helpers = require("helpers")
 local filesystem = require("external.filesystem")
@@ -17,7 +17,6 @@ local floor = math.floor
 local string = string
 local table = table
 local ipairs = ipairs
-local pairs = pairs
 local math = math
 local capi = {
     awesome = awesome,
@@ -316,7 +315,10 @@ local function new()
 
     capi.client.connect_signal("scanned", function()
         capi.client.connect_signal("request::manage", function(client)
-            on_client_added(ret, client)
+            gtimer.start_new(0.01, function()
+                on_client_added(ret, client)
+                return false
+            end)
         end)
 
         for _, client in ipairs(capi.client.get()) do
@@ -329,7 +331,15 @@ local function new()
     end)
 
     capi.client.connect_signal("request::unmanage", function(client)
-        on_client_removed(ret, client)
+        -- Copying the needed values since the client will be invalid when the timer runs
+        local _client = {}
+        _client.tasklist_widget = client.tasklist_widget
+        _client.window_switcher_widget = client.window_switcher_widget
+        gtimer.start_new(0.01, function()
+            on_client_removed(ret, _client)
+            _client = nil
+            return false
+        end)
     end)
 
     capi.client.connect_signal("tagged", function(client)
