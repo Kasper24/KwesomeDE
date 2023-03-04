@@ -4,6 +4,7 @@
 -------------------------------------------
 local awful = require("awful")
 local gtable = require("gears.table")
+local gtimer = require("gears.timer")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
 local widgets = require("ui.widgets")
@@ -11,6 +12,7 @@ local theme_daemon = require("daemons.system.theme")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local capi = {
+    screen = screen,
     client = client,
     tag = tag
 }
@@ -20,11 +22,9 @@ local instance = nil
 
 local function save_tag_thumbnail(tag)
     if tag.selected == true then
-        local screenshot = awful.screenshot {
-            screen = awful.screen.focused()
-        }
-        screenshot:refresh()
-        tag.thumbnail = screenshot.surface
+        local screen = awful.screen.focused()
+        local geo = screen.geometry
+        tag.thumbnail = helpers.ui.adjust_image_res(screen.content, 300, 150, geo.width, geo.height)
     end
 end
 
@@ -49,9 +49,12 @@ function tag_preview:show(t, args)
         self.y = args.coords.y
     end
 
-    -- save_tag_thumbnail(t)
-    self.widget.image = t.thumbnail or theme_daemon:get_wallpaper_path()
-    collectgarbage("collect")
+    save_tag_thumbnail(t)
+    if t.thumbnail then
+        self.widget.image = t.thumbnail
+    else
+        self.widget.image = self.default_thumbnail
+    end
     self.visible = true
 end
 
@@ -68,13 +71,15 @@ function tag_preview:toggle(t, args)
 end
 
 local function new()
+    local default_thumbnail = helpers.ui.adjust_image_res(theme_daemon:get_wallpaper_path(), 300, 150)
     local thumbnail = wibox.widget {
         widget = wibox.widget.imagebox,
         forced_width = dpi(300),
         forced_height = dpi(150),
         horizontal_fit_policy = "fit",
         vertical_fit_policy = "fit",
-        image = theme_daemon:get_wallpaper_path()
+        image = default_thumbnail,
+        default_thumbnail = default_thumbnail
     }
 
     local widget = widgets.popup {
@@ -87,6 +92,7 @@ local function new()
         bg = beautiful.colors.background,
         widget = thumbnail
     }
+    widget.default_thumbnail = helpers.ui.adjust_image_res(theme_daemon:get_wallpaper_path(), 300, 150)
 
     gtable.crush(widget, tag_preview, true)
 
@@ -104,15 +110,10 @@ local function new()
 
     capi.tag.connect_signal("property::selected", function(t)
         -- Wait a little bit so it won't screenshot the previous tag
-        -- gtimer {
-        --     timeout = 0.4,
-        --     autostart = true,
-        --     call_now = false,
-        --     single_shot = true,
-        --     callback = function()
-        --         save_tag_thumbnail(t)
-        --     end
-        -- }
+        gtimer.start_new(0.4, function()
+            save_tag_thumbnail(t)
+            return false
+        end)
     end)
 
     return widget
