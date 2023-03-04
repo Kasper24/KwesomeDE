@@ -13,6 +13,7 @@ local theme_daemon = require("daemons.system.theme")
 local helpers = require("helpers")
 local capi = {
     awesome = awesome,
+    screen = screen,
     client = client
 }
 
@@ -310,6 +311,22 @@ capi.client.connect_signal("property::floating", function(client)
         client.ontop = true
     else
         client.ontop = false
+    end
+end)
+
+capi.client.connect_signal("property::fullscreen", function(client)
+    if client.fullscreen then
+        for screen in capi.screen do
+            screen.left_wibar.ontop = false
+            screen.top_wibar.ontop = false
+        end
+    else
+        if #helpers.client.find({fullscreen = true}) == 0 then
+            for screen in capi.screen do
+                screen.left_wibar.ontop = true
+                screen.top_wibar.ontop = true
+            end
+        end
     end
 end)
 
