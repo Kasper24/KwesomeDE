@@ -37,7 +37,7 @@ local function build_properties(prototype, prop_names)
     end
 end
 
-local function scroll(self, dir)
+local function scroll(self, dir, page_dir)
     local grid = self:get_grid()
     if #grid.children < 1 then
         self._private.selected_widget = nil
@@ -45,7 +45,6 @@ local function scroll(self, dir)
     end
 
     local next_widget_index = nil
-    local if_cant_scroll_func = nil
     local grid_orientation = grid:get_orientation()
 
     if dir == "up" then
@@ -54,38 +53,39 @@ local function scroll(self, dir)
         elseif grid_orientation == "vertical" then
             next_widget_index = grid:index(self:get_selected_widget()) - grid.forced_num_cols
         end
-        if_cant_scroll_func = function() self:page_backward("up") end
     elseif dir == "down" then
         if grid_orientation == "horizontal" then
             next_widget_index = grid:index(self:get_selected_widget()) + 1
         elseif grid_orientation == "vertical" then
             next_widget_index = grid:index(self:get_selected_widget()) + grid.forced_num_cols
         end
-        if_cant_scroll_func = function() self:page_forward("down") end
     elseif dir == "left" then
         if grid_orientation == "horizontal" then
             next_widget_index = grid:index(self:get_selected_widget()) - grid.forced_num_rows
         elseif grid_orientation == "vertical" then
             next_widget_index = grid:index(self:get_selected_widget()) - 1
         end
-        if_cant_scroll_func = function() self:page_backward("left") end
     elseif dir == "right" then
         if grid_orientation == "horizontal" then
             next_widget_index = grid:index(self:get_selected_widget()) + grid.forced_num_rows
         elseif grid_orientation == "vertical" then
             next_widget_index = grid:index(self:get_selected_widget()) + 1
         end
-        if_cant_scroll_func = function() self:page_forward("right") end
     end
 
     local next_widget = grid.children[next_widget_index]
     if next_widget then
         next_widget:select()
-        self:emit_signal("scroll", dir)
+        self:emit_signal("scroll", dir, self:get_index_of_entry(next_widget.entry), next_widget, next_widget.entry)
     else
-        if_cant_scroll_func()
+        if dir == "up" or dir == "left" then
+            self:page_backward(page_dir or dir)
+        elseif dir == "down" or dir == "right" then
+            self:page_forward(page_dir or dir)
+        end
     end
 end
+
 
 local function entry_widget(self, entry)
     local widget = self._private.entry_template(entry, self)
@@ -124,9 +124,17 @@ function rofi_grid:set_widget_template(widget_template)
 
     self:get_grid():connect_signal("button::press", function(_, lx, ly, button, mods, find_widgets_result)
         if button == 4 then
-            self:scroll_up()
+            if self:get_grid():get_orientation() == "horizontal" then
+                self:scroll_up()
+            else
+                self:scroll_left("up")
+            end
         elseif button == 5 then
-            self:scroll_down()
+            if self:get_grid():get_orientation() == "horizontal" then
+                self:scroll_down()
+            else
+                self:scroll_right("down")
+            end
         end
     end)
 
@@ -256,22 +264,23 @@ function rofi_grid:search()
     self:emit_signal("search", self:get_text(), self:get_current_page(), self:get_pages_count())
 end
 
-function rofi_grid:scroll_up()
-    scroll(self, "up")
 end
 
-function rofi_grid:scroll_down()
-    scroll(self, "down")
+function rofi_grid:scroll_up(page_dir)
+    scroll(self, "up", page_dir)
 end
 
-function rofi_grid:scroll_left()
-    scroll(self, "left")
+function rofi_grid:scroll_down(page_dir)
+    scroll(self, "down", page_dir)
 end
 
-function rofi_grid:scroll_right()
-    scroll(self, "right")
+function rofi_grid:scroll_left(page_dir)
+    scroll(self, "left", page_dir)
 end
 
+function rofi_grid:scroll_right(page_dir)
+    scroll(self, "right", page_dir)
+end
 function rofi_grid:page_forward(dir)
     local min_entry_index_to_include = 0
     local max_entry_index_to_include = self._private.entries_per_page
