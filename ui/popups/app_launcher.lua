@@ -163,7 +163,7 @@ local function new()
                         forced_width = dpi(650),
                         forced_height = dpi(60),
                         shape = helpers.ui.rrect(),
-                        bg = beautiful.colors.surface_no_opacity,
+                        bg = beautiful.colors.surface,
                         {
                             widget = wibox.container.margin,
                             margins = dpi(15),

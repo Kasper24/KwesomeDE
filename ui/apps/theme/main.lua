@@ -117,7 +117,7 @@ local function wallpapers_grid(wallpapers_key, entry_template)
                     forced_width = dpi(800),
                     forced_height = dpi(50),
                     shape = helpers.ui.rrect(),
-                    bg = beautiful.colors.surface_no_opacity,
+                    bg = beautiful.colors.surface,
                     {
                         widget = wibox.container.margin,
                         margins = dpi(15),
