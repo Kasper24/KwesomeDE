@@ -179,7 +179,7 @@ local function new()
                 {
                     layout = wibox.layout.grid,
                     id = "grid_role",
-                    orientation = "horizontal",
+                    orientation = "vertical",
                     homogeneous = true,
                     spacing = dpi(15),
                     forced_num_cols = 5,
