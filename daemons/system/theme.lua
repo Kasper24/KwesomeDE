@@ -1182,6 +1182,10 @@ end
 function theme:set_wallpaper_engine_fps(wallpaper_engine_fps)
     self._private.wallpaper_engine_fps = wallpaper_engine_fps
     helpers.settings["theme-we-fps"] = wallpaper_engine_fps
+
+    if #helpers.client.find({class = "linux-wallpaperengine"}) > 0 and self:get_wallpaper_type() == "we" then
+        self:set_wallpaper(self:get_active_wallpaper(), "we")
+    end
 end
 
 function theme:get_wallpaper_engine_fps()
