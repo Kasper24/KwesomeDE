@@ -882,14 +882,16 @@ local function bottom()
         stack:raise_widget(widget)
     end)
 
-    theme_daemon:connect_signal("colorscheme::generation::success", function(self, colors)
-        if helpers.color.is_dark(colors[1]) then
-            light_dark:set_text("Light")
-        else
-            light_dark:set_text("Dark")
+    theme_daemon:connect_signal("colorscheme::generation::success", function(self, colors, wallpaper)
+        if wallpaper == theme_daemon:get_selected_colorscheme() then
+            if helpers.color.is_dark(colors[1]) then
+                light_dark:set_text("Light")
+            else
+                light_dark:set_text("Dark")
+            end
+            spinning_circle:stop()
+            stack:raise_widget(widget)
         end
-        spinning_circle:stop()
-        stack:raise_widget(widget)
     end)
 
     for i = 1, 16 do
