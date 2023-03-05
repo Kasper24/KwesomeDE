@@ -97,6 +97,7 @@ capi.client.connect_signal("request::default_mousebindings", function()
                 if c.can_move ~= false then
                     c.floating = true
                     c.maximized = false
+                    c.fullscreen = false
                     c:activate{
                         context = "mouse_click",
                         action = "mouse_move"
@@ -111,6 +112,7 @@ capi.client.connect_signal("request::default_mousebindings", function()
                 if c.can_resize ~= false then
                     c.floating = true
                     c.maximized = false
+                    c.fullscreen = false
                     c:activate{
                         context = "mouse_click",
                         action = "mouse_resize"
