@@ -699,7 +699,7 @@ local function scan_wallpapers(self)
     self._private.wallpapers = {}
     self._private.we_wallpapers = {}
 
-    local emit_signal_timer = gtimer {
+    local debouncer = gtimer {
         timeout = 0.5,
         autostart = false,
         single_shot = true,
@@ -727,7 +727,7 @@ local function scan_wallpapers(self)
             table.insert(self._private.wallpapers, { path = wallpaper_path, title = wallpaper_path:gsub(WALLPAPERS_PATH, "") })
         end
     end, {}, function()
-        emit_signal_timer:again()
+        debouncer:again()
     end)
 
     filesystem.filesystem.iterate_contents(self:get_wallpaper_engine_workshop_folder(), function(file, path, name)
@@ -749,7 +749,7 @@ local function scan_wallpapers(self)
             end
         end
     end, {}, function()
-        emit_signal_timer:again()
+        debouncer:again()
     end)
 end
 
