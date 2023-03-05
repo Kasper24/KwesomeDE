@@ -70,7 +70,7 @@ function screenshot:screenshot()
 
     local function screenshot()
         local file_name = os.date("%d-%m-%Y-%H:%M:%S") .. ".png"
-        local command = self._private.show_cursor and "maim " or "maim -u "
+        local command = self._private.show_cursor and "maim --capturebackground " or "maim --capturebackground -u "
         if self._private.screenshot_method == "selection" then
             command = command .. "-s " .. self._private.folder .. file_name
         elseif self._private.screenshot_method == "screen" then
