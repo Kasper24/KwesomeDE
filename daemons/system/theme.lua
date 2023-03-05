@@ -205,7 +205,17 @@ local function generate_colorscheme(self, wallpaper, reset, light)
         end)
     end
 
-    imagemagick()
+    if self._private.generate_colorscheme_debouncer ~= nil and self._private.generate_colorscheme_debouncer.started then
+        self._private.generate_colorscheme_debouncer:stop()
+    end
+    self._private.generate_colorscheme_debouncer = gtimer {
+        timeout = 1,
+        autostart = true,
+        single_shot = true,
+        callback = function()
+            imagemagick()
+        end
+    }
 end
 
 local function reload_gtk()
