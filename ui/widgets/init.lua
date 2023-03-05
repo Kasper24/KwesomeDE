@@ -30,6 +30,7 @@ return {
     slider_prompt = require(... .. ".slider_prompt"),
     slider = require(... .. ".slider"),
     spinning_circle = require(... .. ".spinning_circle"),
+    text_input = require(... .. ".text_input"),
     text = require(... .. ".text"),
     textclock = require(... .. ".textclock"),
     titlebar = require(... .. ".titlebar"),
