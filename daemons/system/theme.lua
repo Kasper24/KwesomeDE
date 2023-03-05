@@ -1136,16 +1136,16 @@ end
 
 function theme:set_ui_animations_framerate(framerate)
     helpers.animation:set_framerate(framerate)
-    self._private.ui_animations = framerate
+    self._private.ui_animations_framerate = framerate
     helpers.settings["theme-ui-animations-framerate"] = framerate
 end
 
 function theme:get_ui_animations_framerate()
-    if self._private.get_ui_animations_framerate == nil then
-        self._private.get_ui_animations_framerate = helpers.settings["theme-ui-animations-framerate"]
+    if self._private.ui_animations_framerate == nil then
+        self._private.ui_animations_framerate = helpers.settings["theme-ui-animations-framerate"]
     end
 
-    return self._private.get_ui_animations_framerate
+    return self._private.ui_animations_framerate
 end
 
 -- Command after generation
