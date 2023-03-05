@@ -824,8 +824,6 @@ end
 
 -- Wallpaper
 function theme:set_wallpaper(wallpaper, type)
-    awful.spawn("pkill -f linux-wallpaperengine", false)
-
     self._private.active_wallpaper = wallpaper
     helpers.settings["theme-active-wallpaper"] = wallpaper
 
@@ -834,6 +832,11 @@ function theme:set_wallpaper(wallpaper, type)
     helpers.settings["theme-wallpaper-type"] = type
 
     for s in capi.screen do
+        local wallpaper_engine_instances = helpers.client.find({class = "linux-wallpaperengine", screen =  s})
+        for _, wallpaper_engine_instance in ipairs(wallpaper_engine_instances) do
+            wallpaper_engine_instance:kill()
+        end
+
         if self:get_wallpaper_type() == "image" then
             image_wallpaper(self, s)
         elseif self:get_wallpaper_type() == "mountain" then
