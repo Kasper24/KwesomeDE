@@ -200,7 +200,7 @@ function persistent:reapply_clients()
 end
 
 function persistent:recreate_clients()
-    local clients_amount = helpers.table.length(self.restored_settings.clients)
+    local clients_amount = gtable.count_keys(self.restored_settings.clients)
     local index = 0
 
     self.restored_settings.new_clients = {}

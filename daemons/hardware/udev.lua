@@ -42,7 +42,7 @@ local function check_usb_device(self)
                     vendor = vendor
                 }
                 new_devices[device.name] = device
-                if helpers.table.length(self._private.usb_devices) > 0 and self._private.usb_devices[device.name] == nil then
+                if gtable.count_keys(self._private.usb_devices) > 0 and self._private.usb_devices[device.name] == nil then
                     self:emit_signal("usb::added", device)
                 end
             end
@@ -73,7 +73,7 @@ local function check_block_devices(self)
                 device.options = line:match('OPTIONS=(.*)')
                 new_devices[device.mount_point] = device
 
-                if helpers.table.length(self._private.block_devices) > 0 and
+                if gtable.count_keys(self._private.block_devices) > 0 and
                     self._private.block_devices[device.mount_point] == nil then
                     self:emit_signal("block::added", device)
                 end

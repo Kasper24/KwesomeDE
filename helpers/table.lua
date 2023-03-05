@@ -5,14 +5,6 @@ local table = table
 
 local _table = {}
 
-function _table.length(tbl)
-    local length = 0
-    for n in pairs(tbl) do
-        length = length + 1
-    end
-    return length
-end
-
 function _table.dump(o, args)
     args = args or {}
     args.pretty = args.pretty or true
