@@ -2,6 +2,7 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
+local gtable = require("gears.table")
 local gcolor = require("gears.color")
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
@@ -237,7 +238,7 @@ local function image_tab()
 
             widget:connect_signal("select", function()
                 button:turn_on()
-                theme_daemon:set_selected_colorscheme(entry.path)
+                theme_daemon:set_selected_colorscheme(entry.path, "image")
             end)
 
             widget:connect_signal("unselect", function()
@@ -313,7 +314,7 @@ local function mountain_tab()
 
             widget:connect_signal("select", function()
                 button:turn_on()
-                theme_daemon:set_selected_colorscheme(entry.path)
+                theme_daemon:set_selected_colorscheme(entry.path, "mountain")
             end)
 
             widget:connect_signal("unselect", function()
@@ -441,7 +442,7 @@ local function digital_sun_tab()
 
             widget:connect_signal("select", function()
                 button:turn_on()
-                theme_daemon:set_selected_colorscheme(entry.path)
+                theme_daemon:set_selected_colorscheme(entry.path, "digital_sun")
             end)
 
             widget:connect_signal("unselect", function()
@@ -544,7 +545,7 @@ local function binary_tab()
 
             widget:connect_signal("select", function()
                 button:turn_on()
-                theme_daemon:set_selected_colorscheme(entry.path)
+                theme_daemon:set_selected_colorscheme(entry.path, "binary")
             end)
 
             widget:connect_signal("unselect", function()
@@ -621,7 +622,7 @@ local function we_tab(theme_app)
 
             widget:connect_signal("select", function()
                 button:turn_on()
-                theme_daemon:set_selected_colorscheme(entry.path)
+                theme_daemon:set_selected_colorscheme(entry.path, "we")
             end)
 
             widget:connect_signal("unselect", function()
@@ -767,36 +768,13 @@ local function tabs(theme_app)
     }
 end
 
-local function widget(theme_app)
+local function bottom()
     local colors = wibox.widget {
         widget = wibox.layout.grid,
         spacing = dpi(15),
         forced_num_rows = 2,
         forced_num_cols = 8,
         expand = true
-    }
-
-    local empty_wallpapers = wibox.widget {
-        widget = wibox.container.margin,
-        margins = {
-            top = dpi(250)
-        },
-        {
-            layout = wibox.layout.fixed.vertical,
-            spacing = dpi(15),
-            {
-                widget = widgets.text,
-                halign = "center",
-                icon = beautiful.icons.spraycan,
-                size = 50
-            },
-            {
-                widget = widgets.text,
-                halign = "center",
-                size = 15,
-                text = "It's empty out here ):"
-            }
-        }
     }
 
     local spinning_circle = widgets.spinning_circle {
@@ -895,8 +873,7 @@ local function widget(theme_app)
     local stack = wibox.widget {
         layout = wibox.layout.stack,
         top_only = true,
-        -- empty_wallpapers,
-        -- spinning_circle,
+        spinning_circle,
         widget
     }
 
@@ -958,6 +935,43 @@ local function new(theme_app, layout)
         end
     }
 
+    local empty_wallpapers = wibox.widget {
+        widget = wibox.container.margin,
+        margins = {
+            top = dpi(250)
+        },
+        {
+            layout = wibox.layout.fixed.vertical,
+            spacing = dpi(15),
+            {
+                widget = widgets.text,
+                halign = "center",
+                icon = beautiful.icons.spraycan,
+                size = 50
+            },
+            {
+                widget = widgets.text,
+                halign = "center",
+                size = 15,
+                text = "It's empty out here ):"
+            }
+        }
+    }
+
+    local content = wibox.widget {
+        layout = wibox.layout.fixed.vertical,
+        spacing = dpi(15),
+        tabs(theme_app),
+        bottom()
+    }
+
+    local stack = wibox.widget {
+        layout = wibox.layout.stack,
+        top_only = true,
+        empty_wallpapers,
+        content
+    }
+
     local widget = wibox.widget {
         layout = wibox.layout.fixed.vertical,
         spacing = dpi(15),
@@ -972,9 +986,30 @@ local function new(theme_app, layout)
                 close_button
             }
         },
-        tabs(theme_app),
-        widget(theme_app)
+        stack
     }
+
+    theme_daemon:connect_signal("tab::select", function(self, tab)
+        if tab == "image" then
+            if gtable.count_keys(theme_daemon:get_wallpapers()) == 0 then
+                stack:raise_widget(empty_wallpapers)
+            else
+                stack:raise_widget(content)
+            end
+        elseif tab == "mountain" or tab == "digital_sun" or tab == "binary" then
+            if gtable.count_keys(theme_daemon:get_wallpapers_and_we_wallpapers()) == 0 then
+                stack:raise_widget(empty_wallpapers)
+            else
+                stack:raise_widget(content)
+            end
+        elseif tab == "we" then
+            if gtable.count_keys(theme_daemon:get_we_wallpapers()) == 0 then
+                stack:raise_widget(empty_wallpapers)
+            else
+                stack:raise_widget(content)
+            end
+        end
+    end)
 
     theme_daemon:set_selected_tab("image")
 

@@ -717,6 +717,19 @@ local function scan_wallpapers(self)
                 self._private.we_wallpapers,
                 {unpack(self._private.wallpapers), unpack(self._private.we_wallpapers)}
             )
+
+            if gtable.count_keys(self:get_wallpapers()) > 0 then
+                print(self:get_wallpapers()[1].path)
+                self:set_selected_colorscheme(self:get_wallpapers()[1].path, "image")
+            end
+            if gtable.count_keys(self:get_wallpapers_and_we_wallpapers()) > 0 then
+                self:set_selected_colorscheme(self:get_wallpapers_and_we_wallpapers()[1].path, "mountain")
+                self:set_selected_colorscheme(self:get_wallpapers_and_we_wallpapers()[1].path, "digital_sun")
+                self:set_selected_colorscheme(self:get_wallpapers_and_we_wallpapers()[1].path, "binary")
+            end
+            if gtable.count_keys(self:get_we_wallpapers()) > 0 then
+                self:set_selected_colorscheme(self:get_we_wallpapers()[1].path, "we")
+            end
         end
     }
 
@@ -941,17 +954,14 @@ function theme:get_active_colorscheme_colors()
 end
 
 -- Selected colorscheme
-function theme:set_selected_colorscheme(colorscheme)
-    if self._private[self:get_selected_tab()] == nil then
-        self._private[self:get_selected_tab()] = {}
-    end
-
-    self._private[self:get_selected_tab()].selected_colorscheme = colorscheme
+function theme:set_selected_colorscheme(colorscheme, tab)
+    self._private[tab].selected_colorscheme = colorscheme
     generate_colorscheme(self, colorscheme)
 end
 
-function theme:get_selected_colorscheme()
-    return self._private[self:get_selected_tab()].selected_colorscheme
+function theme:get_selected_colorscheme(tab)
+    tab = tab or self:get_selected_tab()
+    return self._private[tab].selected_colorscheme
 end
 
 function theme:get_selected_colorscheme_colors()
@@ -960,37 +970,11 @@ end
 
 function theme:set_selected_tab(tab)
     self._private.selected_tab = tab
-    if tab == "image" then
-        if self._private["image"] == nil then
-            self:set_selected_colorscheme(self:get_wallpapers()[1].path)
-        else
-            self:set_selected_colorscheme(self:get_selected_colorscheme())
-        end
-    elseif tab == "mountain" then
-        if self._private["mountain"] == nil then
-            self:set_selected_colorscheme(self:get_wallpapers_and_we_wallpapers()[1].path)
-        else
-            self:set_selected_colorscheme(self:get_selected_colorscheme())
-        end
-    elseif tab == "digital_sun" then
-        if self._private["digital_sun"] == nil then
-            self:set_selected_colorscheme(self:get_wallpapers_and_we_wallpapers()[1].path)
-        else
-            self:set_selected_colorscheme(self:get_selected_colorscheme())
-        end
-    elseif tab == "binary" then
-        if self._private["binary"] == nil then
-            self:set_selected_colorscheme(self:get_wallpapers_and_we_wallpapers()[1].path)
-        else
-            self:set_selected_colorscheme(self:get_selected_colorscheme())
-        end
-    elseif tab == "we" then
-        if self._private["we"] == nil then
-            self:set_selected_colorscheme(self:get_we_wallpapers()[1].path)
-        else
-            self:set_selected_colorscheme(self:get_selected_colorscheme())
-        end
+    local colorscheme = self:get_selected_colorscheme()
+    if colorscheme then
+        self:set_selected_colorscheme(colorscheme, tab)
     end
+    self:emit_signal("tab::select", tab)
 end
 
 function theme:get_selected_tab()
@@ -1213,6 +1197,11 @@ local function new()
     gtable.crush(ret, theme, true)
 
     ret._private = {}
+    ret._private.image = {}
+    ret._private.mountain = {}
+    ret._private.digital_sun = {}
+    ret._private.binary = {}
+    ret._private.we = {}
 
     gtimer.delayed_call(function()
         ret:set_client_gap(ret:get_client_gap(), false)
