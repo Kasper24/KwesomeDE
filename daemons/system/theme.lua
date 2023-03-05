@@ -722,11 +722,6 @@ local function scan_wallpapers(self)
                 return a.title < b.title
             end)
 
-            self:emit_signal("wallpapers",
-                self._private.wallpapers,
-                self._private.we_wallpapers,
-                {unpack(self._private.wallpapers), unpack(self._private.we_wallpapers)}
-            )
 
             if gtable.count_keys(self:get_wallpapers()) > 0 then
                 self:set_selected_colorscheme(self:get_wallpapers()[1].path, "image")
@@ -739,6 +734,12 @@ local function scan_wallpapers(self)
             if gtable.count_keys(self:get_we_wallpapers()) > 0 then
                 self:set_selected_colorscheme(self:get_we_wallpapers()[1].path, "we")
             end
+
+            self:emit_signal("wallpapers",
+                self._private.wallpapers,
+                self._private.we_wallpapers,
+                {unpack(self._private.wallpapers), unpack(self._private.we_wallpapers)}
+            )
         end
     }
 
