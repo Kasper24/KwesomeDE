@@ -722,6 +722,7 @@ local function scan_wallpapers(self)
                 return a.title < b.title
             end)
 
+            self:set_selected_tab(self:get_selected_tab())
 
             if gtable.count_keys(self:get_wallpapers()) > 0 then
                 self:set_selected_colorscheme(self:get_wallpapers()[1].path, "image")
