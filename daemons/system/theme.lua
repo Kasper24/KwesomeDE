@@ -749,6 +749,7 @@ local function scan_wallpapers(self)
             end
         end
     end, {}, function()
+        emit_signal_timer:again()
     end)
 end
 
