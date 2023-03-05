@@ -141,7 +141,7 @@ local function run_keygrabber(self)
             elseif key == "f" or key == "Right" then
                 self:set_cursor_index_to_word_end()
             elseif key == "d" then
-                wp.text = wp.text:sub(1, wp.cur_pos - 1) .. wp.text:sub(cword_end(wp.text, wp.cur_pos))
+                self:delete_next_word()
             elseif key == "BackSpace" then
                 self:delete_previous_word()
             end
@@ -274,8 +274,9 @@ end
 function text_input:insert_text(text)
     local old_text = self:get_text()
     local cursor_index = self:get_cursor_index()
-    local new_text = old_text:sub(1, cursor_index - 1) .. text .. old_text:sub(cursor_index)
-    self:get_text_widget():set_text(new_text)
+    local left_text = old_text:sub(1, cursor_index) .. text
+    local right_text = old_text:sub(cursor_index + 1)
+    self:get_text_widget():set_text(left_text .. right_text)
     self:set_cursor_index(self:get_cursor_index() + #text)
 
     self:emit_signal("property::text", new_text)
@@ -291,12 +292,21 @@ function text_input:paste(self)
     end)
 end
 
+function text_input:delete_next_word()
+    local old_text = self:get_text()
+    local cursor_index = self:get_cursor_index()
+
+    local left_text = old_text:sub(1, cursor_index)
+    local right_text = old_text:sub(cword_end(old_text, cursor_index + 1))
+    self:get_text_widget():set_text(left_text .. right_text)
+end
+
 function text_input:delete_previous_word()
     local old_text = self:get_text()
     local cursor_index = self:get_cursor_index()
-    local wstart = cword_start(old_text, cursor_index)
-    local left_text = old_text:sub(1, wstart - 1)
-    local right_text = old_text:sub(cursor_index)
+    local wstart = cword_start(old_text, cursor_index + 1) - 1
+    local left_text = old_text:sub(1, wstart)
+    local right_text = old_text:sub(cursor_index + 1)
     self:get_text_widget():set_text(left_text .. right_text)
     self:set_cursor_index(wstart)
 end
@@ -356,11 +366,11 @@ function text_input:set_cursor_index_from_x_y(x, y)
 end
 
 function text_input:set_cursor_index_to_word_start()
-    self:set_cursor_index(cword_start(self:get_text(), self:get_cursor_index()) - 1)
+    self:set_cursor_index(cword_start(self:get_text(), self:get_cursor_index() + 1) - 1)
 end
 
 function text_input:set_cursor_index_to_word_end()
-    self:set_cursor_index(cword_end(self:get_text(), self:get_cursor_index()) - 1)
+    self:set_cursor_index(cword_end(self:get_text(), self:get_cursor_index() + 1) - 1)
 end
 
 function text_input:set_cursor_index_to_end()
