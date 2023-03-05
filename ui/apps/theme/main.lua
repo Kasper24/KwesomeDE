@@ -22,22 +22,17 @@ local main = {
 }
 
 local function color_button(index)
-    local color = theme_daemon:get_selected_colorscheme_colors()[index]
-
     local background = wibox.widget {
         widget = wibox.container.background,
         forced_width = dpi(200),
         forced_height = dpi(40),
         shape = helpers.ui.rrect(),
-        bg = color
     }
 
     local color_text = wibox.widget {
         widget = widgets.text,
         halign = "center",
         size = 12,
-        color = helpers.color.is_dark(color) and beautiful.colors.white or beautiful.colors.black,
-        text = color
     }
 
     local color_button = wibox.widget {
