@@ -331,6 +331,10 @@ local function new()
     end)
 
     capi.client.connect_signal("request::unmanage", function(client)
+        if client.skip_taskbar then
+            return
+        end
+
         -- Copying the needed values since the client will be invalid when the timer runs
         local _client = {}
         _client.tasklist_widget = client.tasklist_widget
