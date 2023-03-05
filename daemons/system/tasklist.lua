@@ -384,7 +384,9 @@ local function new()
 
     capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
         for _, client in ipairs(capi.client.get()) do
-            client.font_icon.color = old_colorscheme_to_new_map[client.font_icon.color]
+            if client.font_icon then
+                client.font_icon.color = old_colorscheme_to_new_map[client.font_icon.color]
+            end
         end
     end)
 
