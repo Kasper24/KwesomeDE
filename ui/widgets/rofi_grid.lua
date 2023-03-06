@@ -88,6 +88,10 @@ end
 
 
 local function entry_widget(self, entry)
+    if self._private.entries_widgets_cache[entry] then
+        return self._private.entries_widgets_cache[entry]
+    end
+
     local widget = self._private.entry_template(entry, self)
 
     local rofi_grid = self
@@ -115,6 +119,8 @@ local function entry_widget(self, entry)
     function entry:is_selected() widget:is_selected() end
     entry.widget = widget
     widget.entry = entry
+
+    self._private.entries_widgets_cache[entry] = widget
 
     return widget
 end
@@ -505,6 +511,7 @@ local function new()
     gtable.crush(widget, rofi_grid, true)
 
     local wp = widget._private
+    wp.entries_widgets_cache = setmetatable({}, { __mode = "v" })
 
     wp.entries = {}
     wp.sort_fn = nil
