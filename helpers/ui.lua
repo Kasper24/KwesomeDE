@@ -31,30 +31,36 @@ function _ui.prrect(tl, tr, br, bl)
     end
 end
 
-local function _get_widget_geometry(_hierarchy, widget)
-    local width, height = _hierarchy:get_size()
-    if _hierarchy:get_widget() == widget then
+function _ui.get_widget_geometry_in_device_space(args, widget)
+    local hierarchy = nil
+    if args.hierarchy then
+        hierarchy = args.hierarchy
+    elseif args.drawable then
+        hierarchy = args.drawable._widget_hierarchy
+    elseif args.wibox then
+        hierarchy = args.wibox._drawable._widget_hierarchy
+    end
+
+    if hierarchy:get_widget() == widget then
         -- Get the extents of this widget in the device space
-        local x, y, w, h = gmatrix.transform_rectangle(_hierarchy:get_matrix_to_device(), 0, 0, width, height)
+        local width, height = hierarchy:get_size()
+        local matrix = hierarchy:get_matrix_to_device()
+        local x, y, w, h = matrix:transform_rectangle(0, 0, width, height)
         return {
             x = x,
             y = y,
             width = w,
             height = h,
-            hierarchy = _hierarchy
+            hierarchy = hierarchy
         }
     end
 
-    for _, child in ipairs(_hierarchy:get_children()) do
-        local ret = _get_widget_geometry(child, widget)
+    for _, child in ipairs(hierarchy:get_children()) do
+        local ret = _ui.get_widget_geometry_in_device_space({hierarchy = child}, widget)
         if ret then
             return ret
         end
     end
-end
-
-function _ui.get_widget_geometry(wibox, widget)
-    return _get_widget_geometry(wibox._drawable._widget_hierarchy, widget)
 end
 
 function _ui.adjust_image_res(image, width, height)

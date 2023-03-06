@@ -25,7 +25,7 @@ function task_preview:show(c, args)
     args.offset = args.offset or {}
 
     if not args.coords and args.wibox and args.widget then
-        args.coords = helpers.ui.get_widget_geometry(args.wibox, args.widget)
+        args.coords = helpers.ui.get_widget_geometry_in_device_space({wibox = args.wibox}, args.widget)
         if args.offset.x ~= nil then
             args.coords.x = args.coords.x + args.offset.x
         end

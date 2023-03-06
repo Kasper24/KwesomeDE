@@ -50,7 +50,7 @@ function menu:set_pos(args)
     local screen_h = screen_workarea.y + screen_workarea.height
 
     if not coords and wibox and widget then
-        coords = helpers.ui.get_widget_geometry(wibox, widget)
+        coords = helpers.ui.get_widget_geometry_in_device_space({wibox = wibox}, widget)
     else
         coords = args.coords or capi.mouse.coords()
     end
@@ -267,7 +267,7 @@ function menu.sub_menu_button(args)
             widget = ebwidget.state,
             id = "button",
             on_hover = function(self)
-                local coords = helpers.ui.get_widget_geometry(self.menu, self)
+                local coords = helpers.ui.get_widget_geometry_in_device_space({wibox = self.menu}, self)
                 coords.x = coords.x + self.menu.x + self.menu.width
                 coords.y = coords.y + self.menu.y
                 args.sub_menu:show{
