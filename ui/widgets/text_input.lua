@@ -509,6 +509,7 @@ function text_input:set_cursor_index(index)
 
         self._private.cursor_x = strong_pos.x / Pango.SCALE
         self._private.cursor_y = strong_pos.y / Pango.SCALE
+
         self:show_cursor()
         self:hide_selection()
 
@@ -607,8 +608,10 @@ local function new()
     gtable.crush(widget, text_input, true)
 
     local wp = widget._private
+
     wp.placeholder = ""
     wp.text = ""
+
     wp.state = false
     wp.clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
     wp.cursor_index = 0
