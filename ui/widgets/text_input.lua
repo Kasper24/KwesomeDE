@@ -637,9 +637,9 @@ local function new()
     wp.round = false
     wp.obscure = false
 
-    wp.selection_bg = beautiful.fg_normal
+    wp.selection_bg = beautiful.colors.background
     wp.cursor_width = 2
-    wp.cursor_bg = beautiful.fg_normal
+    wp.cursor_bg = beautiful.colors.on_background
 
     widget:set_widget_template(wibox.widget {
         widget = wibox.widget.textbox,
