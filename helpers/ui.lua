@@ -144,14 +144,16 @@ function _ui.add_gradient_to_surface(image, colors)
     return surface
 end
 
-local show = false
-gtimer.start_new(5, function()
-    show = true
-    return false
-end)
-
 function _ui.should_show_notification()
-    return show
+    if _ui.show_notifications == nil then
+        _ui.show_notifications = false
+        gtimer.start_new(5, function()
+            _ui.show_notifications = true
+            return false
+        end)
+    end
+
+    return _ui.show_notifications
 end
 
 return _ui
