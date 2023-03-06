@@ -5,7 +5,6 @@ local cairo = require("lgi").cairo
 local gsurface = require("gears.surface")
 local gcolor = require("gears.color")
 local gshape = require("gears.shape")
-local gmatrix = require("gears.matrix")
 local gtimer = require("gears.timer")
 local beautiful = require("beautiful")
 local ipairs = ipairs
