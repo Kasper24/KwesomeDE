@@ -145,7 +145,7 @@ function rofi_grid:set_widget_template(widget_template)
         end
     end)
 
-    self:get_prompt():connect_signal("text::changed", function(_, text)
+    self:get_prompt():connect_signal("property::text", function(_, text)
         if text == self:get_text() then
             return
         end

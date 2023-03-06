@@ -107,26 +107,27 @@ local function wallpapers_grid(wallpapers_key, entry_template)
             layout = wibox.layout.fixed.vertical,
             spacing = dpi(15),
             {
-                widget = wibox.container.place,
-                halign = "left",
-                valign = "top",
-                {
+                widget = widgets.text_input,
+                id = "prompt_role",
+                forced_width = dpi(800),
+                forced_height = dpi(50),
+                widget_template = wibox.widget {
                     widget = widgets.background,
-                    forced_width = dpi(800),
-                    forced_height = dpi(50),
                     shape = helpers.ui.rrect(),
                     bg = beautiful.colors.surface,
                     {
                         widget = wibox.container.margin,
                         margins = dpi(15),
                         {
-                            widget = widgets.prompt,
-                            id = "prompt_role",
-                            icon = {
-                                font = beautiful.icons.firefox.font,
-                                size = 15,
-                                color = beautiful.icons.spraycan.color,
-                                icon = beautiful.icons.firefox.icon,
+                            layout = wibox.layout.fixed.horizontal,
+                            spacing = dpi(15),
+                            {
+                                widget = widgets.text,
+                                icon = beautiful.icons.firefox
+                            },
+                            {
+                                widget = wibox.widget.textbox,
+                                id = "text_role"
                             }
                         }
                     }
