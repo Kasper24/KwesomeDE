@@ -51,21 +51,4 @@ function _misc.sleep(time)
     end
 end
 
-function _misc.round(number, decimals)
-    local power = 10 ^ decimals
-    return math.floor(number * power) / power
-end
-
-function _misc.round_by_factor(number, factor)
-    return math.floor(number / factor + 0.5) * factor
-end
-
-function _misc.convert_range(old_value, old_min, old_max, new_min, new_max)
-    return ((old_value - old_min) / (old_max - old_min)) * (new_max - new_min) + new_min
-end
-
-function _misc.clip(num, min_num, max_num)
-    return max(min(num, max_num), min_num)
-end
-
 return _misc

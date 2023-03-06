@@ -45,7 +45,7 @@ local function new(args)
     args.handle_border_width = args.handle_border_width or dpi(2)
     args.handle_border_color = args.handle_border_color or  beautiful.colors.background_no_opacity
 
-	local value = helpers.misc.convert_range((args.value or 0 ), args.minimum, args.maximum, 0, 1)
+	local value = helpers.math.convert_range((args.value or 0 ), args.minimum, args.maximum, 0, 1)
 	local w = 0
     local is_dragging = false
 
@@ -177,15 +177,15 @@ local function new(args)
 
 	function widget:set_value(val)
 		if is_dragging == false then
-			val = helpers.misc.convert_range(val, args.minimum, args.maximum, 0, 1)
+			val = helpers.math.convert_range(val, args.minimum, args.maximum, 0, 1)
             bar.pos = val
             bar:emit_signal("widget::redraw_needed")
         end
 	end
 
 	function widget:get_value()
-		local value = helpers.misc.convert_range(bar.pos, 0, 1, args.minimum, args.maximum)
-		value = helpers.misc.round(value, 2)
+		local value = helpers.math.convert_range(bar.pos, 0, 1, args.minimum, args.maximum)
+		value = helpers.math.round(value, 2)
 		if args.round then
 			value = gmath.round(value)
 		end

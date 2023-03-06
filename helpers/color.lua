@@ -1,5 +1,5 @@
 local gmath = require("gears.math")
-local clip = require("helpers.misc").clip
+local clip = require("helpers.math").clip
 local color_libary = require("external.color")
 local tonumber = tonumber
 local string = string

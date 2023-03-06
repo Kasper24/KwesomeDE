@@ -32,8 +32,8 @@ local function get_grid_pos_from_real_pos(self, pos)
 end
 
 function desktop:ask_for_new_position(widget, path)
-    local new_x = helpers.misc.round_by_factor(widget.x, self._private.cell_size)
-    local new_y = helpers.misc.round_by_factor(widget.y, self._private.cell_size)
+    local new_x = helpers.math.round_by_factor(widget.x, self._private.cell_size)
+    local new_y = helpers.math.round_by_factor(widget.y, self._private.cell_size)
 
     local new_grid_pos = get_grid_pos_from_real_pos(self, {
         x = new_x,
