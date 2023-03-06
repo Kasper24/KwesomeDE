@@ -12,7 +12,7 @@ local icons = {"picom", "accessories-painting", "applications-painting", "azpain
                "org.tuxpaint.Tuxpaint", "tuxpaint"}
 
 picom_daemon:connect_signal("state", function(self, state)
-    if helpers.misc.should_show_notification() == true then
+    if helpers.ui.should_show_notification() == true then
         local text = state == true and "Enabled" or "Disabled"
         local font_icon = state == true and beautiful.icons.toggle.on or beautiful.icons.toggle.off
 

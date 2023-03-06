@@ -10,7 +10,7 @@ local helpers = require("helpers")
 local bluetooth_icons = {"bluetooth", "bluetooth-48", "bluetooth-radio", "gnome-bluetooth", "preferences-bluetooth"}
 
 bluetooth_daemon:connect_signal("state", function(self, state)
-    if helpers.misc.should_show_notification() == true then
+    if helpers.ui.should_show_notification() == true then
         local text = state == true and "Enabled" or "Disabled"
         local font_icon = state == true and beautiful.icons.bluetooth.on or beautiful.icons.bluetooth.off
         local icons = state == true and bluetooth_icons or

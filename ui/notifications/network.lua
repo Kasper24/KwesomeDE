@@ -11,7 +11,7 @@ local icons = {"gnome-network-displays", "org.gnome.NetworkDisplays", "preferenc
                "network-workgroup", "mate-network-properties", "cs-network"}
 
 network_daemon:connect_signal("wireless_state", function(self, state)
-    if helpers.misc.should_show_notification() == true then
+    if helpers.ui.should_show_notification() == true then
         local text = state == true and "Enabled" or "Disabled"
         local category = state == true and "network.connected" or "network.disconnected"
         local font_icon = state == true and beautiful.icons.network.wifi_high or beautiful.icons.network.wifi_off
@@ -39,7 +39,7 @@ network_daemon:connect_signal("access_point::connected", function(self, ssid, st
         font_icon = beautiful.icons.network.wifi_high
     end
 
-    if helpers.misc.should_show_notification() == true then
+    if helpers.ui.should_show_notification() == true then
         naughty.notification {
             app_font_icon = beautiful.icons.router,
             app_icon = icons,
@@ -54,7 +54,7 @@ network_daemon:connect_signal("access_point::connected", function(self, ssid, st
 end)
 
 network_daemon:connect_signal("scan_access_points::success", function(self)
-    if helpers.misc.should_show_notification() == true then
+    if helpers.ui.should_show_notification() == true then
         naughty.notification {
             app_font_icon = beautiful.icons.router,
             app_icon = icons,
@@ -68,7 +68,7 @@ network_daemon:connect_signal("scan_access_points::success", function(self)
 end)
 
 network_daemon:connect_signal("scan_access_points::failed", function(self, error, error_code)
-    if helpers.misc.should_show_notification() == true then
+    if helpers.ui.should_show_notification() == true then
         naughty.notification {
             app_font_icon = beautiful.icons.router,
             app_icon = icons,

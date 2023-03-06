@@ -6,6 +6,7 @@ local gsurface = require("gears.surface")
 local gcolor = require("gears.color")
 local gshape = require("gears.shape")
 local gmatrix = require("gears.matrix")
+local gtimer = require("gears.timer")
 local beautiful = require("beautiful")
 local ipairs = ipairs
 local floor = math.floor
@@ -135,6 +136,16 @@ function _ui.add_gradient_to_surface(image, colors)
     cr:fill()
 
     return surface
+end
+
+local show = false
+gtimer.start_new(5, function()
+    show = true
+    return false
+end)
+
+function _ui.should_show_notification()
+    return show
 end
 
 return _ui

@@ -51,16 +51,6 @@ function _misc.sleep(time)
     end
 end
 
-local show = false
-gtimer.start_new(5, function()
-    show = true
-    return false
-end)
-
-function _misc.should_show_notification()
-    return show
-end
-
 function _misc.round(number, decimals)
     local power = 10 ^ decimals
     return math.floor(number * power) / power
