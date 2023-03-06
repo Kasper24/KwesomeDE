@@ -6,7 +6,6 @@ local gsurface = require("gears.surface")
 local gcolor = require("gears.color")
 local gshape = require("gears.shape")
 local gtimer = require("gears.timer")
-local beautiful = require("beautiful")
 local ipairs = ipairs
 local floor = math.floor
 local type = type
@@ -17,15 +16,19 @@ local capi = {
 local _ui = {}
 
 function _ui.rrect()
+    local theme_daemon = require("daemons.system.theme")
+
     return function(cr, width, height)
-        local radius = beautiful.border_radius
+        local radius = theme_daemon:get_ui_border_radius()
         gshape.rounded_rect(cr, width, height, radius)
     end
 end
 
 function _ui.prrect(tl, tr, br, bl)
+    local theme_daemon = require("daemons.system.theme")
+
     return function(cr, width, height)
-        local radius = beautiful.border_radius
+        local radius = theme_daemon:get_ui_border_radius()
         gshape.partially_rounded_rect(cr, width, height, tl, tr, br, bl, radius)
     end
 end
