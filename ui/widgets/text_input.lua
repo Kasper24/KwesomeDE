@@ -29,8 +29,9 @@ local text_input = {
 }
 
 local properties = {
-    "only_numbers", "round", "obscure", "reset_on_stop",
-    "stop_keys", "stop_on_clicked_inside", "stop_on_clicked_outside", "stop_on_focus_lost", "stop_on_tag_changed",
+    "only_numbers", "round", "obscure",
+    "unfocus_keys", "unfocus_on_clicked_inside", "unfocus_on_clicked_outside", "unfocus_on_mouse_leave", "unfocus_on_tag_change",
+    "reset_on_unfocus",
     "placeholder", "text",
     "cursor_size", "cursor_bg", "selected_text_bg"
 }
@@ -108,10 +109,10 @@ local function run_mousegrabber(self)
 
     capi.mousegrabber.run(function(m)
         if m.buttons[1] then
-            if capi.mouse.current_widget ~= self and self.stop_on_clicked_outside then
+            if capi.mouse.current_widget ~= self and self.unfocus_on_clicked_outside then
                 self:unfocus()
                 return false
-            elseif capi.mouse.current_widget == self and self.stop_on_clicked_inside then
+            elseif capi.mouse.current_widget == self and self.unfocus_on_clicked_inside then
                 self:unfocus()
                 return false
             end
@@ -148,7 +149,7 @@ local function run_keygrabber(self)
                 self:delete_previous_word()
             end
         else
-            if has_value(wp.stop_keys, key) then
+            if has_value(wp.unfocus_keys, key) then
                 self:unfocus()
             end
 
@@ -159,7 +160,7 @@ local function run_keygrabber(self)
             elseif key == "End" then
                 self:set_cursor_index_to_end()
             elseif key == "BackSpace" then
-                self:delete_text_before_cursor()
+                self:delete_text()
             elseif key == "Delete" then
                 self:delete_text_after_cursor()
             elseif key == "Left" then
@@ -174,11 +175,15 @@ local function run_keygrabber(self)
                 -- wlen() is UTF-8 aware but #key is not,
                 -- so check that we have one UTF-8 char but advance the cursor of # position
                 if key:wlen() == 1 then
-                    self:insert_text(key)
+                    self:update_text(key)
                 end
             end
         end
     end)
+end
+
+function text_input:get_mode()
+    return self._private.mode
 end
 
 function text_input:set_widget_template(widget_template)
@@ -187,6 +192,7 @@ function text_input:set_widget_template(widget_template)
 
     local widget = wibox.widget {
         layout = wibox.layout.stack,
+        widget_template,
         {
             widget = wibox.widget.base.make_widget,
             id = "cursor",
@@ -215,7 +221,6 @@ function text_input:set_widget_template(widget_template)
                 cr:fill()
             end
         },
-        widget_template
     }
 
     wp.selecting_text = false
@@ -223,7 +228,7 @@ function text_input:set_widget_template(widget_template)
     local function on_drag(drawable, lx, ly)
         if not wp.selecting_text and (lx ~= wp.press_pos.lx or ly ~= wp.press_pos.ly) then
             self:set_selection_start_index_from_x_y(wp.press_pos.lx, wp.press_pos.ly)
-            self:set_selection_end_index_from_x_y(wp.press_pos.lx, wp.press_pos.ly)
+            self:set_selection_end_index(self._private.selection_start)
             wp.selecting_text = true
         elseif wp.selecting_text then
             self:set_selection_end_index_from_x_y(lx - wp.offset.x, ly - wp.offset.y)
@@ -248,7 +253,6 @@ function text_input:set_widget_template(widget_template)
         end
     end)
 
-
     widget:connect_signal("mouse::enter", function()
         capi.root.cursor("xterm")
         local wibox = capi.mouse.current_wibox
@@ -265,55 +269,10 @@ function text_input:set_widget_template(widget_template)
             wibox.cursor = "left_ptr"
         end
 
-        if wp.stop_on_focus_lost ~= false and wp.state == true then
+        if wp.unfocus_on_mouse_leave then
             self:unfocus()
         end
     end)
-
-    -- local geo = helpers.ui.get_widget_geometry_in_device_space({hierarchy = find_widgets_result.hierarchy}, widget)
-    -- print(find_widgets_result.x)
-
-    -- local helpers = require("helpers")
-
-    -- press_or_drag{
-    --     on_press = function()
-    --         self:focus()
-    --         self:set_cursor_index_from_x_y(lx, ly)
-    --     end,
-    --     on_drag = function()
-    --         self:set_selection_start_index_from_x_y(lx, ly)
-    --         capi.mousegrabber.run(function(m)
-    --             if m.buttons[1] then
-    --                 local mouse_coords = capi.mouse.coords()
-    --                 -- print(geo.x)
-    --                 -- local x = geo.x - mouse_coords.x
-    --                 -- local y = geo.y - mouse_coords.y
-    --                 -- print(x)
-
-    --                 -- local t = helpers.ui.get_widget_geometry_in_local_space({hierarchy = find_widgets_result.hierarchy}, widget, capi.mouse.coords().x, capi.mouse.coords().y)
-    --                 -- print(t.x)
-    --                 -- local t = helpers.ui.get_widget_geometry_in_local_space({hierarchy = find_widgets_result.hierarchy}, widget)
-    --                 -- print(t.x)
-    --                 -- self:set_selection_end_index_from_x_y(lx, ly)
-    --                 return true
-    --             else
-    --                 return false
-    --             end
-    --         end, "xterm")
-    --     end
-    -- }
-
-    -- local was_lmb_pressed = nil
-    -- widget:connect_signal("mouse::move", function(_, lx, ly, button, mods, find_widgets_result)
-    --     if capi.mouse.is_left_mouse_button_pressed == true then
-    --         if was_lmb_pressed ~= true then
-    --             self:set_selection_start_index_from_x_y(lx, ly)
-    --         else
-    --             self:set_selection_end_index_from_x_y(lx, ly)
-    --         end
-    --     end
-    --     was_lmb_pressed = capi.mouse.is_left_mouse_button_pressed
-    -- end)
 
     self:set_widget(widget)
 end
@@ -330,7 +289,15 @@ function text_input:toggle_obscure()
     self:set_obscure(not self._private.obscure)
 end
 
-function text_input:replace_text(text)
+function text_input:update_text(text)
+    if self:get_mode() == "insert" then
+        self:insert_text(text)
+    else
+        self:overwrite_text(text)
+    end
+end
+
+function text_input:set_text(text)
     --TODO handle text selection and insertion
     local wp = self._private
     local text_widget = self:get_text_widget()
@@ -354,7 +321,23 @@ function text_input:insert_text(text)
     self:get_text_widget():set_text(left_text .. right_text)
     self:set_cursor_index(self:get_cursor_index() + #text)
 
-    self:emit_signal("property::text", new_text)
+    self:emit_signal("property::text", self:get_text())
+end
+
+function text_input:overwrite_text(text)
+    local start_pos = self._private.selection_start
+    local end_pos = self._private.selection_end
+    if start_pos > end_pos then
+        start_pos, end_pos = end_pos, start_pos
+    end
+
+    local old_text = self:get_text()
+    local left_text = old_text:sub(1, start_pos)
+    local right_text = old_text:sub(end_pos + 1)
+    self:get_text_widget():set_text(left_text .. text .. right_text)
+    self:set_cursor_index(#left_text + 1)
+
+    self:emit_signal("property::text", self:get_text())
 end
 
 function text_input:paste(self)
@@ -362,7 +345,7 @@ function text_input:paste(self)
 
     wp.clipboard:request_text(function(clipboard, text)
         if text then
-            self:insert_text(text)
+            self:update_text(text)
         end
     end)
 end
@@ -374,6 +357,7 @@ function text_input:delete_next_word()
     local left_text = old_text:sub(1, cursor_index)
     local right_text = old_text:sub(cword_end(old_text, cursor_index + 1))
     self:get_text_widget():set_text(left_text .. right_text)
+    self:emit_signal("property::text", self:get_text())
 end
 
 function text_input:delete_previous_word()
@@ -384,6 +368,15 @@ function text_input:delete_previous_word()
     local right_text = old_text:sub(cursor_index + 1)
     self:get_text_widget():set_text(left_text .. right_text)
     self:set_cursor_index(wstart)
+    self:emit_signal("property::text", self:get_text())
+end
+
+function text_input:delete_text()
+    if self:get_mode() == "insert" then
+        self:delete_text_before_cursor()
+    else
+        self:overwrite_text("")
+    end
 end
 
 function text_input:delete_text_before_cursor()
@@ -394,6 +387,7 @@ function text_input:delete_text_before_cursor()
         local right_text = old_text:sub(cursor_index + 1)
         self:get_text_widget():set_text(left_text .. right_text)
         self:set_cursor_index(cursor_index - 1)
+        self:emit_signal("property::text", self:get_text())
     end
 end
 
@@ -404,6 +398,7 @@ function text_input:delete_text_after_cursor()
         local left_text = old_text:sub(1, cursor_index)
         local right_text = old_text:sub(cursor_index + 2)
         self:get_text_widget():set_text(left_text .. right_text)
+        self:emit_signal("property::text", self:get_text())
     end
 end
 
@@ -413,6 +408,12 @@ end
 
 function text_input:get_text_widget()
     return self._private.text_widget
+end
+
+function text_input:show_selected_text()
+    local selected_text_bg = self:get_widget():get_children_by_id("selected_text_bg")[1]
+    selected_text_bg.opacity = 1
+    selected_text_bg:emit_signal("widget::redraw_needed")
 end
 
 function text_input:hide_selected_text()
@@ -425,13 +426,14 @@ function text_input:set_selection_start_index(index)
     index = math.max(math.min(index, #self:get_text()), 0)
 
     local layout = self:get_text_widget()._private.layout
-    local strong_pos, weak_pos = layout:get_cursor_pos(index)
+    local strong_pos, weak_pos = layout:get_caret_pos(index)
     if strong_pos then
         local selected_text_bg = self:get_widget():get_children_by_id("selected_text_bg")[1]
         selected_text_bg.start_x = strong_pos.x / Pango.SCALE
         selected_text_bg.start_y = strong_pos.y / Pango.SCALE
-        selected_text_bg.opacity = 1
+        self:show_selected_text()
         self._private.selection_start = index
+        self._private.mode = "overwrite"
         self:hide_cursor()
         selected_text_bg:emit_signal("widget::redraw_needed")
     end
@@ -441,7 +443,7 @@ function text_input:set_selection_end_index(index)
     index = math.max(math.min(index, #self:get_text()), 0)
 
     local layout = self:get_text_widget()._private.layout
-    local strong_pos, weak_pos = layout:get_cursor_pos(index)
+    local strong_pos, weak_pos = layout:get_caret_pos(index)
     if strong_pos then
         local selected_text_bg = self:get_widget():get_children_by_id("selected_text_bg")[1]
         selected_text_bg.end_x = strong_pos.x / Pango.SCALE
@@ -453,7 +455,7 @@ end
 
 function text_input:set_selection_start_index_from_x_y(x, y)
     local layout = self:get_text_widget()._private.layout
-    local index, trailing = layout:xy_to_index(x * Pango.SCALE, y)
+    local index, trailing = layout:xy_to_index(x * Pango.SCALE, y * Pango.SCALE)
     if index then
         self:set_selection_start_index(index)
     else
@@ -463,11 +465,9 @@ end
 
 function text_input:set_selection_end_index_from_x_y(x, y)
     local layout = self:get_text_widget()._private.layout
-    local index, trailing = layout:xy_to_index(x * Pango.SCALE, y)
+    local index, trailing = layout:xy_to_index(x * Pango.SCALE, y * Pango.SCALE)
     if index then
-        self:set_selection_end_index(index)
-    else
-        self:set_selection_end_index(#self:get_text())
+        self:set_selection_end_index(index + trailing)
     end
 end
 
@@ -495,13 +495,14 @@ function text_input:set_cursor_index(index)
         self:show_cursor()
         self:hide_selected_text()
         self._private.cursor_index = index
+        self._private.mode = "insert"
         cursor:emit_signal("widget::redraw_needed")
     end
 end
 
 function text_input:set_cursor_index_from_x_y(x, y)
     local layout = self:get_text_widget()._private.layout
-    local index, trailing = layout:xy_to_index(x * Pango.SCALE, y)
+    local index, trailing = layout:xy_to_index(x * Pango.SCALE, y * Pango.SCALE)
     if index then
         self:set_cursor_index(index)
     else
@@ -539,9 +540,12 @@ function text_input:focus()
         return
     end
 
+    self:show_cursor()
+    self:show_selected_text()
+
     --TODO show cursor
     run_keygrabber(self)
-    if wp.stop_on_clicked_outside then
+    if wp.unfocus_on_clicked_outside then
         run_mousegrabber(self)
     end
 
@@ -556,11 +560,13 @@ function text_input:unfocus()
         return
     end
 
-    if self.reset_on_stop == true then
+    if self.reset_on_unfocus == true then
         self:set_text("")
+        self:hide_cursor()
+        self:hide_selected_text()
     end
     awful.keygrabber.stop(wp.keygrabber)
-    if wp.stop_on_clicked_outside then
+    if wp.unfocus_on_clicked_outside then
         capi.mousegrabber.stop()
     end
 
@@ -587,21 +593,21 @@ local function new()
     wp.placeholder = ""
     wp.text = ""
     wp.state = false
-    wp.cur_pos = #wp.text + 1 or 1
     wp.clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
     wp.cursor_index = 0
+    wp.mode = "insert"
 
-    wp.stop_keys = { "Escape", "Return" }
-    wp.stop_on_clicked_inside = false
-    wp.stop_on_clicked_outside = false
-    wp.stop_on_focus_lost = true
-    wp.stop_on_tag_changed = true
-    wp.stop_on_other_text_input_focused = true
-    wp.stop_on_subject_lost_focus = nil
+    wp.unfocus_keys = { "Escape", "Return" }
+    wp.unfocus_on_clicked_inside = false
+    wp.unfocus_on_clicked_outside = false
+    wp.unfocus_on_mouse_leave = true
+    wp.unfocus_on_tag_change = true
+    wp.unfocus_on_other_text_input_focus = true
+    wp.unfocus_on_subject_lost_focus = nil
+    wp.reset_on_unfocus = false
 
     wp.only_numbers = false
     wp.round = false
-    wp.reset_on_stop = false
     wp.obscure = false
 
     wp.selected_text_bg = beautiful.fg_normal
@@ -614,13 +620,13 @@ local function new()
     })
 
     capi.tag.connect_signal("property::selected", function()
-        if wp.stop_on_tag_changed then
+        if wp.unfocus_on_tag_change then
             widget:unfocus()
         end
     end)
 
     capi.awesome.connect_signal("text_input::focus", function(text_input)
-        if wp.stop_on_other_text_input_focused == false and text_input ~= self then
+        if wp.unfocus_on_other_text_input_focus == false and text_input ~= self then
             widget:unfocus()
         end
     end)
