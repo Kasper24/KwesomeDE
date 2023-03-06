@@ -592,10 +592,10 @@ function text_input:unfocus()
         return
     end
 
+    self:hide_cursor()
+    self:hide_selection()
     if self.reset_on_unfocus == true then
         self:set_text("")
-        self:hide_cursor()
-        self:hide_selection()
     end
     awful.keygrabber.stop(wp.keygrabber)
     if wp.unfocus_on_clicked_outside then
