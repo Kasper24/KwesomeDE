@@ -320,4 +320,3 @@ return instance
 -- -- print(package.cpath)
 
 -- pulseaudio = require("pulseaudio")
--- print(helpers.table.dump(pulseaudio.get_sources()))
