@@ -416,12 +416,12 @@ function text_input:get_text_widget()
     return self._private.text_widget
 end
 
-function text_input:show_selected_text()
+function text_input:show_selection()
     self._private.selection_opacity = 1
     self:get_text_widget():emit_signal("widget::redraw_needed")
 end
 
-function text_input:hide_selected_text()
+function text_input:hide_selection()
     self._private.selection_opacity = 0
     self:get_text_widget():emit_signal("widget::redraw_needed")
 end
@@ -442,8 +442,10 @@ function text_input:set_selection_start_index(index)
 
         self._private.selection_start_x = strong_pos.x / Pango.SCALE
         self._private.selection_start_y = strong_pos.y / Pango.SCALE
-        self:show_selected_text()
+
+        self:show_selection()
         self:hide_cursor()
+
         self:get_text_widget():emit_signal("widget::redraw_needed")
     end
 end
@@ -501,7 +503,8 @@ function text_input:set_cursor_index(index)
         self._private.cursor_x = strong_pos.x / Pango.SCALE
         self._private.cursor_y = strong_pos.y / Pango.SCALE
         self:show_cursor()
-        self:hide_selected_text()
+        self:hide_selection()
+
         self:get_text_widget():emit_signal("widget::redraw_needed")
     end
 end
@@ -548,7 +551,7 @@ function text_input:focus()
     end
 
     self:show_cursor()
-    self:show_selected_text()
+    self:show_selection()
 
     --TODO show cursor
     run_keygrabber(self)
@@ -570,7 +573,7 @@ function text_input:unfocus()
     if self.reset_on_unfocus == true then
         self:set_text("")
         self:hide_cursor()
-        self:hide_selected_text()
+        self:hide_selection()
     end
     awful.keygrabber.stop(wp.keygrabber)
     if wp.unfocus_on_clicked_outside then
