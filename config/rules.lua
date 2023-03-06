@@ -272,7 +272,6 @@ local apps = {
 require("awful.autofocus")
 
 power_popup:connect_signal("visibility", function(self, visibie)
-    print(visibie)
     if visibie then
         for _, client in ipairs(capi.client.get()) do
             if client.fake_root ~= true then

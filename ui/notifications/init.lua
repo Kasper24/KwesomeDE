@@ -92,7 +92,6 @@ end
 
 local function icon_widget(n)
     if n._private.color then
-        print(n._private.color)
         return wibox.widget {
             widget = widgets.background,
             forced_width = dpi(40),
