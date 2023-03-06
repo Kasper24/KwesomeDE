@@ -31,6 +31,7 @@ local text_input = {
 local properties = {
     "only_numbers", "round", "obscure",
     "unfocus_keys", "unfocus_on_clicked_inside", "unfocus_on_clicked_outside", "unfocus_on_mouse_leave", "unfocus_on_tag_change",
+    "focus_on_subject_mouse_enter", "unfocus_on_subject_mouse_leave",
     "reset_on_unfocus",
     "placeholder", "text",
     "cursor_size", "cursor_bg", "selection_bg"
@@ -569,6 +570,18 @@ function text_input:get_cursor_index()
     return self._private.cursor_index
 end
 
+function text_input:set_focus_on_subject_mouse_enter(subject)
+    subject:connect_signal("mouse::enter", function()
+        self:focus()
+    end)
+end
+
+function text_input:set_unfocus_on_subject_mouse_enter(subject)
+    subject:connect_signal("mouse::leave", function()
+        self:unfocus()
+    end)
+end
+
 function text_input:focus()
     local wp = self._private
     if wp.state == true then
@@ -641,10 +654,12 @@ local function new()
     wp.unfocus_keys = { "Escape", "Return" }
     wp.unfocus_on_clicked_inside = false
     wp.unfocus_on_clicked_outside = false
-    wp.unfocus_on_mouse_leave = true
+    wp.unfocus_on_mouse_leave = false
     wp.unfocus_on_tag_change = true
     wp.unfocus_on_other_text_input_focus = true
-    wp.unfocus_on_subject_lost_focus = nil
+    wp.focus_on_subject_mouse_enter = nil
+    wp.unfocus_on_subject_mouse_leave = nil
+
     wp.reset_on_unfocus = false
 
     wp.only_numbers = false
