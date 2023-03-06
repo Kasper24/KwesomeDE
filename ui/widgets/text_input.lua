@@ -137,7 +137,9 @@ local function run_keygrabber(self)
         end
 
         if mod.Control then
-            if key == "v" then
+            if key == "a" then
+                self:select_all()
+            elseif key == "v" then
                 self:paste()
             elseif key == "b" or key == "Left" then
                 self:set_cursor_index_to_word_start()
@@ -406,6 +408,11 @@ end
 function text_input:hide_selected_text()
     self._private.selection_opacity = 0
     self:get_text_widget():emit_signal("widget::redraw_needed")
+end
+
+function text_input:select_all()
+    self:set_selection_start_index(0)
+    self:set_selection_end_index(#self:get_text())
 end
 
 function text_input:set_selection_start_index(index)
