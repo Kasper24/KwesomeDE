@@ -576,8 +576,6 @@ function text_input:focus()
     end
 
     self:show_cursor()
-    self:show_selection()
-
     run_keygrabber(self)
     if wp.unfocus_on_clicked_outside then
         run_mousegrabber(self)
