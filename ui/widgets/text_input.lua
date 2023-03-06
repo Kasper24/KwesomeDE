@@ -541,11 +541,29 @@ function text_input:set_cursor_index_to_end()
 end
 
 function text_input:increamant_cursor_index()
-    self:set_cursor_index(self:get_cursor_index() + 1)
+    if self:get_mode() == "insert" then
+        self:set_cursor_index(self:get_cursor_index() + 1)
+    else
+        local start_pos = self._private.selection_start
+        local end_pos = self._private.selection_end
+        if start_pos > end_pos then
+            start_pos, end_pos = end_pos, start_pos
+        end
+        self:set_cursor_index(end_pos)
+    end
 end
 
 function text_input:decremeant_cursor_index()
-    self:set_cursor_index(self:get_cursor_index() - 1)
+    if self:get_mode() == "insert" then
+        self:set_cursor_index(self:get_cursor_index() - 1)
+    else
+        local start_pos = self._private.selection_start
+        local end_pos = self._private.selection_end
+        if start_pos > end_pos then
+            start_pos, end_pos = end_pos, start_pos
+        end
+        self:set_cursor_index(start_pos)
+    end
 end
 
 function text_input:get_cursor_index()
