@@ -73,7 +73,7 @@ local function color_button(index)
     return color_button
 end
 
-local function wallpapers_grid(wallpapers_key, entry_template)
+local function wallpapers_grid(theme_app, wallpapers_key, entry_template)
     local slider = wibox.widget {
         widget = wibox.widget.slider,
         forced_width = dpi(5),
@@ -108,9 +108,10 @@ local function wallpapers_grid(wallpapers_key, entry_template)
             spacing = dpi(15),
             {
                 widget = widgets.text_input,
-                id = "prompt_role",
+                id = "text_input_role",
                 forced_width = dpi(800),
                 forced_height = dpi(50),
+                unfocus_on_subject_mouse_leave = theme_app:get_client(),
                 widget_template = wibox.widget {
                     widget = widgets.background,
                     shape = helpers.ui.rrect(),
@@ -191,8 +192,9 @@ local function wallpapers_grid(wallpapers_key, entry_template)
     return layout
 end
 
-local function image_tab()
+local function image_tab(theme_app)
     local layout = wallpapers_grid(
+        theme_app,
         "wallpapers",
         function(entry)
             local widget = nil
@@ -208,6 +210,7 @@ local function image_tab()
                 end,
                 {
                     widget = wibox.widget.imagebox,
+                    clip_shape = helpers.ui.rrect(),
                     horizontal_fit_policy = "fit",
                     vertical_fit_policy = "fit",
                     forced_width = dpi(146),
@@ -248,8 +251,9 @@ local function image_tab()
     return layout
 end
 
-local function mountain_tab()
+local function mountain_tab(theme_app)
     local layout = wallpapers_grid(
+        theme_app,
         "wallpapers_and_we_wallpapers",
         function(entry, rofi_grid)
             local colors = theme_daemon:get_colorschemes()[entry.path]
@@ -270,6 +274,7 @@ local function mountain_tab()
                     {
                         widget = wibox.container.background,
                         id = "background",
+                        shape = helpers.ui.rrect(),
                         bg = {
                             type = 'linear',
                             from = {0, 0},
@@ -285,6 +290,7 @@ local function mountain_tab()
                         widget = wibox.widget.imagebox,
                         forced_width = dpi(146),
                         forced_height = dpi(100),
+                        clip_shape = helpers.ui.rrect(),
                         horizontal_fit_policy = "fit",
                         vertical_fit_policy = "fit",
                         image = helpers.ui.adjust_image_res(beautiful.mountain_background, 100, 70)
@@ -340,12 +346,14 @@ local function mountain_tab()
     return layout
 end
 
-local function digital_sun_tab()
+local function digital_sun_tab(theme_app)
     local layout = wallpapers_grid(
+        theme_app,
         "wallpapers_and_we_wallpapers",
         function(entry, rofi_grid)
             local colors = theme_daemon:get_colorschemes()[entry.path] or theme_daemon:get_active_colorscheme_colors()
             local sun = wibox.widget {
+                widget = wibox.widget.base.make_widget,
                 background_color_1 = colors[1],
                 background_color_2 = colors[9],
                 sun_accent_color_1 = beautiful.colors.random_accent_color(colors),
@@ -417,7 +425,11 @@ local function digital_sun_tab()
                 on_release = function()
                     widget:select()
                 end,
-                sun
+                {
+                    widget = wibox.container.background,
+                    shape = helpers.ui.rrect(),
+                    sun
+                }
             }
 
             local title = wibox.widget {
@@ -463,7 +475,7 @@ local function digital_sun_tab()
     return layout
 end
 
-local function binary_tab()
+local function binary_tab(theme_app)
     local function binary()
         local ret = {}
         for _ = 1, 30 do
@@ -477,6 +489,7 @@ local function binary_tab()
     end
 
     local layout = wallpapers_grid(
+        theme_app,
         "wallpapers_and_we_wallpapers",
         function(entry, rofi_grid)
             local colors = theme_daemon:get_colorschemes()[entry.path] or theme_daemon:get_active_colorscheme_colors()
@@ -494,9 +507,10 @@ local function binary_tab()
                 end,
                 {
                     widget = wibox.container.background,
+                    id = "background",
                     forced_width = dpi(146),
                     forced_height = dpi(100),
-                    id = "background",
+                    shape = helpers.ui.rrect(),
                     bg = colors[1],
                     fg = beautiful.colors.random_accent_color(colors),
                     {
@@ -504,6 +518,7 @@ local function binary_tab()
                         {
                             widget = wibox.container.background,
                             id = "system_failure",
+                            shape = helpers.ui.rrect(),
                             fg = beautiful.colors.random_accent_color(colors),
                             {
                                 widget = wibox.widget.textbox,
@@ -565,6 +580,7 @@ end
 
 local function we_tab(theme_app)
     local layout = wallpapers_grid(
+        theme_app,
         "we_wallpapers",
         function(entry, rofi_grid)
             local menu = widgets.menu {
@@ -592,10 +608,11 @@ local function we_tab(theme_app)
                 end,
                 {
                     widget = wibox.widget.imagebox,
-                    horizontal_fit_policy = "fit",
-                    vertical_fit_policy = "fit",
                     forced_width = dpi(146),
                     forced_height = dpi(100),
+                    clip_shape = helpers.ui.rrect(),
+                    horizontal_fit_policy = "fit",
+                    vertical_fit_policy = "fit",
                     image = helpers.ui.adjust_image_res(entry.path, 100, 70)
                 }
             }
@@ -640,10 +657,10 @@ local function tabs(theme_app)
     local _we_button = {}
 
     local _stack = {}
-    local _image_tab = image_tab()
-    local _mountain_tab = mountain_tab()
-    local _digital_sun_tab = digital_sun_tab()
-    local _binary_tab = binary_tab()
+    local _image_tab = image_tab(theme_app)
+    local _mountain_tab = mountain_tab(theme_app)
+    local _digital_sun_tab = digital_sun_tab(theme_app)
+    local _binary_tab = binary_tab(theme_app)
     local _we_tab = we_tab(theme_app)
 
     _image_button = wibox.widget {
