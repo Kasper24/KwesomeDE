@@ -86,7 +86,6 @@ local function scroll(self, dir, page_dir)
     end
 end
 
-
 local function entry_widget(self, entry)
     if self._private.entries_widgets_cache[entry] then
         return self._private.entries_widgets_cache[entry]
