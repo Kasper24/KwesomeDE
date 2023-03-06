@@ -33,7 +33,7 @@ local properties = {
     "unfocus_keys", "unfocus_on_clicked_inside", "unfocus_on_clicked_outside", "unfocus_on_mouse_leave", "unfocus_on_tag_change",
     "reset_on_unfocus",
     "placeholder", "text",
-    "cursor_size", "cursor_bg", "selected_text_bg"
+    "cursor_size", "cursor_bg", "selection_bg"
 }
 
 local function build_properties(prototype, prop_names)
@@ -188,40 +188,28 @@ end
 
 function text_input:set_widget_template(widget_template)
     local wp = self._private
-    self._private.text_widget = widget_template:get_children_by_id("text_role")[1]
 
-    local widget = wibox.widget {
-        layout = wibox.layout.stack,
-        widget_template,
-        {
-            widget = wibox.widget.base.make_widget,
-            id = "cursor",
-            x = 0,
-            y = 0,
-            opacity = 1,
-            draw = function(self, __, cr, width, height)
-                local ink_rect, logical_rect = wp.text_widget._private.layout:get_pixel_extents()
-                cr:set_source(gcolor.change_opacity(wp.cursor_bg, self.opacity))
-                cr:set_line_width(wp.cursor_width)
-                cr:move_to(self.x, self.y + logical_rect.y)
-                cr:line_to(self.x, self.y + logical_rect.y + logical_rect.height)
-                cr:stroke()
-            end
-        },
-        {
-            widget = wibox.widget.base.make_widget,
-            id = "selected_text_bg",
-            start_x = 0,
-            end_x = 0,
-            opacity = 1,
-            draw = function(self, __, cr, width, height)
-                local ink_rect, logical_rect = wp.text_widget._private.layout:get_pixel_extents()
-                cr:set_source(gcolor.change_opacity(wp.selected_text_bg, self.opacity))
-                cr:rectangle(self.start_x, logical_rect.y, self.end_x - self.start_x, logical_rect.height)
-                cr:fill()
-            end
-        },
-    }
+    self._private.text_widget = widget_template:get_children_by_id("text_role")[1]
+    self._private.text_widget.forced_width = math.huge
+    local text_draw = self._private.text_widget.draw
+
+    function self._private.text_widget:draw(context, cr, width, height)
+        text_draw(self, context, cr, width, height)
+
+        -- Cursor
+        local ink_rect, logical_rect = self._private.layout:get_pixel_extents()
+        cr:set_source(gcolor.change_opacity(wp.cursor_bg, wp.cursor_opacity))
+        cr:set_line_width(wp.cursor_width)
+        cr:move_to(wp.cursor_x, wp.cursor_y + logical_rect.y)
+        cr:line_to(wp.cursor_x, wp.cursor_y + logical_rect.y + logical_rect.height)
+        cr:stroke()
+
+        -- Selected text bg
+        local ink_rect, logical_rect = self._private.layout:get_pixel_extents()
+        cr:set_source(gcolor.change_opacity(wp.selection_bg, wp.selection_opacity))
+        cr:rectangle(wp.selection_start_x, logical_rect.y, wp.selection_end_x - wp.selection_start_x, logical_rect.height)
+        cr:fill()
+    end
 
     wp.selecting_text = false
 
@@ -235,16 +223,16 @@ function text_input:set_widget_template(widget_template)
         end
     end
 
-    widget:connect_signal("button::press", function(_, lx, ly, button, mods, find_widgets_result)
-        self:focus()
-        wp.press_pos = { lx = lx, ly = ly }
-        wp.offset = { x = find_widgets_result.x, y = find_widgets_result.y }
+    self._private.text_widget:connect_signal("button::press", function(_, lx, ly, button, mods, find_widgets_result)
         if button == 1 then
+            self:focus()
+            wp.press_pos = { lx = lx, ly = ly }
+            wp.offset = { x = find_widgets_result.x, y = find_widgets_result.y }
             find_widgets_result.drawable:connect_signal("mouse::move", on_drag)
         end
     end)
 
-    widget:connect_signal("button::release", function(_, lx, ly, button, mods, find_widgets_result)
+    self._private.text_widget:connect_signal("button::release", function(_, lx, ly, button, mods, find_widgets_result)
         find_widgets_result.drawable:disconnect_signal("mouse::move", on_drag)
         if not wp.selecting_text then
             self:set_cursor_index_from_x_y(lx, ly)
@@ -253,7 +241,7 @@ function text_input:set_widget_template(widget_template)
         end
     end)
 
-    widget:connect_signal("mouse::enter", function()
+    self._private.text_widget:connect_signal("mouse::enter", function()
         capi.root.cursor("xterm")
         local wibox = capi.mouse.current_wibox
         if wibox then
@@ -261,7 +249,7 @@ function text_input:set_widget_template(widget_template)
         end
     end)
 
-    widget:connect_signal("mouse::leave", function(_, find_widgets_result)
+    self._private.text_widget:connect_signal("mouse::leave", function(_, find_widgets_result)
         find_widgets_result.drawable:disconnect_signal("mouse::move", on_drag)
         capi.root.cursor("left_ptr")
         local wibox = capi.mouse.current_wibox
@@ -274,7 +262,7 @@ function text_input:set_widget_template(widget_template)
         end
     end)
 
-    self:set_widget(widget)
+    self:set_widget(widget_template)
 end
 
 function text_input:set_state(state)
@@ -411,15 +399,13 @@ function text_input:get_text_widget()
 end
 
 function text_input:show_selected_text()
-    local selected_text_bg = self:get_widget():get_children_by_id("selected_text_bg")[1]
-    selected_text_bg.opacity = 1
-    selected_text_bg:emit_signal("widget::redraw_needed")
+    self._private.selection_opacity = 1
+    self:get_text_widget():emit_signal("widget::redraw_needed")
 end
 
 function text_input:hide_selected_text()
-    local selected_text_bg = self:get_widget():get_children_by_id("selected_text_bg")[1]
-    selected_text_bg.opacity = 0
-    selected_text_bg:emit_signal("widget::redraw_needed")
+    self._private.selection_opacity = 0
+    self:get_text_widget():emit_signal("widget::redraw_needed")
 end
 
 function text_input:set_selection_start_index(index)
@@ -428,14 +414,14 @@ function text_input:set_selection_start_index(index)
     local layout = self:get_text_widget()._private.layout
     local strong_pos, weak_pos = layout:get_caret_pos(index)
     if strong_pos then
-        local selected_text_bg = self:get_widget():get_children_by_id("selected_text_bg")[1]
-        selected_text_bg.start_x = strong_pos.x / Pango.SCALE
-        selected_text_bg.start_y = strong_pos.y / Pango.SCALE
-        self:show_selected_text()
         self._private.selection_start = index
         self._private.mode = "overwrite"
+
+        self._private.selection_start_x = strong_pos.x / Pango.SCALE
+        self._private.selection_start_y = strong_pos.y / Pango.SCALE
+        self:show_selected_text()
         self:hide_cursor()
-        selected_text_bg:emit_signal("widget::redraw_needed")
+        self:get_text_widget():emit_signal("widget::redraw_needed")
     end
 end
 
@@ -445,11 +431,10 @@ function text_input:set_selection_end_index(index)
     local layout = self:get_text_widget()._private.layout
     local strong_pos, weak_pos = layout:get_caret_pos(index)
     if strong_pos then
-        local selected_text_bg = self:get_widget():get_children_by_id("selected_text_bg")[1]
-        selected_text_bg.end_x = strong_pos.x / Pango.SCALE
-        selected_text_bg.end_y = strong_pos.y / Pango.SCALE
+        self._private.selection_end_x = strong_pos.x / Pango.SCALE
+        self._private.selection_end_y = strong_pos.y / Pango.SCALE
         self._private.selection_end = index
-        selected_text_bg:emit_signal("widget::redraw_needed")
+        self:get_text_widget():emit_signal("widget::redraw_needed")
     end
 end
 
@@ -472,15 +457,13 @@ function text_input:set_selection_end_index_from_x_y(x, y)
 end
 
 function text_input:show_cursor()
-    local cursor = self:get_widget():get_children_by_id("cursor")[1]
-    cursor.opacity = 1
-    cursor:emit_signal("widget::redraw_needed")
+    self._private.cursor_opacity = 1
+    self:get_text_widget():emit_signal("widget::redraw_needed")
 end
 
 function text_input:hide_cursor()
-    local cursor = self:get_widget():get_children_by_id("cursor")[1]
-    cursor.opacity = 0
-    cursor:emit_signal("widget::redraw_needed")
+    self._private.cursor_opacity = 0
+    self:get_text_widget():emit_signal("widget::redraw_needed")
 end
 
 function text_input:set_cursor_index(index)
@@ -489,20 +472,21 @@ function text_input:set_cursor_index(index)
     local layout = self:get_text_widget()._private.layout
     local strong_pos, weak_pos = layout:get_cursor_pos(index)
     if strong_pos then
-        local cursor = self:get_widget():get_children_by_id("cursor")[1]
-        cursor.x = strong_pos.x / Pango.SCALE
-        cursor.y = strong_pos.y / Pango.SCALE
-        self:show_cursor()
-        self:hide_selected_text()
         self._private.cursor_index = index
         self._private.mode = "insert"
-        cursor:emit_signal("widget::redraw_needed")
+
+        self._private.cursor_x = strong_pos.x / Pango.SCALE
+        self._private.cursor_y = strong_pos.y / Pango.SCALE
+        self:show_cursor()
+        self:hide_selected_text()
+        self:get_text_widget():emit_signal("widget::redraw_needed")
     end
 end
 
 function text_input:set_cursor_index_from_x_y(x, y)
     local layout = self:get_text_widget()._private.layout
     local index, trailing = layout:xy_to_index(x * Pango.SCALE, y * Pango.SCALE)
+
     if index then
         self:set_cursor_index(index)
     else
@@ -597,6 +581,13 @@ local function new()
     wp.cursor_index = 0
     wp.mode = "insert"
 
+    wp.cursor_x = 0
+    wp.cursor_y = 0
+    wp.selection_start_x = 0
+    wp.selection_end_x = 0
+    wp.selection_start_y = 0
+    wp.selection_end_y = 0
+
     wp.unfocus_keys = { "Escape", "Return" }
     wp.unfocus_on_clicked_inside = false
     wp.unfocus_on_clicked_outside = false
@@ -610,7 +601,7 @@ local function new()
     wp.round = false
     wp.obscure = false
 
-    wp.selected_text_bg = beautiful.fg_normal
+    wp.selection_bg = beautiful.fg_normal
     wp.cursor_width = 2
     wp.cursor_bg = beautiful.fg_normal
 
