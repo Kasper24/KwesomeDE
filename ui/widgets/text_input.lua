@@ -8,6 +8,8 @@ local Gdk = lgi.require('Gdk', '3.0')
 local Pango = lgi.Pango
 local awful = require("awful")
 local gtable = require("gears.table")
+local gtimer = require("gears.timer")
+local gcolor = require("gears.color")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
 local tonumber = tonumber
@@ -30,7 +32,7 @@ local properties = {
     "only_numbers", "round", "obscure", "reset_on_stop",
     "stop_keys", "stop_on_clicked_inside", "stop_on_clicked_outside", "stop_on_focus_lost", "stop_on_tag_changed",
     "placeholder", "text",
-    "cursor_size", "cursor_color"
+    "cursor_size", "cursor_bg", "selected_text_bg"
 }
 
 local function build_properties(prototype, prop_names)
@@ -190,9 +192,11 @@ function text_input:set_widget_template(widget_template)
             id = "cursor",
             x = 0,
             y = 0,
+            opacity = 1,
             draw = function(self, __, cr, width, height)
                 local ink_rect, logical_rect = wp.text_widget._private.layout:get_pixel_extents()
-                cr:set_line_width(2)
+                cr:set_source(gcolor.change_opacity(wp.cursor_bg, self.opacity))
+                cr:set_line_width(wp.cursor_width)
                 cr:move_to(self.x, self.y + logical_rect.y)
                 cr:line_to(self.x, self.y + logical_rect.y + logical_rect.height)
                 cr:stroke()
@@ -203,9 +207,10 @@ function text_input:set_widget_template(widget_template)
             id = "selected_text_bg",
             start_x = 0,
             end_x = 0,
+            opacity = 1,
             draw = function(self, __, cr, width, height)
                 local ink_rect, logical_rect = wp.text_widget._private.layout:get_pixel_extents()
-                cr:set_source_rgba(0.5, 0.5, 1, 0.5)
+                cr:set_source(gcolor.change_opacity(wp.selected_text_bg, self.opacity))
                 cr:rectangle(self.start_x, logical_rect.y, self.end_x - self.start_x, logical_rect.height)
                 cr:fill()
             end
@@ -213,7 +218,38 @@ function text_input:set_widget_template(widget_template)
         widget_template
     }
 
-    widget:connect_signal("mouse::enter", function(self, find_widgets_result)
+    wp.selecting_text = false
+
+    local function on_drag(drawable, lx, ly)
+        if not wp.selecting_text and (lx ~= wp.press_pos.lx or ly ~= wp.press_pos.ly) then
+            self:set_selection_start_index_from_x_y(wp.press_pos.lx, wp.press_pos.ly)
+            self:set_selection_end_index_from_x_y(wp.press_pos.lx, wp.press_pos.ly)
+            wp.selecting_text = true
+        elseif wp.selecting_text then
+            self:set_selection_end_index_from_x_y(lx - wp.offset.x, ly - wp.offset.y)
+        end
+    end
+
+    widget:connect_signal("button::press", function(_, lx, ly, button, mods, find_widgets_result)
+        self:focus()
+        wp.press_pos = { lx = lx, ly = ly }
+        wp.offset = { x = find_widgets_result.x, y = find_widgets_result.y }
+        if button == 1 then
+            find_widgets_result.drawable:connect_signal("mouse::move", on_drag)
+        end
+    end)
+
+    widget:connect_signal("button::release", function(_, lx, ly, button, mods, find_widgets_result)
+        find_widgets_result.drawable:disconnect_signal("mouse::move", on_drag)
+        if not wp.selecting_text then
+            self:set_cursor_index_from_x_y(lx, ly)
+        else
+            wp.selecting_text = false
+        end
+    end)
+
+
+    widget:connect_signal("mouse::enter", function()
         capi.root.cursor("xterm")
         local wibox = capi.mouse.current_wibox
         if wibox then
@@ -221,7 +257,8 @@ function text_input:set_widget_template(widget_template)
         end
     end)
 
-    widget:connect_signal("mouse::leave", function()
+    widget:connect_signal("mouse::leave", function(_, find_widgets_result)
+        find_widgets_result.drawable:disconnect_signal("mouse::move", on_drag)
         capi.root.cursor("left_ptr")
         local wibox = capi.mouse.current_wibox
         if wibox then
@@ -233,12 +270,50 @@ function text_input:set_widget_template(widget_template)
         end
     end)
 
-    widget:connect_signal("button::press", function(_, lx, ly, button, mods, find_widgets_result)
-        if button == 1 then
-            self:focus()
-            self:set_cursor_index_from_x_y(lx, ly)
-        end
-    end)
+    -- local geo = helpers.ui.get_widget_geometry_in_device_space({hierarchy = find_widgets_result.hierarchy}, widget)
+    -- print(find_widgets_result.x)
+
+    -- local helpers = require("helpers")
+
+    -- press_or_drag{
+    --     on_press = function()
+    --         self:focus()
+    --         self:set_cursor_index_from_x_y(lx, ly)
+    --     end,
+    --     on_drag = function()
+    --         self:set_selection_start_index_from_x_y(lx, ly)
+    --         capi.mousegrabber.run(function(m)
+    --             if m.buttons[1] then
+    --                 local mouse_coords = capi.mouse.coords()
+    --                 -- print(geo.x)
+    --                 -- local x = geo.x - mouse_coords.x
+    --                 -- local y = geo.y - mouse_coords.y
+    --                 -- print(x)
+
+    --                 -- local t = helpers.ui.get_widget_geometry_in_local_space({hierarchy = find_widgets_result.hierarchy}, widget, capi.mouse.coords().x, capi.mouse.coords().y)
+    --                 -- print(t.x)
+    --                 -- local t = helpers.ui.get_widget_geometry_in_local_space({hierarchy = find_widgets_result.hierarchy}, widget)
+    --                 -- print(t.x)
+    --                 -- self:set_selection_end_index_from_x_y(lx, ly)
+    --                 return true
+    --             else
+    --                 return false
+    --             end
+    --         end, "xterm")
+    --     end
+    -- }
+
+    -- local was_lmb_pressed = nil
+    -- widget:connect_signal("mouse::move", function(_, lx, ly, button, mods, find_widgets_result)
+    --     if capi.mouse.is_left_mouse_button_pressed == true then
+    --         if was_lmb_pressed ~= true then
+    --             self:set_selection_start_index_from_x_y(lx, ly)
+    --         else
+    --             self:set_selection_end_index_from_x_y(lx, ly)
+    --         end
+    --     end
+    --     was_lmb_pressed = capi.mouse.is_left_mouse_button_pressed
+    -- end)
 
     self:set_widget(widget)
 end
@@ -340,17 +415,85 @@ function text_input:get_text_widget()
     return self._private.text_widget
 end
 
-function text_input:set_cursor_index(index)
-    if index > #self:get_text() or index < 0 then
-        return
-    end
+function text_input:hide_selected_text()
+    local selected_text_bg = self:get_widget():get_children_by_id("selected_text_bg")[1]
+    selected_text_bg.opacity = 0
+    selected_text_bg:emit_signal("widget::redraw_needed")
+end
+
+function text_input:set_selection_start_index(index)
+    index = math.max(math.min(index, #self:get_text()), 0)
 
     local layout = self:get_text_widget()._private.layout
     local strong_pos, weak_pos = layout:get_cursor_pos(index)
-    if strong_pos ~= nil then
+    if strong_pos then
+        local selected_text_bg = self:get_widget():get_children_by_id("selected_text_bg")[1]
+        selected_text_bg.start_x = strong_pos.x / Pango.SCALE
+        selected_text_bg.start_y = strong_pos.y / Pango.SCALE
+        selected_text_bg.opacity = 1
+        self._private.selection_start = index
+        self:hide_cursor()
+        selected_text_bg:emit_signal("widget::redraw_needed")
+    end
+end
+
+function text_input:set_selection_end_index(index)
+    index = math.max(math.min(index, #self:get_text()), 0)
+
+    local layout = self:get_text_widget()._private.layout
+    local strong_pos, weak_pos = layout:get_cursor_pos(index)
+    if strong_pos then
+        local selected_text_bg = self:get_widget():get_children_by_id("selected_text_bg")[1]
+        selected_text_bg.end_x = strong_pos.x / Pango.SCALE
+        selected_text_bg.end_y = strong_pos.y / Pango.SCALE
+        self._private.selection_end = index
+        selected_text_bg:emit_signal("widget::redraw_needed")
+    end
+end
+
+function text_input:set_selection_start_index_from_x_y(x, y)
+    local layout = self:get_text_widget()._private.layout
+    local index, trailing = layout:xy_to_index(x * Pango.SCALE, y)
+    if index then
+        self:set_selection_start_index(index)
+    else
+        self:set_selection_start_index(#self:get_text())
+    end
+end
+
+function text_input:set_selection_end_index_from_x_y(x, y)
+    local layout = self:get_text_widget()._private.layout
+    local index, trailing = layout:xy_to_index(x * Pango.SCALE, y)
+    if index then
+        self:set_selection_end_index(index)
+    else
+        self:set_selection_end_index(#self:get_text())
+    end
+end
+
+function text_input:show_cursor()
+    local cursor = self:get_widget():get_children_by_id("cursor")[1]
+    cursor.opacity = 1
+    cursor:emit_signal("widget::redraw_needed")
+end
+
+function text_input:hide_cursor()
+    local cursor = self:get_widget():get_children_by_id("cursor")[1]
+    cursor.opacity = 0
+    cursor:emit_signal("widget::redraw_needed")
+end
+
+function text_input:set_cursor_index(index)
+    index = math.max(math.min(index, #self:get_text()), 0)
+
+    local layout = self:get_text_widget()._private.layout
+    local strong_pos, weak_pos = layout:get_cursor_pos(index)
+    if strong_pos then
         local cursor = self:get_widget():get_children_by_id("cursor")[1]
         cursor.x = strong_pos.x / Pango.SCALE
         cursor.y = strong_pos.y / Pango.SCALE
+        self:show_cursor()
+        self:hide_selected_text()
         self._private.cursor_index = index
         cursor:emit_signal("widget::redraw_needed")
     end
@@ -359,9 +502,10 @@ end
 function text_input:set_cursor_index_from_x_y(x, y)
     local layout = self:get_text_widget()._private.layout
     local index, trailing = layout:xy_to_index(x * Pango.SCALE, y)
-    if index ~= nil then
-        index = index + 1
+    if index then
         self:set_cursor_index(index)
+    else
+        self:set_cursor_index(#self:get_text())
     end
 end
 
@@ -401,7 +545,6 @@ function text_input:focus()
         run_mousegrabber(self)
     end
 
-    print("focus")
     wp.state = true
     self:emit_signal("focus")
     capi.awesome.emit_signal("text_input::focus", self)
@@ -421,7 +564,6 @@ function text_input:unfocus()
         capi.mousegrabber.stop()
     end
 
-    print("unfocus")
     wp.state = false
     self:emit_signal("unfocus")
     capi.awesome.emit_signal("text_input::unfocus", self)
@@ -462,9 +604,9 @@ local function new()
     wp.reset_on_stop = false
     wp.obscure = false
 
-    wp.selected_text_bg = beautiful.colors.on_background
-    wp.cursor_size = 4
-    wp.cursor_color = beautiful.colors.on_background
+    wp.selected_text_bg = beautiful.fg_normal
+    wp.cursor_width = 2
+    wp.cursor_bg = beautiful.fg_normal
 
     widget:set_widget_template(wibox.widget {
         widget = wibox.widget.textbox,
@@ -473,13 +615,13 @@ local function new()
 
     capi.tag.connect_signal("property::selected", function()
         if wp.stop_on_tag_changed then
-            self:unfocus()
+            widget:unfocus()
         end
     end)
 
     capi.awesome.connect_signal("text_input::focus", function(text_input)
         if wp.stop_on_other_text_input_focused == false and text_input ~= self then
-            self:unfocus()
+            widget:unfocus()
         end
     end)
 
