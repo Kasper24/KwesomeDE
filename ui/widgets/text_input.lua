@@ -576,7 +576,7 @@ function text_input:set_focus_on_subject_mouse_enter(subject)
     end)
 end
 
-function text_input:set_unfocus_on_subject_mouse_enter(subject)
+function text_input:set_unfocus_on_subject_mouse_leave(subject)
     subject:connect_signal("mouse::leave", function()
         self:unfocus()
     end)
