@@ -10,7 +10,7 @@ local math = math
 local rofi_grid  = { mt = {} }
 
 local properties = {
-    "entries", "page",
+    "entries", "page", "lazy_load_widgets",
     "widget_template", "entry_template",
     "sort_fn", "search_fn", "search_sort_fn",
     "sort_alphabetically","reverse_sort_alphabetically,",
@@ -178,6 +178,12 @@ function rofi_grid:set_entries(entries)
     self._private.entries = entries
     self:set_sort_fn()
     self:reset()
+
+    if self._private.lazy_load_widgets == false then
+        for _, entry in ipairs(self._private.entries) do
+            self._private.entries_widgets_cache[entry] = entry_widget(self, entry)
+        end
+    end
 end
 
 function rofi_grid:add_entry(entry)
@@ -520,6 +526,7 @@ local function new()
     wp.wrap_page_scrolling = true
     wp.wrap_entry_scrolling = true
     wp.search_fn = nil
+    wp.lazy_load_widgets = true
 
     wp.text = ""
     wp.pages_count = 0
