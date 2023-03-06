@@ -198,21 +198,28 @@ function text_input:set_widget_template(widget_template)
     local text_draw = self._private.text_widget.draw
 
     function self._private.text_widget:draw(context, cr, width, height)
-        text_draw(self, context, cr, width, height)
+        -- Selection bg
+        local ink_rect, logical_rect = self._private.layout:get_pixel_extents()
+        cr:set_source(gcolor.change_opacity(wp.selection_bg, wp.selection_opacity))
+        cr:rectangle(
+            wp.selection_start_x,
+            logical_rect.y - 3,
+            wp.selection_end_x - wp.selection_start_x,
+            logical_rect.y + logical_rect.height + 6
+        )
+        cr:fill()
 
         -- Cursor
         local ink_rect, logical_rect = self._private.layout:get_pixel_extents()
         cr:set_source(gcolor.change_opacity(wp.cursor_bg, wp.cursor_opacity))
         cr:set_line_width(wp.cursor_width)
-        cr:move_to(wp.cursor_x, wp.cursor_y + logical_rect.y)
-        cr:line_to(wp.cursor_x, wp.cursor_y + logical_rect.y + logical_rect.height)
+        cr:move_to(wp.cursor_x, logical_rect.y - 3)
+        cr:line_to(wp.cursor_x, logical_rect.y + logical_rect.height + 6)
         cr:stroke()
 
-        -- Selected text bg
-        local ink_rect, logical_rect = self._private.layout:get_pixel_extents()
-        cr:set_source(gcolor.change_opacity(wp.selection_bg, wp.selection_opacity))
-        cr:rectangle(wp.selection_start_x, logical_rect.y, wp.selection_end_x - wp.selection_start_x, logical_rect.height)
-        cr:fill()
+        cr:set_source_rgb(1, 1, 1)
+
+        text_draw(self, context, cr, width, height)
     end
 
     wp.selecting_text = false
