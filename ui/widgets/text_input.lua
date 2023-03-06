@@ -297,7 +297,6 @@ function text_input:update_text(text)
 end
 
 function text_input:set_text(text)
-    --TODO handle text selection and insertion
     local wp = self._private
     local text_widget = self:get_text_widget()
 
@@ -579,7 +578,6 @@ function text_input:focus()
     self:show_cursor()
     self:show_selection()
 
-    --TODO show cursor
     run_keygrabber(self)
     if wp.unfocus_on_clicked_outside then
         run_mousegrabber(self)
