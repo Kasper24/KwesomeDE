@@ -187,10 +187,6 @@ local function run_keygrabber(self)
     end)
 end
 
-function text_input:get_mode()
-    return self._private.mode
-end
-
 function text_input:set_widget_template(widget_template)
     local wp = self._private
 
@@ -275,6 +271,10 @@ function text_input:set_widget_template(widget_template)
     end)
 
     self:set_widget(widget_template)
+end
+
+function text_input:get_mode()
+    return self._private.mode
 end
 
 function text_input:set_state(state)
