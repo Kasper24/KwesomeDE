@@ -171,7 +171,7 @@ end
 local function get_applications(self)
     awful.spawn.easy_async_with_shell(
         [[pactl list sink-inputs | grep "Sink Input #\|application.name = \|application.icon_name = \|Mute:\|Volume: ";
-        pactl list source-outputs | grep "Source Input #\|application.name = \|application.icon_name = \|Mute:\|Volume: "]],
+        pactl list source-outputs | grep "Source Output #\|application.name = \|application.icon_name = \|Mute:\|Volume: "]],
         function(stdout)
 
             local application = {}
