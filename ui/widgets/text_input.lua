@@ -139,6 +139,8 @@ local function run_keygrabber(self)
         if mod.Control then
             if key == "a" then
                 self:select_all()
+            elseif key == "c" then
+                    self:copy()
             elseif key == "v" then
                 self:paste()
             elseif key == "b" or key == "Left" then
@@ -330,7 +332,21 @@ function text_input:overwrite_text(text)
     self:emit_signal("property::text", self:get_text())
 end
 
-function text_input:paste(self)
+function text_input:copy()
+    local wp = self._private
+    if self:get_mode() == "overwrite" then
+        local text = self:get_text()
+        local start_pos = self._private.selection_start
+        local end_pos = self._private.selection_end
+        if start_pos > end_pos then
+            start_pos, end_pos = end_pos + 1, start_pos
+        end
+        text = text:sub(start_pos, end_pos)
+        wp.clipboard:set_text(text, -1)
+    end
+end
+
+function text_input:paste()
     local wp = self._private
 
     wp.clipboard:request_text(function(clipboard, text)
