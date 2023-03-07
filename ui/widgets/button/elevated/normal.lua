@@ -146,10 +146,12 @@ function elevated_button_normal:effect(instant)
         }
         for _, child in ipairs(wp.animable_childs) do
             if child.color_anim then
+                child.color_anim:stop()
                 local child_color = child.widget._private["text_" .. on_prefix .. "normal_bg"]
                 child.color_anim.pos = child_color
                 child.widget:set_color(child_color)
             elseif child.bg_anim then
+                child.bg_anim:stop()
                 local child_bg = child.widget._private[on_prefix .. "normal_bg"]
                 child.bg_anim.pos = child_bg
                 child.widget.bg = child_bg
