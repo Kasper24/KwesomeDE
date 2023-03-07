@@ -691,11 +691,12 @@ local function new()
     wp.round = false
     wp.obscure = false
 
-    wp.selection_bg = beautiful.colors.background
     wp.cursor_width = 2
     wp.cursor_bg = beautiful.colors.on_background
     wp.cursor_blink = true
     wp.cursor_blink_rate = 0.6
+
+    wp.selection_bg = beautiful.colors.background
 
     widget:set_widget_template(wibox.widget {
         layout = wibox.layout.stack,
