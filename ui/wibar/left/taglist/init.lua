@@ -74,10 +74,11 @@ end
 
 local function update_taglist(self, tag)
     local clients = tag:clients()
-    if #clients == 0 then
-        self.indicator_animation:set(dpi(0))
-    elseif (#clients == 1 and clients[1].skip_taskbar ~= true) or #clients > 1 then
+
+    if (#clients == 1 and clients[1].skip_taskbar ~= true) or #clients > 1 then
         self.indicator_animation:set(dpi(40))
+    else
+        self.indicator_animation:set(dpi(0))
     end
 
     if tag.selected then
