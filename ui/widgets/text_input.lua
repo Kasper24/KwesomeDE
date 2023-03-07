@@ -347,7 +347,7 @@ function text_input:overwrite_text(text)
     local left_text = old_text:sub(1, start_pos)
     local right_text = old_text:sub(end_pos + 1)
     self:get_text_widget():set_text(left_text .. text .. right_text)
-    self:set_cursor_index(end_pos)
+    self:set_cursor_index(#left_text)
 
     self:emit_signal("property::text", self:get_text())
 end
