@@ -148,6 +148,7 @@ end
 local function new()
     local app_launcher = bling.widget.app_launcher {
         bg = beautiful.colors.background,
+        lazy_load_widgets = false,
         widget_template = wibox.widget {
             widget = wibox.container.margin,
             margins = dpi(15),
@@ -155,23 +156,44 @@ local function new()
                 layout = wibox.layout.fixed.vertical,
                 spacing = dpi(15),
                 {
-                    widget = wibox.container.place,
-                    halign = "left",
-                    valign = "top",
-                    {
+                    widget = widgets.text_input,
+                    id = "text_input_role",
+                    forced_width = dpi(650),
+                    forced_height = dpi(60),
+                    unfocus_keys = { },
+                    unfocus_on_clicked_inside = false,
+                    unfocus_on_clicked_outside = false,
+                    unfocus_on_mouse_leave = false,
+                    unfocus_on_tag_change = false,
+                    unfocus_on_other_text_input_focus = false,
+                    focus_on_subject_mouse_enter = nil,
+                    unfocus_on_subject_mouse_leave = nil,
+                    widget_template = wibox.widget {
                         widget = widgets.background,
-                        forced_width = dpi(650),
-                        forced_height = dpi(60),
                         shape = helpers.ui.rrect(),
                         bg = beautiful.colors.surface,
                         {
                             widget = wibox.container.margin,
                             margins = dpi(15),
                             {
-                                widget = widgets.prompt,
-                                id = "prompt_role",
-                                always_on = true,
-                                icon = beautiful.icons.firefox,
+                                layout = wibox.layout.fixed.horizontal,
+                                spacing = dpi(15),
+                                {
+                                    widget = widgets.text,
+                                    icon = beautiful.icons.firefox
+                                },
+                                {
+                                    layout = wibox.layout.stack,
+                                    {
+                                        widget = wibox.widget.textbox,
+                                        id = "placeholder_role",
+                                        text = "Search: "
+                                    },
+                                    {
+                                        widget = wibox.widget.textbox,
+                                        id = "text_role"
+                                    },
+                                }
                             }
                         }
                     }
@@ -201,7 +223,7 @@ local function new()
             ["ended"] = function()
                 if app_launcher._private.state == false then
                     app_launcher:get_widget().visible = false
-                    app_launcher:get_prompt():set_text("")
+                    app_launcher:get_text_input():set_text("")
                     app_launcher:reset()
                 end
             end
@@ -211,7 +233,7 @@ local function new()
     function app_launcher:show()
         app_launcher._private.state = true
         app_launcher:get_widget().visible = true
-        app_launcher:get_prompt():start()
+        app_launcher:get_text_input():focus()
         app_launcher:emit_signal("visibility", true)
 
         animation.easing = helpers.animation.easing.outExpo
@@ -220,7 +242,7 @@ local function new()
 
     function app_launcher:hide()
         app_launcher._private.state = false
-        app_launcher:get_prompt():stop()
+        app_launcher:get_text_input():unfocus()
         app_launcher:emit_signal("visibility", false)
 
         animation.easing = helpers.animation.easing.inExpo

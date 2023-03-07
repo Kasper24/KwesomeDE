@@ -456,11 +456,11 @@ function rofi_grid:reset()
         end
     end
 
-    self:get_prompt():set_text("")
+    self:get_text_input():set_text("")
 end
 
-function rofi_grid:get_prompt()
-    return self._private.prompt
+function rofi_grid:get_text_input()
+    return self._private.text_input
 end
 
 function rofi_grid:get_grid()
