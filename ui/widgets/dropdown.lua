@@ -48,7 +48,7 @@ local function new(args)
 
     local dropdown_button = nil
 
-    local menu = wmenu({}, args.menu_width)
+    local menu = wmenu({}, args.menu_width, false)
 
     dropdown_button = wibox.widget {
         widget = tbwidget.state,

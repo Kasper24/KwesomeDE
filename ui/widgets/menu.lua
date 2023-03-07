@@ -174,7 +174,7 @@ function menu:reset()
     self.widget:reset()
 end
 
-function menu.menu(widgets, width)
+function menu.menu(widgets, width, hide_on_clicked_outside)
     local menu_container = wibox.widget {
         layout = wibox.layout.fixed.vertical,
         forced_height = 0
@@ -203,13 +203,13 @@ function menu.menu(widgets, width)
     }
 
     capi.awesome.connect_signal("root::pressed", function()
-        if widget._private.can_hide == true then
+        if hide_on_clicked_outside ~= false and widget._private.can_hide == true then
             widget:hide(true)
         end
     end)
 
     capi.client.connect_signal("button::press", function()
-        if widget._private.can_hide == true then
+        if hide_on_clicked_outside ~= false and widget._private.can_hide == true then
             widget:hide(true)
         end
     end)
