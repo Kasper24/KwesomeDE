@@ -684,7 +684,7 @@ local function new()
 
     wp.unfocus_keys = { "Escape", "Return" }
     wp.unfocus_on_clicked_inside = false
-    wp.unfocus_on_clicked_outside = false
+    wp.unfocus_on_clicked_outside = true
     wp.unfocus_on_mouse_leave = false
     wp.unfocus_on_tag_change = true
     wp.unfocus_on_other_text_input_focus = true
