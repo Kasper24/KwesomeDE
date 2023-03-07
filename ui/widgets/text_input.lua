@@ -103,11 +103,6 @@ local function cword_end(s, pos)
 end
 
 local function run_mousegrabber(self)
-    local cursor = "left_ptr"
-    if capi.mouse.current_wibox then
-        cursor = capi.mouse.current_wibox.cursor
-    end
-
     capi.mousegrabber.run(function(m)
         if m.buttons[1] then
             if capi.mouse.current_widget ~= self and self.unfocus_on_clicked_outside then
@@ -119,7 +114,7 @@ local function run_mousegrabber(self)
             end
         end
         return true
-    end, cursor)
+    end, "xterm")
 end
 
 local function run_keygrabber(self)
