@@ -688,6 +688,7 @@ local function new()
     wp.unfocus_on_mouse_leave = false
     wp.unfocus_on_tag_change = true
     wp.unfocus_on_other_text_input_focus = true
+
     wp.focus_on_subject_mouse_enter = nil
     wp.unfocus_on_subject_mouse_leave = nil
 
