@@ -29,12 +29,12 @@ local text_input = {
 }
 
 local properties = {
-    "only_numbers", "round", "obscure",
     "unfocus_keys", "unfocus_on_clicked_inside", "unfocus_on_clicked_outside", "unfocus_on_mouse_leave", "unfocus_on_tag_change",
     "focus_on_subject_mouse_enter", "unfocus_on_subject_mouse_leave",
     "reset_on_unfocus",
-    "placeholder", "text",
-    "cursor_size", "cursor_bg", "selection_bg"
+    "placeholder", "text", "only_numbers", "round", "obscure",
+    "cursor_blink", "cursor_blink_rate","cursor_size", "cursor_bg",
+    "selection_bg"
 }
 
 local function build_properties(prototype, prop_names)
@@ -194,6 +194,11 @@ function text_input:set_widget_template(widget_template)
     self._private.text_widget.forced_width = math.huge
     local text_draw = self._private.text_widget.draw
 
+    local placeholder_widget = widget_template:get_children_by_id("placeholder_role")
+    if placeholder_widget then
+        placeholder_widget = placeholder_widget[1]
+    end
+
     function self._private.text_widget:draw(context, cr, width, height)
         -- Selection bg
         local ink_rect, logical_rect = self._private.layout:get_pixel_extents()
@@ -217,6 +222,12 @@ function text_input:set_widget_template(widget_template)
         cr:set_source_rgb(1, 1, 1)
 
         text_draw(self, context, cr, width, height)
+
+        if self:get_text() == "" and placeholder_widget then
+            placeholder_widget.visible = true
+        elseif placeholder_widget then
+            placeholder_widget.visible = false
+        end
     end
 
     wp.selecting_text = false
@@ -303,7 +314,6 @@ function text_input:set_text(text)
 
     text_widget:set_text(text)
     if text_widget:get_text() == "" then
-        text_widget:set_text(wp.placeholder)
         self:set_cursor_index(0)
     else
         self:set_cursor_index(#text)
@@ -594,6 +604,20 @@ function text_input:focus()
         run_mousegrabber(self)
     end
 
+    if wp.cursor_blink then
+        gtimer.start_new(wp.cursor_blink_rate, function()
+            if wp.state == true then
+                if self._private.cursor_opacity == 1 then
+                    self:hide_cursor()
+                else
+                    self:show_cursor()
+                end
+                return true
+            end
+            return false
+        end)
+    end
+
     wp.state = true
     self:emit_signal("focus")
     capi.awesome.emit_signal("text_input::focus", self)
@@ -636,9 +660,6 @@ local function new()
 
     local wp = widget._private
 
-    wp.placeholder = ""
-    wp.text = ""
-
     wp.state = false
     wp.clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
     wp.cursor_index = 0
@@ -662,6 +683,8 @@ local function new()
 
     wp.reset_on_unfocus = false
 
+    wp.placeholder = ""
+    wp.text = ""
     wp.only_numbers = false
     wp.round = false
     wp.obscure = false
@@ -669,10 +692,21 @@ local function new()
     wp.selection_bg = beautiful.colors.background
     wp.cursor_width = 2
     wp.cursor_bg = beautiful.colors.on_background
+    wp.cursor_blink = true
+    wp.cursor_blink_rate = 0.6
 
     widget:set_widget_template(wibox.widget {
-        widget = wibox.widget.textbox,
-        id = "text_role"
+        layout = wibox.layout.stack,
+        {
+            widget = wibox.widget.textbox,
+            id = "placeholder_role",
+            text = wp.placeholder
+        },
+        {
+            widget = wibox.widget.textbox,
+            id = "text_role",
+            text = wp.text
+        }
     })
 
     capi.tag.connect_signal("property::selected", function()
