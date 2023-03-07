@@ -277,8 +277,8 @@ function text_input:get_mode()
     return self._private.mode
 end
 
-function text_input:set_state(state)
-    if state == true then
+function text_input:set_focused(focused)
+    if focused == true then
        self:focus()
     else
         self:unfocus()
@@ -509,7 +509,7 @@ function text_input:set_cursor_index(index)
         self._private.cursor_x = strong_pos.x / Pango.SCALE
         self._private.cursor_y = strong_pos.y / Pango.SCALE
 
-        if self:get_state() then
+        if self:get_focused() then
             self:show_cursor()
         end
         self:hide_selection()
@@ -583,13 +583,13 @@ function text_input:set_unfocus_on_subject_mouse_leave(subject)
     end)
 end
 
-function text_input:get_state()
-    return self._private.state
+function text_input:get_focused()
+    return self._private.focused
 end
 
 function text_input:focus()
     local wp = self._private
-    if self:get_state() == true then
+    if self:get_focused() == true then
         return
     end
 
@@ -601,7 +601,7 @@ function text_input:focus()
 
     if wp.cursor_blink then
         gtimer.start_new(wp.cursor_blink_rate, function()
-            if self:get_state() == true then
+            if self:get_focused() == true then
                 if self._private.cursor_opacity == 1 then
                     self:hide_cursor()
                 else
@@ -613,14 +613,14 @@ function text_input:focus()
         end)
     end
 
-    wp.state = true
+    wp.focused = true
     self:emit_signal("focus")
     capi.awesome.emit_signal("text_input::focus", self)
 end
 
 function text_input:unfocus()
     local wp = self._private
-    if self:get_state() == false then
+    if self:get_focused() == false then
         return
     end
 
@@ -639,7 +639,7 @@ function text_input:unfocus()
         wibox.cursor = "left_ptr"
     end
 
-    wp.state = false
+    wp.focused = false
     self:emit_signal("unfocus")
     capi.awesome.emit_signal("text_input::unfocus", self)
 end
@@ -647,7 +647,7 @@ end
 function text_input:toggle()
     local wp = self._private
 
-    if self:get_state() == false then
+    if self:get_focused() == false then
         self:focus()
     else
         self:unfocus()
@@ -660,7 +660,7 @@ local function new()
 
     local wp = widget._private
 
-    wp.state = false
+    wp.focused = false
     wp.clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
     wp.cursor_index = 0
     wp.mode = "insert"
