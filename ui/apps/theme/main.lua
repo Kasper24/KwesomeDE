@@ -110,7 +110,7 @@ local function wallpapers_grid(theme_app, wallpapers_key, entry_template)
                 widget = widgets.text_input,
                 id = "text_input_role",
                 forced_width = dpi(800),
-                forced_height = dpi(50),
+                forced_height = dpi(55),
                 unfocus_on_subject_mouse_leave = theme_app:get_client(),
                 widget_template = wibox.widget {
                     widget = widgets.background,
@@ -128,8 +128,16 @@ local function wallpapers_grid(theme_app, wallpapers_key, entry_template)
                                 color = beautiful.icons.spraycan.color
                             },
                             {
-                                widget = wibox.widget.textbox,
-                                id = "text_role"
+                                layout = wibox.layout.stack,
+                                {
+                                    widget = wibox.widget.textbox,
+                                    id = "placeholder_role",
+                                    text = "Search: "
+                                },
+                                {
+                                    widget = wibox.widget.textbox,
+                                    id = "text_role"
+                                }
                             }
                         }
                     }
