@@ -46,16 +46,16 @@ function elevated_button_state:set_on_by_default(value)
     end
 end
 
-function elevated_button_state:turn_on()
+function elevated_button_state:turn_on(instant)
     local wp = self._private
     wp.state = true
-    self:effect()
+    self:effect(instant)
 end
 
-function elevated_button_state:turn_off()
+function elevated_button_state:turn_off(instant)
     local wp = self._private
     wp.state = false
-    self:effect()
+    self:effect(instant)
 end
 
 function elevated_button_state:toggle()
