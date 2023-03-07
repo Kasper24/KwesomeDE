@@ -136,7 +136,7 @@ local function run_keygrabber(self)
             if key == "a" then
                 self:select_all()
             elseif key == "c" then
-                    self:copy()
+                self:copy()
             elseif key == "v" then
                 self:paste()
             elseif key == "b" or key == "Left" then
