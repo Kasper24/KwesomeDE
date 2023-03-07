@@ -612,7 +612,7 @@ function text_input:focus()
             if self:get_focused() == true then
                 if self._private.cursor_opacity == 1 then
                     self:hide_cursor()
-                else
+                elseif self:get_mode() == "insert" then
                     self:show_cursor()
                 end
                 return true
