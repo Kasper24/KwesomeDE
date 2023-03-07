@@ -265,12 +265,6 @@ function text_input:set_widget_template(widget_template)
 
     self._private.text_widget:connect_signal("mouse::leave", function(_, find_widgets_result)
         find_widgets_result.drawable:disconnect_signal("mouse::move", on_drag)
-        capi.root.cursor("left_ptr")
-        local wibox = capi.mouse.current_wibox
-        if wibox then
-            wibox.cursor = "left_ptr"
-        end
-
         if wp.unfocus_on_mouse_leave then
             self:unfocus()
         end
