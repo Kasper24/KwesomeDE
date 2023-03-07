@@ -180,7 +180,7 @@ local function new()
                                 spacing = dpi(15),
                                 {
                                     widget = widgets.text,
-                                    icon = beautiful.icons.firefox
+                                    icon = beautiful.icons.magnifying_glass
                                 },
                                 {
                                     layout = wibox.layout.stack,

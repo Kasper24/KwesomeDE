@@ -250,7 +250,8 @@ local function icons()
         cube = { icon = "" },
         photo_film = { icon = "" },
         clipboard = { icon = ""},
-        atom = { icon = "" }
+        atom = { icon = "" },
+        magnifying_glass = { icon = "" }
     }
 
     theme.taglist_icons = {

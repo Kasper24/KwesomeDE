@@ -124,7 +124,8 @@ local function wallpapers_grid(theme_app, wallpapers_key, entry_template)
                             spacing = dpi(15),
                             {
                                 widget = widgets.text,
-                                icon = beautiful.icons.firefox
+                                icon = beautiful.icons.magnifying_glass,
+                                color = beautiful.icons.spraycan.color
                             },
                             {
                                 widget = wibox.widget.textbox,
