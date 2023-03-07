@@ -509,7 +509,9 @@ function text_input:set_cursor_index(index)
         self._private.cursor_x = strong_pos.x / Pango.SCALE
         self._private.cursor_y = strong_pos.y / Pango.SCALE
 
-        self:show_cursor()
+        if self:get_state() then
+            self:show_cursor()
+        end
         self:hide_selection()
 
         self:get_text_widget():emit_signal("widget::redraw_needed")
@@ -581,9 +583,13 @@ function text_input:set_unfocus_on_subject_mouse_leave(subject)
     end)
 end
 
+function text_input:get_state()
+    return self._private.state
+end
+
 function text_input:focus()
     local wp = self._private
-    if wp.state == true then
+    if self:get_state() == true then
         return
     end
 
@@ -595,7 +601,7 @@ function text_input:focus()
 
     if wp.cursor_blink then
         gtimer.start_new(wp.cursor_blink_rate, function()
-            if wp.state == true then
+            if self:get_state() == true then
                 if self._private.cursor_opacity == 1 then
                     self:hide_cursor()
                 else
@@ -614,7 +620,7 @@ end
 
 function text_input:unfocus()
     local wp = self._private
-    if wp.state == false then
+    if self:get_state() == false then
         return
     end
 
@@ -641,7 +647,7 @@ end
 function text_input:toggle()
     local wp = self._private
 
-    if wp.state == false then
+    if self:get_state() == false then
         self:focus()
     else
         self:unfocus()
