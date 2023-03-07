@@ -667,10 +667,12 @@ local function new()
 
     wp.cursor_x = 0
     wp.cursor_y = 0
+    wp.cursor_opacity = 0
     wp.selection_start_x = 0
     wp.selection_end_x = 0
     wp.selection_start_y = 0
     wp.selection_end_y = 0
+    wp.selection_opacity = 0
 
     wp.unfocus_keys = { "Escape", "Return" }
     wp.unfocus_on_clicked_inside = false
