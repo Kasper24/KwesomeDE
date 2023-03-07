@@ -168,7 +168,7 @@ local function run_keygrabber(self)
             elseif key == "Right" then
                 self:increamant_cursor_index()
             else
-                if (wp.round and key == ".") or (wp.only_numbers and tonumber(wp.text .. key) == nil) then
+                if (wp.round and key == ".") or (wp.only_numbers and tonumber(self:get_text() .. key) == nil) then
                     return
                 end
 
