@@ -148,6 +148,12 @@ local function run_keygrabber(self)
             elseif key == "BackSpace" then
                 self:delete_previous_word()
             end
+        elseif mod.Shift then
+            if key =="Left" then
+                self:decremeant_selection_end_index()
+            elseif key == "Right" then
+                self:increamant_selection_end_index()
+            end
         else
             if has_value(wp.unfocus_keys, key) then
                 self:unfocus()
@@ -474,6 +480,24 @@ function text_input:set_selection_end_index(index)
         self._private.selection_end_y = strong_pos.y / Pango.SCALE
         self._private.selection_end = index
         self:get_text_widget():emit_signal("widget::redraw_needed")
+    end
+end
+
+function text_input:increamant_selection_end_index()
+    if self:get_mode() == "insert" then
+        self:set_selection_start_index(self:get_cursor_index())
+        self:set_selection_end_index(self:get_cursor_index() + 1)
+    else
+        self:set_selection_end_index(self._private.selection_end + 1)
+    end
+end
+
+function text_input:decremeant_selection_end_index()
+    if self:get_mode() == "insert" then
+        self:set_selection_start_index(self:get_cursor_index())
+        self:set_selection_end_index(self:get_cursor_index() - 1)
+    else
+        self:set_selection_end_index(self._private.selection_end - 1)
     end
 end
 
