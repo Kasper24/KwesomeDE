@@ -16,6 +16,7 @@ local brightness_daemon = require("daemons.system.brightness")
 local rgb_daemon = require("daemons.hardware.rgb")
 local theme_daemon = require("daemons.system.theme")
 local screenshot_daemon = require("daemons.system.screenshot")
+local record_daemon = require("daemons.system.record")
 local helpers = require("helpers")
 local bling = require("external.bling")
 local machi = require("external.layout-machi")
@@ -775,7 +776,27 @@ awful.keyboard.append_global_keybindings({ -- Toogle media
         on_press = function()
             screenshot_daemon:pick_color()
         end
-    }, awful.key {
+    },
+    awful.key {
+        modifiers = { keys.mod },
+        key = "F5",
+        group = "media",
+        description = "start recording",
+        on_press = function()
+            record_daemon:start_video()
+        end
+    },
+    awful.key {
+        modifiers = { keys.mod },
+        key = "F6",
+        group = "media",
+        description = "stop recording",
+        on_press = function()
+            record_daemon:stop_video()
+        end
+    },
+    -- Openrgb sync script
+    awful.key {
         modifiers = {keys.mod, keys.ctrl},
         key = "w",
         group = "media",
