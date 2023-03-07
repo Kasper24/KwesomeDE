@@ -633,6 +633,11 @@ function text_input:unfocus()
     if wp.unfocus_on_clicked_outside then
         capi.mousegrabber.stop()
     end
+    capi.root.cursor("left_ptr")
+    local wibox = capi.mouse.current_wibox
+    if wibox then
+        wibox.cursor = "left_ptr"
+    end
 
     wp.state = false
     self:emit_signal("unfocus")
