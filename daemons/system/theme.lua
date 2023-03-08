@@ -95,7 +95,6 @@ local function generate_colorscheme(self, wallpaper, reset, light)
         self:emit_signal("colorscheme::generation::success", self:get_colorschemes()[wallpaper], wallpaper, false)
         return
     end
-
     self:emit_signal("colorscheme::generation::start")
 
     local color_count = 16
@@ -487,13 +486,6 @@ local function install_gtk_theme()
     awful.spawn(string.format("cp -r %s %s", GTK_THEME_ALTO_COLOR, INSTALLED_GTK_THEMES_PATH), false)
 end
 
-local function on_wallpaper_changed()
-    gtimer.start_new(1, function()
-        capi.awesome.emit_signal("wallpaper::changed", BACKGROUND_PATH)
-        return false
-    end)
-end
-
 local function image_wallpaper(self, screen)
     local widget = wibox.widget {
         widget = wibox.widget.imagebox,
@@ -677,7 +669,7 @@ end
 
 local function we_wallpaper(self, screen)
     local id = get_we_wallpaper_id(self:get_active_wallpaper())
-    local cmd = string.format("cd %s && ./linux-wallpaperengine --assets-dir %s %s --fps %s --class linux-wallpaperengine --x %s --y %s --width %s --height %s --screenshot %s",
+    local cmd = string.format("cd %s && ./linux-wallpaperengine --assets-dir %s %s --fps %s --class linux-wallpaperengine --x %s --y %s --width %s --height %s",
         WE_PATH,
         self:get_wallpaper_engine_assets_folder(),
         self:get_wallpaper_engine_workshop_folder() .. "/" .. id,
@@ -685,8 +677,7 @@ local function we_wallpaper(self, screen)
         screen.geometry.x,
         screen.geometry.y,
         screen.geometry.width,
-        screen.geometry.height,
-        BACKGROUND_PATH
+        screen.geometry.height
     )
     awful.spawn.easy_async_with_shell(cmd, function(stdout, stderr)
         stderr = helpers.string.trim(stderr)
@@ -881,7 +872,9 @@ function theme:set_wallpaper(wallpaper, type)
             capi.screen.primary.geometry.width,
             capi.screen.primary.geometry.height
         )
-        on_wallpaper_changed()
+        capi.awesome.emit_signal("wallpaper::changed", BACKGROUND_PATH)
+        collectgarbage("collect")
+        collectgarbage("collect")
     end
 end
 
@@ -1231,6 +1224,29 @@ local function new()
     setup_profile_image(ret)
     scan_wallpapers(ret)
     watch_wallpapers_changes(ret)
+
+    capi.client.connect_signal("request::manage", function(client)
+        if client.class == "linux-wallpaperengine" and client.screen == capi.screen.primary then
+            gtimer.start_new(3, function()
+                if not client or not client.valid then
+                    return
+                end
+
+                local screenshot = awful.screenshot { client = client }
+                screenshot:refresh()
+                wibox.widget.draw_to_svg_file(
+                    screenshot.content_widget,
+                    "/home/kasper/.cache/awesome/wallpaper.png",
+                    client.width,
+                    client.height
+                )
+                capi.awesome.emit_signal("wallpaper::changed")
+                collectgarbage("collect")
+                collectgarbage("collect")
+                return false
+            end)
+        end
+    end)
 
     return ret
 end
