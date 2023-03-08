@@ -202,7 +202,7 @@
         "description": "The opacity of AwesomeWM UI elements"
     },
     "theme-ui-border-radius": {
-        "default": 36,
+        "default": 12,
         "summary": "UI border raidus",
         "description": "The border radius of AwesomeWM UI elements"
     },
