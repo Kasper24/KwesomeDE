@@ -250,7 +250,7 @@ function persistent:enable()
         self:save()
     end)
 
-    capi.awesome.connect_signal("startup", function()
+    capi.client.connect_signal("scanned", function()
         self:restore()
     end)
 end
