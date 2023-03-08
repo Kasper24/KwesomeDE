@@ -73,10 +73,10 @@ function _ui.adjust_image_res(image, width, height)
         pixbuf = Gdk.pixbuf_get_from_surface(image, 0, 0, image:get_width(), image:get_height())
     end
 
-    -- Scale down the image
-    local scaled_pixbuf = pixbuf:scale_simple(width, height, GdkPixbuf.InterpType.BILINEAR)
-
-    return capi.awesome.pixbuf_to_surface(scaled_pixbuf._native, image)
+    if pixbuf then
+        local scaled_pixbuf = pixbuf:scale_simple(width, height, GdkPixbuf.InterpType.BILINEAR)
+        return capi.awesome.pixbuf_to_surface(scaled_pixbuf._native, image)
+    end
 end
 
 function _ui.adjust_image_res_by_ratio(image, ratio)
@@ -95,10 +95,10 @@ function _ui.adjust_image_res_by_ratio(image, ratio)
     local new_width = floor(width / ratio)
     local new_height = floor(height / ratio)
 
-    -- Scale down the image
-    local scaled_pixbuf = pixbuf:scale_simple(new_width, new_height, GdkPixbuf.InterpType.BILINEAR)
-
-    return capi.awesome.pixbuf_to_surface(scaled_pixbuf._native, image)
+    if pixbuf then
+        local scaled_pixbuf = pixbuf:scale_simple(new_width, new_height, GdkPixbuf.InterpType.BILINEAR)
+        return capi.awesome.pixbuf_to_surface(scaled_pixbuf._native, image)
+    end
 end
 
 function _ui.crop_surface(surface, ratio)
