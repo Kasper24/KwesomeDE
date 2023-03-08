@@ -207,6 +207,7 @@ function rofi_grid:refresh()
 
     self:get_grid():reset()
     collectgarbage("collect")
+    collectgarbage("collect")
 
     for index, entry in ipairs(self:get_matched_entries()) do
         -- Only add widgets that are between this range (part of the current page)
@@ -224,6 +225,7 @@ function rofi_grid:search()
     self._private.matched_entries = {}
     -- Remove all the grid widgets
     self:get_grid():reset()
+    collectgarbage("collect")
     collectgarbage("collect")
 
     if text == "" then
@@ -332,6 +334,7 @@ function rofi_grid:page_forward(dir)
     -- Remove the current page entrys from the grid
     self:get_grid():reset()
     collectgarbage("collect")
+    collectgarbage("collect")
 
     for index, entry in ipairs(self:get_matched_entries()) do
         -- Only add widgets that are between this range (part of the current page)
@@ -377,6 +380,7 @@ function rofi_grid:page_backward(dir)
 
     -- Remove the current page entrys from the grid
     self:get_grid():reset()
+    collectgarbage("collect")
     collectgarbage("collect")
 
     local max_entry_index_to_include = self._private.entries_per_page * self:get_current_page()

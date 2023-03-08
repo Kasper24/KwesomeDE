@@ -41,6 +41,7 @@ function task_preview:show(c, args)
     self.widget:get_children_by_id("name")[1]:set_text(c.name)
     self.widget:get_children_by_id("thumbnail")[1]:set_client(c)
     collectgarbage("collect")
+    collectgarbage("collect")
 
     self.visible = true
 end

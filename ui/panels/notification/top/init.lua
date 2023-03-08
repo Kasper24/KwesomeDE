@@ -320,6 +320,7 @@ local function new()
         notification_groups = {}
         scrollbox:reset()
         collectgarbage("collect")
+        collectgarbage("collect")
         stack:raise_widget(empty_notifications)
     end)
 
