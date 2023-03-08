@@ -39,7 +39,7 @@ xkbcomp -xkb "$DISPLAY" - | sed 's#key <CAPS>.*#key <CAPS> {\
 end
 
 local function configure_xserver()
-    awful.spawn("xrandr --output DP-2 --gamma 0.8", false)
+    -- awful.spawn("xrandr --output DP-2 --gamma 0.8", false)
     awful.spawn("xset s off", false)
     awful.spawn("xset -dpms", false)
     awful.spawn("xset s noblank", false)
