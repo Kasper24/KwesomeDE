@@ -20,8 +20,10 @@ local function new()
         width = dpi(800),
         height = dpi(1060),
     }
+
+    local first = true
     app:connect_signal("visibility", function(self, visible)
-        if visible == true then
+        if visible == true and first == true then
             local stack = wibox.layout.stack()
             stack:set_top_only(true)
             stack:add(main(app, stack))
@@ -34,9 +36,7 @@ local function new()
             }
 
             app:set_widget(widget)
-        else
-            app:set_widget(wibox.container.background())
-            collectgarbage("collect")
+            first = false
         end
     end)
 
