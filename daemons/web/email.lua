@@ -73,7 +73,13 @@ local function new()
                 if error == nil then
                     local emails_handler = handler:new()
                     local emails_parser = xml.parser(emails_handler)
+
                     emails_parser:parse(content)
+
+                    if emails_handler.error then
+                        ret:emit_signal("error", emails_handler.error)
+                        return
+                    end
 
                     if old_data == nil and emails_handler.root.feed.entry ~= nil then
                         ret:emit_signal("emails", emails_handler.root.feed.entry)
@@ -89,6 +95,11 @@ local function new()
                     local emails_handler = handler:new()
                     local emails_parser = xml.parser(emails_handler)
                     emails_parser:parse(stdout)
+
+                    if emails_handler.error then
+                        ret:emit_signal("error", emails_handler.error)
+                        return
+                    end
 
                     if emails_handler.root and emails_handler.root.feed then
                         for _, email in ipairs(emails_handler.root.feed.entry) do
