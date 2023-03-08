@@ -180,7 +180,7 @@ function elevated_button_normal:effect(instant)
                 child.color_anim:set(child_color)
                 if child.widget:get_icon() then
                     if wp.old_mode ~= "press" and wp.mode == "press" then
-                        child.size_anim:set(child.original_size / 1.5)
+                        child.size_anim:set(child.original_size * 0.7)
                     elseif wp.old_mode == "press" and wp.mode ~= "press" then
                         child.size_anim:set(child.original_size)
                     end

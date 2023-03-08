@@ -77,7 +77,7 @@ function text_button_normal:text_effect(instant)
         wp.color_anim:set(bg)
         if self:get_content_widget():get_icon() and wp.original_size then
             if wp.old_mode ~= "press" and wp.mode == "press" then
-                wp.size_anim:set(wp.original_size / 1.5)
+                wp.size_anim:set(wp.original_size * 0.7)
             elseif wp.old_mode == "press" and wp.mode ~= "press" then
                 wp.size_anim:set(wp.original_size)
             end
