@@ -189,6 +189,10 @@ local function wallpapers_grid(theme_app, wallpapers_key, entry_template)
         slider:set_maximum(#layout:get_matched_entries())
     end)
 
+    layout:connect_signal("select", function(self, new_index)
+        slider:set_value(new_index)
+    end)
+
     slider:connect_signal("property::value", function(self, value, instant)
         if instant ~= true then
             layout:set_selected_entry(value)
