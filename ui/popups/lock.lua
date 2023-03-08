@@ -16,22 +16,16 @@ local os = os
 local lock = {}
 local instance = nil
 
-local accent_color = beautiful.colors.random_accent_color()
-
 function lock:show()
     self.widget.screen = awful.screen.focused()
     self.widget.visible = true
-
-    self._private.prompt:start()
-
+    self._private.text_input:focus()
     self:emit_signal("visibility", true)
 end
 
 function lock:hide()
-    self._private.prompt:stop()
-
+    self._private.text_input:unfocus()
     self.widget.visible = false
-
     self:emit_signal("visibility", false)
 end
 
@@ -84,22 +78,40 @@ local function widget(self)
         size = 30
     }
 
-    self._private.prompt = wibox.widget {
-        widget = widgets.prompt,
+    self._private.text_input = wibox.widget {
+        widget = widgets.text_input,
         forced_width = dpi(450),
-        forced_height = dpi(50),
-        reset_on_stop = true,
-        always_on = true,
+        unfocus_keys = { },
+        unfocus_on_clicked_inside = false,
+        unfocus_on_clicked_outside = false,
+        unfocus_on_mouse_leave = false,
+        unfocus_on_tag_change = false,
+        unfocus_on_other_text_input_focus = false,
+        reset_on_unfocus = true,
         obscure = true,
-        icon = {
-            font = beautiful.icons.lock.font,
-            size = beautiful.icons.lock.size,
-            icon = beautiful.icons.lock.icon,
-            color = accent_color
-        } ,
+        widget_template = wibox.widget {
+            layout = wibox.layout.fixed.horizontal,
+            spacing = dpi(15),
+            {
+                widget = widgets.text,
+                icon = beautiful.icons.lock
+            },
+            {
+                layout = wibox.layout.stack,
+                {
+                    widget = wibox.widget.textbox,
+                    id = "placeholder_role",
+                    text = "Password: "
+                },
+                {
+                    widget = wibox.widget.textbox,
+                    id = "text_role"
+                },
+            }
+        }
     }
 
-    self._private.prompt:connect_signal("key::press", function(self, mod, key, text)
+    self._private.text_input:connect_signal("key::press", function(self, mod, key, text)
         if key == "Return" then
             system_daemon:unlock(text)
         end
@@ -108,12 +120,12 @@ local function widget(self)
     local toggle_password_obscure_button = wibox.widget {
         widget = widgets.checkbox,
         state = true,
-        handle_active_color = accent_color,
+        handle_active_color = beautiful.icons.lock.color,
         on_turn_on = function()
-            self._private.prompt:set_obscure(true)
+            self._private.text_input:set_obscure(true)
         end,
         on_turn_off = function()
-            self._private.prompt:set_obscure(false)
+            self._private.text_input:set_obscure(false)
         end
     }
 
@@ -122,7 +134,7 @@ local function widget(self)
         text_normal_bg = beautiful.colors.on_background,
         text = "Unlock",
         on_release = function()
-            system_daemon:unlock(self._private.prompt:get_text())
+            system_daemon:unlock(self._private.text_input:get_text())
         end
     }
 
@@ -131,7 +143,7 @@ local function widget(self)
         forced_width = dpi(100),
         forced_height = dpi(100),
         icon = beautiful.icons.poweroff,
-        text_normal_bg = accent_color,
+        text_normal_bg = beautiful.icons.lock.color,
         size = 40,
         on_release = function()
             system_daemon:shutdown()
@@ -143,7 +155,7 @@ local function widget(self)
         forced_width = dpi(100),
         forced_height = dpi(100),
         icon = beautiful.icons.reboot,
-        text_normal_bg = accent_color,
+        text_normal_bg = beautiful.icons.lock.color,
         size = 40,
         on_release = function()
             system_daemon:restart()
@@ -155,7 +167,7 @@ local function widget(self)
         forced_width = dpi(100),
         forced_height = dpi(100),
         icon = beautiful.icons.suspend,
-        text_normal_bg = accent_color,
+        text_normal_bg = beautiful.icons.lock.color,
         size = 40,
         on_release = function()
             system_daemon:suspend()
@@ -167,7 +179,7 @@ local function widget(self)
         forced_width = dpi(100),
         forced_height = dpi(100),
         icon = beautiful.icons.exit,
-        text_normal_bg = accent_color,
+        text_normal_bg = beautiful.icons.lock.color,
         size = 40,
         on_release = function()
             system_daemon:exit()
@@ -189,7 +201,7 @@ local function widget(self)
                 {
                     layout = wibox.layout.fixed.horizontal,
                     spacing = dpi(15),
-                    self._private.prompt,
+                    self._private.text_input,
                     toggle_password_obscure_button
                 },
                 unlock_button
@@ -241,7 +253,7 @@ local function new()
     end)
 
     system_daemon:connect_signal("wrong_password", function()
-        ret._private.prompt:set_text("")
+        ret._private.text_input:set_text("")
     end)
 
     return ret
