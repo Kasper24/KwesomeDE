@@ -662,7 +662,7 @@ function text_input:unfocus()
         self:set_text("")
     end
     awful.keygrabber.stop(wp.keygrabber)
-    if wp.unfocus_on_clicked_outside then
+    if wp.unfocus_on_clicked_outside or wp.unfocus_on_clicked_inside then
         capi.mousegrabber.stop()
     end
     capi.root.cursor("left_ptr")
