@@ -121,21 +121,21 @@ local function do_redraw(self)
     -- Draw the background
     cr:save()
 
-    if not capi.awesome.composite_manager_running then
-        -- This is pseudo-transparency: We draw the wallpaper in the background
-        local wallpaper = surface.load_silently(capi.root.wallpaper(), false)
-        cr.operator = cairo.Operator.SOURCE
-        if wallpaper then
-            cr:set_source_surface(wallpaper, -x, -y)
-        else
-            cr:set_source_rgb(0, 0, 0)
-        end
-        cr:paint()
-        cr.operator = cairo.Operator.OVER
-    else
+    -- if not capi.awesome.composite_manager_running then
+    --     -- This is pseudo-transparency: We draw the wallpaper in the background
+    --     local wallpaper = surface.load_silently(capi.root.wallpaper(), false)
+    --     cr.operator = cairo.Operator.SOURCE
+    --     if wallpaper then
+    --         cr:set_source_surface(wallpaper, -x, -y)
+    --     else
+    --         cr:set_source_rgb(0, 0, 0)
+    --     end
+    --     cr:paint()
+    --     cr.operator = cairo.Operator.OVER
+    -- else
         -- This is true transparency: We draw a translucent background
         cr.operator = cairo.Operator.SOURCE
-    end
+    -- end
 
     cr:set_source(self.background_color)
     cr:paint()
@@ -255,17 +255,17 @@ function drawable:set_bg(c)
     -- XXX: This isn't needed when awesome.composite_manager_running is true,
     -- but a compositing manager could stop/start and we'd have to properly
     -- handle this. So for now we choose the lazy approach.
-    local redraw_on_move = not color.create_opaque_pattern(c)
-    if self._redraw_on_move ~= redraw_on_move then
-        self._redraw_on_move = redraw_on_move
-        if redraw_on_move then
-            self.drawable:connect_signal("property::x", self._do_complete_repaint)
-            self.drawable:connect_signal("property::y", self._do_complete_repaint)
-        else
-            self.drawable:disconnect_signal("property::x", self._do_complete_repaint)
-            self.drawable:disconnect_signal("property::y", self._do_complete_repaint)
-        end
-    end
+    -- local redraw_on_move = not color.create_opaque_pattern(c)
+    -- if self._redraw_on_move ~= redraw_on_move then
+    --     self._redraw_on_move = redraw_on_move
+    --     if redraw_on_move then
+    --         self.drawable:connect_signal("property::x", self._do_complete_repaint)
+    --         self.drawable:connect_signal("property::y", self._do_complete_repaint)
+    --     else
+    --         self.drawable:disconnect_signal("property::x", self._do_complete_repaint)
+    --         self.drawable:disconnect_signal("property::y", self._do_complete_repaint)
+    --     end
+    -- end
 
     self.background_color = c
     self._do_complete_repaint()
@@ -506,11 +506,11 @@ function drawable.new(d, widget_context_skeleton, drawable_name)
 end
 
 -- Redraw all drawables when the wallpaper changes
-capi.awesome.connect_signal("wallpaper_changed", function()
-    for d in pairs(visible_drawables) do
-        d:_do_complete_repaint()
-    end
-end)
+-- capi.awesome.connect_signal("wallpaper_changed", function()
+--     for d in pairs(visible_drawables) do
+--         d:_do_complete_repaint()
+--     end
+-- end)
 
 -- Give drawables a chance to react to screen changes
 local function draw_all()
