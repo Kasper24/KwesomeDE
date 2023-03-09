@@ -219,8 +219,7 @@ function text_input:set_widget_template(widget_template)
         cr:line_to(wp.cursor_x, logical_rect.y + logical_rect.height + 6)
         cr:stroke()
 
-        cr:set_source_rgb(1, 1, 1)
-
+        cr:set_source(gcolor(wp.text_color))
         text_draw(self, context, cr, width, height)
 
         if self:get_text() == "" and placeholder_widget then
@@ -717,11 +716,13 @@ local function new()
 
     wp.reset_on_unfocus = false
 
-    wp.placeholder = ""
-    wp.text = ""
     wp.only_numbers = false
     wp.round = false
     wp.obscure = false
+
+    wp.placeholder = ""
+    wp.text_color = beautiful.colors.on_background
+    wp.text = ""
 
     wp.cursor_width = 2
     wp.cursor_bg = beautiful.colors.on_background
