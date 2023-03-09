@@ -29,7 +29,7 @@ local text_input = {
 }
 
 local properties = {
-    "unfocus_keys", "unfocus_on_clicked_inside", "unfocus_on_clicked_outside", "unfocus_on_mouse_leave", "unfocus_on_tag_change",
+    "unfocus_keys", "unfocus_on_clicked_outside", "unfocus_on_mouse_leave", "unfocus_on_tag_change",
     "focus_on_subject_mouse_enter", "unfocus_on_subject_mouse_leave",
     "reset_on_unfocus",
     "placeholder", "text", "only_numbers", "round", "obscure",
@@ -106,9 +106,6 @@ local function run_mousegrabber(self)
     capi.mousegrabber.run(function(m)
         if m.buttons[1] then
             if capi.mouse.current_widget ~= self and self.unfocus_on_clicked_outside then
-                self:unfocus()
-                return false
-            elseif capi.mouse.current_widget == self and self.unfocus_on_clicked_inside then
                 self:unfocus()
                 return false
             end
@@ -632,7 +629,7 @@ function text_input:focus()
     end
 
     run_keygrabber(self)
-    if wp.unfocus_on_clicked_outside or wp.unfocus_on_clicked_inside then
+    if wp.unfocus_on_clicked_outside then
         run_mousegrabber(self)
     end
 
@@ -667,7 +664,7 @@ function text_input:unfocus()
         self:set_text("")
     end
     awful.keygrabber.stop(wp.keygrabber)
-    if wp.unfocus_on_clicked_outside or wp.unfocus_on_clicked_inside then
+    if wp.unfocus_on_clicked_outside then
         capi.mousegrabber.stop()
     end
     capi.root.cursor("left_ptr")
@@ -712,7 +709,6 @@ local function new()
     wp.selection_opacity = 0
 
     wp.unfocus_keys = { "Escape", "Return" }
-    wp.unfocus_on_clicked_inside = false
     wp.unfocus_on_clicked_outside = true
     wp.unfocus_on_mouse_leave = false
     wp.unfocus_on_tag_change = true
