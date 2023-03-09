@@ -713,7 +713,7 @@ local function scan_wallpapers(self)
     self._private.we_wallpapers = {}
 
     local debouncer = gtimer {
-        timeout = 0.5,
+        timeout = 5,
         autostart = false,
         single_shot = true,
         callback = function()
