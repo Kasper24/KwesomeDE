@@ -923,7 +923,7 @@ function theme:get_we_wallpapers()
 end
 
 function theme:get_wallpapers_and_we_wallpapers()
-    return {unpack(self._private.wallpapers), unpack(self._private.we_wallpapers)}
+    return gtable.join(self._private.wallpapers, self._private.we_wallpapers)
 end
 
 function theme:preview_we_wallpaper(we_wallpaper, geometry)
