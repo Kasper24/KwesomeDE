@@ -296,8 +296,6 @@ local function prs()
 end
 
 local function new()
-    local accent_color = beautiful.colors.random_accent_color()
-
     local events = events()
     local prs = prs()
 
@@ -315,7 +313,7 @@ local function new()
         widget = widgets.button.text.state,
         on_by_default = true,
         size = 15,
-        on_normal_bg = accent_color,
+        on_normal_bg = beautiful.icons.github.color,
         text_normal_bg = beautiful.colors.on_background,
         text_on_normal_bg = beautiful.colors.on_accent,
         text = "Activity",
@@ -329,7 +327,7 @@ local function new()
     prs_button = wibox.widget {
         widget = widgets.button.text.state,
         size = 15,
-        on_normal_bg = accent_color,
+        on_normal_bg = beautiful.icons.github.color,
         text_normal_bg = beautiful.colors.on_background,
         text_on_normal_bg = beautiful.colors.on_accent,
         text = "PR",

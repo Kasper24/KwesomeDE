@@ -17,8 +17,6 @@ local github = require(path .. ".github")
 local gitlab = require(path .. ".gitlab")
 
 local function new()
-    local accent_color = beautiful.colors.random_accent_color()
-
     local email = email()
     local github = github()
     local gitlab = gitlab()
@@ -41,7 +39,7 @@ local function new()
         widget = widgets.button.text.state,
         on_by_default = true,
         size = 15,
-        on_normal_bg = accent_color,
+        on_normal_bg = beautiful.icons.envelope.color,
         text_normal_bg = beautiful.colors.on_background,
         text_on_normal_bg = beautiful.colors.on_accent,
         text = "Email",
@@ -58,7 +56,7 @@ local function new()
     {
         widget = widgets.button.text.state,
         size = 15,
-        on_normal_bg = accent_color,
+        on_normal_bg = beautiful.icons.envelope.color,
         text_normal_bg = beautiful.colors.on_background,
         text_on_normal_bg = beautiful.colors.on_accent,
         text = "Github",
@@ -75,7 +73,7 @@ local function new()
     {
         widget = widgets.button.text.state,
         size = 15,
-        on_normal_bg = accent_color,
+        on_normal_bg = beautiful.icons.envelope.color,
         text_normal_bg = beautiful.colors.on_background,
         text_on_normal_bg = beautiful.colors.on_accent,
         text = "Gitlab",

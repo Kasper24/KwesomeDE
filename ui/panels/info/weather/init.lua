@@ -253,8 +253,6 @@ local function new()
         layout = wibox.layout.flex.horizontal
     }
 
-    local graph_accent_color = beautiful.colors.random_accent_color()
-
     local hourly_forecast_graph = wibox.widget {
         widget = widgets.graph,
         forced_height = dpi(55),
@@ -263,7 +261,7 @@ local function new()
         step_width = dpi(18),
         step_hook = curvaceous,
         background_color = beautiful.colors.transparent,
-        color = helpers.color.darken(graph_accent_color, 0.5),
+        color = helpers.color.darken(beautiful.icons.sun.color, 0.5),
         opacity = 1
     }
 
@@ -275,14 +273,13 @@ local function new()
         step_width = dpi(18),
         step_hook = curvaceous,
         background_color = beautiful.colors.transparent,
-        color = graph_accent_color,
+        color = beautiful.icons.sun.color,
         opacity = 1
     }
 
     capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
-        graph_accent_color = old_colorscheme_to_new_map[graph_accent_color]
-        hourly_forecast_graph.color = helpers.color.darken(graph_accent_color, 0.5)
-        hourly_forecast_graph_border.color = graph_accent_color
+        hourly_forecast_graph.color = helpers.color.darken(beautiful.icons.sun.color, 0.5)
+        hourly_forecast_graph_border.color = beautiful.icons.sun.color
     end)
 
     local hours = wibox.widget {
