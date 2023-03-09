@@ -1,9 +1,7 @@
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local wibox = require("wibox")
-local collectgarbage = collectgarbage
 local ipairs = ipairs
-local string = string
 local table = table
 local math = math
 
@@ -211,8 +209,6 @@ function rofi_grid:refresh()
     local min_entry_index_to_include = max_entry_index_to_include - self._private.entries_per_page
 
     self:get_grid():reset()
-    collectgarbage("collect")
-    collectgarbage("collect")
 
     for index, entry in ipairs(self:get_matched_entries()) do
         -- Only add widgets that are between this range (part of the current page)
@@ -230,8 +226,6 @@ function rofi_grid:search()
     self._private.matched_entries = {}
     -- Remove all the grid widgets
     self:get_grid():reset()
-    collectgarbage("collect")
-    collectgarbage("collect")
 
     if text == "" then
         self._private.matched_entries = self._private.entries
@@ -338,8 +332,6 @@ function rofi_grid:page_forward(dir)
 
     -- Remove the current page entrys from the grid
     self:get_grid():reset()
-    collectgarbage("collect")
-    collectgarbage("collect")
 
     for index, entry in ipairs(self:get_matched_entries()) do
         -- Only add widgets that are between this range (part of the current page)
@@ -385,8 +377,6 @@ function rofi_grid:page_backward(dir)
 
     -- Remove the current page entrys from the grid
     self:get_grid():reset()
-    collectgarbage("collect")
-    collectgarbage("collect")
 
     local max_entry_index_to_include = self._private.entries_per_page * self:get_current_page()
     local min_entry_index_to_include = max_entry_index_to_include - self._private.entries_per_page
