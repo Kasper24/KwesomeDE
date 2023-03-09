@@ -739,11 +739,7 @@ local function scan_wallpapers(self)
                 self:set_selected_colorscheme(self:get_we_wallpapers()[1].path, "we")
             end
 
-            self:emit_signal("wallpapers",
-                self._private.wallpapers,
-                self._private.we_wallpapers,
-                {unpack(self._private.wallpapers), unpack(self._private.we_wallpapers)}
-            )
+            self:emit_signal("wallpapers")
         end
     }
 
