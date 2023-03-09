@@ -195,6 +195,8 @@ function text_input:set_widget_template(widget_template)
     self._private.text_widget.forced_width = math.huge
     local text_draw = self._private.text_widget.draw
 
+    self._private.text_widget:set_text(self:get_text())
+
     local placeholder_widget = widget_template:get_children_by_id("placeholder_role")
     if placeholder_widget then
         placeholder_widget = placeholder_widget[1]
