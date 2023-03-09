@@ -247,7 +247,6 @@ function text_input:set_widget_template(widget_template)
 
     self._private.text_widget:connect_signal("button::press", function(_, lx, ly, button, mods, find_widgets_result)
         if button == 1 then
-            self:focus()
             wp.press_pos = { lx = lx, ly = ly }
             wp.offset = { x = find_widgets_result.x, y = find_widgets_result.y }
             find_widgets_result.drawable:connect_signal("mouse::move", on_drag)
@@ -261,6 +260,7 @@ function text_input:set_widget_template(widget_template)
         else
             wp.selecting_text = false
         end
+        self:focus()
     end)
 
     self._private.text_widget:connect_signal("mouse::enter", function()
@@ -627,7 +627,10 @@ function text_input:focus()
         return
     end
 
-    self:show_cursor()
+    if self:get_mode() == "insert" then
+        self:show_cursor()
+    end
+
     run_keygrabber(self)
     if wp.unfocus_on_clicked_outside or wp.unfocus_on_clicked_inside then
         run_mousegrabber(self)
