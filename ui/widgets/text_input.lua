@@ -313,7 +313,6 @@ function text_input:update_text(text)
 end
 
 function text_input:set_text(text)
-    local wp = self._private
     local text_widget = self:get_text_widget()
 
     text_widget:set_text(text)
