@@ -261,16 +261,16 @@ function rofi_grid:search()
     -- it will reselect the entry whose index is the same as the entry index that was previously selected
     -- and if matched_entries.length < current_index it will instead select the entry with the greatest index
     if self._private.try_to_keep_index_after_searching then
-        if self:get_grid():get_widgets_at(old_pos.row, old_pos.col) == nil then
-            local entry = self:get_grid().children[#self:get_grid().children]
-            entry:select()
+        local entry_at_old_pos = self:get_grid():get_widgets_at(old_pos.row, old_pos.col)
+        if entry_at_old_pos and entry_at_old_pos[1] then
+            entry_at_old_pos[1]:select()
         else
-            local entry = self:get_grid():get_widgets_at(old_pos.row, old_pos.col)[1]
+            local entry = self:get_grid().children[#self:get_grid().children]
             entry:select()
         end
     -- Otherwise select the first entry on the list
-    elseif #self:get_grid().children > 0 then
-        local entry = self:get_grid():get_widgets_at(1, 1)[1]
+    elseif self:get_grid().children[1] then
+        local entry = self:get_grid().children[1]
         entry:select()
     end
 
