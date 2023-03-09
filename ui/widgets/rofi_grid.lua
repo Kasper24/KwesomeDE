@@ -107,11 +107,11 @@ local function entry_widget(self, entry)
     end
 
     function widget:unselect()
-        local index = rofi_grid:get_index_of_entry(entry)
-        self:emit_signal("unselect", index)
-        rofi_grid:emit_signal("select", index)
         self.selected = false
         rofi_grid._private.selected_widget = nil
+
+        self:emit_signal("unselect")
+        rofi_grid:emit_signal("unselect")
     end
 
     function widget:is_selected()
