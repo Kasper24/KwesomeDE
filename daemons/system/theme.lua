@@ -679,20 +679,31 @@ local function we_wallpaper(self, screen)
         screen.geometry.width,
         screen.geometry.height
     )
-    awful.spawn.easy_async_with_shell(cmd, function(stdout, stderr)
+    local test_cmd = string.format("cd %s && ./linux-wallpaperengine --assets-dir %s %s --fps %s --class linux-wallpaperengine --x %s --y %s --width %s --height %s",
+        WE_PATH,
+        self:get_wallpaper_engine_assets_folder(),
+        self:get_wallpaper_engine_workshop_folder() .. "/" .. id,
+        self:get_wallpaper_engine_fps(),
+        0,
+        0,
+        1,
+        1
+    )
+
+    -- I'm not sure why, but running wallpaper engine inside easy_async_with_shell
+    -- results in weird issues, so using it only for error handling then kill it
+    -- and spawn a new one using .spawn
+    local pid = 0
+    pid = awful.spawn.easy_async_with_shell(test_cmd, function(stdout, stderr)
         stderr = helpers.string.trim(stderr)
         if stderr ~= "" then
             self:emit_signal("wallpaper_engine::error", stderr)
-        else
-            -- I'm not sure why, but running wallpaper engine inside easy_async_with_shell
-            -- results in weird issues, so using it only for error handling then kill it
-            -- and spawn a new one using .spawn
-            awful.spawn("pkill -f linux-wallpaperengine", false)
-            awful.spawn.with_shell(cmd)
-            gtimer.start_new(2, function()
-                on_wallpaper_changed()
-            end)
         end
+        awful.spawn("kill -9 " .. pid, false)
+    end)
+
+    gtimer.start_new(1, function()
+        awful.spawn.with_shell(cmd)
     end)
 end
 
