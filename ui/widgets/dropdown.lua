@@ -23,25 +23,25 @@ function dropdown:add(key, value)
         text = key,
         on_release = function()
             self.on_value_selected(value)
-            self:set_text(self.prompt .. key)
+            self:set_text(self.label .. key)
         end
     })
 end
 
 function dropdown:select(key, value)
     self.on_value_selected(value)
-    self:set_text(self.prompt .. key)
+    self:set_text(self.label .. key)
 end
 
 function dropdown:get_value()
-    return self:get_text():gsub(self.prompt, "")
+    return self:get_text():gsub(self.label, "")
 end
 
 local function new(args)
     args = args or {}
 
     args.menu_width = args.menu_width or nil
-    args.prompt = args.prompt or ""
+    args.label = args.label or ""
     args.initial_value = args.initial_value or ""
     args.values = args.values or {}
     args.on_value_selected = args.on_value_selected or nil
@@ -54,7 +54,7 @@ local function new(args)
         widget = tbwidget.state,
         halign = "left",
         size = 12,
-        text = args.prompt .. args.initial_value,
+        text = args.label .. args.initial_value,
         text_normal_bg = beautiful.colors.on_background,
         on_release = function()
             menu:toggle()
@@ -69,7 +69,7 @@ local function new(args)
             text = key,
             on_release = function()
                 args.on_value_selected(value)
-                dropdown_button:set_text(args.prompt .. key)
+                dropdown_button:set_text(args.label .. key)
             end
         })
     end
