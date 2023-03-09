@@ -669,16 +669,6 @@ end
 
 local function we_wallpaper(self, screen)
     local id = get_we_wallpaper_id(self:get_active_wallpaper())
-    local cmd = string.format("cd %s && ./linux-wallpaperengine --assets-dir %s %s --fps %s --class linux-wallpaperengine --x %s --y %s --width %s --height %s",
-        WE_PATH,
-        self:get_wallpaper_engine_assets_folder(),
-        self:get_wallpaper_engine_workshop_folder() .. "/" .. id,
-        self:get_wallpaper_engine_fps(),
-        screen.geometry.x,
-        screen.geometry.y,
-        screen.geometry.width,
-        screen.geometry.height
-    )
     local test_cmd = string.format("cd %s && ./linux-wallpaperengine --assets-dir %s %s --fps %s --class linux-wallpaperengine --x %s --y %s --width %s --height %s",
         WE_PATH,
         self:get_wallpaper_engine_assets_folder(),
@@ -702,6 +692,16 @@ local function we_wallpaper(self, screen)
         awful.spawn("kill -9 " .. pid, false)
     end)
 
+    local cmd = string.format("cd %s && ./linux-wallpaperengine --assets-dir %s %s --fps %s --class linux-wallpaperengine --x %s --y %s --width %s --height %s",
+        WE_PATH,
+        self:get_wallpaper_engine_assets_folder(),
+        self:get_wallpaper_engine_workshop_folder() .. "/" .. id,
+        self:get_wallpaper_engine_fps(),
+        screen.geometry.x,
+        screen.geometry.y,
+        screen.geometry.width,
+        screen.geometry.height
+    )
     gtimer.start_new(1, function()
         awful.spawn.with_shell(cmd)
     end)
