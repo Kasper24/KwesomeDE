@@ -236,6 +236,11 @@
         "summary": "UI animations framerate",
         "description": "The framerate of the UI animations"
     },
+    "theme-ui-show-lockscreen-on-login": {
+        "default": false,
+        "summary": "UI show lockscreen on init",
+        "description": "Show the lockscreen on login"
+    },
     "theme-we-workshop-folder": {
         "default": "",
         "summary": "Wallpaper engine workshop folder",

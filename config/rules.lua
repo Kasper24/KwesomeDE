@@ -271,34 +271,6 @@ local apps = {
 
 require("awful.autofocus")
 
-power_popup:connect_signal("visibility", function(self, visibie)
-    if visibie then
-        for _, client in ipairs(capi.client.get()) do
-            if client.fake_root ~= true then
-                client.hidden = true
-            end
-        end
-    else
-        for _, client in ipairs(capi.client.get()) do
-            client.hidden = false
-        end
-    end
-end)
-
-lock_popup:connect_signal("visibility", function(self, visibie)
-    if visibie then
-        for _, client in ipairs(capi.client.get()) do
-            if client.fake_root ~= true then
-                client.hidden = true
-            end
-        end
-    else
-        for _, client in ipairs(capi.client.get()) do
-            client.hidden = false
-        end
-    end
-end)
-
 capi.client.connect_signal("request::manage", function(client)
     if not capi.awesome.startup then
         client:to_secondary_section()
@@ -310,22 +282,6 @@ capi.client.connect_signal("property::floating", function(client)
         client.ontop = true
     else
         client.ontop = false
-    end
-end)
-
-capi.client.connect_signal("property::fullscreen", function(client)
-    if client.fullscreen then
-        for screen in capi.screen do
-            screen.left_wibar.ontop = false
-            screen.top_wibar.ontop = false
-        end
-    else
-        if #helpers.client.find({fullscreen = true}) == 0 then
-            for screen in capi.screen do
-                screen.left_wibar.ontop = true
-                screen.top_wibar.ontop = true
-            end
-        end
     end
 end)
 

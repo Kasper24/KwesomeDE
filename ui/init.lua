@@ -1,17 +1,33 @@
 local awful = require("awful")
 local widgets = require("ui.widgets")
-local helpers = require("helpers")
+local welcome_app = require("ui.apps.welcome")
+local theme_app = require("ui.apps.theme")
+local action_panel = require(... .. ".panels.action")
+local info_panel = require(... .. ".panels.info")
+local notification_panel = require(... .. ".panels.notification")
+local power_popup = require(... .. ".popups.power")
+local lock_popup = require(... .. ".popups.lock")
+local cpu_popup = require(... .. ".panels.action.info.cpu")
+local ram_popup = require(... .. ".panels.action.info.ram")
+local disk_popup = require(... .. ".panels.action.info.disk")
+local audio_popup = require(... .. ".panels.action.info.audio")
+local wifi_popup = require(... .. ".panels.action.dashboard.wifi")
+local bluetooth_popup = require(... .. ".panels.action.dashboard.bluetooth")
 local system_daemon = require("daemons.system.system")
+local theme_daemon = require("daemons.system.theme")
+local helpers = require("helpers")
 local capi = {
+    screen = screen,
     client = client
 }
 
-if DEBUG ~= true and helpers.misc.is_restart() == false then
-    require(... .. ".popups.loading")
-end
-
-local welcome_app = require("ui.apps.welcome")
-local theme_app = require("ui.apps.theme")
+require(... .. ".desktop")
+require(... .. ".popups.brightness")
+require(... .. ".popups.keyboard_layout")
+require(... .. ".popups.volume")
+require(... .. ".notifications")
+require(... .. ".titlebar")
+require(... .. ".wibar")
 
 capi.client.connect_signal("scanned", function()
     if system_daemon:is_new_version() or system_daemon:does_need_setup() then
@@ -25,31 +41,6 @@ capi.client.connect_signal("scanned", function()
     end
 end)
 
-require(... .. ".desktop")
-require(... .. ".popups.brightness")
-require(... .. ".popups.keyboard_layout")
-require(... .. ".popups.volume")
-require(... .. ".notifications")
-require(... .. ".titlebar")
-require(... .. ".wibar")
-
-local action_panel = require(... .. ".panels.action")
-local info_panel = require(... .. ".panels.info")
-local notification_panel = require(... .. ".panels.notification")
-local power_popup = require(... .. ".popups.power")
-local lock_popup = require(... .. ".popups.lock")
-local cpu_popup = require(... .. ".panels.action.info.cpu")
-local ram_popup = require(... .. ".panels.action.info.ram")
-local disk_popup = require(... .. ".panels.action.info.disk")
-local audio_popup = require(... .. ".panels.action.info.audio")
-local wifi_popup = require(... .. ".panels.action.dashboard.wifi")
-local bluetooth_popup = require(... .. ".panels.action.dashboard.bluetooth")
-
-local capi = {
-    screen = screen,
-    client = client
-}
-
 capi.client.connect_signal("property::fullscreen", function(c)
     if c.fullscreen then
         action_panel:hide()
@@ -61,6 +52,18 @@ capi.client.connect_signal("property::fullscreen", function(c)
         audio_popup:hide()
         wifi_popup:hide()
         bluetooth_popup:hide()
+
+        for screen in capi.screen do
+            screen.left_wibar.ontop = false
+            screen.top_wibar.ontop = false
+        end
+    else
+        if #helpers.client.find({fullscreen = true}) == 0 then
+            for screen in capi.screen do
+                screen.left_wibar.ontop = true
+                screen.top_wibar.ontop = true
+            end
+        end
     end
 end)
 
@@ -173,10 +176,6 @@ bluetooth_popup:connect_signal("visibility", function(self, visible)
     end
 end)
 
-awful.screen.connect_for_each_screen(function(s)
-    s.screen_mask = widgets.screen_mask(s)
-end)
-
 power_popup:connect_signal("visibility", function(visibility)
     for s in capi.screen do
         if visibility and s ~= awful.screen.focused() then
@@ -190,11 +189,58 @@ end)
 
 lock_popup:connect_signal("visibility", function(visibility)
     for s in capi.screen do
-        if visibility and s ~= awful.screen.focused() then
-            s.screen_mask.visible = true
-        end
-        if visibility == false then
+        if visibility then
+            if s ~= awful.screen.focused() then
+                s.screen_mask.visible = true
+            end
+            s.left_wibar.ontop = false
+            s.top_wibar.ontop = false
+        else
             s.screen_mask.visible = false
+            if #helpers.client.find({fullscreen = true}) == 0 then
+                s.left_wibar.ontop = true
+                s.top_wibar.ontop = true
+            end
         end
     end
 end)
+
+power_popup:connect_signal("visibility", function(self, visibie)
+    if visibie then
+        for _, client in ipairs(capi.client.get()) do
+            if client.fake_root ~= true then
+                client.hidden = true
+            end
+        end
+    else
+        for _, client in ipairs(capi.client.get()) do
+            client.hidden = false
+        end
+    end
+end)
+
+lock_popup:connect_signal("visibility", function(self, visibie)
+    if visibie then
+        for _, client in ipairs(capi.client.get()) do
+            if client.fake_root ~= true then
+                client.hidden = true
+            end
+        end
+    else
+        for _, client in ipairs(capi.client.get()) do
+            client.hidden = false
+        end
+    end
+end)
+
+awful.screen.connect_for_each_screen(function(s)
+    s.screen_mask = widgets.screen_mask(s)
+end)
+
+if DEBUG ~= true and helpers.misc.is_restart() == false then
+    if theme_daemon:get_ui_show_lockscreen_on_login() then
+        lock_popup:show()
+    else
+        require(... .. ".popups.loading")
+    end
+end

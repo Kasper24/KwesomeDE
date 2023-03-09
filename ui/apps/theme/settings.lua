@@ -256,7 +256,7 @@ local function theme_checkbox(key)
     local name = wibox.widget {
         widget = widgets.text,
         size = 15,
-        text = "UI " .. key:sub(1, 1):upper() .. key:sub(2) .. ":"
+        text = "UI " .. key:sub(1, 1):upper() .. key:sub(2):gsub("_", " ") .. ":"
     }
 
     local checkbox = wibox.widget {
@@ -368,6 +368,7 @@ local function new(layout)
             theme_daemon:set_ui_animations_framerate(value)
         end, 1),
         theme_checkbox("animations"),
+        theme_checkbox("show_lockscreen_on_login"),
         separator(),
         folder_picker("WP Engine Assets Folder: ", theme_daemon:get_wallpaper_engine_assets_folder(), function(folder)
             theme_daemon:set_wallpaper_engine_assets_folder(folder)

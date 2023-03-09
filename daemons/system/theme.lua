@@ -1151,6 +1151,20 @@ function theme:get_ui_animations_framerate()
     return self._private.ui_animations_framerate
 end
 
+-- Show lockscreen on login
+function theme:set_ui_show_lockscreen_on_login(show_ui_lockscreen_on_login)
+    self._private.show_ui_lockscreen_on_login = show_ui_lockscreen_on_login
+    helpers.settings["theme-ui-show-lockscreen-on-login"] = show_ui_lockscreen_on_login
+end
+
+function theme:get_ui_show_lockscreen_on_login()
+    if self._private.show_ui_lockscreen_on_login == nil then
+        self._private.show_ui_lockscreen_on_login = helpers.settings["theme-ui-show-lockscreen-on-login"]
+    end
+
+    return self._private.show_ui_lockscreen_on_login
+end
+
 -- Command after generation
 function theme:set_command_after_generation(command_after_generation)
     self._private.command_after_generation = command_after_generation
