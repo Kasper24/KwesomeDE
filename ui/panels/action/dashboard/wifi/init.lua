@@ -35,13 +35,41 @@ local function access_point_widget(layout, access_point)
         size = 20
     }
 
-    local prompt = wibox.widget {
-        widget = widgets.prompt,
+    local text_input = wibox.widget {
+        widget = widgets.text_input,
         forced_width = dpi(440),
-        forced_height = dpi(50),
         obscure = true,
-        icon = beautiful.icons.lock,
         text = access_point.password,
+        widget_template = wibox.widget {
+            widget = widgets.background,
+            shape = helpers.ui.rrect(),
+            bg = beautiful.colors.surface,
+            {
+                widget = wibox.container.margin,
+                margins = dpi(15),
+                {
+                    layout = wibox.layout.fixed.horizontal,
+                    spacing = dpi(15),
+                    {
+                        widget = widgets.text,
+                        icon = beautiful.icons.lock,
+                        color = beautiful.icons.network.wifi_low.color
+                    },
+                    {
+                        layout = wibox.layout.stack,
+                        {
+                            widget = wibox.widget.textbox,
+                            id = "placeholder_role",
+                            text = "Search: "
+                        },
+                        {
+                            widget = wibox.widget.textbox,
+                            id = "text_role"
+                        },
+                    }
+                }
+            }
+        }
     }
 
     local toggle_password_obscure_button = wibox.widget {
@@ -49,10 +77,10 @@ local function access_point_widget(layout, access_point)
         state = true,
         handle_active_color = beautiful.icons.network.wifi_off.color,
         on_turn_on = function()
-            prompt:set_obscure(true)
+            text_input:set_obscure(true)
         end,
         on_turn_off = function()
-            prompt:set_obscure(false)
+            text_input:set_obscure(false)
         end
     }
 
@@ -88,8 +116,7 @@ local function access_point_widget(layout, access_point)
         size = 12,
         text = "Cancel",
         on_release = function()
-            prompt:stop()
-            widget:get_children_by_id("button")[1]:turn_off()
+            text_input:unfocus()
             anim:set(dpi(65))
         end
     }
@@ -101,7 +128,7 @@ local function access_point_widget(layout, access_point)
         size = 12,
         text = access_point:is_active() == true and "Disconnect" or "Connect",
         on_release = function()
-            access_point:toggle(prompt:get_text(), auto_connect_checkbox:get_state())
+            access_point:toggle(text_input:get_text(), auto_connect_checkbox:get_state())
         end
     }
 
@@ -137,8 +164,7 @@ local function access_point_widget(layout, access_point)
             spinning_circle:stop()
             connect_or_disconnect_stack:raise_widget(connect_or_disconnect)
 
-            prompt:stop()
-            widget:get_children_by_id("button")[1]:turn_off()
+            text_input:unfocus()
             anim:set(dpi(65))
         end
     end)
@@ -153,16 +179,12 @@ local function access_point_widget(layout, access_point)
         mode = "exact",
         height = dpi(65),
         {
-            widget = widgets.button.elevated.state,
-            on_normal_bg = beautiful.colors.transparent,
+            widget = widgets.button.elevated.normal,
             id = "button",
             on_release = function(self)
-                if self._private.state == false then
-                    capi.awesome.emit_signal("access_point_widget::expanded", widget)
-                    prompt:start()
-                    anim:set(dpi(250))
-                    self:turn_on()
-                end
+                capi.awesome.emit_signal("access_point_widget::expanded", widget)
+                text_input:focus()
+                anim:set(dpi(250))
             end,
             {
                 layout = wibox.layout.fixed.vertical,
@@ -177,7 +199,7 @@ local function access_point_widget(layout, access_point)
                 {
                     layout = wibox.layout.fixed.horizontal,
                     spacing = dpi(15),
-                    prompt,
+                    text_input,
                     toggle_password_obscure_button
                 },
                 {
@@ -206,8 +228,7 @@ local function access_point_widget(layout, access_point)
 
     capi.awesome.connect_signal("access_point_widget::expanded", function(toggled_on_widget)
         if toggled_on_widget ~= widget then
-            prompt:stop()
-            widget:get_children_by_id("button")[1]:turn_off()
+            text_input:unfocus()
             anim:set(dpi(65))
         end
     end)

@@ -35,23 +35,36 @@ local function command_after_generation()
         text = "Command after generation: "
     }
 
-    local prompt = wibox.widget {
-        widget = widgets.prompt,
+    local text_input = wibox.widget {
+        widget = widgets.text_input,
         forced_width = dpi(600),
-        forced_height = dpi(50),
-        reset_on_stop = false,
+        unfocus_on_clicked_outside = false,
+        unfocus_on_mouse_leave = true,
         text = theme_daemon:get_command_after_generation(),
-        text_color = beautiful.colors.on_background,
+        widget_template = wibox.widget {
+			widget = widgets.background,
+			shape = helpers.ui.rrect(),
+			bg = beautiful.colors.surface,
+			{
+				widget = wibox.container.margin,
+				margins = dpi(5),
+				{
+					widget = wibox.widget.textbox,
+					id = "text_role"
+				}
+			}
+		}
     }
 
-    prompt:connect_signal("text::changed", function(self, text)
+    text_input:connect_signal("property::text", function(self, text)
         theme_daemon:set_command_after_generation(text)
     end)
 
     return wibox.widget {
         layout = wibox.layout.fixed.horizontal,
+        forced_height = dpi(40),
         title,
-        prompt
+        text_input
     }
 end
 
@@ -101,7 +114,7 @@ local function picom_slider(key, maximum, round, minimum)
         text = display_name
     }
 
-    local slider_prompt = widgets.slider_prompt {
+    local slider_text_input = widgets.slider_text_input {
         slider_width = dpi(410),
         round = round,
         minimum = minimum or 0,
@@ -110,7 +123,7 @@ local function picom_slider(key, maximum, round, minimum)
         bar_active_color = beautiful.icons.spraycan.color,
     }
 
-    slider_prompt:connect_signal("property::value", function(self, value, instant)
+    slider_text_input:connect_signal("property::value", function(self, value, instant)
         picom_daemon["set_" .. key](picom_daemon, value)
     end)
 
@@ -118,7 +131,7 @@ local function picom_slider(key, maximum, round, minimum)
         layout = wibox.layout.align.horizontal,
         forced_height = dpi(40),
         name,
-        slider_prompt
+        slider_text_input
     }
 end
 
@@ -130,13 +143,29 @@ local function profile_image()
         text = "Profile image:"
     }
 
-    local folder_prompt = wibox.widget {
-        widget = widgets.prompt,
+    local folder_text_input = wibox.widget {
+        widget = widgets.text_input,
         forced_width = dpi(410),
-        text = theme_daemon:get_profile_image()
+        unfocus_on_clicked_outside = false,
+        unfocus_on_mouse_leave = true,
+        text = theme_daemon:get_profile_image(),
+        widget_template = wibox.widget {
+			widget = widgets.background,
+			shape = helpers.ui.rrect(),
+			bg = beautiful.colors.surface,
+			{
+				widget = wibox.container.margin,
+				margins = dpi(5),
+				{
+					widget = wibox.widget.textbox,
+					halign = "center",
+					id = "text_role"
+				}
+			}
+		}
     }
 
-    folder_prompt:connect_signal("text::changed", function(self, text)
+    folder_text_input:connect_signal("property::text", function(self, text)
         theme_daemon:set_profile_image(text)
     end)
 
@@ -151,7 +180,7 @@ local function profile_image()
     }
 
     theme_daemon:connect_signal("profile_image", function(self, profile_image)
-        folder_prompt:set_text(profile_image)
+        folder_text_input:set_text(profile_image)
     end)
 
     return wibox.widget {
@@ -159,7 +188,7 @@ local function profile_image()
         forced_height = dpi(35),
         spacing = dpi(15),
         title,
-        folder_prompt,
+        folder_text_input,
         set_folder_button
     }
 end
@@ -172,13 +201,28 @@ local function folder_picker(text, initial_value, on_changed)
         text = text
     }
 
-    local folder_prompt = wibox.widget {
-        widget = widgets.prompt,
+    local folder_text_input = wibox.widget {
+        widget = widgets.text_input,
         forced_width = dpi(410),
-        text = initial_value
+        unfocus_on_clicked_outside = false,
+        unfocus_on_mouse_leave = true,
+        text = initial_value,
+        widget_template = wibox.widget {
+            widget = widgets.background,
+            shape = helpers.ui.rrect(),
+            bg = beautiful.colors.surface,
+            {
+                widget = wibox.container.margin,
+                margins = dpi(5),
+                {
+                    widget = wibox.widget.textbox,
+                    id = "text_role"
+                }
+            }
+		}
     }
 
-    folder_prompt:connect_signal("text::changed", function(self, text)
+    folder_text_input:connect_signal("property::text", function(self, text)
         on_changed(text)
     end)
 
@@ -192,7 +236,7 @@ local function folder_picker(text, initial_value, on_changed)
                 stdout = helpers.string.trim(stdout)
                 if stdout ~= "" and stdout ~= nil then
                     on_changed(stdout)
-                    folder_prompt:set_text(stdout)
+                    folder_text_input:set_text(stdout)
                 end
             end)
         end
@@ -203,7 +247,7 @@ local function folder_picker(text, initial_value, on_changed)
         forced_height = dpi(35),
         spacing = dpi(15),
         title,
-        folder_prompt,
+        folder_text_input,
         set_folder_button
     }
 end
@@ -244,7 +288,7 @@ local function theme_slider(text, initial_value, maximum, round, on_changed, min
         text = text
     }
 
-    local slider_prompt = widgets.slider_prompt {
+    local slider_text_input = widgets.slider_text_input {
         slider_width = dpi(410),
         round = round,
         value = initial_value,
@@ -253,7 +297,7 @@ local function theme_slider(text, initial_value, maximum, round, on_changed, min
         bar_active_color = beautiful.icons.spraycan.color,
     }
 
-    slider_prompt:connect_signal("property::value", function(self, value)
+    slider_text_input:connect_signal("property::value", function(self, value)
         on_changed(value)
     end)
 
@@ -261,7 +305,7 @@ local function theme_slider(text, initial_value, maximum, round, on_changed, min
         layout = wibox.layout.align.horizontal,
         forced_height = dpi(40),
         name,
-        slider_prompt
+        slider_text_input
     }
 end
 

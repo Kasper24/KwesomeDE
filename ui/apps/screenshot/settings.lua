@@ -49,8 +49,9 @@ local function delay()
         text = "Delay:"
     }
 
-    local slider = widgets.slider_prompt {
+    local slider = widgets.slider_text_input {
         slider_width = dpi(150),
+        text_input_width = dpi(60),
         value = screenshot_daemon:get_delay(),
         round = true,
         maximum = 100,
@@ -77,14 +78,15 @@ local function folder()
         text = "Folder:"
     }
 
-    local folder_prompt = wibox.widget {
-        widget = widgets.prompt,
+    local folder_text_input = wibox.widget {
+        widget = widgets.text_input,
         forced_width = dpi(220),
-        size = 12,
+        unfocus_on_clicked_outside = false,
+        unfocus_on_mouse_leave = true,
         text = screenshot_daemon:get_folder()
     }
 
-    folder_prompt:connect_signal("text::changed", function(self, text)
+    folder_text_input:connect_signal("property::text", function(self, text)
         screenshot_daemon:set_folder(text)
     end)
 
@@ -99,7 +101,7 @@ local function folder()
     }
 
     screenshot_daemon:connect_signal("folder::updated", function(self, folder)
-        folder_prompt:set_text(folder)
+        folder_text_input:set_text(folder)
     end)
 
     return wibox.widget {
@@ -107,7 +109,7 @@ local function folder()
         forced_height = dpi(35),
         spacing = dpi(15),
         title,
-        folder_prompt,
+        folder_text_input,
         set_folder_button
     }
 end

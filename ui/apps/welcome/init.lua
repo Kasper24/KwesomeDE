@@ -13,13 +13,8 @@ local email_daemon = require("daemons.web.email")
 local github_daemon = require("daemons.web.github")
 local gitlab_daemon = require("daemons.web.gitlab")
 local weather_daemon = require("daemons.web.weather")
-local theme_app = require("ui.apps.theme")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
-local capi = {
-    awesome = awesome,
-    client = client
-}
 
 local instance = nil
 
@@ -31,6 +26,47 @@ local function indicator(active)
         forced_width = dpi(20),
         shape = gshape.circle,
         bg = active and accent_color or helpers.color.lighten(beautiful.colors.surface_no_opacity, 0.2)
+    }
+end
+
+local function text_input_widget(icon, placeholder, initial, forced_width, forced_height)
+    return wibox.widget {
+        widget = widgets.text_input,
+        forced_width = forced_width,
+        forced_height = forced_height,
+        unfocus_keys = { },
+        unfocus_on_clicked_outside = false,
+        unfocus_on_mouse_leave = true,
+        text = initial or "",
+        widget_template = wibox.widget {
+            widget = widgets.background,
+            shape = helpers.ui.rrect(),
+            bg = beautiful.colors.surface,
+            {
+                widget = wibox.container.margin,
+                margins = dpi(15),
+                {
+                    layout = wibox.layout.fixed.horizontal,
+                    spacing = dpi(15),
+                    {
+                        widget = widgets.text,
+                        icon = icon
+                    },
+                    {
+                        layout = wibox.layout.stack,
+                        {
+                            widget = wibox.widget.textbox,
+                            id = "placeholder_role",
+                            text = placeholder,
+                        },
+                        {
+                            widget = wibox.widget.textbox,
+                            id = "text_role"
+                        },
+                    }
+                }
+            }
+        }
     }
 end
 
@@ -183,49 +219,35 @@ local function weather_page(on_next_pressed, on_previous_pressed)
         widget = widgets.button.text.normal,
         size = 13,
         text_normal_bg = beautiful.colors.on_background,
-        text = "4. Copy the generated key and paste it in the prompt below"
+        text = "4. Copy the generated key and paste it in the text input below"
     }
 
-    local api_key_prompt = wibox.widget {
-        widget = widgets.prompt,
-        forced_width = dpi(250),
-        forced_height = dpi(50),
-        reset_on_stop = false,
-        label = "API Key: ",
-        icon_color = beautiful.colors.on_background,
-        icon = beautiful.icons.lock,
-        text_color = beautiful.colors.on_background,
-        text = weather_daemon:get_api_key() or ""
-    }
-
-    local coordinate_x_prompt = wibox.widget {
-        widget = widgets.prompt,
-        forced_width = dpi(250),
-        forced_height = dpi(50),
-        reset_on_stop = false,
-        label = "Lat: ",
-        icon_color = beautiful.colors.on_background,
-        icon = beautiful.icons.location_dot,
-        text_color = beautiful.colors.on_background,
-        text = weather_daemon:get_coordinate_x() or ""
-    }
-
-    local coordinate_y_prompt = wibox.widget {
-        widget = widgets.prompt,
-        forced_width = dpi(250),
-        forced_height = dpi(50),
-        reset_on_stop = false,
-        label = "Lon: ",
-        icon_color = beautiful.colors.on_background,
-        icon = beautiful.icons.location_dot,
-        text_color = beautiful.colors.on_background,
-        text = weather_daemon:get_coordinate_y() or ""
-    }
+    local api_key_text_input = text_input_widget(
+        beautiful.icons.lock,
+        "API Key:",
+        weather_daemon:get_api_key(),
+        dpi(250),
+        dpi(50)
+    )
+    local coordinate_x_text_input = text_input_widget(
+        beautiful.icons.location_dot,
+        "Lat:",
+        weather_daemon:get_coordinate_x(),
+        dpi(250),
+        dpi(50)
+    )
+    local coordinate_y_text_input = text_input_widget(
+        beautiful.icons.location_dot,
+        "Lon:",
+        weather_daemon:get_coordinate_y(),
+        dpi(250),
+        dpi(50)
+    )
 
     local unit_dropdown = widgets.dropdown {
         forced_width = dpi(250),
         forced_height = dpi(50),
-        prompt = "Unit: ",
+        label = "Unit: ",
         initial_value = weather_daemon:get_unit(),
         values = {
             ["metric"] = "metric",
@@ -254,9 +276,9 @@ local function weather_page(on_next_pressed, on_previous_pressed)
         text = "Next",
         on_release = function()
             weather_daemon:set_unit(unit_dropdown:get_value())
-            weather_daemon:set_api_key(api_key_prompt:get_text())
-            weather_daemon:set_coordinate_x(coordinate_x_prompt:get_text())
-            weather_daemon:set_coordinate_y(coordinate_y_prompt:get_text())
+            weather_daemon:set_api_key(api_key_text_input:get_text())
+            weather_daemon:set_coordinate_x(coordinate_x_text_input:get_text())
+            weather_daemon:set_coordinate_y(coordinate_y_text_input:get_text())
             weather_daemon:refresh()
             on_next_pressed()
         end
@@ -283,19 +305,19 @@ local function weather_page(on_next_pressed, on_previous_pressed)
                         widget = wibox.container.place,
                         halign = "center",
                         valign = "center",
-                        api_key_prompt
+                        api_key_text_input
                     },
                     {
                         widget = wibox.container.place,
                         halign = "center",
                         valign = "center",
-                        coordinate_x_prompt
+                        coordinate_x_text_input
                     },
                     {
                         widget = wibox.container.place,
                         halign = "center",
                         valign = "center",
-                        coordinate_y_prompt
+                        coordinate_y_text_input
                     },
                     {
                         widget = wibox.container.place,
@@ -391,29 +413,21 @@ local function gitlab_page(on_next_pressed, on_previous_pressed)
         text = "5. Press Create personal access token."
     }
 
-    local host_prompt = wibox.widget {
-        widget = widgets.prompt,
-        forced_width = dpi(300),
-        forced_height = dpi(50),
-        reset_on_stop = false,
-        label = "Host: ",
-        icon_color = beautiful.colors.on_background,
-        icon = beautiful.icons.server,
-        text_color = beautiful.colors.on_background,
-        text = gitlab_daemon:get_host() or ""
-    }
+    local host_text_input = text_input_widget(
+        beautiful.icons.server,
+        "Host:",
+        gitlab_daemon:get_host(),
+        dpi(300),
+        dpi(50)
+    )
 
-    local access_token_prompt = wibox.widget {
-        widget = widgets.prompt,
-        forced_width = dpi(300),
-        forced_height = dpi(50),
-        reset_on_stop = false,
-        label = "Access Token: ",
-        icon_color = beautiful.colors.on_background,
-        icon = beautiful.icons.lock,
-        text_color = beautiful.colors.on_background,
-        text = gitlab_daemon:get_access_token() or ""
-    }
+    local access_token_text_input = text_input_widget(
+        beautiful.icons.lock,
+        "Access Token:",
+        gitlab_daemon:get_access_token(),
+        dpi(300),
+        dpi(50)
+    )
 
     local back_button = wibox.widget {
         widget = widgets.button.text.normal,
@@ -431,8 +445,8 @@ local function gitlab_page(on_next_pressed, on_previous_pressed)
         size = 13,
         text = "Next",
         on_release = function()
-            gitlab_daemon:set_access_token(access_token_prompt:get_text())
-            gitlab_daemon:set_host(host_prompt:get_text())
+            gitlab_daemon:set_access_token(access_token_text_input:get_text())
+            gitlab_daemon:set_host(host_text_input:get_text())
             gitlab_daemon:refresh()
             on_next_pressed()
         end
@@ -457,13 +471,13 @@ local function gitlab_page(on_next_pressed, on_previous_pressed)
                     widget = wibox.container.place,
                     halign = "center",
                     valign = "center",
-                    access_token_prompt
+                    access_token_text_input
                 },
                 {
                     widget = wibox.container.place,
                     halign = "center",
                     valign = "center",
-                    host_prompt
+                    host_text_input
                 }
             },
             nil,
@@ -517,17 +531,13 @@ local function github_page(on_next_pressed, on_previous_pressed)
         text = "Please fill your GitHub username in order for the GitHub panel info to show."
     }
 
-    local username_prompt = wibox.widget {
-        widget = widgets.prompt,
-        forced_width = dpi(300),
-        forced_height = dpi(50),
-        reset_on_stop = false,
-        label = "Username: ",
-        icon_color = beautiful.colors.on_background,
-        icon = beautiful.icons.user,
-        text_color = beautiful.colors.on_background,
-        text = github_daemon:get_username() or ""
-    }
+    local username_text_input = text_input_widget(
+        beautiful.icons.user,
+        "Username:",
+        github_daemon:get_username(),
+        dpi(300),
+        dpi(50)
+    )
 
     local back_button = wibox.widget {
         widget = widgets.button.text.normal,
@@ -545,7 +555,7 @@ local function github_page(on_next_pressed, on_previous_pressed)
         size = 13,
         text = "Next",
         on_release = function()
-            github_daemon:set_username(username_prompt:get_text())
+            github_daemon:set_username(username_text_input:get_text())
             github_daemon:refresh()
             on_next_pressed()
         end
@@ -566,7 +576,7 @@ local function github_page(on_next_pressed, on_previous_pressed)
                     widget = wibox.container.place,
                     halign = "center",
                     valign = "center",
-                    username_prompt
+                    username_text_input
                 }
             },
             nil,
@@ -620,41 +630,29 @@ local function email_page(on_next_pressed, on_previous_pressed)
         text = "Please fill your email info in order for the email panel info to show."
     }
 
-    local machine_prompt = wibox.widget {
-        widget = widgets.prompt,
-        forced_width = dpi(300),
-        forced_height = dpi(50),
-        reset_on_stop = false,
-        label = "Machine: ",
-        icon_color = beautiful.colors.on_background,
-        icon = beautiful.icons.server,
-        text_color = beautiful.colors.on_background,
-        text = email_daemon:get_machine() or "mail.google.com"
-    }
+    local machine_text_input = text_input_widget(
+        beautiful.icons.server,
+        "Machine:",
+        email_daemon:get_machine(),
+        dpi(300),
+        dpi(50)
+    )
 
-    local login_prompt = wibox.widget {
-        widget = widgets.prompt,
-        forced_width = dpi(300),
-        forced_height = dpi(50),
-        reset_on_stop = false,
-        label = "Login: ",
-        icon_color = beautiful.colors.on_background,
-        icon = beautiful.icons.user,
-        text_color = beautiful.colors.on_background,
-        text = email_daemon:get_login() or ""
-    }
+    local login_text_input = text_input_widget(
+        beautiful.icons.user,
+        "Login:",
+        email_daemon:get_login(),
+        dpi(300),
+        dpi(50)
+    )
 
-    local password_prompt = wibox.widget {
-        widget = widgets.prompt,
-        forced_width = dpi(300),
-        forced_height = dpi(50),
-        reset_on_stop = false,
-        label = "Password: ",
-        icon_color = beautiful.colors.on_background,
-        icon = beautiful.icons.lock,
-        text_color = beautiful.colors.on_background,
-        text = email_daemon:get_password() or ""
-    }
+    local password_text_input = text_input_widget(
+        beautiful.icons.lock,
+        "Password:",
+        email_daemon:get_password(),
+        dpi(300),
+        dpi(50)
+    )
 
     local back_button = wibox.widget {
         widget = widgets.button.text.normal,
@@ -672,7 +670,7 @@ local function email_page(on_next_pressed, on_previous_pressed)
         size = 13,
         text = "Next",
         on_release = function()
-            email_daemon:update_net_rc(machine_prompt:get_text(), login_prompt:get_text(), password_prompt:get_text())
+            email_daemon:update_net_rc(machine_text_input:get_text(), login_text_input:get_text(), password_text_input:get_text())
             on_next_pressed()
         end
     }
@@ -692,19 +690,19 @@ local function email_page(on_next_pressed, on_previous_pressed)
                     widget = wibox.container.place,
                     halign = "center",
                     valign = "center",
-                    machine_prompt
+                    machine_text_input
                 },
                 {
                     widget = wibox.container.place,
                     halign = "center",
                     valign = "center",
-                    login_prompt
+                    login_text_input
                 },
                 {
                     widget = wibox.container.place,
                     halign = "center",
                     valign = "center",
-                    password_prompt
+                    password_text_input
                 }
             },
             nil,
