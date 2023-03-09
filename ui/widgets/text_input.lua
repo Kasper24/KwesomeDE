@@ -275,6 +275,8 @@ function text_input:set_widget_template(widget_template)
             if wibox then
                 wibox.cursor = "left_ptr"
             end
+        elseif wp.unfocus_on_clicked_outside then
+            run_mousegrabber(self)
         end
 
         find_widgets_result.drawable:disconnect_signal("mouse::move", on_drag)
@@ -629,9 +631,6 @@ function text_input:focus()
     end
 
     run_keygrabber(self)
-    if wp.unfocus_on_clicked_outside then
-        run_mousegrabber(self)
-    end
 
     if wp.cursor_blink then
         gtimer.start_new(wp.cursor_blink_rate, function()
