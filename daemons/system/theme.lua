@@ -667,7 +667,7 @@ local function get_we_wallpaper_id(path)
     end
 end
 
-local function we_wallpaper(self, screen)
+local function we_error_handler(self)
     local id = get_we_wallpaper_id(self:get_active_wallpaper())
     local test_cmd = string.format("cd %s && ./linux-wallpaperengine --assets-dir %s %s --fps %s --class linux-wallpaperengine --x %s --y %s --width %s --height %s",
         WE_PATH,
@@ -691,7 +691,10 @@ local function we_wallpaper(self, screen)
         end
         awful.spawn("kill -9 " .. pid, false)
     end)
+end
 
+local function we_wallpaper(self, screen)
+    local id = get_we_wallpaper_id(self:get_active_wallpaper())
     local cmd = string.format("cd %s && ./linux-wallpaperengine --assets-dir %s %s --fps %s --class linux-wallpaperengine --x %s --y %s --width %s --height %s",
         WE_PATH,
         self:get_wallpaper_engine_assets_folder(),
@@ -702,9 +705,7 @@ local function we_wallpaper(self, screen)
         screen.geometry.width,
         screen.geometry.height
     )
-    gtimer.start_new(1, function()
-        awful.spawn.with_shell(cmd)
-    end)
+    awful.spawn.with_shell(cmd)
 end
 
 local function scan_wallpapers(self)
@@ -856,6 +857,10 @@ function theme:set_wallpaper(wallpaper, type)
     type = type or self:get_selected_tab()
     self._private.wallpaper_type = type
     helpers.settings["theme-wallpaper-type"] = type
+
+    if type == "we" then
+        we_error_handler(self)
+    end
 
     for s in capi.screen do
         local wallpaper_engine_instances = helpers.client.find({class = "linux-wallpaperengine", screen =  s})
