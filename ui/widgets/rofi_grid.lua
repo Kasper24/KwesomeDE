@@ -128,7 +128,7 @@ local function entry_widget(self, entry)
 end
 
 function rofi_grid:set_widget_template(widget_template)
-    self._private.prompt = widget_template:get_children_by_id("prompt_role")[1]
+    self._private.text_input = widget_template:get_children_by_id("text_input_role")[1]
     self._private.grid = widget_template:get_children_by_id("grid_role")[1]
 
     self:get_grid():connect_signal("button::press", function(_, lx, ly, button, mods, find_widgets_result)
@@ -147,7 +147,7 @@ function rofi_grid:set_widget_template(widget_template)
         end
     end)
 
-    self:get_prompt():connect_signal("property::text", function(_, text)
+    self:get_text_input():connect_signal("property::text", function(_, text)
         if text == self:get_text() then
             return
         end
@@ -156,7 +156,6 @@ function rofi_grid:set_widget_template(widget_template)
         self._private.search_timer:again()
     end)
 
-    self:get_prompt():connect_signal("key::release", function(_, mod, key, cmd)
         if key == "Up" then
             self:scroll_up()
         end
@@ -168,6 +167,7 @@ function rofi_grid:set_widget_template(widget_template)
         end
         if key == "Right" then
             self:scroll_right()
+    self:get_text_input():connect_signal("key::release", function(_, mod, key, cmd)
         end
     end)
 
