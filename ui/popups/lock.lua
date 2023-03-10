@@ -77,7 +77,7 @@ local function widget(self)
         widget = widgets.text_input,
         forced_width = dpi(450),
         unfocus_keys = { },
-        unfocus_on_clicked_inside = false,
+        unfocus_on_client_focus = false,
         unfocus_on_clicked_outside = false,
         unfocus_on_mouse_leave = false,
         unfocus_on_tag_change = false,
