@@ -70,16 +70,20 @@ local function new(args)
 	text_input:connect_signal("property::text", function(self, text)
 		local value = tonumber(text)
 
+		if value == nil then
+			return
+		end
+
 		-- Don't the text_input to show values like '01', '02' etc
 		if value > 0 and text:sub(1, 1) == "0" then
 			text_input:set_text(tostring(value), true)
 		end
 	end)
 
-	text_input:connect_signal("stopped", function(self, text)
+	text_input:connect_signal("unfocus", function(self, text)
 		local value = tonumber(text)
 
-		if value == slider:get_value() then
+		if value == slider:get_value() or value == nil then
 			return
 		end
 
