@@ -70,6 +70,7 @@ local function widget(self)
     local date = wibox.widget {
         widget = widgets.textclock,
         format = "%d" .. helpers.string.day_ordinal_number() .. " of %B, %A",
+        halign = "center",
         size = 30
     }
 
