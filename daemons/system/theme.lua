@@ -668,6 +668,10 @@ local function get_we_wallpaper_id(path)
 end
 
 local function we_error_handler(self)
+    if DEBUG then
+        return
+    end
+
     local id = get_we_wallpaper_id(self:get_active_wallpaper())
     local test_cmd = string.format("cd %s && ./linux-wallpaperengine --assets-dir %s %s --fps %s --class linux-wallpaperengine --x %s --y %s --width %s --height %s",
         WE_PATH,
@@ -696,6 +700,10 @@ local function we_error_handler(self)
 end
 
 local function we_wallpaper(self, screen)
+    if DEBUG then
+        return
+    end
+
     local id = get_we_wallpaper_id(self:get_active_wallpaper())
     local cmd = string.format("cd %s && ./linux-wallpaperengine --assets-dir %s %s --fps %s --class linux-wallpaperengine --x %s --y %s --width %s --height %s",
         WE_PATH,
