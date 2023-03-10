@@ -192,9 +192,9 @@ local function wallpapers_grid(theme_app, wallpapers_key, entry_template)
         slider:set_value(new_index)
     end)
 
-    layout:connect_signal("search", function(self, dir, increamant, widget, entry)
+    layout:connect_signal("search", function(self)
+        slider:set_maximum(math.max(2, #layout:get_matched_entries()))
         slider:set_value(1)
-        slider:set_maximum(#layout:get_matched_entries())
     end)
 
     layout:connect_signal("select", function(self, new_index)
