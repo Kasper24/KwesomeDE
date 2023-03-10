@@ -156,6 +156,7 @@ function rofi_grid:set_widget_template(widget_template)
         self._private.search_timer:again()
     end)
 
+    self:get_text_input():connect_signal("key::release", function(_, mod, key, cmd)
         if key == "Up" then
             self:scroll_up()
         end
@@ -167,7 +168,6 @@ function rofi_grid:set_widget_template(widget_template)
         end
         if key == "Right" then
             self:scroll_right()
-    self:get_text_input():connect_signal("key::release", function(_, mod, key, cmd)
         end
     end)
 
