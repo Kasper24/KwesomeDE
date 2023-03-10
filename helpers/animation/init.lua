@@ -84,7 +84,7 @@ local function init_animation_loop(self)
         framerate_tomilli(self._private.framerate),
         function()
             for index, animation in ipairs(self._private.animations) do
-                if animation._private.state == true then
+                if animation.state == true then
                     -- compute delta time
                     local time = GLib.get_monotonic_time()
                     local delta = time - animation.last_elapsed
@@ -98,7 +98,7 @@ local function init_animation_loop(self)
                         if animation.loop == true then
                             animation.tween:reset()
                         else
-                            animation._private.state = false
+                            animation.state = false
 
                             -- Snap to end
                             animation.pos = animation.tween.target
@@ -158,7 +158,7 @@ function animation:set(args)
         self:fire(self.pos)
         self:emit_signal("update", self.pos)
 
-        self._private.state = false
+        self.state = false
         self.ended:fire(self.pos)
         self:emit_signal("ended", self.pos)
         return
@@ -168,7 +168,7 @@ function animation:set(args)
         table.insert(self._private.anim_manager._private.animations, self)
     end
 
-    self._private.state = true
+    self.state = true
     self.last_elapsed = GLib.get_monotonic_time()
 
     self.started:fire()
@@ -177,19 +177,15 @@ end
 
 -- Rubato compatibility
 function animation:abort()
-    self._private.state = false
+    self.state = false
 end
 
 function animation:stop()
-    self._private.state = false
+    self.state = false
 end
 
 function animation:initial()
     return self._private.initial
-end
-
-function animation:state()
-    return self._private.state
 end
 
 function animation_manager:set_instant(value)
@@ -253,7 +249,8 @@ function animation_manager:new(args)
     ret._private = {}
     ret._private.anim_manager = self
     ret._private.initial = args.pos
-    ret._private.state = false
+    -- Can't have it private for rubato compatibility
+    ret.state = false
 
     return ret
 end

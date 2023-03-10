@@ -406,7 +406,7 @@ naughty.connect_signal("request::display", function(n)
 
         if screen.notifications then
             local last_notif = screen.notifications[#screen.notifications]
-            if last_notif and last_notif.anim and last_notif.anim:state() == true then
+            if last_notif and last_notif.anim and last_notif.anim.state == true then
                 return true
             end
         end

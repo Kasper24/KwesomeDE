@@ -156,7 +156,7 @@ function menu:add(widget, index)
         self.widget:insert(index, widget)
     end
 
-    if self.animation:state() == true then
+    if self.animation.state == true then
         self.animation:stop()
         self.animation:set(self.menu_height)
     elseif self.visible then
