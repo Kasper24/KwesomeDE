@@ -845,14 +845,19 @@ function theme:toggle_dark_light()
     generate_colorscheme(self, self:get_selected_colorscheme(), true, light)
 end
 
-function theme:edit_color(index)
-    awful.spawn.easy_async(COLOR_PICKER_SCRIPT_PATH .. " '" .. self:get_selected_colorscheme_colors()[index] .. "'", function(stdout)
-        stdout = helpers.string.trim(stdout)
-        if stdout ~= "" and stdout ~= nil then
-            self:get_selected_colorscheme_colors()[index] = stdout
-            self:emit_signal("colorscheme::generation::success", self:get_selected_colorscheme_colors(), self:get_selected_colorscheme(), true)
-        end
-    end)
+function theme:set_color(index, color)
+    if color == nil then
+        awful.spawn.easy_async(COLOR_PICKER_SCRIPT_PATH .. " '" .. self:get_selected_colorscheme_colors()[index] .. "'", function(stdout)
+            stdout = helpers.string.trim(stdout)
+            if stdout ~= "" and stdout ~= nil then
+                self:get_selected_colorscheme_colors()[index] = stdout
+                self:emit_signal("colorscheme::generation::success", self:get_selected_colorscheme_colors(), self:get_selected_colorscheme(), true)
+            end
+        end)
+    else
+        self:get_selected_colorscheme_colors()[index] = color
+        self:emit_signal("colorscheme::generation::success", self:get_selected_colorscheme_colors(), self:get_selected_colorscheme(), true)
+    end
 end
 
 -- Wallpaper

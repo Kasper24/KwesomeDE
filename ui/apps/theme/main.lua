@@ -29,15 +29,19 @@ local function color_button(index)
         shape = helpers.ui.rrect(),
     }
 
-    local color_text = wibox.widget {
-        widget = widgets.text,
-        halign = "center",
+    local color_text_input = wibox.widget {
+        widget = widgets.text_input,
         size = 12,
+        widget_template = wibox.widget {
+            widget = wibox.widget.textbox,
+            id = "text_role",
+            halign = "center",
+		}
     }
 
     local color_button = wibox.widget {
         layout = wibox.layout.fixed.vertical,
-        spacing = dpi(15),
+        spacing = dpi(5),
         {
             widget = widgets.text,
             halign = "center",
@@ -46,13 +50,13 @@ local function color_button(index)
         },
         {
             widget = widgets.button.elevated.normal,
-            on_release = function()
-                theme_daemon:edit_color(index)
+            on_secondary_release = function()
+                theme_daemon:set_color(index)
             end,
             {
                 layout = wibox.layout.stack,
                 background,
-                color_text
+                color_text_input
             }
         }
     }
@@ -61,13 +65,17 @@ local function color_button(index)
         if wallpaper == theme_daemon:get_selected_colorscheme() then
             local color = colors[index]
             if helpers.color.is_dark(color) then
-                color_text:set_color(beautiful.colors.white)
+                color_text_input:set_text_color(beautiful.colors.white)
             else
-                color_text:set_color(beautiful.colors.black)
+                color_text_input:set_text_color(beautiful.colors.black)
             end
-            color_text:set_text(color)
+            color_text_input:set_text(color)
             background.bg = color
         end
+    end)
+
+    color_text_input:connect_signal("unfocus", function(self, text)
+        theme_daemon:set_color(index, text)
     end)
 
     return color_button
