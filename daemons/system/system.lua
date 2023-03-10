@@ -72,12 +72,7 @@ function system:unlock(password)
     end
 end
 
-local function new()
-    local ret = gobject {}
-    gtable.crush(ret, system, true)
-
-    ret._private = {}
-
+local function system_info(self)
     gtimer.poller {
         timeout = 60,
         callback = function()
@@ -86,11 +81,43 @@ local function new()
 
                 awful.spawn.easy_async("neofetch uptime", function(uptime)
                     uptime = helpers.string.trim(uptime:gsub("time", ""):gsub("up  ", ""))
-                    ret:emit_signal("update", packages_count, uptime)
+                    self:emit_signal("info", packages_count, uptime)
                 end)
             end)
         end
     }
+end
+
+local function updates_info(self)
+    local function pacman()
+        awful.spawn.easy_async("checkupdates", function(stdout)
+            local updates_count = 0
+            for line in stdout:gmatch("[^\r\n]+") do
+                updates_count = updates_count + 1
+                self:emit_signal("pacman::updates_available", updates_count, stdout)
+            end
+        end)
+    end
+
+    gtimer.poller {
+        timeout = 60 * 60 * 24,
+        callback = function()
+            awful.spawn.easy_async("neofetch distro", function(distro)
+                distro = helpers.string.trim(distro:gsub("distro ", ""))
+                if distro == "Arch Linux" or distro == "EndeavourOS" or distro == "Manjaro Linux" then
+                    pacman()
+                end
+            end)
+        end
+    }
+end
+
+local function new()
+    local ret = gobject {}
+    gtable.crush(ret, system, true)
+
+    system_info(ret)
+    updates_info(ret)
 
     return ret
 end

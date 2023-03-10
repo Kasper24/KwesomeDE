@@ -62,7 +62,7 @@ local function new()
         }
     }
 
-    system_daemon:connect_signal("update", function(self, packages_count, uptime)
+    system_daemon:connect_signal("info", function(self, packages_count, uptime)
         uptime_widget:get_children_by_id("text")[1]:set_text(uptime)
     end)
 
@@ -81,7 +81,7 @@ local function new()
         }
     }
 
-    system_daemon:connect_signal("update", function(self, packages_count, uptime)
+    system_daemon:connect_signal("info", function(self, packages_count, uptime)
         packages:get_children_by_id("text")[1]:set_text(packages_count .. " Packages")
     end)
 
