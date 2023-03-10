@@ -30,7 +30,7 @@ local function new(args)
         unfocus_on_mouse_leave = true,
 		only_numbers = true,
 		round = args.round,
-		text = tostring(slider:get_value()),
+		initial = tostring(slider:get_value()),
 		widget_template = wibox.widget {
 			widget = bwidget,
 			shape = helpers.ui.rrect(),

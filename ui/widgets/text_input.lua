@@ -31,7 +31,7 @@ local properties = {
     "unfocus_keys", "unfocus_on_clicked_outside", "unfocus_on_mouse_leave", "unfocus_on_tag_change",
     "focus_on_subject_mouse_enter", "unfocus_on_subject_mouse_leave",
     "reset_on_unfocus",
-    "placeholder", "text", "pattern", "obscure",
+    "placeholder", "initial", "pattern", "obscure",
     "cursor_blink", "cursor_blink_rate","cursor_size", "cursor_bg",
     "selection_bg"
 }
@@ -196,9 +196,11 @@ function text_input:set_widget_template(widget_template)
     local wp = self._private
 
     wp.text_widget = widget_template:get_children_by_id("text_role")[1]
-    wp.text_widget:set_text(self:get_text())
     wp.text_widget.forced_width = math.huge
     local text_draw = wp.text_widget.draw
+    if self:get_initial() then
+        self:set_text(self:get_initial())
+    end
 
     local placeholder_widget = widget_template:get_children_by_id("placeholder_role")
     if placeholder_widget then
@@ -309,6 +311,11 @@ end
 
 function text_input:toggle_obscure()
     self:set_obscure(not self._private.obscure)
+end
+
+function text_input:set_initial(initial)
+    self._private.initial = initial
+    self:set_text(initial)
 end
 
 function text_input:update_text(text)

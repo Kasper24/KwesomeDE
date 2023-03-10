@@ -40,14 +40,14 @@ local function command_after_generation()
         forced_width = dpi(600),
         unfocus_on_clicked_outside = false,
         unfocus_on_mouse_leave = true,
-        text = theme_daemon:get_command_after_generation(),
+        initial = theme_daemon:get_command_after_generation(),
         widget_template = wibox.widget {
 			widget = widgets.background,
 			shape = helpers.ui.rrect(),
 			bg = beautiful.colors.surface,
 			{
 				widget = wibox.container.margin,
-				margins = dpi(5),
+				margins = dpi(10),
 				{
 					widget = wibox.widget.textbox,
 					id = "text_role"
@@ -148,17 +148,16 @@ local function profile_image()
         forced_width = dpi(410),
         unfocus_on_clicked_outside = false,
         unfocus_on_mouse_leave = true,
-        text = theme_daemon:get_profile_image(),
+        initial = theme_daemon:get_profile_image(),
         widget_template = wibox.widget {
 			widget = widgets.background,
 			shape = helpers.ui.rrect(),
 			bg = beautiful.colors.surface,
 			{
 				widget = wibox.container.margin,
-				margins = dpi(5),
+				margins = dpi(10),
 				{
 					widget = wibox.widget.textbox,
-					halign = "center",
 					id = "text_role"
 				}
 			}
@@ -206,14 +205,14 @@ local function folder_picker(text, initial_value, on_changed)
         forced_width = dpi(410),
         unfocus_on_clicked_outside = false,
         unfocus_on_mouse_leave = true,
-        text = initial_value,
+        initial = initial_value,
         widget_template = wibox.widget {
             widget = widgets.background,
             shape = helpers.ui.rrect(),
             bg = beautiful.colors.surface,
             {
                 widget = wibox.container.margin,
-                margins = dpi(5),
+                margins = dpi(10),
                 {
                     widget = wibox.widget.textbox,
                     id = "text_role"

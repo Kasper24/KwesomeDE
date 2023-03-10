@@ -83,7 +83,7 @@ local function folder()
         forced_width = dpi(220),
         unfocus_on_clicked_outside = false,
         unfocus_on_mouse_leave = true,
-        text = screenshot_daemon:get_folder()
+        initial = screenshot_daemon:get_folder()
     }
 
     folder_text_input:connect_signal("property::text", function(self, text)

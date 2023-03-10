@@ -39,7 +39,7 @@ local function access_point_widget(layout, access_point)
         widget = widgets.text_input,
         forced_width = dpi(440),
         obscure = true,
-        text = access_point.password,
+        initial = access_point.password,
         widget_template = wibox.widget {
             widget = widgets.background,
             shape = helpers.ui.rrect(),
