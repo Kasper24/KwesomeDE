@@ -176,36 +176,15 @@ bluetooth_popup:connect_signal("visibility", function(self, visible)
     end
 end)
 
-power_popup:connect_signal("visibility", function(visibility)
-    for s in capi.screen do
-        if visibility and s ~= awful.screen.focused() then
-            s.screen_mask.visible = true
-        end
-        if visibility == false then
-            s.screen_mask.visible = false
-        end
-    end
-end)
-
-lock_popup:connect_signal("visibility", function(visibility)
-    for s in capi.screen do
-        if visibility then
-            if s ~= awful.screen.focused() then
-                s.screen_mask.visible = true
-            end
-            s.left_wibar.ontop = false
-            s.top_wibar.ontop = false
-        else
-            s.screen_mask.visible = false
-            if #helpers.client.find({fullscreen = true}) == 0 then
-                s.left_wibar.ontop = true
-                s.top_wibar.ontop = true
-            end
-        end
-    end
-end)
-
 power_popup:connect_signal("visibility", function(self, visibie)
+    for s in capi.screen do
+        if visibie and s ~= awful.screen.focused() then
+            s.screen_mask.visible = true
+        elseif visibie == false then
+            s.screen_mask.visible = false
+        end
+    end
+
     if visibie then
         for _, client in ipairs(capi.client.get()) do
             if client.fake_root ~= true then
@@ -220,6 +199,22 @@ power_popup:connect_signal("visibility", function(self, visibie)
 end)
 
 lock_popup:connect_signal("visibility", function(self, visibie)
+    for s in capi.screen do
+        if visibie then
+            if s ~= awful.screen.focused() then
+                s.screen_mask.visible = true
+            end
+            s.left_wibar.ontop = false
+            s.top_wibar.ontop = false
+        else
+            s.screen_mask.visible = false
+            if #helpers.client.find({fullscreen = true}) == 0 then
+                s.left_wibar.ontop = true
+                s.top_wibar.ontop = true
+            end
+        end
+    end
+
     if visibie then
         for _, client in ipairs(capi.client.get()) do
             if client.fake_root ~= true then
