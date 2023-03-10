@@ -247,6 +247,8 @@ local function new()
 
     local rescan = wibox.widget {
         widget = widgets.button.text.normal,
+        forced_width = dpi(50),
+        forced_height = dpi(50),
         text_normal_bg = beautiful.colors.on_background,
         icon = beautiful.icons.arrow_rotate_right,
         size = 15,
@@ -257,6 +259,8 @@ local function new()
 
     local settings = wibox.widget {
         widget = widgets.button.text.normal,
+        forced_width = dpi(50),
+        forced_height = dpi(50),
         text_normal_bg = beautiful.colors.on_background,
         icon = beautiful.icons.gear,
         size = 15,
