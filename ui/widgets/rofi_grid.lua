@@ -274,7 +274,7 @@ function rofi_grid:search()
         entry:select()
     end
 
-    self:emit_signal("search", self:get_text(), self:get_current_page(), self:get_pages_count())
+    self:emit_signal("search", self:get_text())
 end
 
 function rofi_grid:set_selected_entry(index)
