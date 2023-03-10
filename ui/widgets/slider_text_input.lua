@@ -22,14 +22,18 @@ local function new(args)
 	args.forced_height = args.slider_height
 	local slider = swidget(args)
 
+	local pattern = "numbers_one_decimal"
+	if args.round then
+		pattern = "round_numbers"
+	end
+
 	local text_input = wibox.widget {
 		widget = tiwidget,
 		forced_width = args.text_input_width or dpi(80),
 		forced_height = args.text_input_height or dpi(40),
 		unfocus_on_clicked_outside = false,
         unfocus_on_mouse_leave = true,
-		only_numbers = true,
-		round = args.round,
+		pattern = pattern,
 		initial = tostring(slider:get_value()),
 		widget_template = wibox.widget {
 			widget = bwidget,
