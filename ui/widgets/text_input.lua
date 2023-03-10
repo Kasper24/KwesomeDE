@@ -184,8 +184,6 @@ local function run_keygrabber(self)
             elseif key == "Right" then
                 self:increamant_cursor_index()
             else
-                -- wlen() is UTF-8 aware but #key is not,
-                -- so check that we have one UTF-8 char but advance the cursor of # position
                 if key:wlen() == 1 then
                     self:update_text(key)
                 end
@@ -197,20 +195,19 @@ end
 function text_input:set_widget_template(widget_template)
     local wp = self._private
 
-    self._private.text_widget = widget_template:get_children_by_id("text_role")[1]
-    self._private.text_widget.forced_width = math.huge
-    local text_draw = self._private.text_widget.draw
-
-    self._private.text_widget:set_text(self:get_text())
+    wp.text_widget = widget_template:get_children_by_id("text_role")[1]
+    wp.text_widget:set_text(self:get_text())
+    wp.text_widget.forced_width = math.huge
+    local text_draw = wp.text_widget.draw
 
     local placeholder_widget = widget_template:get_children_by_id("placeholder_role")
     if placeholder_widget then
         placeholder_widget = placeholder_widget[1]
     end
 
-    function self._private.text_widget:draw(context, cr, width, height)
+    function wp.text_widget:draw(context, cr, width, height)
         -- Selection bg
-        local ink_rect, logical_rect = self._private.layout:get_pixel_extents()
+        local _, logical_rect = self._private.layout:get_pixel_extents()
         cr:set_source(gcolor.change_opacity(wp.selection_bg, wp.selection_opacity))
         cr:rectangle(
             wp.selection_start_x,
@@ -221,7 +218,7 @@ function text_input:set_widget_template(widget_template)
         cr:fill()
 
         -- Cursor
-        local ink_rect, logical_rect = self._private.layout:get_pixel_extents()
+        local _, logical_rect = self._private.layout:get_pixel_extents()
         cr:set_source(gcolor.change_opacity(wp.cursor_bg, wp.cursor_opacity))
         cr:set_line_width(wp.cursor_width)
         cr:move_to(wp.cursor_x, logical_rect.y - 3)
@@ -238,19 +235,17 @@ function text_input:set_widget_template(widget_template)
         end
     end
 
-    wp.selecting_text = false
-
-    local function on_drag(drawable, lx, ly)
+    local function on_drag(_, lx, ly)
         if not wp.selecting_text and (lx ~= wp.press_pos.lx or ly ~= wp.press_pos.ly) then
             self:set_selection_start_index_from_x_y(wp.press_pos.lx, wp.press_pos.ly)
-            self:set_selection_end_index(self._private.selection_start)
+            self:set_selection_end_index(wp.selection_start)
             wp.selecting_text = true
         elseif wp.selecting_text then
             self:set_selection_end_index_from_x_y(lx - wp.offset.x, ly - wp.offset.y)
         end
     end
 
-    self._private.text_widget:connect_signal("button::press", function(_, lx, ly, button, mods, find_widgets_result)
+    wp.text_widget:connect_signal("button::press", function(_, lx, ly, button, mods, find_widgets_result)
         if button == 1 then
             wp.press_pos = { lx = lx, ly = ly }
             wp.offset = { x = find_widgets_result.x, y = find_widgets_result.y }
@@ -258,7 +253,7 @@ function text_input:set_widget_template(widget_template)
         end
     end)
 
-    self._private.text_widget:connect_signal("button::release", function(_, lx, ly, button, mods, find_widgets_result)
+    wp.text_widget:connect_signal("button::release", function(_, lx, ly, button, mods, find_widgets_result)
         find_widgets_result.drawable:disconnect_signal("mouse::move", on_drag)
         if not wp.selecting_text then
             self:set_cursor_index_from_x_y(lx, ly)
@@ -268,7 +263,7 @@ function text_input:set_widget_template(widget_template)
         self:focus()
     end)
 
-    self._private.text_widget:connect_signal("mouse::enter", function()
+    wp.text_widget:connect_signal("mouse::enter", function()
         capi.root.cursor("xterm")
         local wibox = capi.mouse.current_wibox
         if wibox then
@@ -276,7 +271,7 @@ function text_input:set_widget_template(widget_template)
         end
     end)
 
-    self._private.text_widget:connect_signal("mouse::leave", function(_, find_widgets_result)
+    wp.text_widget:connect_signal("mouse::leave", function(_, find_widgets_result)
         if self:get_focused() == false then
             capi.root.cursor("left_ptr")
             local wibox = capi.mouse.current_wibox
@@ -740,6 +735,7 @@ local function new()
     wp.selection_start_y = 0
     wp.selection_end_y = 0
     wp.selection_opacity = 0
+    wp.selecting_text = false
 
     wp.unfocus_keys = { "Escape", "Return" }
     wp.unfocus_on_clicked_outside = true
