@@ -533,25 +533,28 @@ awful.keyboard.append_global_keybindings({ -- Add padding
         on_press = function()
             awful.tag.incmwfact(-0.05)
         end
-    }, -- Increase number of master clients
+    },
+    -- Decrase number of master clients
     awful.key {
         modifiers = {keys.mod, keys.shift},
         key = "h",
-        group = "layout",
-        description = "increase number of master clients",
-        on_press = function()
-            awful.tag.incnmaster(1, nil, true)
-        end
-    }, -- Decrase number of master clients
-    awful.key {
-        modifiers = {keys.mod, keys.shift},
-        key = "l",
         group = "layout",
         description = "decrease number of master clients",
         on_press = function()
             awful.tag.incnmaster(-1, nil, true)
         end
-    }, -- Increase number of columns
+    },
+    -- Increase number of master clients
+    awful.key {
+        modifiers = {keys.mod, keys.shift},
+        key = "l",
+        group = "layout",
+        description = "increase number of master clients",
+        on_press = function()
+            awful.tag.incnmaster(1, nil, true)
+        end
+    },
+    -- Increase number of columns
     awful.key {
         modifiers = {keys.mod, keys.ctrl},
         key = "h",
