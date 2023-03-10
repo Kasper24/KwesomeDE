@@ -17,7 +17,7 @@ local function run_programs()
     helpers.run.run_once_grep("kdeconnect-indicator")
     helpers.run.run_once_grep("mopidy")
     gtimer.start_new(10, function()
-        helpers.run.run_once_grep("openrgb")
+        helpers.run.run_once_grep("openrgb --server --gui")
         return false
     end)
 end
