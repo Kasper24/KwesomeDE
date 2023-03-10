@@ -38,11 +38,6 @@ function lock:toggle()
 end
 
 local function widget(self)
-    local blur = wibox.widget {
-        widget = widgets.background,
-        bg = beautiful.colors.background_blur
-    }
-
     local picture = wibox.widget {
         widget = widgets.profile,
         halign = "center",
