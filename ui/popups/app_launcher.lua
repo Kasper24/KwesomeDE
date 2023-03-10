@@ -78,10 +78,10 @@ local function app(app, app_launcher)
     local widget = wibox.widget {
         widget = widgets.button.elevated.state,
         id = "button",
-        forced_width = dpi(120),
-        forced_height = dpi(120),
+        forced_width = dpi(325),
+        forced_height = dpi(50),
         paddings = dpi(15),
-        halign = "center",
+        halign = "left",
         on_normal_bg = font_icon.color,
         on_release = function()
             app:run_or_select()
@@ -91,19 +91,14 @@ local function app(app, app_launcher)
             menu:toggle()
         end,
         {
-            layout = wibox.layout.fixed.vertical,
+            layout = wibox.layout.fixed.horizontal,
             spacing = dpi(15),
             {
-                widget = wibox.container.place,
-                halign = "center",
-                valign = "center",
-                {
-                    widget = widgets.text,
-                    scale = 2,
-                    text_normal_bg = font_icon.color,
-                    text_on_normal_bg = beautiful.colors.transparent,
-                    icon = font_icon
-                },
+                widget = widgets.text,
+                scale = 0.8,
+                text_normal_bg = font_icon.color,
+                text_on_normal_bg = beautiful.colors.transparent,
+                icon = font_icon
             },
             {
                 widget = wibox.container.place,
@@ -204,8 +199,8 @@ local function new()
                     orientation = "horizontal",
                     homogeneous = true,
                     spacing = dpi(15),
-                    forced_num_cols = 5,
-                    forced_num_rows = 3,
+                    forced_num_cols = 2,
+                    forced_num_rows = 8,
                 }
             }
         },
@@ -237,7 +232,7 @@ local function new()
         app_launcher:emit_signal("visibility", true)
 
         animation.easing = helpers.animation.easing.outExpo
-        animation:set(dpi(500))
+        animation:set(dpi(620))
     end
 
     function app_launcher:hide()
