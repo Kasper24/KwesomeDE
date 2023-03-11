@@ -41,6 +41,15 @@ capi.client.connect_signal("scanned", function()
     end
 end)
 
+
+capi.client.connect_signal("request::manage", function(c)
+    if lock_popup:is_visible() or power_popup:is_visible() then
+        if client.fake_root ~= true then
+            client.hidden = true
+        end
+    end
+end)
+
 capi.client.connect_signal("property::fullscreen", function(c)
     if c.fullscreen then
         action_panel:hide()

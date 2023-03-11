@@ -74,6 +74,10 @@ function power:toggle()
     end
 end
 
+function power:is_visible()
+    return self.widget.visible
+end
+
 local function button(icon, text, on_release)
     local button = wibox.widget {
         widget = widgets.button.text.normal,

@@ -37,6 +37,10 @@ function lock:toggle()
     end
 end
 
+function lock:is_visible()
+    return self.widget.visible
+end
+
 local function widget(self)
     local picture = wibox.widget {
         widget = widgets.profile,
