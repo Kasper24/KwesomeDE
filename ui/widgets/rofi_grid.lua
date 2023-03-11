@@ -130,8 +130,12 @@ end
 function rofi_grid:set_widget_template(widget_template)
     self._private.text_input = widget_template:get_children_by_id("text_input_role")[1]
     self._private.grid = widget_template:get_children_by_id("grid_role")[1]
+    self._private.scrollbar = widget_template:get_children_by_id("scrollbar_role")
+    if self._private.scrollbar then
+        self._private.scrollbar = self._private.scrollbar[1]
+    end
 
-    self:get_grid():connect_signal("button::press", function(_, lx, ly, button, mods, find_widgets_result)
+    widget_template:connect_signal("button::press", function(_, lx, ly, button, mods, find_widgets_result)
         if button == 4 then
             if self:get_grid():get_orientation() == "horizontal" then
                 self:scroll_up()
@@ -171,6 +175,36 @@ function rofi_grid:set_widget_template(widget_template)
         end
     end)
 
+    local scrollbar = self:get_scrollbar()
+    if scrollbar then
+        self:connect_signal("scroll", function(self, new_index)
+            scrollbar:set_value(new_index)
+        end)
+
+        self:connect_signal("page::forward", function(self, new_index)
+            scrollbar:set_value(new_index)
+        end)
+
+        self:connect_signal("page::backward", function(self, new_index)
+            scrollbar:set_value(new_index)
+        end)
+
+        self:connect_signal("search", function(self, text, new_index)
+            scrollbar:set_maximum(math.max(2, #self:get_matched_entries()))
+            scrollbar:set_value(new_index)
+        end)
+
+        self:connect_signal("select", function(self, new_index)
+            scrollbar:set_value(new_index)
+        end)
+
+        scrollbar:connect_signal("property::value", function(_, value, instant)
+            if instant ~= true then
+                self:set_selected_entry(value)
+            end
+        end)
+    end
+
     self._private.max_entries_per_page = self:get_grid().forced_num_cols * self:get_grid().forced_num_rows
     self._private.entries_per_page = self._private.max_entries_per_page
 
@@ -181,6 +215,11 @@ function rofi_grid:set_entries(entries)
     self._private.entries = entries
     self:set_sort_fn()
     self:reset()
+    local scrollbar = self:get_scrollbar()
+    if scrollbar then
+        scrollbar:set_maximum(#self._private.entries)
+        scrollbar:set_value(1)
+    end
 
     if self._private.lazy_load_widgets == false then
         for _, entry in ipairs(self._private.entries) do
@@ -456,6 +495,10 @@ function rofi_grid:reset()
     end
 
     self:get_text_input():set_text("")
+end
+
+function rofi_grid:get_scrollbar()
+    return self._private.scrollbar
 end
 
 function rofi_grid:get_text_input()

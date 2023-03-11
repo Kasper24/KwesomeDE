@@ -82,21 +82,6 @@ local function color_button(index)
 end
 
 local function wallpapers_grid(theme_app, wallpapers_key, entry_template)
-    local slider = wibox.widget {
-        widget = wibox.widget.slider,
-        forced_width = dpi(5),
-        minimum = 1,
-        value = 1,
-        bar_shape = helpers.ui.rrect(),
-        bar_height= 3,
-        bar_color = beautiful.colors.transparent,
-        bar_active_color = beautiful.colors.transparent,
-        handle_width = dpi(50),
-        handle_color = beautiful.bg_normal,
-        handle_shape = helpers.ui.rrect(),
-        handle_color = beautiful.colors.on_background
-    }
-
     local layout = wibox.widget {
         layout = widgets.rofi_grid,
         sort_fn = function(a, b)
@@ -167,7 +152,21 @@ local function wallpapers_grid(theme_app, wallpapers_key, entry_template)
                 {
                     layout = wibox.container.rotate,
                     direction = 'west',
-                    slider
+                    {
+                        widget = wibox.widget.slider,
+                        id = "scrollbar_role",
+                        forced_width = dpi(5),
+                        minimum = 1,
+                        value = 1,
+                        bar_shape = helpers.ui.rrect(),
+                        bar_height= 3,
+                        bar_color = beautiful.colors.transparent,
+                        bar_active_color = beautiful.colors.transparent,
+                        handle_width = dpi(50),
+                        handle_color = beautiful.bg_normal,
+                        handle_shape = helpers.ui.rrect(),
+                        handle_color = beautiful.colors.on_background
+                    }
                 }
             }
         },
@@ -176,39 +175,9 @@ local function wallpapers_grid(theme_app, wallpapers_key, entry_template)
 
     theme_daemon:connect_signal("wallpapers", function()
         layout:set_entries(theme_daemon["get_" .. wallpapers_key](theme_daemon))
-        slider:set_maximum(#theme_daemon["get_" .. wallpapers_key](theme_daemon))
-        slider:set_value(1)
-    end)
-
-    layout:connect_signal("scroll", function(self, new_index)
-        slider:set_value(new_index)
-    end)
-
-    layout:connect_signal("page::forward", function(self, new_index)
-        slider:set_value(new_index)
-    end)
-
-    layout:connect_signal("page::backward", function(self, new_index)
-        slider:set_value(new_index)
-    end)
-
-    layout:connect_signal("search", function(self, text, new_index)
-        slider:set_maximum(math.max(2, #layout:get_matched_entries()))
-        slider:set_value(new_index)
-    end)
-
-    layout:connect_signal("select", function(self, new_index)
-        slider:set_value(new_index)
-    end)
-
-    slider:connect_signal("property::value", function(self, value, instant)
-        if instant ~= true then
-            layout:set_selected_entry(value)
-        end
     end)
 
     layout:set_entries(theme_daemon["get_" .. wallpapers_key](theme_daemon))
-    slider:set_maximum(#layout:get_matched_entries())
 
     return layout
 end
