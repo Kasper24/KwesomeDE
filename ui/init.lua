@@ -41,8 +41,7 @@ capi.client.connect_signal("scanned", function()
     end
 end)
 
-
-capi.client.connect_signal("request::manage", function(c)
+capi.client.connect_signal("request::manage", function(client)
     if lock_popup:is_visible() or power_popup:is_visible() then
         if client.fake_root ~= true then
             client.hidden = true
@@ -50,8 +49,8 @@ capi.client.connect_signal("request::manage", function(c)
     end
 end)
 
-capi.client.connect_signal("property::fullscreen", function(c)
-    if c.fullscreen then
+capi.client.connect_signal("property::fullscreen", function(client)
+    if client.fullscreen then
         action_panel:hide()
         info_panel:hide()
         notification_panel:hide()
@@ -76,8 +75,8 @@ capi.client.connect_signal("property::fullscreen", function(c)
     end
 end)
 
-capi.client.connect_signal("focus", function(c)
-    if c.fullscreen then
+capi.client.connect_signal("focus", function(client)
+    if client.fullscreen then
         action_panel:hide()
         info_panel:hide()
         notification_panel:hide()
