@@ -94,8 +94,8 @@ local function updates_info(self)
             local updates_count = 0
             for line in stdout:gmatch("[^\r\n]+") do
                 updates_count = updates_count + 1
-                self:emit_signal("pacman::updates_available", updates_count, stdout)
             end
+            self:emit_signal("pacman::updates_available", updates_count, stdout)
         end)
     end
 
