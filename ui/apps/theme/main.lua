@@ -180,21 +180,21 @@ local function wallpapers_grid(theme_app, wallpapers_key, entry_template)
         slider:set_value(1)
     end)
 
-    layout:connect_signal("scroll", function(self, dir, new_index, widget, entry)
+    layout:connect_signal("scroll", function(self, new_index)
         slider:set_value(new_index)
     end)
 
-    layout:connect_signal("page::forward", function(self, dir, new_index, widget, entry)
+    layout:connect_signal("page::forward", function(self, new_index)
         slider:set_value(new_index)
     end)
 
-    layout:connect_signal("page::backward", function(self, dir, new_index, widget, entry)
+    layout:connect_signal("page::backward", function(self, new_index)
         slider:set_value(new_index)
     end)
 
-    layout:connect_signal("search", function(self)
+    layout:connect_signal("search", function(self, text, new_index)
         slider:set_maximum(math.max(2, #layout:get_matched_entries()))
-        slider:set_value(1)
+        slider:set_value(new_index)
     end)
 
     layout:connect_signal("select", function(self, new_index)

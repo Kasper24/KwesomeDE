@@ -74,7 +74,7 @@ local function scroll(self, dir, page_dir)
     local next_widget = grid.children[next_widget_index]
     if next_widget then
         next_widget:select()
-        self:emit_signal("scroll", dir, self:get_index_of_entry(next_widget.entry), next_widget, next_widget.entry)
+        self:emit_signal("scroll", self:get_index_of_entry(next_widget.entry))
     else
         if dir == "up" or dir == "left" then
             self:page_backward(page_dir or dir)
@@ -265,16 +265,16 @@ function rofi_grid:search()
         if entry_at_old_pos and entry_at_old_pos[1] then
             entry_at_old_pos[1]:select()
         else
-            local entry = self:get_grid().children[#self:get_grid().children]
-            entry:select()
+            local widget = self:get_grid().children[#self:get_grid().children]
+            widget:select()
         end
     -- Otherwise select the first entry on the list
     elseif self:get_grid().children[1] then
-        local entry = self:get_grid().children[1]
-        entry:select()
+        local widget = self:get_grid().children[1]
+        widget:select()
     end
 
-    self:emit_signal("search", self:get_text())
+    self:emit_signal("search", self:get_text(), self:get_index_of_entry(self:get_selected_widget().entry))
 end
 
 function rofi_grid:set_selected_entry(index)
@@ -322,7 +322,7 @@ function rofi_grid:page_forward(dir)
     elseif self._private.wrap_entry_scrolling then
         local widget = self:get_grid():get_widgets_at(1, 1)[1]
         widget:select()
-        self:emit_signal("scroll", dir, self:get_index_of_entry(widget.entry), widget, widget.entry)
+        self:emit_signal("scroll", self:get_index_of_entry(widget.entry))
         return
     else
         return
@@ -356,7 +356,7 @@ function rofi_grid:page_forward(dir)
         entry:select()
     end
 
-    self:emit_signal("page::forward", dir, self:get_index_of_entry(self:get_selected_widget().entry), self:get_current_page(), self:get_pages_count())
+    self:emit_signal("page::forward", self:get_index_of_entry(self:get_selected_widget().entry))
 end
 
 function rofi_grid:page_backward(dir)
@@ -367,7 +367,7 @@ function rofi_grid:page_backward(dir)
     elseif self._private.wrap_entry_scrolling then
         local widget = self:get_grid().children[#self:get_grid().children]
         widget:select()
-        self:emit_signal("scroll", dir, self:get_index_of_entry(widget.entry), widget, widget.entry)
+        self:emit_signal("scroll", self:get_index_of_entry(widget.entry))
         return
     else
         return
@@ -402,7 +402,7 @@ function rofi_grid:page_backward(dir)
     end
     entry:select()
 
-    self:emit_signal("page::backward", dir, self:get_index_of_entry(self:get_selected_widget().entry), self:get_current_page(), self:get_pages_count())
+    self:emit_signal("page::backward", self:get_index_of_entry(self:get_selected_widget().entry))
 end
 
 function rofi_grid:set_page(page)
