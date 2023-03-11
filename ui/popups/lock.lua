@@ -41,6 +41,31 @@ function lock:is_visible()
     return self.widget.visible
 end
 
+local function action_button(icon, title, on_release)
+    return wibox.widget {
+        layout = wibox.layout.fixed.vertical,
+        spacing = dpi(15),
+        {
+            widget = widgets.button.text.normal,
+            forced_width = dpi(75),
+            forced_height = dpi(75),
+            icon = icon,
+            -- normal_bg = beautiful.icons.lock.color,
+            text_normal_bg = beautiful.colors.on_background,
+            size = 30,
+            on_release = function()
+                on_release()
+            end
+        },
+        {
+            widget = widgets.text,
+            halign = "center",
+            size = 15,
+            text = title
+        }
+    }
+end
+
 local function widget(self)
     local picture = wibox.widget {
         widget = widgets.profile,
@@ -131,67 +156,21 @@ local function widget(self)
 
     local unlock_button = wibox.widget {
         widget = widgets.button.text.normal,
-        text_normal_bg = beautiful.colors.on_background,
+        normal_bg = beautiful.icons.lock.color,
+        text_normal_bg = beautiful.colors.transparent,
         text = "Unlock",
         on_release = function()
             system_daemon:unlock(self._private.text_input:get_text())
         end
     }
 
-    local shutdown_button = wibox.widget {
-        widget = widgets.button.text.normal,
-        forced_width = dpi(100),
-        forced_height = dpi(100),
-        icon = beautiful.icons.poweroff,
-        text_normal_bg = beautiful.icons.lock.color,
-        size = 40,
-        on_release = function()
-            system_daemon:shutdown()
-        end
-    }
-
-    local restart_button = wibox.widget {
-        widget = widgets.button.text.normal,
-        forced_width = dpi(100),
-        forced_height = dpi(100),
-        icon = beautiful.icons.reboot,
-        text_normal_bg = beautiful.icons.lock.color,
-        size = 40,
-        on_release = function()
-            system_daemon:restart()
-        end
-    }
-
-    local suspend_button = wibox.widget {
-        widget = widgets.button.text.normal,
-        forced_width = dpi(100),
-        forced_height = dpi(100),
-        icon = beautiful.icons.suspend,
-        text_normal_bg = beautiful.icons.lock.color,
-        size = 40,
-        on_release = function()
-            system_daemon:suspend()
-        end
-    }
-
-    local exit_button = wibox.widget {
-        widget = widgets.button.text.normal,
-        forced_width = dpi(100),
-        forced_height = dpi(100),
-        icon = beautiful.icons.exit,
-        text_normal_bg = beautiful.icons.lock.color,
-        size = 40,
-        on_release = function()
-            system_daemon:exit()
-        end
-    }
-
     return wibox.widget {
-        widget = wibox.layout.stack,
+        widget = wibox.container.place,
+        halign = "center",
+        valign = "center",
         {
-            widget = wibox.container.place,
-            halign = "center",
-            valign = "center",
+            layout = wibox.layout.fixed.vertical,
+            spacing = dpi(30),
             {
                 layout = wibox.layout.fixed.vertical,
                 spacing = dpi(15),
@@ -204,26 +183,27 @@ local function widget(self)
                     self._private.text_input,
                     toggle_password_obscure_button
                 },
-                unlock_button
-            }
-        },
-        {
-            widget = wibox.container.margin,
-            margins = {
-                bottom = dpi(30),
-                right = dpi(30)
             },
+            unlock_button,
             {
                 widget = wibox.container.place,
-                halign = "right",
-                valign = "bottom",
+                halign = "center",
+                valign = "center",
                 {
                     layout = wibox.layout.fixed.horizontal,
-                    spacing = dpi(15),
-                    shutdown_button,
-                    restart_button,
-                    suspend_button,
-                    exit_button
+                    spacing = dpi(45),
+                    action_button(beautiful.icons.poweroff, "Shutdown", function()
+                        system_daemon:shutdown()
+                    end),
+                    action_button(beautiful.icons.reboot, "Restart", function()
+                        system_daemon:reboot()
+                    end),
+                    action_button(beautiful.icons.suspend, "Suspend", function()
+                        system_daemon:suspend()
+                    end),
+                    action_button(beautiful.icons.exit, "Exit", function()
+                        system_daemon:exit()
+                    end)
                 }
             }
         }
