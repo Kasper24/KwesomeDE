@@ -143,7 +143,6 @@ end
 local function new()
     local app_launcher = bling.widget.app_launcher {
         bg = beautiful.colors.background,
-        lazy_load_widgets = false,
         widget_template = wibox.widget {
             layout = widgets.rofi_grid,
             lazy_load_widgets = false,
