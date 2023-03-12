@@ -118,7 +118,7 @@ local function entry_widget(self, entry)
 
     function entry:select() widget:select() end
     function entry:unselect() widget:unselect() end
-    function entry:is_selected() widget:is_selected() end
+    function entry:is_selected() return widget:is_selected() end
     entry.widget = widget
     widget.entry = entry
 
@@ -273,12 +273,12 @@ function rofi_grid:search()
     else
         for _, entry in ipairs(self._private.entries) do
             text = text:gsub( "%W", "" )
-            if self.search_fn(text:lower(), entry, self:get_entries()) then
+            if self._private.search_fn(text:lower(), entry) then
                 table.insert(self:get_matched_entries(), entry)
             end
         end
 
-        if self:get_sort_fn() then
+        if self:get_search_sort_fn() then
             table.sort(self:get_matched_entries(), function(a, b)
                 return self._private.search_sort_fn(text, a, b)
             end)
