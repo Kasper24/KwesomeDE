@@ -192,7 +192,7 @@ local function image_tab(theme_app)
                 widget = widgets.button.elevated.state,
                 id = "button",
                 forced_width = dpi(146),
-                forced_height = dpi(100),
+                forced_height = dpi(105),
                 on_normal_bg = beautiful.icons.spraycan.color,
                 halign = "center",
                 on_release = function()
@@ -204,7 +204,7 @@ local function image_tab(theme_app)
                     horizontal_fit_policy = "fit",
                     vertical_fit_policy = "fit",
                     forced_width = dpi(146),
-                    forced_height = dpi(100),
+                    forced_height = dpi(105),
                     image = helpers.ui.adjust_image_res(entry.path, 100, 70)
                 }
             }
@@ -253,7 +253,7 @@ local function mountain_tab(theme_app)
                 widget = widgets.button.elevated.state,
                 id = "button",
                 forced_width = dpi(146),
-                forced_height = dpi(100),
+                forced_height = dpi(105),
                 on_normal_bg = beautiful.icons.spraycan.color,
                 halign = "center",
                 on_release = function()
@@ -279,7 +279,7 @@ local function mountain_tab(theme_app)
                     {
                         widget = wibox.widget.imagebox,
                         forced_width = dpi(146),
-                        forced_height = dpi(100),
+                        forced_height = dpi(105),
                         clip_shape = helpers.ui.rrect(),
                         horizontal_fit_policy = "fit",
                         vertical_fit_policy = "fit",
@@ -409,7 +409,7 @@ local function digital_sun_tab(theme_app)
                 widget = widgets.button.elevated.state,
                 id = "button",
                 forced_width = dpi(146),
-                forced_height = dpi(100),
+                forced_height = dpi(105),
                 on_normal_bg = beautiful.icons.spraycan.color,
                 halign = "center",
                 on_release = function()
@@ -489,7 +489,7 @@ local function binary_tab(theme_app)
                 widget = widgets.button.elevated.state,
                 id = "button",
                 forced_width = dpi(146),
-                forced_height = dpi(100),
+                forced_height = dpi(105),
                 on_normal_bg = beautiful.icons.spraycan.color,
                 halign = "center",
                 on_release = function()
@@ -499,7 +499,7 @@ local function binary_tab(theme_app)
                     widget = wibox.container.background,
                     id = "background",
                     forced_width = dpi(146),
-                    forced_height = dpi(100),
+                    forced_height = dpi(105),
                     shape = helpers.ui.rrect(),
                     bg = colors[1],
                     fg = beautiful.colors.random_accent_color(colors),
@@ -587,7 +587,7 @@ local function we_tab(theme_app)
                 widget = widgets.button.elevated.state,
                 id = "button",
                 forced_width = dpi(146),
-                forced_height = dpi(100),
+                forced_height = dpi(105),
                 on_normal_bg = beautiful.icons.spraycan.color,
                 halign = "center",
                 on_release = function()
@@ -599,7 +599,7 @@ local function we_tab(theme_app)
                 {
                     widget = wibox.widget.imagebox,
                     forced_width = dpi(146),
-                    forced_height = dpi(100),
+                    forced_height = dpi(105),
                     clip_shape = helpers.ui.rrect(),
                     horizontal_fit_policy = "fit",
                     vertical_fit_policy = "fit",
@@ -746,7 +746,7 @@ local function tabs(theme_app)
 
     _stack = wibox.widget {
         layout = wibox.layout.stack,
-        forced_height = dpi(580),
+        forced_height = dpi(600),
         top_only = true,
         _image_tab,
         _mountain_tab,
