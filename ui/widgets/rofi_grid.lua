@@ -191,7 +191,9 @@ function rofi_grid:set_widget_template(widget_template)
 
         self:connect_signal("search", function(self, text, new_index)
             scrollbar:set_maximum(math.max(2, #self:get_matched_entries()))
-            scrollbar:set_value(new_index)
+            if new_index then
+                scrollbar:set_value(new_index)
+            end
         end)
 
         self:connect_signal("select", function(self, new_index)
@@ -211,9 +213,9 @@ function rofi_grid:set_widget_template(widget_template)
     self:set_widget(widget_template)
 end
 
-function rofi_grid:set_entries(entries)
+function rofi_grid:set_entries(entries, sort_fn)
     self._private.entries = entries
-    self:set_sort_fn()
+    self:set_sort_fn(sort_fn)
     self:reset()
     local scrollbar = self:get_scrollbar()
     if scrollbar then
@@ -271,14 +273,16 @@ function rofi_grid:search()
     else
         for _, entry in ipairs(self._private.entries) do
             text = text:gsub( "%W", "" )
-            if self.search_fn(text:lower(), entry) then
+            if self.search_fn(text:lower(), entry, self:get_entries()) then
                 table.insert(self:get_matched_entries(), entry)
             end
         end
 
-        table.sort(self:get_matched_entries(), function(a, b)
-            self._private.search_sort_fn(text, a, b)
-        end)
+        if self:get_sort_fn() then
+            table.sort(self:get_matched_entries(), function(a, b)
+                return self._private.search_sort_fn(text, a, b)
+            end)
+        end
     end
     for _, entry in ipairs(self._private.matched_entries) do
         -- Only add the widgets for entrys that are part of the first page
@@ -519,6 +523,10 @@ end
 
 function rofi_grid:get_current_page()
     return self._private.current_page
+end
+
+function rofi_grid:get_entries()
+    return self._private.entries
 end
 
 function rofi_grid:get_matched_entries()
