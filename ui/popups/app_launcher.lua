@@ -145,66 +145,94 @@ local function new()
         bg = beautiful.colors.background,
         lazy_load_widgets = false,
         widget_template = wibox.widget {
-            widget = wibox.container.margin,
-            margins = dpi(15),
-            {
-                layout = wibox.layout.fixed.vertical,
-                spacing = dpi(15),
+            layout = widgets.rofi_grid,
+            lazy_load_widgets = false,
+            widget_template = wibox.widget {
+                widget = wibox.container.margin,
+                margins = dpi(15),
                 {
-                    widget = widgets.text_input,
-                    id = "text_input_role",
-                    forced_width = dpi(650),
-                    forced_height = dpi(60),
-                    unfocus_keys = { },
-                    unfocus_on_clicked_inside = false,
-                    unfocus_on_clicked_outside = false,
-                    unfocus_on_mouse_leave = false,
-                    unfocus_on_tag_change = false,
-                    unfocus_on_other_text_input_focus = false,
-                    focus_on_subject_mouse_enter = nil,
-                    unfocus_on_subject_mouse_leave = nil,
-                    widget_template = wibox.widget {
-                        widget = widgets.background,
-                        shape = helpers.ui.rrect(),
-                        bg = beautiful.colors.surface,
-                        {
-                            widget = wibox.container.margin,
-                            margins = dpi(15),
+                    layout = wibox.layout.fixed.vertical,
+                    spacing = dpi(15),
+                    {
+                        widget = widgets.text_input,
+                        id = "text_input_role",
+                        forced_width = dpi(650),
+                        forced_height = dpi(60),
+                        unfocus_keys = { },
+                        unfocus_on_clicked_inside = false,
+                        unfocus_on_clicked_outside = false,
+                        unfocus_on_mouse_leave = false,
+                        unfocus_on_tag_change = false,
+                        unfocus_on_other_text_input_focus = false,
+                        focus_on_subject_mouse_enter = nil,
+                        unfocus_on_subject_mouse_leave = nil,
+                        widget_template = wibox.widget {
+                            widget = widgets.background,
+                            shape = helpers.ui.rrect(),
+                            bg = beautiful.colors.surface,
                             {
-                                layout = wibox.layout.fixed.horizontal,
-                                spacing = dpi(15),
+                                widget = wibox.container.margin,
+                                margins = dpi(15),
                                 {
-                                    widget = widgets.text,
-                                    icon = beautiful.icons.magnifying_glass
-                                },
-                                {
-                                    layout = wibox.layout.stack,
+                                    layout = wibox.layout.fixed.horizontal,
+                                    spacing = dpi(15),
                                     {
-                                        widget = wibox.widget.textbox,
-                                        id = "placeholder_role",
-                                        text = "Search: "
+                                        widget = widgets.text,
+                                        icon = beautiful.icons.magnifying_glass
                                     },
                                     {
-                                        widget = wibox.widget.textbox,
-                                        id = "text_role"
-                                    },
+                                        layout = wibox.layout.stack,
+                                        {
+                                            widget = wibox.widget.textbox,
+                                            id = "placeholder_role",
+                                            text = "Search: "
+                                        },
+                                        {
+                                            widget = wibox.widget.textbox,
+                                            id = "text_role"
+                                        },
+                                    }
                                 }
                             }
                         }
+                    },
+                    {
+                        layout = wibox.layout.fixed.horizontal,
+                        spacing = dpi(15),
+                        {
+                            layout = wibox.layout.grid,
+                            id = "grid_role",
+                            orientation = "horizontal",
+                            homogeneous = true,
+                            spacing = dpi(15),
+                            forced_num_cols = 2,
+                            forced_num_rows = 8,
+                        },
+                        {
+                            layout = wibox.container.rotate,
+                            direction = 'west',
+                            {
+                                widget = wibox.widget.slider,
+                                id = "scrollbar_role",
+                                forced_width = dpi(5),
+                                forced_height = dpi(10),
+                                minimum = 1,
+                                value = 1,
+                                bar_shape = helpers.ui.rrect(),
+                                bar_height= 3,
+                                bar_color = beautiful.colors.transparent,
+                                bar_active_color = beautiful.colors.transparent,
+                                handle_width = dpi(50),
+                                handle_color = beautiful.bg_normal,
+                                handle_shape = helpers.ui.rrect(),
+                                handle_color = beautiful.colors.on_background
+                            }
+                        }
                     }
-                },
-                {
-                    layout = wibox.layout.grid,
-                    id = "grid_role",
-                    orientation = "horizontal",
-                    homogeneous = true,
-                    spacing = dpi(15),
-                    forced_num_cols = 2,
-                    forced_num_rows = 8,
                 }
-            }
+            },
+            entry_template = app
         },
-        app_template = app
     }
 
     local animation = helpers.animation:new{
@@ -219,7 +247,7 @@ local function new()
                 if app_launcher._private.state == false then
                     app_launcher:get_widget().visible = false
                     app_launcher:get_text_input():set_text("")
-                    app_launcher:reset()
+                    app_launcher:get_rofi_grid():reset()
                 end
             end
         }
@@ -255,9 +283,9 @@ local function new()
         app_launcher:set_favorites(pinned_apps)
     end)
 
-    app_launcher:get_grid():connect_signal("button::press", function(grid, lx, ly, button, mods, find_widgets_result)
+    app_launcher:get_rofi_grid():connect_signal("button::press", function(grid, lx, ly, button, mods, find_widgets_result)
         if button == 3 then
-            local selected_app = app_launcher:get_selected_app_widget()
+            local selected_app = app_launcher:get_rofi_grid():get_selected_widget()
             if selected_app then
                 selected_app:unselect()
             end
@@ -265,7 +293,7 @@ local function new()
     end)
 
     capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
-        app_launcher._private.widget.widget.bg = old_colorscheme_to_new_map[beautiful.colors.background]
+        app_launcher:get_widget().widget.bg = old_colorscheme_to_new_map[beautiful.colors.background]
     end)
 
     return app_launcher
