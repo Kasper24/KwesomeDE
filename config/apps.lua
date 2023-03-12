@@ -59,7 +59,7 @@ end
 
 function app:toggle()
     if self.run_or_raise == true then
-        helpers.client.run_or_raise({class = self.class}, false, command, { switchtotag = true })
+        helpers.client.run_or_raise({class = self.class}, false, self.command, { switchtotag = true })
     else
         awful.spawn(self.command)
     end
