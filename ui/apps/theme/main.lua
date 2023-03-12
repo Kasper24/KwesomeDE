@@ -94,7 +94,7 @@ local function wallpapers_grid(theme_app, wallpapers_key, entry_template)
             return false
         end,
         search_sort_fn = function(text, a, b)
-            return helpers.fzy.score(text, a.title) < helpers.fzy.score(text, b.title)
+            return helpers.fzy.score(text, a.title) > helpers.fzy.score(text, b.title)
         end,
         widget_template = wibox.widget {
             layout = wibox.layout.fixed.vertical,
