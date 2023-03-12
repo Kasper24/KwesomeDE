@@ -1,12 +1,8 @@
 local awful = require("awful")
 local ruled = require("ruled")
-local gtable = require("gears.table")
-local gmath = require("gears.math")
 local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
-local ipairs = ipairs
 local capi = {
-    root = root,
     client = client,
     mouse = mouse
 }
