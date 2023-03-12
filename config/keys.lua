@@ -495,22 +495,22 @@ awful.keyboard.append_global_keybindings({ -- Add padding
             local current_client_gap = theme_daemon:get_client_gap()
             theme_daemon:set_client_gap(current_client_gap - 5)
         end
-    }, -- Add gaps
+    }, -- Increase useless gaps
     awful.key {
         modifiers = {keys.mod},
         key = "=",
         group = "layout",
-        description = "increase gaps",
+        description = "increase useless gaps",
         on_press = function()
             local current_useless_gap = theme_daemon:get_useless_gap()
             theme_daemon:set_useless_gap(current_useless_gap + 5)
         end
-    }, -- Subtract gaps
+    }, -- Decrease useless gaps
     awful.key {
         modifiers = {keys.mod},
         key = "-",
         group = "layout",
-        description = "decrease gaps",
+        description = "decrease useless gaps",
         on_press = function()
             local current_useless_gap = theme_daemon:get_useless_gap()
             theme_daemon:set_useless_gap(current_useless_gap - 5)
