@@ -88,6 +88,8 @@ function apps:new(id, key, command, class, args)
     ret.key = key
     ret.command = command
     ret.class = class
+    ret.scratchpad_command = args.scratchpad_command or command
+    ret.scratchpad_class = args.scratchpad_class or class
     ret.launch_modifiers = args.launch_modifiers or {keys.mod, keys.ctrl}
     ret.scratchpad_modifiers = args.scratchpad_modifiers or {keys.mod, keys.alt}
     ret.geometry = args.geometry or centered_gemotery()
@@ -99,8 +101,8 @@ function apps:new(id, key, command, class, args)
     ret.y = args.y or y
 
     ret.scratchpad = bling.module.scratchpad:new{
-        command = command,
-        rule = { class = class },
+        command = ret.scratchpad_command,
+        rule = { class = ret.scratchpad_class },
         sticky = false,
         autoclose = false,
         floating = true,
@@ -173,7 +175,9 @@ local function new()
     ret:new("kitty", "Return", "kitty", "kitty", {
         launch_modifiers = {keys.mod},
         run_or_raise = false,
-        geometry = terminal_gemotery()
+        geometry = terminal_gemotery(),
+        scratchpad_command = "kitty --class scratchpad",
+        scratchpad_class = "scratchpad"
     })
     ret:new("gnome-sysetm-monitor", "Delete", "gnome-system-monitor", "Gnome-system-monitor", {
         launch_modifiers = {keys.ctrl, keys.alt}
