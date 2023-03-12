@@ -16,6 +16,8 @@ local keys = {
 }
 
 local apps = {}
+local app = {}
+
 local instance = nil
 
 local function centered_gemotery(width, height)
@@ -25,6 +27,18 @@ local function centered_gemotery(width, height)
     return {
         x = (awful.screen.focused().geometry.width / 2) - (width / 2),
         y = (awful.screen.focused().geometry.height / 2) - (height / 2),
+        width = width,
+        height = height
+    }
+end
+
+local function terminal_gemotery(width, height)
+    width = width or awful.screen.focused().geometry.width * 0.7
+    height = height or awful.screen.focused().geometry.height * 0.5
+
+    return {
+        x = (awful.screen.focused().geometry.width / 2) - (width / 2),
+        y = 100,
         width = width,
         height = height
     }
@@ -43,92 +57,97 @@ local function random_animation()
     return x, y
 end
 
-function apps:scratchpad_toggle(id, new_animation)
-    if self.scratchpads[id].rubato.x.state == false and self.scratchpads[id].rubato.y.state == false then
-        self.scratchpads[id].geometry = centered_gemotery()
-        if new_animation then
+function app:toggle()
+    if self.run_or_raise == true then
+        helpers.client.run_or_raise({class = self.class}, false, command, { switchtotag = true })
+    else
+        awful.spawn(self.command)
+    end
+end
+
+function app:scratchpad_toggle()
+    if self.scratchpad.rubato.x.state == false and self.scratchpad.rubato.y.state == false then
+        self.scratchpad.geometry = self.geometry
+        if self.new_animation_on_toggle then
             local x, y = random_animation()
-            self.scratchpads[id].rubato.x.pos = x
-            self.scratchpads[id].rubato.y.pos = y
+            self.scratchpad.rubato.x.pos = x
+            self.scratchpad.rubato.y.pos = y
         end
     end
 
-    self.scratchpads[id]:toggle()
+    self.scratchpad:toggle()
 end
 
 function apps:new(id, key, command, class, args)
     args = args or {}
 
-    args.launch_modifiers = args.launch_modifiers or {keys.mod, keys.ctrl}
-    args.scratchpad_modifiers = args.scratchpad_modifiers or {keys.mod, keys.alt}
-    args.geometry = args.geometry or centered_gemotery()
-    args.new_animation_on_toggle = args.new_animation_on_toggle == nil and true or args.new_animation_on_toggle
-    args.run_or_raise = args.run_or_raise == nil and true or args.run_or_raise
+    local ret = gobject {}
+    gtable.crush(ret, app, true)
+
+    ret.id = id
+    ret.key = key
+    ret.command = command
+    ret.class = class
+    ret.launch_modifiers = args.launch_modifiers or {keys.mod, keys.ctrl}
+    ret.scratchpad_modifiers = args.scratchpad_modifiers or {keys.mod, keys.alt}
+    ret.geometry = args.geometry or centered_gemotery()
+    ret.new_animation_on_toggle = args.new_animation_on_toggle == nil and true or args.new_animation_on_toggle
+    ret.run_or_raise = args.run_or_raise == nil and true or args.run_or_raise
 
     local x, y = random_animation()
-    args.x = args.x or x
-    args.y = args.y or y
+    ret.x = args.x or x
+    ret.y = args.y or y
 
-    self.scratchpads[id] = bling.module.scratchpad:new{
+    ret.scratchpad = bling.module.scratchpad:new{
         command = command,
-        rule = {
-            class = class
-        },
+        rule = { class = class },
         sticky = false,
         autoclose = false,
         floating = true,
-        geometry = args.geometry,
+        geometry = ret.geometry,
         reapply = true,
         dont_focus_before_close = true,
         rubato = {
             x = helpers.animation:new{
                 easing = helpers.animation.easing.inBounce,
-                pos = args.x,
+                pos = ret.x,
                 duration = 1.5
             },
             y = helpers.animation:new{
                 easing = helpers.animation.easing.inBounce,
-                pos = args.y,
+                pos = ret.y,
                 duration = 1.5
             }
         }
     }
 
-    self.scratchpads[id]:connect_signal("turn_on", function()
-        self.scratchpads[id].rubato.x.easing = helpers.animation.easing.inBounce
-        self.scratchpads[id].rubato.y.easing = helpers.animation.easing.inBounce
+    ret.scratchpad:connect_signal("turn_on", function()
+        ret.scratchpad.rubato.x.easing = helpers.animation.easing.inBounce
+        ret.scratchpad.rubato.y.easing = helpers.animation.easing.inBounce
     end)
 
-    self.scratchpads[id]:connect_signal("turn_off", function()
-        self.scratchpads[id].rubato.x.easing = helpers.animation.easing.outBounce
-        self.scratchpads[id].rubato.y.easing = helpers.animation.easing.outBounce
+    ret.scratchpad:connect_signal("turn_off", function()
+        ret.scratchpad.rubato.x.easing = helpers.animation.easing.outBounce
+        ret.scratchpad.rubato.y.easing = helpers.animation.easing.outBounce
     end)
 
     awful.keyboard.append_global_keybindings({awful.key {
-        modifiers = args.scratchpad_modifiers,
+        modifiers = ret.scratchpad_modifiers,
         key = key,
         group = "apps",
         description = "toggle " .. id .. " scratchpad ",
         on_press = function()
-            self:scratchpad_toggle(id, args.new_animation_on_toggle)
+            ret:scratchpad_toggle()
         end
     }})
 
     awful.keyboard.append_global_keybindings({awful.key {
-        modifiers = args.launch_modifiers,
+        modifiers = ret.launch_modifiers,
         key = key,
         group = "apps",
         description = "launch " .. id,
         on_press = function()
-            if args.run_or_raise == true then
-                helpers.client.run_or_raise({
-                    class = class
-                }, false, command, {
-                    switchtotag = true
-                })
-            else
-                awful.spawn(command)
-            end
+            ret:toggle()
         end
     }})
 end
@@ -136,7 +155,6 @@ end
 local function new()
     local ret = gobject {}
     gtable.crush(ret, apps, true)
-    ret.scratchpads = {}
 
     ret:new("vivaldi", "b", "vivaldi-stable", "Vivaldi-stable")
     ret:new("vscode", "e", "code", "Code")
@@ -154,7 +172,8 @@ local function new()
     })
     ret:new("kitty", "Return", "kitty", "kitty", {
         launch_modifiers = {keys.mod},
-        run_or_raise = false
+        run_or_raise = false,
+        geometry = terminal_gemotery()
     })
     ret:new("gnome-sysetm-monitor", "Delete", "gnome-system-monitor", "Gnome-system-monitor", {
         launch_modifiers = {keys.ctrl, keys.alt}
