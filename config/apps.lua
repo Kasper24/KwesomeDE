@@ -135,9 +135,9 @@ function apps:new(id, key, command, class, args)
 
     awful.keyboard.append_global_keybindings({awful.key {
         modifiers = ret.scratchpad_modifiers,
-        key = key,
+        key = ret.key,
         group = "apps",
-        description = "toggle " .. id .. " scratchpad ",
+        description = "toggle " .. ret.id .. " scratchpad ",
         on_press = function()
             ret:scratchpad_toggle()
         end
@@ -145,9 +145,9 @@ function apps:new(id, key, command, class, args)
 
     awful.keyboard.append_global_keybindings({awful.key {
         modifiers = ret.launch_modifiers,
-        key = key,
+        key = ret.key,
         group = "apps",
-        description = "launch " .. id,
+        description = "launch " .. ret.id,
         on_press = function()
             ret:toggle()
         end
