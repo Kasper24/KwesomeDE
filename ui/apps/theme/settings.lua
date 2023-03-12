@@ -279,7 +279,7 @@ local function theme_checkbox(key)
     }
 end
 
-local function theme_slider(text, initial_value, maximum, round, on_changed, minimum)
+local function theme_slider(text, initial_value, maximum, round, on_changed, minimum, signal)
     local name = wibox.widget {
         widget = widgets.text,
         forced_width = dpi(190),
@@ -299,6 +299,12 @@ local function theme_slider(text, initial_value, maximum, round, on_changed, min
     slider_text_input:connect_signal("property::value", function(self, value)
         on_changed(value)
     end)
+
+    if signal then
+        theme_daemon:connect_signal(signal, function(self, value)
+            slider_text_input:set_value(tostring(value))
+        end)
+    end
 
     return wibox.widget {
         layout = wibox.layout.align.horizontal,
@@ -353,10 +359,10 @@ local function new(layout)
         },
         theme_slider("Useless gap: ", theme_daemon:get_useless_gap(), 250, true, function(value)
             theme_daemon:set_useless_gap(value)
-        end),
+        end, 0, "useless_gap"),
         theme_slider("Client gap: ", theme_daemon:get_client_gap(), 250, true, function(value)
             theme_daemon:set_client_gap(value)
-        end),
+        end, 0, "client_gap"),
         theme_slider("UI Opacity: ", theme_daemon:get_ui_opacity(), 1, false, function(value)
             theme_daemon:set_ui_opacity(value)
         end),

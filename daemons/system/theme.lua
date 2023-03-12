@@ -1086,6 +1086,10 @@ end
 
 -- Useless gaps
 function theme:set_useless_gap(useless_gap, save)
+    if useless_gap < 0 then
+       useless_gap = 0
+    end
+
     for _, tag in ipairs(capi.root.tags()) do
         tag.gap = useless_gap
     end
@@ -1095,6 +1099,7 @@ function theme:set_useless_gap(useless_gap, save)
     end
 
     self._private.useless_gap = useless_gap
+    self:emit_signal("useless_gap", useless_gap)
     if save ~= false then
         helpers.settings["theme-useless-gap"] = useless_gap
     end
@@ -1110,6 +1115,10 @@ end
 
 -- Client gaps
 function theme:set_client_gap(client_gap, save)
+    if client_gap < 0 then
+        client_gap = 0
+     end
+
     for screen in capi.screen do
         screen.padding = {
             left = client_gap,
@@ -1121,6 +1130,7 @@ function theme:set_client_gap(client_gap, save)
     end
 
     self._private.client_gap = client_gap
+    self:emit_signal("client_gap", client_gap)
     if save ~= false then
         helpers.settings["theme-client-gap"] = client_gap
     end
