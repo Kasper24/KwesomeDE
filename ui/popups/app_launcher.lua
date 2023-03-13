@@ -292,7 +292,8 @@ local function new()
     end)
 
     capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
-        app_launcher:get_widget().widget.bg = old_colorscheme_to_new_map[beautiful.colors.background]
+        app_launcher:get_widget().bg = beautiful.colors.background
+        app_launcher:get_widget().widget.bg = beautiful.colors.background
     end)
 
     return app_launcher
