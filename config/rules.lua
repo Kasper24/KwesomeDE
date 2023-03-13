@@ -17,258 +17,6 @@ local capi = {
     client = client
 }
 
-local apps = {
-    kitty = {
-        command = "kitty",
-        class = "kitty"
-    },
-    alacritty = {
-        command = "alacritty",
-        class = "Alacritty"
-    },
-    termite = {
-        command = "termite",
-        class = "Termite"
-    },
-    urxvt = {
-        command = "urxvt",
-        class = "URxvt"
-    },
-    st = {
-        command = "st",
-        class = "st"
-    },
-    st_256color = {
-        command = "st-256color",
-        class = "st-256color"
-    },
-    htop = {
-        command = "kitty --class htop htop",
-        class = "htop"
-    },
-    nm_connection_editor = {
-        command = "nm-connection-editor",
-        class = "Nm-connection-editor"
-    },
-    network_manager_dmenu = {
-        name = "network",
-        command = "networkmanager_dmenu",
-        class = "Rofi"
-    },
-    pavucontrol = {
-        command = "pavucontrol",
-        class = "Pavucontrol"
-    },
-    blueman_manager = {
-        name = "bluetooth",
-        command = "blueman-manager",
-        class = "Blueman-manager"
-    },
-    file_roller = {
-        command = "file-roller",
-        class = "File-roller"
-    },
-    lxappearance = {
-        command = "Lxappearance",
-        class = "lxappearance"
-    },
-    nvidia_settings = {
-        command = "nvidia-settings",
-        class = "Nvidia-settings"
-    },
-    wpgtk = {
-        command = "wpg",
-        class = "Wpg"
-    },
-    feh = {
-        command = "feh",
-        class = "feh"
-    },
-    eye_of_gnome = {
-        command = "eog",
-        class = "Eog"
-    },
-    gwenview = {
-        command = "gwenview",
-        class = "gwenview"
-    },
-    flameshot_gui = {
-        command = "flameshot gui -p ~/Pictures",
-        class = "flameshot"
-    },
-    flameshot = {
-        command = "flameshot full -c -p ~/Pictures",
-        class = "flameshot"
-    },
-    gnome_calculator = {
-        command = "gnome-calculator",
-        class = "Gnome-calculator"
-    },
-    gnome_system_monitor = {
-        name = "system-monitor",
-        command = "gnome-system-monitor",
-        class = "Gnome-system-monitor"
-    },
-    notepadqq = {
-        command = "notepadqq",
-        class = "Notepadqq"
-    },
-    ranger = {
-        command = "kitty --class ranger ranger",
-        class = "ranger"
-    },
-    nemo = {
-        command = "nemo",
-        class = "Nemo"
-    },
-    thunar = {
-        class = "Thunar"
-    },
-    files = {
-        class = "files"
-    },
-    firefox = {
-        command = "firefox",
-        class = "firefox"
-    },
-    vivaldi = {
-        command = "vivaldi-stable",
-        class = "Vivaldi-stable"
-    },
-    chromium = {
-        class = "Chromium"
-    },
-    emacs = {
-        class = "Emacs"
-    },
-    vim = {
-        class = "vim"
-    },
-    vscode = {
-        command = "code",
-        class = "Code"
-    },
-    android_studio = {
-        command = "android-studio",
-        class = "jetbrains-studio"
-    },
-    qt_creator = {
-        command = "qtcreator",
-        class = "QtCreator"
-    },
-    lazygit = {
-        command = "kitty --class gitqlient lazygit",
-        class = "gitqlient"
-    },
-    gitkraken = {
-        command = "gitkraken",
-        class = "GitKraken"
-    },
-    discord = {
-        command = "discocss",
-        class = "discord"
-    },
-    telegram = {
-        command = "kotatogram-desktop",
-        class = "KotatogramDesktop"
-    },
-    kotatogram = {
-        command = "telegram-desktop",
-        class = "TelegramDesktop"
-    },
-    spotify = {
-        command = "spotify",
-        class = "Spotify"
-    },
-    ncmpcpp = {
-        command = "kitty --class mopidy ncmpcpp",
-        class = "mopidy"
-    },
-    steam = {
-        command = "steam",
-        class = "Steam"
-    },
-    lutris = {
-        command = "lutris",
-        class = "Lutris"
-    },
-    heroic = {
-        command = "heroic",
-        class = "heroic"
-    },
-    rockstar_games_launcer = {
-        name = "Rockstar Games Launcher"
-    },
-    rocket_league = {
-        class = "steam_app_252950"
-    },
-    gta_v = {
-        name = "Grand Theft Auto V"
-    },
-    openrgb = {
-        command = "openrgb",
-        class = "openrgb"
-    },
-    artemis = {
-        command = "artemis",
-        class = "artemis.ui.exe"
-    },
-    qbittorrent = {
-        command = "qbittorrent",
-        class = "qBittorrent"
-    },
-    webtorrent = {
-        class = "WebTorrent"
-    },
-    virtualbox = {
-        command = "virtualbox",
-        class = "VirtualBox Manager"
-    },
-    qemui = {
-        class = "Qemu-system-x86_64"
-    },
-    thunderbird = {
-        command = "thunderbird",
-        class = "Thunderbird"
-    },
-    bitwarden = {
-        command = "bitwarden",
-        class = "Bitwarden"
-    },
-    keepassxc = {
-        command = "keepassxc",
-        class = "KeePassXC"
-    },
-    libreoffice_writer = {
-        command = "libreoffice",
-        class = "libreoffice-writer"
-    },
-    libreoffice_impress = {
-        command = "libreoffice",
-        class = "libreoffice-impress"
-    },
-    libreoffice_calc = {
-        command = "libreoffice",
-        class = "libreoffice-calc"
-    },
-    screenshot = {
-        command = "",
-        class = "Screenshot"
-    },
-    record = {
-        command = "",
-        class = "Record"
-    },
-    theme = {
-        command = "",
-        class = "Theme"
-    },
-    xfce4_settings_manager = {
-        command = "xfce4-settings-manager",
-        class = "Xfce4-settings-manager"
-    }
-}
-
 require("awful.autofocus")
 
 capi.client.connect_signal("request::manage", function(client)
@@ -310,65 +58,37 @@ ruled.client.connect_signal("request::rules", function()
             maximized_horizontal = false,
             maximized_vertical = false,
             placement = awful.placement.centered
-        },
-        callback = function(c)
-            if c.floating then
-                if c.transient_for == nil then
-                    awful.placement.centered(c)
-                else
-                    awful.placement.centered(c, {
-                        parent = c.transient_for
-                    })
-                end
-                awful.placement.no_offscreen(c)
-            end
-        end
-    }
-
-    ruled.client.append_rule {
-        rule_any = {
-            class = {"linux-wallpaperengine"}
-        },
-        properties = {
-            x = 0,
-            y = 0,
-            floating = true,
-            below = true,
-            sticky = true,
-            skip_taskbar = true,
-            can_tile = false,
-            can_move = false,
-            can_resize = false,
-            is_fixed = true,
-            can_focus = false,
-            focusable = false,
-            can_kill = false,
-            fake_root = true
         }
     }
-
-    ruled.client.append_rule {
-        rule_any = {
-            class = {"linux-wallpaperengine-preview"}
-        },
-        properties = {
-            floating = true,
-        }
-    }
-
 
     -- Floating clients
     ruled.client.append_rule {
         rule_any = {
-            instance = {"copyq", -- Includes session name in class.
-            "floating_terminal", "riotclientux.exe", "leagueclientux.exe", "Devtools" -- Firefox devtools
+            instance = {
+                "copyq", -- Includes session name in class.
+                "floating_terminal",
+                "riotclientux.exe",
+                "leagueclientux.exe",
+                "Devtools" -- Firefox devtools
             },
-            class = {apps.lxappearance.class, apps.nm_connection_editor.class, apps.file_roller.class,
-                     apps.nvidia_settings.class, apps.blueman_manager.class},
-            name = {"Event Tester", -- xev
-            "MetaMask Notification"},
-            role = {"pop-up", -- e.g. Google Chrome's (detached) Developer Tools.
-            "AlarmWindow", "pop-up", "GtkFileChooserDialog", "conversation"},
+            class = {
+                "lxappearance",
+                "Nm-connection-editor",
+                "File-roller",
+                "Nvidia-settings",
+                "Blueman-manager"
+            },
+            name = {
+                "Event Tester", -- xev
+                "MetaMask Notification"
+            },
+            role = {
+                "pop-up", -- e.g. Google Chrome's (detached) Developer Tools.
+                "AlarmWindow",
+                "pop-up",
+                "GtkFileChooserDialog",
+                "conversation"
+            },
             type = {"dialog"}
         },
         properties = {
@@ -379,10 +99,16 @@ ruled.client.connect_signal("request::rules", function()
     -- "Needy": Clients that steal focus when they are urgent
     ruled.client.append_rule {
         rule_any = {
+            class = {"Vivaldi-stable", "firefox"},
             type = {"dialog"}
         },
         callback = function(c)
             c:connect_signal("property::urgent", function()
+                -- If current focused app is fullscren (possiblly a game, don't jump)
+                if capi.client.focus and capi.client.focus.fullscreen then
+                    return
+                end
+
                 if c.urgent then
                     c:jump_to()
                 end
@@ -401,18 +127,10 @@ ruled.client.connect_signal("request::rules", function()
         }
     }
 
-    -- File chooser dialog
-    ruled.client.append_rule {
-        rule = {
-            role = "GtkFileChooserDialog"
-        }
-        -- properties = { floating = true, width = awful.screen.focused().geometry.width * 0.55, height = awful.screen.focused().geometry.height * 0.65 }
-    }
-
     -- Pavucontrol
     ruled.client.append_rule {
         rule = {
-            class = apps.pavucontrol.class
+            class = "Pavucontrol"
         },
         properties = {
             floating = true,
@@ -424,7 +142,10 @@ ruled.client.connect_signal("request::rules", function()
     -- System monitors
     ruled.client.append_rule {
         rule_any = {
-            class = {apps.htop.class, apps.gnome_system_monitor.class}
+            class = {"htop", "Gnome-system-monitor"}
+        },
+        except = {
+            type = {"dialog"}
         },
         properties = {
             floating = true,
@@ -433,10 +154,23 @@ ruled.client.connect_signal("request::rules", function()
         }
     }
 
+    -- Gnome system monitor confrim kill dialog
+    ruled.client.append_rule {
+        rule = {
+            class = "Gnome-system-monitor",
+            type = "dialog"
+        },
+        properties = {
+            floating = true,
+            width = awful.screen.focused().geometry.width * 0.2,
+            height = awful.screen.focused().geometry.height * 0.2
+        }
+    }
+
     -- Gnome calculator
     ruled.client.append_rule {
         rule = {
-            class = apps.gnome_calculator.class
+            class = "Gnome-calculator"
         },
         properties = {
             floating = true,
@@ -448,7 +182,7 @@ ruled.client.connect_signal("request::rules", function()
     -- Image viewers
     ruled.client.append_rule {
         rule_any = {
-            class = {apps.feh.class, apps.eye_of_gnome.class, apps.gwenview.class}
+            class = {"feh", "Eog", "gwenview"}
         },
         properties = {
             floating = true,
@@ -460,7 +194,7 @@ ruled.client.connect_signal("request::rules", function()
     -- WPGTK
     ruled.client.append_rule {
         rule = {
-            class = apps.wpgtk.class
+            class = "Wpg"
         },
         properties = {
             floating = true,
@@ -472,7 +206,7 @@ ruled.client.connect_signal("request::rules", function()
     -- Notepadqq
     ruled.client.append_rule {
         rule = {
-            class = apps.notepadqq.class
+            class = "Notepadqq"
         },
         properties = {
             floating = true,
@@ -501,7 +235,7 @@ ruled.client.connect_signal("request::rules", function()
     -- SDL_VIDEO_MINIMIZE_ON_FOCUS_LOSS=0 but not all games use SDL
     ruled.client.append_rule {
         rule = {
-            name = apps.gta_v.name
+            name = "Grand Theft Auto V"
         },
         callback = function(c)
             c:connect_signal("property::minimized", function()
@@ -519,7 +253,7 @@ ruled.client.connect_signal("request::rules", function()
     -- so I don't want it to raise Rocket League as I can see it and there is no need
     ruled.client.append_rule {
         rule = {
-            class = apps.rocket_league.class
+            class = "steam_app_252950"
         },
         callback = function(c)
             c:connect_signal("property::urgent", function()
@@ -545,7 +279,7 @@ ruled.client.connect_signal("request::rules", function()
     -- Start the start page server when opening firefox and close it when closing firefox
     ruled.client.append_rule {
         rule = {
-            class = apps.firefox.class
+            class = "firefox"
         },
         callback = function(c)
             awful.spawn.with_shell(
@@ -559,7 +293,7 @@ ruled.client.connect_signal("request::rules", function()
     -- Hack to not close artemis to tray
     ruled.client.append_rule {
         rule = {
-            class = apps.artemis.class
+            class = "artemis.ui.exe"
         },
         callback = function(c)
             -- Artemis first open a splash loading window before opening the main window
@@ -581,21 +315,37 @@ ruled.client.connect_signal("request::rules", function()
         }
     }
 
-    -- Focus browser when urent if current client is not full screen
+    -- Wallpaper engine
     ruled.client.append_rule {
         rule_any = {
-            class = {apps.vivaldi.class, apps.firefox.class}
+            class = {"linux-wallpaperengine"}
         },
-        except = {
-            role = "GtkFileChooserDialog"
+        properties = {
+            x = 0,
+            y = 0,
+            floating = true,
+            below = true,
+            sticky = true,
+            skip_taskbar = true,
+            can_tile = false,
+            can_move = false,
+            can_resize = false,
+            is_fixed = true,
+            can_focus = false,
+            focusable = false,
+            can_kill = false,
+            fake_root = true
+        }
+    }
+
+    -- Wallpaper engine preview
+    ruled.client.append_rule {
+        rule_any = {
+            class = {"linux-wallpaperengine-preview"}
         },
-        callback = function(c)
-            if not capi.client.focus.fullscreen or not capi.client.focus then
-                c:connect_signal("property::urgent", function()
-                    c:jump_to()
-                end)
-            end
-        end
+        properties = {
+            floating = true,
+        }
     }
 
     ---------------------------------------------
@@ -604,7 +354,11 @@ ruled.client.connect_signal("request::rules", function()
     -- Browsing
     ruled.client.append_rule {
         rule_any = {
-            class = {apps.vivaldi.class, apps.firefox.class}
+            class = {
+                "Vivaldi-stable",
+                "firefox",
+                "Chromium",
+            }
         },
         except = {
             role = "GtkFileChooserDialog"
@@ -618,7 +372,15 @@ ruled.client.connect_signal("request::rules", function()
     -- Code
     ruled.client.append_rule {
         rule_any = {
-            class = {apps.vscode.class, apps.qt_creator.class, apps.android_studio.class}
+            class = {
+                "Emacs",
+                "nvim",
+                "lvim",
+                "vim",
+                "Code",
+                "QtCreator",
+                "jetbrains-studio"
+            }
         },
         except = {
             role = "GtkFileChooserDialog"
@@ -632,7 +394,10 @@ ruled.client.connect_signal("request::rules", function()
     -- Git client
     ruled.client.append_rule {
         rule_any = {
-            class = {apps.gitkraken.class, apps.lazygit.class}
+            class = {
+                "GitKraken",
+                "gitqlient"
+            }
         },
         except = {
             role = "GtkFileChooserDialog"
@@ -646,7 +411,11 @@ ruled.client.connect_signal("request::rules", function()
     -- Chat
     ruled.client.append_rule {
         rule_any = {
-            class = {apps.discord.class, apps.kotatogram.class}
+            class = {
+                "discord",
+                "TelegramDesktop",
+                "KotatogramDesktop"
+            }
         },
         except = {
             role = "GtkFileChooserDialog"
@@ -660,7 +429,10 @@ ruled.client.connect_signal("request::rules", function()
     -- Music
     ruled.client.append_rule {
         rule_any = {
-            class = {apps.spotify.class, apps.ncmpcpp.class}
+            class = {
+                "Spotify",
+                "mopidy"
+            }
         },
         except = {
             role = "GtkFileChooserDialog"
@@ -674,8 +446,14 @@ ruled.client.connect_signal("request::rules", function()
     -- Game launchers
     ruled.client.append_rule {
         rule_any = {
-            class = {apps.steam.class, apps.lutris.class, apps.heroic.class},
-            name = {apps.rockstar_games_launcer.name}
+            class = {
+                "Steam",
+                "Lutris",
+                "heroic"
+            },
+            name = {
+                "Rockstar Games Launcher"
+            }
         },
         except = {
             role = "GtkFileChooserDialog"
@@ -688,8 +466,12 @@ ruled.client.connect_signal("request::rules", function()
     -- Games
     ruled.client.append_rule {
         rule_any = {
-            class = {apps.rocket_league.class},
-            name = {apps.gta_v.name}
+            class = {
+                "steam_app_252950"
+            },
+            name = {
+                "Grand Theft Auto V"
+            }
         },
         except = {
             role = "GtkFileChooserDialog"
@@ -718,7 +500,7 @@ ruled.client.connect_signal("request::rules", function()
     -- RGB Lighting
     ruled.client.append_rule {
         rule_any = {
-            class = {apps.openrgb.class, apps.artemis.class}
+            class = {"openrgb", "artemis.ui.exe"}
         },
         except = {
             role = "GtkFileChooserDialog"
@@ -730,7 +512,7 @@ ruled.client.connect_signal("request::rules", function()
 
     ruled.client.append_rule {
         rule = {
-            class = apps.ncmpcpp.class
+            class = "mopidy"
         },
         callback = function(c)
             c.custom_titlebar = true
@@ -740,3 +522,38 @@ ruled.client.connect_signal("request::rules", function()
         end
     }
 end)
+
+ruled.client.add_rule_source("fix_dialog", function(c, properties, callbacks)
+    if c.type ~= "dialog" then
+        return
+    end
+
+    if not properties.placement then
+        local parent = c.transient_for
+        if not parent and c.pid then
+            local screen = properties.screen
+                and (type(properties.screen) == "function"
+                    and capi.screen[properties.screen(c, properties)]
+                    or capi.screen[properties.screen])
+                or nil
+            if screen then
+                local possible_parents = {}
+                for _, cc in ipairs(screen.clients) do
+                    if c ~= cc and c.pid == cc.pid then
+                        table.insert(possible_parents, cc)
+                    end
+                end
+                -- right now I take first parent, I already forgot why I create table ¯\_(ツ)_/¯
+                parent = possible_parents[1]
+            end
+        end
+
+        c.width = 300
+        c.height = 300
+
+        (awful.placement.centered + awful.placement.no_offscreen)(c, {
+            parent = parent,
+        })
+    end
+
+end, { "awful.spawn", "awful.rules" }, {})
