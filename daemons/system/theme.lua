@@ -905,8 +905,6 @@ function theme:set_wallpaper(wallpaper, type)
             capi.screen.primary.geometry.height
         )
         capi.awesome.emit_signal("wallpaper::changed", BACKGROUND_PATH)
-        collectgarbage("collect")
-        collectgarbage("collect")
     end
 end
 
@@ -1297,8 +1295,6 @@ local function new()
                     client.height
                 )
                 capi.awesome.emit_signal("wallpaper::changed")
-                collectgarbage("collect")
-                collectgarbage("collect")
                 return false
             end)
         end

@@ -326,8 +326,6 @@ local function create_notification(n, screen)
                 if n.destroyed then
                     n.widget.visible = false
                     n.widget = nil
-                    collectgarbage("collect")
-                    collectgarbage("collect")
                 else
                     -- Prevents a crash caused by drawing the arc when the size is to small
                     n.widget.widget:get_children_by_id("top_row")[1]:set_third(timeout_arc)

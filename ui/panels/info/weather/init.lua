@@ -375,8 +375,6 @@ local function new()
         hourly_forecast_graph:clear()
         hourly_forecast_graph_border:clear()
         daily_forecast_widget:reset()
-        collectgarbage("collect")
-        collectgarbage("collect")
 
         stack:raise_widget(weather_widget)
 

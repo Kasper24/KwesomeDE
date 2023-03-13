@@ -9,7 +9,6 @@ local beautiful = require("beautiful")
 local notifications_daemon = require("daemons.system.notifications")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
-local collectgarbage = collectgarbage
 local setmetatable = setmetatable
 local ipairs = ipairs
 local string = string
@@ -319,8 +318,6 @@ local function new()
     notifications_daemon:connect_signal("empty", function(self)
         notification_groups = {}
         scrollbox:reset()
-        collectgarbage("collect")
-        collectgarbage("collect")
         stack:raise_widget(empty_notifications)
     end)
 

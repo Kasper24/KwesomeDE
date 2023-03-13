@@ -219,8 +219,6 @@ local function new()
     tasklist_daemon:connect_signal("client::removed", function(self, client)
         tasklist_layout:remove_widgets(client.tasklist_widget)
         client.tasklist_widget = nil
-        collectgarbage("collect")
-        collectgarbage("collect")
     end)
 
     tasklist_daemon:connect_signal("pinned_app::pos", function(self, pinned_app, pos)
