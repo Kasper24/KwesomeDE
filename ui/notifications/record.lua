@@ -49,7 +49,7 @@ record_daemon:connect_signal("ended", function(self, folder, file_name)
     }
 
     view_file:connect_signal("invoked", function()
-        awful.spawn("xdg-open " .. folder .. file_name, false)
+        awful.spawn("xdg-open " .. folder .. "/" .. file_name, false)
     end)
 
     open_dir:connect_signal("invoked", function()
@@ -63,7 +63,7 @@ record_daemon:connect_signal("ended", function(self, folder, file_name)
         font_icon = beautiful.icons.toggle.off,
         icon = icons,
         title = "Video Recording",
-        message = "Video saved to " .. folder .. file_name,
+        message = "Video saved to " .. folder .. "/" .. file_name,
         actions = {view_file, open_dir}
     }
 end)
