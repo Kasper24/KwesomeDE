@@ -167,10 +167,13 @@ ruled.client.connect_signal("request::rules", function()
         }
     }
 
-    -- Gnome calculator
+    -- Calculators
     ruled.client.append_rule {
-        rule = {
-            class = "Gnome-calculator"
+        rule_any = {
+            class =  {
+                "Gnome-calculator",
+                "kcalc"
+            }
         },
         properties = {
             floating = true,
