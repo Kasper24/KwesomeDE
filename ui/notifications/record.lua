@@ -80,3 +80,16 @@ record_daemon:connect_signal("error::create_directory", function()
         category = "im.error"
     }
 end)
+
+record_daemon:connect_signal("error::not_recording", function()
+    naughty.notification {
+        app_font_icon = beautiful.icons.video,
+        app_icon = icons,
+        app_name = "Recorder",
+        font_icon = beautiful.icons.circle_exclamation,
+        icon = error_icons,
+        title = "Error",
+        message = "Not recording",
+        category = "im.error"
+    }
+end)

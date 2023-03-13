@@ -77,17 +77,21 @@ function record:set_audio_source(audio_source)
 end
 
 function record:stop_video()
-    awful.spawn.easy_async("killall ffmpeg", function()
-        local file = filesystem.file.new_for_path(self._private.folder .. self._private.file_name)
-        file:exists(function(error, exists)
-            if error ~= nil or exists == false then
-                self:emit_signal("error::create_file", error)
-            end
+    if self._private.is_recording then
+        awful.spawn.easy_async("killall ffmpeg", function()
+            local file = filesystem.file.new_for_path(self._private.folder .. self._private.file_name)
+            file:exists(function(error, exists)
+                if error ~= nil or exists == false then
+                    self:emit_signal("error::create_file", error)
+                end
 
-            self._private.is_recording = false
-            self:emit_signal("ended", self._private.folder, self._private.file_name)
+                self._private.is_recording = false
+                self:emit_signal("ended", self._private.folder, self._private.file_name)
+            end)
         end)
-    end)
+    else
+        self:emit_signal("error::not_recording")
+    end
 end
 
 function record:start_video()
