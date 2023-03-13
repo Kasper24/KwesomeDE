@@ -167,7 +167,7 @@ local function new()
     ret:new("discord", "d", "discocss", "discord")
     ret:new("ncmpcpp", "n", "kitty --class mopidy ncmpcpp", "mopidy")
     ret:new("spotify", "s", "spotify", "Spotify")
-    ret:new("openrgb", "o", "openrgb", "openrgb")
+    ret:new("openrgb", "o", "openrgb --server --gui", "openrgb")
     ret:new("artemis", "a", "artemis", "artemis.ui.exe")
     ret:new("ranger", "f", "kitty --class ranger ranger", "ranger", {
         run_or_raise = false
