@@ -93,10 +93,23 @@ end
 function record:start_video()
     local function record()
         self._private.file_name = os.date("%d-%m-%Y-%H:%M:%S") .. "." .. self._private.format
+
         local command = string.format(
-            "ffmpeg -video_size %s -framerate %d -f x11grab -i :0.0+0,0 -f pulse -i %s %s%s -c:v libx264 -profile:v main",
-            self._private.resolution, self._private.fps, self._private.audio_source, self._private.folder,
-            self._private.file_name)
+            "ffmpeg -video_size %s " ..
+            "-framerate %d " ..
+            "-f x11grab -i :0.0+0,0 " ..
+            "-f pulse -i %s " ..
+            "-c:v libx264 -profile:v main " ..
+            "-pix_fmt yuv420p -preset ultrafast -tune zerolatency -crf 23 " ..
+            "-c:a aac -b:a 128k " ..
+            "-vsync vfr " ..
+            "%s/%s",
+            self._private.resolution,
+            self._private.fps,
+            self._private.audio_source,
+            self._private.folder,
+            self._private.file_name
+        )
         awful.spawn(command, false)
         self._private.is_recording = true
         self:emit_signal("started")
