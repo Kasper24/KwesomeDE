@@ -36,14 +36,17 @@ local function client_checkbox_button(client, property, text, on_release)
 end
 
 local function new(client)
-    local maximize_menu = mwidget {client_checkbox_button(client, "maximized", "Maximize"),
-                                   client_checkbox_button(client, "maximized_horizontal", "Maximize Horizontally"),
-                                   client_checkbox_button(client, "maximized_vertical", "Maximize Vertically")}
+    local maximize_menu = mwidget {
+        client_checkbox_button(client, "maximized", "Maximize"),
+        client_checkbox_button(client, "maximized_horizontal", "Maximize Horizontally"),
+        client_checkbox_button(client, "maximized_vertical", "Maximize Vertically")
+    }
 
-    local layer_menu = mwidget {client_checkbox_button(client, "above", "Above"),
-                                client_checkbox_button(client, "below", "Below"),
-                                client_checkbox_button(client, "ontop", "On Top")}
-
+    local layer_menu = mwidget {
+        client_checkbox_button(client, "above", "Above"),
+        client_checkbox_button(client, "below", "Below"),
+        client_checkbox_button(client, "ontop", "On Top")
+    }
 
     local client_icon_button = mwidget.button {
         icon = client.font_icon,
