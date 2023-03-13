@@ -66,16 +66,16 @@ local function event_widget(event)
     local avatar = wibox.widget {
         widget = widgets.button.elevated.normal,
         normal_shape = gshape.circle,
+        on_release = function()
+            awful.spawn("xdg-open http://github.com/" .. event.actor.login, false)
+        end,
         {
             widget = wibox.widget.imagebox,
             forced_width = dpi(40),
             forced_height = dpi(40),
             clip_shape = helpers.ui.rrect(),
             image = github_daemon:get_events_avatars_path() .. event.actor.id
-        },
-        on_release = function()
-            awful.spawn("xdg-open http://github.com/" .. event.actor.login, false)
-        end
+        }
     }
 
     local user = wibox.widget {
@@ -139,6 +139,7 @@ local function event_widget(event)
     return wibox.widget {
         layout = wibox.layout.fixed.horizontal,
         forced_width = dpi(600),
+        forced_height = dpi(60),
         spacing = dpi(5),
         avatar,
         info
