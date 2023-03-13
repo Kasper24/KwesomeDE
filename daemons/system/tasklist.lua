@@ -125,11 +125,6 @@ local function on_client_added(self, client)
     on_client_updated(self)
 end
 
-local function on_client_removed(self, client)
-    self:emit_signal("client::removed", client)
-    on_client_updated(self)
-end
-
 function tasklist:idx(client)
     client = client or capi.client.focus
     if not client then return end
@@ -341,15 +336,8 @@ local function new()
             return
         end
 
-        -- Copying the needed values since the client will be invalid when the timer runs
-        local _client = {}
-        _client.tasklist_widget = client.tasklist_widget
-        _client.window_switcher_widget = client.window_switcher_widget
-        gtimer.start_new(0.01, function()
-            on_client_removed(ret, _client)
-            _client = nil
-            return false
-        end)
+        ret:emit_signal("client::removed", client)
+        on_client_updated(ret)
     end)
 
     capi.client.connect_signal("tagged", function(client)
