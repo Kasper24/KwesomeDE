@@ -192,3 +192,5 @@ capi.client.connect_signal("request::titlebars", function(client)
         titlebar:set_bg(beautiful.colors.background_no_opacity)
     end)
 end)
+
+require(... .. ".ncmpcpp")

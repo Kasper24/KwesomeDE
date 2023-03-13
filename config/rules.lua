@@ -7,7 +7,6 @@ local gtimer = require("gears.timer")
 local ruled = require("ruled")
 local power_popup = require("ui.popups.power")
 local lock_popup = require("ui.popups.lock")
-local ncmpcpp_titlebar = require("ui.titlebar.ncmpcpp")
 local picom_daemon = require("daemons.system.picom")
 local theme_daemon = require("daemons.system.theme")
 local helpers = require("helpers")
@@ -511,18 +510,6 @@ ruled.client.connect_signal("request::rules", function()
         properties = {
             tag = awful.screen.focused().tags[8]
         }
-    }
-
-    ruled.client.append_rule {
-        rule = {
-            class = "mopidy"
-        },
-        callback = function(c)
-            c.custom_titlebar = true
-
-            ncmpcpp_titlebar.tabs_titlebar(c)
-            ncmpcpp_titlebar.media_controls_titlebar(c)
-        end
     }
 end)
 

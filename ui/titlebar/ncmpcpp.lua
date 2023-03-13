@@ -3,6 +3,7 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 local awful = require("awful")
+local ruled = require("ruled")
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
@@ -13,9 +14,7 @@ local capi = {
     awesome = awesome
 }
 
-local ncmppcpp = {}
-
-function ncmppcpp.tabs_titlebar(c)
+local function tabs_titlebar(c)
     local current_playlist = nil
     local local_files = nil
     local search = nil
@@ -181,7 +180,7 @@ function ncmppcpp.tabs_titlebar(c)
     end)
 end
 
-function ncmppcpp.media_controls_titlebar(c)
+local function media_controls_titlebar(c)
     local playerctl_daemon = bling.signal.playerctl.lib {
         update_on_activity = true,
         player = {"mopidy", "%any"},
@@ -244,4 +243,15 @@ function ncmppcpp.media_controls_titlebar(c)
     end)
 end
 
-return ncmppcpp
+ruled.client.connect_signal("request::rules", function()
+    ruled.client.append_rule
+    {
+        rule = { class = "mopidy" },
+        callback = function(c)
+            c.custom_titlebar = true
+
+            tabs_titlebar(c)
+            media_controls_titlebar(c)
+        end
+    }
+end)
