@@ -1,4 +1,5 @@
 copy_to=~/.local/share/themes/FlatColor/gtk-3.0/gtk.css
+copy_to=~/.themes/FlatColor/gtk-3.0/gtk.css
 
 /* Default color scheme */
 @define-color bg_color {color0};

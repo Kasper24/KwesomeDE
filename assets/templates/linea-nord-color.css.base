@@ -1,4 +1,5 @@
 copy_to=~/.local/share/themes/linea-nord-color/general/dark.css
+copy_to=~/.themes/linea-nord-color/general/dark.css
 
 @import url("gtk-version.css");
 @import url("../general/gtk-colors.css");

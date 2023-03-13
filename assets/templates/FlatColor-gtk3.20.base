@@ -1,5 +1,6 @@
 /* Default color scheme */
 copy_to=~/.local/share/themes/FlatColor/gtk-3.20/gtk.css
+copy_to=~/.themes/FlatColor/gtk-3.20/gtk.css
 
 @define-color color0 {color0};
 @define-color color1 {color1};

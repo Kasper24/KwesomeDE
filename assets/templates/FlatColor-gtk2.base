@@ -1,6 +1,7 @@
 #modded Numix gtkrc
 
 copy_to=~/.local/share/themes/FlatColor/gtk-2.0/gtkrc
+copy_to=~/.themes/FlatColor/gtk-2.0/gtkrc
 
 gtk-color-scheme = "bg_color:{color0}
 color0:{color0}

@@ -1,4 +1,5 @@
 copy_to=~/.local/share/themes/alto-gtk/gtk-3.20/gtk.css
+copy_to=~/.themes/alto-gtk/gtk-3.20/gtk.css
 
 /* Default color scheme */
 @define-color color0 {color0};
