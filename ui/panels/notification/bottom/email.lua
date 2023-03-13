@@ -8,7 +8,6 @@ local beautiful = require("beautiful")
 local email_daemon = require("daemons.web.email")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
-local collectgarbage = collectgarbage
 local setmetatable = setmetatable
 local tostring = tostring
 local ipairs = ipairs
