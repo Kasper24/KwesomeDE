@@ -100,8 +100,8 @@ function record:start_video()
             "-f x11grab -i :0.0+0,0 " ..
             "-f pulse -i %s " ..
             "-c:v libx264 -profile:v main " ..
-            "-pix_fmt yuv420p -preset ultrafast -tune zerolatency -crf 23 " ..
-            "-c:a aac -b:a 128k " ..
+            "-pix_fmt yuv420p -preset ultrafast -tune zerolatency -crf 28 " ..
+            "-c:a aac -b:a 64k -b:v 500k " ..
             "-vsync vfr " ..
             "%s/%s",
             self._private.resolution,
