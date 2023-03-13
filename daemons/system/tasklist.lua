@@ -52,6 +52,12 @@ end
 local function sort_clients(self)
     self._private.clients = capi.client.get()
 
+    for index, client in ipairs(self._private.clients) do
+        if client.skip_taskbar then
+            table.remove(self._private.clients, index)
+        end
+    end
+
     table.sort(self._private.clients, function(a, b)
         if a.first_tag == nil then
             return false
