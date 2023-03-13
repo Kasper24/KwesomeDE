@@ -5,6 +5,22 @@
 local hotkeys_popup = require("ui.popups.hotkeys")
 local pairs = pairs
 
+local ranger_rule = { class = {"ranger", "ranger"} }
+for group_name, group_data in pairs({
+    ["Ranger: file"] = { rule_any = ranger_rule },
+    ["Ranger: movement"] = { rule_any = ranger_rule },
+    ["Ranger: search"] = { rule_any = ranger_rule },
+    ["Ranger: sort"] = { rule_any = ranger_rule },
+    ["Ranger: linemode"] = { rule_any = ranger_rule },
+    ["Ranger: filterstack"] = { rule_any = ranger_rule },
+    ["Ranger: tabs"] = { rule_any = ranger_rule },
+    ["Ranger: bookmarks"] = { rule_any = ranger_rule },
+    ["Ranger: tags"] = { rule_any = ranger_rule },
+    ["Ranger: settings"] = { rule_any = ranger_rule }
+}) do
+    hotkeys_popup.add_group_rules(group_name, group_data)
+end
+
 local ranger_keys = {
     ["Ranger: file"] = {{
         modifiers = {},
@@ -247,43 +263,5 @@ local ranger_keys = {
         }
     }}
 }
-
-local ranger_rule = {
-    class = {"ranger", "ranger"}
-}
-for group_name, group_data in pairs({
-    ["Ranger: file"] = {
-        rule_any = ranger_rule
-    },
-    ["Ranger: movement"] = {
-        rule_any = ranger_rule
-    },
-    ["Ranger: search"] = {
-        rule_any = ranger_rule
-    },
-    ["Ranger: sort"] = {
-        rule_any = ranger_rule
-    },
-    ["Ranger: linemode"] = {
-        rule_any = ranger_rule
-    },
-    ["Ranger: filterstack"] = {
-        rule_any = ranger_rule
-    },
-    ["Ranger: tabs"] = {
-        rule_any = ranger_rule
-    },
-    ["Ranger: bookmarks"] = {
-        rule_any = ranger_rule
-    },
-    ["Ranger: tags"] = {
-        rule_any = ranger_rule
-    },
-    ["Ranger: settings"] = {
-        rule_any = ranger_rule
-    }
-}) do
-    hotkeys_popup.add_group_rules(group_name, group_data)
-end
 
 hotkeys_popup.add_hotkeys(ranger_keys)
