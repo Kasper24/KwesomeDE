@@ -258,6 +258,8 @@ function widget.new(args)
         end
     end
 
+    local label_bg = b
+
     function widget_instance:_load_widget_settings()
         if self._widget_settings_loaded then
             return
@@ -269,10 +271,9 @@ function widget.new(args)
         self.border_width = args.border_width or 0 or beautiful.border_width
         self.border_color = args.border_color or nil or self.fg
         self.shape = args.shape or helpers.ui.rrect() or beautiful.hotkeys_shape
-        self.modifiers_fg = args.modifiers_fg or beautiful.colors.random_accent_color() or beautiful.bg_minimize or
-                                "#555555"
-        self.label_bg = args.label_bg or beautiful.colors.random_accent_color() or self.fg
-        self.label_fg = args.label_fg or beautiful.colors.on_background or self.bg
+        self.modifiers_fg = beautiful.colors.random_accent_color()
+        self.label_bg = beautiful.colors.random_accent_color()
+        self.label_fg = beautiful.colors.transparent
         self.opacity = args.opacity or 1
         self.font = args.font or beautiful.font_name .. "Bold 15" or "Monospace Bold 9"
         self.description_font = args.description_font or beautiful.font_name .. "12" or "Monospace 8"
@@ -282,13 +283,15 @@ function widget.new(args)
     end
 
     function widget_instance:_get_next_color(id)
-        id = id or "default"
-        if self._colors_counter[id] then
-            self._colors_counter[id] = math.fmod(self._colors_counter[id] + 1, 15) + 1
-        else
-            self._colors_counter[id] = 1
-        end
-        return self.label_colors["color" .. tostring(self._colors_counter[id], 15)]
+        return self.label_bg
+
+        -- id = id or "default"
+        -- if self._colors_counter[id] then
+        --     self._colors_counter[id] = math.fmod(self._colors_counter[id] + 1, 15) + 1
+        -- else
+        --     self._colors_counter[id] = 1
+        -- end
+        -- return self.label_colors["color" .. tostring(self._colors_counter[id], 15)]
     end
 
     function widget_instance:_add_hotkey(key, data, target)
