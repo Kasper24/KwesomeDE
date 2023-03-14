@@ -16,6 +16,7 @@ local function run_programs()
     helpers.run.run_once_grep("parcellite")
     helpers.run.run_once_grep("kdeconnect-indicator")
     helpers.run.run_once_grep("mopidy")
+    helpers.run.run_once_grep("bitwarden-desktop", "bitwarden")
     gtimer.start_new(10, function()
         helpers.run.run_once_grep("openrgb --server --gui")
         return false
