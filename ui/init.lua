@@ -24,6 +24,7 @@ local capi = {
 require(... .. ".desktop")
 require(... .. ".popups.hotkeys.qutebrowser")
 require(... .. ".popups.hotkeys.ranger")
+require(... .. ".popups.hotkeys.vim")
 require(... .. ".popups.brightness")
 require(... .. ".popups.keyboard_layout")
 require(... .. ".popups.volume")
