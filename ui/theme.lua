@@ -328,6 +328,7 @@ local function icons()
         ["thunar"] = theme.icons.file_manager,
         ["qbittorrent"] = theme.icons.download,
         ["qemusystemx8664"] = theme.icons.computer,
+        ["qutebrowser"] = theme.icons.chrome,
         ["qtcreator"] = theme.icons.code,
         ["recorder"] = theme.icons.video,
         ["rockstargameslauncher"] = theme.icons.gamepad_alt,
