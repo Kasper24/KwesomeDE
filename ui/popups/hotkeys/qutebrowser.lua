@@ -11,6 +11,9 @@ local pairs = pairs
 
 local qutebrowser_rule = {class="qutebrowser"}
 for group_name, group_data in pairs({
+    ["Qutebrowser: common"]             = { rule = qutebrowser_rule },
+    ["Qutebrowser: search"]             = { rule = qutebrowser_rule },
+    ["Qutebrowser: tabs"]               = { rule = qutebrowser_rule },
     ["Qutebrowser: copying/yanking"]    = { rule = qutebrowser_rule },
     ["Qutebrowser: pasting"]            = { rule = qutebrowser_rule },
     ["Qutebrowser: navigation"]         = { rule = qutebrowser_rule },
@@ -28,6 +31,67 @@ for group_name, group_data in pairs({
 end
 
 local qutebrowser_keys = {
+    ["Qutebrowser: common"] = {{
+        modifiers = {},
+        keys = {
+            h = "left",
+            j = "down",
+            k = "up",
+            l = "right",
+            ["+"] = "zoom in",
+            ["-"] = "zoom out",
+            [":"] = "command line",
+        }
+    }},
+
+    ["Qutebrowser: search"] = {{
+        modifiers = {},
+        keys = {
+            ["/"] = "search in page",
+            N = "forward search in page",
+            n = "back search in page",
+        }
+    }},
+
+    ["Qutebrowser: bookmarks"] = {{
+        modifiers = {},
+        keys = {
+            M = "save bookmark",
+            m = "save quickmark",
+            B = "load quickmark in new tab",
+            b = "load quickmark",
+        }
+    }},
+
+    ["Qutebrowser: tabs"] = {{
+        modifiers = {},
+        keys = {
+            k = "previous tab",
+            j = "next tab",
+            T = "select tab",
+            gt = "switch tabs by name",
+            gm = "move tab to index",
+            gl = "move tab to the left",
+            gr = "move tab to the right",
+            gC = "clone tab",
+            d = "close tab",
+            u = "undo close tab",
+        }
+    },{
+        modifiers = {"Alt"},
+        keys = {
+            num = "select tab",
+            m = "mute tab",
+
+        }
+    },{
+        modifiers = {"Control"},
+        keys = {
+            tab = "select prev. tab",
+            p =  "pin tab",
+        }
+    }},
+
     ["Qutebrowser: copying/yanking"] = {{
         modifiers = {},
         keys = {
@@ -74,6 +138,12 @@ local qutebrowser_keys = {
             d = "half page down",
             u = "half page up",
         }
+    },{
+        modifiers = {},
+        keys = {
+            gg = "scroll to top",
+            G = "scroll to bottom",
+        }
     }},
 
     ["Qutebrowser: in prompt mode"] = {{
@@ -88,9 +158,12 @@ local qutebrowser_keys = {
     ["Qutebrowser: opening"] = {{
         modifiers = {},
         keys = {
+            o = "go to url",
+            O = "like o, in new tab",
             go = "edit and open current URL",
             gO = "like go, in new tab",
             xo = "open in background tab",
+            xO = "like go, in bg. tab",
             wo = "open in new window",
         }
     }},
@@ -98,6 +171,8 @@ local qutebrowser_keys = {
     ["Qutebrowser: back/forward"] = {{
         modifiers = {},
         keys = {
+            H = "back in history",
+            L = "forward in history",
             th = "back (in new tab)",
             wh = "back (in new window)",
             tl = "forward (in new tab)",
@@ -105,9 +180,11 @@ local qutebrowser_keys = {
         }
     }},
 
-    ["Qutebrowser: extended hint mode"] = {{
+    ["Qutebrowser: hints"] = {{
         modifiers = {},
         keys = {
+            f = "hints",
+            F = "hints new tab",
             [";b"] = "open hint in background tab",
             [";f"] = "open hint in foreground tab",
             [";h"] = "hover over hint (mouse-over)",
@@ -126,11 +203,6 @@ local qutebrowser_keys = {
     ["Qutebrowser: misc. commands"] = {{
         modifiers = {},
         keys = {
-            gt = "switch tabs by name",
-            gm = "move tab to index",
-            gl = "move tab to the left",
-            gr = "move tab to the right",
-            gC = "clone tab",
             gf = "view page source",
             gu = "navigate up in URL",
             gU = "like gu, in new tab",
@@ -154,7 +226,6 @@ local qutebrowser_keys = {
     }, {
         modifiers = {"Control"},
         keys = {
-            tab = "select prev. tab",
             v = "passthrough mode",
             q = "quit",
             h = "home",
