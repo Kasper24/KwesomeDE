@@ -158,6 +158,7 @@ local function new()
     local ret = gobject {}
     gtable.crush(ret, apps, true)
 
+    ret:new("qutebrowser", "q", "qutebrowser", "qutebrowser")
     ret:new("vivaldi", "b", "vivaldi-stable", "Vivaldi-stable")
     ret:new("vscode", "e", "code", "Code")
     ret:new("lazygit", "g", "kitty --class gitqlient lazygit", "gitqlient", {
