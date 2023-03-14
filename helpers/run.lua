@@ -19,8 +19,9 @@ function _run.run_once_ps(findme, cmd)
     end)
 end
 
-function _run.run_once_grep(command)
-    awful.spawn.easy_async_with_shell(string.format("ps aux | grep '%s' | grep -v 'grep'", command), function(stdout)
+function _run.run_once_grep(command, findme)
+    findme = findme or command
+    awful.spawn.easy_async_with_shell(string.format("ps aux | grep '%s' | grep -v 'grep'", findme), function(stdout)
         if stdout == "" or stdout == nil then
             awful.spawn(command, false)
         end
