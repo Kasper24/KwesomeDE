@@ -14,14 +14,13 @@ for group_name, group_data in pairs({
     ["Qutebrowser: common"]             = { rule = qutebrowser_rule },
     ["Qutebrowser: search"]             = { rule = qutebrowser_rule },
     ["Qutebrowser: tabs"]               = { rule = qutebrowser_rule },
-    ["Qutebrowser: copying/yanking"]    = { rule = qutebrowser_rule },
-    ["Qutebrowser: pasting"]            = { rule = qutebrowser_rule },
+    ["Qutebrowser: copy/paste"]         = { rule = qutebrowser_rule },
     ["Qutebrowser: navigation"]         = { rule = qutebrowser_rule },
     ["Qutebrowser: scrolling"]          = { rule = qutebrowser_rule },
     ["Qutebrowser: in prompt mode"]     = { rule = qutebrowser_rule },
     ["Qutebrowser: opening"]            = { rule = qutebrowser_rule },
     ["Qutebrowser: back/forward"]       = { rule = qutebrowser_rule },
-    ["Qutebrowser: extended hint mode"] = { rule = qutebrowser_rule },
+    ["Qutebrowser: hints"]              = { rule = qutebrowser_rule },
     ["Qutebrowser: misc. commands"]     = { rule = qutebrowser_rule },
     ["Qutebrowser: modifier commands"]  = { rule = qutebrowser_rule },
     ["Qutebrowser: in insert mode"]     = { rule = qutebrowser_rule },
@@ -34,10 +33,7 @@ local qutebrowser_keys = {
     ["Qutebrowser: common"] = {{
         modifiers = {},
         keys = {
-            h = "left",
-            j = "down",
-            k = "up",
-            l = "right",
+            r = "reload tab",
             ["+"] = "zoom in",
             ["-"] = "zoom out",
             [":"] = "command line",
@@ -92,19 +88,13 @@ local qutebrowser_keys = {
         }
     }},
 
-    ["Qutebrowser: copying/yanking"] = {{
+    ["Qutebrowser: copy/paste"] = {{
         modifiers = {},
         keys = {
             yy = "copy/yank URL",
             yY = "copy URL to selection",
             yt = "copy title to clipboard",
-            yT = "copy title to selection"
-        }
-    }},
-
-    ["Qutebrowser: pasting"] = {{
-        modifiers = {},
-        keys = {
+            yT = "copy title to selection",
             pp = "open URL from clipboard",
             pP = "open URL from slection",
             Pp = "like pp, in new tab",
@@ -133,6 +123,10 @@ local qutebrowser_keys = {
     ["Qutebrowser: scrolling"] = {{
         modifiers = {"Control"},
         keys = {
+            h = "left",
+            j = "down",
+            k = "up",
+            l = "right",
             f = "page down",
             b = "page up",
             d = "half page down",
