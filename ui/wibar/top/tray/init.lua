@@ -48,24 +48,31 @@ local function system_tray()
         }
     }
 
-    return wibox.widget {
+    local button = wibox.widget {
+        widget = widgets.button.text.state,
+        forced_width = dpi(50),
+        forced_height = dpi(50),
+        icon = beautiful.icons.chevron.down,
+        text_normal_bg = beautiful.icons.envelope.color,
+        on_normal_bg = beautiful.icons.envelope.color,
+        text_on_normal_bg = beautiful.colors.transparent,
+        on_press = function()
+            system_tray:toggle()
+        end
+    }
+
+    system_tray:connect_signal("visibility", function(self, visibile)
+        if visibile then
+            button:turn_on()
+        else
+            button:turn_off()
+        end
+    end)
+
+    return {
         widget = wibox.container.margin,
         margins = dpi(5),
-        {
-            widget = widgets.button.text.state,
-            forced_width = dpi(50),
-            forced_height = dpi(50),
-            icon = beautiful.icons.chevron.down,
-            text_normal_bg = beautiful.icons.envelope.color,
-            on_normal_bg = beautiful.icons.envelope.color,
-            text_on_normal_bg = beautiful.colors.transparent,
-            on_turn_on = function()
-                system_tray:show()
-            end,
-            on_turn_off = function()
-                system_tray:hide()
-            end,
-        }
+        button
     }
 end
 
