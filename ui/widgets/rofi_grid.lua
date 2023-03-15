@@ -35,9 +35,9 @@ local function build_properties(prototype, prop_names)
     end
 end
 
-local function has_value(table, value)
-    for _, v in ipairs(table) do
-        if v == value then
+local function has_entry(entries, name)
+    for _, entry in ipairs(entries) do
+        if entry.name == name then
             return true
         end
     end
@@ -244,30 +244,36 @@ function rofi_grid:add_entry(entry)
 end
 
 function rofi_grid:set_entries(entries, sort_fn)
-    local old_entries = self._private.entries
+    local old_entries_count = #self._private.entries
     self._private.entries = entries
-    self:set_sort_fn(sort_fn)
-    self:reset()
 
-    if #old_entries > 0 then
-        for _, entry in ipairs(self:get_entries()) do
-            if not has_value(old_entries, element) then
-                self._private.entries_widgets_cache[entry.name] = entry_widget(self, entry)
+    if old_entries_count > 0 then
+        -- Remove old entries that are not in the new entries table
+        for key, entry in pairs(self._private.entries_widgets_cache) do
+            if has_entry(self:get_entries(), key) == false and self._private.entries_widgets_cache[key] then
+                self._private.entries_widgets_cache[key]:emit_signal("removed")
+                self._private.entries_widgets_cache[key] = nil
             end
         end
+    end
 
-        for _, entry in ipairs(old_entries) do
-            if not has_value(self:get_entries(), element) then
-                self._private.entries_widgets_cache[entry.name] = nil
+    if self:get_lazy_load_widgets() == false then
+        if old_entries_count > 0 then
+            -- Add new entries that are not in the old entries table
+            for _, entry in ipairs(self:get_entries()) do
+                if self._private.entries_widgets_cache[entry.name] == nil then
+                    self._private.entries_widgets_cache[entry.name] = entry_widget(self, entry)
+                end
             end
-        end
-    else
-        if self:get_lazy_load_widgets() == false then
+        else
             for _, entry in ipairs(self:get_entries()) do
                 self._private.entries_widgets_cache[entry.name] = entry_widget(self, entry)
             end
         end
     end
+
+    self:set_sort_fn(sort_fn)
+    self:reset()
 end
 
 function rofi_grid:refresh()
