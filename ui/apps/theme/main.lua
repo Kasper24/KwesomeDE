@@ -639,21 +639,8 @@ local function we_tab(theme_app)
     return layout
 end
 
-local function tabs(theme_app)
-    local _image_button = {}
-    local _mountain_button = {}
-    local _digital_sun_button = {}
-    local _binary_button = {}
-    local _we_button = {}
-
-    local _stack = {}
-    local _image_tab = image_tab(theme_app)
-    local _mountain_tab = mountain_tab(theme_app)
-    local _digital_sun_tab = digital_sun_tab(theme_app)
-    local _binary_tab = binary_tab(theme_app)
-    local _we_tab = we_tab(theme_app)
-
-    _image_button = wibox.widget {
+local function tabs_buttons()
+    local image_button = wibox.widget {
         widget = widgets.button.text.state,
         on_by_default = true,
         size = 13,
@@ -663,16 +650,10 @@ local function tabs(theme_app)
         text = "Image",
         on_release = function()
             theme_daemon:set_selected_tab("image")
-            _image_button:turn_on()
-            _mountain_button:turn_off()
-            _digital_sun_button:turn_off()
-            _binary_button:turn_off()
-            _we_button:turn_off()
-            _stack:raise_widget(_image_tab)
         end
     }
 
-    _mountain_button = wibox.widget {
+    local mountain_button = wibox.widget {
         widget = widgets.button.text.state,
         size = 13,
         on_normal_bg = beautiful.icons.spraycan.color,
@@ -681,16 +662,10 @@ local function tabs(theme_app)
         text = "Mountain",
         on_release = function()
             theme_daemon:set_selected_tab("mountain")
-            _image_button:turn_off()
-            _mountain_button:turn_on()
-            _digital_sun_button:turn_off()
-            _binary_button:turn_off()
-            _we_button:turn_off()
-            _stack:raise_widget(_mountain_tab)
         end
     }
 
-    _digital_sun_button = wibox.widget {
+    local digital_sun_button = wibox.widget {
         widget = widgets.button.text.state,
         size = 13,
         on_normal_bg = beautiful.icons.spraycan.color,
@@ -699,16 +674,10 @@ local function tabs(theme_app)
         text = "Digital Sun",
         on_release = function()
             theme_daemon:set_selected_tab("digital_sun")
-            _image_button:turn_off()
-            _mountain_button:turn_off()
-            _digital_sun_button:turn_on()
-            _binary_button:turn_off()
-            _we_button:turn_off()
-            _stack:raise_widget(_digital_sun_tab)
         end
     }
 
-    _binary_button = wibox.widget {
+    local binary_button = wibox.widget {
         widget = widgets.button.text.state,
         size = 13,
         on_normal_bg = beautiful.icons.spraycan.color,
@@ -717,16 +686,10 @@ local function tabs(theme_app)
         text = "Binary",
         on_release = function()
             theme_daemon:set_selected_tab("binary")
-            _image_button:turn_off()
-            _mountain_button:turn_off()
-            _digital_sun_button:turn_off()
-            _binary_button:turn_on()
-            _we_button:turn_off()
-            _stack:raise_widget(_binary_tab)
         end
     }
 
-    _we_button = wibox.widget {
+    local we_button = wibox.widget {
         widget = widgets.button.text.state,
         size = 13,
         on_normal_bg = beautiful.icons.spraycan.color,
@@ -735,16 +698,62 @@ local function tabs(theme_app)
         text = "WP Engine",
         on_release = function()
             theme_daemon:set_selected_tab("we")
-            _image_button:turn_off()
-            _mountain_button:turn_off()
-            _digital_sun_button:turn_off()
-            _binary_button:turn_off()
-            _we_button:turn_on()
-            _stack:raise_widget(_we_tab)
         end
     }
 
-    _stack = wibox.widget {
+    theme_daemon:connect_signal("tab::select", function(self, tab)
+        if tab == "image" then
+            image_button:turn_on()
+            mountain_button:turn_off()
+            digital_sun_button:turn_off()
+            binary_button:turn_off()
+            we_button:turn_off()
+        elseif tab == "mountain" then
+            image_button:turn_off()
+            mountain_button:turn_on()
+            digital_sun_button:turn_off()
+            binary_button:turn_off()
+            we_button:turn_off()
+        elseif tab == "digital_sun" then
+            image_button:turn_off()
+            mountain_button:turn_off()
+            digital_sun_button:turn_on()
+            binary_button:turn_off()
+            we_button:turn_off()
+        elseif tab == "binary" then
+            image_button:turn_off()
+            mountain_button:turn_off()
+            digital_sun_button:turn_off()
+            binary_button:turn_on()
+            we_button:turn_off()
+        elseif tab == "we" then
+            image_button:turn_off()
+            mountain_button:turn_off()
+            digital_sun_button:turn_off()
+            binary_button:turn_off()
+            we_button:turn_on()
+        end
+    end)
+
+    return wibox.widget {
+        layout = wibox.layout.flex.horizontal,
+        spacing = dpi(15),
+        image_button,
+        mountain_button,
+        digital_sun_button,
+        binary_button,
+        we_button
+    }
+end
+
+local function tabs(theme_app)
+    local _image_tab = image_tab(theme_app)
+    local _mountain_tab = mountain_tab(theme_app)
+    local _digital_sun_tab = digital_sun_tab(theme_app)
+    local _binary_tab = binary_tab(theme_app)
+    local _we_tab = we_tab(theme_app)
+
+    local stack = wibox.widget {
         layout = wibox.layout.stack,
         forced_height = dpi(600),
         top_only = true,
@@ -755,20 +764,21 @@ local function tabs(theme_app)
         _we_tab
     }
 
-    return wibox.widget {
-        layout = wibox.layout.fixed.vertical,
-        spacing = dpi(15),
-        {
-            layout = wibox.layout.flex.horizontal,
-            spacing = dpi(15),
-            _image_button,
-            _mountain_button,
-            _digital_sun_button,
-            _binary_button,
-            _we_button
-        },
-        _stack,
-    }
+    theme_daemon:connect_signal("tab::select", function(self, tab)
+        if tab == "image" then
+            stack:raise_widget(_image_tab)
+        elseif tab == "mountain" then
+            stack:raise_widget(_mountain_tab)
+        elseif tab == "digital_sun" then
+            stack:raise_widget(_digital_sun_tab)
+        elseif tab == "binary" then
+            stack:raise_widget(_binary_tab)
+        elseif tab == "we" then
+            stack:raise_widget(_we_tab)
+        end
+    end)
+
+    return stack
 end
 
 local function bottom()
@@ -991,6 +1001,7 @@ local function new(theme_app, layout)
                 close_button
             }
         },
+        tabs_buttons(),
         stack
     }
 
