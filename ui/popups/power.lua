@@ -30,35 +30,10 @@ local greeters = {"See you later, alligator!", "After a while, crocodile.", "Sta
 function power:show()
     self.widget.screen = awful.screen.focused()
     self.widget.visible = true
-
-    self._private.grabber = awful.keygrabber.run(function(_, key, event)
-        key = key:lower() -- Ignore case
-
-        if event == "release" then
-            return
-        elseif key == "s" then
-            self:hide()
-            system_daemon:suspend()
-        elseif key == "e" then
-            system_daemon:exit()
-        elseif key == "l" then
-            self:hide(false)
-            system_daemon:lock()
-        elseif key == "p" then
-            system_daemon:shutdown()
-        elseif key == "r" then
-            system_daemon:reboot()
-        elseif key == "escape" or key == "q" or key == "x" then
-            self:hide()
-        end
-    end)
-
     self:emit_signal("visibility", true)
 end
 
 function power:hide(emit_signal)
-    awful.keygrabber.stop(self._private.grabber)
-
     self.widget.visible = false
 
     if emit_signal ~= false then
@@ -194,7 +169,6 @@ local function new()
     gtable.crush(ret, power, true)
 
     ret._private = {}
-    ret._private.grabber = nil
 
     ret.widget = widgets.popup {
         visible = false,

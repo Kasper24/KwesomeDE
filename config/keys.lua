@@ -850,7 +850,7 @@ awful.keyboard.append_global_keybindings({ -- Toggle app launcher
         group = "ui",
         description = "toggle exit screen",
         on_press = function()
-            power_popup:show()
+            power_popup:toggle()
         end
     }, -- Toggle hotkeys
     awful.key {
