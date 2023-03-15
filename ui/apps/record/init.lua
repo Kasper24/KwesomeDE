@@ -156,8 +156,6 @@ local function folder()
     local folder_text_input = wibox.widget {
         widget = widgets.text_input,
         forced_width = dpi(350),
-        unfocus_on_clicked_outside = false,
-        unfocus_on_mouse_leave = true,
         initial = record_daemon:get_folder()
     }
 

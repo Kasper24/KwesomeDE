@@ -31,8 +31,6 @@ local function new(args)
 		widget = tiwidget,
 		forced_width = args.text_input_width or dpi(80),
 		forced_height = args.text_input_height or dpi(40),
-		unfocus_on_clicked_outside = false,
-        unfocus_on_mouse_leave = true,
 		pattern = pattern,
 		initial = tostring(slider:get_value()),
 		widget_template = wibox.widget {
