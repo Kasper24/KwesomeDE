@@ -83,11 +83,11 @@ local function app(app, app_launcher)
         paddings = dpi(15),
         halign = "left",
         on_normal_bg = font_icon.color,
-        on_release = function()
-            app:run_or_select()
+        on_release = function(self)
+            self:run_or_select()
         end,
-        on_secondary_release = function()
-            app:select()
+        on_secondary_release = function(self)
+            self:select()
             menu:toggle()
         end,
         {
