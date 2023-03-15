@@ -1,3 +1,5 @@
+copy_to=~/.config/kitty/themes/luawal.conf
+
 foreground         {foreground}
 background         {background}
 cursor             {cursor}
