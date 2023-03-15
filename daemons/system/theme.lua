@@ -89,9 +89,9 @@ local function closet_color(colors, reference)
     end
     table.remove(colors, closestIndex)
     return closest
-  end
+end
 
-local function generate_colorscheme(self, wallpaper, reset, light)
+  local function generate_colorscheme(self, wallpaper, reset, light)
     if self:get_colorschemes()[wallpaper] ~= nil and reset ~= true then
         self:emit_signal("colorscheme::generation::success", self:get_colorschemes()[wallpaper], wallpaper, false)
         return
@@ -723,71 +723,72 @@ local function we_wallpaper(self, screen)
     awful.spawn.with_shell(cmd)
 end
 
+local function sort_wallpapers(self)
+    table.sort(self._private.wallpapers, function(a, b)
+        return a.name < b.name
+    end)
+
+    table.sort(self._private.we_wallpapers, function(a, b)
+        return a.name < b.name
+    end)
+end
+
+local function on_wallpapers_updated(self)
+    self:set_selected_tab(self:get_selected_tab())
+
+    if gtable.count_keys(self:get_wallpapers()) > 0 then
+        self:set_selected_colorscheme(self:get_wallpapers()[1].path, "image")
+    end
+    if gtable.count_keys(self:get_wallpapers_and_we_wallpapers()) > 0 then
+        self:set_selected_colorscheme(self:get_wallpapers_and_we_wallpapers()[1].path, "mountain")
+        self:set_selected_colorscheme(self:get_wallpapers_and_we_wallpapers()[1].path, "digital_sun")
+        self:set_selected_colorscheme(self:get_wallpapers_and_we_wallpapers()[1].path, "binary")
+    end
+    if gtable.count_keys(self:get_we_wallpapers()) > 0 then
+        self:set_selected_colorscheme(self:get_we_wallpapers()[1].path, "we")
+    end
+
+    self:emit_signal("wallpapers")
+end
+
 local function scan_wallpapers(self)
     self._private.wallpapers = {}
     self._private.we_wallpapers = {}
 
-    local debouncer = gtimer {
-        timeout = 5,
-        autostart = false,
-        single_shot = true,
-        callback = function()
-            table.sort(self._private.wallpapers, function(a, b)
-                return a.name < b.name
-            end)
-
-            table.sort(self._private.we_wallpapers, function(a, b)
-                return a.name < b.name
-            end)
-
-            self:set_selected_tab(self:get_selected_tab())
-
-            if gtable.count_keys(self:get_wallpapers()) > 0 then
-                self:set_selected_colorscheme(self:get_wallpapers()[1].path, "image")
+    filesystem.filesystem.scan(WALLPAPERS_PATH, function(error, files)
+        if error == nil and files then
+            for _, file in ipairs(files) do
+                local mimetype = Gio.content_type_guess(file.full_path)
+                if PICTURES_MIMETYPES[mimetype] then
+                    table.insert(self._private.wallpapers, { path = file.full_path, name = file.name })
+                end
             end
-            if gtable.count_keys(self:get_wallpapers_and_we_wallpapers()) > 0 then
-                self:set_selected_colorscheme(self:get_wallpapers_and_we_wallpapers()[1].path, "mountain")
-                self:set_selected_colorscheme(self:get_wallpapers_and_we_wallpapers()[1].path, "digital_sun")
-                self:set_selected_colorscheme(self:get_wallpapers_and_we_wallpapers()[1].path, "binary")
-            end
-            if gtable.count_keys(self:get_we_wallpapers()) > 0 then
-                self:set_selected_colorscheme(self:get_we_wallpapers()[1].path, "we")
-            end
-
-            self:emit_signal("wallpapers")
         end
-    }
 
-    filesystem.filesystem.iterate_contents(WALLPAPERS_PATH, function(file)
-        local wallpaper_path = WALLPAPERS_PATH .. file:get_name()
-        local mimetype = Gio.content_type_guess(wallpaper_path)
-        if PICTURES_MIMETYPES[mimetype] ~= nil then
-            table.insert(self._private.wallpapers, { path = wallpaper_path, name = wallpaper_path:gsub(WALLPAPERS_PATH, "") })
-        end
-    end, {}, function()
-        debouncer:again()
-    end)
-
-    filesystem.filesystem.iterate_contents(self:get_wallpaper_engine_workshop_folder(), function(file, path, name)
-        if type(path) == "string" then
-            local mimetype = Gio.content_type_guess(path)
-            if PICTURES_MIMETYPES[mimetype] ~= nil then
-                local json_path = path:gsub("/" .. name, "") .. "/project.json"
-                local json_file = filesystem.file.new_for_path(json_path)
-                json_file:exists(function(error, exists)
-                    if error == nil and exists then
+        filesystem.filesystem.scan(self:get_wallpaper_engine_workshop_folder(), function(error, files)
+            if error == nil and files then
+                for index, file in ipairs(files) do
+                    local mimetype = Gio.content_type_guess(file.full_path)
+                    if PICTURES_MIMETYPES[mimetype] then
+                        local json_file = filesystem.file.new_for_path(file.path_no_name .. "project.json")
                         json_file:read(function(error, content)
                             if error == nil then
                                 local name = json.decode(content).title
-                                table.insert(self._private.we_wallpapers, { path = path, name = name})
+                                table.insert(self._private.we_wallpapers, { path = file.full_path, name = name})
+                            end
+
+                            if index == #files then
+                                sort_wallpapers(self)
+                                on_wallpapers_updated(self)
                             end
                         end)
                     end
-                end)
+                end
+            else
+                sort_wallpapers(self)
+                on_wallpapers_updated(self)
             end
-        end
-    end, {}, function()
-        debouncer:again()
+        end)
     end)
 end
 
