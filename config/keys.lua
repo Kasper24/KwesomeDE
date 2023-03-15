@@ -854,7 +854,7 @@ awful.keyboard.append_global_keybindings({ -- Toggle app launcher
         end
     }, -- Toggle hotkeys
     awful.key {
-        modifiers = {keys.mod},
+        modifiers = {},
         key = "F1",
         group = "ui",
         description = "toggle hotkeys",
