@@ -85,16 +85,16 @@ local function wallpapers_grid(theme_app, wallpapers_key, entry_template)
     local layout = wibox.widget {
         layout = widgets.rofi_grid,
         sort_fn = function(a, b)
-            return a.title:lower() < b.title:lower()
+            return a.name:lower() < b.name:lower()
         end,
         search_fn = function(text, entry)
-            if helpers.fzy.has_match(text, entry.title) then
+            if helpers.fzy.has_match(text, entry.name) then
                 return true
             end
             return false
         end,
         search_sort_fn = function(text, a, b)
-            return helpers.fzy.score(text, a.title) > helpers.fzy.score(text, b.title)
+            return helpers.fzy.score(text, a.name) > helpers.fzy.score(text, b.name)
         end,
         widget_template = wibox.widget {
             layout = wibox.layout.fixed.vertical,
@@ -209,20 +209,20 @@ local function image_tab(theme_app)
                 }
             }
 
-            local title = wibox.widget {
+            local name = wibox.widget {
                 widget = widgets.text,
                 forced_width = dpi(130),
                 forced_height = dpi(20),
                 halign = "center",
                 size = 12,
-                text = entry.title
+                text = entry.name
             }
 
             widget = wibox.widget {
                 layout = wibox.layout.fixed.vertical,
                 spacing = dpi(5),
                 button,
-                title
+                name
             }
 
             widget:connect_signal("select", function()
@@ -288,20 +288,20 @@ local function mountain_tab(theme_app)
                 }
             }
 
-            local title = wibox.widget {
+            local name = wibox.widget {
                 widget = widgets.text,
                 forced_width = dpi(130),
                 forced_height = dpi(20),
                 halign = "center",
                 size = 12,
-                text = entry.title
+                text = entry.name
             }
 
             widget = wibox.widget {
                 layout = wibox.layout.fixed.vertical,
                 spacing = dpi(5),
                 button,
-                title
+                name
             }
 
             widget:connect_signal("select", function()
@@ -422,20 +422,20 @@ local function digital_sun_tab(theme_app)
                 }
             }
 
-            local title = wibox.widget {
+            local name = wibox.widget {
                 widget = widgets.text,
                 forced_width = dpi(130),
                 forced_height = dpi(20),
                 halign = "center",
                 size = 12,
-                text = entry.title
+                text = entry.name
             }
 
             widget = wibox.widget {
                 layout = wibox.layout.fixed.vertical,
                 spacing = dpi(5),
                 button,
-                title
+                name
             }
 
             widget:connect_signal("select", function()
@@ -528,20 +528,20 @@ local function binary_tab(theme_app)
                 }
             }
 
-            local title = wibox.widget {
+            local name = wibox.widget {
                 widget = widgets.text,
                 forced_width = dpi(130),
                 forced_height = dpi(20),
                 halign = "center",
                 size = 12,
-                text = entry.title
+                text = entry.name
             }
 
             widget = wibox.widget {
                 layout = wibox.layout.fixed.vertical,
                 spacing = dpi(5),
                 button,
-                title
+                name
             }
 
             widget:connect_signal("select", function()
@@ -607,20 +607,20 @@ local function we_tab(theme_app)
                 }
             }
 
-            local title = wibox.widget {
+            local name = wibox.widget {
                 widget = widgets.text,
                 forced_width = dpi(130),
                 forced_height = dpi(20),
                 halign = "center",
                 size = 12,
-                text = entry.title
+                text = entry.name
             }
 
             widget = wibox.widget {
                 layout = wibox.layout.fixed.vertical,
                 spacing = dpi(5),
                 button,
-                title
+                name
             }
 
             widget:connect_signal("select", function()

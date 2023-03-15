@@ -733,11 +733,11 @@ local function scan_wallpapers(self)
         single_shot = true,
         callback = function()
             table.sort(self._private.wallpapers, function(a, b)
-                return a.title < b.title
+                return a.name < b.name
             end)
 
             table.sort(self._private.we_wallpapers, function(a, b)
-                return a.title < b.title
+                return a.name < b.name
             end)
 
             self:set_selected_tab(self:get_selected_tab())
@@ -762,7 +762,7 @@ local function scan_wallpapers(self)
         local wallpaper_path = WALLPAPERS_PATH .. file:get_name()
         local mimetype = Gio.content_type_guess(wallpaper_path)
         if PICTURES_MIMETYPES[mimetype] ~= nil then
-            table.insert(self._private.wallpapers, { path = wallpaper_path, title = wallpaper_path:gsub(WALLPAPERS_PATH, "") })
+            table.insert(self._private.wallpapers, { path = wallpaper_path, name = wallpaper_path:gsub(WALLPAPERS_PATH, "") })
         end
     end, {}, function()
         debouncer:again()
@@ -778,8 +778,8 @@ local function scan_wallpapers(self)
                     if error == nil and exists then
                         json_file:read(function(error, content)
                             if error == nil then
-                                local title = json.decode(content).title
-                                table.insert(self._private.we_wallpapers, { path = path, title = title})
+                                local name = json.decode(content).title
+                                table.insert(self._private.we_wallpapers, { path = path, name = name})
                             end
                         end)
                     end
