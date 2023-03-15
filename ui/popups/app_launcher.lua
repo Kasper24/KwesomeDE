@@ -284,7 +284,7 @@ local function new()
 
     app_launcher:get_rofi_grid():connect_signal("button::press", function(grid, lx, ly, button, mods, find_widgets_result)
         if button == 3 then
-            local selected_app = app_launcher:get_rofi_grid():get_selected_widget()
+            local selected_app = app_launcher:get_rofi_grid():get_selected_entry()
             if selected_app then
                 selected_app:unselect()
             end
