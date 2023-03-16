@@ -78,7 +78,7 @@ local function new(args)
 		end
 	end)
 
-	text_input:connect_signal("unfocus", function(self, text)
+	text_input:connect_signal("unfocus", function(self, context, text)
 		local value = tonumber(text)
 
 		if value == slider:get_value() or value == nil then

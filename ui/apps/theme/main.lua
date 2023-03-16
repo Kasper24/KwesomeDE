@@ -75,7 +75,7 @@ local function color_button(index)
         end
     end)
 
-    color_text_input:connect_signal("unfocus", function(self, text)
+    color_text_input:connect_signal("unfocus", function(self, context, text)
         theme_daemon:set_color(index, text)
     end)
 
