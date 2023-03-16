@@ -12,6 +12,7 @@ collectgarbage("setstepmul", 1000)
 gtimer.start_new(5, function()
 	collectgarbage("collect")
 	collectgarbage("collect")
+	return true
 end)
 
 local beautiful = require("beautiful")
