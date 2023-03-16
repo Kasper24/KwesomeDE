@@ -162,8 +162,17 @@ local function profile_image()
 		}
     }
 
+    local text_changed = false
+
     folder_text_input:connect_signal("property::text", function(self, text)
-        theme_daemon:set_profile_image(text)
+        text_changed = true
+    end)
+
+    folder_text_input:connect_signal("unfocus", function(self, context, text)
+        if text_changed then
+            theme_daemon:set_profile_image(text)
+            text_changed = false
+        end
     end)
 
     local set_folder_button = wibox.widget {
@@ -218,8 +227,17 @@ local function folder_picker(text, initial_value, on_changed)
 		}
     }
 
+    local text_changed = false
+
     folder_text_input:connect_signal("property::text", function(self, text)
-        on_changed(text)
+        text_changed = true
+    end)
+
+    folder_text_input:connect_signal("unfocus", function(self, context, text)
+        if text_changed then
+            on_changed(text)
+            text_changed = false
+        end
     end)
 
     local set_folder_button = wibox.widget {
