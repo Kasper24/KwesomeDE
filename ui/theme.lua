@@ -5,6 +5,7 @@
 local unpack = unpack or table.unpack -- luacheck: globals unpack (compatibility with Lua 5.1)
 local gfilesystem = require("gears.filesystem")
 local gcolor = require("gears.color")
+local gsurface = require("gears.surface")
 local beautiful = require("beautiful")
 local theme_daemon = require("daemons.system.theme")
 local helpers = require("helpers")
@@ -377,9 +378,9 @@ end
 
 local function assets()
     local assets_folder = filesystem.filesystem.get_awesome_config_dir("assets/images")
-    theme.mountain_background = assets_folder .. "mountain.png"
-    theme.overview = assets_folder .. "overview.png"
-    theme.default_github_profile = assets_folder .. "default_github_profile.png"
+    theme.mountain_background = gsurface(assets_folder .. "mountain.png")
+    theme.overview = gsurface(assets_folder .. "overview.png")
+    theme.default_github_profile = gsurface(assets_folder .. "default_github_profile.png")
 
     local themes_path = gfilesystem.get_themes_dir()
     theme.layout_fairh = themes_path.."default/layouts/fairhw.png"
