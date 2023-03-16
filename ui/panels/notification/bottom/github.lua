@@ -9,6 +9,7 @@ local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
 local github_daemon = require("daemons.web.github")
 local helpers = require("helpers")
+local filesystem = require("external.filesystem")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 local string = string
@@ -63,20 +64,30 @@ end
 local function event_widget(event)
     local action_and_link = github_daemon:get_event_info(event)
 
+    local avatar_image = wibox.widget {
+        widget = wibox.widget.imagebox,
+        forced_width = dpi(40),
+        forced_height = dpi(40),
+        clip_shape = helpers.ui.rrect(),
+        image = beautiful.default_github_profile
+    }
+
     local avatar = wibox.widget {
         widget = widgets.button.elevated.normal,
         normal_shape = gshape.circle,
         on_release = function()
             awful.spawn("xdg-open http://github.com/" .. event.actor.login, false)
         end,
-        {
-            widget = wibox.widget.imagebox,
-            forced_width = dpi(40),
-            forced_height = dpi(40),
-            clip_shape = helpers.ui.rrect(),
-            image = github_daemon:get_events_avatars_path() .. event.actor.id
-        }
+        avatar_image
     }
+
+    local path = github_daemon:get_events_avatars_path() .. event.actor.id
+    local profile_image = filesystem.file.new_for_path(path)
+    profile_image:exists(function(error, exists)
+        if error == nil and exists then
+            avatar_image:set_image(path)
+        end
+    end)
 
     local user = wibox.widget {
         widget = widgets.text,
@@ -186,20 +197,30 @@ local function events()
 end
 
 local function pr_widget(pr)
+    local avatar_image = wibox.widget {
+        widget = wibox.widget.imagebox,
+        forced_width = dpi(40),
+        forced_height = dpi(40),
+        clip_shape = helpers.ui.rrect(),
+        image = beautiful.default_github_profile
+    }
+
     local avatar = wibox.widget {
         widget = widgets.button.elevated.normal,
         normal_shape = gshape.circle,
         on_release = function()
             awful.spawn("xdg-open " .. pr.user.html_url, false)
         end,
-        {
-            widget = wibox.widget.imagebox,
-            forced_width = dpi(40),
-            forced_height = dpi(40),
-            clip_shape = helpers.ui.rrect(),
-            image = github_daemon:get_prs_avatars_path() .. pr.user.id
-        }
+        avatar_image
     }
+
+    local path = github_daemon:get_prs_avatars_path() .. pr.user.id
+    local profile_image = filesystem.file.new_for_path(path)
+    profile_image:exists(function(error, exists)
+        if error == nil and exists then
+            avatar_image:set_image(path)
+        end
+    end)
 
     local repo = string.sub(pr.repository_url, string.find(pr.repository_url, "/[^/]*$") + 1)
     local title = " - #" .. pr.number .. " " .. pr.title

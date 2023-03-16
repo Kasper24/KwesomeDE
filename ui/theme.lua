@@ -379,6 +379,7 @@ local function assets()
     local assets_folder = filesystem.filesystem.get_awesome_config_dir("assets/images")
     theme.mountain_background = assets_folder .. "mountain.png"
     theme.overview = assets_folder .. "overview.png"
+    theme.default_github_profile = assets_folder .. "default_github_profile.png"
 
     local themes_path = gfilesystem.get_themes_dir()
     theme.layout_fairh = themes_path.."default/layouts/fairhw.png"

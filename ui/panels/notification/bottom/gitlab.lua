@@ -18,6 +18,14 @@ local gitlab = {
 }
 
 local function mr_widget(mr)
+    local avatar_image = wibox.widget {
+        widget = wibox.widget.imagebox,
+        forced_width = dpi(40),
+        forced_height = dpi(40),
+        clip_shape = helpers.ui.rrect(),
+        image = beautiful.default_github_profile
+    }
+
     local avatar = wibox.widget {
         widget = widgets.button.elevated.normal,
         normal_shape = gshape.circle,
@@ -26,12 +34,16 @@ local function mr_widget(mr)
         on_release = function()
             awful.spawn("xdg-open " .. mr.author.web_url, false)
         end,
-        {
-            widget = wibox.widget.imagebox,
-            clip_shape = helpers.ui.rrect(),
-            image = gitlab_daemon:get_avatars_path() .. mr.author.id
-        }
+        avatar_image
     }
+
+    local path = gitlab_daemon:get_avatars_path() .. mr.author.id
+    local profile_image = filesystem.file.new_for_path(path)
+    profile_image:exists(function(error, exists)
+        if error == nil and exists then
+            avatar_image:set_image(path)
+        end
+    end)
 
     local title = wibox.widget {
         widget = widgets.text,
