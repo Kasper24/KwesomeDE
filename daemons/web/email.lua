@@ -104,7 +104,8 @@ local function new()
                     if emails_handler.root and emails_handler.root.feed then
                         for _, email in ipairs(emails_handler.root.feed.entry) do
                             if old_data == nil or old_data[email.id] == nil then
-                                ret:emit_signal("new_email", email)
+                                local first_download = old_data == nil
+                                ret:emit_signal("new_email", email, first_download)
                             end
                         end
 

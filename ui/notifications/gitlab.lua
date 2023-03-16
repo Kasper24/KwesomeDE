@@ -10,7 +10,11 @@ local gitlab_daemon = require("daemons.web.gitlab")
 local icons = {"gitlab", "com.github.zren.gitlabissues", "gitlab-tray", "folder-gitlab", "io.gitlab.osslugaru.Lugaru",
                "com.gitlab.davem.ClamTk", "mailer", "preferences-mail.svg", "kmail"}
 
-gitlab_daemon:connect_signal("new_mr", function(self, mr)
+gitlab_daemon:connect_signal("new_mr", function(self, mr, first_download)
+    if first_download then
+        return
+    end
+
     local open = naughty.action {
         name = "Open"
     }

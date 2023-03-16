@@ -9,7 +9,11 @@ local github_daemon = require("daemons.web.github")
 
 local icons = {"github", "appimagekit-github-desktop", "io.github.shiftey.Desktop", "folder-github", "folder-Github"}
 
-github_daemon:connect_signal("new_event", function(self, event)
+github_daemon:connect_signal("new_event", function(self, event, first_download)
+    if first_download then
+        return
+    end
+
     local action_and_link = github_daemon:get_event_info(event)
 
     local open = naughty.action {
@@ -32,7 +36,11 @@ github_daemon:connect_signal("new_event", function(self, event)
     }
 end)
 
-github_daemon:connect_signal("new_pr", function(self, pr)
+github_daemon:connect_signal("new_pr", function(self, pr, first_download)
+    if first_download then
+        return
+    end
+
     local open = naughty.action {
         name = "Open"
     }

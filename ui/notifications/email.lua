@@ -11,7 +11,11 @@ local icons = {"mail-notification", "email", "e-mail", "mail-generic", "mailer",
                "redhat-email", "email-client", "applications-email-panel", "package_internet_email",
                "ximian-evolution-email", "redhat-email", "bubblemail", "bubblmail", "bluemail"}
 
-email_daemon:connect_signal("new_email", function(self, email)
+email_daemon:connect_signal("new_email", function(self, email, first_download)
+    if first_download then
+        return
+    end
+
     local title = ""
     local text = ""
     if type(email.summary) == "string" then
