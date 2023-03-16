@@ -176,7 +176,7 @@ function animation:set(args)
         }
     end
 
-    if self._private.anim_manager._private.instant then
+    if self._private.anim_manager._private.instant and self.override_instant ~= true then
         self.pos = self.tween.target
         self:fire(self.pos)
         self:emit_signal("update", self.pos)
@@ -214,23 +214,23 @@ end
 function animation_manager:set_instant(value)
     if value == true and self._private.instant == false then
         on_no_running_animations(self, function()
-            GLib.source_remove(self._private.source_id)
+            -- GLib.source_remove(self._private.source_id)
             self._private.instant = true
         end)
     elseif self._private.instant == true then
         self._private.instant = false
-        animation_loop(self)
+        -- animation_loop(self)
     end
 end
 
 function animation_manager:set_framerate(value)
     self._private.framerate = value
-    if self._private.instant == false then
+    -- if self._private.instant == false then
         on_no_running_animations(self, function()
             GLib.source_remove(self._private.source_id)
             animation_loop(self)
         end)
-    end
+    -- end
 end
 
 function animation_manager:new(args)

@@ -286,6 +286,7 @@ local function create_notification(n, screen)
         duration = 5,
         target = 100,
         easing = helpers.animation.easing.linear,
+        override_instant = true,
         reset_on_stop = false,
         update = function(self, pos)
             timeout_arc.value = pos

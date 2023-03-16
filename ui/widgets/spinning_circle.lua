@@ -59,6 +59,7 @@ local function new(args)
         duration = 10,
         easing = helpers.animation.easing.linear,
         loop = true,
+        override_instant = true,
         reset_on_stop = false,
         update = function(self, pos)
             spinning_circle.start_angle = pos
