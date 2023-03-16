@@ -9,7 +9,6 @@ local AppInfo = Gio.AppInfo
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
-local gtimer = require("gears.timer")
 local beautiful = require("beautiful")
 local helpers = require("helpers")
 local filesystem = require("external.filesystem")
