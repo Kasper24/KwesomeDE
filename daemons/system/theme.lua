@@ -793,11 +793,29 @@ local function scan_wallpapers(self)
 end
 
 local function watch_wallpapers_changes(self)
+    if self._private.watch_wallpapers_changes_debouncer == nil then
+        self._private.watch_wallpapers_changes_debouncer = gtimer {
+            timeout = 5,
+            autostart = true,
+            single_shot = true,
+            callback = function()
+                scan_wallpapers(self)
+            end
+        }
+    end
+
     local wallpapers_watcher = helpers.inotify:watch(WALLPAPERS_PATH,
         {helpers.inotify.Events.create, helpers.inotify.Events.delete, helpers.inotify.Events.moved_from,
          helpers.inotify.Events.moved_to})
     wallpapers_watcher:connect_signal("event", function()
-        scan_wallpapers(self)
+        self._private.watch_wallpapers_changes_debouncer:again()
+    end)
+
+    self._private.we_wallpapers_watcher = helpers.inotify:watch(self:get_wallpaper_engine_workshop_folder(),
+        {helpers.inotify.Events.create, helpers.inotify.Events.delete, helpers.inotify.Events.moved_from,
+        helpers.inotify.Events.moved_to})
+     self._private.we_wallpapers_watcher:dynamic_connect_signal("event", function()
+        self._private.watch_wallpapers_changes_debouncer:again()
     end)
 end
 
@@ -1227,6 +1245,14 @@ function theme:set_wallpaper_engine_workshop_folder(wallpaper_engine_workshop_fo
     self._private.wallpaper_engine_workshop_folder = wallpaper_engine_workshop_folder
     helpers.settings["theme-we-workshop-folder"] = wallpaper_engine_workshop_folder
     scan_wallpapers(self)
+
+    self._private.we_wallpapers_watcher:dynamic_disconnect_signal("event")
+    self._private.we_wallpapers_watcher = helpers.inotify:watch(wallpaper_engine_workshop_folder,
+        {helpers.inotify.Events.create, helpers.inotify.Events.delete, helpers.inotify.Events.moved_from,
+        helpers.inotify.Events.moved_to})
+    self._private.we_wallpapers_watcher:dynamic_connect_signal("event", function()
+        self._private.watch_wallpapers_changes_debouncer:again()
+    end)
 end
 
 function theme:get_wallpaper_engine_workshop_folder()
