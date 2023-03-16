@@ -81,6 +81,7 @@ local function folder()
     local folder_text_input = wibox.widget {
         widget = widgets.text_input,
         forced_width = dpi(220),
+        unfocus_on_client_clicked = false,
         initial = screenshot_daemon:get_folder()
     }
 

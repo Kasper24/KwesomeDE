@@ -38,6 +38,7 @@ local function command_after_generation()
     local text_input = wibox.widget {
         widget = widgets.text_input,
         forced_width = dpi(600),
+        unfocus_on_client_clicked = false,
         initial = theme_daemon:get_command_after_generation(),
         widget_template = wibox.widget {
 			widget = widgets.background,
@@ -144,6 +145,7 @@ local function profile_image()
     local folder_text_input = wibox.widget {
         widget = widgets.text_input,
         forced_width = dpi(410),
+        unfocus_on_client_clicked = false,
         initial = theme_daemon:get_profile_image(),
         widget_template = wibox.widget {
 			widget = widgets.background,
@@ -199,6 +201,7 @@ local function folder_picker(text, initial_value, on_changed)
     local folder_text_input = wibox.widget {
         widget = widgets.text_input,
         forced_width = dpi(410),
+        unfocus_on_client_clicked = false,
         initial = initial_value,
         widget_template = wibox.widget {
             widget = widgets.background,

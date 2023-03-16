@@ -31,6 +31,7 @@ local function color_button(index)
 
     local color_text_input = wibox.widget {
         widget = widgets.text_input,
+        unfocus_on_client_clicked = false,
         size = 12,
         widget_template = wibox.widget {
             widget = wibox.widget.textbox,
@@ -104,6 +105,7 @@ local function wallpapers_grid(theme_app, wallpapers_key, entry_template)
                 id = "text_input_role",
                 forced_width = dpi(800),
                 forced_height = dpi(55),
+                unfocus_on_client_clicked = false,
                 unfocus_on_subject_mouse_leave = theme_app:get_client(),
                 widget_template = wibox.widget {
                     widget = widgets.background,

@@ -35,6 +35,7 @@ local function text_input_widget(icon, placeholder, initial, forced_width, force
         forced_width = forced_width,
         forced_height = forced_height,
         unfocus_keys = { },
+        unfocus_on_client_clicked = false,
         initial = initial or "",
         widget_template = wibox.widget {
             widget = widgets.background,
