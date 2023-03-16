@@ -255,7 +255,7 @@ local function new()
     local empty_notifications = wibox.widget {
         widget = wibox.container.margin,
         margins = {
-            top = dpi(250)
+            top = dpi(175)
         },
         {
             layout = wibox.layout.fixed.vertical,
