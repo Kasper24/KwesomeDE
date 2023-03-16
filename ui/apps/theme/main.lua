@@ -318,7 +318,7 @@ local function mountain_tab(theme_app)
             theme_daemon:connect_signal("colorscheme::generation::success", function(self, colors, wallpaper, update)
                 if wallpaper == entry.path and update == true then
                     colors = theme_daemon:get_colorschemes()[entry.path]
-                    button:get_children_by_id("background").bg = {
+                    button:get_children_by_id("background")[1].bg = {
                         type = 'linear',
                         from = {0, 0},
                         to = {0, 100},
