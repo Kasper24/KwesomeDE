@@ -316,10 +316,7 @@ local function new()
 
     capi.client.connect_signal("scanned", function()
         capi.client.connect_signal("request::manage", function(client)
-            gtimer.start_new(0.01, function()
-                on_client_added(ret, client)
-                return false
-            end)
+            on_client_added(ret, client)
         end)
 
         for _, client in ipairs(capi.client.get()) do
