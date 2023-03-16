@@ -97,7 +97,6 @@ local function on_no_running_animations(self, callback)
             end
         end
 
-        print("looping")
         return true
     end)
 end
