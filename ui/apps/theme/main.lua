@@ -85,18 +85,6 @@ end
 local function wallpapers_grid(theme_app, wallpapers_key, entry_template)
     local layout = wibox.widget {
         layout = widgets.rofi_grid,
-        sort_fn = function(a, b)
-            return a.name:lower() < b.name:lower()
-        end,
-        search_fn = function(text, entry)
-            if helpers.fzy.has_match(text, entry.name) then
-                return true
-            end
-            return false
-        end,
-        search_sort_fn = function(text, a, b)
-            return helpers.fzy.score(text, a.name) > helpers.fzy.score(text, b.name)
-        end,
         widget_template = wibox.widget {
             layout = wibox.layout.fixed.vertical,
             spacing = dpi(15),
