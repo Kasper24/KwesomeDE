@@ -276,11 +276,14 @@ local function reload_awesome_colorscheme()
 end
 
 local function on_finished_generating(self)
-    if self:get_command_after_generation() ~= nil then
-        awful.spawn.with_shell(self:get_command_after_generation())
-    end
+    gtimer.start_new(5, function()
+        if self:get_command_after_generation() ~= nil then
+            awful.spawn.with_shell(self:get_command_after_generation())
+        end
+        reload_gtk()
 
-    reload_gtk()
+        return false
+    end)
 end
 
 local function generate_sequences(colors)
@@ -362,122 +365,116 @@ local function replace_template_colors(color, color_name, line)
 end
 
 local function generate_templates(self)
-    local on_finished_generating_timer = gtimer {
-        timeout = 2,
-        call_now = false,
-        single_shot = true,
-        autostart = false,
-        callback = function()
-            on_finished_generating(self)
-        end
-    }
+    filesystem.filesystem.scan(BASE_TEMPLATES_PATH, function(error, files)
+        if error == nil and files then
+            for index, file in ipairs(files) do
+                local name = file.name
+                if name:match(".base") ~= nil then
+                    local template_path = BASE_TEMPLATES_PATH .. name
+                    local file = filesystem.file.new_for_path(template_path)
+                    file:read(function(error, content)
+                        if error == nil then
+                            local lines = {}
+                            local users = {}
+                            local copy_to = {}
 
-    filesystem.filesystem.iterate_contents(BASE_TEMPLATES_PATH, function(file)
-        local name = file:get_name()
-        if name:match(".base") ~= nil then
-            local template_path = BASE_TEMPLATES_PATH .. name
-            local file = filesystem.file.new_for_path(template_path)
-            file:read(function(error, content)
-                if error == nil then
-                    local lines = {}
-                    local users = {}
-                    local copy_to = {}
+                            if content ~= nil then
+                                for line in content:gmatch("[^\r\n$]+") do
+                                    if line:match("{{") then
+                                        line = line:gsub("{{", "{")
+                                    end
+                                    if line:match("}}") then
+                                        line = line:gsub("}}", "}")
+                                    end
 
-                    if content ~= nil then
-                        for line in content:gmatch("[^\r\n$]+") do
-                            if line:match("{{") then
-                                line = line:gsub("{{", "{")
-                            end
-                            if line:match("}}") then
-                                line = line:gsub("}}", "}")
-                            end
+                                    if line:match("user=") then
+                                        local user = line:gsub("user=", "")
+                                        table.insert(users, user)
+                                        line = ""
+                                    end
+                                    if line:match("copy_to=") then
+                                        local path = line:gsub("copy_to=", "")
+                                        table.insert(copy_to, path)
+                                        line = ""
+                                    end
 
-                            if line:match("user=") then
-                                local user = line:gsub("user=", "")
-                                table.insert(users, user)
-                                line = ""
-                            end
-                            if line:match("copy_to=") then
-                                local path = line:gsub("copy_to=", "")
-                                table.insert(copy_to, path)
-                                line = ""
-                            end
+                                    local colors = self:get_active_colorscheme_colors()
 
-                            local colors = self:get_active_colorscheme_colors()
+                                    for index = 0, 15 do
+                                        local color = replace_template_colors(colors[index + 1], "color" .. index, line)
+                                        if color ~= nil then
+                                            line = color
+                                        end
+                                    end
 
-                            for index = 0, 15 do
-                                local color = replace_template_colors(colors[index + 1], "color" .. index, line)
-                                if color ~= nil then
-                                    line = color
+                                    local background = replace_template_colors(colors[1], "background", line)
+                                    if background ~= nil then
+                                        line = background
+                                    end
+
+                                    local foreground = replace_template_colors(colors[16], "foreground", line)
+                                    if foreground ~= nil then
+                                        line = foreground
+                                    end
+
+                                    local cursor = replace_template_colors(colors[16], "cursor", line)
+                                    if cursor ~= nil then
+                                        line = cursor
+                                    end
+
+                                    if line:match("{wallpaper}") then
+                                        line = line:gsub("{wallpaper}", self:get_active_wallpaper())
+                                    end
+
+                                    table.insert(lines, line)
                                 end
                             end
 
-                            local background = replace_template_colors(colors[1], "background", line)
-                            if background ~= nil then
-                                line = background
+                            local same_user = false
+                            if #users > 0 then
+                                for _, user in ipairs(users) do
+                                    if user == os.getenv("USER") then
+                                        same_user = true
+                                    end
+                                end
+                                if same_user == false then
+                                    return
+                                end
                             end
 
-                            local foreground = replace_template_colors(colors[16], "foreground", line)
-                            if foreground ~= nil then
-                                line = foreground
+                            -- Store the output as a string
+                            local output = table.concat(lines, "\n")
+
+                            -- Get the name of the file
+                            name = name:gsub(".base", "")
+
+                            -- Save to ~/.cache/awesome/templates
+                            local file = filesystem.file.new_for_path(GENERATED_TEMPLATES_PATH .. name)
+                            file:write(output)
+
+                            -- Backwards compatibility with wal/wpgtk
+                            local file = filesystem.file.new_for_path(WAL_CACHE_PATH .. name)
+                            file:write(output)
+
+                            -- Save to addiontal location specified in the template file
+                            for _, path in ipairs(copy_to) do
+                                path = path:gsub("~", os.getenv("HOME"))
+                                if path:match(os.getenv("HOME")) then
+                                    local file = filesystem.file.new_for_path(path)
+                                    file:write(output)
+                                else
+                                    awful.spawn.with_shell(RUN_AS_ROOT_SCRIPT_PATH .. " 'cp -r " .. WAL_CACHE_PATH .. name .. " " .. path.. "'")
+                                end
                             end
 
-                            local cursor = replace_template_colors(colors[16], "cursor", line)
-                            if cursor ~= nil then
-                                line = cursor
-                            end
-
-                            if line:match("{wallpaper}") then
-                                line = line:gsub("{wallpaper}", self:get_active_wallpaper())
-                            end
-
-                            table.insert(lines, line)
-                        end
-                    end
-
-                    local same_user = false
-                    if #users > 0 then
-                        for _, user in ipairs(users) do
-                            if user == os.getenv("USER") then
-                                same_user = true
-                            end
-                        end
-                        if same_user == false then
-                            return
-                        end
-                    end
-
-                    -- Store the output as a string
-                    local output = table.concat(lines, "\n")
-
-                    -- Get the name of the file
-                    name = name:gsub(".base", "")
-
-                    -- Save to ~/.cache/awesome/templates
-                    local file = filesystem.file.new_for_path(GENERATED_TEMPLATES_PATH .. name)
-                    file:write(output)
-
-                    -- Backwards compatibility with wal/wpgtk
-                    local file = filesystem.file.new_for_path(WAL_CACHE_PATH .. name)
-                    file:write(output, function()
-                        -- Save to addiontal location specified in the template file
-                        for _, path in ipairs(copy_to) do
-                            path = path:gsub("~", os.getenv("HOME"))
-                            if path:match(os.getenv("HOME")) then
-                                local file = filesystem.file.new_for_path(path)
-                                file:write(output)
-                            else
-                                awful.spawn.with_shell(RUN_AS_ROOT_SCRIPT_PATH .. " 'cp -r " .. WAL_CACHE_PATH .. name .. " " .. path.. "'")
+                            if index >= #files then
+                                on_finished_generating(self)
                             end
                         end
                     end)
                 end
-            end)
+            end
         end
-    end, {
-        recursive = true
-    }, function()
-        on_finished_generating_timer:again()
     end)
 end
 
