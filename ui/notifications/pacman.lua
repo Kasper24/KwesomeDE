@@ -6,12 +6,17 @@ local beautiful = require("beautiful")
 local naughty = require("naughty")
 local system_daemon = require("daemons.system.system")
 
-system_daemon:connect_signal("pacman::updates_available", function(self, updates_count, updates)
+system_daemon:connect_signal("package_manager::updates_available", function(self, name, updates_count, updates)
+    local title = updates_count .. " Updates availabvle"
+    if updates_count == 0 then
+        title = "Your system is up to date"
+    end
+
     naughty.notification {
         app_font_icon = beautiful.icons.computer,
-        app_name = "Pacman",
+        app_name = name,
         font_icon = beautiful.icons.download,
-        title = updates_count .. " Updates availabvle",
+        title = title,
         text = updates
     }
 end)
