@@ -8,9 +8,11 @@ local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local gstring = require("gears.string")
 local wibox = require("wibox")
+local beautiful = require("beautiful")
 local naughty = require("naughty")
 local helpers = require("helpers")
 local filesystem = require("external.filesystem")
+local async = require("external.async")
 local json = require("external.json")
 local ipairs = ipairs
 local table = table
@@ -67,7 +69,34 @@ local function read_notifications(self)
 
             if #self._private.notifications > 0 then
                 for _, notification in ipairs(self._private.notifications) do
-                    self:emit_signal("new", notification)
+                    local tasks = {}
+
+                    if notification.font_icon == nil then
+                        local icon = filesystem.file.new_for_path(notification.icon)
+                        table.insert(tasks, async.callback(icon, icon.exists))
+                    end
+                    if notification.app_font_icon == nil then
+                        local icon = filesystem.file.new_for_path(notification.app_icon)
+                        table.insert(tasks, async.callback(icon, icon.exists))
+                    end
+
+                    async.all(tasks, function(error, results)
+                        if results then
+                            if error == nil then
+                                if results[1][1] == false then
+                                    notification.font_icon = beautiful.icons.message
+                                end
+                                if results[2][1] == false then
+                                    notification.app_font_icon = beautiful.icons.window
+                                end
+                            else
+                                notification.font_icon = beautiful.icons.message
+                                notification.app_font_icon = beautiful.icons.window
+                            end
+                        end
+
+                        self:emit_signal("new", notification)
+                    end)
                 end
             else
                 self:emit_signal("empty")
