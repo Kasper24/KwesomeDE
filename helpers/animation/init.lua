@@ -78,7 +78,7 @@ local function framerate_tomilli(framerate)
     return 1000 / framerate
 end
 
-local function init_animation_loop(self)
+local function animation_loop(self)
     self._private.source_id = GLib.timeout_add(
         GLib.PRIORITY_DEFAULT,
         framerate_tomilli(self._private.framerate),
@@ -196,7 +196,7 @@ function animation_manager:set_instant(value)
             return false
         end)
     elseif self._private.instant == true then
-        init_animation_loop(self)
+        animation_loop(self)
     end
 
     self._private.instant = value
@@ -208,7 +208,7 @@ function animation_manager:set_framerate(value)
         -- Wait a bit so the already running animations can end
         gtimer.start_new(1, function()
             GLib.source_remove(self._private.source_id)
-            init_animation_loop(self)
+            animation_loop(self)
             return false
         end)
     end
@@ -264,7 +264,7 @@ local function new()
     ret._private.instant = false
     ret._private.framerate = 144
 
-    init_animation_loop(ret)
+    animation_loop(ret)
 
     return ret
 end
