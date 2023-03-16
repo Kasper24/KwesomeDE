@@ -105,7 +105,7 @@ local function github_events(self)
             end
 
             for _, event in ipairs(data) do
-                if old_data == nil or old_data[pr.id] == nil then
+                if old_data == nil or old_data[event.id] == nil then
                     local remote_file = filesystem.file.new_for_uri(event.actor.avatar_url)
                     remote_file:read(function(error, content)
                         if error == nil then
