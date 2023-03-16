@@ -314,7 +314,7 @@ local function new()
     ret._private.pinned_apps_with_userdata = {}
 
     capi.client.connect_signal("scanned", function()
-        capi.client.connect_signal("request::manage", function(client)
+        capi.client.connect_signal("manage", function(client)
             on_client_added(ret, client)
         end)
 
@@ -327,8 +327,8 @@ local function new()
         end
     end)
 
-    capi.client.connect_signal("request::unmanage", function(client)
-        if client.skip_taskbar then
+    capi.client.connect_signal("unmanage", function(client)
+        if not client.managed then
             return
         end
 
