@@ -58,7 +58,7 @@ function gitlab:refresh()
             end
 
             for _, mr in ipairs(data) do
-                if old_data[mr.id] == nil then
+                if old_data and old_data[mr.id] == nil then
                     local remote_file = filesystem.file.new_for_uri(mr.author.avatar_url)
                     remote_file:read(function(error, content)
                         if error == nil then
