@@ -18,19 +18,19 @@ local capi = {
 
 local instance = nil
 
-local function app_menu(app, font_icon)
+local function app_menu(app, app_widget, font_icon)
     local menu = widgets.menu {
         widgets.menu.button {
             icon = font_icon,
             text = app.name,
             on_release = function(self)
-                app:run()
+                app_widget:run()
             end
         },
         widgets.menu.button {
             text = "Run as Root",
             on_release = function(self)
-                app:run_as_root()
+                app_widget:run_as_root()
             end
         },
         widgets.menu.checkbox_button {
@@ -73,7 +73,7 @@ local function app(app, app_launcher)
         app.icon_name
     )
 
-    local menu = app_menu(app, font_icon)
+    local menu = nil
 
     local widget = wibox.widget {
         widget = widgets.button.elevated.state,
@@ -115,6 +115,8 @@ local function app(app, app_launcher)
         }
     }
 
+    menu = app_menu(app, widget, font_icon)
+
     widget:connect_signal("select", function()
         menu:hide()
         widget:turn_on()
@@ -141,11 +143,17 @@ local function app(app, app_launcher)
 end
 
 local function new()
+    local pinned_apps = {}
+    for _, pinned_app in ipairs(app_launcher_daemon:get_pinned_apps()) do
+        table.insert(pinned_apps, pinned_app.id)
+    end
+
     local app_launcher = bling.widget.app_launcher {
         bg = beautiful.colors.background,
         widget_template = wibox.widget {
             layout = widgets.rofi_grid,
             lazy_load_widgets = false,
+            favorites = pinned_apps,
             widget_template = wibox.widget {
                 widget = wibox.container.margin,
                 margins = dpi(15),
@@ -279,20 +287,19 @@ local function new()
         animation:set(1)
     end
 
-    local pinned_apps = {}
     app_launcher_daemon:connect_signal("pinned_app::added", function(self, pinned_app)
         table.insert(pinned_apps, pinned_app.id)
-        app_launcher:set_favorites(pinned_apps)
+        app_launcher:get_rofi_grid():set_favorites(pinned_apps)
     end)
 
     app_launcher_daemon:connect_signal("pinned_app::removed", function(self, pinned_app)
         helpers.table.remove_value(pinned_apps, pinned_app.id)
-        app_launcher:set_favorites(pinned_apps)
+        app_launcher:get_rofi_grid():set_favorites(pinned_apps)
     end)
 
     app_launcher:get_rofi_grid():connect_signal("button::press", function(grid, lx, ly, button, mods, find_widgets_result)
         if button == 3 then
-            local selected_app = app_launcher:get_rofi_grid():get_selected_entry()
+            local selected_app = app_launcher:get_rofi_grid():get_selected_widget()
             if selected_app then
                 selected_app:unselect()
             end

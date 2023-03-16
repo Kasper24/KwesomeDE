@@ -120,6 +120,10 @@ function app_launcher:remove_pinned_app(id)
     helpers.settings["app-launcher-pinned-apps"] = self._private.pinned_apps
 end
 
+function app_launcher:get_pinned_apps()
+    return self._private.pinned_apps
+end
+
 local function new()
     local ret = gobject {}
     gtable.crush(ret, app_launcher, true)
