@@ -253,6 +253,10 @@ local function new()
     }
 
     function app_launcher:show()
+        if app_launcher._private.state then
+            return
+        end
+
         app_launcher._private.state = true
         app_launcher:get_widget().visible = true
         app_launcher:get_text_input():focus()
@@ -263,6 +267,10 @@ local function new()
     end
 
     function app_launcher:hide()
+        if app_launcher._private.state == false then
+            return
+        end
+
         app_launcher._private.state = false
         app_launcher:get_text_input():unfocus()
         app_launcher:emit_signal("visibility", false)
