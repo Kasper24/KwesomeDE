@@ -191,15 +191,32 @@ end
 function animation_manager:set_instant(value)
     if value == true and self._private.instant == false then
         -- Wait a bit so the already running animations can end
-        gtimer.start_new(1, function()
-            GLib.source_remove(self._private.source_id)
-            return false
+        gtimer.start_new(0.1, function()
+            if #self._private.animations <= 0 then
+                GLib.source_remove(self._private.source_id)
+                self._private.instant = true
+                return false
+            else
+                local has_non_looped_anim = false
+                for _, animation in ipairs(self._private.animations) do
+                    if animation.loop == false then
+                        has_non_looped_anim = true
+                    end
+                end
+
+                if has_non_looped_anim == false then
+                    GLib.source_remove(self._private.source_id)
+                    self._private.instant = true
+                    return false
+                end
+            end
+
+            return true
         end)
     elseif self._private.instant == true then
+        self._private.instant = false
         animation_loop(self)
     end
-
-    self._private.instant = value
 end
 
 function animation_manager:set_framerate(value)
