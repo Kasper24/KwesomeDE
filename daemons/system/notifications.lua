@@ -83,10 +83,10 @@ local function read_notifications(self)
                     async.all(tasks, function(error, results)
                         if results then
                             if error == nil then
-                                if results[1][1] == false then
+                                if results[1] == nil or results[1][1] == false then
                                     notification.font_icon = beautiful.icons.message
                                 end
-                                if results[2][1] == false then
+                                if results[2] == nil or results[2][1] == false then
                                     notification.app_font_icon = beautiful.icons.window
                                 end
                             else
