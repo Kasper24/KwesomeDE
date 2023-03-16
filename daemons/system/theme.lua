@@ -91,7 +91,7 @@ local function closet_color(colors, reference)
     return closest
 end
 
-  local function generate_colorscheme(self, wallpaper, reset, light)
+local function generate_colorscheme(self, wallpaper, reset, light)
     if self:get_colorschemes()[wallpaper] ~= nil and reset ~= true then
         self:emit_signal("colorscheme::generation::success", self:get_colorschemes()[wallpaper], wallpaper, false)
         return
