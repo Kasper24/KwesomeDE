@@ -568,15 +568,6 @@ local function we_tab(theme_app)
         theme_app,
         "we_wallpapers",
         function(entry, rofi_grid)
-            local menu = widgets.menu {
-                widgets.menu.button {
-                    text = "Preview",
-                    on_release = function()
-                        theme_daemon:preview_we_wallpaper(entry.path, theme_app:get_client():geometry())
-                    end
-                }
-            }
-
             local widget = nil
             local button = wibox.widget {
                 widget = widgets.button.elevated.state,
@@ -589,7 +580,8 @@ local function we_tab(theme_app)
                     widget:select()
                 end,
                 on_secondary_release = function()
-                    menu:toggle()
+                    widget:select()
+                    theme_app:emit_signal("wallpaper_engine_wallapper_menu::show")
                 end,
                 {
                     widget = wibox.widget.imagebox,
@@ -999,6 +991,19 @@ local function new(theme_app, layout)
         tabs_buttons(),
         stack
     }
+
+    local wallpaper_engine_wallapper_menu = widgets.menu {
+        widgets.menu.button {
+            text = "Preview",
+            on_release = function()
+                theme_daemon:preview_we_wallpaper(theme_daemon:get_selected_colorscheme(), theme_app:get_client():geometry())
+            end
+        }
+    }
+
+    theme_app:connect_signal("wallpaper_engine_wallapper_menu::show", function()
+        wallpaper_engine_wallapper_menu:toggle()
+    end)
 
     theme_daemon:connect_signal("tab::select", function(self, tab)
         if tab == "image" then
