@@ -325,6 +325,7 @@ local function create_notification(n, screen)
         signals = {
             ["ended"] = function()
                 if n.destroyed then
+                    n.anim = nil
                     n.widget.visible = false
                     n.widget = nil
                 else
