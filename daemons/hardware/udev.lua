@@ -12,14 +12,13 @@ local string = string
 local ipairs = ipairs
 local pairs = pairs
 
--- This seems to be common issue causing a crash, so make sure GUdev is available
-local _gudev_status, GUdev = pcall(function()
-    return require("lgi").GUdev
+local _gusb_status, GUsb = pcall(function()
+    return require("lgi").GUsb
 end)
-if not _gudev_status or not GUdev then
+if not _gusb_status or not GUsb then
     gdebug.print_warning(
-        "Can't load GUdev introspection. "..
-        "Seems like GUdev is not installed or `lua-lgi` was built with an incompatible GUdev version. " ..
+        "Can't load GUsb introspection. "..
+        "Seems like GUsb is not installed or `lua-lgi` was built with an incompatible GUsb version. " ..
         "USB notifications will not be available!"
     )
     return gobject {}
@@ -28,8 +27,8 @@ end
 local udev = {}
 local instance = nil
 
-local function check_usb_device(self)
-    local devices = self._private.client:query_by_subsystem("usb")
+local function check_usb_device_gudev(self)
+    local devices = self._private.gudev_client:query_by_subsystem("usb")
 
     local new_devices = {}
     for _, device in ipairs(devices) do
@@ -56,6 +55,42 @@ local function check_usb_device(self)
     end
 
     self._private.usb_devices = new_devices
+end
+
+local function check_usb_device_shell(self)
+    awful.spawn.easy_async_with_shell("lsusb -v | grep -e 'iManufacturer' -e 'iProduct'", function(stdout)
+        local new_devices = {}
+        local device = {}
+        for line in stdout:gmatch("[^\r\n]+") do
+            if line:match("iManufacturer") then
+                device = {}
+                device.vendor = line:match("iManufacturer%s+%d+%s+([^\n]*)")
+            elseif line:match("iProduct") then
+                device.name = line:match("iProduct%s+%d+%s+([^\n]*)")
+                new_devices[device.name] = device
+
+                if gtable.count_keys(self._private.usb_devices) > 0 and self._private.usb_devices[device.name] == nil then
+                    self:emit_signal("usb::added", device)
+                end
+            end
+        end
+
+        for key, device in pairs(self._private.usb_devices) do
+            if new_devices[key] == nil then
+                self:emit_signal("usb::removed", device)
+            end
+        end
+
+        self._private.usb_devices = new_devices
+    end)
+end
+
+local function check_usb_device(self)
+    if self._private.gudev_client then
+        check_usb_device_gudev(self)
+    else
+        check_usb_device_shell(self)
+    end
 end
 
 local function check_block_devices(self)
@@ -95,21 +130,36 @@ local function new()
     gtable.crush(ret, udev, true)
 
     ret._private = {}
-    ret._private.client = GUdev.Client()
     ret._private.usb_devices = {}
     ret._private.block_devices = {}
 
-    awful.spawn.easy_async("pkill -f 'udevadm monitor'", function()
-        awful.spawn.with_line_callback("udevadm monitor", {
-            stdout = function(_)
-                gtimer.start_new(0.5, function()
-                    check_usb_device(ret)
-                    check_block_devices(ret)
-                    return false
-                end)
-            end
-        })
+    -- This seems to be common issue causing a crash, so make sure GUdev is available
+    local _gudev_status, GUdev = pcall(function()
+        return require("lgi").GUdev
     end)
+    if not _gudev_status or not GUdev then
+        gdebug.print_warning(
+            "Can't load GUdev introspection. "..
+            "Seems like GUdev is not installed or `lua-lgi` was built with an incompatible GUdev version. " ..
+            "Using shell commands instead!"
+        )
+    else
+        ret._private.gudev_client = GUdev.Client.new()
+    end
+
+    local deivce_context = GUsb.Context.new()
+    deivce_context:enumerate()
+    deivce_context.on_device_added = function(context, device)
+        check_usb_device(ret)
+        check_block_devices(ret)
+    end
+    deivce_context.on_device_removed = function(context, device)
+        check_usb_device(ret)
+        check_block_devices(ret)
+    end
+
+    check_usb_device(ret)
+    check_block_devices(ret)
 
     return ret
 end

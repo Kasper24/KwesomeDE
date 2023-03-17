@@ -110,7 +110,8 @@ yay/paru -S awesome-git
 | networkmanager                          | Network notifcations, applet/wibar widget                 |
 | blueman                                 | Bluetooth notifcations, applet/wibar widget               |
 | pipewire-pulse/pulsaudio + pactl        | Audio notifcations, applet/wibar widget                   |
-| libgudev                                | Used for USB notifications                                |
+| libgudev                                | Used for USB notifications (optional - use commands)      |
+| libusb                                  | Used for USB notifications                                |
 | upower                                  | Battery notifications/widgets                             |
 | lm_sensors                              | CPU Temperature                                           |
 | brightnessctl                           | Brightness daemon and widget                              |
