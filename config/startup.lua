@@ -8,7 +8,7 @@ local helpers = require("helpers")
 local string = string
 
 local function run_programs()
-    awful.spawn(string.format("sudo %s/Dotfiles/packages/wal-vivaldi/patcher.py", os.getenv("HOME")))
+    awful.spawn(string.format("sudo %s/Dotfiles/packages/wal-vivaldi/patcher.py", os.getenv("HOME")), false)
 
     helpers.run.run_once_ps("polkit-gnome-authentication-agent-1",
         "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1")
