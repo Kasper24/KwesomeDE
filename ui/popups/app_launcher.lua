@@ -84,10 +84,10 @@ local function app(app, app_launcher)
         halign = "left",
         on_normal_bg = font_icon.color,
         on_release = function(self)
-            self:run_or_select()
+            self:run_or_select("press")
         end,
         on_secondary_release = function(self)
-            self:select()
+            self:select("press")
             menu:toggle()
         end,
         {
@@ -117,14 +117,15 @@ local function app(app, app_launcher)
 
     menu = app_menu(app, widget, font_icon)
 
-    widget:connect_signal("select", function()
+    widget:connect_signal("select", function(self, context)
+        local instant = context ~= "press"
         menu:hide()
-        widget:turn_on()
+        widget:turn_on(instant)
     end)
 
     widget:connect_signal("unselect", function()
         menu:hide()
-        widget:turn_off()
+        widget:turn_off(true)
     end)
 
     app_launcher:connect_signal("scroll", function()
