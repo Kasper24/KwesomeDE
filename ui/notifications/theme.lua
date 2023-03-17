@@ -46,12 +46,12 @@ theme_daemon:connect_signal("colorscheme::generation::error", function(self, wal
     }
 end)
 
-theme_daemon:connect_signal("wallpaper_engine::error", function(self, error)
+theme_daemon:connect_signal("wallpaper_engine::error", function(self, error, crash)
     naughty.notification {
         app_font_icon = beautiful.icons.spraycan,
         app_name = "Wallpaper Engine",
         font_icon = beautiful.icons.circle_exclamation,
-        title = "Error",
+        title = crash and "Crash" or "Error",
         text = error
     }
 end)

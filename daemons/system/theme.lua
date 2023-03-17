@@ -692,10 +692,11 @@ local function we_error_handler(self)
     -- I'm not sure why, but running wallpaper engine inside easy_async_with_shell
     -- results in weird issues, so using it only for error handling then kill it
     -- and spawn a new one using .spawn
-    local pid = awful.spawn.easy_async_with_shell(test_cmd, function(stdout, stderr)
+    local pid = awful.spawn.easy_async_with_shell(test_cmd, function(_, stderr, __, exitcode)
         stderr = helpers.string.trim(stderr)
         if stderr ~= "" then
-            self:emit_signal("wallpaper_engine::error", stderr)
+            local crashed = exitcode == 6
+            self:emit_signal("wallpaper_engine::error", stderr, crashed)
         end
     end)
     gtimer.start_new(1, function()
