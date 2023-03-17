@@ -164,6 +164,8 @@ local function wallpapers_grid(theme_app, wallpapers_key, entry_template)
 
     theme_daemon:connect_signal("wallpapers", function()
         layout:set_entries(theme_daemon["get_" .. wallpapers_key](theme_daemon))
+        collectgarbage("collect")
+        collectgarbage("collect")
     end)
 
     theme_app:connect_signal("visibility", function(self, visible)
@@ -173,6 +175,8 @@ local function wallpapers_grid(theme_app, wallpapers_key, entry_template)
     end)
 
     layout:set_entries(theme_daemon["get_" .. wallpapers_key](theme_daemon))
+    collectgarbage("collect")
+    collectgarbage("collect")
 
     return layout
 end
