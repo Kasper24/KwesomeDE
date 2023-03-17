@@ -825,7 +825,7 @@ local function new()
     wp.cursor_blink = true
     wp.cursor_blink_rate = 0.6
 
-    wp.selection_bg = beautiful.colors.background
+    wp.selection_bg = beautiful.colors.random_accent_color()
 
     widget:set_widget_template(wibox.widget {
         layout = wibox.layout.stack,
@@ -876,6 +876,12 @@ local function new()
         if wp.unfocus_on_client_clicked then
             widget:unfocus()
         end
+    end)
+
+    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+        wp.text_color = old_colorscheme_to_new_map[wp.text_color]
+        wp.cursor_bg = old_colorscheme_to_new_map[wp.cursor_bg]
+        wp.selection_bg = old_colorscheme_to_new_map[wp.selection_bg]
     end)
 
     return widget
