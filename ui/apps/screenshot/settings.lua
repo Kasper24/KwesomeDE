@@ -56,6 +56,7 @@ local function delay()
         round = true,
         maximum = 100,
         bar_active_color = beautiful.icons.camera_retro.color,
+        selection_bg = beautiful.icons.camera_retro.color,
     }
 
     slider:connect_signal("property::value", function(self, value, instant)
@@ -82,7 +83,8 @@ local function folder()
         widget = widgets.text_input,
         forced_width = dpi(220),
         unfocus_on_client_clicked = false,
-        initial = screenshot_daemon:get_folder()
+        initial = screenshot_daemon:get_folder(),
+        selection_bg = beautiful.icons.camera_retro.color,
     }
 
     folder_text_input:connect_signal("property::text", function(self, text)

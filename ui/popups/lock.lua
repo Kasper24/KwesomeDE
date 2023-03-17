@@ -114,6 +114,7 @@ local function widget(self)
         unfocus_on_other_text_input_focus = false,
         reset_on_unfocus = true,
         obscure = true,
+        selection_bg = beautiful.icons.lock.color,
         widget_template = wibox.widget {
             layout = wibox.layout.fixed.horizontal,
             spacing = dpi(15),

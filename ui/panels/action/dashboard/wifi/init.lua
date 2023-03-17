@@ -40,6 +40,7 @@ local function access_point_widget(layout, access_point)
         forced_width = dpi(440),
         obscure = true,
         initial = access_point.password,
+        selection_bg = beautiful.icons.network.wifi_off.color,
         widget_template = wibox.widget {
             widget = widgets.background,
             shape = helpers.ui.rrect(),

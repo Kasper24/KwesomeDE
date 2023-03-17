@@ -33,6 +33,7 @@ local function new(args)
 		forced_height = args.text_input_height or dpi(40),
 		pattern = pattern,
 		initial = tostring(slider:get_value()),
+		selection_bg = args.selection_bg or beautiful.colors.random_accent_color(),
 		widget_template = wibox.widget {
 			widget = bwidget,
 			shape = helpers.ui.rrect(),

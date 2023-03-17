@@ -40,6 +40,7 @@ local function command_after_generation()
         forced_width = dpi(600),
         unfocus_on_client_clicked = false,
         initial = theme_daemon:get_command_after_generation(),
+        selection_bg = beautiful.icons.spraycan.color,
         widget_template = wibox.widget {
 			widget = widgets.background,
 			shape = helpers.ui.rrect(),
@@ -120,6 +121,7 @@ local function picom_slider(key, maximum, round, minimum)
         maximum = maximum,
         value = picom_daemon["get_" .. key](picom_daemon),
         bar_active_color = beautiful.icons.spraycan.color,
+        selection_bg = beautiful.icons.spraycan.color
     }
 
     slider_text_input:connect_signal("property::value", function(self, value, instant)
@@ -147,6 +149,7 @@ local function profile_image()
         forced_width = dpi(410),
         unfocus_on_client_clicked = false,
         initial = theme_daemon:get_profile_image(),
+        selection_bg = beautiful.icons.spraycan.color,
         widget_template = wibox.widget {
 			widget = widgets.background,
 			shape = helpers.ui.rrect(),
@@ -212,6 +215,7 @@ local function folder_picker(text, initial_value, on_changed)
         forced_width = dpi(410),
         unfocus_on_client_clicked = false,
         initial = initial_value,
+        selection_bg = beautiful.icons.spraycan.color,
         widget_template = wibox.widget {
             widget = widgets.background,
             shape = helpers.ui.rrect(),
@@ -309,6 +313,7 @@ local function theme_slider(text, initial_value, maximum, round, on_changed, min
         minimum = minimum or 0,
         maximum = maximum,
         bar_active_color = beautiful.icons.spraycan.color,
+        selection_bg = beautiful.icons.spraycan.color
     }
 
     slider_text_input:connect_signal("property::value", function(self, value)

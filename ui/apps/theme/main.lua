@@ -33,6 +33,7 @@ local function color_button(index)
         widget = widgets.text_input,
         unfocus_on_client_clicked = false,
         size = 12,
+        selection_bg = beautiful.icons.spraycan.color,
         widget_template = wibox.widget {
             widget = wibox.widget.textbox,
             id = "text_role",
@@ -95,6 +96,7 @@ local function wallpapers_grid(theme_app, wallpapers_key, entry_template)
                 forced_height = dpi(55),
                 unfocus_on_client_clicked = false,
                 unfocus_on_subject_mouse_leave = theme_app:get_client(),
+                selection_bg = beautiful.icons.spraycan.color,
                 widget_template = wibox.widget {
                     widget = widgets.background,
                     shape = helpers.ui.rrect(),
