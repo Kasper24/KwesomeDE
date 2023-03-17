@@ -128,7 +128,7 @@ yay/paru -S awesome-git
 
 **Arch Linux (and other Arch-based distributions)**
    ```sh
-      pacman -Sy networkmanager blueman pipewire pipewire-pulse libgudev upower lm_sensors brightnessctl
+      pacman -Sy networkmanager blueman pipewire pipewire-pulse libusb libgudev upower lm_sensors brightnessctl
       redshift inotify-tools maim xcolor ffmpeg playerctl fortune-mod imagemagick neofetch --needed
    ```
    Assuming your **AUR Helper** is [yay](https://github.com/Jguer/yay) or [paru](https://github.com/Morganamilo/paru).
