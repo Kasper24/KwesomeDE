@@ -5,10 +5,7 @@
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
-local gtimer = require("gears.timer")
 local gdebug = require("gears.debug")
-local helpers = require("helpers")
-local string = string
 local ipairs = ipairs
 local pairs = pairs
 
@@ -24,7 +21,7 @@ if not _gusb_status or not GUsb then
     return gobject {}
 end
 
-local udev = {}
+local usb = {}
 local instance = nil
 
 local function check_usb_device_gudev(self)
@@ -93,47 +90,13 @@ local function check_usb_device(self)
     end
 end
 
-local function check_block_devices(self)
-    awful.spawn.easy_async("findmnt --pairs", function(stdout)
-        local new_devices = {}
-        for line in stdout:gmatch("[^\r\n]+") do
-            local partition = line:match('SOURCE="(.*)" FSTYPE')
-            if partition ~= "tmpfs" and partition ~= "gvfsd-fuse" then
-                local device = {}
-                device.mount_point = line:match('TARGET="(.*)" SOURCE')
-                device.name = string.sub(device.mount_point, helpers.string.find_last(device.mount_point, "/") + 1,
-                    #device.mount_point)
-                device.partition = line:match('SOURCE="(.*)" FSTYPE')
-                device.fs_type = line:match('FSTYPE="(.*)" OPTIONS')
-                device.options = line:match('OPTIONS=(.*)')
-                new_devices[device.mount_point] = device
-
-                if gtable.count_keys(self._private.block_devices) > 0 and
-                    self._private.block_devices[device.mount_point] == nil then
-                    self:emit_signal("block::added", device)
-                end
-            end
-        end
-
-        for key, device in pairs(self._private.block_devices) do
-            if new_devices[key] == nil then
-                self:emit_signal("block::removed", device)
-            end
-        end
-
-        self._private.block_devices = new_devices
-    end)
-end
-
 local function new()
     local ret = gobject {}
-    gtable.crush(ret, udev, true)
+    gtable.crush(ret, usb, true)
 
     ret._private = {}
     ret._private.usb_devices = {}
-    ret._private.block_devices = {}
 
-    -- This seems to be common issue causing a crash, so make sure GUdev is available
     local _gudev_status, GUdev = pcall(function()
         return require("lgi").GUdev
     end)
@@ -150,16 +113,15 @@ local function new()
     local deivce_context = GUsb.Context.new()
     deivce_context:enumerate()
     deivce_context.on_device_added = function(context, device)
+        -- Get pid/vid_as_str() is not working, so gotta get it via shell
         check_usb_device(ret)
-        check_block_devices(ret)
     end
     deivce_context.on_device_removed = function(context, device)
+        -- Get pid/vid_as_str() is not working, so gotta get it via shell
         check_usb_device(ret)
-        check_block_devices(ret)
     end
 
     check_usb_device(ret)
-    check_block_devices(ret)
 
     return ret
 end
