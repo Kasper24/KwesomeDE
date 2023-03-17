@@ -166,6 +166,12 @@ local function wallpapers_grid(theme_app, wallpapers_key, entry_template)
         layout:set_entries(theme_daemon["get_" .. wallpapers_key](theme_daemon))
     end)
 
+    theme_app:connect_signal("visibility", function(self, visible)
+        if visible == false then
+            layout:get_text_input():unfocus()
+        end
+    end)
+
     layout:set_entries(theme_daemon["get_" .. wallpapers_key](theme_daemon))
 
     return layout
