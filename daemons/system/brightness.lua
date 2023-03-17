@@ -20,16 +20,12 @@ function brightness:decrease_brightness(step)
 end
 
 local function get_brightness(self)
-    awful.spawn.with_line_callback("brightnessctl g", {
-        stdout = function(value)
-            awful.spawn.with_line_callback("brightnessctl m", {
-                stdout = function(max)
-                    local percentage = tonumber(value) / tonumber(max) * 100
-                    self:emit_signal("update", percentage)
-                end
-            })
-        end
-    })
+    awful.spawn.easy_async("brightnessctl g", function(value)
+        awful.spawn.easy_async("brightnessctl m", function(max)
+            local percentage = tonumber(value) / tonumber(max) * 100
+            self:emit_signal("update", percentage)
+        end)
+    end)
 end
 
 local function new()
@@ -39,7 +35,6 @@ local function new()
     get_brightness(ret)
 
     local watcher = helpers.inotify:watch("/sys/class/backlight/?**/brightness", {helpers.inotify.Events.modify})
-
     watcher:connect_signal("event", function(_, __, __)
         get_brightness(ret)
     end)
