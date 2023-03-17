@@ -51,8 +51,8 @@ function playerctl.art_opacity(daemon)
     end
 
     local function image_surface(path)
-        local adjusted_image = helpers.ui.adjust_image_res(path, 500, 225)
-        return helpers.ui.add_gradient_to_surface(adjusted_image, colors())
+        local scaled_image = helpers.ui.scale_image(path, 500, 225)
+        return helpers.ui.add_gradient_to_surface(scaled_image, colors())
     end
 
     local art = wibox.widget{

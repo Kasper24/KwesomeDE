@@ -13,6 +13,7 @@ local wibox = require("wibox")
 local beautiful = require("beautiful")
 local color_libary = require("external.color")
 local helpers = require("helpers")
+local sanitize_filename = helpers.string.sanitize_filename
 local filesystem = require("external.filesystem")
 local json = require("external.json")
 local string = string
@@ -48,6 +49,8 @@ local FILE_PICKER_SCRIPT_PATH = filesystem.filesystem.get_awesome_config_dir("sc
 local COLOR_PICKER_SCRIPT_PATH = filesystem.filesystem.get_awesome_config_dir("scripts") .. "color-picker.lua"
 local DEFAULT_PROFILE_IMAGE_PATH = filesystem.filesystem.get_awesome_config_dir("assets/images") .. "profile.png"
 local WE_PATH = filesystem.filesystem.get_awesome_config_dir("assets/wallpaper-engine/binary")
+local THUMBNAIL_SIZE = { width = 100, height = 70 }
+local THUMBNAIL_PATH = filesystem.filesystem.get_cache_dir("thumbnails/wallpapers/100-70")
 
 local PICTURES_MIMETYPES = {
     ["application/pdf"] = "lximage", -- AI
@@ -752,39 +755,56 @@ local function scan_wallpapers(self)
     self._private.wallpapers = {}
     self._private.we_wallpapers = {}
 
-    filesystem.filesystem.scan(WALLPAPERS_PATH, function(error, files)
-        if error == nil and files then
-            for _, file in ipairs(files) do
-                local mimetype = Gio.content_type_guess(file.full_path)
-                if PICTURES_MIMETYPES[mimetype] then
-                    table.insert(self._private.wallpapers, { path = file.full_path, name = file.name })
-                end
-            end
-        end
-
-        filesystem.filesystem.scan(self:get_wallpaper_engine_workshop_folder(), function(error, files)
+    filesystem.filesystem.make_directory_with_parents(THUMBNAIL_PATH, function()
+        filesystem.filesystem.scan(WALLPAPERS_PATH, function(error, files)
             if error == nil and files then
-                for index, file in ipairs(files) do
+                for _, file in ipairs(files) do
                     local mimetype = Gio.content_type_guess(file.full_path)
                     if PICTURES_MIMETYPES[mimetype] then
-                        local json_file = filesystem.file.new_for_path(file.path_no_name .. "project.json")
-                        json_file:read(function(error, content)
-                            if error == nil then
-                                local name = json.decode(content).title
-                                table.insert(self._private.we_wallpapers, { path = file.full_path, name = name})
-                            end
-
-                            if index == #files then
-                                sort_wallpapers(self)
-                                on_wallpapers_updated(self)
-                            end
+                        helpers.ui.scale_image_save(file.full_path, THUMBNAIL_PATH .. file.name, 100, 70, function(image)
+                            table.insert(self._private.wallpapers, {
+                                path = file.full_path,
+                                thumbnail = image,
+                                name = file.name
+                            })
                         end)
                     end
                 end
-            else
-                sort_wallpapers(self)
-                on_wallpapers_updated(self)
             end
+
+            filesystem.filesystem.scan(self:get_wallpaper_engine_workshop_folder(), function(error, files)
+                if error == nil and files then
+                    for index, file in ipairs(files) do
+                        local mimetype = Gio.content_type_guess(file.full_path)
+                        if PICTURES_MIMETYPES[mimetype] then
+                            local json_file = filesystem.file.new_for_path(file.path_no_name .. "project.json")
+                            json_file:read(function(error, content)
+                                if error == nil then
+                                    local name = json.decode(content).title
+                                    helpers.ui.scale_image_save(file.full_path, THUMBNAIL_PATH .. sanitize_filename(name), 100, 70, function(image)
+                                        table.insert(self._private.we_wallpapers, {
+                                            path = file.full_path,
+                                            thumbnail = image,
+                                            name = name
+                                        })
+
+                                        if index == #files then
+                                            sort_wallpapers(self)
+                                            on_wallpapers_updated(self)
+                                        end
+                                    end)
+                                elseif index == #files then
+                                    sort_wallpapers(self)
+                                    on_wallpapers_updated(self)
+                                end
+                            end)
+                        end
+                    end
+                else
+                    sort_wallpapers(self)
+                    on_wallpapers_updated(self)
+                end
+            end)
         end)
     end)
 end

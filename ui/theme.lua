@@ -378,9 +378,16 @@ end
 
 local function assets()
     local assets_folder = filesystem.filesystem.get_awesome_config_dir("assets/images")
-    theme.mountain_background = gsurface(assets_folder .. "mountain.png")
     theme.overview = gsurface(assets_folder .. "overview.png")
     theme.default_github_profile = gsurface(assets_folder .. "default_github_profile.png")
+    theme.mountain_background = gsurface(assets_folder .. "mountain.png")
+
+    local mountain_background_thumbnail_dir_path = filesystem.filesystem.get_cache_dir("thumbnails/mountain/100-70" )
+    filesystem.filesystem.make_directory_with_parents(mountain_background_thumbnail_dir_path, function()
+        helpers.ui.scale_image_save(assets_folder .. "mountain.png", mountain_background_thumbnail_dir_path .. "mountain", 100, 70, function(image)
+            theme.mountain_background_thumbnail = image
+        end)
+    end)
 
     local themes_path = gfilesystem.get_themes_dir()
     theme.layout_fairh = themes_path.."default/layouts/fairhw.png"

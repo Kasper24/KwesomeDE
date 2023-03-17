@@ -166,4 +166,9 @@ function _string.day_ordinal_number(day)
     end
 end
 
+function _string.sanitize_filename(filename)
+    local sanitized_filename = string.gsub(filename, "[^%w%-_%.]+", "_")
+    return sanitized_filename
+end
+
 return _string

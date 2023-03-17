@@ -6,6 +6,7 @@ local gsurface = require("gears.surface")
 local gcolor = require("gears.color")
 local gshape = require("gears.shape")
 local gtimer = require("gears.timer")
+local filesystem = require("external.filesystem")
 local ipairs = ipairs
 local floor = math.floor
 local type = type
@@ -65,38 +66,38 @@ function _ui.get_widget_geometry_in_device_space(args, widget)
     end
 end
 
-function _ui.adjust_image_res(image, width, height)
+function _ui.scale_image_save(image, cache_path, width, height, callback)
+    local file = filesystem.file.new_for_path(cache_path)
+    file:exists(function(error, exists)
+        if error == nil and exists then
+            callback(cache_path)
+        else
+            local pixbuf = nil
+            if type(image) == "string" then
+                pixbuf = GdkPixbuf.Pixbuf.new_from_file(image)
+            else
+                -- pixbuf = Gdk.pixbuf_get_from_surface(image, 0, 0, image:get_width(), image:get_height())
+            end
+
+            if pixbuf then
+                pixbuf = pixbuf:scale_simple(width, height, GdkPixbuf.InterpType.BILINEAR)
+                pixbuf:savev(cache_path, "png", {})
+                callback(cache_path)
+            end
+        end
+    end)
+end
+
+function _ui.scale_image(image, width, height)
     local pixbuf = nil
     if type(image) == "string" then
         pixbuf = GdkPixbuf.Pixbuf.new_from_file(image)
     else
-        pixbuf = Gdk.pixbuf_get_from_surface(image, 0, 0, image:get_width(), image:get_height())
+        -- pixbuf = Gdk.pixbuf_get_from_surface(image, 0, 0, image:get_width(), image:get_height())
     end
 
     if pixbuf then
         local scaled_pixbuf = pixbuf:scale_simple(width, height, GdkPixbuf.InterpType.BILINEAR)
-        return capi.awesome.pixbuf_to_surface(scaled_pixbuf._native, image)
-    end
-end
-
-function _ui.adjust_image_res_by_ratio(image, ratio)
-    local pixbuf = nil
-    if type(image) == "string" then
-        pixbuf = GdkPixbuf.Pixbuf.new_from_file(image)
-    else
-        pixbuf = Gdk.pixbuf_get_from_surface(image, 0, 0, image:get_width(), image:get_height())
-    end
-
-    -- Get the original image dimensions
-    local width = pixbuf:get_width()
-    local height = pixbuf:get_height()
-
-    -- Calculate the new dimensions to scale the image down to
-    local new_width = floor(width / ratio)
-    local new_height = floor(height / ratio)
-
-    if pixbuf then
-        local scaled_pixbuf = pixbuf:scale_simple(new_width, new_height, GdkPixbuf.InterpType.BILINEAR)
         return capi.awesome.pixbuf_to_surface(scaled_pixbuf._native, image)
     end
 end

@@ -195,7 +195,7 @@ local function image_tab(theme_app)
                     vertical_fit_policy = "fit",
                     forced_width = dpi(146),
                     forced_height = dpi(105),
-                    image = helpers.ui.adjust_image_res(entry.path, 100, 70)
+                    image = entry.thumbnail
                 }
             }
 
@@ -273,7 +273,7 @@ local function mountain_tab(theme_app)
                         clip_shape = helpers.ui.rrect(),
                         horizontal_fit_policy = "fit",
                         vertical_fit_policy = "fit",
-                        image = helpers.ui.adjust_image_res(beautiful.mountain_background, 100, 70)
+                        image = beautiful.mountain_background_thumbnail
                     },
                 }
             }
@@ -593,7 +593,7 @@ local function we_tab(theme_app)
                     clip_shape = helpers.ui.rrect(),
                     horizontal_fit_policy = "fit",
                     vertical_fit_policy = "fit",
-                    image = helpers.ui.adjust_image_res(entry.path, 100, 70)
+                    image = entry.thumbnail
                 }
             }
 
