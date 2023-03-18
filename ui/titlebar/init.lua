@@ -93,8 +93,6 @@ capi.client.connect_signal("request::titlebars", function(client)
         close:turn_off()
     end)
 
-    local menu = widgets.client_menu(client)
-
     local titlebar = widgets.titlebar(client, {
         position = "top",
         size = dpi(35),
@@ -135,7 +133,7 @@ capi.client.connect_signal("request::titlebars", function(client)
                     on_press = function()
                         helpers.input.tap_or_drag {
                             on_tap = function()
-                                menu:toggle{}
+                                client.menu:toggle{}
                             end,
                             on_drag = function()
                                 client.maximized = false

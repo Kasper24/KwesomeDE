@@ -94,7 +94,7 @@ local function pinned_app_widget(pinned_app)
 end
 
 local function client_widget(client)
-    local menu = widgets.client_menu(client)
+    client.menu = widgets.client_menu(client)
 
     local button = wibox.widget {
         widget = wibox.container.margin,
@@ -122,7 +122,7 @@ local function client_widget(client)
             end,
             on_release = function()
                 task_preview:hide()
-                menu:hide()
+                client.menu:hide()
 
                 if client.minimized == false then
                     if capi.client.focus == client then
@@ -142,7 +142,7 @@ local function client_widget(client)
             end,
             on_secondary_release = function(self)
                 task_preview:hide()
-                menu:toggle{
+                client.menu:toggle{
                     wibox = awful.screen.focused().top_wibar,
                     widget = self,
                     offset = {
@@ -196,7 +196,7 @@ local function client_widget(client)
     end)
 
     client:connect_signal("unmanage", function()
-        menu:hide()
+        client.menu:hide()
     end)
 
     return widget
