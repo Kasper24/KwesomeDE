@@ -34,8 +34,8 @@ function animated_panel:show()
 
     self.placement = nil
 
-    -- local image = wibox.widget.draw_to_image_surface(self.widget, self.width, self.height)
-    -- self.widget = fake_widget(image)
+    local image = wibox.widget.draw_to_image_surface(self.widget, self.width, self.height)
+    self.widget = fake_widget(image)
 
     if self.actual_pos == nil then
         self.actual_pos = self[self.axis]
@@ -54,8 +54,8 @@ function animated_panel:hide()
 
     self.state = false
 
-    -- local image = wibox.widget.draw_to_image_surface(self.widget, self.width, self.height)
-    -- self.widget = fake_widget(image)
+    local image = wibox.widget.draw_to_image_surface(self.widget, self.width, self.height)
+    self.widget = fake_widget(image)
     self.animation.easing = helpers.animation.easing.inExpo
     self.animation:set(self.start_pos)
     self:emit_signal("visibility", false)
