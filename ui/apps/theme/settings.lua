@@ -432,6 +432,15 @@ local function new(layout)
         layout:add(picom_checkbox("animation-clamping"))
     end)
 
+    if picom_daemon:has_animation_support() then
+        layout:add(separator())
+        layout:add(picom_slider("animation-stiffness", 1000, true))
+        layout:add(picom_slider("animation-dampening", 200, true))
+        layout:add(picom_slider("animation-window-mass", 100, true))
+        layout:add(picom_checkbox("animations"))
+        layout:add(picom_checkbox("animation-clamping"))
+    end
+
     return wibox.widget {
         layout = wibox.layout.fixed.vertical,
         spacing = dpi(15),

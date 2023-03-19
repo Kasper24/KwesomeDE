@@ -82,6 +82,10 @@ function picom:toggle(save)
     end
 end
 
+function picom:has_animation_support()
+    return self._private.has_animation_support
+end
+
 local function build_properties(prototype, properties)
     for _, prop in ipairs(properties) do
         if not prototype["set_" .. prop] then
@@ -113,6 +117,7 @@ local function new()
 
     ret._private = {}
     ret._private.state = -1
+    ret._private.has_animation_support = false
 
     for _, prop in ipairs(properties) do
         ret._private[prop] = helpers.settings["picom-" .. prop]
@@ -150,6 +155,7 @@ local function new()
 
         awful.spawn.easy_async("picom --help", function(stdout)
             if stdout:find("--animations", 1, true) ~= nil then
+                ret._private.has_animation_support = true
                 ret:emit_signal("animations::support")
             end
         end)
