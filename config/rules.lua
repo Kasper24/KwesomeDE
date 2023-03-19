@@ -539,8 +539,8 @@ ruled.client.add_rule_source("fix_dialog", function(c, properties, callbacks)
             end
         end
 
-        c.width = c.screen.geometry.width * 0.6
-        c.height = c.screen.geometry.height * 0.8
+        -- c.width = c.screen.geometry.width * 0.6
+        -- c.height = c.screen.geometry.height * 0.8
 
         (awful.placement.centered + awful.placement.no_offscreen)(c, {
             parent = parent,
