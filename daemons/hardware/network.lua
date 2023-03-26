@@ -249,6 +249,10 @@ local function get_wifi_proxy(self)
 end
 
 function network:scan_access_points()
+    if self._private.wifi_proxy == nil then
+        return
+    end
+
     self._private.access_points = {}
 
     self._private.wifi_proxy:RequestScanAsync(function(proxy, context, success, failure)
