@@ -19,7 +19,7 @@ end
 
 local function new()
     local chart = wibox.widget {
-        widget = widgets.piechart,
+        widget = wibox.widget.piechart,
         forced_height = 200,
         forced_width = 400,
         colors = {beautiful.colors.random_accent_color(), beautiful.colors.surface,

@@ -17,7 +17,6 @@ return {
     dropdown = require(... .. ".dropdown"),
     menu = require(... .. ".menu"),
     playerctl = require(... .. ".playerctl"),
-    piechart = require(... .. ".piechart"),
     popup = require(... .. ".popup"),
     profile = require(... .. ".profile"),
     progressbar = require(... .. ".progressbar"),
