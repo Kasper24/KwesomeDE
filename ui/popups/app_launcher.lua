@@ -84,7 +84,7 @@ local function app(app, app_launcher)
         halign = "left",
         on_normal_bg = font_icon.color,
         on_release = function(self)
-            self:run_or_select("press")
+            self:select_or_exec("press")
         end,
         on_secondary_release = function(self)
             self:select("press")
@@ -193,7 +193,7 @@ local function new()
                                         {
                                             widget = wibox.widget.textbox,
                                             id = "placeholder_role",
-                                            text = "Search: "
+                                            text = "Search:"
                                         },
                                         {
                                             widget = wibox.widget.textbox,
