@@ -7,6 +7,7 @@ local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
 local helpers = require("helpers")
 local wifi_tab = require("ui.apps.settings.tabs.wifi")
+local accounts_tab = require("ui.apps.settings.tabs.accounts")
 local appearance_tab = require("ui.apps.settings.tabs.appearance")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
@@ -22,7 +23,7 @@ local function tab_button(navigator, id, icon, title)
     return wibox.widget {
         widget = widgets.button.elevated.state,
         halign = "left",
-        on_normal_bg = beautiful.icons.spraycan.color,
+        on_normal_bg = beautiful.icons.computer.color,
         on_release = function()
             navigator:emit_signal("tab::select", id)
         end,
@@ -98,7 +99,7 @@ local function new()
         widget = widgets.button.text.normal,
         forced_width = dpi(40),
         forced_height = dpi(40),
-        text_normal_bg = beautiful.icons.spraycan.color,
+        text_normal_bg = beautiful.icons.computer.color,
         icon = beautiful.icons.xmark,
         on_release = function()
             SETTINGS_APP:hide()
@@ -126,7 +127,7 @@ local function new()
             {
                 id = "accounts",
                 button = tab_button(navigator, "accounts", beautiful.icons.user, "Accounts"),
-                tab = wifi_tab()
+                tab = accounts_tab()
             },
         },
         {

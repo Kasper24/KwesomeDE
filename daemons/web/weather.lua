@@ -36,28 +36,28 @@ function weather:get_unit()
     return self._private.unit
 end
 
-function weather:set_coordinate_x(coordinate_x)
-    self._private.coordinate_x = coordinate_x
-    helpers.settings["weather-latitude"] = coordinate_x
+function weather:set_latitude(latitude)
+    self._private.latitude = latitude
+    helpers.settings["weather-latitude"] = latitude
 end
 
-function weather:get_coordinate_x()
-    return self._private.coordinate_x
+function weather:get_latitude()
+    return self._private.latitude
 end
 
-function weather:set_coordinate_y(coordinate_y)
-    self._private.coordinate_y = coordinate_y
-    helpers.settings["weather-longitude"] = coordinate_y
+function weather:set_longitude(longitude)
+    self._private.longitude = longitude
+    helpers.settings["weather-longitude"] = longitude
 end
 
-function weather:get_coordinate_y()
-    return self._private.coordinate_y
+function weather:get_longitude()
+    return self._private.longitude
 end
 
 function weather:refresh()
     local link = string.format(
         "https://api.openweathermap.org/data/2.5/onecall?lat=%s&lon=%s&appid=%s&units=%s&exclude=minutely&lang=en",
-        self:get_coordinate_x(), self:get_coordinate_y(), self:get_api_key(), self:get_unit())
+        self:get_latitude(), self:get_longitude(), self:get_api_key(), self:get_unit())
 
         filesystem.filesystem.remote_watch(
         DATA_PATH, link,
@@ -89,10 +89,10 @@ local function new()
     -- "metric" for Celcius, "imperial" for Fahrenheit
     ret._private.unit = helpers.settings["weather-unit"]
     ret._private.api_key = helpers.settings["weather-api-key"]
-    ret._private.coordinate_x = helpers.settings["weather-latitude"]
-    ret._private.coordinate_y = helpers.settings["weather-longitude"]
+    ret._private.latitude = helpers.settings["weather-latitude"]
+    ret._private.longitude = helpers.settings["weather-longitude"]
 
-    if ret._private.api_key ~= "" and ret._private.coordinate_x ~= "" and ret._private.coordinate_y ~= "" then
+    if ret._private.api_key ~= "" and ret._private.latitude ~= "" and ret._private.longitude ~= "" then
         ret:refresh()
     else
         gtimer.delayed_call(function()

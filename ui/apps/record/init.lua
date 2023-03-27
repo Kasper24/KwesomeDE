@@ -152,7 +152,7 @@ local function folder()
     local title = wibox.widget {
         widget = widgets.text,
         size = 15,
-        text = "Folder: "
+        text = "Folder:"
     }
 
     local folder_text_input = wibox.widget {

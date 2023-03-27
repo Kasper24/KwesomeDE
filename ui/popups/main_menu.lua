@@ -12,7 +12,6 @@ local screenshot_app = require("ui.apps.screenshot")
 local record_app = require("ui.apps.record")
 local hotkeys_popup = require("ui.popups.hotkeys")
 local power_popup = require("ui.screens.power")
-local theme_app = require("ui.apps.theme")
 local settings_app = require("ui.apps.settings")
 local beautiful = require("beautiful")
 local helpers = require("helpers")
@@ -191,13 +190,6 @@ local function widget()
             text = "Settings",
             on_release = function()
                 settings_app:show()
-            end
-        },
-        widgets.menu.button {
-            icon = beautiful.icons.spraycan,
-            text = "Theme",
-            on_release = function()
-                theme_app:show()
             end
         },
         widgets.menu.separator(),

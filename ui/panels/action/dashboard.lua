@@ -6,7 +6,7 @@ local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local screenshot_popup = require("ui.apps.screenshot")
 local record_popup = require("ui.apps.record")
-local theme_popup = require("ui.apps.theme")
+local settings_popup = require("ui.apps.settings")
 local wifi_popup = require("ui.applets.wifi")
 local bluetooth_popup = require("ui.applets.bluetooth")
 local beautiful = require("beautiful")
@@ -208,16 +208,16 @@ local function compositor()
     return widget
 end
 
-local function theme()
-    local widget = button(beautiful.icons.palette, "Theme", function()
-        theme_popup:toggle()
+local function settings()
+    local widget = button(beautiful.icons.computer, "Settings", function()
+        settings_popup:toggle()
     end)
 
-    theme_popup:connect_signal("visibility", function(self, visible)
+    settings_popup:connect_signal("visibility", function(self, visible)
         if visible == true then
-            widget:turn_on("Theme")
+            widget:turn_on("Settings")
         else
-            widget:turn_off("Theme")
+            widget:turn_off("Settings")
         end
     end)
 
@@ -298,7 +298,7 @@ local function new()
         {
             layout = wibox.layout.flex.horizontal,
             spacing = dpi(30),
-            theme(),
+            settings(),
             record(),
             screenshot()
         }

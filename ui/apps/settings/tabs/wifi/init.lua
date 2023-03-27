@@ -64,7 +64,7 @@ local function access_point_widget(layout, access_point)
                         {
                             widget = wibox.widget.textbox,
                             id = "placeholder_role",
-                            text = "Search: "
+                            text = "Search:"
                         },
                         {
                             widget = wibox.widget.textbox,
@@ -110,7 +110,7 @@ local function access_point_widget(layout, access_point)
         valign = "center",
         size = 12,
         color = beautiful.colors.on_surface,
-        text = "Auto Connect: "
+        text = "Auto Connect:"
     }
 
     local cancel = wibox.widget {
@@ -208,6 +208,7 @@ local function access_point_widget(layout, access_point)
                 },
                 {
                     layout = wibox.layout.fixed.horizontal,
+                    spacing = dpi(5),
                     auto_connect_text,
                     auto_connect_checkbox
                 },

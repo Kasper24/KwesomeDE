@@ -30,7 +30,7 @@ local function show_cursor()
         widget = widgets.text,
         valign = "center",
         size = 15,
-        text = "Show Cursor: "
+        text = "Show Cursor:"
     }
 
     return wibox.widget {

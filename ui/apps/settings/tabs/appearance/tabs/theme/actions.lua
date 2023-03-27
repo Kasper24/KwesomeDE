@@ -26,7 +26,7 @@ local function color_button(index)
         widget = widgets.text_input,
         unfocus_on_client_clicked = false,
         size = 12,
-        selection_bg = beautiful.icons.spraycan.color,
+        selection_bg = beautiful.icons.computer.color,
         widget_template = wibox.widget {
             widget = wibox.widget.textbox,
             id = "text_role",
@@ -77,43 +77,50 @@ local function color_button(index)
 end
 
 local function command_after_generation()
-    local title = wibox.widget {
-        widget = widgets.text,
-        size = 15,
-        text = "Command after generation: "
-    }
-
     local text_input = wibox.widget {
         widget = widgets.text_input,
-        forced_width = dpi(600),
-        unfocus_on_client_clicked = false,
+        id = "text_input_role",
+        forced_height = dpi(55),
         initial = theme_daemon:get_command_after_generation(),
-        selection_bg = beautiful.icons.spraycan.color,
+        unfocus_on_client_clicked = false,
+        selection_bg = beautiful.icons.computer.color,
         widget_template = wibox.widget {
-			widget = widgets.background,
-			shape = helpers.ui.rrect(),
-			bg = beautiful.colors.surface,
-			{
-				widget = wibox.container.margin,
-				margins = dpi(10),
-				{
-					widget = wibox.widget.textbox,
-					id = "text_role"
-				}
-			}
-		}
+            widget = widgets.background,
+            shape = helpers.ui.rrect(),
+            bg = beautiful.colors.surface,
+            {
+                widget = wibox.container.margin,
+                margins = dpi(15),
+                {
+                    layout = wibox.layout.fixed.horizontal,
+                    spacing = dpi(15),
+                    {
+                        widget = widgets.text,
+                        icon = beautiful.icons.computer,
+                        color = beautiful.icons.computer.color
+                    },
+                    {
+                        layout = wibox.layout.stack,
+                        {
+                            widget = wibox.widget.textbox,
+                            id = "placeholder_role",
+                            text = "Run:"
+                        },
+                        {
+                            widget = wibox.widget.textbox,
+                            id = "text_role"
+                        }
+                    }
+                }
+            }
+        }
     }
 
     text_input:connect_signal("property::text", function(self, text)
         theme_daemon:set_command_after_generation(text)
     end)
 
-    return wibox.widget {
-        layout = wibox.layout.fixed.horizontal,
-        forced_height = dpi(40),
-        title,
-        text_input
-    }
+    return text_input
 end
 
 local function new()
@@ -134,7 +141,7 @@ local function new()
 
     local light_dark = wibox.widget {
         widget = widgets.button.text.normal,
-        normal_bg = beautiful.icons.spraycan.color,
+        normal_bg = beautiful.icons.computer.color,
         text_normal_bg = beautiful.colors.on_accent,
         size = 15,
         text = "Light",
@@ -145,7 +152,7 @@ local function new()
 
     local reset_colorscheme = wibox.widget {
         widget = widgets.button.text.normal,
-        normal_bg = beautiful.icons.spraycan.color,
+        normal_bg = beautiful.icons.computer.color,
         text_normal_bg = beautiful.colors.on_accent,
         size = 15,
         text = "Reset Colorscheme",
@@ -156,7 +163,7 @@ local function new()
 
     local save_colorscheme = wibox.widget {
         widget = widgets.button.text.normal,
-        normal_bg = beautiful.icons.spraycan.color,
+        normal_bg = beautiful.icons.computer.color,
         text_normal_bg = beautiful.colors.on_accent,
         size = 15,
         text = "Save Colorscheme",
@@ -167,7 +174,7 @@ local function new()
 
     local set_wallpaper = wibox.widget {
         widget = widgets.button.text.normal,
-        normal_bg = beautiful.icons.spraycan.color,
+        normal_bg = beautiful.icons.computer.color,
         text_normal_bg = beautiful.colors.on_accent,
         size = 15,
         text = "Set Wallpaper",
@@ -178,7 +185,7 @@ local function new()
 
     local set_colorscheme = wibox.widget {
         widget = widgets.button.text.normal,
-        normal_bg = beautiful.icons.spraycan.color,
+        normal_bg = beautiful.icons.computer.color,
         text_normal_bg = beautiful.colors.on_accent,
         size = 15,
         text = "Set Colorscheme",
@@ -189,7 +196,7 @@ local function new()
 
     local set_both = wibox.widget {
         widget = widgets.button.text.normal,
-        normal_bg = beautiful.icons.spraycan.color,
+        normal_bg = beautiful.icons.computer.color,
         text_normal_bg = beautiful.colors.on_accent,
         size = 15,
         text = "Set Both",
@@ -202,8 +209,8 @@ local function new()
     local widget = wibox.widget {
         layout = wibox.layout.fixed.vertical,
         spacing = dpi(15),
-        command_after_generation(),
         colors,
+        command_after_generation(),
         {
             layout = wibox.layout.grid,
             spacing = dpi(10),

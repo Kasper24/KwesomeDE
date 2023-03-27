@@ -34,7 +34,7 @@ local function new()
 
     local text_input = wibox.widget {
         widget = tiwidget,
-        forced_width = dpi(410),
+        forced_width = dpi(400),
         unfocus_on_client_clicked = false,
         selection_bg = beautiful.icons.spraycan.color,
         widget_template = wibox.widget {
@@ -70,7 +70,6 @@ local function new()
 
     widget = wibox.widget {
         layout = wibox.layout.fixed.horizontal,
-        forced_height = dpi(35),
         spacing = dpi(15),
         text_input,
         set_folder_button

@@ -34,7 +34,7 @@ local function checkbox(key)
     local checkbox = wibox.widget {
         widget = widgets.checkbox,
         state = picom_daemon["get_" .. key](picom_daemon),
-        handle_active_color = beautiful.icons.spraycan.color,
+        handle_active_color = beautiful.icons.computer.color,
         on_turn_on = function()
             picom_daemon["set_" .. key](picom_daemon, true)
         end,
@@ -71,8 +71,8 @@ local function slider(key, maximum, round, minimum)
         minimum = minimum or 0,
         maximum = maximum,
         value = picom_daemon["get_" .. key](picom_daemon),
-        bar_active_color = beautiful.icons.spraycan.color,
-        selection_bg = beautiful.icons.spraycan.color
+        bar_active_color = beautiful.icons.computer.color,
+        selection_bg = beautiful.icons.computer.color
     }
 
     slider_text_input:connect_signal("property::value", function(self, value, instant)
@@ -81,7 +81,6 @@ local function slider(key, maximum, round, minimum)
 
     return wibox.widget {
         layout = wibox.layout.align.horizontal,
-        forced_height = dpi(40),
         name,
         slider_text_input
     }

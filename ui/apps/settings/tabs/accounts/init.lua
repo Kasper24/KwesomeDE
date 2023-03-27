@@ -5,10 +5,10 @@
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
-local theme_tab = require("ui.apps.settings.tabs.appearance.tabs.theme")
-local ui_tab = require("ui.apps.settings.tabs.appearance.tabs.ui")
-local compositor_tab = require("ui.apps.settings.tabs.appearance.tabs.compositor")
-local wallpaper_engine_tab = require("ui.apps.settings.tabs.appearance.tabs.wallpaper_engine")
+local email_tab = require("ui.apps.settings.tabs.accounts.tabs.email")
+local github_tab = require("ui.apps.settings.tabs.accounts.tabs.github")
+local gitlab_tab = require("ui.apps.settings.tabs.accounts.tabs.gitlab")
+local openweather_tab = require("ui.apps.settings.tabs.accounts.tabs.openweather")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 
@@ -55,24 +55,24 @@ local function new()
     navigator:set_tabs {
         {
             {
-                id = "theme",
-                button = tab_button(navigator, "theme", beautiful.icons.spraycan, "Theme"),
-                tab = theme_tab()
+                id = "email",
+                button = tab_button(navigator, "email", beautiful.icons.envelope, "Email"),
+                tab = email_tab()
             },
             {
-                id = "ui",
-                button = tab_button(navigator, "ui", beautiful.icons.spraycan, "UI"),
-                tab = ui_tab()
+                id = "github",
+                button = tab_button(navigator, "github", beautiful.icons.github, "Github"),
+                tab = github_tab()
             },
             {
-                id = "compositor",
-                button = tab_button(navigator, "compositor", beautiful.icons.spraycan, "Compositor"),
-                tab = compositor_tab()
+                id = "gitlab",
+                button = tab_button(navigator, "gitlab", beautiful.icons.gitlab, "Gitlab"),
+                tab = gitlab_tab()
             },
             {
-                id = "wallpaper_engine",
-                button = tab_button(navigator, "wallpaper_engine", beautiful.icons.spraycan, "Wallpaper Engine"),
-                tab = wallpaper_engine_tab()
+                id = "open_weather",
+                button = tab_button(navigator, "open_weather", beautiful.icons.clouds, "OpenWeather"),
+                tab = openweather_tab()
             },
         }
     }

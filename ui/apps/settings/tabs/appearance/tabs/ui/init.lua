@@ -19,7 +19,7 @@ local function checkbox(key)
     local checkbox = wibox.widget {
         widget = widgets.checkbox,
         state = theme_daemon["get_ui_" .. key](theme_daemon),
-        handle_active_color = beautiful.icons.spraycan.color,
+        handle_active_color = beautiful.icons.computer.color,
         on_turn_on = function()
             theme_daemon["set_ui_" .. key](theme_daemon, true)
         end,
@@ -51,8 +51,8 @@ local function slider(text, initial_value, maximum, round, on_changed, minimum, 
         value = initial_value,
         minimum = minimum or 0,
         maximum = maximum,
-        bar_active_color = beautiful.icons.spraycan.color,
-        selection_bg = beautiful.icons.spraycan.color
+        bar_active_color = beautiful.icons.computer.color,
+        selection_bg = beautiful.icons.computer.color
     }
 
     slider_text_input:connect_signal("property::value", function(self, value)
@@ -67,7 +67,6 @@ local function slider(text, initial_value, maximum, round, on_changed, minimum, 
 
     return wibox.widget {
         layout = wibox.layout.align.horizontal,
-        forced_height = dpi(40),
         name,
         slider_text_input
     }
@@ -107,7 +106,7 @@ local function new()
             layout = wibox.layout.fixed.vertical,
             forced_height = dpi(60),
             spacing = dpi(5),
-            slider("DPI: ", theme_daemon:get_dpi(), 250, true, function(value)
+            slider("DPI:", theme_daemon:get_dpi(), 250, true, function(value)
                 theme_daemon:set_dpi(value)
             end),
             {

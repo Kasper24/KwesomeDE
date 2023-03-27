@@ -127,7 +127,7 @@ local function widget(self)
                 {
                     widget = wibox.widget.textbox,
                     id = "placeholder_role",
-                    text = "Password: "
+                    text = "Password:"
                 },
                 {
                     widget = wibox.widget.textbox,

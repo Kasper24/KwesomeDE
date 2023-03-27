@@ -22,7 +22,7 @@ local function tab_button(navigator, id, icon, title)
     return wibox.widget {
         widget = widgets.button.elevated.state,
         halign = "left",
-        on_normal_bg = beautiful.icons.spraycan.color,
+        on_normal_bg = beautiful.icons.computer.color,
         on_release = function()
             navigator:emit_signal("tab::select", id)
             theme_daemon:set_selected_tab(id)
@@ -59,27 +59,27 @@ local function new()
         {
             {
                 id = "image",
-                button = tab_button(navigator, "image", beautiful.icons.spraycan, "Image"),
+                button = tab_button(navigator, "image", beautiful.icons.computer, "Image"),
                 tab = image_tab()
             },
             {
                 id = "mountain",
-                button = tab_button(navigator, "mountain", beautiful.icons.spraycan, "Mountain"),
+                button = tab_button(navigator, "mountain", beautiful.icons.computer, "Mountain"),
                 tab = mountain_tab()
             },
             {
                 id = "digital_sun",
-                button = tab_button(navigator, "digital_sun", beautiful.icons.spraycan, "Digital Sun"),
+                button = tab_button(navigator, "digital_sun", beautiful.icons.computer, "Digital Sun"),
                 tab = digital_sun_tab()
             },
             {
                 id = "binary",
-                button = tab_button(navigator, "binary", beautiful.icons.spraycan, "Binary"),
+                button = tab_button(navigator, "binary", beautiful.icons.computer, "Binary"),
                 tab = binary_tab()
             },
             {
                 id = "wallpaper_engine",
-                button = tab_button(navigator, "wallpaper_engine", beautiful.icons.spraycan, "Wallpaper Engine"),
+                button = tab_button(navigator, "wallpaper_engine", beautiful.icons.computer, "Wallpaper Engine"),
                 tab = wallpaper_engine_tab()
             },
         }

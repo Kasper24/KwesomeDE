@@ -1,7 +1,6 @@
 local awful = require("awful")
 local widgets = require("ui.widgets")
-local welcome_app = require("ui.apps.welcome")
-local theme_app = require("ui.apps.theme")
+local settings_app = require("ui.apps.settings")
 local action_panel = require(... .. ".panels.action")
 local info_panel = require(... .. ".panels.info")
 local notification_panel = require(... .. ".panels.notification")
@@ -32,13 +31,7 @@ require(... .. ".wibar")
 
 capi.client.connect_signal("scanned", function()
     if system_daemon:is_new_version() or system_daemon:does_need_setup() then
-        welcome_app:toggle()
-
-        welcome_app:connect_signal("visibility", function(self, visible)
-            if visible == false then
-                theme_app:toggle()
-            end
-        end)
+        settings_app:toggle()
     end
 end)
 

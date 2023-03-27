@@ -26,7 +26,7 @@ local function new(wallpapers_key, entry_template)
                 -- forced_width = dpi(800),
                 forced_height = dpi(55),
                 unfocus_on_client_clicked = false,
-                selection_bg = beautiful.icons.spraycan.color,
+                selection_bg = beautiful.icons.computer.color,
                 widget_template = wibox.widget {
                     widget = widgets.background,
                     shape = helpers.ui.rrect(),
@@ -40,14 +40,14 @@ local function new(wallpapers_key, entry_template)
                             {
                                 widget = widgets.text,
                                 icon = beautiful.icons.magnifying_glass,
-                                color = beautiful.icons.spraycan.color
+                                color = beautiful.icons.computer.color
                             },
                             {
                                 layout = wibox.layout.stack,
                                 {
                                     widget = wibox.widget.textbox,
                                     id = "placeholder_role",
-                                    text = "Search: "
+                                    text = "Search:"
                                 },
                                 {
                                     widget = wibox.widget.textbox,
