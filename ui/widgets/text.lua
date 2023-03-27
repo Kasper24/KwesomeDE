@@ -4,9 +4,8 @@
 -------------------------------------------
 local gtable = require("gears.table")
 local gstring = require("gears.string")
-local wibox = require("wibox")
+local textbox = require("wibox.widget.textbox")
 local beautiful = require("beautiful")
-local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 local tostring = tostring
@@ -135,7 +134,7 @@ function text:get_size()
 end
 
 local function new(hot_reload)
-    local widget = wibox.widget.textbox()
+    local widget = textbox()
     gtable.crush(widget, text, true)
 
     local wp = widget._private

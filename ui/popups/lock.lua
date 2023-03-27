@@ -90,14 +90,14 @@ local function widget(self)
     }
 
     local clock = wibox.widget {
-        widget = widgets.textclock,
+        widget = wibox.widget.textclock,
         format = "%H:%M",
         halign = "center",
         size = 60
     }
 
     local date = wibox.widget {
-        widget = widgets.textclock,
+        widget = wibox.widget.textclock,
         format = "%d" .. helpers.string.day_ordinal_number() .. " of %B, %A",
         halign = "center",
         size = 30

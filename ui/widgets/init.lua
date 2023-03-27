@@ -29,6 +29,5 @@ return {
     spinning_circle = require(... .. ".spinning_circle"),
     text_input = require(... .. ".text_input"),
     text = require(... .. ".text"),
-    textclock = require(... .. ".textclock"),
     titlebar = require(... .. ".titlebar"),
 }

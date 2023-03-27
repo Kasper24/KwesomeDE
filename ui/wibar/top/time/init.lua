@@ -18,7 +18,7 @@ local time = {
 
 local function new()
     local clock = wibox.widget {
-        widget = widgets.textclock,
+        widget = wibox.widget.textclock,
         format = "%d %b %H:%M",
         size = 14,
         text_normal_bg = beautiful.icons.envelope.color,

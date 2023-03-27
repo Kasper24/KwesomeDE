@@ -19,7 +19,7 @@ local calendar = {
 
 local function new()
     local hour = wibox.widget {
-        widget = widgets.textclock,
+        widget = wibox.widget.textclock,
         format = "%H",
         size = 50,
         color = beautiful.colors.on_background
@@ -56,7 +56,7 @@ local function new()
     }
 
     local minute = wibox.widget {
-        widget = widgets.textclock,
+        widget = wibox.widget.textclock,
         format = "%M",
         size = 50,
         color = beautiful.colors.on_background
@@ -75,7 +75,7 @@ local function new()
     }
 
     local date = wibox.widget {
-        widget = widgets.textclock,
+        widget = wibox.widget.textclock,
         format = "%A, %b, %d",
         halign = "center",
         size = 20,
