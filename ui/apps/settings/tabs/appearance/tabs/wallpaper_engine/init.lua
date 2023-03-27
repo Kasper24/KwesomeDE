@@ -27,6 +27,20 @@ local function slider(text, initial_value, maximum, round, on_changed, minimum, 
         selection_bg = beautiful.icons.computer.color
     }
 
+    SETTINGS_APP:connect_signal("tab::select", function()
+        slider_text_input:get_text_input():unfocus()
+    end)
+
+    SETTINGS_APP:connect_signal("visibility", function(self, visible)
+        if visible == false then
+            slider_text_input:get_text_input():unfocus()
+        end
+    end)
+
+    SETTINGS_APP:get_client():connect_signal("unfocus", function()
+        slider_text_input:get_text_input():unfocus()
+    end)
+
     slider_text_input:connect_signal("property::value", function(self, value)
         on_changed(value)
     end)

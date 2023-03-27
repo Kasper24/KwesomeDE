@@ -14,9 +14,8 @@ local text_input = {
 }
 
 local function new(icon, placeholder, initial)
-    return wibox.widget {
+    local text_input = wibox.widget {
         widget = widgets.text_input,
-        unfocus_keys = { },
         unfocus_on_client_clicked = false,
         initial = initial or "",
         selection_bg = beautiful.icons.computer.color,
@@ -51,6 +50,22 @@ local function new(icon, placeholder, initial)
             }
         }
     }
+
+    SETTINGS_APP:connect_signal("tab::select", function()
+        text_input:unfocus()
+    end)
+
+    SETTINGS_APP:connect_signal("visibility", function(self, visible)
+        if visible == false then
+            text_input:unfocus()
+        end
+    end)
+
+    SETTINGS_APP:get_client():connect_signal("unfocus", function()
+        text_input:unfocus()
+    end)
+
+    return text_input
 end
 
 function text_input.mt:__call(icon, placeholder, initial)

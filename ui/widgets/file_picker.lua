@@ -76,6 +76,10 @@ local function new()
     }
     gtable.crush(widget, file_picker, true)
 
+    function widget:get_text_input()
+		return text_input
+	end
+
     widget._private.initial_value = ""
     widget._private.text_input = text_input
     widget._private.text_changed = false

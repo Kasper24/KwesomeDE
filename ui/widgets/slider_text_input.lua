@@ -66,6 +66,10 @@ local function new(args)
         slider:set_maximum(maximum)
 	end
 
+	function widget:get_text_input()
+		return text_input
+	end
+
 	text_input:connect_signal("property::text", function(self, text)
 		local value = tonumber(text)
 

@@ -19,6 +19,7 @@ local function new(navigator, id, icon, title)
         on_normal_bg = beautiful.icons.computer.color,
         on_release = function()
             navigator:emit_signal("tab::select", id)
+            SETTINGS_APP:emit_signal("tab::select", id)
         end,
         {
             layout = wibox.layout.fixed.horizontal,

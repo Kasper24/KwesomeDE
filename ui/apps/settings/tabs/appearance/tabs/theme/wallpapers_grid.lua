@@ -94,6 +94,24 @@ local function new(wallpapers_key, entry_template)
         entry_template = entry_template
     }
 
+    SETTINGS_APP:connect_signal("tab::select", function()
+        layout:get_text_input():unfocus()
+    end)
+
+    SETTINGS_APP:connect_signal("visibility", function(self, visible)
+        if visible == false then
+            layout:get_text_input():unfocus()
+        end
+    end)
+
+    SETTINGS_APP:get_client():connect_signal("unfocus", function()
+        layout:get_text_input():unfocus()
+    end)
+
+    theme_daemon:connect_signal("tab::select", function()
+        layout:get_text_input():unfocus()
+    end)
+
     theme_daemon:connect_signal("wallpapers", function()
         layout:set_entries(theme_daemon["get_" .. wallpapers_key](theme_daemon))
         collectgarbage("collect")
