@@ -66,14 +66,14 @@ function app:toggle()
 end
 
 function app:scratchpad_toggle()
-    if self.scratchpad.rubato.x.state == false and self.scratchpad.rubato.y.state == false then
-        self.scratchpad.geometry = self.geometry
-        if self.new_animation_on_toggle then
-            local x, y = random_animation()
-            self.scratchpad.rubato.x.pos = x
-            self.scratchpad.rubato.y.pos = y
-        end
-    end
+    -- if self.scratchpad.rubato.x.state == false and self.scratchpad.rubato.y.state == false then
+    --     self.scratchpad.geometry = self.geometry
+    --     if self.new_animation_on_toggle then
+    --         local x, y = random_animation()
+    --         self.scratchpad.rubato.x.pos = x
+    --         self.scratchpad.rubato.y.pos = y
+    --     end
+    -- end
 
     self.scratchpad:toggle()
 end
@@ -109,29 +109,29 @@ function apps:new(id, key, command, class, args)
         geometry = ret.geometry,
         reapply = true,
         dont_focus_before_close = true,
-        rubato = {
-            x = helpers.animation:new{
-                easing = helpers.animation.easing.inBounce,
-                pos = ret.x,
-                duration = 1.5
-            },
-            y = helpers.animation:new{
-                easing = helpers.animation.easing.inBounce,
-                pos = ret.y,
-                duration = 1.5
-            }
-        }
+        -- rubato = {
+        --     x = helpers.animation:new{
+        --         easing = helpers.animation.easing.inBounce,
+        --         pos = ret.x,
+        --         duration = 1.5
+        --     },
+        --     y = helpers.animation:new{
+        --         easing = helpers.animation.easing.inBounce,
+        --         pos = ret.y,
+        --         duration = 1.5
+        --     }
+        -- }
     }
 
-    ret.scratchpad:connect_signal("turn_on", function()
-        ret.scratchpad.rubato.x.easing = helpers.animation.easing.inBounce
-        ret.scratchpad.rubato.y.easing = helpers.animation.easing.inBounce
-    end)
+    -- ret.scratchpad:connect_signal("turn_on", function()
+    --     ret.scratchpad.rubato.x.easing = helpers.animation.easing.inBounce
+    --     ret.scratchpad.rubato.y.easing = helpers.animation.easing.inBounce
+    -- end)
 
-    ret.scratchpad:connect_signal("turn_off", function()
-        ret.scratchpad.rubato.x.easing = helpers.animation.easing.outBounce
-        ret.scratchpad.rubato.y.easing = helpers.animation.easing.outBounce
-    end)
+    -- ret.scratchpad:connect_signal("turn_off", function()
+    --     ret.scratchpad.rubato.x.easing = helpers.animation.easing.outBounce
+    --     ret.scratchpad.rubato.y.easing = helpers.animation.easing.outBounce
+    -- end)
 
     awful.keyboard.append_global_keybindings({awful.key {
         modifiers = ret.scratchpad_modifiers,
