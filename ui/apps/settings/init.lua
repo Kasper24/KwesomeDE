@@ -17,7 +17,7 @@ local function new()
         title ="Settings",
         class = "Settings",
         width = dpi(1650),
-        height = dpi(1060),
+        height = dpi(1080),
     }
 
     local first = true
