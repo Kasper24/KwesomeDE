@@ -96,7 +96,7 @@ local function new()
     }
 
     local scrollbox = wibox.widget {
-        layout = widgets.overflow.vertical,
+        layout = wibox.layout.overflow.vertical,
         spacing = dpi(10),
         scrollbar_widget = widgets.scrollbar,
         scrollbar_width = dpi(10),

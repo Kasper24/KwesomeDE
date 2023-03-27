@@ -321,7 +321,7 @@ local function new()
         spacing = dpi(15),
         current_weather_widget,
         {
-            layout = widgets.overflow.horizontal,
+            layout = wibox.layout.overflow.horizontal,
             forced_width = dpi(500),
             scrollbar_widget = widgets.scrollbar,
             scrollbar_width = dpi(10),

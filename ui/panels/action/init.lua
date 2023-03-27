@@ -34,7 +34,7 @@ local function new()
         widget = wibox.container.margin,
         margins = dpi(25),
         {
-            layout = widgets.overflow.vertical,
+            layout = wibox.layout.overflow.vertical,
             spacing = dpi(25),
             scrollbar_widget = widgets.scrollbar,
             scrollbar_width = dpi(0),

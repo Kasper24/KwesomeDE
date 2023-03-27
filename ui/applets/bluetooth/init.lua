@@ -173,7 +173,7 @@ local function new()
     }
 
     local layout = wibox.widget {
-        layout = widgets.overflow.vertical,
+        layout = wibox.layout.overflow.vertical,
         forced_height = dpi(600),
         spacing = dpi(15),
         scrollbar_widget = widgets.scrollbar,

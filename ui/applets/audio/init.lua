@@ -251,7 +251,7 @@ local function applications()
     }
 
     local sinks_inputs_layout = wibox.widget {
-        layout = widgets.overflow.vertical,
+        layout = wibox.layout.overflow.vertical,
         forced_height = dpi(300),
         spacing = dpi(15),
         scrollbar_widget = widgets.scrollbar,
@@ -267,7 +267,7 @@ local function applications()
     }
 
     local source_outputs_layout = wibox.widget {
-        layout = widgets.overflow.vertical,
+        layout = wibox.layout.overflow.vertical,
         forced_height = dpi(300),
         spacing = dpi(15),
         scrollbar_widget = widgets.scrollbar,
@@ -337,7 +337,7 @@ local function devices()
     }
 
     local sinks_layout = wibox.widget {
-        layout = widgets.overflow.vertical,
+        layout = wibox.layout.overflow.vertical,
         forced_height = dpi(300),
         spacing = dpi(15),
         scrollbar_widget = widgets.scrollbar,
@@ -354,7 +354,7 @@ local function devices()
     }
 
     local sources_layout = wibox.widget {
-        layout = widgets.overflow.vertical,
+        layout = wibox.layout.overflow.vertical,
         forced_height = dpi(300),
         spacing = dpi(15),
         scrollbar_widget = widgets.scrollbar,

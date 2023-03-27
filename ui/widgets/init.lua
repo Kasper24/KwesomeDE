@@ -17,7 +17,6 @@ return {
     dropdown = require(... .. ".dropdown"),
     graph = require(... .. ".graph"),
     menu = require(... .. ".menu"),
-    overflow = require(... .. ".overflow"),
     playerctl = require(... .. ".playerctl"),
     piechart = require(... .. ".piechart"),
     popup = require(... .. ".popup"),

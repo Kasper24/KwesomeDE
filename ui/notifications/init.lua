@@ -228,7 +228,7 @@ local function create_notification(n, screen)
         strategy = "max",
         height = dpi(60),
         {
-            layout = widgets.overflow.vertical,
+            layout = wibox.layout.overflow.vertical,
             scrollbar_widget = widgets.scrollbar,
             scrollbar_width = dpi(10),
             scroll_speed = 3,

@@ -145,7 +145,7 @@ local function widget()
     }
 
     local cores_layout = wibox.widget {
-        layout = widgets.overflow.vertical,
+        layout = wibox.layout.overflow.vertical,
         forced_height = dpi(300),
         spacing = dpi(15),
         scrollbar_widget = widgets.scrollbar,
@@ -190,7 +190,7 @@ local function widget()
     }
 
     local processes_layout = wibox.widget {
-        layout = widgets.overflow.vertical,
+        layout = wibox.layout.overflow.vertical,
         forced_height = dpi(300),
         spacing = dpi(15),
         scrollbar_widget = widgets.scrollbar,
