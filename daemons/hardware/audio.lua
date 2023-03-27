@@ -283,9 +283,9 @@ local function new()
                     elseif line:match("Event 'remove' on source #") then
                         local id = line:match("Event 'remove' on source #(.*)")
                         on_object_removed(ret, "sources", id)
-                        ---------------------------------------------------------------------------------------------------------
-                        -- Applications
-                        ---------------------------------------------------------------------------------------------------------
+                    ---------------------------------------------------------------------------------------------------------
+                    -- Applications
+                    ---------------------------------------------------------------------------------------------------------
                     elseif line:match("Event 'new' on sink%-input #") or
                         line:match("Event 'new' on source%-input #") then
                         get_applications(ret)
