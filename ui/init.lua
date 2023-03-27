@@ -247,6 +247,6 @@ if DEBUG ~= true and helpers.misc.is_restart() == false then
     if theme_daemon:get_ui_show_lockscreen_on_login() then
         lock_popup:show()
     else
-        require(... .. ".popups.loading")
+        require(... .. ".screens.loading")
     end
 end
