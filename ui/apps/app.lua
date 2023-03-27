@@ -16,6 +16,7 @@ local capi = {
 local app = {
     mt = {}
 }
+
 function app:show()
     helpers.client.run_or_raise({
         class = self._private.class
@@ -56,6 +57,14 @@ function app:set_widget(widget)
             widget = widget
         }
     end
+end
+
+function app:set_width(width)
+    self._private.width = width
+end
+
+function app:set_height(height)
+    self._private.height = height
 end
 
 local function new(args)
@@ -101,20 +110,22 @@ local function new(args)
             },
             properties = {
                 floating = true,
-                width = ret._private.width,
                 height = 1,
                 placement = awful.placement.centered
             },
             callback = function(c)
                 ret._private.client = c
+                ret:emit_signal("init")
 
                 c:connect_signal("unmanage", function()
                     ret._private.visible = false
                     ret._private.client = nil
                 end)
 
+                c.width = ret._private.width
+
                 c.custom_titlebar = true
-                c.can_resize = false
+                --c.can_resize = false
                 c.can_tile = false
 
                 -- Settings placement in properties doesn't work

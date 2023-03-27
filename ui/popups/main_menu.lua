@@ -13,6 +13,7 @@ local record_app = require("ui.apps.record")
 local hotkeys_popup = require("ui.popups.hotkeys")
 local power_popup = require("ui.screens.power")
 local theme_app = require("ui.apps.theme")
+local settings_app = require("ui.apps.settings")
 local beautiful = require("beautiful")
 local helpers = require("helpers")
 local ipairs = ipairs
@@ -189,7 +190,7 @@ local function widget()
             icon = beautiful.icons.gear,
             text = "Settings",
             on_release = function()
-                helpers.settings:open_setting_file()
+                settings_app:show()
             end
         },
         widgets.menu.button {
