@@ -15,6 +15,7 @@ return {
     client_menu = require(... .. ".client_menu"),
     client_thumbnail = require(... .. ".client_thumbnail"),
     dropdown = require(... .. ".dropdown"),
+    file_picker = require(... .. ".file_picker"),
     folder_picker = require(... .. ".folder_picker"),
     menu = require(... .. ".menu"),
     playerctl = require(... .. ".playerctl"),

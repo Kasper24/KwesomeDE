@@ -72,7 +72,7 @@ local function slider(text, initial_value, maximum, round, on_changed, minimum, 
     }
 end
 
-local function folder_picker(title, initial_value, on_changed)
+local function file_picker(title, initial_value, on_changed)
     return wibox.widget {
         layout = wibox.layout.align.horizontal,
         {
@@ -82,7 +82,7 @@ local function folder_picker(title, initial_value, on_changed)
             text = title,
         },
         {
-            widget = widgets.folder_picker,
+            widget = widgets.file_picker,
             forced_width = dpi(400),
             initial_value = initial_value,
             on_changed = function(text)
@@ -99,7 +99,7 @@ local function new()
         scrollbar_width = dpi(10),
         step = 50,
         spacing = dpi(15),
-        folder_picker("Profile image:", theme_daemon:get_profile_image(), function(text)
+        file_picker("Profile image:", theme_daemon:get_profile_image(), function(text)
             theme_daemon:set_profile_image(text)
         end),
         {
