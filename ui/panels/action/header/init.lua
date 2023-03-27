@@ -4,7 +4,7 @@
 -------------------------------------------
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
-local power_popup = require("ui.popups.power")
+local power_popup = require("ui.screens.power")
 local beautiful = require("beautiful")
 local upower_daemon = require("daemons.hardware.upower")
 local system_daemon = require("daemons.system.system")
