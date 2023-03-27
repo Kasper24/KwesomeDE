@@ -16,8 +16,6 @@ local text_input = {
 local function new(icon, placeholder, initial)
     return wibox.widget {
         widget = widgets.text_input,
-        forced_width = dpi(300),
-        forced_height = dpi(60),
         unfocus_keys = { },
         unfocus_on_client_clicked = false,
         initial = initial or "",
