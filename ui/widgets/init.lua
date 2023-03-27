@@ -15,7 +15,6 @@ return {
     client_menu = require(... .. ".client_menu"),
     client_thumbnail = require(... .. ".client_thumbnail"),
     dropdown = require(... .. ".dropdown"),
-    graph = require(... .. ".graph"),
     menu = require(... .. ".menu"),
     playerctl = require(... .. ".playerctl"),
     piechart = require(... .. ".piechart"),
