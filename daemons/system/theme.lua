@@ -746,10 +746,10 @@ local function on_wallpapers_updated(self)
         self:set_selected_colorscheme(self:get_wallpapers_and_we_wallpapers()[1].path, "binary")
     end
     if gtable.count_keys(self:get_we_wallpapers()) > 0 then
-        self:set_selected_colorscheme(self:get_we_wallpapers()[1].path, "we")
+        self:set_selected_colorscheme(self:get_we_wallpapers()[1].path, "wallpaper_engine")
     end
 
-    self:emit_signal("wallpapers")
+    self:emit_signal("wallpapers", self:get_wallpapers(), self:get_wallpapers_and_we_wallpapers(), self:get_we_wallpapers())
 end
 
 local function scan_wallpapers(self)
@@ -1308,7 +1308,7 @@ local function new()
     ret._private.mountain = {}
     ret._private.digital_sun = {}
     ret._private.binary = {}
-    ret._private.we = {}
+    ret._private.wallpaper_engine = {}
 
     gtimer.delayed_call(function()
         ret:set_client_gap(ret:get_client_gap(), false)

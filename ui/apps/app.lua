@@ -125,7 +125,7 @@ local function new(args)
                 c.width = ret._private.width
 
                 c.custom_titlebar = true
-                --c.can_resize = false
+                c.can_resize = false
                 c.can_tile = false
 
                 -- Settings placement in properties doesn't work

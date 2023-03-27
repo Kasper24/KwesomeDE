@@ -13,31 +13,28 @@ local path = ...
 local main = require(path .. ".main")
 
 local function new()
-    local app = app {
+    SETTINGS_APP = app {
         title ="Settings",
         class = "Settings",
+        width = dpi(1650),
+        height = dpi(1060),
     }
 
-    app:connect_signal("init", function(self, visible)
-        app:set_width(app:get_client().screen.geometry.width * 0.9)
-        app:set_height(app:get_client().screen.geometry.height * 0.9)
-    end)
-
     local first = true
-    app:connect_signal("visibility", function(self, visible)
+    SETTINGS_APP:connect_signal("visibility", function(self, visible)
         if visible == true and first == true then
             local widget = wibox.widget {
                 widget = wibox.container.margin,
                 margins = dpi(15),
-                main(app)
+                main(SETTINGS_APP)
             }
 
-            app:set_widget(widget)
+            SETTINGS_APP:set_widget(widget)
             first = false
         end
     end)
 
-    return app
+    return SETTINGS_APP
 end
 
 if not instance then
