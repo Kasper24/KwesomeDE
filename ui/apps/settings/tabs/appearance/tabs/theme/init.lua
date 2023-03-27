@@ -5,6 +5,7 @@
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
+local tab_button = require("ui.apps.settings.tab_button")
 local image_tab = require("ui.apps.settings.tabs.appearance.tabs.theme.tabs.image")
 local mountain_tab = require("ui.apps.settings.tabs.appearance.tabs.theme.tabs.mountain")
 local digital_sun_tab = require("ui.apps.settings.tabs.appearance.tabs.theme.tabs.digital_sun")
@@ -17,38 +18,6 @@ local setmetatable = setmetatable
 local theme = {
     mt = {}
 }
-
-local function tab_button(navigator, id, icon, title)
-    return wibox.widget {
-        widget = widgets.button.elevated.state,
-        halign = "left",
-        on_normal_bg = beautiful.icons.computer.color,
-        on_release = function()
-            navigator:emit_signal("tab::select", id)
-            theme_daemon:set_selected_tab(id)
-        end,
-        {
-            layout = wibox.layout.fixed.horizontal,
-            spacing = dpi(15),
-            {
-                widget = widgets.text,
-                size = 13,
-                halign = "left",
-                text_normal_bg = beautiful.colors.on_background,
-                text_on_normal_bg = beautiful.colors.on_accent,
-                icon = icon,
-            },
-            {
-                widget = widgets.text,
-                size = 13,
-                halign = "left",
-                text_normal_bg = beautiful.colors.on_background,
-                text_on_normal_bg = beautiful.colors.on_accent,
-                text = title,
-            }
-        }
-    }
-end
 
 local function new()
     local navigator = wibox.widget {
