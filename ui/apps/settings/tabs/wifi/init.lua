@@ -355,8 +355,8 @@ local function new()
     }
 end
 
-function wifi.mt:__call(self, layout)
-    return new(self, layout)
+function wifi.mt:__call()
+    return new()
 end
 
 return setmetatable(wifi, wifi.mt)
