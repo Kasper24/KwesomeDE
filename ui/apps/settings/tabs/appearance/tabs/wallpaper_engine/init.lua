@@ -41,6 +41,10 @@ local function slider(text, initial_value, maximum, round, on_changed, minimum, 
         slider_text_input:get_text_input():unfocus()
     end)
 
+    SETTINGS_APP:get_client():connect_signal("mouse::leave", function()
+        slider_text_input:get_text_input():unfocus()
+    end)
+
     slider_text_input:connect_signal("property::value", function(self, value)
         on_changed(value)
     end)

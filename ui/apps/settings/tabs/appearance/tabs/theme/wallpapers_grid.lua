@@ -108,6 +108,10 @@ local function new(wallpapers_key, entry_template)
         layout:get_text_input():unfocus()
     end)
 
+    SETTINGS_APP:get_client():connect_signal("mouse::leave", function()
+        layout:get_text_input():unfocus()
+    end)
+
     theme_daemon:connect_signal("tab::select", function()
         layout:get_text_input():unfocus()
     end)

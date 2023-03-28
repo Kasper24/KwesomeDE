@@ -61,6 +61,10 @@ local function new(icon, placeholder, initial)
         end
     end)
 
+    SETTINGS_APP:get_client():connect_signal("mouse::leave", function()
+        text_input:unfocus()
+    end)
+
     SETTINGS_APP:get_client():connect_signal("unfocus", function()
         text_input:unfocus()
     end)
