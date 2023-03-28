@@ -915,8 +915,6 @@ function theme:set_wallpaper(wallpaper, type)
         we_error_handler(self)
     end
 
-    print(type)
-
     for s in capi.screen do
         local wallpaper_engine_instances = helpers.client.find({class = "linux-wallpaperengine", screen =  s})
         for _, wallpaper_engine_instance in ipairs(wallpaper_engine_instances) do
