@@ -30,6 +30,10 @@ function bluetooth:open_settings()
 end
 
 function bluetooth:scan()
+    if self._private.adapter_proxy == nil then
+        return
+    end
+
     self._private.adapter_proxy:StartDiscovery()
 end
 
