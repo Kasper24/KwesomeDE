@@ -72,7 +72,8 @@ local function folder_picker(title, initial_value, on_changed)
             text = title,
         },
         {
-            widget = widgets.folder_picker,
+            widget = widgets.picker,
+            type = "folder",
             initial_value = initial_value,
             on_changed = function(text)
                 on_changed(text)

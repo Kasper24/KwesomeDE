@@ -92,7 +92,8 @@ end
 
 local function file_picker(title, initial_value, on_changed)
     local file_picker = wibox.widget {
-        widget = widgets.file_picker,
+        widget = widgets.picker,
+        type = "file",
         forced_width = dpi(400),
         initial_value = initial_value,
         on_changed = function(text)

@@ -19,6 +19,7 @@ local folder_picker = {
 }
 
 local FOLDER_PICKER_SCRIPT_PATH = filesystem.filesystem.get_awesome_config_dir("scripts") .. "folder-picker.lua"
+local FILE_PICKER_SCRIPT_PATH = filesystem.filesystem.get_awesome_config_dir("scripts") .. "file-picker.lua"
 
 function folder_picker:set_initial_value(initial_value)
     self._private.initial_value = initial_value
@@ -29,12 +30,15 @@ function folder_picker:set_on_changed(on_changed)
     self._private.on_changed = on_changed
 end
 
+function folder_picker:set_type(type)
+    self._private.type = type
+end
+
 local function new()
     local widget = nil
 
     local text_input = wibox.widget {
         widget = tiwidget,
-        forced_width = dpi(400),
         unfocus_on_client_clicked = false,
         selection_bg = beautiful.icons.spraycan.color,
         widget_template = wibox.widget {
@@ -53,27 +57,34 @@ local function new()
     }
 
     local set_folder_button = wibox.widget {
-        widget = tbwidget.normal,
-        size = 15,
-        text_normal_bg = beautiful.colors.on_background,
-        text = "...",
-        on_release = function()
-            awful.spawn.easy_async(FOLDER_PICKER_SCRIPT_PATH .. " '" .. widget._private.initial_value .. "'", function(stdout)
-                stdout = helpers.string.trim(stdout)
-                if stdout ~= "" and stdout ~= nil then
-                    widget._private.on_changed(stdout)
-                    text_input:set_text(stdout)
-                end
-            end)
-        end
+        widget = wibox.container.margin,
+        margins = { left = dpi(15) },
+        {
+            widget = tbwidget.normal,
+            size = 15,
+            text_normal_bg = beautiful.colors.on_background,
+            icon = beautiful.icons.folder_open,
+            on_release = function()
+                local script = widget._private.type == "file" and FILE_PICKER_SCRIPT_PATH or FOLDER_PICKER_SCRIPT_PATH
+
+                awful.spawn.easy_async(script .. " '" .. widget._private.initial_value .. "'", function(stdout)
+                    stdout = helpers.string.trim(stdout)
+                    if stdout ~= "" and stdout ~= nil then
+                        widget._private.on_changed(stdout)
+                        text_input:set_text(stdout)
+                    end
+                end)
+            end
+        }
     }
 
     widget = wibox.widget {
-        layout = wibox.layout.fixed.horizontal,
-        spacing = dpi(15),
+        layout = wibox.layout.ratio.horizontal,
         text_input,
         set_folder_button
     }
+    widget:set_ratio(1, 0.93)
+
     gtable.crush(widget, folder_picker, true)
 
 	function widget:get_text_input()
@@ -98,6 +109,7 @@ local function new()
     return widget
 
 end
+
 function folder_picker.mt:__call()
     return new()
 end
