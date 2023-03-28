@@ -125,47 +125,49 @@ local function new()
         path = "/"
     }
 
-    ret._private.adapter_proxy = dbus_proxy.Proxy:new{
-        bus = dbus_proxy.Bus.SYSTEM,
-        name = "org.bluez",
-        interface = "org.bluez.Adapter1",
-        path = "/org/bluez/hci0"
-    }
+    if ret._private.object_manager_proxy then
+        ret._private.adapter_proxy = dbus_proxy.Proxy:new{
+            bus = dbus_proxy.Bus.SYSTEM,
+            name = "org.bluez",
+            interface = "org.bluez.Adapter1",
+            path = "/org/bluez/hci0"
+        }
 
-    ret._private.adapter_proxy_properties = dbus_proxy.Proxy:new{
-        bus = dbus_proxy.Bus.SYSTEM,
-        name = "org.bluez",
-        interface = "org.freedesktop.DBus.Properties",
-        path = "/org/bluez/hci0"
-    }
+        ret._private.adapter_proxy_properties = dbus_proxy.Proxy:new{
+            bus = dbus_proxy.Bus.SYSTEM,
+            name = "org.bluez",
+            interface = "org.freedesktop.DBus.Properties",
+            path = "/org/bluez/hci0"
+        }
 
-    ret._private.object_manager_proxy:connect_signal("InterfacesAdded", function(self, interface, data)
-        get_device_info(ret, interface)
-    end)
+        ret._private.object_manager_proxy:connect_signal("InterfacesAdded", function(self, interface, data)
+            get_device_info(ret, interface)
+        end)
 
-    ret._private.object_manager_proxy:connect_signal("InterfacesRemoved", function(self, interface, data)
-        if interface ~= nil then
-            ret:emit_signal(interface .. "_removed")
-        end
-    end)
-
-    ret._private.adapter_proxy_properties:connect_signal("PropertiesChanged", function(self, interface, data)
-        if data.Powered ~= nil then
-            ret:emit_signal("state", data.Powered)
-
-            if data.Powered == true then
-                ret:scan()
+        ret._private.object_manager_proxy:connect_signal("InterfacesRemoved", function(self, interface, data)
+            if interface ~= nil then
+                ret:emit_signal(interface .. "_removed")
             end
-        end
-    end)
+        end)
 
-    gtimer.delayed_call(function()
-        local objects = ret._private.object_manager_proxy:GetManagedObjects()
-        for object_path, _ in pairs(objects) do
-            get_device_info(ret, object_path)
-        end
-        ret:emit_signal("state", ret._private.adapter_proxy.Powered)
-    end)
+        ret._private.adapter_proxy_properties:connect_signal("PropertiesChanged", function(self, interface, data)
+            if data.Powered ~= nil then
+                ret:emit_signal("state", data.Powered)
+
+                if data.Powered == true then
+                    ret:scan()
+                end
+            end
+        end)
+
+        gtimer.delayed_call(function()
+            local objects = ret._private.object_manager_proxy:GetManagedObjects()
+            for object_path, _ in pairs(objects) do
+                get_device_info(ret, object_path)
+            end
+            ret:emit_signal("state", ret._private.adapter_proxy.Powered)
+        end)
+    end
 
     return ret
 end
