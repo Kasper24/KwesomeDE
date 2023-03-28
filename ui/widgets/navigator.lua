@@ -74,33 +74,6 @@ local function new()
         end
     end)
 
-    widget:set_widget_template(wibox.widget {
-        layout = wibox.layout.fixed.horizontal,
-        fill_space = true,
-        spacing = dpi(15),
-        {
-            layout = wibox.layout.overflow.vertical,
-            forced_width = dpi(250),
-            forced_height = math.huge,
-            scrollbar_widget = sbwidget,
-            scrollbar_width = dpi(10),
-            step = 50,
-            id = "tabs_buttons",
-            spacing = dpi(15),
-        },
-        {
-            widget = bwidget,
-            forced_width = dpi(1),
-            shape = helpers.ui.rrect(),
-            bg = beautiful.colors.surface
-        },
-        {
-            layout = wibox.layout.stack,
-            id = "tabs_stack",
-            top_only = true,
-        }
-    })
-
     return widget
 end
 
