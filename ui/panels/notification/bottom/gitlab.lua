@@ -9,6 +9,7 @@ local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
 local gitlab_daemon = require("daemons.web.gitlab")
 local helpers = require("helpers")
+local filesystem = require("external.filesystem")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 local ipairs = ipairs
