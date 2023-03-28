@@ -85,8 +85,8 @@ function navigator.horizontal()
         spacing = dpi(15),
         {
             layout = wibox.layout.overflow.horizontal,
-            forced_width = dpi(250),
-            forced_height = math.huge,
+            forced_width = math.huge,
+            forced_height = dpi(100),
             scrollbar_widget = sbwidget,
             scrollbar_width = dpi(10),
             step = 50,
