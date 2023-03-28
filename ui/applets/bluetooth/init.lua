@@ -218,7 +218,7 @@ local function new()
         end
     end)
 
-    return widgets.animated_panel {
+    local widget = widgets.animated_panel {
         ontop = true,
         visible = false,
         minimum_width = dpi(600),
@@ -255,6 +255,14 @@ local function new()
             }
         }
     }
+
+    widget:connect_signal("visibility", function(self, visible)
+        if visible then
+            bluetooth_daemon:scan()
+        end
+    end)
+
+    return widget
 end
 
 if not instance then

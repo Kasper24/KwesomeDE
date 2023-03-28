@@ -438,7 +438,6 @@ local function new()
     end)
 
     get_wifi_proxy(ret)
-    ret:scan_access_points()
 
     gtimer.delayed_call(function()
         ret:emit_signal("wireless_state", ret._private.client_proxy.WirelessEnabled)

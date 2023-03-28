@@ -8,8 +8,11 @@ local app = require("ui.apps.app")
 local beautiful = require("beautiful")
 local tab_button = require("ui.apps.settings.tab_button")
 local wifi_tab = require("ui.apps.settings.tabs.wifi")
+local bluetooth_tab = require("ui.apps.settings.tabs.bluetooth")
 local accounts_tab = require("ui.apps.settings.tabs.accounts")
 local appearance_tab = require("ui.apps.settings.tabs.appearance")
+local network_daemon = require("daemons.hardware.network")
+local bluetooth_daemon = require("daemons.hardware.bluetooth")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local capi = {
@@ -65,13 +68,17 @@ local function main()
         {
             {
                 id = "wifi",
-                button = tab_button(navigator, "wifi", beautiful.icons.network.wifi_high, "Wi-Fi"),
+                button = tab_button(navigator, "wifi", beautiful.icons.network.wifi_high, "Wi-Fi", function()
+                    network_daemon:scan_access_points()
+                end),
                 tab = wifi_tab()
             },
             {
                 id = "bluetooth",
-                button = tab_button(navigator, "bluetooth", beautiful.icons.bluetooth.on, "Bluetooth"),
-                tab = wifi_tab()
+                button = tab_button(navigator, "bluetooth", beautiful.icons.bluetooth.on, "Bluetooth", function()
+                    bluetooth_daemon:scan()
+                end),
+                tab = bluetooth_tab()
             },
         },
         {
