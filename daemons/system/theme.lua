@@ -911,9 +911,11 @@ function theme:set_wallpaper(wallpaper, type)
     self._private.wallpaper_type = type
     helpers.settings["theme-wallpaper-type"] = type
 
-    if type == "we" then
+    if type == "wallpaper_engine" then
         we_error_handler(self)
     end
+
+    print(type)
 
     for s in capi.screen do
         local wallpaper_engine_instances = helpers.client.find({class = "linux-wallpaperengine", screen =  s})
@@ -929,12 +931,12 @@ function theme:set_wallpaper(wallpaper, type)
             digital_sun_wallpaper(self, s)
         elseif self:get_wallpaper_type() == "binary" then
             binary_wallpaper(self, s)
-        elseif self:get_wallpaper_type() == "we" then
+        elseif self:get_wallpaper_type() == "wallpaper_engine" then
             we_wallpaper(self, s)
         end
     end
 
-    if self:get_wallpaper_type() ~= "we" then
+    if self:get_wallpaper_type() ~= "wallpaper_engine" then
         wibox.widget.draw_to_svg_file(
             self._private.wallpaper_widget,
             BACKGROUND_PATH,
@@ -1286,8 +1288,8 @@ function theme:set_wallpaper_engine_fps(wallpaper_engine_fps)
     self._private.wallpaper_engine_fps = wallpaper_engine_fps
     helpers.settings["theme-we-fps"] = wallpaper_engine_fps
 
-    if #helpers.client.find({class = "linux-wallpaperengine"}) > 0 and self:get_wallpaper_type() == "we" then
-        self:set_wallpaper(self:get_active_wallpaper(), "we")
+    if #helpers.client.find({class = "linux-wallpaperengine"}) > 0 and self:get_wallpaper_type() == "wallpaper_engine" then
+        self:set_wallpaper(self:get_active_wallpaper(), "wallpaper_engine")
     end
 end
 
@@ -1314,7 +1316,7 @@ local function new()
         ret:set_client_gap(ret:get_client_gap(), false)
         ret:set_ui_animations(ret:get_ui_animations())
         ret:set_ui_animations_framerate(ret:get_ui_animations_framerate())
-        if #helpers.client.find({class = "linux-wallpaperengine"}) > 0 and ret:get_wallpaper_type() == "we" then
+        if #helpers.client.find({class = "linux-wallpaperengine"}) > 0 and ret:get_wallpaper_type() == "wallpaper_engine" then
             return
         end
         ret:set_wallpaper(ret:get_active_wallpaper(), ret:get_wallpaper_type())
