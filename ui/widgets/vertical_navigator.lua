@@ -46,6 +46,10 @@ function vertical_navigator:get_tabs()
     return self._private.tabs
 end
 
+function vertical_navigator:set_buttons_header(header)
+    self._private.tabs_buttons:insert(1, header)
+end
+
 local function new()
     local widget = wibox.widget {
         layout = wibox.layout.fixed.horizontal,

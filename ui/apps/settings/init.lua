@@ -10,45 +10,13 @@ local tab_button = require("ui.apps.settings.tab_button")
 local wifi_tab = require("ui.apps.settings.tabs.wifi")
 local accounts_tab = require("ui.apps.settings.tabs.accounts")
 local appearance_tab = require("ui.apps.settings.tabs.appearance")
+local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
+local capi = {
+    awesome = awesome
+}
 
 local instance = nil
-
-local function tabs()
-    -- local picture = wibox.widget {
-    --     widget = widgets.profile,
-    --     forced_height = dpi(50),
-    --     forced_width = dpi(50),
-    --     valign = "center",
-    --     clip_shape = helpers.ui.rrect(),
-    -- }
-
-    -- local name = wibox.widget {
-    --     widget = widgets.text,
-    --     size = 15,
-    --     italic = true,
-    --     text = os.getenv("USER") .. "@" .. capi.awesome.hostname
-    -- }
-
-    -- local user = wibox.widget {
-    --     layout = wibox.layout.fixed.horizontal,
-    --     spacing = dpi(15),
-    --     picture,
-    --     name
-    -- }
-
-    -- local navbar = wibox.widget {
-    --     widget = wibox.container.constraint,
-    --     mode = "max",
-    --     width = dpi(300),
-    --     {
-    --         layout = wibox.layout.fixed.vertical,
-    --         spacing = dpi(30),
-    --         user,
-    --         tab_buttons
-    --     }
-    -- }
-end
 
 local function main()
     local title = wibox.widget {
@@ -70,8 +38,27 @@ local function main()
         end
     }
 
+    local user = wibox.widget {
+        layout = wibox.layout.fixed.horizontal,
+        spacing = dpi(15),
+        {
+            widget = widgets.profile,
+            forced_height = dpi(50),
+            forced_width = dpi(50),
+            valign = "center",
+            clip_shape = helpers.ui.rrect(),
+        },
+        {
+            widget = widgets.text,
+            size = 15,
+            italic = true,
+            text = os.getenv("USER") .. "@" .. capi.awesome.hostname
+        }
+    }
+
     local navigator = wibox.widget {
         widget = widgets.vertical_navigator,
+        buttons_header = user
     }
 
     navigator:set_tabs {
