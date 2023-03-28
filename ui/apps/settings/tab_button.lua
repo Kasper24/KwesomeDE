@@ -12,17 +12,14 @@ local tab_button = {
     mt = {}
 }
 
-local function new(navigator, id, icon, title, on_release)
-    return wibox.widget {
+local function new(navigator, id, icon, title, on_turn_on)
+    local widget = wibox.widget {
         widget = widgets.button.elevated.state,
         halign = "left",
         on_normal_bg = beautiful.icons.computer.color,
-        on_release = function()
+        on_release = function(self)
             navigator:emit_signal("tab::select", id)
             SETTINGS_APP:emit_signal("tab::select", id)
-            if on_release then
-                on_release()
-            end
         end,
         {
             layout = wibox.layout.fixed.horizontal,
@@ -46,10 +43,17 @@ local function new(navigator, id, icon, title, on_release)
         }
     }
 
+    if on_turn_on then
+        widget:connect_signal("turn_on", function()
+            on_turn_on()
+        end)
+    end
+
+    return widget
 end
 
-function tab_button.mt:__call(navigator, id, icon, title, on_release)
-    return new(navigator, id, icon, title, on_release)
+function tab_button.mt:__call(navigator, id, icon, title, on_turn_on)
+    return new(navigator, id, icon, title, on_turn_on)
 end
 
 return setmetatable(tab_button, tab_button.mt)

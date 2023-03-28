@@ -50,6 +50,7 @@ function elevated_button_state:turn_on(instant)
     local wp = self._private
     wp.state = true
     self:effect(instant)
+    self:emit_signal("turn_on")
 end
 
 function elevated_button_state:turn_off(instant)
