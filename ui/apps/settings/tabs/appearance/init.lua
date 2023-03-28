@@ -19,7 +19,7 @@ local theme = {
 
 local function new()
     local navigator = wibox.widget {
-        widget = widgets.vertical_navigator
+        widget = widgets.navigator.vertical
     }
 
     navigator:set_tabs {

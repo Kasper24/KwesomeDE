@@ -60,7 +60,7 @@ local function main()
     }
 
     local navigator = wibox.widget {
-        widget = widgets.vertical_navigator,
+        widget = widgets.navigator.vertical,
         buttons_header = user
     }
 

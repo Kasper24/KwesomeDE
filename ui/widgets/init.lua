@@ -16,6 +16,7 @@ return {
     client_thumbnail = require(... .. ".client_thumbnail"),
     dropdown = require(... .. ".dropdown"),
     menu = require(... .. ".menu"),
+    navigator = require(... .. ".navigator"),
     picker = require(... .. ".picker"),
     playerctl = require(... .. ".playerctl"),
     popup = require(... .. ".popup"),
@@ -30,5 +31,4 @@ return {
     text_input = require(... .. ".text_input"),
     text = require(... .. ".text"),
     titlebar = require(... .. ".titlebar"),
-    vertical_navigator = require(... .. ".vertical_navigator"),
 }
