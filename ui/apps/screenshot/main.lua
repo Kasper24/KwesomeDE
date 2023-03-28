@@ -93,6 +93,7 @@ local function new(self, layout)
         widget = widgets.text,
         bold = true,
         size = 15,
+        valign = "top",
         text = "Screenshot"
     }
 

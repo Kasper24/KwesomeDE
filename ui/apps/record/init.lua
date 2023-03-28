@@ -225,6 +225,7 @@ local function widget(self)
         widget = widgets.text,
         bold = true,
         size = 15,
+        valign = "top",
         text = "Record"
     }
 

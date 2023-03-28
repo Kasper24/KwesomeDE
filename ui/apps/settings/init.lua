@@ -55,6 +55,7 @@ local function main()
         widget = widgets.text,
         bold = true,
         size = 15,
+        valign = "top",
         text = "Settings"
     }
 
