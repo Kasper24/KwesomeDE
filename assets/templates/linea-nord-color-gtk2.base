@@ -2,8 +2,8 @@ copy_to=~/.local/share/themes/linea-nord-color/gtk-2.0/gtkrc
 copy_to=~/.themes/linea-nord-color/gtk-2.0/gtkrc
 
 gtk_color_scheme = "fg_color:{color7}
-bg_color:{color0}
-base_color:{color8}
+bg_color:{color8}
+base_color:{color0}
 text_color:{color15}
 selected_bg_color:{color14}
 selected_fg_color:{color15}
