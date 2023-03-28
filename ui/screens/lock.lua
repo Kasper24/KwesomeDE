@@ -137,9 +137,9 @@ local function widget(self)
         }
     }
 
-    self._private.text_input:connect_signal("key::press", function(self, mod, key, text)
+    self._private.text_input:connect_signal("key::press", function(self, mod, key, event)
         if key == "Return" then
-            system_daemon:unlock(text)
+            system_daemon:unlock(self:get_text())
         end
     end)
 
