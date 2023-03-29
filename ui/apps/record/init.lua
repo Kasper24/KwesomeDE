@@ -8,10 +8,28 @@ local beautiful = require("beautiful")
 local record_daemon = require("daemons.system.record")
 local audio_daemon = require("daemons.hardware.audio")
 local app = require("ui.apps.app")
+local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local pairs = pairs
 
 local instance = nil
+
+local function separator()
+    return wibox.widget {
+        widget = widgets.background,
+        forced_height = dpi(2),
+        shape = helpers.ui.rrect(),
+        bg = beautiful.colors.surface,
+    }
+end
+
+local function setting_container(widget)
+    return wibox.widget {
+        widget = wibox.container.margin,
+        margins = dpi(15),
+        widget
+    }
+end
 
 local function resolution()
     local title = wibox.widget {
@@ -148,46 +166,27 @@ local function audio_source()
     }
 end
 
-local function folder()
+local function folder_picker()
     local title = wibox.widget {
         widget = widgets.text,
         size = 15,
         text = "Folder:"
     }
 
-    local folder_text_input = wibox.widget {
-        widget = widgets.text_input,
-        forced_width = dpi(350),
-        unfocus_on_client_clicked = false,
-        initial = record_daemon:get_folder(),
-        selection_bg = beautiful.icons.video.color,
-    }
-
-    folder_text_input:connect_signal("property::text", function(self, text)
-        record_daemon:set_folder(text)
-    end)
-
-    local set_folder_button = wibox.widget {
-        widget = widgets.button.text.normal,
-        size = 15,
-        text_normal_bg = beautiful.colors.on_background,
-        text = "...",
-        on_release = function()
-            record_daemon:set_folder()
+    local file_picker = wibox.widget {
+        widget = widgets.picker,
+        type = "file",
+        initial_value = record_daemon:get_folder(),
+        on_changed = function(text)
+            record_daemon:set_folder(text)
         end
     }
 
-    record_daemon:connect_signal("folder::updated", function(self, folder)
-        folder_text_input:set_text(folder)
-    end)
-
     return wibox.widget {
         layout = wibox.layout.fixed.horizontal,
-        forced_height = dpi(35),
         spacing = dpi(15),
         title,
-        folder_text_input,
-        set_folder_button
+        file_picker
     }
 end
 
@@ -244,14 +243,25 @@ local function main()
         layout = wibox.layout.fixed.vertical,
         spacing = dpi(15),
         {
-            widget = wibox.layout.fixed.vertical,
-            spacing = dpi(15),
-            resolution(),
-            fps(),
-            delay(),
-            audio_source(),
-            format(),
-            folder()
+            widget = widgets.background,
+            shape = helpers.ui.rrect(),
+            bg = beautiful.colors.background,
+            border_width = dpi(2),
+            border_color = beautiful.colors.surface,
+            {
+                widget = wibox.layout.fixed.vertical,
+                setting_container(resolution()),
+                separator(),
+                setting_container(fps()),
+                separator(),
+                setting_container(delay()),
+                separator(),
+                setting_container(audio_source()),
+                separator(),
+                setting_container(format()),
+                separator(),
+                setting_container(folder_picker())
+            }
         },
         record_button
     }
@@ -262,7 +272,7 @@ local function new()
         title ="Recorder",
         class = "Recorder",
         width = dpi(550),
-        height = dpi(400),
+        height = dpi(520),
         show_titlebar = true,
         widget_fn = function()
             return main()
