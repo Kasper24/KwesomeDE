@@ -16,6 +16,7 @@ local instance = nil
 local function resolution()
     local title = wibox.widget {
         widget = widgets.text,
+        halign = "left",
         size = 15,
         text = "Resolution:"
     }
@@ -50,6 +51,7 @@ local function fps()
     local title = wibox.widget {
         widget = widgets.text,
         forced_width = dpi(65),
+        halign = "left",
         size = 15,
         text = "FPS:"
     }
@@ -81,6 +83,7 @@ local function delay()
     local title = wibox.widget {
         widget = widgets.text,
         forced_width = dpi(65),
+        halign = "left",
         size = 15,
         text = "Delay:"
     }
@@ -111,6 +114,7 @@ end
 local function audio_source()
     local title = wibox.widget {
         widget = widgets.text,
+        halign = "left",
         size = 15,
         text = "Audio Source:"
     }
@@ -151,6 +155,7 @@ end
 local function folder()
     local title = wibox.widget {
         widget = widgets.text,
+        halign = "left",
         size = 15,
         text = "Folder:"
     }
@@ -194,6 +199,7 @@ end
 local function format()
     local title = wibox.widget {
         widget = widgets.text,
+        halign = "left",
         size = 15,
         text = "Format:"
     }
@@ -220,26 +226,7 @@ local function format()
     }
 end
 
-local function widget(self)
-    local title = wibox.widget {
-        widget = widgets.text,
-        bold = true,
-        size = 15,
-        valign = "top",
-        text = "Record"
-    }
-
-    local close_button = wibox.widget {
-        widget = widgets.button.text.normal,
-        forced_width = dpi(50),
-        forced_height = dpi(50),
-        text_normal_bg = beautiful.icons.video.color,
-        icon = beautiful.icons.xmark,
-        on_release = function()
-            self:hide()
-        end
-    }
-
+local function main()
     local record_button = wibox.widget {
         widget = widgets.button.text.normal,
         forced_width = dpi(50),
@@ -261,33 +248,23 @@ local function widget(self)
     end)
 
     return wibox.widget {
-        widget = wibox.container.margin,
-        margins = dpi(15),
+        layout = wibox.layout.fixed.vertical,
+        spacing = dpi(15),
         {
-            layout = wibox.layout.fixed.vertical,
-            spacing = dpi(15),
+            widget = wibox.container.margin,
+            left = dpi(10),
             {
-                layout = wibox.layout.align.horizontal,
-                title,
-                nil,
-                close_button
-            },
-            {
-                widget = wibox.container.margin,
-                left = dpi(10),
-                {
-                    widget = wibox.layout.fixed.vertical,
-                    spacing = dpi(15),
-                    resolution(),
-                    fps(),
-                    delay(),
-                    audio_source(),
-                    format(),
-                    folder()
-                }
-            },
-            record_button
-        }
+                widget = wibox.layout.fixed.vertical,
+                spacing = dpi(15),
+                resolution(),
+                fps(),
+                delay(),
+                audio_source(),
+                format(),
+                folder()
+            }
+        },
+        record_button
     }
 end
 
@@ -297,8 +274,11 @@ local function new()
         class = "Recorder",
         width = dpi(550),
         height = dpi(435),
+        show_titlebar = true,
+        widget_fn = function()
+            return main()
+        end
     }
-    app:set_widget(widget(app))
 
     record_daemon:connect_signal("started", function()
         app:set_hidden(true)

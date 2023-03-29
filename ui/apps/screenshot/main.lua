@@ -93,7 +93,6 @@ local function new(self, layout)
         widget = widgets.text,
         bold = true,
         size = 15,
-        valign = "top",
         text = "Screenshot"
     }
 
@@ -143,10 +142,15 @@ local function new(self, layout)
                 title,
                 nil,
                 {
-                    layout = wibox.layout.fixed.horizontal,
-                    spacing = dpi(15),
-                    settings_button,
-                    close_button
+                    layout = wibox.container.place,
+                    valign = "top",
+
+                    {
+                        layout = wibox.layout.fixed.horizontal,
+                        spacing = dpi(15),
+                        settings_button,
+                        close_button
+                    }
                 }
             },
             {

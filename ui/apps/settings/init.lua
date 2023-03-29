@@ -118,21 +118,10 @@ local function new()
         class = "Settings",
         width = dpi(1650),
         height = dpi(1080),
-    }
-
-    local first = true
-    SETTINGS_APP:connect_signal("visibility", function(self, visible)
-        if visible == true and first == true then
-            local widget = wibox.widget {
-                widget = wibox.container.margin,
-                margins = dpi(15),
-                main()
-            }
-
-            SETTINGS_APP:set_widget(widget)
-            first = false
+        widget_fn = function ()
+            main()
         end
-    end)
+    }
 
     return SETTINGS_APP
 end

@@ -5,17 +5,116 @@
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
+local gshape = require("gears.shape")
 local ruled = require("ruled")
+local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
 local helpers = require("helpers")
+local dpi = beautiful.xresources.apply_dpi
 local capi = {
-    awesome = awesome
+    awesome = awesome,
+    client = client
 }
 
 local app = {
     mt = {}
 }
+
+local function titlebar(app)
+    local minimize = wibox.widget {
+        widget = widgets.button.elevated.state,
+        forced_width = dpi(20),
+        forced_height = dpi(20),
+        on_by_default = capi.client.focus == app:get_client(),
+        normal_shape = gshape.isosceles_triangle,
+        normal_bg = beautiful.colors.surface,
+        on_normal_bg = app:get_client().font_icon.color,
+        on_release = function(self)
+            app:get_client().minimized = not app:get_client().minimized
+        end
+    }
+
+    local close = wibox.widget {
+        widget = widgets.button.elevated.state,
+        forced_width = dpi(20),
+        forced_height = dpi(20),
+        on_by_default = capi.client.focus == app:get_client(),
+        normal_shape = gshape.circle,
+        normal_bg = beautiful.colors.surface,
+        on_normal_bg = app:get_client().font_icon.color,
+        on_release = function()
+            app:get_client():kill()
+        end
+    }
+
+    local font_icon = wibox.widget {
+        widget = widgets.button.text.state,
+        halign = "center",
+        disabled = true,
+        paddings = 0,
+        on_by_default = capi.client.focus == app:get_client(),
+        icon = app:get_client().font_icon,
+        scale = 0.7,
+        normal_bg = beautiful.colors.background,
+        on_normal_bg = beautiful.colors.background,
+        text_normal_bg = beautiful.colors.on_background,
+        text_on_normal_bg = app:get_client().font_icon.color,
+    }
+
+    local title = wibox.widget {
+        widget = widgets.text,
+        halign = "center",
+        size = 12,
+        text = app:get_client().name,
+        color = beautiful.colors.on_background,
+    }
+
+    app:get_client():connect_signal("focus", function()
+        font_icon:turn_on()
+        minimize:turn_on()
+        close:turn_on()
+    end)
+
+    app:get_client():connect_signal("unfocus", function()
+        font_icon:turn_off()
+        minimize:turn_off()
+        close:turn_off()
+    end)
+
+    return wibox.widget {
+        widget = wibox.container.margin,
+        margins = { left = dpi(15) },
+        {
+            layout = wibox.layout.align.horizontal,
+            forced_height = dpi(35),
+            {
+                widget = wibox.container.place,
+                halign = "center",
+                {
+                    layout = wibox.layout.fixed.horizontal,
+                    spacing = dpi(15),
+                    font_icon,
+                    title
+                }
+            },
+            {
+                widget = wibox.container.place,
+                halign = "right",
+                {
+                    layout = wibox.layout.fixed.horizontal,
+                    spacing = dpi(15),
+                    minimize,
+                    {
+                        widget = wibox.container.margin,
+                        margins = { right = dpi(15) },
+                        close
+                    }
+                }
+            }
+        }
+    }
+end
 
 function app:show()
     helpers.client.run_or_raise({
@@ -49,16 +148,6 @@ function app:set_hidden(hidden)
     end
 end
 
-function app:set_widget(widget)
-    self._private.widget = widget
-
-    if self._private.titlebar then
-        self._private.titlebar:setup{
-            widget = widget
-        }
-    end
-end
-
 function app:set_width(width)
     self._private.width = width
 end
@@ -77,7 +166,8 @@ local function new(args)
     ret._private.class = args.class or ""
     ret._private.width = args.width or nil
     ret._private.height = args.height or nil
-    ret._private.widget = args.widget or nil
+    ret._private.widget_fn = args.widget_fn or nil
+    ret._private.show_titlebar = args.show_titlebar or nil
     ret._private.command = string.format([[ lua -e "
     local lgi = require 'lgi'
     local Gtk = lgi.require('Gtk', '3.0')
@@ -102,6 +192,8 @@ local function new(args)
     Gtk.main()
 "
 ]], ret._private.title, ret._private.class, ret._private.class)
+
+    ret._private.first = true
 
     ruled.client.connect_signal("request::rules", function()
         ruled.client.append_rule {
@@ -137,11 +229,6 @@ local function new(args)
                     size = ret._private.height,
                     bg = beautiful.colors.background
                 })
-                if ret._private.widget then
-                    ret._private.titlebar:setup{
-                        widget = ret._private.widget
-                    }
-                end
 
                 capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
                     ret._private.titlebar:set_bg(beautiful.colors.background)
@@ -149,6 +236,30 @@ local function new(args)
 
                 c:connect_signal("request::unmanage", function()
                     ret:emit_signal("visibility", false)
+                end)
+
+                c:connect_signal("managed", function()
+                    if ret._private.first then
+                        ret._private.widget = wibox.widget {
+                            widget = wibox.container.margin,
+                            margins = { top = dpi(10), bottom = dpi(15), left = dpi(15), right = dpi(15) },
+                            ret._private.widget_fn()
+                        }
+
+                        if ret._private.show_titlebar then
+                            ret._private.widget = wibox.widget {
+                                layout = wibox.layout.align.vertical,
+                                titlebar(ret),
+                                ret._private.widget
+                            }
+                        end
+
+                        ret._private.first = false
+                    end
+
+                    ret._private.titlebar:setup{
+                        widget = ret._private.widget
+                    }
                 end)
 
                 ret._private.visible = true

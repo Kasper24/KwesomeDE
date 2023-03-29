@@ -120,6 +120,7 @@ local function on_client_added(self, client)
     client.icon = self:get_icon(client.desktop_app_info) -- not used
     client.font_icon = self:get_font_icon(client.class, client.name)
     client.managed = true
+    client:emit_signal("managed")
 
     on_client_updated(self)
 end

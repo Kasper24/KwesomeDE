@@ -2,8 +2,7 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-local awful = require("awful")
-local ruled = require("ruled")
+local gshape = require("gears.shape")
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local app = require("ui.apps.app")
@@ -11,25 +10,307 @@ local beautiful = require("beautiful")
 local screenshot_daemon = require("daemons.system.screenshot")
 local dpi = beautiful.xresources.apply_dpi
 local capi = {
-    awesome = awesome
+    client = client,
 }
 
 local instance = nil
 
-local path = ...
+local function button(icon, text, on_release, on_by_default)
+    local icon = wibox.widget {
+        widget = widgets.text,
+        halign = "center",
+        color = beautiful.icons.camera_retro.color,
+        text_normal_bg = beautiful.icons.camera_retro.color,
+        text_on_normal_bg = beautiful.colors.transparent,
+        icon = icon
+    }
+
+    local text = wibox.widget {
+        widget = widgets.text,
+        halign = "center",
+        size = 12,
+        color = beautiful.colors.on_surface,
+        text_normal_bg = beautiful.colors.on_surface,
+        text_on_normal_bg = beautiful.colors.transparent,
+        text = text
+    }
+
+    return wibox.widget {
+        widget = widgets.button.elevated.state,
+        on_by_default = on_by_default,
+        forced_width = dpi(120),
+        forced_height = dpi(120),
+        normal_bg = beautiful.colors.surface,
+        on_normal_bg = beautiful.icons.camera_retro.color,
+        on_release = function(self)
+            on_release(self)
+        end,
+        {
+            layout = wibox.layout.fixed.vertical,
+            spacing = dpi(15),
+            icon,
+            text
+        }
+    }
+end
+
+local function show_cursor()
+    local checkbox = wibox.widget {
+        widget = widgets.checkbox,
+        state = screenshot_daemon:get_show_cursor(),
+        handle_active_color = beautiful.icons.camera_retro.color,
+        on_turn_on = function()
+            screenshot_daemon:set_show_cursor(true)
+        end,
+        on_turn_off = function()
+            screenshot_daemon:set_show_cursor(false)
+        end
+    }
+
+    local text = wibox.widget {
+        widget = widgets.text,
+        valign = "center",
+        size = 15,
+        text = "Show Cursor:"
+    }
+
+    return wibox.widget {
+        layout = wibox.layout.fixed.horizontal,
+        forced_height = dpi(35),
+        spacing = dpi(5),
+        text,
+        checkbox
+    }
+end
+
+local function delay()
+    local title = wibox.widget {
+        widget = widgets.text,
+        size = 15,
+        text = "Delay:"
+    }
+
+    local slider = widgets.slider_text_input {
+        slider_width = dpi(150),
+        text_input_width = dpi(60),
+        value = screenshot_daemon:get_delay(),
+        round = true,
+        maximum = 100,
+        bar_active_color = beautiful.icons.camera_retro.color,
+        selection_bg = beautiful.icons.camera_retro.color,
+    }
+
+    slider:connect_signal("property::value", function(self, value, instant)
+        screenshot_daemon:set_delay(value)
+    end)
+
+    return wibox.widget {
+        layout = wibox.layout.fixed.horizontal,
+        forced_height = dpi(35),
+        spacing = dpi(15),
+        title,
+        slider
+    }
+end
+
+local function folder_picker()
+    local title = wibox.widget {
+        widget = widgets.text,
+        size = 15,
+        text = "Folder:"
+    }
+
+    local file_picker = wibox.widget {
+        widget = widgets.picker,
+        type = "file",
+        initial_value = screenshot_daemon:get_folder(),
+        on_changed = function(text)
+            screenshot_daemon:set_folder(text)
+        end
+    }
+
+    return wibox.widget {
+        layout = wibox.layout.fixed.horizontal,
+        spacing = dpi(15),
+        title,
+        file_picker
+    }
+end
+
+local function titlebar(app)
+    print(app:get_client().class)
+
+    local minimize = wibox.widget {
+        widget = widgets.button.elevated.state,
+        forced_width = dpi(20),
+        forced_height = dpi(20),
+        on_by_default = capi.client.focus == app:get_client(),
+        normal_shape = gshape.isosceles_triangle,
+        normal_bg = beautiful.colors.surface,
+        -- on_normal_bg = app:get_client().font_icon.color,
+        on_release = function(self)
+            app:get_client().minimized = not app:get_client().minimized
+        end
+    }
+
+    local close = wibox.widget {
+        widget = widgets.button.elevated.state,
+        forced_width = dpi(20),
+        forced_height = dpi(20),
+        on_by_default = capi.client.focus == app:get_client(),
+        normal_shape = gshape.circle,
+        normal_bg = beautiful.colors.surface,
+        -- on_normal_bg = app:get_client().font_icon.color,
+        on_release = function()
+            app:get_client():kill()
+        end
+    }
+
+    local font_icon = wibox.widget {
+        widget = widgets.button.text.state,
+        halign = "center",
+        disabled = true,
+        paddings = 0,
+        on_by_default = capi.client.focus == app:get_client(),
+        -- icon = app:get_client().font_icon,
+        scale = 0.7,
+        normal_bg = beautiful.colors.background,
+        on_normal_bg = beautiful.colors.background,
+        text_normal_bg = beautiful.colors.on_background,
+        -- text_on_normal_bg = app:get_client().font_icon.color,
+    }
+
+    local title = wibox.widget {
+        widget = widgets.text,
+        halign = "center",
+        size = 12,
+        text = app:get_client().name,
+        color = beautiful.colors.on_background,
+    }
+
+    app:get_client():connect_signal("focus", function()
+        font_icon:turn_on()
+        minimize:turn_on()
+        close:turn_on()
+    end)
+
+    app:get_client():connect_signal("unfocus", function()
+        font_icon:turn_off()
+        minimize:turn_off()
+        close:turn_off()
+    end)
+
+    return wibox.widget {
+        layout = wibox.layout.align.horizontal,
+        forced_height = dpi(35),
+        nil,
+        {
+            widget = wibox.container.place,
+            halign = "center",
+            {
+                layout = wibox.layout.fixed.horizontal,
+                spacing = dpi(15),
+                font_icon,
+                title
+            },
+        },
+        {
+            widget = wibox.container.place,
+            halign = "right",
+            {
+                layout = wibox.layout.fixed.horizontal,
+                spacing = dpi(15),
+                minimize,
+                {
+                    widget = wibox.container.margin,
+                    margins = { right = 10 },
+                    close
+                }
+            }
+        }
+    }
+end
+
+local function main()
+    local selection_button = nil
+    local screen_button = nil
+    local window_button = nil
+    local color_picker_button = nil
+
+    selection_button = button(beautiful.icons.scissors, "Selection", function()
+        screenshot_daemon:set_screenshot_method("selection")
+        selection_button:turn_on()
+        screen_button:turn_off()
+        window_button:turn_off()
+        color_picker_button:turn_off()
+    end, true)
+
+    screen_button = button(beautiful.icons.computer, "Screen", function()
+        screenshot_daemon:set_screenshot_method("screen")
+        selection_button:turn_off()
+        screen_button:turn_on()
+        window_button:turn_off()
+        color_picker_button:turn_off()
+    end)
+
+    window_button = button(beautiful.icons.window, "Window", function()
+        screenshot_daemon:set_screenshot_method("window")
+        selection_button:turn_off()
+        screen_button:turn_off()
+        window_button:turn_on()
+        color_picker_button:turn_off()
+    end)
+
+    color_picker_button = button(beautiful.icons.palette, "Pick Color", function()
+        screenshot_daemon:set_screenshot_method("color_picker")
+        selection_button:turn_off()
+        screen_button:turn_off()
+        window_button:turn_off()
+        color_picker_button:turn_on()
+    end)
+
+    local screenshot_button = wibox.widget {
+        widget = widgets.button.elevated.normal,
+        forced_width = dpi(65),
+        forced_height = dpi(65),
+        normal_shape = gshape.circle,
+        normal_bg = beautiful.icons.camera_retro.color,
+        normal_border_width = dpi(5),
+        normal_border_color = beautiful.colors.background,
+        on_release = function()
+            screenshot_daemon:screenshot()
+        end
+    }
+
+    return wibox.widget {
+        layout = wibox.layout.fixed.vertical,
+        spacing = dpi(15),
+        {
+            widget = wibox.layout.fixed.horizontal,
+            spacing = dpi(15),
+            selection_button,
+            screen_button,
+            window_button,
+            color_picker_button
+        },
+        delay(),
+        show_cursor(),
+        folder_picker(),
+        screenshot_button
+    }
+end
 
 local function new()
     local app = app {
         title ="Screenshot",
         class = "Screenshot",
         width = dpi(560),
-        height = dpi(280),
+        height = dpi(450),
+        show_titlebar = true,
+        widget_fn = function()
+            return main()
+        end
     }
-    local stack = wibox.layout.stack()
-    stack:set_top_only(true)
-    stack:add(require(path .. ".main")(app, stack))
-    stack:add(require(path .. ".settings")(stack))
-    app:set_widget(stack)
 
     screenshot_daemon:connect_signal("started", function()
         app:set_hidden(true)
