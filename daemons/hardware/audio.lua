@@ -127,7 +127,6 @@ end
 
 function audio:get_default_source()
     for _, source in pairs(self:get_sources()) do
-        print(source.name .. " " .. tostring(source.default))
         if source.default then
             return source
         end

@@ -57,7 +57,6 @@ local function new()
             {
                 id = "wallpaper_engine",
                 button = tab_button(navigator, "wallpaper_engine", beautiful.icons.computer, "Wallpaper Engine", function()
-                    print("asd")
                     theme_daemon:set_selected_tab("wallpaper_engine")
                 end),
                 tab = wallpaper_engine_tab()

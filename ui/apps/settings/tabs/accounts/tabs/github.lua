@@ -18,7 +18,6 @@ local function new()
     )
 
     username_text_input:connect_signal("unfocus", function(self, context, text)
-        print(text)
         github_daemon:set_username(text)
         github_daemon:refresh()
     end)
