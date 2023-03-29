@@ -45,11 +45,9 @@ local BACKGROUND_PATH = filesystem.filesystem.get_cache_dir() .. "wallpaper.png"
 local GENERATED_TEMPLATES_PATH = filesystem.filesystem.get_cache_dir("templates")
 local WAL_CACHE_PATH = filesystem.filesystem.get_xdg_cache_home("wal")
 local RUN_AS_ROOT_SCRIPT_PATH = filesystem.filesystem.get_awesome_config_dir("scripts") .. "run-as-root.sh"
-local FILE_PICKER_SCRIPT_PATH = filesystem.filesystem.get_awesome_config_dir("scripts") .. "file-picker.lua"
 local COLOR_PICKER_SCRIPT_PATH = filesystem.filesystem.get_awesome_config_dir("scripts") .. "color-picker.lua"
 local DEFAULT_PROFILE_IMAGE_PATH = filesystem.filesystem.get_awesome_config_dir("assets/images") .. "profile.png"
 local WE_PATH = filesystem.filesystem.get_awesome_config_dir("assets/wallpaper-engine/binary")
-local THUMBNAIL_SIZE = { width = 100, height = 70 }
 local THUMBNAIL_PATH = filesystem.filesystem.get_cache_dir("thumbnails/wallpapers/100-70")
 
 local PICTURES_MIMETYPES = {
@@ -1057,15 +1055,6 @@ function theme:set_profile_image(profile_image)
     self._private.profile_image = profile_image
     helpers.settings["theme-profile-image"] = profile_image
     self:emit_signal("profile_image", profile_image)
-end
-
-function theme:set_profile_image_with_file_picker()
-    awful.spawn.easy_async(FILE_PICKER_SCRIPT_PATH, function(stdout)
-        stdout = helpers.string.trim(stdout)
-        if stdout ~= "" and stdout ~= nil then
-            self:set_profile_image(stdout)
-        end
-    end)
 end
 
 function theme:get_profile_image(internal)
