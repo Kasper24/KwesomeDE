@@ -21,17 +21,17 @@ local app = {
     mt = {}
 }
 
-local function titlebar(app)
+local function titlebar(client)
     local minimize = wibox.widget {
         widget = widgets.button.elevated.state,
         forced_width = dpi(20),
         forced_height = dpi(20),
-        on_by_default = capi.client.focus == app:get_client(),
+        on_by_default = capi.client.focus == client,
         normal_shape = gshape.isosceles_triangle,
         normal_bg = beautiful.colors.surface,
-        on_normal_bg = app:get_client().font_icon.color,
+        on_normal_bg = client.font_icon.color,
         on_release = function(self)
-            app:get_client().minimized = not app:get_client().minimized
+            client.minimized = not client.minimized
         end
     }
 
@@ -39,12 +39,12 @@ local function titlebar(app)
         widget = widgets.button.elevated.state,
         forced_width = dpi(20),
         forced_height = dpi(20),
-        on_by_default = capi.client.focus == app:get_client(),
+        on_by_default = capi.client.focus == client,
         normal_shape = gshape.circle,
         normal_bg = beautiful.colors.surface,
-        on_normal_bg = app:get_client().font_icon.color,
+        on_normal_bg = client.font_icon.color,
         on_release = function()
-            app:get_client():kill()
+            client:kill()
         end
     }
 
@@ -53,30 +53,30 @@ local function titlebar(app)
         halign = "center",
         disabled = true,
         paddings = 0,
-        on_by_default = capi.client.focus == app:get_client(),
-        icon = app:get_client().font_icon,
+        on_by_default = capi.client.focus == client,
+        icon = client.font_icon,
         scale = 1,
         normal_bg = beautiful.colors.background,
         on_normal_bg = beautiful.colors.background,
         text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = app:get_client().font_icon.color,
+        text_on_normal_bg = client.font_icon.color,
     }
 
     local title = wibox.widget {
         widget = widgets.text,
         halign = "center",
         size = 15,
-        text = app:get_client().name,
+        text = client.name,
         color = beautiful.colors.on_background,
     }
 
-    app:get_client():connect_signal("focus", function()
+    client:connect_signal("focus", function()
         font_icon:turn_on()
         minimize:turn_on()
         close:turn_on()
     end)
 
-    app:get_client():connect_signal("unfocus", function()
+    client:connect_signal("unfocus", function()
         font_icon:turn_off()
         minimize:turn_off()
         close:turn_off()
@@ -215,7 +215,7 @@ local function new(args)
                         if ret._private.show_titlebar then
                             ret._private.widget = wibox.widget {
                                 layout = wibox.layout.align.vertical,
-                                titlebar(ret),
+                                titlebar(c),
                                 ret._private.widget
                             }
                         end
