@@ -331,6 +331,7 @@ function menu.button(args)
         margins = dpi(5),
         {
             widget = ebwidget.normal,
+            halign = "left",
             id = "button",
             on_release = function(self)
                 self.menu:hide(true)
