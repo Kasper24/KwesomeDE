@@ -61,7 +61,7 @@ local function new()
     local widget = wibox.container.background()
     gtable.crush(widget, navigator, true)
 
-    widget:connect_signal("tab::select", function(self, id)
+    widget:connect_signal("select", function(self, id)
         for _, tab_group in ipairs(self._private.tabs) do
             for _, tab in ipairs(tab_group) do
                 if tab.id == id then

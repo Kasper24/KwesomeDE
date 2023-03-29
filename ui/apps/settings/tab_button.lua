@@ -18,7 +18,7 @@ local function new(navigator, id, icon, title, on_turn_on)
         halign = "left",
         on_normal_bg = beautiful.icons.computer.color,
         on_release = function(self)
-            navigator:emit_signal("tab::select", id)
+            navigator:emit_signal("select", id)
             SETTINGS_APP:emit_signal("tab::select", id)
         end,
         {
