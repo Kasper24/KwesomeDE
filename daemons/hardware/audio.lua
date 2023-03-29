@@ -117,6 +117,23 @@ function audio:get_sources()
     return self._private.sources
 end
 
+function audio:get_default_sink()
+    for _, sink in pairs(self:get_sinks()) do
+        if sink.default then
+            return sink
+        end
+    end
+end
+
+function audio:get_default_source()
+    for _, source in pairs(self:get_sources()) do
+        print(source.name .. " " .. tostring(source.default))
+        if source.default then
+            return source
+        end
+    end
+end
+
 local function on_default_device_changed(self)
     awful.spawn.easy_async_with_shell([[pactl info | grep "Default Sink:\|Default Source:"]], function(stdout)
         for line in stdout:gmatch("[^\r\n]+") do
