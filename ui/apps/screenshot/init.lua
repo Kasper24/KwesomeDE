@@ -8,12 +8,27 @@ local widgets = require("ui.widgets")
 local app = require("ui.apps.app")
 local beautiful = require("beautiful")
 local screenshot_daemon = require("daemons.system.screenshot")
+local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
-local capi = {
-    client = client,
-}
 
 local instance = nil
+
+local function separator()
+    return wibox.widget {
+        widget = widgets.background,
+        forced_height = dpi(2),
+        shape = helpers.ui.rrect(),
+        bg = beautiful.colors.surface,
+    }
+end
+
+local function setting_container(widget)
+    return wibox.widget {
+        widget = wibox.container.margin,
+        margins = dpi(15),
+        widget
+    }
+end
 
 local function button(icon, text, on_release, on_by_default)
     local icon = wibox.widget {
@@ -197,9 +212,21 @@ local function main()
             window_button,
             color_picker_button
         },
-        delay(),
-        show_cursor(),
-        folder_picker(),
+        {
+            widget = widgets.background,
+            shape = helpers.ui.rrect(),
+            bg = beautiful.colors.background,
+            border_width = dpi(2),
+            border_color = beautiful.colors.surface,
+            {
+                layout = wibox.layout.fixed.vertical,
+                setting_container(delay()),
+                separator(),
+                setting_container(show_cursor()),
+                separator(),
+                setting_container(folder_picker())
+            }
+        },
         screenshot_button
     }
 end
@@ -209,7 +236,7 @@ local function new()
         title ="Screenshot",
         class = "Screenshot",
         width = dpi(560),
-        height = dpi(400),
+        height = dpi(455),
         show_titlebar = true,
         widget_fn = function()
             return main()
