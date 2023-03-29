@@ -22,6 +22,7 @@ return {
     popup = require(... .. ".popup"),
     profile = require(... .. ".profile"),
     progressbar = require(... .. ".progressbar"),
+    radio_group = require(... .. ".radio_group"),
     rofi_grid = require(... .. ".rofi_grid"),
     screen_mask = require(... .. ".screen_mask"),
     scrollbar = require(... .. ".scrollbar"),

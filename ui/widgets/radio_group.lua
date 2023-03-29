@@ -18,37 +18,84 @@ local radio_group = {
     mt = {}
 }
 
-function radio_group:set_buttons(buttons)
-    self._private.buttons = buttons
+local function button(value, radio_group)
+    local widget = wibox.widget {
+         layout = wibox.layout.fixed.horizontal,
+         spacing = dpi(15),
+         {
+             widget = wibox.widget.checkbox,
+             id = "checkbox",
+             forced_width = dpi(25),
+             forced_height = dpi(25),
+             shape = gshape.circle,
+             color = value.color,
+             check_color = value.check_color,
+             paddings = dpi(2),
+         },
+         {
+             widget = twidget,
+             size = 15,
+             text = value.label,
+             color = beautiful.colors.on_background
+         }
+     }
 
-    for index, button in ipairs(buttons) do
+     local checkbox = widget:get_children_by_id("checkbox")[1]
+     widget:connect_signal("mouse::enter", function()
+         capi.root.cursor("hand2")
+         local wibox = capi.mouse.current_wibox
+         if wibox then
+             wibox.cursor = "hand2"
+         end
+     end)
+
+     widget:connect_signal("mouse::leave", function()
+         capi.root.cursor("left_ptr")
+         local wibox = capi.mouse.current_wibox
+         if wibox then
+             wibox.cursor = "left_ptr"
+         end
+     end)
+
+     widget:connect_signal("button::press", function(_, lx, ly, button, mods, find_widgets_result)
+         if button == 1 then
+            radio_group:emit_signal("select", value.id)
+         end
+     end)
+
+     return widget
+end
+
+function radio_group:set_values(values)
+    self._private.values = values
+
+    for index, value in ipairs(values) do
+        value.button = button(value, self)
         if index == 1 then
-            local checkbox = button:get_children_by_id("checkbox")[1]
-            checkbox.checked = true
+            value.button:get_children_by_id("checkbox")[1].checked = true
         end
-
-        button.radio_group = self
-        self._private.buttons_layout:add(button)
+        self._private.buttons_layout:add(value.button)
     end
 end
 
-function radio_group:get_buttons()
-    return self._private.buttons
+function radio_group:get_values()
+    return self._private.values
 end
 
 function radio_group:set_widget_template(widget_template)
     self:set_widget(widget_template)
-    self._private.buttons_layout = widget_template:get_children_by_id("buttons")[1]
+    self._private.buttons_layout = widget_template:get_children_by_id("buttons_layout")[1]
 end
 
 local function new()
     local widget = wibox.container.background()
     gtable.crush(widget, radio_group, true)
 
-    widget:connect_signal("button::select", function(self, id)
-        for _, button in ipairs(self._private.buttons) do
-            local checkbox = button:get_children_by_id("checkbox")[1]
-            if button.id == id then
+    widget:connect_signal("select", function(self, id)
+        print(id)
+        for _, value in ipairs(self._private.values) do
+            local checkbox = value.button:get_children_by_id("checkbox")[1]
+            if value.id == id then
                 checkbox.checked = true
             else
                 checkbox.checked = false
@@ -59,59 +106,11 @@ local function new()
     return widget
 end
 
-function radio_group.button(id, label, color, check_color)
-   local widget = wibox.widget {
-        layout = wibox.layout.fixed.horizontal,
-        spacing = dpi(15),
-        {
-            widget = wibox.widget.checkbox,
-            id = "checkbox",
-            forced_width = dpi(25),
-            forced_height = dpi(25),
-            shape = gshape.circle,
-            color = color,
-            check_color = check_color,
-            paddings = dpi(2),
-        },
-        {
-            widget = twidget,
-            size = 15,
-            text = label,
-            color = beautiful.colors.on_background
-        }
-    }
-
-    local checkbox = widget:get_children_by_id("checkbox")[1]
-    checkbox:connect_signal("mouse::enter", function()
-        capi.root.cursor("hand2")
-        local wibox = capi.mouse.current_wibox
-        if wibox then
-            wibox.cursor = "hand2"
-        end
-    end)
-
-    checkbox:connect_signal("mouse::leave", function()
-        capi.root.cursor("left_ptr")
-        local wibox = capi.mouse.current_wibox
-        if wibox then
-            wibox.cursor = "left_ptr"
-        end
-    end)
-
-    checkbox:connect_signal("button::press", function(_, lx, ly, button, mods, find_widgets_result)
-        if button == 1 then
-            widget.radio_group:emit_signal("button::select", id)
-        end
-    end)
-
-    return widget
-end
-
 function radio_group.horizontal()
     local widget = new()
     widget:set_widget_template(wibox.widget {
         layout = wibox.layout.fixed.horizontal,
-        id = "buttons",
+        id = "buttons_layout",
         spacing = dpi(15),
     })
     return widget
@@ -121,7 +120,7 @@ function radio_group.vertical()
     local widget = new()
     widget:set_widget_template(wibox.widget {
         layout = wibox.layout.fixed.vertical,
-        id = "buttons",
+        id = "buttons_layout",
         spacing = dpi(15),
     })
     return widget

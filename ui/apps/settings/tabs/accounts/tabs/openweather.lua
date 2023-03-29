@@ -30,6 +30,41 @@ local function new()
         weather_daemon:get_longitude()
     )
 
+    local unit_radio_group = wibox.widget {
+        layout = wibox.layout.fixed.vertical,
+        forced_width = dpi(400),
+        forced_height = dpi(200),
+        spacing = dpi(15),
+        {
+            widget = widgets.text,
+            size = 15,
+            text = "Unit:"
+        },
+        {
+            widget = widgets.radio_group.vertical,
+            values = {
+                {
+                    id = "metric",
+                    label = "Metric",
+                    color = beautiful.colors.background,
+                    check_color = beautiful.icons.computer.color
+                },
+                {
+                    id = "imperial",
+                    label = "Imperial",
+                    color = beautiful.colors.background,
+                    check_color = beautiful.icons.computer.color
+                },
+                {
+                    id = "standard",
+                    label = "Standard",
+                    color = beautiful.colors.background,
+                    check_color = beautiful.icons.computer.color
+                }
+            }
+        }
+    }
+
     api_key_text_input:connect_signal("unfocus", function(self, context, text)
         weather_daemon:set_api_key(text)
         weather_daemon:refresh()
@@ -45,22 +80,6 @@ local function new()
         weather_daemon:refresh()
     end)
 
-    local unit_dropdown = widgets.dropdown {
-        forced_width = dpi(250),
-        forced_height = dpi(50),
-        label = "Unit: ",
-        initial_value = weather_daemon:get_unit(),
-        values = {
-            ["metric"] = "metric",
-            ["imperial"] = "imperial",
-            ["standard"] = "standard"
-        },
-        on_value_selected = function(value)
-            weather_daemon:set_unit(value)
-            weather_daemon:refresh()
-        end
-    }
-
     return wibox.widget {
         layout = wibox.layout.overflow.vertical,
         scrollbar_widget = widgets.scrollbar,
@@ -70,7 +89,7 @@ local function new()
         api_key_text_input,
         longitude_text_input,
         latitude_text_input,
-        unit_dropdown
+        unit_radio_group
     }
 end
 
