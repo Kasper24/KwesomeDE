@@ -88,6 +88,7 @@ local function titlebar(app)
         {
             layout = wibox.layout.align.horizontal,
             forced_height = dpi(35),
+            nil,
             {
                 widget = wibox.container.place,
                 halign = "center",
