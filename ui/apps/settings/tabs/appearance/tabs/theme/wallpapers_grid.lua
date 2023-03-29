@@ -98,10 +98,8 @@ local function new(wallpapers_key, entry_template)
         layout:get_text_input():unfocus()
     end)
 
-    SETTINGS_APP:connect_signal("visibility", function(self, visible)
-        if visible == false then
-            layout:get_text_input():unfocus()
-        end
+    SETTINGS_APP:get_client():connect_signal("request::unmanage", function()
+        layout:get_text_input():unfocus()
     end)
 
     SETTINGS_APP:get_client():connect_signal("unfocus", function()

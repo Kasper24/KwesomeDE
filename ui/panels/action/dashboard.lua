@@ -4,9 +4,9 @@
 -------------------------------------------
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
-local screenshot_popup = require("ui.apps.screenshot")
-local record_popup = require("ui.apps.record")
-local settings_popup = require("ui.apps.settings")
+local screenshot_app = require("ui.apps.screenshot")
+local record_app = require("ui.apps.record")
+local settings_app = require("ui.apps.settings")
 local wifi_popup = require("ui.applets.wifi")
 local bluetooth_popup = require("ui.applets.bluetooth")
 local beautiful = require("beautiful")
@@ -210,10 +210,10 @@ end
 
 local function settings()
     local widget = button(beautiful.icons.computer, "Settings", function()
-        settings_popup:toggle()
+        settings_app:show()
     end)
 
-    settings_popup:connect_signal("visibility", function(self, visible)
+    settings_app:connect_signal("visibility", function(self, visible)
         if visible == true then
             widget:turn_on("Settings")
         else
@@ -242,10 +242,10 @@ end
 
 local function screenshot()
     local widget = button(beautiful.icons.palette, "Screenshot", function()
-        screenshot_popup:toggle()
+        screenshot_app:show()
     end)
 
-    screenshot_popup:connect_signal("visibility", function(self, visible)
+    screenshot_app:connect_signal("visibility", function(self, visible)
         if visible == true then
             widget:turn_on("Screenshot")
         else
@@ -259,7 +259,7 @@ end
 local function record()
     local widget = button(beautiful.icons.video, "Record", function()
         if record_daemon:get_is_recording() == false then
-            record_popup:show()
+            record_app:show()
         else
             record_daemon:stop_video()
         end

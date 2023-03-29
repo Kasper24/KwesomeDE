@@ -137,100 +137,6 @@ local function folder_picker()
     }
 end
 
-local function titlebar(app)
-    print(app:get_client().class)
-
-    local minimize = wibox.widget {
-        widget = widgets.button.elevated.state,
-        forced_width = dpi(20),
-        forced_height = dpi(20),
-        on_by_default = capi.client.focus == app:get_client(),
-        normal_shape = gshape.isosceles_triangle,
-        normal_bg = beautiful.colors.surface,
-        -- on_normal_bg = app:get_client().font_icon.color,
-        on_release = function(self)
-            app:get_client().minimized = not app:get_client().minimized
-        end
-    }
-
-    local close = wibox.widget {
-        widget = widgets.button.elevated.state,
-        forced_width = dpi(20),
-        forced_height = dpi(20),
-        on_by_default = capi.client.focus == app:get_client(),
-        normal_shape = gshape.circle,
-        normal_bg = beautiful.colors.surface,
-        -- on_normal_bg = app:get_client().font_icon.color,
-        on_release = function()
-            app:get_client():kill()
-        end
-    }
-
-    local font_icon = wibox.widget {
-        widget = widgets.button.text.state,
-        halign = "center",
-        disabled = true,
-        paddings = 0,
-        on_by_default = capi.client.focus == app:get_client(),
-        -- icon = app:get_client().font_icon,
-        scale = 0.7,
-        normal_bg = beautiful.colors.background,
-        on_normal_bg = beautiful.colors.background,
-        text_normal_bg = beautiful.colors.on_background,
-        -- text_on_normal_bg = app:get_client().font_icon.color,
-    }
-
-    local title = wibox.widget {
-        widget = widgets.text,
-        halign = "center",
-        size = 12,
-        text = app:get_client().name,
-        color = beautiful.colors.on_background,
-    }
-
-    app:get_client():connect_signal("focus", function()
-        font_icon:turn_on()
-        minimize:turn_on()
-        close:turn_on()
-    end)
-
-    app:get_client():connect_signal("unfocus", function()
-        font_icon:turn_off()
-        minimize:turn_off()
-        close:turn_off()
-    end)
-
-    return wibox.widget {
-        layout = wibox.layout.align.horizontal,
-        forced_height = dpi(35),
-        nil,
-        {
-            widget = wibox.container.place,
-            halign = "center",
-            {
-                layout = wibox.layout.fixed.horizontal,
-                spacing = dpi(15),
-                font_icon,
-                title
-            },
-        },
-        {
-            widget = wibox.container.place,
-            halign = "right",
-            {
-                layout = wibox.layout.fixed.horizontal,
-                spacing = dpi(15),
-                minimize,
-                {
-                    widget = wibox.container.margin,
-                    margins = { right = 10 },
-                    close
-                }
-            }
-        }
-    }
-end
-
 local function main()
     local selection_button = nil
     local screen_button = nil
@@ -270,13 +176,11 @@ local function main()
     end)
 
     local screenshot_button = wibox.widget {
-        widget = widgets.button.elevated.normal,
-        forced_width = dpi(65),
-        forced_height = dpi(65),
-        normal_shape = gshape.circle,
+        widget = widgets.button.text.normal,
+        size = 15,
         normal_bg = beautiful.icons.camera_retro.color,
-        normal_border_width = dpi(5),
-        normal_border_color = beautiful.colors.background,
+        text_normal_bg = beautiful.colors.on_accent,
+        text = "Screenshot",
         on_release = function()
             screenshot_daemon:screenshot()
         end
@@ -305,7 +209,7 @@ local function new()
         title ="Screenshot",
         class = "Screenshot",
         width = dpi(560),
-        height = dpi(450),
+        height = dpi(400),
         show_titlebar = true,
         widget_fn = function()
             return main()

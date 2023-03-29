@@ -55,7 +55,7 @@ local function titlebar(app)
         paddings = 0,
         on_by_default = capi.client.focus == app:get_client(),
         icon = app:get_client().font_icon,
-        scale = 0.7,
+        scale = 1,
         normal_bg = beautiful.colors.background,
         on_normal_bg = beautiful.colors.background,
         text_normal_bg = beautiful.colors.on_background,
@@ -65,7 +65,7 @@ local function titlebar(app)
     local title = wibox.widget {
         widget = widgets.text,
         halign = "center",
-        size = 12,
+        size = 15,
         text = app:get_client().name,
         color = beautiful.colors.on_background,
     }
@@ -84,7 +84,7 @@ local function titlebar(app)
 
     return wibox.widget {
         widget = wibox.container.margin,
-        margins = { left = dpi(15) },
+        margins = { left = dpi(10), right = dpi(10), top = dpi(5) },
         {
             layout = wibox.layout.align.horizontal,
             forced_height = dpi(35),
@@ -105,11 +105,7 @@ local function titlebar(app)
                     layout = wibox.layout.fixed.horizontal,
                     spacing = dpi(15),
                     minimize,
-                    {
-                        widget = wibox.container.margin,
-                        margins = { right = dpi(15) },
-                        close
-                    }
+                    close
                 }
             }
         }
@@ -120,21 +116,6 @@ function app:show()
     helpers.client.run_or_raise({
         class = self._private.class
     }, true, self._private.command, {shell = true})
-end
-
-function app:hide()
-    if self._private.client ~= nil then
-        self._private.client:kill()
-    end
-    self._private.visible = false
-end
-
-function app:toggle()
-    if self._private.visible == true then
-        self:hide()
-    else
-        self:show()
-    end
 end
 
 function app:get_client()
@@ -203,19 +184,11 @@ local function new(args)
             properties = {
                 floating = true,
                 height = 1,
-                placement = awful.placement.centered
+                placement = awful.placement.centered,
             },
             callback = function(c)
                 ret._private.client = c
-                ret:emit_signal("init")
-
-                c:connect_signal("unmanage", function()
-                    ret._private.visible = false
-                    ret._private.client = nil
-                end)
-
                 c.width = ret._private.width
-
                 c.custom_titlebar = true
                 c.can_resize = false
                 c.can_tile = false
@@ -230,19 +203,11 @@ local function new(args)
                     bg = beautiful.colors.background
                 })
 
-                capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
-                    ret._private.titlebar:set_bg(beautiful.colors.background)
-                end)
-
-                c:connect_signal("request::unmanage", function()
-                    ret:emit_signal("visibility", false)
-                end)
-
                 c:connect_signal("managed", function()
                     if ret._private.first then
                         ret._private.widget = wibox.widget {
                             widget = wibox.container.margin,
-                            margins = { top = dpi(10), bottom = dpi(15), left = dpi(15), right = dpi(15) },
+                            margins = { top = dpi(10), bottom = dpi(10), left = dpi(20), right = dpi(20) },
                             ret._private.widget_fn()
                         }
 
@@ -262,8 +227,13 @@ local function new(args)
                     }
                 end)
 
-                ret._private.visible = true
-                ret:emit_signal("visibility", true)
+                c:connect_signal("request::unmanage", function()
+                    ret._private.client = nil
+                end)
+
+                capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+                    ret._private.titlebar:set_bg(beautiful.colors.background)
+                end)
             end
         }
     end)

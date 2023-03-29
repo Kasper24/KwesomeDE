@@ -16,7 +16,6 @@ local instance = nil
 local function resolution()
     local title = wibox.widget {
         widget = widgets.text,
-        halign = "left",
         size = 15,
         text = "Resolution:"
     }
@@ -51,7 +50,6 @@ local function fps()
     local title = wibox.widget {
         widget = widgets.text,
         forced_width = dpi(65),
-        halign = "left",
         size = 15,
         text = "FPS:"
     }
@@ -83,7 +81,6 @@ local function delay()
     local title = wibox.widget {
         widget = widgets.text,
         forced_width = dpi(65),
-        halign = "left",
         size = 15,
         text = "Delay:"
     }
@@ -114,7 +111,6 @@ end
 local function audio_source()
     local title = wibox.widget {
         widget = widgets.text,
-        halign = "left",
         size = 15,
         text = "Audio Source:"
     }
@@ -155,7 +151,6 @@ end
 local function folder()
     local title = wibox.widget {
         widget = widgets.text,
-        halign = "left",
         size = 15,
         text = "Folder:"
     }
@@ -199,7 +194,6 @@ end
 local function format()
     local title = wibox.widget {
         widget = widgets.text,
-        halign = "left",
         size = 15,
         text = "Format:"
     }
@@ -229,7 +223,6 @@ end
 local function main()
     local record_button = wibox.widget {
         widget = widgets.button.text.normal,
-        forced_width = dpi(50),
         size = 15,
         normal_bg = beautiful.icons.video.color,
         text_normal_bg = beautiful.colors.on_accent,
@@ -251,18 +244,14 @@ local function main()
         layout = wibox.layout.fixed.vertical,
         spacing = dpi(15),
         {
-            widget = wibox.container.margin,
-            left = dpi(10),
-            {
-                widget = wibox.layout.fixed.vertical,
-                spacing = dpi(15),
-                resolution(),
-                fps(),
-                delay(),
-                audio_source(),
-                format(),
-                folder()
-            }
+            widget = wibox.layout.fixed.vertical,
+            spacing = dpi(15),
+            resolution(),
+            fps(),
+            delay(),
+            audio_source(),
+            format(),
+            folder()
         },
         record_button
     }
@@ -273,7 +262,7 @@ local function new()
         title ="Recorder",
         class = "Recorder",
         width = dpi(550),
-        height = dpi(435),
+        height = dpi(400),
         show_titlebar = true,
         widget_fn = function()
             return main()

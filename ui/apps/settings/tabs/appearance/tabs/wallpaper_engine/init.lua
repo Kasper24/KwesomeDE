@@ -31,10 +31,8 @@ local function slider(text, initial_value, maximum, round, on_changed, minimum, 
         slider_text_input:get_text_input():unfocus()
     end)
 
-    SETTINGS_APP:connect_signal("visibility", function(self, visible)
-        if visible == false then
-            slider_text_input:get_text_input():unfocus()
-        end
+    SETTINGS_APP:get_client():connect_signal("request::unmanage", function()
+        slider_text_input:get_text_input():unfocus()
     end)
 
     SETTINGS_APP:get_client():connect_signal("unfocus", function()

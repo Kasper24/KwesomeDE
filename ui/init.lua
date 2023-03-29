@@ -31,7 +31,7 @@ require(... .. ".wibar")
 
 capi.client.connect_signal("scanned", function()
     if system_daemon:is_new_version() or system_daemon:does_need_setup() then
-        settings_app:toggle()
+        settings_app:show()
     end
 end)
 

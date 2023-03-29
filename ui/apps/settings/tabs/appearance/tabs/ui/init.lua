@@ -59,10 +59,8 @@ local function slider(text, initial_value, maximum, round, on_changed, minimum, 
         slider_text_input:get_text_input():unfocus()
     end)
 
-    SETTINGS_APP:connect_signal("visibility", function(self, visible)
-        if visible == false then
-            slider_text_input:get_text_input():unfocus()
-        end
+    SETTINGS_APP:get_client():connect_signal("request::unmanage", function()
+        slider_text_input:get_text_input():unfocus()
     end)
 
     SETTINGS_APP:get_client():connect_signal("unfocus", function()
@@ -105,10 +103,8 @@ local function file_picker(title, initial_value, on_changed)
         file_picker:get_text_input():unfocus()
     end)
 
-    SETTINGS_APP:connect_signal("visibility", function(self, visible)
-        if visible == false then
-            file_picker:get_text_input():unfocus()
-        end
+    SETTINGS_APP:get_client():connect_signal("request::unmanage", function()
+        file_picker:get_text_input():unfocus()
     end)
 
     SETTINGS_APP:get_client():connect_signal("mouse::leave", function()

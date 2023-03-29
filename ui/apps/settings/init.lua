@@ -37,7 +37,7 @@ local function main()
         text_normal_bg = beautiful.icons.computer.color,
         icon = beautiful.icons.xmark,
         on_release = function()
-            SETTINGS_APP:hide()
+            SETTINGS_APP:get_client():kill()
         end
     }
 
@@ -119,7 +119,7 @@ local function new()
         width = dpi(1650),
         height = dpi(1080),
         widget_fn = function ()
-            main()
+            return main()
         end
     }
 

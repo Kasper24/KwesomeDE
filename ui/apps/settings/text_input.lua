@@ -55,10 +55,8 @@ local function new(icon, placeholder, initial)
         text_input:unfocus()
     end)
 
-    SETTINGS_APP:connect_signal("visibility", function(self, visible)
-        if visible == false then
-            text_input:unfocus()
-        end
+    SETTINGS_APP:get_client():connect_signal("request::unmanage", function()
+        text_input:unfocus()
     end)
 
     SETTINGS_APP:get_client():connect_signal("mouse::leave", function()

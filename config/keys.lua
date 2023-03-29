@@ -3,7 +3,7 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 local awful = require("awful")
-local screenshot_widget = require("ui.apps.screenshot")
+local screenshot_app = require("ui.apps.screenshot")
 local main_menu = require("ui.popups.main_menu")
 local power_popup = require("ui.screens.power")
 local app_launcher = require("ui.popups.app_launcher")
@@ -751,14 +751,14 @@ awful.keyboard.append_global_keybindings({ -- Toogle media
         on_press = function()
             brightness_daemon:decrease_brightness(5)
         end
-    }, -- Toggle Screenshot widget
+    }, -- Toggle Screenshot app
     awful.key {
         modifiers = {},
         key = "Print",
         group = "media",
-        description = "toggle screenshot widget",
+        description = "toggle screenshot app",
         on_press = function()
-            screenshot_widget:show()
+            screenshot_app:show()
         end
     }, -- Take a screenshot
     awful.key {
