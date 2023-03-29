@@ -273,24 +273,26 @@ function text_input:set_widget_template(widget_template)
     end
 
     wp.text_widget:connect_signal("button::press", function(_, lx, ly, button, mods, find_widgets_result)
-        if button == 1 then
-            single_double_triple_tap(self, {
-                on_single_click = function()
-                    self:focus()
-                    self:set_cursor_index_from_x_y(lx, ly)
-                end,
-                on_double_click = function()
-                    self:set_selection_to_word()
-                end,
-                on_triple_click = function()
-                    self:select_all()
-                end
-            })
+		if gtable.hasitem(mods, "Mod4") or button ~= 1 then
+			return
+		end
 
-            wp.press_pos = { lx = lx, ly = ly }
-            wp.offset = { x = find_widgets_result.x, y = find_widgets_result.y }
-            find_widgets_result.drawable:connect_signal("mouse::move", on_drag)
-        end
+        single_double_triple_tap(self, {
+            on_single_click = function()
+                self:focus()
+                self:set_cursor_index_from_x_y(lx, ly)
+            end,
+            on_double_click = function()
+                self:set_selection_to_word()
+            end,
+            on_triple_click = function()
+                self:select_all()
+            end
+        })
+
+        wp.press_pos = { lx = lx, ly = ly }
+        wp.offset = { x = find_widgets_result.x, y = find_widgets_result.y }
+        find_widgets_result.drawable:connect_signal("mouse::move", on_drag)
     end)
 
     wp.text_widget:connect_signal("button::release", function(_, lx, ly, button, mods, find_widgets_result)

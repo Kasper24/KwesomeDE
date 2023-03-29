@@ -58,9 +58,11 @@ local function button(value, radio_group)
      end)
 
      widget:connect_signal("button::press", function(_, lx, ly, button, mods, find_widgets_result)
-         if button == 1 then
-            radio_group:emit_signal("select", value.id)
-         end
+        if gtable.hasitem(mods, "Mod4") or button ~= 1 then
+			return
+		end
+
+        radio_group:emit_signal("select", value.id)
      end)
 
      return widget
