@@ -42,6 +42,9 @@ local function new()
         },
         {
             widget = widgets.radio_group.vertical,
+            on_select = function(id)
+                weather_daemon:set_unit(id)
+            end,
             values = {
                 {
                     id = "metric",

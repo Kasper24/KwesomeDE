@@ -87,11 +87,19 @@ function radio_group:set_widget_template(widget_template)
     self._private.buttons_layout = widget_template:get_children_by_id("buttons_layout")[1]
 end
 
+function radio_group:set_on_select(on_select)
+    self._private.on_select = on_select
+end
+
 local function new()
     local widget = wibox.container.background()
     gtable.crush(widget, radio_group, true)
 
     widget:connect_signal("select", function(self, id)
+        if widget._private.on_select then
+            widget._private.on_select(id)
+        end
+
         for _, value in ipairs(self._private.values) do
             local checkbox = value.button:get_children_by_id("checkbox")[1]
             if value.id == id then
