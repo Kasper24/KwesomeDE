@@ -21,8 +21,6 @@ local capi = {
 local screenshot = {}
 local instance = nil
 
-local FOLDER_PICKER_SCRIPT_PATH = filesystem.filesystem.get_awesome_config_dir("scripts") .. "folder-picker.lua"
-
 function screenshot:set_show_cursor(state)
     self._private.show_cursor = state
     helpers.settings["screenshot-show-cursor"] = state
@@ -42,19 +40,8 @@ function screenshot:get_delay()
 end
 
 function screenshot:set_folder(folder)
-    if folder then
-        self._private.folder = folder
-        helpers.settings["screenshot-folder"] = folder
-    else
-        awful.spawn.easy_async(FOLDER_PICKER_SCRIPT_PATH .. " '" .. self._private.folder .. "'", function(stdout)
-            stdout = helpers.string.trim(stdout)
-            if stdout ~= "" and stdout ~= nil then
-                self._private.folder = stdout
-                helpers.settings["screenshot-folder"] = stdout
-                self:emit_signal("folder::updated", stdout)
-            end
-        end)
-    end
+    self._private.folder = folder
+    helpers.settings["screenshot-folder"] = folder
 end
 
 function screenshot:get_folder()

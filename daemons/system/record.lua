@@ -11,8 +11,6 @@ local filesystem = require("external.filesystem")
 local string = string
 local os = os
 
-local FOLDER_PICKER_SCRIPT_PATH = filesystem.filesystem.get_awesome_config_dir("scripts") .. "folder-picker.lua"
-
 local record = {}
 local instance = nil
 
@@ -48,19 +46,8 @@ function record:get_folder()
 end
 
 function record:set_folder(folder)
-    if folder then
-        self._private.folder = folder
-        helpers.settings["record-folder"] = folder
-    else
-        awful.spawn.easy_async(FOLDER_PICKER_SCRIPT_PATH .. " '" .. self._private.folder .. "'", function(stdout)
-            stdout = helpers.string.trim(stdout)
-            if stdout ~= "" and stdout ~= nil then
-                self._private.folder = stdout
-                helpers.settings["record-folder"] = stdout
-                self:emit_signal("folder::updated", stdout)
-            end
-        end)
-    end
+    self._private.folder = folder
+    helpers.settings["record-folder"] = folder
 end
 
 function record:get_format()
