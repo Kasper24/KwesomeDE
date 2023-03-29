@@ -22,25 +22,6 @@ local capi = {
 local instance = nil
 
 local function main()
-    local title = wibox.widget {
-        widget = widgets.text,
-        bold = true,
-        size = 15,
-        valign = "top",
-        text = "Settings"
-    }
-
-    local close_button = wibox.widget {
-        widget = widgets.button.text.normal,
-        forced_width = dpi(40),
-        forced_height = dpi(40),
-        text_normal_bg = beautiful.icons.computer.color,
-        icon = beautiful.icons.xmark,
-        on_release = function()
-            SETTINGS_APP:get_client():kill()
-        end
-    }
-
     local user = wibox.widget {
         layout = wibox.layout.fixed.horizontal,
         spacing = dpi(15),
@@ -97,19 +78,7 @@ local function main()
         }
     }
 
-    local widget = wibox.widget {
-        layout = wibox.layout.fixed.vertical,
-        spacing = dpi(15),
-        {
-            layout = wibox.layout.align.horizontal,
-            title,
-            nil,
-            close_button
-        },
-        navigator
-    }
-
-    return widget
+    return navigator
 end
 
 local function new()
@@ -118,6 +87,7 @@ local function new()
         class = "Settings",
         width = dpi(1650),
         height = dpi(1080),
+        show_titlebar = true,
         widget_fn = function ()
             return main()
         end
