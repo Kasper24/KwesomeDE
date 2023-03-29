@@ -125,6 +125,17 @@ local function delay()
 end
 
 local function audio_source()
+    local function add_sources(dropdown)
+        dropdown:reset()
+        for _, sink in pairs(audio_daemon:get_sinks()) do
+            dropdown:add(sink.description, sink.name)
+        end
+
+        for _, source in pairs(audio_daemon:get_sources()) do
+            dropdown:add(source.description, source.name)
+        end
+    end
+
     local title = wibox.widget {
         widget = widgets.text,
         size = 15,
@@ -139,20 +150,23 @@ local function audio_source()
         end
     }
 
-    local selected = false
-    for _, sink in pairs(audio_daemon:get_sinks()) do
-        dropdown:add(sink.description, sink.name)
-        if selected == false then
-            dropdown:select(sink.description, sink.name)
-            selected = true
-        end
-    end
-    for _, source in pairs(audio_daemon:get_sources()) do
-        dropdown:add(source.description, source.name)
-        if selected == false then
-            dropdown:select(source.description, source.name)
-            selected = true
-        end
+    add_sources(dropdown)
+
+    audio_daemon:connect_signal("sinks::added", function(self, sink)
+        add_sources(dropdown)
+    end)
+
+    audio_daemon:connect_signal("sources::added", function(self, source)
+        add_sources(dropdown)
+    end)
+
+    audio_daemon:connect_signal("default_sources_updated", function(self, source)
+        dropdown:select(source.description, source.name)
+    end)
+
+    local default_source = audio_daemon:get_default_source()
+    if default_source then
+        dropdown:select(default_source.description, default_source.name)
     end
 
     return wibox.widget {
