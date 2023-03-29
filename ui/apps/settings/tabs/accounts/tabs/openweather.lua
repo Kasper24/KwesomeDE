@@ -79,7 +79,7 @@ local function new()
     end)
 
     longitude_text_input:connect_signal("unfocus", function(self, context, text)
-        weather_daemon:set_longitudes(text)
+        weather_daemon:set_longitude(text)
         weather_daemon:refresh()
     end)
 
