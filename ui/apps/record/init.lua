@@ -67,7 +67,6 @@ end
 local function fps()
     local title = wibox.widget {
         widget = widgets.text,
-        forced_width = dpi(65),
         size = 15,
         text = "FPS:"
     }
@@ -98,7 +97,6 @@ end
 local function delay()
     local title = wibox.widget {
         widget = widgets.text,
-        forced_width = dpi(65),
         size = 15,
         text = "Delay:"
     }
@@ -175,6 +173,7 @@ local function folder_picker()
 
     local file_picker = wibox.widget {
         widget = widgets.picker,
+        text_input_forced_width = dpi(330),
         type = "file",
         initial_value = record_daemon:get_folder(),
         on_changed = function(text)
@@ -184,6 +183,7 @@ local function folder_picker()
 
     return wibox.widget {
         layout = wibox.layout.fixed.horizontal,
+        forced_height = dpi(35),
         spacing = dpi(15),
         title,
         file_picker

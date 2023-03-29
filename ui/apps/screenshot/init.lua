@@ -137,6 +137,7 @@ local function folder_picker()
 
     local file_picker = wibox.widget {
         widget = widgets.picker,
+        text_input_forced_width = dpi(340),
         type = "file",
         initial_value = screenshot_daemon:get_folder(),
         on_changed = function(text)
@@ -146,6 +147,7 @@ local function folder_picker()
 
     return wibox.widget {
         layout = wibox.layout.fixed.horizontal,
+        forced_height = dpi(35),
         spacing = dpi(15),
         title,
         file_picker

@@ -61,6 +61,32 @@ local function slider(text, initial_value, maximum, round, on_changed, minimum, 
 end
 
 local function folder_picker(title, initial_value, on_changed)
+    local file_picker = wibox.widget {
+        widget = widgets.picker,
+        text_input_forced_width = dpi(400),
+        type = "folder",
+        initial_value = initial_value,
+        on_changed = function(text)
+            on_changed(text)
+        end
+    }
+
+    SETTINGS_APP:connect_signal("tab::select", function()
+        file_picker:get_text_input():unfocus()
+    end)
+
+    SETTINGS_APP:get_client():connect_signal("request::unmanage", function()
+        file_picker:get_text_input():unfocus()
+    end)
+
+    SETTINGS_APP:get_client():connect_signal("mouse::leave", function()
+        file_picker:get_text_input():unfocus()
+    end)
+
+    SETTINGS_APP:get_client():connect_signal("unfocus", function()
+        file_picker:get_text_input():unfocus()
+    end)
+
     return wibox.widget {
         layout = wibox.layout.align.horizontal,
         {
@@ -69,14 +95,7 @@ local function folder_picker(title, initial_value, on_changed)
             size = 15,
             text = title,
         },
-        {
-            widget = widgets.picker,
-            type = "folder",
-            initial_value = initial_value,
-            on_changed = function(text)
-                on_changed(text)
-            end
-        }
+        file_picker
     }
 end
 
