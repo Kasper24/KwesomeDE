@@ -55,6 +55,18 @@ local function resolution()
         end
     }
 
+    RECORD_APP:get_client():connect_signal("request::unmanage", function()
+        dropdown:hide()
+    end)
+
+    RECORD_APP:get_client():connect_signal("unfocus", function()
+        dropdown:hide()
+    end)
+
+    RECORD_APP:get_client():connect_signal("mouse::leave", function()
+        dropdown:hide()
+    end)
+
     return wibox.widget {
         layout = wibox.layout.fixed.horizontal,
         forced_height = dpi(35),
@@ -169,6 +181,18 @@ local function audio_source()
         dropdown:select(default_source.description, default_source.name)
     end
 
+    RECORD_APP:get_client():connect_signal("request::unmanage", function()
+        dropdown:hide()
+    end)
+
+    RECORD_APP:get_client():connect_signal("unfocus", function()
+        dropdown:hide()
+    end)
+
+    RECORD_APP:get_client():connect_signal("mouse::leave", function()
+        dropdown:hide()
+    end)
+
     return wibox.widget {
         layout = wibox.layout.fixed.horizontal,
         forced_height = dpi(35),
@@ -185,22 +209,34 @@ local function folder_picker()
         text = "Folder:"
     }
 
-    local file_picker = wibox.widget {
+    local folder_picker = wibox.widget {
         widget = widgets.picker,
         text_input_forced_width = dpi(330),
-        type = "file",
+        type = "folder",
         initial_value = record_daemon:get_folder(),
         on_changed = function(text)
             record_daemon:set_folder(text)
         end
     }
 
+    RECORD_APP:get_client():connect_signal("request::unmanage", function()
+        folder_picker:get_text_input():unfocus()
+    end)
+
+    RECORD_APP:get_client():connect_signal("unfocus", function()
+        folder_picker:get_text_input():unfocus()
+    end)
+
+    RECORD_APP:get_client():connect_signal("mouse::leave", function()
+        folder_picker:get_text_input():unfocus()
+    end)
+
     return wibox.widget {
         layout = wibox.layout.fixed.horizontal,
         forced_height = dpi(35),
         spacing = dpi(15),
         title,
-        file_picker
+        folder_picker
     }
 end
 
@@ -223,6 +259,18 @@ local function format()
             record_daemon:set_format(value)
         end
     }
+
+    RECORD_APP:get_client():connect_signal("request::unmanage", function()
+        dropdown:hide()
+    end)
+
+    RECORD_APP:get_client():connect_signal("unfocus", function()
+        dropdown:hide()
+    end)
+
+    RECORD_APP:get_client():connect_signal("mouse::leave", function()
+        dropdown:hide()
+    end)
 
     return wibox.widget {
         layout = wibox.layout.fixed.horizontal,
@@ -282,7 +330,7 @@ local function main()
 end
 
 local function new()
-    local app = app {
+    RECORD_APP = app {
         title ="Recorder",
         class = "Recorder",
         width = dpi(550),
@@ -294,18 +342,18 @@ local function new()
     }
 
     record_daemon:connect_signal("started", function()
-        app:set_hidden(true)
+        RECORD_APP:set_hidden(true)
     end)
 
     record_daemon:connect_signal("ended", function()
-        app:set_hidden(false)
+        RECORD_APP:set_hidden(false)
     end)
 
     record_daemon:connect_signal("error::create_directory", function()
-        app:set_hidden(false)
+        RECORD_APP:set_hidden(false)
     end)
 
-    return app
+    return RECORD_APP
 end
 
 if not instance then

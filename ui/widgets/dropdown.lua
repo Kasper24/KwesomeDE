@@ -14,6 +14,10 @@ local dropdown = {
     mt = {}
 }
 
+function dropdown:hide()
+    self.menu:hide()
+end
+
 function dropdown:reset(index)
     self.menu:reset(index)
 end

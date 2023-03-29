@@ -135,22 +135,34 @@ local function folder_picker()
         text = "Folder:"
     }
 
-    local file_picker = wibox.widget {
+    local folder_picker = wibox.widget {
         widget = widgets.picker,
         text_input_forced_width = dpi(340),
-        type = "file",
+        type = "folder",
         initial_value = screenshot_daemon:get_folder(),
         on_changed = function(text)
             screenshot_daemon:set_folder(text)
         end
     }
 
+    RECORD_APP:get_client():connect_signal("request::unmanage", function()
+        folder_picker:get_text_input():unfocus()
+    end)
+
+    RECORD_APP:get_client():connect_signal("unfocus", function()
+        folder_picker:get_text_input():unfocus()
+    end)
+
+    RECORD_APP:get_client():connect_signal("mouse::leave", function()
+        folder_picker:get_text_input():unfocus()
+    end)
+
     return wibox.widget {
         layout = wibox.layout.fixed.horizontal,
         forced_height = dpi(35),
         spacing = dpi(15),
         title,
-        file_picker
+        folder_picker
     }
 end
 
