@@ -20,7 +20,7 @@ local pam = require('liblua_pam')
 local system = {}
 local instance = nil
 
-local VERSION = 0
+local VERSION = "0.001"
 
 function system:set_need_setup_off()
     helpers.settings["need-setup"] = false
@@ -32,7 +32,7 @@ end
 
 function system:is_new_version()
     local version = helpers.settings["version"]
-    if version < VERSION then
+    if version ~= VERSION then
         helpers.settings["version"] = VERSION
         return true
     end

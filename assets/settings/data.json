@@ -1,6 +1,6 @@
 {
     "version": {
-        "default": -1,
+        "default": "-1",
         "summary": "Version",
         "description": "KwesomeDE version"
     },

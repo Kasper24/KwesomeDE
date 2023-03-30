@@ -11,6 +11,7 @@ local wifi_tab = require("ui.apps.settings.tabs.wifi")
 local bluetooth_tab = require("ui.apps.settings.tabs.bluetooth")
 local accounts_tab = require("ui.apps.settings.tabs.accounts")
 local appearance_tab = require("ui.apps.settings.tabs.appearance")
+local about_tab = require("ui.apps.settings.tabs.about")
 local network_daemon = require("daemons.hardware.network")
 local bluetooth_daemon = require("daemons.hardware.bluetooth")
 local helpers = require("helpers")
@@ -74,6 +75,13 @@ local function main()
                 id = "appearance",
                 button = tab_button(navigator, "appearance", beautiful.icons.spraycan, "Appearance"),
                 tab = appearance_tab()
+            }
+        },
+        {
+            {
+                id = "about",
+                button = tab_button(navigator, "about", beautiful.icons.computer, "About"),
+                tab = about_tab()
             }
         }
     }
