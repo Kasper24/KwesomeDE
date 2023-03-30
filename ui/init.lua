@@ -31,7 +31,7 @@ require(... .. ".wibar")
 
 system_daemon:connect_signal("version::new", function()
     settings_app:connect_signal("managed", function()
-        SETTINGS_APP_NAVIGATOR:emit_signal("select", "about")
+        SETTINGS_APP_NAVIGATOR:select("about")
     end)
     settings_app:show()
 end)

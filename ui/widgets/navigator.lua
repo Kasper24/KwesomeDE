@@ -24,6 +24,19 @@ local function separator()
     }
 end
 
+function navigator:select(id)
+    for _, tab_group in ipairs(self._private.tabs) do
+        for _, tab in ipairs(tab_group) do
+            if tab.id == id then
+                self._private.tabs_stack:raise_widget(tab.tab)
+                tab.button:turn_on()
+            else
+                tab.button:turn_off()
+            end
+        end
+    end
+end
+
 function navigator:set_tabs(tabs)
     self._private.tabs = tabs
 
@@ -60,19 +73,6 @@ end
 local function new()
     local widget = wibox.container.background()
     gtable.crush(widget, navigator, true)
-
-    widget:connect_signal("select", function(self, id)
-        for _, tab_group in ipairs(self._private.tabs) do
-            for _, tab in ipairs(tab_group) do
-                if tab.id == id then
-                    widget._private.tabs_stack:raise_widget(tab.tab)
-                    tab.button:turn_on()
-                else
-                    tab.button:turn_off()
-                end
-            end
-        end
-    end)
 
     return widget
 end

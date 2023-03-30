@@ -40,7 +40,6 @@ local function button(value, radio_group)
          }
      }
 
-     local checkbox = widget:get_children_by_id("checkbox")[1]
      widget:connect_signal("mouse::enter", function()
          capi.root.cursor("hand2")
          local wibox = capi.mouse.current_wibox
@@ -62,10 +61,25 @@ local function button(value, radio_group)
 			return
 		end
 
-        radio_group:emit_signal("select", value.id)
+        radio_group:select(value.id)
      end)
 
      return widget
+end
+
+function radio_group:select(id)
+    if self._private.on_select then
+        self._private.on_select(id)
+    end
+
+    for _, value in ipairs(self._private.values) do
+        local checkbox = value.button:get_children_by_id("checkbox")[1]
+        if value.id == id then
+            checkbox.checked = true
+        else
+            checkbox.checked = false
+        end
+    end
 end
 
 function radio_group:set_values(values)
@@ -96,21 +110,6 @@ end
 local function new()
     local widget = wibox.container.background()
     gtable.crush(widget, radio_group, true)
-
-    widget:connect_signal("select", function(self, id)
-        if widget._private.on_select then
-            widget._private.on_select(id)
-        end
-
-        for _, value in ipairs(self._private.values) do
-            local checkbox = value.button:get_children_by_id("checkbox")[1]
-            if value.id == id then
-                checkbox.checked = true
-            else
-                checkbox.checked = false
-            end
-        end
-    end)
 
     return widget
 end
