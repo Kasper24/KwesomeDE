@@ -34,13 +34,19 @@ local function new(args)
         end
     }
 
-    return wibox.widget {
+    local layout = wibox.widget {
         layout = wibox.layout.fixed.horizontal,
         forced_height = dpi(40),
         spacing = dpi(15),
         title,
         widget
     }
+
+    function layout:get_checkbox()
+        return widget
+    end
+
+    return layout
 end
 
 function checkbox.mt:__call(args)

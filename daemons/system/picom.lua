@@ -86,6 +86,10 @@ function picom:has_animation_support()
     return self._private.has_animation_support
 end
 
+function picom:get_state()
+    return capi.awesome.composite_manager_running
+end
+
 local function build_properties(prototype, properties)
     for _, prop in ipairs(properties) do
         if not prototype["set_" .. prop] then
