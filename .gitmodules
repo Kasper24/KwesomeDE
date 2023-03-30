@@ -1,6 +1,6 @@
 [submodule "bling"]
 	path = external/bling
-	url = https://github.com/BlingCorp/bling
+	url = https://github.com/Kasper24/bling
 [submodule "layout-machi"]
 	path = external/layout-machi
 	url = https://github.com/xinhaoyuan/layout-machi
@@ -9,16 +9,16 @@
 	url = https://github.com/andOrlando/color
 [submodule "xml2lua"]
 	path = external/xml2lua
-	url = https://github.com/manoelcampos/xml2lua
+	url = https://github.com/Kasper24/xml2lua
 [submodule "json"]
 	path = external/json
-	url = https://github.com/rxi/json.lua
+	url = https://github.com/Kasper24/json.lua
 [submodule "dbus_proxy"]
 	path = external/dbus_proxy
-	url = https://github.com/stefano-m/lua-dbus_proxy
+	url = https://github.com/Kasper24/lua-dbus_proxy
 [submodule "async"]
 	path = external/async
-	url = https://github.com/sclu1034/async.lua
+	url = https://github.com/Kasper24/async.lua
 [submodule "filesystem"]
 	path = external/filesystem
-	url = https://github.com/sclu1034/lgi-async-extra
+	url = https://github.com/Kasper24/lgi-async-extra
