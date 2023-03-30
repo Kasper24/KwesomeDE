@@ -1,7 +1,9 @@
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
+local slider_text_input = require("ui.apps.settings.slider_text_input")
+local checkbox = require("ui.apps.settings.checkbox")
+local separator = require("ui.apps.settings.separator")
 local beautiful = require("beautiful")
-local helpers = require("helpers")
 local picom_daemon = require("daemons.system.picom")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
@@ -10,31 +12,16 @@ local ui = {
     mt = {}
 }
 
-local function separator()
-    return wibox.widget {
-        widget = widgets.background,
-        forced_height = dpi(1),
-        shape = helpers.ui.rrect(),
-        bg = beautiful.colors.surface
-    }
-end
 
-local function checkbox(key)
-    local display_name = key:gsub("(%l)(%w*)", function(a, b)
+local function checkbox_widget(key)
+    local name = key:gsub("(%l)(%w*)", function(a, b)
         return string.upper(a) .. b
     end)
-    display_name = display_name:gsub("-", " ") .. ":"
+    name = name:gsub("-", " ") .. ":"
 
-    local name = wibox.widget {
-        widget = widgets.text,
-        size = 15,
-        text = display_name
-    }
-
-    local checkbox = wibox.widget {
-        widget = widgets.checkbox,
+    local widget = checkbox {
+        name = name,
         state = picom_daemon["get_" .. key](picom_daemon),
-        handle_active_color = beautiful.icons.computer.color,
         on_turn_on = function()
             picom_daemon["set_" .. key](picom_daemon, true)
         end,
@@ -43,47 +30,27 @@ local function checkbox(key)
         end
     }
 
-    return wibox.widget {
-        layout = wibox.layout.fixed.horizontal,
-        forced_height = dpi(40),
-        spacing = dpi(15),
-        name,
-        checkbox
-    }
+    return widget
 end
 
-local function slider(key, maximum, round, minimum)
-    local display_name = key:gsub("(%l)(%w*)", function(a, b)
+local function slider_text_input_widget(key,  minimum, maximum, round)
+    local name = key:gsub("(%l)(%w*)", function(a, b)
         return string.upper(a) .. b
     end)
-    display_name = display_name:gsub("-", " ") .. ":"
+    name = name:gsub("-", " ") .. ":"
 
-    local name = wibox.widget {
-        widget = widgets.text,
-        forced_width = dpi(200),
-        size = 15,
-        text = display_name
-    }
-
-    local slider_text_input = widgets.slider_text_input {
-        slider_width = dpi(400),
+    local widget = slider_text_input {
+        name = name,
         round = round,
         minimum = minimum or 0,
         maximum = maximum,
         value = picom_daemon["get_" .. key](picom_daemon),
-        bar_active_color = beautiful.icons.computer.color,
-        selection_bg = beautiful.icons.computer.color
+        on_changed = function(value)
+            picom_daemon["set_" .. key](picom_daemon, value)
+        end
     }
 
-    slider_text_input:connect_signal("property::value", function(self, value, instant)
-        picom_daemon["set_" .. key](picom_daemon, value)
-    end)
-
-    return wibox.widget {
-        layout = wibox.layout.align.horizontal,
-        name,
-        slider_text_input
-    }
+    return widget
 end
 
 local function new()
@@ -93,22 +60,22 @@ local function new()
         scrollbar_width = dpi(10),
         step = 50,
         spacing = dpi(15),
-        slider("active-opacity", 1, false, 0.1),
-        slider("inactive-opacity", 1, false, 0.1),
+        slider_text_input_widget("active-opacity",  0.1, 1, false),
+        slider_text_input_widget("inactive-opacity",  0.1, 1, false),
         separator(),
-        slider("corner-radius", 100, true),
-        slider("blur-strength", 20, true),
+        slider_text_input_widget("corner-radius", 0, 100, true),
+        slider_text_input_widget("blur-strength", 0, 20, true),
         separator(),
-        slider("shadow-radius", 100, true),
-        slider("shadow-opacity", 1, false),
-        slider("shadow-offset-x", 500, true, -500),
-        slider("shadow-offset-y", 500, true, -500),
-        checkbox("shadow"),
+        slider_text_input_widget("shadow-radius", 0, 100, true),
+        slider_text_input_widget("shadow-opacity", 0, 1, false),
+        slider_text_input_widget("shadow-offset-x", -500, 500, true),
+        slider_text_input_widget("shadow-offset-y", -500, 500, true),
+        checkbox_widget("shadow"),
         separator(),
-        slider("fade-delta", 100, true),
-        slider("fade-in-step", 1, false),
-        slider("fade-out-step", 1, false),
-        checkbox("fading")
+        slider_text_input_widget("fade-delta", 0, 100, true),
+        slider_text_input_widget("fade-in-step", 0, 1, false),
+        slider_text_input_widget("fade-out-step", 0, 1, false),
+        checkbox_widget("fading")
     }
 end
 

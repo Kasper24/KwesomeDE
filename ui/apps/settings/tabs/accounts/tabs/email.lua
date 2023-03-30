@@ -1,7 +1,7 @@
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
-local text_input_widget = require("ui.apps.settings.text_input")
+local text_input = require("ui.apps.settings.text_input")
 local email_daemon = require("daemons.web.email")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
@@ -11,23 +11,23 @@ local email = {
 }
 
 local function new()
-    local machine_text_input = text_input_widget(
-        beautiful.icons.server,
-        "Machine:",
-        email_daemon:get_machine()
-    )
+    local machine_text_input = text_input {
+        icon = beautiful.icons.server,
+        placeholder = "Machine:",
+        initial = email_daemon:get_machine()
+    }
 
-    local login_text_input = text_input_widget(
-        beautiful.icons.user,
-        "Login:",
-        email_daemon:get_login()
-    )
+    local login_text_input = text_input {
+        icon = beautiful.icons.user,
+        placeholder = "Login:",
+        initial = email_daemon:get_login()
+    }
 
-    local password_text_input = text_input_widget(
-        beautiful.icons.lock,
-        "Password:",
-        email_daemon:get_password()
-    )
+    local password_text_input = text_input {
+        icon = beautiful.icons.lock,
+        placeholder = "Password:",
+        initial = email_daemon:get_password()
+    }
 
     machine_text_input:connect_signal("unfocus", function(self)
         email_daemon:update_net_rc(machine_text_input:get_text(), login_text_input:get_text(), password_text_input:get_text())

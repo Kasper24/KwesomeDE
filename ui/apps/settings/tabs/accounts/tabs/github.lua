@@ -1,7 +1,7 @@
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
-local text_input_widget = require("ui.apps.settings.text_input")
+local text_input = require("ui.apps.settings.text_input")
 local github_daemon = require("daemons.web.github")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
@@ -11,11 +11,11 @@ local github = {
 }
 
 local function new()
-    local username_text_input = text_input_widget(
-        beautiful.icons.user,
-        "Username:",
-        github_daemon:get_username()
-    )
+    local username_text_input = text_input {
+        icon = beautiful.icons.user,
+        placeholder = "Username:",
+        initial = github_daemon:get_username()
+    }
 
     username_text_input:connect_signal("unfocus", function(self, context, text)
         github_daemon:set_username(text)

@@ -13,11 +13,13 @@ local text_input = {
     mt = {}
 }
 
-local function new(icon, placeholder, initial)
-    local text_input = wibox.widget {
+local function new(args)
+    args = args or {}
+
+    local widget = wibox.widget {
         widget = widgets.text_input,
         unfocus_on_client_clicked = false,
-        initial = initial or "",
+        initial = args.initial or "",
         selection_bg = beautiful.icons.computer.color,
         widget_template = wibox.widget {
             widget = widgets.background,
@@ -32,14 +34,14 @@ local function new(icon, placeholder, initial)
                     {
                         widget = widgets.text,
                         color = beautiful.icons.computer.color,
-                        icon = icon
+                        icon = args.icon
                     },
                     {
                         layout = wibox.layout.stack,
                         {
                             widget = wibox.widget.textbox,
                             id = "placeholder_role",
-                            text = placeholder,
+                            text = args.placeholder,
                         },
                         {
                             widget = wibox.widget.textbox,
@@ -52,26 +54,26 @@ local function new(icon, placeholder, initial)
     }
 
     SETTINGS_APP:connect_signal("tab::select", function()
-        text_input:unfocus()
+        widget:unfocus()
     end)
 
     SETTINGS_APP:get_client():connect_signal("request::unmanage", function()
-        text_input:unfocus()
+        widget:unfocus()
     end)
 
     SETTINGS_APP:get_client():connect_signal("mouse::leave", function()
-        text_input:unfocus()
+        widget:unfocus()
     end)
 
     SETTINGS_APP:get_client():connect_signal("unfocus", function()
-        text_input:unfocus()
+        widget:unfocus()
     end)
 
-    return text_input
+    return widget
 end
 
-function text_input.mt:__call(icon, placeholder, initial)
-    return new(icon, placeholder, initial)
+function text_input.mt:__call(args)
+    return new(args)
 end
 
 return setmetatable(text_input, text_input.mt)

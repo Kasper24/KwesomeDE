@@ -1,7 +1,7 @@
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
-local text_input_widget = require("ui.apps.settings.text_input")
+local text_input = require("ui.apps.settings.text_input")
 local gitlab_daemon = require("daemons.web.gitlab")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
@@ -11,17 +11,17 @@ local gitlab = {
 }
 
 local function new()
-    local host_text_input = text_input_widget(
-        beautiful.icons.server,
-        "Host:",
-        gitlab_daemon:get_host()
-    )
+    local host_text_input = text_input {
+        icon = beautiful.icons.server,
+        placeholder = "Host:",
+        initial = gitlab_daemon:get_host()
+    }
 
-    local access_token_text_input = text_input_widget(
-        beautiful.icons.lock,
-        "Access Token:",
-        gitlab_daemon:get_access_token()
-    )
+    local access_token_text_input = text_input {
+        icon = beautiful.icons.lock,
+        placeholder = "Access Token:",
+        initial = gitlab_daemon:get_access_token()
+    }
 
     host_text_input:connect_signal("unfocus", function(self, context, text)
         gitlab_daemon:set_host(text)
