@@ -20,24 +20,17 @@ local pam = require('liblua_pam')
 local system = {}
 local instance = nil
 
-local VERSION = "0.001"
+local VERSIONS = {
+    {
+        version = "0.001",
+        changes = {
+            "Secrets are now stored in a secured way. Please install gnome-keyring and re-set your Gitlab API key and Openweather access token"
+        }
+    }
+}
 
-function system:set_need_setup_off()
-    helpers.settings["need-setup"] = false
-end
-
-function system:does_need_setup()
-    return helpers.settings["need-setup"]
-end
-
-function system:is_new_version()
-    local version = helpers.settings["version"]
-    if version ~= VERSION then
-        helpers.settings["version"] = VERSION
-        return true
-    end
-
-    return false
+function system:get_versions()
+    return VERSIONS
 end
 
 function system:shutdown()
@@ -112,10 +105,26 @@ local function updates_info(self)
     }
 end
 
+local function check_version(self)
+    local version = helpers.settings["version"]
+
+    local last_version = VERSIONS[#VERSIONS]
+    if version ~= last_version.version then
+        helpers.settings["version"] = last_version.version
+        gtimer.delayed_call(function()
+            self:emit_signal("version::new", last_version)
+        end)
+        return true
+    end
+
+    return false
+end
+
 local function new()
     local ret = gobject {}
     gtable.crush(ret, system, true)
 
+    check_version(ret)
     system_info(ret)
     updates_info(ret)
 

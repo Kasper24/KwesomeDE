@@ -2,8 +2,7 @@ local gshape = require("gears.shape")
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
-local text_input = require("ui.apps.settings.text_input")
-local email_daemon = require("daemons.web.email")
+local system_daemon = require("daemons.system.system")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 
@@ -11,7 +10,7 @@ local breaking_changes = {
     mt = {}
 }
 
-local function bullet_point(message)
+local function change_widget(message)
     return wibox.widget {
         layout = wibox.layout.fixed.horizontal,
         spacing = dpi(15),
@@ -30,15 +29,41 @@ local function bullet_point(message)
     }
 end
 
+local function version_widget(version)
+    local layout = wibox.widget {
+        layout = wibox.layout.fixed.vertical,
+        forced_width = dpi(200),
+        forced_height = dpi(200),
+        spacing = dpi(15),
+        {
+            widget = widgets.text,
+            bold = true,
+            size = 20,
+            text = version.version .. ":"
+        }
+    }
+
+    for _, change in ipairs(version.changes) do
+        layout:add(change_widget(change))
+    end
+
+    return layout
+end
+
 local function new()
-    return wibox.widget {
+    local layout = wibox.widget {
         layout = wibox.layout.overflow.vertical,
         scrollbar_widget = widgets.scrollbar,
         scrollbar_width = dpi(10),
         step = 50,
         spacing = dpi(15),
-        bullet_point("Secrets are now stored in a secured way. Please install gnome-keyring and re-set your Gitlab API key and Openweather access token")
     }
+
+    for _, version in ipairs(system_daemon:get_versions()) do
+        layout:add(version_widget(version))
+    end
+
+    return layout
 end
 
 function breaking_changes.mt:__call()

@@ -412,6 +412,7 @@ awful.screen.connect_for_each_screen(function(s)
 end)
 
 require(... .. ".bluetooth")
+require(... .. ".breaking_change")
 require(... .. ".email")
 require(... .. ".error")
 require(... .. ".github")

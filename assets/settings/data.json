@@ -4,11 +4,6 @@
         "summary": "Version",
         "description": "KwesomeDE version"
     },
-    "need-setup": {
-        "default": true,
-        "summary": "Need Setup",
-        "description": "If true the welcome screen will show"
-    },
     "airplane": {
         "default": false,
         "summary": "Airplane mode",
