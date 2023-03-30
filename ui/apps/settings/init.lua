@@ -41,23 +41,23 @@ local function main()
         }
     }
 
-    local navigator = wibox.widget {
+    SETTINGS_APP_NAVIGATOR = wibox.widget {
         widget = widgets.navigator.vertical,
         buttons_header = user
     }
 
-    navigator:set_tabs {
+    SETTINGS_APP_NAVIGATOR:set_tabs {
         {
             {
                 id = "wifi",
-                button = tab_button(navigator, "wifi", beautiful.icons.network.wifi_high, "Wi-Fi", function()
+                button = tab_button(SETTINGS_APP_NAVIGATOR, "wifi", beautiful.icons.network.wifi_high, "Wi-Fi", function()
                     network_daemon:scan_access_points()
                 end),
                 tab = wifi_tab()
             },
             {
                 id = "bluetooth",
-                button = tab_button(navigator, "bluetooth", beautiful.icons.bluetooth.on, "Bluetooth", function()
+                button = tab_button(SETTINGS_APP_NAVIGATOR, "bluetooth", beautiful.icons.bluetooth.on, "Bluetooth", function()
                     bluetooth_daemon:scan()
                 end),
                 tab = bluetooth_tab()
@@ -66,27 +66,27 @@ local function main()
         {
             {
                 id = "accounts",
-                button = tab_button(navigator, "accounts", beautiful.icons.user, "Accounts"),
+                button = tab_button(SETTINGS_APP_NAVIGATOR, "accounts", beautiful.icons.user, "Accounts"),
                 tab = accounts_tab()
             },
         },
         {
             {
                 id = "appearance",
-                button = tab_button(navigator, "appearance", beautiful.icons.spraycan, "Appearance"),
+                button = tab_button(SETTINGS_APP_NAVIGATOR, "appearance", beautiful.icons.spraycan, "Appearance"),
                 tab = appearance_tab()
             }
         },
         {
             {
                 id = "about",
-                button = tab_button(navigator, "about", beautiful.icons.computer, "About"),
+                button = tab_button(SETTINGS_APP_NAVIGATOR, "about", beautiful.icons.spraycan, "About"),
                 tab = about_tab()
             }
         }
     }
 
-    return navigator
+    return SETTINGS_APP_NAVIGATOR
 end
 
 local function new()

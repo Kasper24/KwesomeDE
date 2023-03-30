@@ -29,6 +29,15 @@ require(... .. ".quick_notifications")
 require(... .. ".titlebar")
 require(... .. ".wibar")
 
+-- Gotta have it outside the scanned signal, or else when restarting
+-- with the settings app opened the we will connect to the 'managed'
+-- signal only after it was already emitted
+if system_daemon:is_new_version() or system_daemon:does_need_setup() then
+    settings_app:connect_signal("managed", function()
+        SETTINGS_APP_NAVIGATOR:emit_signal("select", "about")
+    end)
+end
+
 capi.client.connect_signal("scanned", function()
     if system_daemon:is_new_version() or system_daemon:does_need_setup() then
         settings_app:show()

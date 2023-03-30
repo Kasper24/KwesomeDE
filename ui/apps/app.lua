@@ -226,6 +226,8 @@ local function new(args)
                     ret._private.titlebar:setup{
                         widget = ret._private.widget
                     }
+
+                    ret:emit_signal("managed")
                 end)
 
                 c:connect_signal("request::unmanage", function()
