@@ -80,7 +80,7 @@ local function main()
         {
             {
                 id = "about",
-                button = tab_button(SETTINGS_APP_NAVIGATOR, "about", beautiful.icons.spraycan, "About"),
+                button = tab_button(SETTINGS_APP_NAVIGATOR, "about", beautiful.icons.computer, "About"),
                 tab = about_tab()
             }
         }
