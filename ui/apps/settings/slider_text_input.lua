@@ -22,7 +22,7 @@ local function new(args)
         text = args.name
     }
 
-    local widget = widgets.slider_text_input {
+    local slider_text_input = widgets.slider_text_input {
         slider_width = dpi(400),
         round = args.round,
         minimum = args.minimum or 0,
@@ -32,31 +32,37 @@ local function new(args)
         selection_bg = beautiful.icons.computer.color
     }
 
-    widget:connect_signal("property::value", function(self, value, instant)
+    slider_text_input:connect_signal("property::value", function(self, value, instant)
         args.on_changed(value)
     end)
 
     SETTINGS_APP:connect_signal("tab::select", function()
-        widget:get_text_input():unfocus()
+        slider_text_input:get_text_input():unfocus()
     end)
 
     SETTINGS_APP:get_client():connect_signal("request::unmanage", function()
-        widget:get_text_input():unfocus()
+        slider_text_input:get_text_input():unfocus()
     end)
 
     SETTINGS_APP:get_client():connect_signal("unfocus", function()
-        widget:get_text_input():unfocus()
+        slider_text_input:get_text_input():unfocus()
     end)
 
     SETTINGS_APP:get_client():connect_signal("mouse::leave", function()
-        widget:get_text_input():unfocus()
+        slider_text_input:get_text_input():unfocus()
     end)
 
-    return wibox.widget {
+    local widget = wibox.widget {
         layout = wibox.layout.align.horizontal,
         title,
-        widget
+        slider_text_input
     }
+
+    function widget:get_slider_text_input()
+        return slider_text_input
+    end
+
+    return widget
 end
 
 function slider_text_input.mt:__call(args)
