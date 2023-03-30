@@ -14,7 +14,13 @@ local ui = {
 }
 
 local function checkbox_widget(key)
+    local title = key:gsub("(%l)(%w*)", function(a, b)
+        return string.upper(a) .. b
+    end)
+    title = title:gsub("_", " ") .. ":"
+
     local widget = checkbox {
+        title = title,
         state = theme_daemon["get_ui_" .. key](theme_daemon),
         on_turn_on = function()
             theme_daemon["set_ui_" .. key](theme_daemon, true)
@@ -27,9 +33,9 @@ local function checkbox_widget(key)
     return widget
 end
 
-local function slider(name, initial_value, maximum, round, on_changed, minimum, signal)
+local function slider(title, initial_value, maximum, round, on_changed, minimum, signal)
     local widget = slider_text_input {
-        name = name,
+        title = title,
         round = round,
         value = initial_value,
         minimum = minimum or 0,
@@ -54,7 +60,7 @@ local function new()
         step = 50,
         spacing = dpi(15),
         picker {
-            name = "Profile image:",
+            title = "Profile image:",
             initial_value = theme_daemon:get_profile_image(),
             on_changed = function(text)
                 theme_daemon:set_profile_image(text)

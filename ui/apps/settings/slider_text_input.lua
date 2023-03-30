@@ -19,7 +19,7 @@ local function new(args)
         widget = widgets.text,
         forced_width = dpi(200),
         size = 15,
-        text = args.name
+        text = args.title
     }
 
     local slider_text_input = widgets.slider_text_input {

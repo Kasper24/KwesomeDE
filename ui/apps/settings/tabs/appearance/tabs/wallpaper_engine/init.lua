@@ -14,7 +14,7 @@ local ui = {
 }
 
 local function slider(text, initial_value, maximum, round, on_changed, minimum, signal)
-    local name = wibox.widget {
+    local title = wibox.widget {
         widget = widgets.text,
         forced_width = dpi(200),
         size = 15,
@@ -59,7 +59,7 @@ local function slider(text, initial_value, maximum, round, on_changed, minimum, 
 
     return wibox.widget {
         layout = wibox.layout.align.horizontal,
-        name,
+        title,
         slider_text_input
     }
 end
@@ -72,14 +72,14 @@ local function new()
         step = 50,
         spacing = dpi(15),
         picker {
-            name = "Assets Folder:",
+            title = "Assets Folder:",
             initial_value = theme_daemon:get_wallpaper_engine_assets_folder(),
             on_changed = function(text)
                 theme_daemon:set_wallpaper_engine_assets_folder(text)
             end
         },
         picker {
-            name = "Workshop Folder",
+            title = "Workshop Folder",
             initial_value = theme_daemon:get_wallpaper_engine_workshop_folder(),
             on_changed = function(text)
                 theme_daemon:set_wallpaper_engine_workshop_folder(text)

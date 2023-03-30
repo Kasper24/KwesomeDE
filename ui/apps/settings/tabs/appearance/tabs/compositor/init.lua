@@ -14,13 +14,13 @@ local ui = {
 
 
 local function checkbox_widget(key)
-    local name = key:gsub("(%l)(%w*)", function(a, b)
+    local title = key:gsub("(%l)(%w*)", function(a, b)
         return string.upper(a) .. b
     end)
-    name = name:gsub("-", " ") .. ":"
+    title = title:gsub("-", " ") .. ":"
 
     local widget = checkbox {
-        name = name,
+        title = title,
         state = picom_daemon["get_" .. key](picom_daemon),
         on_turn_on = function()
             picom_daemon["set_" .. key](picom_daemon, true)
@@ -34,13 +34,13 @@ local function checkbox_widget(key)
 end
 
 local function slider_text_input_widget(key,  minimum, maximum, round)
-    local name = key:gsub("(%l)(%w*)", function(a, b)
+    local title = key:gsub("(%l)(%w*)", function(a, b)
         return string.upper(a) .. b
     end)
-    name = name:gsub("-", " ") .. ":"
+    title = title:gsub("-", " ") .. ":"
 
     local widget = slider_text_input {
-        name = name,
+        title = title,
         round = round,
         minimum = minimum or 0,
         maximum = maximum,

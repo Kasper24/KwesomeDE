@@ -32,7 +32,7 @@ local function new()
 
     local unit_radio_group = radio_group {
         forced_height = dpi(200),
-        name = "Unit:",
+        title = "Unit:",
         on_changed = function(id)
             weather_daemon:set_unit(id)
             weather_daemon:refresh()
