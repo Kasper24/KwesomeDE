@@ -125,11 +125,12 @@ yay/paru -S awesome-git
 | fortune-mod                             | Fortune daemon (unused, but might change)                 |
 | imagemagick                             | Used to generate colors from wallpapers                   |
 | neofetch                                | Used to display system info                               |
+| gnome-keyring                           | Used to secrets in a secured way                          |
 
 **Arch Linux (and other Arch-based distributions)**
    ```sh
       pacman -Sy networkmanager blueman pipewire pipewire-pulse libusb libgudev upower lm_sensors brightnessctl
-      redshift inotify-tools maim xcolor ffmpeg playerctl fortune-mod imagemagick neofetch --needed
+      redshift inotify-tools maim xcolor ffmpeg playerctl fortune-mod imagemagick neofetch gnome-keyring --needed
    ```
    Assuming your **AUR Helper** is [yay](https://github.com/Jguer/yay) or [paru](https://github.com/Morganamilo/paru).
    ```sh

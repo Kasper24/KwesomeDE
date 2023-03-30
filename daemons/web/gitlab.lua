@@ -2,6 +2,8 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
+local lgi = require("lgi")
+local Secret = lgi.Secret
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
@@ -31,11 +33,27 @@ function gitlab:get_host()
 end
 
 function gitlab:set_access_token(access_token)
-    self._private.access_token = access_token
-    helpers.settings["gitlab-access-token"] = access_token
+    Secret.password_store(
+        self._private.access_token_schema,
+        self._private.access_token_atrributes,
+        Secret.COLLECTION_DEFAULT,
+        "access token",
+        access_token,
+        nil,
+        function(source, result, unused)
+            local success = Secret.password_store_finish(result)
+            if success then
+                self._private.access_token = access_token
+            end
+        end
+    )
 end
 
 function gitlab:get_access_token()
+    if self._private.access_token == nil then
+        self._private.access_token =Secret.password_lookup_sync(self._private.access_token_schema, self._private.access_token_atrributes)
+    end
+
     return self._private.access_token
 end
 
@@ -91,10 +109,15 @@ local function new()
     gtable.crush(ret, gitlab, true)
 
     ret._private = {}
-    ret._private.access_token = helpers.settings["gitlab-access-token"]
+    ret._private.access_token_atrributes =  {
+        ["org.kwesomede.openweather.gitlab.access-token"] = "gitlab access token"
+    }
+    ret._private.access_token_schema = Secret.Schema.new("org.kwesomede", Secret.SchemaFlags.NONE, {
+        ["org.kwesomede.openweather.gitlab.access-token"] = Secret.SchemaAttributeType.STRING
+    })
     ret._private.host = helpers.settings["gitlab-host"]
 
-    if ret._private.access_token ~= "" then
+    if ret:get_access_token() then
         ret:refresh()
     else
         gtimer.delayed_call(function()

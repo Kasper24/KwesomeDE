@@ -306,16 +306,6 @@
         "summary": "Gitlab host",
         "description": "Your Gitlab host URL"
     },
-    "gitlab-access-token": {
-        "default": "",
-        "summary": "Gitlab access token",
-        "description": "Your Gitlab access token"
-    },
-    "weather-api-key": {
-        "default": "",
-        "summary": "Weather API key",
-        "description": "Your OpenWeather API key"
-    },
     "weather-latitude": {
         "default": "40.730610",
         "summary": "Weather latitude",
