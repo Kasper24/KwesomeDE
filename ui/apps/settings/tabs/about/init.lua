@@ -5,7 +5,6 @@
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
-local tab_button = require("ui.apps.settings.tab_button")
 local breaking_changes_tab = require("ui.apps.settings.tabs.about.tabs.breaking_changes")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
@@ -23,7 +22,8 @@ local function new()
         {
             {
                 id = "breaking_changes",
-                button = tab_button(navigator, "breaking_changes", beautiful.icons.circle_exclamation, "Breaking Changes"),
+                icon = beautiful.icons.circle_exclamation,
+                title = "Breaking Changes",
                 tab = breaking_changes_tab()
             },
         }

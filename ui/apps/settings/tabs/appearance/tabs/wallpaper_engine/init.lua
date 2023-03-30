@@ -31,7 +31,7 @@ local function slider(text, initial_value, maximum, round, on_changed, minimum, 
         selection_bg = beautiful.icons.computer.color
     }
 
-    SETTINGS_APP:connect_signal("tab::select", function()
+    SETTINGS_APP_NAVIGATOR:connect_signal("select", function()
         slider_text_input:get_text_input():unfocus()
     end)
 

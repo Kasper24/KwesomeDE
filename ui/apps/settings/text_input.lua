@@ -53,7 +53,7 @@ local function new(args)
         }
     }
 
-    SETTINGS_APP:connect_signal("tab::select", function()
+    SETTINGS_APP_NAVIGATOR:connect_signal("select", function()
         widget:unfocus()
     end)
 

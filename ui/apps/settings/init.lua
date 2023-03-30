@@ -6,7 +6,6 @@ local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local app = require("ui.apps.app")
 local beautiful = require("beautiful")
-local tab_button = require("ui.apps.settings.tab_button")
 local wifi_tab = require("ui.apps.settings.tabs.wifi")
 local bluetooth_tab = require("ui.apps.settings.tabs.bluetooth")
 local accounts_tab = require("ui.apps.settings.tabs.accounts")
@@ -50,37 +49,44 @@ local function main()
         {
             {
                 id = "wifi",
-                button = tab_button(SETTINGS_APP_NAVIGATOR, "wifi", beautiful.icons.network.wifi_high, "Wi-Fi", function()
+                icon = beautiful.icons.network.wifi_high,
+                title = "Wi-Fi",
+                tab = wifi_tab(),
+                on_select = function()
                     network_daemon:scan_access_points()
-                end),
-                tab = wifi_tab()
+                end,
             },
             {
                 id = "bluetooth",
-                button = tab_button(SETTINGS_APP_NAVIGATOR, "bluetooth", beautiful.icons.bluetooth.on, "Bluetooth", function()
+                icon = beautiful.icons.bluetooth.on,
+                title = "Bluetooth",
+                tab = bluetooth_tab(),
+                on_select = function()
                     bluetooth_daemon:scan()
-                end),
-                tab = bluetooth_tab()
+                end
             },
         },
         {
             {
                 id = "accounts",
-                button = tab_button(SETTINGS_APP_NAVIGATOR, "accounts", beautiful.icons.user, "Accounts"),
+                icon = beautiful.icons.user,
+                title = "Accounts",
                 tab = accounts_tab()
             },
         },
         {
             {
                 id = "appearance",
-                button = tab_button(SETTINGS_APP_NAVIGATOR, "appearance", beautiful.icons.spraycan, "Appearance"),
+                icon = beautiful.icons.spraycan,
+                title = "Appearance",
                 tab = appearance_tab()
             }
         },
         {
             {
                 id = "about",
-                button = tab_button(SETTINGS_APP_NAVIGATOR, "about", beautiful.icons.computer, "About"),
+                icon = beautiful.icons.computer,
+                title = "About",
                 tab = about_tab()
             }
         }

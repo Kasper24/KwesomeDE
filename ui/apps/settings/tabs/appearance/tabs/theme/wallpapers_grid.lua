@@ -94,7 +94,7 @@ local function new(wallpapers_key, entry_template)
         entry_template = entry_template
     }
 
-    SETTINGS_APP:connect_signal("tab::select", function()
+    SETTINGS_APP_NAVIGATOR:connect_signal("select", function()
         layout:get_text_input():unfocus()
     end)
 

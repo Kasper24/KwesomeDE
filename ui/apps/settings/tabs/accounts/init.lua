@@ -5,7 +5,6 @@
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
-local tab_button = require("ui.apps.settings.tab_button")
 local email_tab = require("ui.apps.settings.tabs.accounts.tabs.email")
 local github_tab = require("ui.apps.settings.tabs.accounts.tabs.github")
 local gitlab_tab = require("ui.apps.settings.tabs.accounts.tabs.gitlab")
@@ -26,22 +25,26 @@ local function new()
         {
             {
                 id = "email",
-                button = tab_button(navigator, "email", beautiful.icons.envelope, "Email"),
+                icon = beautiful.icons.envelope,
+                title = "Email",
                 tab = email_tab()
             },
             {
                 id = "github",
-                button = tab_button(navigator, "github", beautiful.icons.github, "Github"),
+                icon = beautiful.icons.github,
+                title = "Github",
                 tab = github_tab()
             },
             {
                 id = "gitlab",
-                button = tab_button(navigator, "gitlab", beautiful.icons.gitlab, "Gitlab"),
+                icon = beautiful.icons.gitlab,
+                title = "Gitlab",
                 tab = gitlab_tab()
             },
             {
                 id = "open_weather",
-                button = tab_button(navigator, "open_weather", beautiful.icons.clouds, "OpenWeather"),
+                icon = beautiful.icons.clouds,
+                title = "OpenWeather",
                 tab = openweather_tab()
             },
         }

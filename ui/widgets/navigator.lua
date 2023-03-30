@@ -6,6 +6,8 @@ local gtable = require("gears.table")
 local wibox = require("wibox")
 local bwidget = require("ui.widgets.background")
 local sbwidget = require("ui.widgets.scrollbar")
+local ebwidget = require("ui.widgets.button.elevated")
+local twidget = require("ui.widgets.text")
 local beautiful = require("beautiful")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
@@ -24,12 +26,52 @@ local function separator()
     }
 end
 
+local function tab_button(tab, navigator)
+    local widget = wibox.widget {
+        widget = ebwidget.state,
+        halign = "left",
+        on_normal_bg = beautiful.icons.computer.color,
+        on_release = function(self)
+            navigator:select(tab.id)
+        end,
+        {
+            layout = wibox.layout.fixed.horizontal,
+            spacing = dpi(15),
+            {
+                widget = twidget,
+                size = 12,
+                halign = "left",
+                text_normal_bg = beautiful.colors.on_background,
+                text_on_normal_bg = beautiful.colors.on_accent,
+                icon = tab.icon,
+            },
+            {
+                widget = twidget,
+                size = 12,
+                halign = "left",
+                text_normal_bg = beautiful.colors.on_background,
+                text_on_normal_bg = beautiful.colors.on_accent,
+                text = tab.title,
+            }
+        }
+    }
+
+    if tab.on_select then
+        widget:connect_signal("turn_on", function()
+            tab.on_select()
+        end)
+    end
+
+    return widget
+end
+
 function navigator:select(id)
     for _, tab_group in ipairs(self._private.tabs) do
         for _, tab in ipairs(tab_group) do
             if tab.id == id then
                 self._private.tabs_stack:raise_widget(tab.tab)
                 tab.button:turn_on()
+                self:emit_signal("select", id)
             else
                 tab.button:turn_off()
             end
@@ -41,13 +83,14 @@ function navigator:set_tabs(tabs)
     self._private.tabs = tabs
 
     for group_index, group in ipairs(tabs) do
-        for tab_index, entry in ipairs(group) do
+        for tab_index, tab in ipairs(group) do
+            tab.button = tab_button(tab, self)
             if group_index == 1 and tab_index == 1 then
-                entry.button:turn_on()
+                tab.button:turn_on()
             end
 
-            self._private.tabs_buttons:add(entry.button)
-            self._private.tabs_stack:add(entry.tab)
+            self._private.tabs_buttons:add(tab.button)
+            self._private.tabs_stack:add(tab.tab)
         end
         if group_index ~= #tabs then
             self._private.tabs_buttons:add(separator())

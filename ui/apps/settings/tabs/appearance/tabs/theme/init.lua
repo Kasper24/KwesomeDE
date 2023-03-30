@@ -5,7 +5,6 @@
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
-local tab_button = require("ui.apps.settings.tab_button")
 local image_tab = require("ui.apps.settings.tabs.appearance.tabs.theme.tabs.image")
 local mountain_tab = require("ui.apps.settings.tabs.appearance.tabs.theme.tabs.mountain")
 local digital_sun_tab = require("ui.apps.settings.tabs.appearance.tabs.theme.tabs.digital_sun")
@@ -28,38 +27,48 @@ local function new()
         {
             {
                 id = "image",
-                button = tab_button(navigator, "image", beautiful.icons.computer, "Image", function()
+                icon = beautiful.icons.spraycan,
+                title = "Image",
+                tab = image_tab(),
+                on_select = function()
                     theme_daemon:set_selected_tab("image")
-                end),
-                tab = image_tab()
+                end
             },
             {
                 id = "mountain",
-                button = tab_button(navigator, "mountain", beautiful.icons.computer, "Mountain", function()
+                icon = beautiful.icons.spraycan,
+                title = "Mountain",
+                tab = mountain_tab(),
+                on_select = function()
                     theme_daemon:set_selected_tab("mountain")
-                end),
-                tab = mountain_tab()
+                end
             },
             {
                 id = "digital_sun",
-                button = tab_button(navigator, "digital_sun", beautiful.icons.computer, "Digital Sun", function()
+                icon = beautiful.icons.spraycan,
+                title = "Digital Sun",
+                tab = digital_sun_tab(),
+                on_select = function()
                     theme_daemon:set_selected_tab("digital_sun")
-                end),
-                tab = digital_sun_tab()
+                end
             },
             {
                 id = "binary",
-                button = tab_button(navigator, "binary", beautiful.icons.computer, "Binary", function()
+                icon = beautiful.icons.spraycan,
+                title = "Binary",
+                tab = binary_tab(),
+                on_select = function()
                     theme_daemon:set_selected_tab("binary")
-                end),
-                tab = binary_tab()
+                end
             },
             {
                 id = "wallpaper_engine",
-                button = tab_button(navigator, "wallpaper_engine", beautiful.icons.computer, "Wallpaper Engine", function()
+                icon = beautiful.icons.spraycan,
+                title = "Wallpaper Engine",
+                tab = wallpaper_engine_tab(),
+                on_select = function()
                     theme_daemon:set_selected_tab("wallpaper_engine")
-                end),
-                tab = wallpaper_engine_tab()
+                end
             },
         }
     }

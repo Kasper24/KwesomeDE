@@ -36,7 +36,7 @@ local function new(args)
         args.on_changed(value)
     end)
 
-    SETTINGS_APP:connect_signal("tab::select", function()
+    SETTINGS_APP_NAVIGATOR:connect_signal("select", function(self, id)
         slider_text_input:get_text_input():unfocus()
     end)
 

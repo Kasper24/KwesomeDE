@@ -25,7 +25,7 @@ local function new(args)
         end
     }
 
-    SETTINGS_APP:connect_signal("tab::select", function()
+    SETTINGS_APP_NAVIGATOR:connect_signal("select", function()
         widget:get_text_input():unfocus()
     end)
 

@@ -5,7 +5,6 @@
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
-local tab_button = require("ui.apps.settings.tab_button")
 local theme_tab = require("ui.apps.settings.tabs.appearance.tabs.theme")
 local ui_tab = require("ui.apps.settings.tabs.appearance.tabs.ui")
 local compositor_tab = require("ui.apps.settings.tabs.appearance.tabs.compositor")
@@ -26,22 +25,26 @@ local function new()
         {
             {
                 id = "theme",
-                button = tab_button(navigator, "theme", beautiful.icons.spraycan, "Theme"),
+                icon = beautiful.icons.spraycan,
+                title = "Theme",
                 tab = theme_tab()
             },
             {
                 id = "ui",
-                button = tab_button(navigator, "ui", beautiful.icons.spraycan, "UI"),
+                icon = beautiful.icons.spraycan,
+                title = "UI",
                 tab = ui_tab()
             },
             {
                 id = "compositor",
-                button = tab_button(navigator, "compositor", beautiful.icons.spraycan, "Compositor"),
+                icon = beautiful.icons.spraycan,
+                title = "Compositor",
                 tab = compositor_tab()
             },
             {
                 id = "wallpaper_engine",
-                button = tab_button(navigator, "wallpaper_engine", beautiful.icons.spraycan, "Wallpaper Engine"),
+                icon = beautiful.icons.spraycan,
+                title = "Wallpaper Engine",
                 tab = wallpaper_engine_tab()
             },
         }
