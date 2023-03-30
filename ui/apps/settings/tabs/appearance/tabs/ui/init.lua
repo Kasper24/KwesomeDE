@@ -39,7 +39,7 @@ local function slider(name, initial_value, maximum, round, on_changed, minimum, 
 
     if signal then
         theme_daemon:connect_signal(signal, function(self, value)
-            slider_text_input:set_value(tostring(value))
+            widget:get_slider_text_input():set_value(tostring(value))
         end)
     end
 
