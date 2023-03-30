@@ -20,56 +20,55 @@ local theme = {
 
 local function new()
     local navigator = wibox.widget {
-        widget = widgets.navigator.vertical
-    }
-
-    navigator:set_tabs {
-        {
+        widget = widgets.navigator.vertical,
+        tabs = {
             {
-                id = "image",
-                icon = beautiful.icons.spraycan,
-                title = "Image",
-                tab = image_tab(),
-                on_select = function()
-                    theme_daemon:set_selected_tab("image")
-                end
-            },
-            {
-                id = "mountain",
-                icon = beautiful.icons.spraycan,
-                title = "Mountain",
-                tab = mountain_tab(),
-                on_select = function()
-                    theme_daemon:set_selected_tab("mountain")
-                end
-            },
-            {
-                id = "digital_sun",
-                icon = beautiful.icons.spraycan,
-                title = "Digital Sun",
-                tab = digital_sun_tab(),
-                on_select = function()
-                    theme_daemon:set_selected_tab("digital_sun")
-                end
-            },
-            {
-                id = "binary",
-                icon = beautiful.icons.spraycan,
-                title = "Binary",
-                tab = binary_tab(),
-                on_select = function()
-                    theme_daemon:set_selected_tab("binary")
-                end
-            },
-            {
-                id = "wallpaper_engine",
-                icon = beautiful.icons.spraycan,
-                title = "Wallpaper Engine",
-                tab = wallpaper_engine_tab(),
-                on_select = function()
-                    theme_daemon:set_selected_tab("wallpaper_engine")
-                end
-            },
+                {
+                    id = "image",
+                    icon = beautiful.icons.spraycan,
+                    title = "Image",
+                    tab = image_tab(),
+                    on_select = function()
+                        theme_daemon:set_selected_tab("image")
+                    end
+                },
+                {
+                    id = "mountain",
+                    icon = beautiful.icons.spraycan,
+                    title = "Mountain",
+                    tab = mountain_tab(),
+                    on_select = function()
+                        theme_daemon:set_selected_tab("mountain")
+                    end
+                },
+                {
+                    id = "digital_sun",
+                    icon = beautiful.icons.spraycan,
+                    title = "Digital Sun",
+                    tab = digital_sun_tab(),
+                    on_select = function()
+                        theme_daemon:set_selected_tab("digital_sun")
+                    end
+                },
+                {
+                    id = "binary",
+                    icon = beautiful.icons.spraycan,
+                    title = "Binary",
+                    tab = binary_tab(),
+                    on_select = function()
+                        theme_daemon:set_selected_tab("binary")
+                    end
+                },
+                {
+                    id = "wallpaper_engine",
+                    icon = beautiful.icons.spraycan,
+                    title = "Wallpaper Engine",
+                    tab = wallpaper_engine_tab(),
+                    on_select = function()
+                        theme_daemon:set_selected_tab("wallpaper_engine")
+                    end
+                },
+            }
         }
     }
 

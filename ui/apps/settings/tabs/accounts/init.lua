@@ -18,35 +18,34 @@ local theme = {
 
 local function new()
     local navigator = wibox.widget {
-        widget = widgets.navigator.vertical
-    }
-
-    navigator:set_tabs {
-        {
+        widget = widgets.navigator.vertical,
+        tabs = {
             {
-                id = "email",
-                icon = beautiful.icons.envelope,
-                title = "Email",
-                tab = email_tab()
-            },
-            {
-                id = "github",
-                icon = beautiful.icons.github,
-                title = "Github",
-                tab = github_tab()
-            },
-            {
-                id = "gitlab",
-                icon = beautiful.icons.gitlab,
-                title = "Gitlab",
-                tab = gitlab_tab()
-            },
-            {
-                id = "open_weather",
-                icon = beautiful.icons.clouds,
-                title = "OpenWeather",
-                tab = openweather_tab()
-            },
+                {
+                    id = "email",
+                    icon = beautiful.icons.envelope,
+                    title = "Email",
+                    tab = email_tab()
+                },
+                {
+                    id = "github",
+                    icon = beautiful.icons.github,
+                    title = "Github",
+                    tab = github_tab()
+                },
+                {
+                    id = "gitlab",
+                    icon = beautiful.icons.gitlab,
+                    title = "Gitlab",
+                    tab = gitlab_tab()
+                },
+                {
+                    id = "open_weather",
+                    icon = beautiful.icons.clouds,
+                    title = "OpenWeather",
+                    tab = openweather_tab()
+                },
+            }
         }
     }
 

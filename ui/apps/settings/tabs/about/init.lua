@@ -15,17 +15,16 @@ local about = {
 
 local function new()
     local navigator = wibox.widget {
-        widget = widgets.navigator.vertical
-    }
-
-    navigator:set_tabs {
-        {
+        widget = widgets.navigator.vertical,
+        tabs = {
             {
-                id = "breaking_changes",
-                icon = beautiful.icons.circle_exclamation,
-                title = "Breaking Changes",
-                tab = breaking_changes_tab()
-            },
+                {
+                    id = "breaking_changes",
+                    icon = beautiful.icons.circle_exclamation,
+                    title = "Breaking Changes",
+                    tab = breaking_changes_tab()
+                },
+            }
         }
     }
 
