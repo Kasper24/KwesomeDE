@@ -71,14 +71,14 @@ local function new()
         scrollbar_width = dpi(10),
         step = 50,
         spacing = dpi(15),
-        picker {
+        picker.folder {
             title = "Assets Folder:",
             initial_value = theme_daemon:get_wallpaper_engine_assets_folder(),
             on_changed = function(text)
                 theme_daemon:set_wallpaper_engine_assets_folder(text)
             end
         },
-        picker {
+        picker.folder {
             title = "Workshop Folder",
             initial_value = theme_daemon:get_wallpaper_engine_workshop_folder(),
             on_changed = function(text)

@@ -59,7 +59,7 @@ local function new()
         scrollbar_width = dpi(10),
         step = 50,
         spacing = dpi(15),
-        picker {
+        picker.file {
             title = "Profile image:",
             initial_value = theme_daemon:get_profile_image(),
             on_changed = function(text)

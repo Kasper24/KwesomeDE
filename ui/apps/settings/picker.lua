@@ -12,13 +12,12 @@ local picker = {
     mt = {}
 }
 
-local function new(args)
+local function new(args, type)
     args = args or {}
 
     local widget = wibox.widget {
-        widget = widgets.picker,
+        widget = widgets.picker[type],
         text_input_forced_width = dpi(400),
-        type = args.type,
         initial_value = args.initial_value,
         on_changed = function(text)
             args.on_changed(text)
@@ -53,8 +52,12 @@ local function new(args)
     }
 end
 
-function picker.mt:__call(args)
-    return new(args)
+function picker.file(args)
+    return new(args, "file")
+end
+
+function picker.folder(args)
+    return new(args, "folder")
 end
 
 return setmetatable(picker, picker.mt)

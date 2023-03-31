@@ -251,7 +251,8 @@ local function icons()
         photo_film = { icon = "" },
         clipboard = { icon = ""},
         atom = { icon = "" },
-        magnifying_glass = { icon = "" }
+        magnifying_glass = { icon = "" },
+        file = { icon = "" }
     }
 
     theme.taglist_icons = {

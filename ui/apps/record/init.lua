@@ -210,9 +210,8 @@ local function folder_picker()
     }
 
     local folder_picker = wibox.widget {
-        widget = widgets.picker,
+        widget = widgets.picker.folder,
         text_input_forced_width = dpi(330),
-        type = "folder",
         initial_value = record_daemon:get_folder(),
         on_changed = function(text)
             record_daemon:set_folder(text)

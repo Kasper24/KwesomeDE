@@ -136,24 +136,23 @@ local function folder_picker()
     }
 
     local folder_picker = wibox.widget {
-        widget = widgets.picker,
+        widget = widgets.picker.folder,
         text_input_forced_width = dpi(340),
-        type = "folder",
         initial_value = screenshot_daemon:get_folder(),
         on_changed = function(text)
             screenshot_daemon:set_folder(text)
         end
     }
 
-    RECORD_APP:get_client():connect_signal("request::unmanage", function()
+    SCREENSHOT_APP:get_client():connect_signal("request::unmanage", function()
         folder_picker:get_text_input():unfocus()
     end)
 
-    RECORD_APP:get_client():connect_signal("unfocus", function()
+    SCREENSHOT_APP:get_client():connect_signal("unfocus", function()
         folder_picker:get_text_input():unfocus()
     end)
 
-    RECORD_APP:get_client():connect_signal("mouse::leave", function()
+    SCREENSHOT_APP:get_client():connect_signal("mouse::leave", function()
         folder_picker:get_text_input():unfocus()
     end)
 
@@ -246,7 +245,7 @@ local function main()
 end
 
 local function new()
-    local app = app {
+    SCREENSHOT_APP = app {
         title ="Screenshot",
         class = "Screenshot",
         width = dpi(560),
@@ -258,22 +257,22 @@ local function new()
     }
 
     screenshot_daemon:connect_signal("started", function()
-        app:set_hidden(true)
+        SCREENSHOT_APP:set_hidden(true)
     end)
 
     screenshot_daemon:connect_signal("ended", function()
-        app:set_hidden(false)
+        SCREENSHOT_APP:set_hidden(false)
     end)
 
     screenshot_daemon:connect_signal("error::create_file", function()
-        app:set_hidden(false)
+        SCREENSHOT_APP:set_hidden(false)
     end)
 
     screenshot_daemon:connect_signal("error::create_directory", function()
-        app:set_hidden(false)
+        SCREENSHOT_APP:set_hidden(false)
     end)
 
-    return app
+    return SCREENSHOT_APP
 end
 
 if not instance then

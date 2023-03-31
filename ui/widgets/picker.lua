@@ -14,43 +14,39 @@ local filesystem = require("external.filesystem")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 
-local folder_picker = {
+local picker = {
     mt = {}
 }
 
 local FOLDER_PICKER_SCRIPT_PATH = filesystem.filesystem.get_awesome_config_dir("scripts") .. "folder-picker.lua"
 local FILE_PICKER_SCRIPT_PATH = filesystem.filesystem.get_awesome_config_dir("scripts") .. "file-picker.lua"
 
-function folder_picker:set_initial_value(initial_value)
+function picker:set_initial_value(initial_value)
     self._private.initial_value = initial_value
     self._private.text_input:set_initial(initial_value)
 end
 
-function folder_picker:set_on_changed(on_changed)
+function picker:set_on_changed(on_changed)
     self._private.on_changed = on_changed
 end
 
-function folder_picker:set_type(type)
-    self._private.type = type
-end
-
-function folder_picker:set_text_input_forced_width(text_input_forced_width)
+function picker:set_text_input_forced_width(text_input_forced_width)
     self._private.text_input.forced_width = text_input_forced_width
 end
 
-function folder_picker:set_text_input_forced_height(text_input_forced_height)
+function picker:set_text_input_forced_height(text_input_forced_height)
     self._private.text_input.forced_height = text_input_forced_height
 end
 
-function folder_picker:set_folder_button_forced_width(folder_button_forced_width)
+function picker:set_folder_button_forced_width(folder_button_forced_width)
     self._private.folder_button.forced_width = folder_button_forced_width
 end
 
-function folder_picker:set_folder_button_forced_height(folder_button_forced_height)
+function picker:set_folder_button_forced_height(folder_button_forced_height)
     self._private.folder_button.forced_height = folder_button_forced_height
 end
 
-local function new()
+local function new(type)
     local widget = nil
 
     local text_input = wibox.widget {
@@ -78,9 +74,9 @@ local function new()
         forced_height = dpi(35),
         size = 15,
         text_normal_bg = beautiful.colors.on_background,
-        icon = beautiful.icons.folder_open,
+        icon = type == "file" and beautiful.icons.file or beautiful.icons.folder_open,
         on_release = function()
-            local script = widget._private.type == "file" and FILE_PICKER_SCRIPT_PATH or FOLDER_PICKER_SCRIPT_PATH
+            local script = type == "file" and FILE_PICKER_SCRIPT_PATH or FOLDER_PICKER_SCRIPT_PATH
 
             awful.spawn.easy_async(script .. " '" .. widget._private.initial_value .. "'", function(stdout)
                 stdout = helpers.string.trim(stdout)
@@ -99,7 +95,7 @@ local function new()
         folder_button
     }
 
-    gtable.crush(widget, folder_picker, true)
+    gtable.crush(widget, picker, true)
 
 	function widget:get_text_input()
 		return text_input
@@ -125,8 +121,12 @@ local function new()
 
 end
 
-function folder_picker.mt:__call()
-    return new()
+function picker.file()
+    return new("file")
 end
 
-return setmetatable(folder_picker, folder_picker.mt)
+function picker.folder()
+    return new("folder")
+end
+
+return setmetatable(picker, picker.mt)
