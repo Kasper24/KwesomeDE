@@ -19,11 +19,6 @@
         "summary": "Don't Disturb",
         "description": "Disable notifications when enabled"
     },
-    "password": {
-        "default": "",
-        "summary": "Password",
-        "description": "The lockscreen password (not secured)"
-    },
     "pinned-apps": {
         "default": [],
         "summary": "Pinned apps",
