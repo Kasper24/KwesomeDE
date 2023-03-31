@@ -26,7 +26,6 @@ local function new()
             {
                 {
                     id = "image",
-                    icon = beautiful.icons.spraycan,
                     title = "Image",
                     tab = image_tab(),
                     on_select = function()
@@ -35,7 +34,6 @@ local function new()
                 },
                 {
                     id = "mountain",
-                    icon = beautiful.icons.spraycan,
                     title = "Mountain",
                     tab = mountain_tab(),
                     on_select = function()
@@ -44,7 +42,6 @@ local function new()
                 },
                 {
                     id = "digital_sun",
-                    icon = beautiful.icons.spraycan,
                     title = "Digital Sun",
                     tab = digital_sun_tab(),
                     on_select = function()
@@ -53,7 +50,6 @@ local function new()
                 },
                 {
                     id = "binary",
-                    icon = beautiful.icons.spraycan,
                     title = "Binary",
                     tab = binary_tab(),
                     on_select = function()
@@ -62,7 +58,6 @@ local function new()
                 },
                 {
                     id = "wallpaper_engine",
-                    icon = beautiful.icons.spraycan,
                     title = "Wallpaper Engine",
                     tab = wallpaper_engine_tab(),
                     on_select = function()

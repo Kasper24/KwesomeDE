@@ -24,25 +24,21 @@ local function new()
             {
                 {
                     id = "theme",
-                    icon = beautiful.icons.spraycan,
                     title = "Theme",
                     tab = theme_tab()
                 },
                 {
                     id = "ui",
-                    icon = beautiful.icons.spraycan,
                     title = "UI",
                     tab = ui_tab()
                 },
                 {
                     id = "compositor",
-                    icon = beautiful.icons.spraycan,
                     title = "Compositor",
                     tab = compositor_tab()
                 },
                 {
                     id = "wallpaper_engine",
-                    icon = beautiful.icons.spraycan,
                     title = "Wallpaper Engine",
                     tab = wallpaper_engine_tab()
                 },
