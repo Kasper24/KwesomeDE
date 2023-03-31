@@ -52,19 +52,13 @@ local function main()
                 id = "wifi",
                 icon = beautiful.icons.network.wifi_high,
                 title = "Wi-Fi",
-                tab = wifi_tab(),
-                on_select = function()
-                    network_daemon:scan_access_points()
-                end,
+                tab = wifi_tab()
             },
             {
                 id = "bluetooth",
                 icon = beautiful.icons.bluetooth.on,
                 title = "Bluetooth",
-                tab = bluetooth_tab(),
-                on_select = function()
-                    bluetooth_daemon:scan()
-                end
+                tab = bluetooth_tab()
             },
         },
         {

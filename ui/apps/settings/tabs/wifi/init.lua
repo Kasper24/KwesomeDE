@@ -242,6 +242,29 @@ local function access_point_widget(layout, access_point)
 end
 
 local function new()
+    local hw_addresses = {}
+
+    local function add_access_points(access_points, stack, layout)
+        layout:reset()
+
+        for _, hw_address in pairs(hw_addresses) do
+            network_daemon:dynamic_disconnect_signals(hw_address .. "::state")
+        end
+        hw_addresses = {}
+        network_daemon:dynamic_disconnect_signals("access_point::connected")
+
+        for _, access_point in pairs(access_points) do
+            table.insert(hw_addresses, access_point.hw_address)
+
+            if access_point:is_active() then
+                layout:insert(1, access_point_widget(layout, access_point))
+            else
+                layout:add(access_point_widget(layout, access_point))
+            end
+        end
+        stack:raise_widget(layout)
+    end
+
     local header = wibox.widget {
         widget = widgets.text,
         halign = "left",
@@ -303,34 +326,17 @@ local function new()
         bg = beautiful.colors.surface
     }
 
-    local hw_addresses = {}
-
-    network_daemon:connect_signal("scan_access_points::success", function(self, access_points)
-        layout:reset()
-
-        for _, hw_address in pairs(hw_addresses) do
-            network_daemon:dynamic_disconnect_signals(hw_address .. "::state")
-        end
-        hw_addresses = {}
-        network_daemon:dynamic_disconnect_signals("access_point::connected")
-
-        for _, access_point in pairs(access_points) do
-            table.insert(hw_addresses, access_point.hw_address)
-
-            if access_point:is_active() then
-                layout:insert(1, access_point_widget(layout, access_point))
-            else
-                layout:add(access_point_widget(layout, access_point))
-            end
-        end
-        stack:raise_widget(layout)
-    end)
-
     network_daemon:connect_signal("wireless_state", function(self, state)
         if state == false then
             stack:raise_widget(no_wifi)
         end
     end)
+
+    network_daemon:connect_signal("scan_access_points::success", function(self, access_points)
+        add_access_points(access_points, stack, layout)
+    end)
+
+    add_access_points(network_daemon:get_access_points(), stack, layout)
 
     return wibox.widget {
         widget = wibox.container.margin,

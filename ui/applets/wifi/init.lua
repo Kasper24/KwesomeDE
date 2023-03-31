@@ -368,12 +368,6 @@ local function new()
         }
     }
 
-    widget:connect_signal("visibility", function(self, visible)
-        if visible then
-            network_daemon:scan_access_points()
-        end
-    end)
-
     return widget
 end
 

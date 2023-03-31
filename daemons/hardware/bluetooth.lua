@@ -8,6 +8,7 @@ local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local dbus_proxy = require("external.dbus_proxy")
+local table = table
 local pairs = pairs
 
 local bluetooth = {}
@@ -36,6 +37,11 @@ function bluetooth:scan()
 
     self._private.adapter_proxy:StartDiscovery()
 end
+
+function bluetooth:get_devices()
+    return self._private.devices
+end
+
 
 function device:toggle_connect()
     if self.Connected == true then
@@ -110,6 +116,7 @@ local function get_device_info(self, object_path)
             end)
 
             gtable.crush(device_proxy, device, true)
+            self._private.devices[object_path] = device_proxy
 
             self:emit_signal("new_device", device_proxy, object_path)
         end
@@ -121,6 +128,7 @@ local function new()
     gtable.crush(ret, bluetooth, true)
 
     ret._private = {}
+    ret._private.devices = {}
 
     ret._private.object_manager_proxy = dbus_proxy.Proxy:new{
         bus = dbus_proxy.Bus.SYSTEM,
@@ -150,6 +158,7 @@ local function new()
 
         ret._private.object_manager_proxy:connect_signal("InterfacesRemoved", function(self, interface, data)
             if interface ~= nil then
+                self._private.devices[interface] = nil
                 ret:emit_signal(interface .. "_removed")
             end
         end)

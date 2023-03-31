@@ -203,21 +203,27 @@ local function new()
         bg = beautiful.colors.surface
     }
 
-    bluetooth_daemon:connect_signal("new_device", function(self, device, path)
-        local widget = device_widget(device, path)
-        layout:add(widget)
-        stack:raise_widget(layout)
-
-        bluetooth_daemon:connect_signal(path .. "_removed", function(self)
-            layout:remove_widgets(widget)
-        end)
-    end)
-
     bluetooth_daemon:connect_signal("state", function(self, state)
         if state == false then
             stack:raise_widget(no_bluetooth)
         end
     end)
+
+    bluetooth_daemon:connect_signal("new_device", function(self, device, path)
+        local widget = device_widget(device, path)
+        layout:add(widget)
+        stack:raise_widget(layout)
+
+        bluetooth_daemon:connect_signal(path .. "_removed", function()
+            layout:remove_widgets(widget)
+        end)
+    end)
+
+    for path, device in pairs(bluetooth_daemon:get_devices()) do
+        local widget = device_widget(device, path)
+        layout:add(widget)
+        stack:raise_widget(layout)
+    end
 
     return wibox.widget {
         widget = wibox.container.margin,

@@ -256,12 +256,6 @@ local function new()
         }
     }
 
-    widget:connect_signal("visibility", function(self, visible)
-        if visible then
-            bluetooth_daemon:scan()
-        end
-    end)
-
     return widget
 end
 

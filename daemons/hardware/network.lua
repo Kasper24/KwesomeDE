@@ -348,6 +348,10 @@ function network:open_settings()
     awful.spawn("nm-connection-editor", false)
 end
 
+function network:get_access_points()
+    return self._private.access_points
+end
+
 function access_point:connect(password, auto_connect)
     local connections = get_access_point_connections(self.network_manager, self.ssid)
     local profile = create_profile(self, password, auto_connect)
@@ -438,6 +442,7 @@ local function new()
     end)
 
     get_wifi_proxy(ret)
+    ret:scan_access_points()
 
     gtimer.delayed_call(function()
         ret:emit_signal("wireless_state", ret._private.client_proxy.WirelessEnabled)
