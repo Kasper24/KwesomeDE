@@ -19,6 +19,7 @@ local theme = {
 local function new()
     local navigator = wibox.widget {
         widget = widgets.navigator.vertical,
+        buttons_selected_color = beautiful.icons.computer.color,
         tabs = {
             {
                 {

@@ -27,24 +27,25 @@ local function separator()
 end
 
 local function tab_button(tab, navigator)
+    local icon = tab.icon and wibox.widget {
+        widget = twidget,
+        size = 12,
+        text_normal_bg = beautiful.colors.on_background,
+        text_on_normal_bg = beautiful.colors.on_accent,
+        icon = tab.icon,
+    } or nil
+
     local widget = wibox.widget {
         widget = ebwidget.state,
-        halign = "left",
-        on_normal_bg = beautiful.icons.computer.color,
+        halign = tab.halign or "left",
+        on_normal_bg = navigator._private.buttons_selected_color,
         on_release = function(self)
             navigator:select(tab.id)
         end,
         {
             layout = wibox.layout.fixed.horizontal,
             spacing = dpi(15),
-            {
-                widget = twidget,
-                size = 12,
-                halign = "left",
-                text_normal_bg = beautiful.colors.on_background,
-                text_on_normal_bg = beautiful.colors.on_accent,
-                icon = tab.icon,
-            },
+            icon,
             {
                 widget = twidget,
                 size = 12,
@@ -113,6 +114,21 @@ function navigator:set_widget_template(widget_template)
     self._private.tabs_stack = widget_template:get_children_by_id("tabs_stack")[1]
 end
 
+function navigator:set_buttons_spacing(spacing)
+    self._private.tabs_buttons.spacing = spacing
+end
+
+function navigator:set_buttons_selected_color(buttons_selected_color)
+    self._private.buttons_selected_color = buttons_selected_color
+    if self._private.tabs then
+        for _, tab_group in ipairs(self._private.tabs) do
+            for _, tab in ipairs(tab_group) do
+                tab.button:set_on_normal_bg(buttons_selected_color)
+            end
+        end
+    end
+end
+
 local function new()
     local widget = wibox.container.background()
     gtable.crush(widget, navigator, true)
@@ -127,12 +143,7 @@ function navigator.horizontal()
         fill_space = true,
         spacing = dpi(15),
         {
-            layout = wibox.layout.overflow.horizontal,
-            forced_width = math.huge,
-            forced_height = dpi(100),
-            scrollbar_widget = sbwidget,
-            scrollbar_width = dpi(10),
-            step = 50,
+            layout = wibox.layout.flex.horizontal,
             id = "tabs_buttons",
             spacing = dpi(15),
         },

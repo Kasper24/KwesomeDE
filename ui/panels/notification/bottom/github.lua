@@ -318,62 +318,27 @@ local function prs()
 end
 
 local function new()
-    local events = events()
-    local prs = prs()
-
-    local content = wibox.widget {
-        layout = wibox.layout.stack,
-        top_only = true,
-        events,
-        prs
-    }
-
-    local events_button = nil
-    local prs_button = nil
-
-    events_button = wibox.widget {
-        widget = widgets.button.text.state,
-        on_by_default = true,
-        size = 15,
-        on_normal_bg = beautiful.icons.github.color,
-        text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = beautiful.colors.on_accent,
-        text = "Activity",
-        on_release = function()
-            events_button:turn_on()
-            prs_button:turn_off()
-            content:raise_widget(events)
-        end
-    }
-
-    prs_button = wibox.widget {
-        widget = widgets.button.text.state,
-        size = 15,
-        on_normal_bg = beautiful.icons.github.color,
-        text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = beautiful.colors.on_accent,
-        text = "PR",
-        on_release = function()
-            events_button:turn_off()
-            prs_button:turn_on()
-            content:raise_widget(prs)
-        end
-    }
-
     return wibox.widget {
-        layout = wibox.layout.fixed.vertical,
-        spacing = dpi(10),
-        {
-            layout = wibox.layout.flex.horizontal,
-            spacing = dpi(10),
-            events_button,
-            prs_button
-        },
-        {
-            widget = wibox.container.place,
-            halign = "center",
-            valign = "center",
-            content
+        widget = widgets.navigator.horizontal,
+        buttons_selected_color = beautiful.icons.envelope.color,
+        buttons_spacing = 0,
+        tabs = {
+            {
+                {
+                    id = "events",
+                    icon = beautiful.icons.star,
+                    title = "Events",
+                    halign = "center",
+                    tab = events(),
+                },
+                {
+                    id = "pull_requests",
+                    icon = beautiful.icons.code_branch,
+                    title = "Pull Requests",
+                    halign = "center",
+                    tab = prs(),
+                },
+            }
         }
     }
 end

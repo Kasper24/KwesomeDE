@@ -42,6 +42,7 @@ local function main()
 
     SETTINGS_APP_NAVIGATOR = wibox.widget {
         widget = widgets.navigator.vertical,
+        buttons_selected_color = beautiful.icons.computer.color,
         buttons_header = user
     }
 
