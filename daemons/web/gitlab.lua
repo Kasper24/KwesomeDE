@@ -30,7 +30,11 @@ function gitlab:set_host(host)
 end
 
 function gitlab:get_host()
-    return self._private.host
+    if self._private.host == nil then
+        self._private.host = helpers.settings["gitlab.host"]
+    end
+
+    return self._private.host or ""
 end
 
 function gitlab:set_access_token(access_token)
@@ -53,10 +57,10 @@ end
 
 function gitlab:get_access_token()
     if self._private.access_token == nil then
-        self._private.access_token =Secret.password_lookup_sync(self._private.access_token_schema, self._private.access_token_atrributes)
+        self._private.access_token = Secret.password_lookup_sync(self._private.access_token_schema, self._private.access_token_atrributes)
     end
 
-    return self._private.access_token
+    return self._private.access_token or ""
 end
 
 function gitlab:get_avatars_path()
@@ -64,11 +68,16 @@ function gitlab:get_avatars_path()
 end
 
 function gitlab:refresh()
+    if self:get_host() == "" or self:get_access_token() == "" then
+        self:emit_signal("error::missing_credentials")
+        return
+    end
+
     local old_data = nil
 
     filesystem.filesystem.remote_watch(
         DATA_PATH,
-        string.format(LINK, self._private.host, self._private.access_token),
+        string.format(LINK, self:get_host(), self._private.access_token),
         UPDATE_INTERVAL,
         function(content)
             local data = json.decode(content)
@@ -117,15 +126,10 @@ local function new()
     ret._private.access_token_schema = Secret.Schema.new("org.kwesomede", Secret.SchemaFlags.NONE, {
         ["org.kwesomede.gitlab.access-token"] = Secret.SchemaAttributeType.STRING
     })
-    ret._private.host = helpers.settings["gitlab.host"]
 
-    if ret:get_access_token() then
+    gtimer.delayed_call(function()
         ret:refresh()
-    else
-        gtimer.delayed_call(function()
-            ret:emit_signal("missing_credentials")
-        end)
-    end
+    end)
 
     return ret
 end

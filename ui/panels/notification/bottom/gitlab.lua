@@ -188,7 +188,7 @@ local function new()
         widget:raise_widget(error_icon)
     end)
 
-    gitlab_daemon:connect_signal("missing_credentials", function()
+    gitlab_daemon:connect_signal("error::missing_credentials", function()
         spinning_circle:stop()
         widget:raise_widget(missing_credentials_text)
     end)

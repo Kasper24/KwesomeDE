@@ -362,7 +362,7 @@ local function new()
         stack:raise_widget(error_icon)
     end)
 
-    weather_daemon:connect_signal("missing_credentials", function()
+    weather_daemon:connect_signal("error::missing_credentials", function()
         spinning_circle:stop()
         stack:raise_widget(missing_credentials_text)
     end)

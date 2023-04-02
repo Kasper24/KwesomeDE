@@ -43,7 +43,7 @@ function weather:get_api_key()
         self._private.api_key =Secret.password_lookup_sync(self._private.api_key_schema, self._private.api_key_atrributes)
     end
 
-    return self._private.api_key
+    return self._private.api_key  or ""
 end
 
 function weather:set_unit(unit)
@@ -53,7 +53,11 @@ function weather:set_unit(unit)
 end
 
 function weather:get_unit()
-    return self._private.unit
+    if self._private.unit == nil then
+        self._private.unit = helpers.settings["openweather.unit"]
+    end
+
+    return self._private.unit  or ""
 end
 
 function weather:set_latitude(latitude)
@@ -63,7 +67,11 @@ function weather:set_latitude(latitude)
 end
 
 function weather:get_latitude()
-    return self._private.latitude
+    if self._private.latitude == nil then
+        self._private.latitude = helpers.settings["openweather.latitude"]
+    end
+
+    return self._private.latitude  or ""
 end
 
 function weather:set_longitude(longitude)
@@ -73,10 +81,19 @@ function weather:set_longitude(longitude)
 end
 
 function weather:get_longitude()
-    return self._private.longitude
+    if self._private.longitude == nil then
+        self._private.longitude = helpers.settings["openweather.longitude"]
+    end
+
+    return self._private.longitude or ""
 end
 
 function weather:refresh()
+    if self:get_api_key() == "" or self:get_latitude() == "" or self:get_longitude() == "" or self:get_unit() == "" then
+        self:emit_signal("error::missing_credentials")
+        return
+    end
+
     local link = string.format(
         "https://api.openweathermap.org/data/2.5/onecall?lat=%s&lon=%s&appid=%s&units=%s&exclude=minutely&lang=en",
         self:get_latitude(), self:get_longitude(), self:get_api_key(), self:get_unit())
@@ -115,17 +132,9 @@ local function new()
         ["org.kwesomede.openweather.openweather.api-key"] = Secret.SchemaAttributeType.STRING
     })
 
-    ret._private.latitude = helpers.settings["openweather.latitude"]
-    ret._private.longitude = helpers.settings["openweather.longitude"]
-    ret._private.unit = helpers.settings["openweather.unit"]
-
-    if ret:get_api_key() and ret:get_latitude() ~= "" and ret:get_longitude() ~= "" then
+    gtimer.delayed_call(function()
         ret:refresh()
-    else
-        gtimer.delayed_call(function()
-            ret:emit_signal("missing_credentials")
-        end)
-    end
+    end)
 
     return ret
 end

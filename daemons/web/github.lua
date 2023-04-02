@@ -33,7 +33,11 @@ function github:set_username(username)
 end
 
 function github:get_username()
-    return self._private.username
+    if self._private.username == nil then
+        self._private.username = helpers.settings["github.username"]
+    end
+
+    return self._private.username or ""
 end
 
 function github:get_event_info(event)
@@ -190,6 +194,11 @@ local function github_contributions(self)
 end
 
 function github:refresh()
+    if self:get_username() == "" then
+        self:emit_signal("error::missing_credentials")
+        return
+    end
+
     github_events(self)
     github_prs(self)
     -- github_contributions(self)
@@ -200,15 +209,10 @@ local function new()
     gtable.crush(ret, github, true)
 
     ret._private = {}
-    ret._private.username = helpers.settings["github.username"]
 
-    if ret._private.username ~= "" then
+    gtimer.delayed_call(function()
         ret:refresh()
-    else
-        gtimer.delayed_call(function()
-            ret:emit_signal("missing_credentials")
-        end)
-    end
+    end)
 
     return ret
 end

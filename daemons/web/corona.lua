@@ -26,7 +26,11 @@ function corona:set_country(country)
 end
 
 function corona:get_country()
-    return self._private.country
+    if self._private.country == nil then
+        self._private.country = helpers.settings["corona.country"]
+    end
+
+    return self._private.country or ""
 end
 
 function corona:open_website()
@@ -34,6 +38,11 @@ function corona:open_website()
 end
 
 function corona:refresh()
+    if self:get_country() == "" then
+        self:emit_signal("error::missing_credentials")
+        return
+    end
+
     filesystem.filesystem.remote_watch(
         DATA_PATH,
         string.format(link, self._private.country),
@@ -60,15 +69,10 @@ local function new()
     gtable.crush(ret, corona, true)
 
     ret._private = {}
-    ret._private.country = helpers.settings["corona.country"]
 
-    if ret._private.country ~= nil then
+    gtimer.delayed_call(function()
         ret:refresh()
-    else
-        gtimer.delayed_call(function()
-            ret:emit_signal("missing_credentials")
-        end)
-    end
+    end)
 
     return ret
 end
