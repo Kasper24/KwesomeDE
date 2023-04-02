@@ -13,15 +13,6 @@ local dpi = beautiful.xresources.apply_dpi
 
 local instance = nil
 
-local function separator()
-    return wibox.widget {
-        widget = widgets.background,
-        forced_height = dpi(1),
-        shape = helpers.ui.rrect(),
-        bg = beautiful.colors.surface
-    }
-end
-
 local function application_widget(application)
     local font_icon = tasklist_daemon:get_font_icon(application.name)
     local accent_color = font_icon and font_icon.color or beautiful.icons.volume.high.color
@@ -190,32 +181,8 @@ local function device_widget(device)
     return widget
 end
 
-local function applications()
-    local sink_inputs_header = wibox.widget {
-        widget = widgets.text,
-        halign = "left",
-        bold = true,
-        color = beautiful.icons.volume.off.color,
-        text = "Sink Inputs"
-    }
-
-    local sinks_inputs_layout = wibox.widget {
-        layout = wibox.layout.overflow.vertical,
-        forced_height = dpi(300),
-        spacing = dpi(15),
-        scrollbar_widget = widgets.scrollbar,
-        scrollbar_width = dpi(10),
-        step = 50
-    }
-
-    local source_outputs_header = widgets.text {
-        halign = "left",
-        bold = true,
-        color = beautiful.icons.volume.off.color,
-        text = "Source Outputs"
-    }
-
-    local source_outputs_layout = wibox.widget {
+local function sink_inputs()
+    local layout = wibox.widget {
         layout = wibox.layout.overflow.vertical,
         forced_height = dpi(300),
         spacing = dpi(15),
@@ -225,51 +192,62 @@ local function applications()
     }
 
     audio_daemon:connect_signal("sink_inputs::added", function(self, sink_input)
-        sinks_inputs_layout:add(application_widget(sink_input))
-    end)
-
-    audio_daemon:connect_signal("source_outputs::added", function(self, source_output)
-        source_outputs_layout:add(application_widget(source_output))
+        layout:add(application_widget(sink_input))
     end)
 
     audio_daemon:connect_signal("sink_inputs::removed", function(self, sink_input)
-        sinks_inputs_layout:remove_widgets(sinks_inputs_layout:get_children_by_id(sink_input.id)[1])
+        layout:remove_widgets(layout:get_children_by_id(sink_input.id)[1])
+    end)
+
+    return layout
+end
+
+local function source_outputs()
+    local layout = wibox.widget {
+        layout = wibox.layout.overflow.vertical,
+        forced_height = dpi(300),
+        spacing = dpi(15),
+        scrollbar_widget = widgets.scrollbar,
+        scrollbar_width = dpi(10),
+        step = 50
+    }
+
+    audio_daemon:connect_signal("source_outputs::added", function(self, source_output)
+        layout:add(application_widget(source_output))
     end)
 
     audio_daemon:connect_signal("source_outputs::removed", function(self, source_output)
-        source_outputs_layout:remove_widgets(sinks_inputs_layout:get_children_by_id(source_output.id)[1])
+        layout:remove_widgets(layout:get_children_by_id(source_output.id)[1])
     end)
 
+    return layout
+end
+
+local function applications()
     return wibox.widget {
-        layout = wibox.layout.fixed.vertical,
-        spacing = dpi(30),
-        {
-            layout = wibox.layout.fixed.vertical,
-            spacing = dpi(15),
-            sink_inputs_header,
-            separator(),
-            sinks_inputs_layout
-        },
-        {
-            layout = wibox.layout.fixed.vertical,
-            spacing = dpi(15),
-            source_outputs_header,
-            separator(),
-            source_outputs_layout
+        widget = widgets.navigator.horizontal,
+        buttons_selected_color = beautiful.icons.volume.high.color,
+        tabs = {
+            {
+                {
+                    id = "sink_inputs",
+                    title = "Sinks Inputs",
+                    halign = "center",
+                    tab = sink_inputs()
+                },
+                {
+                    id = "source_outputs",
+                    title = "Source Outputs",
+                    halign = "center",
+                    tab = source_outputs()
+                },
+            }
         }
     }
 end
 
 local function sinks()
-    local sinks_header = wibox.widget {
-        widget = widgets.text,
-        halign = "left",
-        bold = true,
-        color = beautiful.icons.volume.off.color,
-        text = "Sinks"
-    }
-
-    local sinks_radio_group = wibox.widget {
+    local radio_group = wibox.widget {
         widget = widgets.radio_group.vertical,
         on_select = function(id)
             audio_daemon:set_default_sink(id)
@@ -285,7 +263,7 @@ local function sinks()
     }
 
     audio_daemon:connect_signal("sinks::added", function(self, sink)
-        sinks_radio_group:add_value{
+        radio_group:add_value{
             id = sink.id,
             color = beautiful.colors.background,
             check_color = beautiful.icons.volume.high.color,
@@ -294,32 +272,18 @@ local function sinks()
     end)
 
     audio_daemon:connect_signal("sinks::default", function(self, sink)
-        sinks_radio_group:select(sink.id)
+        radio_group:select(sink.id)
     end)
 
     audio_daemon:connect_signal("sinks::removed", function(self, id)
-        sinks_radio_group:remove_value(id)
+        radio_group:remove_value(id)
     end)
 
-    return wibox.widget {
-        layout = wibox.layout.fixed.vertical,
-        spacing = dpi(15),
-        sinks_header,
-        separator(),
-        sinks_radio_group
-    }
+    return radio_group
 end
 
 local function sources()
-    local sources_header = wibox.widget {
-        widget = widgets.text,
-        halign = "left",
-        bold = true,
-        color = beautiful.icons.volume.off.color,
-        text = "Sources"
-    }
-
-    local sources_radio_group = wibox.widget {
+    local radio_group = wibox.widget {
         widget = widgets.radio_group.vertical,
         on_select = function(id)
             audio_daemon:set_default_source(id)
@@ -335,7 +299,7 @@ local function sources()
     }
 
     audio_daemon:connect_signal("sources::added", function(self, source)
-        sources_radio_group:add_value{
+        radio_group:add_value{
             id = source.id,
             color = beautiful.colors.background,
             check_color = beautiful.icons.volume.high.color,
@@ -344,20 +308,14 @@ local function sources()
     end)
 
     audio_daemon:connect_signal("sources::default", function(self, source)
-        sources_radio_group:select(source.id)
+        radio_group:select(source.id)
     end)
 
     audio_daemon:connect_signal("sources::removed", function(self, id)
-        sources_radio_group:remove_value(id)
+        radio_group:remove_value(id)
     end)
 
-    return wibox.widget {
-        layout = wibox.layout.fixed.vertical,
-        spacing = dpi(15),
-        sources_header,
-        separator(),
-        sources_radio_group
-    }
+    return radio_group
 end
 
 local function devices()
