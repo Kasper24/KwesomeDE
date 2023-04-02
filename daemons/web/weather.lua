@@ -100,23 +100,24 @@ function weather:refresh()
         self:get_latitude(), self:get_longitude(), self:get_api_key(), self:get_unit())
 
         filesystem.filesystem.remote_watch(
-        DATA_PATH, link,
-        UPDATE_INTERVAL,
-        function(content)
-            if content == nil or content == false then
-                self:emit_signal("error")
-                return
-            end
+            DATA_PATH,
+            link,
+            UPDATE_INTERVAL,
+            function(content)
+                if content == nil or content == false then
+                    self:emit_signal("error")
+                    return
+                end
 
-            local data = json.decode(content)
-            if data == nil then
-                self:emit_signal("error")
-                return
-            end
+                local data = json.decode(content)
+                if data == nil then
+                    self:emit_signal("error")
+                    return
+                end
 
-            self:emit_signal("weather", data)
-        end
-    )
+                self:emit_signal("weather", data)
+            end
+        )
 
 end
 
