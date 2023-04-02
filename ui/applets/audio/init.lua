@@ -420,63 +420,28 @@ local function devices()
     }
 end
 
-local function widget()
-    local _applications = applications()
-    local _devices = devices()
-
-    local content = wibox.widget {
-        layout = wibox.layout.stack,
-        top_only = true,
-        _devices,
-        _applications
-    }
-
-    local devices_button = nil
-    local applications_button = nil
-
-    devices_button = wibox.widget {
-        widget = widgets.button.text.state,
-        on_by_default = true,
-        size = 15,
-        on_normal_bg = beautiful.icons.volume.off.color,
-        text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = beautiful.colors.on_accent,
-        text = "Devices",
-        on_release = function()
-            devices_button:turn_on()
-            applications_button:turn_off()
-            content:raise_widget(_devices)
-        end
-    }
-
-    applications_button = wibox.widget {
-        widget = widgets.button.text.state,
-        size = 15,
-        on_normal_bg = beautiful.icons.volume.off.color,
-        text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = beautiful.colors.on_accent,
-        text = "Applications",
-        on_release = function()
-            devices_button:turn_off()
-            applications_button:turn_on()
-            content:raise_widget(_applications)
-        end
-    }
-
-    return wibox.widget {
-        layout = wibox.layout.fixed.vertical,
-        spacing = dpi(10),
-        {
-            layout = wibox.layout.flex.horizontal,
-            spacing = dpi(10),
-            devices_button,
-            applications_button
-        },
-        content
-    }
-end
-
 local function new()
+    local navigator = wibox.widget {
+        widget = widgets.navigator.horizontal,
+        buttons_selected_color = beautiful.icons.computer.color,
+        tabs = {
+            {
+                {
+                    id = "devices",
+                    title = "Devices",
+                    halign = "center",
+                    tab = devices()
+                },
+                {
+                    id = "applications",
+                    title = "Applications",
+                    halign = "center",
+                    tab = applications()
+                },
+            }
+        }
+    }
+
     return widgets.animated_panel {
         ontop = true,
         visible = false,
@@ -495,7 +460,7 @@ local function new()
         widget = wibox.widget {
             widget = wibox.container.margin,
             margins = dpi(25),
-            widget()
+            navigator
         }
     }
 end
