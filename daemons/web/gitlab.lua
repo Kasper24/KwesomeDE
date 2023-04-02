@@ -110,10 +110,10 @@ local function new()
 
     ret._private = {}
     ret._private.access_token_atrributes =  {
-        ["org.kwesomede.openweather.gitlab.access-token"] = "gitlab access token"
+        ["org.kwesomede.gitlab.access-token"] = "gitlab access token"
     }
     ret._private.access_token_schema = Secret.Schema.new("org.kwesomede", Secret.SchemaFlags.NONE, {
-        ["org.kwesomede.openweather.gitlab.access-token"] = Secret.SchemaAttributeType.STRING
+        ["org.kwesomede.gitlab.access-token"] = Secret.SchemaAttributeType.STRING
     })
     ret._private.host = helpers.settings["gitlab.host"]
 
