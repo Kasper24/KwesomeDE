@@ -10,7 +10,6 @@ local audio_daemon = require("daemons.hardware.audio")
 local tasklist_daemon = require("daemons.system.tasklist")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
-local string = string
 
 local instance = nil
 
