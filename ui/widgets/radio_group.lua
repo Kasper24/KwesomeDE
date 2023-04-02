@@ -21,6 +21,7 @@ local radio_group = {
 local function button(value, radio_group)
     local widget = wibox.widget {
          layout = wibox.layout.fixed.horizontal,
+         id = value.id,
          spacing = dpi(15),
          {
              widget = wibox.widget.checkbox,
@@ -32,7 +33,7 @@ local function button(value, radio_group)
              check_color = value.check_color,
              paddings = dpi(2),
          },
-         {
+         value.widget or {
              widget = twidget,
              size = 15,
              text = value.title,
@@ -40,7 +41,11 @@ local function button(value, radio_group)
          }
      }
 
-     widget:connect_signal("mouse::enter", function()
+     local widget_to_connect = value.widget ~= nil and
+        widget:get_children_by_id("checkbox")[1] or
+        widget
+
+     widget_to_connect:connect_signal("mouse::enter", function()
          capi.root.cursor("hand2")
          local wibox = capi.mouse.current_wibox
          if wibox then
@@ -48,7 +53,7 @@ local function button(value, radio_group)
          end
      end)
 
-     widget:connect_signal("mouse::leave", function()
+     widget_to_connect:connect_signal("mouse::leave", function()
          capi.root.cursor("left_ptr")
          local wibox = capi.mouse.current_wibox
          if wibox then
@@ -56,7 +61,7 @@ local function button(value, radio_group)
          end
      end)
 
-     widget:connect_signal("button::press", function(_, lx, ly, button, mods, find_widgets_result)
+     widget_to_connect:connect_signal("button::press", function(_, lx, ly, button, mods, find_widgets_result)
         if gtable.hasitem(mods, "Mod4") or button ~= 1 then
 			return
 		end
@@ -82,10 +87,25 @@ function radio_group:select(id)
     end
 end
 
+function radio_group:add_value(value)
+    value.button = button(value, self)
+    self._private.buttons_layout:add(value.button)
+    table.insert(self._private.values, value)
+end
+
+function radio_group:remove_value(value_to_remove)
+    for index, value in ipairs(self._private.values) do
+        if value.id == value_to_remove.id then
+            self._private.buttons_layout:remove_widgets(value.button)
+            table.remove(self._private.values, index)
+        end
+    end
+end
+
 function radio_group:set_values(values)
     self._private.values = values
 
-    for index, value in ipairs(values) do
+    for _, value in ipairs(values) do
         value.button = button(value, self)
         self._private.buttons_layout:add(value.button)
     end
@@ -109,6 +129,8 @@ end
 local function new()
     local widget = wibox.container.background()
     gtable.crush(widget, radio_group, true)
+
+    widget._private.values = {}
 
     return widget
 end

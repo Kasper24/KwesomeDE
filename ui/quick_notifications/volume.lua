@@ -89,27 +89,27 @@ local function new()
     }
 
     local show = false
-    audio_daemon:connect_signal("default_sinks_updated", function(self, device)
+    audio_daemon:connect_signal("sinks::default", function(self, sink)
         if show == true then
-            if device.mute or device.volume == 0 then
+            if sink.mute or sink.volume == 0 then
                 icon:set_icon(beautiful.icons.volume.off)
-            elseif device.volume <= 33 then
+            elseif sink.volume <= 33 then
                 icon:set_icon(beautiful.icons.volume.low)
-            elseif device.volume <= 66 then
+            elseif sink.volume <= 66 then
                 icon:set_icon(beautiful.icons.volume.normal)
-            elseif device.volume > 66 then
+            elseif sink.volume > 66 then
                 icon:set_icon(beautiful.icons.volume.high)
             end
 
-            text:set_text(device.volume)
-            anim:set(device.volume)
+            text:set_text(sink.volume)
+            anim:set(sink.volume)
 
             if widget.visible == false then
                 widget:show()
             end
             hide_timer:again()
         else
-            anim:set(device.volume / 100)
+            anim:set(sink.volume / 100)
             show = true
         end
     end)

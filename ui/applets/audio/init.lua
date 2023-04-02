@@ -166,21 +166,6 @@ local function device_widget(args)
         end
     }
 
-    local default = wibox.widget {
-        widget = widgets.button.text.state,
-        forced_width = dpi(40),
-        forced_height = dpi(40),
-        on_by_default = args.device.default,
-        text_normal_bg = beautiful.icons.volume.off.color,
-        on_normal_bg = beautiful.icons.volume.off.color,
-        text_on_normal_bg = beautiful.colors.on_accent,
-        icon = beautiful.icons.check,
-        size = 12,
-        on_release = function()
-            args.on_default_press()
-        end
-    }
-
     local slider = widgets.slider {
         forced_height = dpi(20),
         value = args.device.volume,
@@ -198,12 +183,7 @@ local function device_widget(args)
             layout = wibox.layout.align.horizontal,
             name,
             nil,
-            {
-                layout = wibox.layout.fixed.horizontal,
-                spacing = dpi(15),
-                mute,
-                default
-            }
+            mute
         },
         {
             widget = wibox.container.margin,
@@ -212,29 +192,7 @@ local function device_widget(args)
         }
     }
 
-    audio_daemon:dynamic_connect_signal(args.type .. "::" .. args.device.id .. "::removed", function(self)
-        args.on_removed_cb(widget)
-        audio_daemon:dynamic_disconnect_signals(args.type .. "::" .. args.device.id .. "::removed")
-        audio_daemon:dynamic_disconnect_signals(args.type .. "::" .. args.device.id .. "::updated")
-        slider:dynamic_disconnect_signals("property::value")
-    end)
-
-    audio_daemon:dynamic_connect_signal(args.type .. "::" .. args.device.id .. "::updated", function(self, device)
-        slider:set_value(device.volume)
-
-        if device.default == true then
-            default:turn_on()
-        else
-            default:turn_off()
-        end
-        if device.mute == true then
-            mute:turn_on()
-        else
-            mute:turn_off()
-        end
-    end)
-
-    slider:dynamic_connect_signal("property::value", function(self, value, instant)
+    slider:connect_signal("property::value", function(self, value, instant)
         args.on_slider_moved(value)
     end)
 
@@ -336,13 +294,20 @@ local function devices()
         text = "Sinks"
     }
 
-    local sinks_layout = wibox.widget {
-        layout = wibox.layout.overflow.vertical,
+    local sinks_radio_group = wibox.widget {
+        widget = widgets.radio_group.vertical,
         forced_height = dpi(300),
-        spacing = dpi(15),
-        scrollbar_widget = widgets.scrollbar,
-        scrollbar_width = dpi(10),
-        step = 50
+        on_select = function(id)
+            audio_daemon:set_default_sink(id)
+        end,
+        widget_template = wibox.widget {
+            layout = wibox.layout.overflow.vertical,
+            id = "buttons_layout",
+            spacing = dpi(15),
+            scrollbar_widget = widgets.scrollbar,
+            scrollbar_width = dpi(10),
+            step = 50,
+        }
     }
 
     local sources_header = wibox.widget {
@@ -353,51 +318,104 @@ local function devices()
         text = "Sources"
     }
 
-    local sources_layout = wibox.widget {
-        layout = wibox.layout.overflow.vertical,
+    local sources_radio_group = wibox.widget {
+        widget = widgets.radio_group.vertical,
         forced_height = dpi(300),
-        spacing = dpi(15),
-        scrollbar_widget = widgets.scrollbar,
-        scrollbar_width = dpi(10),
-        step = 50
+        on_select = function(id)
+            audio_daemon:set_default_source(id)
+        end,
+        widget_template = wibox.widget {
+            layout = wibox.layout.overflow.vertical,
+            id = "buttons_layout",
+            spacing = dpi(15),
+            scrollbar_widget = widgets.scrollbar,
+            scrollbar_width = dpi(10),
+            step = 50,
+        }
     }
 
     audio_daemon:connect_signal("sinks::added", function(self, sink)
-        sinks_layout:add(device_widget {
-            type = "sinks",
-            device = sink,
-            on_mute_press = function()
-                audio_daemon:sink_toggle_mute(sink.id)
-            end,
-            on_default_press = function()
-                audio_daemon:set_default_sink(sink.id)
-            end,
-            on_slider_moved = function(volume)
-                audio_daemon:sink_set_volume(sink.id, volume)
-            end,
-            on_removed_cb = function(widget)
-                sinks_layout:remove_widgets(widget)
-            end
-        })
+        sinks_radio_group:add_value{
+            id = sink.id,
+            color = beautiful.colors.background,
+            check_color = beautiful.icons.volume.high.color,
+            widget = device_widget {
+                type = "sinks",
+                device = sink,
+                on_mute_press = function()
+                    audio_daemon:sink_toggle_mute(sink.id)
+                end,
+                on_default_press = function()
+                    audio_daemon:set_default_sink(sink.id)
+                end,
+                on_slider_moved = function(volume)
+                    audio_daemon:sink_set_volume(sink.id, volume)
+                end,
+                on_removed_cb = function(widget)
+                    sinks_layout:remove_widgets(widget)
+                end
+            }
+        }
+    end)
+
+    audio_daemon:connect_signal("sinks::default", function(self, sink)
+        sinks_radio_group:select(sink.id)
+    end)
+
+    audio_daemon:dynamic_connect_signal("sinks::updated", function(self, sink)
+        -- slider:set_value(sink.volume)
+
+        -- if sink.mute == true then
+        --     mute:turn_on()
+        -- else
+        --     mute:turn_off()
+        -- end
+    end)
+
+    audio_daemon:dynamic_connect_signal("sinks::removed", function(self, id)
+        sinks_radio_group:remove_value(id)
     end)
 
     audio_daemon:connect_signal("sources::added", function(self, source)
-        sources_layout:add(device_widget {
-            type = "sources",
-            device = source,
-            on_mute_press = function()
-                audio_daemon:source_toggle_mute(source.id)
-            end,
-            on_default_press = function()
-                audio_daemon:set_default_source(source.id)
-            end,
-            on_slider_moved = function(volume)
-                audio_daemon:source_set_volume(source.id, volume)
-            end,
-            on_removed_cb = function(widget)
-                sources_layout:remove_widgets(widget)
-            end
-        })
+        sources_radio_group:add_value{
+            id = source.id,
+            color = beautiful.colors.background,
+            check_color = beautiful.icons.volume.high.color,
+            widget = device_widget {
+                type = "sources",
+                device = source,
+                on_mute_press = function()
+                    audio_daemon:source_toggle_mute(source.id)
+                end,
+                on_default_press = function()
+                    audio_daemon:set_default_source(source.id)
+                end,
+                on_slider_moved = function(volume)
+                    audio_daemon:source_set_volume(source.id, volume)
+                end,
+                on_removed_cb = function(widget)
+                    sources_layout:remove_widgets(widget)
+                end
+            }
+        }
+    end)
+
+    audio_daemon:connect_signal("sources::default", function(self, source)
+        sources_radio_group:select(source.id)
+    end)
+
+    audio_daemon:dynamic_connect_signal("sources::updated", function(self, source)
+        -- slider:set_value(source.volume)
+
+        -- if source.mute == true then
+        --     mute:turn_on()
+        -- else
+        --     mute:turn_off()
+        -- end
+    end)
+
+    audio_daemon:dynamic_connect_signal("sources::removed", function(self, id)
+        sources_radio_group:remove_value(id)
     end)
 
     return wibox.widget {
@@ -408,14 +426,14 @@ local function devices()
             spacing = dpi(15),
             sinks_header,
             separator(),
-            sinks_layout
+            sinks_radio_group
         },
         {
             layout = wibox.layout.fixed.vertical,
             spacing = dpi(15),
             sources_header,
             separator(),
-            sources_layout
+            sources_radio_group
         }
     }
 end

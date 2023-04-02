@@ -147,14 +147,14 @@ local function volume()
         size = 17
     }
 
-    audio_daemon:connect_signal("default_sinks_updated", function(self, device)
-        if device.mute or device.volume == 0 then
+    audio_daemon:connect_signal("sinks::default", function(self, sink)
+        if sink.mute or sink.volume == 0 then
             widget:set_icon(beautiful.icons.volume.off)
-        elseif device.volume <= 33 then
+        elseif sink.volume <= 33 then
             widget:set_icon(beautiful.icons.volume.low)
-        elseif device.volume <= 66 then
+        elseif sink.volume <= 66 then
             widget:set_icon(beautiful.icons.volume.normal)
-        elseif device.volume > 66 then
+        elseif sink.volume > 66 then
             widget:set_icon(beautiful.icons.volume.high)
         end
     end)

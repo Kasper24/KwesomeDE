@@ -142,7 +142,7 @@ local function on_default_device_changed(self)
                 if device.name == default_device_name then
                     if device.default == false then
                         device.default = true
-                        self:emit_signal(string.format("default_%s_updated", type), device)
+                        self:emit_signal(type .. "::default", device)
                     end
                 else
                     device.default = false
@@ -223,7 +223,7 @@ end
 
 local function on_object_removed(self, type, id)
     self._private[type][id] = nil
-    self:emit_signal(type .. "::" .. id .. "::removed")
+    self:emit_signal(type .. "::removed", id)
 end
 
 local function on_device_updated(self, type, id)
@@ -257,7 +257,7 @@ local function on_device_updated(self, type, id)
         if was_there_any_change == true then
             self:emit_signal(type .. "::" .. id .. "::updated", self._private[type][id])
             if self._private[type][id].default == true then
-                self:emit_signal("default_" .. type .. "_updated", self._private[type][id])
+                self:emit_signal(type .. "::default", self._private[type][id])
             end
         end
     end)

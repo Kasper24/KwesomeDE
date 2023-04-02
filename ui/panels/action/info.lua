@@ -214,16 +214,16 @@ local function audio()
     end)
 
     local icon = icon:get_children_by_id("icon")[1]
-    audio_daemon:connect_signal("default_sinks_updated", function(self, device)
-        slider:set_value(device.volume)
+    audio_daemon:connect_signal("sinks::default", function(self, sink)
+        slider:set_value(sink.volume)
 
-        if device.mute or device.volume == 0 then
+        if sink.mute or sink.volume == 0 then
             icon:set_icon(beautiful.icons.volume.off)
-        elseif device.volume <= 33 then
+        elseif sink.volume <= 33 then
             icon:set_icon(beautiful.icons.volume.low)
-        elseif device.volume <= 66 then
+        elseif sink.volume <= 66 then
             icon:set_icon(beautiful.icons.volume.normal)
-        elseif device.volume > 66 then
+        elseif sink.volume > 66 then
             icon:set_icon(beautiful.icons.volume.high)
         end
     end)

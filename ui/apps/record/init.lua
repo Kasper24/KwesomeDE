@@ -172,7 +172,7 @@ local function audio_source()
         add_sources(dropdown)
     end)
 
-    audio_daemon:connect_signal("default_sources_updated", function(self, source)
+    audio_daemon:connect_signal("sources::default", function(self, source)
         dropdown:select(source.description, source.name)
     end)
 
