@@ -22,3 +22,6 @@
 [submodule "filesystem"]
 	path = external/filesystem
 	url = https://github.com/Kasper24/lgi-async-extra
+[submodule "lua-color"]
+	path = external/lua-color
+	url = https://github.com/Kasper24/lua-color
