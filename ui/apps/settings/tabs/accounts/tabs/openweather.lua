@@ -40,19 +40,19 @@ local function new()
         values = {
             {
                 id = "metric",
-                label = "Metric",
+                title = "Metric",
                 color = beautiful.colors.background,
                 check_color = beautiful.icons.computer.color
             },
             {
                 id = "imperial",
-                label = "Imperial",
+                title = "Imperial",
                 color = beautiful.colors.background,
                 check_color = beautiful.icons.computer.color
             },
             {
                 id = "standard",
-                label = "Standard",
+                title = "Standard",
                 color = beautiful.colors.background,
                 check_color = beautiful.icons.computer.color
             }

@@ -35,7 +35,7 @@ local function button(value, radio_group)
          {
              widget = twidget,
              size = 15,
-             text = value.label,
+             text = value.title,
              color = beautiful.colors.on_background
          }
      }
@@ -68,14 +68,14 @@ local function button(value, radio_group)
 end
 
 function radio_group:select(id)
-    if self._private.on_select then
-        self._private.on_select(id)
-    end
-
     for _, value in ipairs(self._private.values) do
         local checkbox = value.button:get_children_by_id("checkbox")[1]
         if value.id == id then
             checkbox.checked = true
+            if self._private.on_select then
+                self._private.on_select(id)
+            end
+            self:emit_signal("select", id)
         else
             checkbox.checked = false
         end
@@ -87,11 +87,10 @@ function radio_group:set_values(values)
 
     for index, value in ipairs(values) do
         value.button = button(value, self)
-        if index == 1 then
-            value.button:get_children_by_id("checkbox")[1].checked = true
-        end
         self._private.buttons_layout:add(value.button)
     end
+
+    self:select(self._private.values[1].id)
 end
 
 function radio_group:get_values()

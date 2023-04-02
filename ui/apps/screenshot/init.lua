@@ -166,42 +166,33 @@ local function folder_picker()
 end
 
 local function main()
-    local selection_button = nil
-    local screen_button = nil
-    local window_button = nil
-    local color_picker_button = nil
+    local buttons = wibox.widget {
+        widget = widgets.button_group.horizontal,
+        on_select = function(id)
+            screenshot_daemon:set_screenshot_method(id)
+        end,
+        values = {
+            {
+                id = "selection",
+                button = button(beautiful.icons.scissors, "Selection")
+            },
+            {
+                id = "screen",
+                button = button(beautiful.icons.computer, "Screen")
 
-    selection_button = button(beautiful.icons.scissors, "Selection", function()
-        screenshot_daemon:set_screenshot_method("selection")
-        selection_button:turn_on()
-        screen_button:turn_off()
-        window_button:turn_off()
-        color_picker_button:turn_off()
-    end, true)
+            },
+            {
+                id = "window",
+                button = button(beautiful.icons.window, "Window")
 
-    screen_button = button(beautiful.icons.computer, "Screen", function()
-        screenshot_daemon:set_screenshot_method("screen")
-        selection_button:turn_off()
-        screen_button:turn_on()
-        window_button:turn_off()
-        color_picker_button:turn_off()
-    end)
+            },
+            {
+                id = "color_picker",
+                button = button(beautiful.icons.palette, "Pick Color")
 
-    window_button = button(beautiful.icons.window, "Window", function()
-        screenshot_daemon:set_screenshot_method("window")
-        selection_button:turn_off()
-        screen_button:turn_off()
-        window_button:turn_on()
-        color_picker_button:turn_off()
-    end)
-
-    color_picker_button = button(beautiful.icons.palette, "Pick Color", function()
-        screenshot_daemon:set_screenshot_method("color_picker")
-        selection_button:turn_off()
-        screen_button:turn_off()
-        window_button:turn_off()
-        color_picker_button:turn_on()
-    end)
+            },
+        }
+    }
 
     local screenshot_button = wibox.widget {
         widget = widgets.button.text.normal,
@@ -217,14 +208,7 @@ local function main()
     return wibox.widget {
         layout = wibox.layout.fixed.vertical,
         spacing = dpi(15),
-        {
-            widget = wibox.layout.fixed.horizontal,
-            spacing = dpi(15),
-            selection_button,
-            screen_button,
-            window_button,
-            color_picker_button
-        },
+        buttons,
         {
             widget = widgets.background,
             shape = helpers.ui.rrect(),

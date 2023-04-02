@@ -22,47 +22,35 @@ local function new()
     local navigator = wibox.widget {
         widget = widgets.navigator.vertical,
         buttons_selected_color = beautiful.icons.computer.color,
+        on_select = function(id)
+            theme_daemon:set_selected_tab(id)
+        end,
         tabs = {
             {
                 {
                     id = "image",
                     title = "Image",
-                    tab = image_tab(),
-                    on_select = function()
-                        theme_daemon:set_selected_tab("image")
-                    end
+                    tab = image_tab()
                 },
                 {
                     id = "mountain",
                     title = "Mountain",
-                    tab = mountain_tab(),
-                    on_select = function()
-                        theme_daemon:set_selected_tab("mountain")
-                    end
+                    tab = mountain_tab()
                 },
                 {
                     id = "digital_sun",
                     title = "Digital Sun",
-                    tab = digital_sun_tab(),
-                    on_select = function()
-                        theme_daemon:set_selected_tab("digital_sun")
-                    end
+                    tab = digital_sun_tab()
                 },
                 {
                     id = "binary",
                     title = "Binary",
-                    tab = binary_tab(),
-                    on_select = function()
-                        theme_daemon:set_selected_tab("binary")
-                    end
+                    tab = binary_tab()
                 },
                 {
                     id = "wallpaper_engine",
                     title = "Wallpaper Engine",
-                    tab = wallpaper_engine_tab(),
-                    on_select = function()
-                        theme_daemon:set_selected_tab("wallpaper_engine")
-                    end
+                    tab = wallpaper_engine_tab()
                 },
             }
         }

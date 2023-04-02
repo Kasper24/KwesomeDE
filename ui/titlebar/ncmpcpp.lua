@@ -14,15 +14,8 @@ local capi = {
     awesome = awesome
 }
 
-local function tabs_titlebar(c)
-    local current_playlist = nil
-    local local_files = nil
-    local search = nil
-    local libary = nil
-    local playlist_editor = nil
-    local lyrics = nil
-
-    current_playlist = wibox.widget {
+local function tab_button(title)
+    return wibox.widget {
         widget = widgets.button.text.state,
         on_by_default = true,
         halign = "left",
@@ -30,108 +23,48 @@ local function tabs_titlebar(c)
         text_normal_bg = beautiful.colors.on_background,
         text_on_normal_bg = beautiful.colors.on_accent,
         size = 12,
-        text = "Current Playlist",
-        on_turn_on = function()
-            helpers.input.send_string_to_client(c, "1o")
-            local_files:turn_off()
-            search:turn_off()
-            libary:turn_off()
-            playlist_editor:turn_off()
-            lyrics:turn_off()
-        end
+        text = title,
+    }
+end
+
+local function tabs_titlebar(c)
+    local tabs = wibox.widget {
+        widget = widgets.button_group.vertical,
+        on_select = function(id)
+            helpers.input.send_string_to_client(c, id)
+        end,
+        values = {
+            {
+                id = "1o",
+                button = tab_button("Current Playlist")
+            },
+            {
+                id = "2",
+                button = tab_button("Local Files")
+
+            },
+            {
+                id = "3",
+                button = tab_button("Search")
+
+            },
+            {
+                id = "4",
+                button = tab_button("Library")
+
+            },
+            {
+                id = "5",
+                button = tab_button("Playlist editor")
+            },
+            {
+                id = "1l",
+                button = tab_button("Lyrics")
+            }
+        }
     }
 
-    local_files = wibox.widget {
-        widget = widgets.button.text.state,
-        halign = "left",
-        on_normal_bg = beautiful.icons.list_music.color,
-        text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = beautiful.colors.on_accent,
-        size = 12,
-        text = "Local Files",
-        on_turn_on = function()
-            helpers.input.send_string_to_client(c, "2")
-            current_playlist:turn_off()
-            search:turn_off()
-            libary:turn_off()
-            playlist_editor:turn_off()
-            lyrics:turn_off()
-        end
-    }
-
-    search = wibox.widget {
-        widget = widgets.button.text.state,
-        halign = "left",
-        on_normal_bg = beautiful.icons.list_music.color,
-        text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = beautiful.colors.on_accent,
-        size = 12,
-        text = "Search",
-        on_turn_on = function()
-            helpers.input.send_string_to_client(c, "3")
-            current_playlist:turn_off()
-            local_files:turn_off()
-            libary:turn_off()
-            playlist_editor:turn_off()
-            lyrics:turn_off()
-        end
-    }
-
-    libary = wibox.widget {
-        widget = widgets.button.text.state,
-        halign = "left",
-        on_normal_bg = beautiful.icons.list_music.color,
-        text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = beautiful.colors.on_accent,
-        size = 12,
-        text = "Library",
-        on_turn_on = function()
-            helpers.input.send_string_to_client(c, "4")
-            current_playlist:turn_off()
-            local_files:turn_off()
-            search:turn_off()
-            playlist_editor:turn_off()
-            lyrics:turn_off()
-        end
-    }
-
-    playlist_editor = wibox.widget {
-        widget = widgets.button.text.state,
-        halign = "left",
-        on_normal_bg = beautiful.icons.list_music.color,
-        text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = beautiful.colors.on_accent,
-        size = 12,
-        text = "Playlist editor",
-        on_turn_on = function()
-            helpers.input.send_string_to_client(c, "5")
-            current_playlist:turn_off()
-            local_files:turn_off()
-            search:turn_off()
-            libary:turn_off()
-            lyrics:turn_off()
-        end
-    }
-
-    lyrics = wibox.widget {
-        widget = widgets.button.text.state,
-        halign = "left",
-        on_normal_bg = beautiful.icons.list_music.color,
-        text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = beautiful.colors.on_accent,
-        size = 12,
-        text = "Lyrics",
-        on_turn_on = function()
-            helpers.input.send_string_to_client(c, "1l")
-            current_playlist:turn_off()
-            local_files:turn_off()
-            search:turn_off()
-            libary:turn_off()
-            playlist_editor:turn_off()
-        end
-    }
-
-    local titlebar =awful.titlebar(c, {
+    local titlebar = awful.titlebar(c, {
         position = "left",
         size = dpi(230),
         bg = beautiful.colors.background_no_opacity
@@ -166,12 +99,7 @@ local function tabs_titlebar(c)
                 shape = helpers.ui.rrect(),
                 bg = beautiful.colors.surface
             },
-            current_playlist,
-            local_files,
-            search,
-            libary,
-            playlist_editor,
-            lyrics
+            tabs
         }
     }
 

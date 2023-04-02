@@ -57,12 +57,6 @@ local function tab_button(tab, navigator)
         }
     }
 
-    if tab.on_select then
-        widget:connect_signal("turn_on", function()
-            tab.on_select()
-        end)
-    end
-
     return widget
 end
 
@@ -72,6 +66,9 @@ function navigator:select(id)
             if tab.id == id then
                 self._private.tabs_stack:raise_widget(tab.tab)
                 tab.button:turn_on()
+                if self._private.on_select then
+                    self._private.on_select(id)
+                end
                 self:emit_signal("select", id)
             else
                 tab.button:turn_off()
@@ -84,12 +81,8 @@ function navigator:set_tabs(tabs)
     self._private.tabs = tabs
 
     for group_index, group in ipairs(tabs) do
-        for tab_index, tab in ipairs(group) do
+        for _, tab in ipairs(group) do
             tab.button = tab_button(tab, self)
-            if group_index == 1 and tab_index == 1 then
-                tab.button:turn_on()
-            end
-
             self._private.tabs_buttons:add(tab.button)
             self._private.tabs_stack:add(tab.tab)
         end
@@ -97,6 +90,8 @@ function navigator:set_tabs(tabs)
             self._private.tabs_buttons:add(separator())
         end
     end
+
+    self:select(self._private.tabs[1][1].id)
 end
 
 function navigator:get_tabs()
@@ -127,6 +122,10 @@ function navigator:set_buttons_selected_color(buttons_selected_color)
             end
         end
     end
+end
+
+function navigator:set_on_select(on_select)
+    self._private.on_select = on_select
 end
 
 local function new()

@@ -9,6 +9,7 @@ return {
     button = require(... .. ".button"),
     background = require(... .. ".background"),
     battery_icon = require(... .. ".battery_icon"),
+    button_group = require(... .. ".button_group"),
     calendar = require(... .. ".calendar"),
     checkbox = require(... .. ".checkbox"),
     client_font_icon  = require(... .. ".client_font_icon"),
