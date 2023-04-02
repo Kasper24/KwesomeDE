@@ -76,12 +76,12 @@ local function color_button(index)
     return color_button
 end
 
-local function command_after_generation()
+local function run_on_set()
     local text_input = wibox.widget {
         widget = widgets.text_input,
         id = "text_input_role",
         forced_height = dpi(55),
-        initial = theme_daemon:get_command_after_generation(),
+        initial = theme_daemon:get_run_on_set(),
         unfocus_on_client_clicked = false,
         selection_bg = beautiful.icons.computer.color,
         widget_template = wibox.widget {
@@ -117,7 +117,7 @@ local function command_after_generation()
     }
 
     text_input:connect_signal("property::text", function(self, text)
-        theme_daemon:set_command_after_generation(text)
+        theme_daemon:set_run_on_set(text)
     end)
 
     return text_input
@@ -210,7 +210,7 @@ local function new()
         layout = wibox.layout.fixed.vertical,
         spacing = dpi(15),
         colors,
-        command_after_generation(),
+        run_on_set(),
         {
             layout = wibox.layout.grid,
             spacing = dpi(10),
