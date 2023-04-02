@@ -90,7 +90,6 @@ end
 
 function weather:refresh()
     if self:get_api_key() == "" or self:get_latitude() == "" or self:get_longitude() == "" or self:get_unit() == "" then
-        print("asd")
         self:emit_signal("error::missing_credentials")
         return
     end
