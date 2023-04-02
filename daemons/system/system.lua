@@ -6,7 +6,7 @@ local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
-local notification_daemon = require("daemons.system.notifications")
+local notifications_daemon = require("daemons.system.notifications")
 local helpers = require("helpers")
 local filesystem = require("external.filesystem")
 local capi = {
@@ -25,6 +25,12 @@ local VERSIONS = {
         version = "0.001",
         changes = {
             "Secrets are now stored in a secured way. Please install gnome-keyring and re-set your Gitlab API key and Openweather access token"
+        }
+    },
+    {
+        version = "0.002",
+        changes = {
+            "Settings have been re-worked. They are now stored as part of the config at ~/.config/awesome/assets/settings.data.json. Please re-set your settings!"
         }
     }
 }
@@ -51,14 +57,14 @@ function system:exit()
 end
 
 function system:lock()
-    notification_daemon:block_on_locked()
+    notifications_daemon:block_on_locked()
     self:emit_signal("lock")
 end
 
 function system:unlock(password)
     local pam_auth = pam:auth_current_user(password)
     if pam_auth then
-        notification_daemon:unblock_on_unlocked()
+        notifications_daemon:unblock_on_unlocked()
         self:emit_signal("unlock")
     else
         self:emit_signal("wrong_password")
@@ -105,14 +111,27 @@ local function updates_info(self)
     }
 end
 
+local function find_current_version_index()
+    local current_version = helpers.settings["kwesomede.version"]
+    for index, version in ipairs(VERSIONS) do
+        if version.version == current_version then
+            return index
+        end
+    end
+
+    return 1
+end
+
 local function check_version(self)
-    local version = helpers.settings["version"]
+    local version = helpers.settings["kwesomede.version"]
 
     local last_version = VERSIONS[#VERSIONS]
     if version ~= last_version.version then
-        helpers.settings["version"] = last_version.version
         gtimer.delayed_call(function()
-            self:emit_signal("version::new", last_version)
+            for index = find_current_version_index(), #VERSIONS do
+                self:emit_signal("version::new", VERSIONS[index])
+            end
+            helpers.settings["kwesomede.version"] = last_version.version
         end)
         return true
     end

@@ -47,7 +47,7 @@ end
 
 function weather:set_unit(unit)
     self._private.unit = unit
-    helpers.settings["weather-unit"] = unit
+    helpers.settings["openweather.unit"] = unit
 end
 
 function weather:get_unit()
@@ -56,7 +56,7 @@ end
 
 function weather:set_latitude(latitude)
     self._private.latitude = latitude
-    helpers.settings["weather-latitude"] = latitude
+    helpers.settings["openweather.latitude"] = latitude
 end
 
 function weather:get_latitude()
@@ -65,7 +65,7 @@ end
 
 function weather:set_longitude(longitude)
     self._private.longitude = longitude
-    helpers.settings["weather-longitude"] = longitude
+    helpers.settings["openweather.longitude"] = longitude
 end
 
 function weather:get_longitude()
@@ -111,9 +111,9 @@ local function new()
         ["org.kwesomede.openweather.openweather.api-key"] = Secret.SchemaAttributeType.STRING
     })
 
-    ret._private.latitude = helpers.settings["weather-latitude"]
-    ret._private.longitude = helpers.settings["weather-longitude"]
-    ret._private.unit = helpers.settings["weather-unit"] -- "metric" for Celcius, "imperial" for Fahrenheit
+    ret._private.latitude = helpers.settings["openweather.latitude"]
+    ret._private.longitude = helpers.settings["openweather.longitude"]
+    ret._private.unit = helpers.settings["openweather.unit"]
 
     if ret:get_api_key() and ret:get_latitude() ~= "" and ret:get_longitude() ~= "" then
         ret:refresh()

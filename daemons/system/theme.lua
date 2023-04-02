@@ -46,7 +46,6 @@ local GENERATED_TEMPLATES_PATH = filesystem.filesystem.get_cache_dir("templates"
 local WAL_CACHE_PATH = filesystem.filesystem.get_xdg_cache_home("wal")
 local RUN_AS_ROOT_SCRIPT_PATH = filesystem.filesystem.get_awesome_config_dir("scripts") .. "run-as-root.sh"
 local COLOR_PICKER_SCRIPT_PATH = filesystem.filesystem.get_awesome_config_dir("scripts") .. "color-picker.lua"
-local DEFAULT_PROFILE_IMAGE_PATH = filesystem.filesystem.get_awesome_config_dir("assets/images") .. "profile.png"
 local WE_PATH = filesystem.filesystem.get_awesome_config_dir("assets/wallpaper-engine/binary")
 local THUMBNAIL_PATH = filesystem.filesystem.get_cache_dir("thumbnails/wallpapers/100-70")
 
@@ -278,11 +277,7 @@ end
 
 local function on_finished_generating(self)
     gtimer.start_new(5, function()
-        if self:get_command_after_generation() ~= nil then
-            awful.spawn.with_shell(self:get_command_after_generation())
-        end
         reload_gtk()
-
         return false
     end)
 end
@@ -836,7 +831,7 @@ local function watch_wallpapers_changes(self)
 end
 
 local function setup_profile_image(self)
-    if self:get_profile_image(true) == "none" then
+    if self:get_profile_image() == nil then
         local profile_image = filesystem.file.new_for_path(os.getenv("HOME") .. "/.face")
         profile_image:exists(function(error, exists)
             if error == nil and exists == true then
@@ -846,8 +841,6 @@ local function setup_profile_image(self)
                 profile_image:exists(function(error, exists)
                     if error == nil and exists == true then
                         self:set_profile_image("/var/lib/AccountService/icons/" .. os.getenv("USER"))
-                    else
-                        self:set_profile_image(DEFAULT_PROFILE_IMAGE_PATH)
                     end
                 end)
             end
@@ -857,13 +850,13 @@ end
 
 --Colorschemes
 function theme:save_colorscheme()
-    helpers.settings["theme-colorschemes"] = self._private.colorschemes
+    helpers.settings["theme.colorschemes"] = self._private.colorschemes
 end
 
 function theme:get_colorschemes()
     if self._private.colorschemes == nil then
         self._private.colorschemes = {}
-        local colorschemes = helpers.settings["theme-colorschemes"]
+        local colorschemes = helpers.settings["theme.colorschemes"]
         for path, colorscheme in pairs(colorschemes) do
             path = path:gsub("~", os.getenv("HOME"))
             self._private.colorschemes[path] = colorscheme
@@ -903,11 +896,11 @@ end
 -- Wallpaper
 function theme:set_wallpaper(wallpaper, type)
     self._private.active_wallpaper = wallpaper
-    helpers.settings["theme-active-wallpaper"] = wallpaper
+    helpers.settings["theme.active_wallpaper"] = wallpaper
 
     type = type or self:get_selected_tab()
     self._private.wallpaper_type = type
-    helpers.settings["theme-wallpaper-type"] = type
+    helpers.settings["theme.wallpaper_type"] = type
 
     if type == "wallpaper_engine" then
         we_error_handler(self)
@@ -949,7 +942,7 @@ end
 
 function theme:get_wallpaper_type()
     if self._private.wallpaper_type == nil then
-        self._private.wallpaper_type = helpers.settings["theme-wallpaper-type"]
+        self._private.wallpaper_type = helpers.settings["theme.wallpaper_type"]
     end
 
     return self._private.wallpaper_type
@@ -957,7 +950,7 @@ end
 
 function theme:get_active_wallpaper()
     if self._private.active_wallpaper == nil then
-        self._private.active_wallpaper = helpers.settings["theme-active-wallpaper"]:gsub("~", os.getenv("HOME"))
+        self._private.active_wallpaper = helpers.settings["theme.active_wallpaper"]:gsub("~", os.getenv("HOME"))
     end
 
     return self._private.active_wallpaper
@@ -995,7 +988,7 @@ end
 -- Active colorscheme
 function theme:set_colorscheme(colorscheme)
     self._private.active_colorscheme = colorscheme
-    helpers.settings["theme-active-colorscheme"] = colorscheme
+    helpers.settings["theme.active_colorscheme"] = colorscheme
 
     self:save_colorscheme()
 
@@ -1007,7 +1000,7 @@ end
 
 function theme:get_active_colorscheme()
     if self._private.active_colorscheme == nil then
-        self._private.active_colorscheme = helpers.settings["theme-active-colorscheme"]:gsub("~", os.getenv("HOME"))
+        self._private.active_colorscheme = helpers.settings["theme.active_colorscheme"]:gsub("~", os.getenv("HOME"))
     end
 
     return self._private.active_colorscheme
@@ -1015,10 +1008,6 @@ end
 
 function theme:get_active_colorscheme_colors()
     local colorscheme_colors = self:get_colorschemes()[self:get_active_colorscheme()]
-    if colorscheme_colors == nil then
-        local default_colorscheme = helpers.settings:get_default_value("theme-active-colorscheme")
-        return helpers.settings:get_default_value("theme-colorschemes")[default_colorscheme]
-    end
     return colorscheme_colors
 end
 
@@ -1053,17 +1042,13 @@ end
 -- UI profile image
 function theme:set_profile_image(profile_image)
     self._private.profile_image = profile_image
-    helpers.settings["theme-profile-image"] = profile_image
+    helpers.settings["ui.profile_image"] = profile_image
     self:emit_signal("profile_image", profile_image)
 end
 
-function theme:get_profile_image(internal)
+function theme:get_profile_image()
     if self._private.profile_image == nil then
-        self._private.profile_image = helpers.settings["theme-profile-image"]
-    end
-    -- If it's none, return the default until the setup_profile_image function finishes running
-    if self._private.profile_image == "none" and (internal == false or internal == nil) then
-        return DEFAULT_PROFILE_IMAGE_PATH
+        self._private.profile_image = helpers.settings["ui.profile_image"]
     end
 
     return self._private.profile_image
@@ -1072,12 +1057,12 @@ end
 -- UI dpi
 function theme:set_dpi(dpi)
     self._private.dpi = dpi
-    helpers.settings["theme-dpi"] = dpi
+    helpers.settings["ui.dpi"] = dpi
 end
 
 function theme:get_dpi()
     if self._private.dpi == nil then
-        self._private.dpi = helpers.settings["theme-dpi"]
+        self._private.dpi = helpers.settings["ui.dpi"]
     end
 
     return self._private.dpi
@@ -1086,13 +1071,13 @@ end
 -- UI opacity
 function theme:set_ui_opacity(opacity)
     self._private.ui_opacity = opacity
-    helpers.settings["theme-ui-opacity"] = opacity
+    helpers.settings["ui.opacity"] = opacity
     reload_awesome_colorscheme()
 end
 
 function theme:get_ui_opacity()
     if self._private.ui_opacity == nil then
-        self._private.ui_opacity = helpers.settings["theme-ui-opacity"]
+        self._private.ui_opacity = helpers.settings["ui.opacity"]
     end
 
     return self._private.ui_opacity
@@ -1101,13 +1086,13 @@ end
 -- UI border radius
 function theme:set_ui_border_radius(border_radius)
     self._private.ui_border_radius = border_radius
-    helpers.settings["theme-ui-border-radius"] = border_radius
+    helpers.settings["ui.border_radius"] = border_radius
     reload_awesome_colorscheme()
 end
 
 function theme:get_ui_border_radius()
     if self._private.ui_border_radius == nil then
-        self._private.ui_border_radius = helpers.settings["theme-ui-border-radius"]
+        self._private.ui_border_radius = helpers.settings["ui.border_radius"]
     end
 
     return self._private.ui_border_radius
@@ -1130,13 +1115,13 @@ function theme:set_useless_gap(useless_gap, save)
     self._private.useless_gap = useless_gap
     self:emit_signal("useless_gap", useless_gap)
     if save ~= false then
-        helpers.settings["theme-useless-gap"] = useless_gap
+        helpers.settings["layout.useless_gap"] = useless_gap
     end
 end
 
 function theme:get_useless_gap()
     if self._private.useless_gap == nil then
-        self._private.useless_gap = helpers.settings["theme-useless-gap"]
+        self._private.useless_gap = helpers.settings["layout.useless_gap"]
     end
 
     return self._private.useless_gap
@@ -1161,13 +1146,13 @@ function theme:set_client_gap(client_gap, save)
     self._private.client_gap = client_gap
     self:emit_signal("client_gap", client_gap)
     if save ~= false then
-        helpers.settings["theme-client-gap"] = client_gap
+        helpers.settings["layout.client_gap"] = client_gap
     end
 end
 
 function theme:get_client_gap()
     if self._private.client_gap == nil then
-        self._private.client_gap = helpers.settings["theme-client-gap"]
+        self._private.client_gap = helpers.settings["layout.client_gap"]
     end
 
     return self._private.client_gap
@@ -1179,13 +1164,13 @@ function theme:set_ui_animations(animations, save)
 
     if save ~= false then
         self._private.ui_animations = animations
-        helpers.settings["theme-ui-animations"] = animations
+        helpers.settings["ui.animations.enabled"] = animations
     end
 end
 
 function theme:get_ui_animations()
     if self._private.ui_animations == nil then
-        self._private.ui_animations = helpers.settings["theme-ui-animations"]
+        self._private.ui_animations = helpers.settings["ui.animations.enabled"]
     end
 
     return self._private.ui_animations
@@ -1194,12 +1179,12 @@ end
 function theme:set_ui_animations_framerate(framerate)
     helpers.animation:set_framerate(framerate)
     self._private.ui_animations_framerate = framerate
-    helpers.settings["theme-ui-animations-framerate"] = framerate
+    helpers.settings["ui.animations.framerate"] = framerate
 end
 
 function theme:get_ui_animations_framerate()
     if self._private.ui_animations_framerate == nil then
-        self._private.ui_animations_framerate = helpers.settings["theme-ui-animations-framerate"]
+        self._private.ui_animations_framerate = helpers.settings["ui.animations.framerate"]
     end
 
     return self._private.ui_animations_framerate
@@ -1208,40 +1193,40 @@ end
 -- Show lockscreen on login
 function theme:set_ui_show_lockscreen_on_login(show_ui_lockscreen_on_login)
     self._private.show_ui_lockscreen_on_login = show_ui_lockscreen_on_login
-    helpers.settings["theme-ui-show-lockscreen-on-login"] = show_ui_lockscreen_on_login
+    helpers.settings["ui.show_lockscreen_on_login"] = show_ui_lockscreen_on_login
 end
 
 function theme:get_ui_show_lockscreen_on_login()
     if self._private.show_ui_lockscreen_on_login == nil then
-        self._private.show_ui_lockscreen_on_login = helpers.settings["theme-ui-show-lockscreen-on-login"]
+        self._private.show_ui_lockscreen_on_login = helpers.settings["ui.show_lockscreen_on_login"]
     end
 
     return self._private.show_ui_lockscreen_on_login
 end
 
 -- Command after generation
-function theme:set_command_after_generation(command_after_generation)
-    self._private.command_after_generation = command_after_generation
-    helpers.settings["theme-command-after-generation"] = command_after_generation
+function theme:set_run_on_set(run_on_set)
+    self._private.run_on_set = run_on_set
+    helpers.settings["theme.run_on_set"] = run_on_set
 end
 
-function theme:get_command_after_generation()
-    if self._private.command_after_generation == nil then
-        self._private.command_after_generation = helpers.settings["theme-command-after-generation"]
+function theme:get_run_on_set()
+    if self._private.run_on_set == nil then
+        self._private.run_on_set = helpers.settings["theme.run_on_set"]
     end
 
-    return self._private.command_after_generation
+    return self._private.run_on_set
 end
 
 -- Wallpaper engine assets folder
 function theme:set_wallpaper_engine_assets_folder(wallpaper_engine_assets_folder)
     self._private.wallpaper_engine_assets_folder = wallpaper_engine_assets_folder
-    helpers.settings["theme-we-assets-folder"] = wallpaper_engine_assets_folder
+    helpers.settings["wallpaper_engine.assets_folder"] = wallpaper_engine_assets_folder
 end
 
 function theme:get_wallpaper_engine_assets_folder()
     if self._private.wallpaper_engine_assets_folder == nil then
-        self._private.wallpaper_engine_assets_folder = helpers.settings["theme-we-assets-folder"]:gsub("~", os.getenv("HOME"))
+        self._private.wallpaper_engine_assets_folder = helpers.settings["wallpaper_engine.assets_folder"]:gsub("~", os.getenv("HOME"))
     end
 
     return self._private.wallpaper_engine_assets_folder
@@ -1250,7 +1235,7 @@ end
 -- Wallpaper engine assets folder
 function theme:set_wallpaper_engine_workshop_folder(wallpaper_engine_workshop_folder)
     self._private.wallpaper_engine_workshop_folder = wallpaper_engine_workshop_folder
-    helpers.settings["theme-we-workshop-folder"] = wallpaper_engine_workshop_folder
+    helpers.settings["wallpaper_engine.workshop_folder"] = wallpaper_engine_workshop_folder
     scan_wallpapers(self)
 
     self._private.we_wallpapers_watcher:dynamic_disconnect_signal("event")
@@ -1264,7 +1249,7 @@ end
 
 function theme:get_wallpaper_engine_workshop_folder()
     if self._private.wallpaper_engine_workshop_folder == nil then
-        self._private.wallpaper_engine_workshop_folder = helpers.settings["theme-we-workshop-folder"]:gsub("~", os.getenv("HOME"))
+        self._private.wallpaper_engine_workshop_folder = helpers.settings["wallpaper_engine.workshop_folder"]:gsub("~", os.getenv("HOME"))
     end
 
     return self._private.wallpaper_engine_workshop_folder
@@ -1273,7 +1258,7 @@ end
 -- Wallpaper engine fps
 function theme:set_wallpaper_engine_fps(wallpaper_engine_fps)
     self._private.wallpaper_engine_fps = wallpaper_engine_fps
-    helpers.settings["theme-we-fps"] = wallpaper_engine_fps
+    helpers.settings["wallpaper_engine.fps"] = wallpaper_engine_fps
 
     if #helpers.client.find({class = "linux-wallpaperengine"}) > 0 and self:get_wallpaper_type() == "wallpaper_engine" then
         self:set_wallpaper(self:get_active_wallpaper(), "wallpaper_engine")
@@ -1282,7 +1267,7 @@ end
 
 function theme:get_wallpaper_engine_fps()
     if self._private.wallpaper_engine_fps == nil then
-        self._private.wallpaper_engine_fps = helpers.settings["theme-we-fps"]
+        self._private.wallpaper_engine_fps = helpers.settings["wallpaper_engine.fps"]
     end
 
     return self._private.wallpaper_engine_fps
@@ -1332,6 +1317,14 @@ local function new()
                 return false
             end)
         end
+    end)
+
+    capi.awesome.connect_signal("wallpaper::changed", function()
+        gtimer.start_new(5, function()
+            if ret:get_run_on_set() then
+                awful.spawn.with_shell(ret:get_run_on_set())
+            end
+        end)
     end)
 
     return ret

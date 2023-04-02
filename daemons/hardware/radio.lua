@@ -14,7 +14,7 @@ local radio = {}
 local instance = nil
 
 function radio:toggle()
-    if self._private.airplane_state == false or self._private.airplane_state == nil then
+    if self._private.enabled == false or self._private.enabled == nil then
         self:turn_on()
     else
         self:turn_off()
@@ -24,16 +24,16 @@ end
 function radio:turn_on()
     awful.spawn("rfkill block all", false)
 
-    self._private.airplane_state = true
-    helpers.settings["airplane"] =  true
+    self._private.enabled = true
+    helpers.settings["airplane.enabled"] =  true
     self:emit_signal("state", true)
 end
 
 function radio:turn_off()
     awful.spawn("rfkill unblock all", false)
 
-    self._private.airplane_state = false
-    helpers.settings["airplane"] =  false
+    self._private.enabled = false
+    helpers.settings["airplane.enabled"] =  false
     self:emit_signal("state", false)
 end
 
@@ -44,22 +44,22 @@ local function new()
     ret._private = {}
 
     gtimer.delayed_call(function()
-        local airplane = helpers.settings["airplane"]
-        if airplane == true then
+        local enabled = helpers.settings["airplane.enabled"]
+        if enabled == true then
             ret:turn_on()
-        elseif airplane == false then
+        elseif enabled == false then
             ret:turn_off()
         end
     end)
 
     network_daemon:connect_signal("wireless_state", function(self, state)
-        if state == true and ret._private.airplane_state == true then
+        if state == true and ret._private.enabled == true then
             ret:turn_off()
         end
     end)
 
     bluetooth_daemon:connect_signal("state", function(self, state)
-        if state == true and ret._private.airplane_state == true then
+        if state == true and ret._private.enabled == true then
             ret:turn_off()
         end
     end)

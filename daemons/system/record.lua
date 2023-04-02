@@ -16,7 +16,7 @@ local instance = nil
 
 function record:set_resolution(resolution)
     self._private.resolution = resolution
-    helpers.settings["record-resolution"] = self._private.resolution
+    helpers.settings["recorder.resolution"] = self._private.resolution
 end
 
 function record:get_resolution()
@@ -25,7 +25,7 @@ end
 
 function record:set_fps(fps)
     self._private.fps = fps
-    helpers.settings["record-fps"] = self._private.fps
+    helpers.settings["recorder.fps"] = self._private.fps
 end
 
 function record:get_fps()
@@ -34,7 +34,7 @@ end
 
 function record:set_delay(delay)
     self._private.delay = delay
-    helpers.settings["record-delay"] = self._private.delay
+    helpers.settings["recorder.delay"] = self._private.delay
 end
 
 function record:get_delay()
@@ -47,7 +47,7 @@ end
 
 function record:set_folder(folder)
     self._private.folder = folder
-    helpers.settings["record-folder"] = folder
+    helpers.settings["recorder.folder"] = folder
 end
 
 function record:get_format()
@@ -56,7 +56,7 @@ end
 
 function record:set_format(format)
     self._private.format = format
-    helpers.settings["record-format"] = self._private.format
+    helpers.settings["recorder.format"] = self._private.format
 end
 
 function record:set_audio_source(audio_source)
@@ -144,11 +144,11 @@ local function new()
 
     ret._private = {}
 
-    ret._private.resolution = helpers.settings["record-resolution"]
-    ret._private.fps = helpers.settings["record-fps"]
-    ret._private.delay = helpers.settings["record-delay"]
-    ret._private.folder = helpers.settings["record-folder"]:gsub("~", os.getenv("HOME"))
-    ret._private.format = helpers.settings["record-format"]
+    ret._private.resolution = helpers.settings["recorder.resolution"]
+    ret._private.fps = helpers.settings["recorder.fps"]
+    ret._private.delay = helpers.settings["recorder.delay"]
+    ret._private.folder = helpers.settings["recorder.folder"]:gsub("~", os.getenv("HOME"))
+    ret._private.format = helpers.settings["recorder.format"]
 
     ret._private.is_recording = false
 

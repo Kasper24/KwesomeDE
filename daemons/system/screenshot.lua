@@ -23,7 +23,7 @@ local instance = nil
 
 function screenshot:set_show_cursor(state)
     self._private.show_cursor = state
-    helpers.settings["screenshot-show-cursor"] = state
+    helpers.settings["screenshot.show_cursor"] = state
 end
 
 function screenshot:get_show_cursor()
@@ -32,7 +32,7 @@ end
 
 function screenshot:set_delay(delay)
     self._private.delay = delay
-    helpers.settings["screenshot-delay"] = delay
+    helpers.settings["screenshot.delay"] = delay
 end
 
 function screenshot:get_delay()
@@ -41,7 +41,7 @@ end
 
 function screenshot:set_folder(folder)
     self._private.folder = folder
-    helpers.settings["screenshot-folder"] = folder
+    helpers.settings["screenshot.folder"] = folder
 end
 
 function screenshot:get_folder()
@@ -133,9 +133,9 @@ local function new()
     ret._private.clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
 
     ret._private.screenshot_method = "selection"
-    ret._private.delay = helpers.settings["screenshot-delay"]
-    ret._private.show_cursor = helpers.settings["screenshot-show-cursor"]
-    ret._private.folder = helpers.settings["screenshot-folder"]:gsub("~", os.getenv("HOME"))
+    ret._private.delay = helpers.settings["screenshot.delay"]
+    ret._private.show_cursor = helpers.settings["screenshot.show_cursor"]
+    ret._private.folder = helpers.settings["screenshot.folder"]:gsub("~", os.getenv("HOME"))
 
     return ret
 end

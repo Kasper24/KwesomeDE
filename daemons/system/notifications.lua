@@ -139,19 +139,11 @@ function notifications:is_suspended()
     return self.suspended
 end
 
-function notifications:turn_on()
-    if self.suspended ~= true then
-        self.suspended = true
-        helpers.settings["dont-disturb"] = true
-        self:emit_signal("state", true)
-    end
-end
-
-function notifications:turn_off(save)
-    if self.suspended ~= false then
-        self.suspended = false
-        helpers.settings["dont-disturb"] = false
-        self:emit_signal("state", false)
+function notifications:set_dont_disturb(value)
+    if self.suspended ~= value then
+        self.suspended = value
+        helpers.settings["notifications.dont_disturb"] = value
+        self:emit_signal("state", value)
     end
 end
 
@@ -171,9 +163,9 @@ end
 
 function notifications:toggle()
     if self.suspended == true then
-        self:turn_off()
+        self:set_dont_disturb(false)
     else
-        self:turn_on()
+        self:set_dont_disturb(true)
     end
 end
 
@@ -196,12 +188,7 @@ local function new()
     filesystem.filesystem.make_directory(ICONS_PATH)
 
     gtimer.delayed_call(function()
-        if helpers.settings["dont-disturb"] == true then
-            ret:turn_on()
-        elseif helpers.settings["dont-disturb"] == false then
-            ret:turn_off()
-        end
-
+        ret:set_dont_disturb(helpers.settings["notifications.dont_disturb"])
         read_notifications(ret)
     end)
 

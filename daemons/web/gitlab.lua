@@ -25,7 +25,7 @@ local UPDATE_INTERVAL = 60 * 30 -- 30 mins
 
 function gitlab:set_host(host)
     self._private.host = host
-    helpers.settings["gitlab-host"] = host
+    helpers.settings["gitlab.host"] = host
 end
 
 function gitlab:get_host()
@@ -115,7 +115,7 @@ local function new()
     ret._private.access_token_schema = Secret.Schema.new("org.kwesomede", Secret.SchemaFlags.NONE, {
         ["org.kwesomede.openweather.gitlab.access-token"] = Secret.SchemaAttributeType.STRING
     })
-    ret._private.host = helpers.settings["gitlab-host"]
+    ret._private.host = helpers.settings["gitlab.host"]
 
     if ret:get_access_token() then
         ret:refresh()
