@@ -11,34 +11,34 @@ local email = {
 }
 
 local function new()
-    local machine_text_input = text_input {
+    local feed_address_text_input = text_input {
         icon = beautiful.icons.server,
-        placeholder = "Machine:",
-        initial = email_daemon:get_machine()
+        placeholder = "Feed Address:",
+        initial = email_daemon:get_feed_address()
     }
 
-    local login_text_input = text_input {
+    local address_text_input = text_input {
         icon = beautiful.icons.user,
-        placeholder = "Login:",
-        initial = email_daemon:get_login()
+        placeholder = "Email Address:",
+        initial = email_daemon:get_address()
     }
 
-    local password_text_input = text_input {
+    local app_password_text_input = text_input {
         icon = beautiful.icons.lock,
-        placeholder = "Password:",
-        initial = email_daemon:get_password()
+        placeholder = "App Password:",
+        initial = email_daemon:get_app_password()
     }
 
-    machine_text_input:connect_signal("unfocus", function(self)
-        email_daemon:update_net_rc(machine_text_input:get_text(), login_text_input:get_text(), password_text_input:get_text())
+    feed_address_text_input:connect_signal("unfocus", function(self)
+        email_daemon:set_server(self:get_text())
     end)
 
-    login_text_input:connect_signal("unfocus", function(self)
-        email_daemon:update_net_rc(machine_text_input:get_text(), login_text_input:get_text(), password_text_input:get_text())
+    address_text_input:connect_signal("unfocus", function(self)
+        email_daemon:set_address(self:get_text())
     end)
 
-    password_text_input:connect_signal("unfocus", function(self)
-        email_daemon:update_net_rc(machine_text_input:get_text(), login_text_input:get_text(), password_text_input:get_text())
+    app_password_text_input:connect_signal("unfocus", function(self)
+        email_daemon:set_app_password(self:get_text())
     end)
 
     return wibox.widget {
@@ -47,9 +47,9 @@ local function new()
         scrollbar_width = dpi(10),
         step = 50,
         spacing = dpi(15),
-        machine_text_input,
-        login_text_input,
-        password_text_input
+        feed_address_text_input,
+        address_text_input,
+        app_password_text_input
     }
 end
 

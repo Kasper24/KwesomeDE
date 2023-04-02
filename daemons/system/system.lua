@@ -32,6 +32,12 @@ local VERSIONS = {
         changes = {
             "Settings have been re-worked. They are now stored as part of the config at ~/.config/awesome/assets/settings.data.json. Please re-set your settings!"
         }
+    },
+    {
+        version = "0.003",
+        changes = {
+            "Email daemon has been improved. Please re-set your email settings!"
+        }
     }
 }
 

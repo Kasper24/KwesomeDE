@@ -359,6 +359,13 @@ local function get_default_settings()
                 "description": "Your Gitlab host URL"
             }
         },
+        "email": {
+            "feed_address": {
+                "default": "https://mail.google.com/mail/feed/atom",
+                "type": "string",
+                "description": "Your email feed address"
+            }
+        },
         "openweather": {
             "latitude": {
                 "default": "40.730610",

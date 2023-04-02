@@ -83,6 +83,19 @@ local function new()
         forced_height = dpi(600)
     }
 
+    local missing_credentials_text = wibox.widget {
+        widget = wibox.container.place,
+        halign = "center",
+        valign = "center",
+        {
+            widget = widgets.text,
+            halign = "center",
+            size = 25,
+            color = beautiful.colors.on_background,
+            text = "Missing Credentials"
+        }
+    }
+
     local error_icon = wibox.widget {
         widget = wibox.container.place,
         halign = "center",
@@ -107,6 +120,7 @@ local function new()
         layout = wibox.layout.stack,
         top_only = true,
         spinning_circle,
+        missing_credentials_text,
         error_icon,
         scrollbox
     }
@@ -130,6 +144,10 @@ local function new()
         spinning_circle:stop()
     end)
 
+    email_daemon:connect_signal("error::missing_credentials", function()
+        spinning_circle:stop()
+        widget:raise_widget(missing_credentials_text)
+    end)
 
     return widget
 end
