@@ -296,7 +296,7 @@ local function get_default_settings()
                 "description": "The framerate of the UI animations"
             },
             "fps": {
-                "default": 60,
+                "default": 24,
                 "type": "number",
                 "description": "The framerate of the UI animations"
             }
