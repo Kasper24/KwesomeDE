@@ -25,8 +25,6 @@ local function new()
         widget = widgets.profile,
         forced_height = dpi(150),
         forced_width = dpi(150),
-        valign = "center",
-        clip_shape = helpers.ui.rrect(),
     }
 
     local name = wibox.widget {

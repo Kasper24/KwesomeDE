@@ -2,6 +2,7 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
+local gtable = require("gears.table")
 local gshape = require("gears.shape")
 local wibox = require("wibox")
 local bwidget = require("ui.widgets.background")
@@ -16,44 +17,62 @@ local profile = {
 }
 
 local function new()
-    local fake_profile = wibox.widget {
+    local profile_letter = wibox.widget {
         widget = bwidget,
         shape = gshape.circle,
         bg = beautiful.icons.computer.color,
         {
-            widget = twidget,
-            bold = true,
-            size = 10,
-            color = beautiful.colors.on_accent,
-            text = os.getenv("USER"):sub(1, 1):upper()
+            widget = wibox.container.place,
+            halign = "center",
+            valign = "center",
+            {
+                widget = twidget,
+                id = "profile_letter",
+                bold = true,
+                size = 50,
+                color = beautiful.colors.on_accent,
+                text = os.getenv("USER"):sub(1, 1):upper()
+            }
         }
     }
 
     local profile = wibox.widget {
-        image = ui_daemon:get_profile_image()
+        widget = wibox.widget.imagebox,
+        clip_shape = gshape.circle,
+        halign = "center",
+        valign = "center",
     }
 
     local stack = wibox.widget {
         widget = wibox.layout.stack,
         top_only = true,
-        fake_profile,
+        profile_letter,
         profile
     }
 
+    function stack:set_letter_size(size)
+        profile_letter:get_children_by_id("profile_letter")[1]:set_size(size)
+    end
+
     if ui_daemon:get_profile_image() then
-        stack:raise_widget(profile)
+        local success = profile:set_image(ui_daemon:get_profile_image())
+        if success then
+            stack:raise_widget(profile)
+        end
     end
 
     ui_daemon:connect_signal("profile_image", function(self, profile_image)
-        profile.image = profile_image
-        stack:raise_widget(profile)
+        local success = profile:set_image(profile_image)
+        if success then
+            stack:raise_widget(profile)
+        end
     end)
 
     return stack
 end
 
-function profile.mt:__call(...)
-    return new(...)
+function profile.mt:__call()
+    return new()
 end
 
 return setmetatable(profile, profile.mt)

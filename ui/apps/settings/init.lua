@@ -27,10 +27,9 @@ local function main()
         spacing = dpi(15),
         {
             widget = widgets.profile,
+            letter_size = 15,
             forced_height = dpi(50),
             forced_width = dpi(50),
-            valign = "center",
-            clip_shape = helpers.ui.rrect(),
         },
         {
             widget = widgets.text,
