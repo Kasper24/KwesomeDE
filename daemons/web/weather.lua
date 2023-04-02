@@ -43,7 +43,7 @@ function weather:get_api_key()
         self._private.api_key =Secret.password_lookup_sync(self._private.api_key_schema, self._private.api_key_atrributes)
     end
 
-    return self._private.api_key  or ""
+    return self._private.api_key or ""
 end
 
 function weather:set_unit(unit)
@@ -57,7 +57,7 @@ function weather:get_unit()
         self._private.unit = helpers.settings["openweather.unit"]
     end
 
-    return self._private.unit  or ""
+    return self._private.unit or ""
 end
 
 function weather:set_latitude(latitude)
@@ -71,7 +71,7 @@ function weather:get_latitude()
         self._private.latitude = helpers.settings["openweather.latitude"]
     end
 
-    return self._private.latitude  or ""
+    return self._private.latitude or ""
 end
 
 function weather:set_longitude(longitude)
@@ -90,6 +90,7 @@ end
 
 function weather:refresh()
     if self:get_api_key() == "" or self:get_latitude() == "" or self:get_longitude() == "" or self:get_unit() == "" then
+        print("asd")
         self:emit_signal("error::missing_credentials")
         return
     end
