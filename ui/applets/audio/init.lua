@@ -260,7 +260,7 @@ local function applications()
     }
 end
 
-local function devices()
+local function sinks()
     local sinks_header = wibox.widget {
         widget = widgets.text,
         halign = "left",
@@ -271,33 +271,8 @@ local function devices()
 
     local sinks_radio_group = wibox.widget {
         widget = widgets.radio_group.vertical,
-        forced_height = dpi(300),
         on_select = function(id)
             audio_daemon:set_default_sink(id)
-        end,
-        widget_template = wibox.widget {
-            layout = wibox.layout.overflow.vertical,
-            id = "buttons_layout",
-            spacing = dpi(15),
-            scrollbar_widget = widgets.scrollbar,
-            scrollbar_width = dpi(10),
-            step = 50,
-        }
-    }
-
-    local sources_header = wibox.widget {
-        widget = widgets.text,
-        halign = "left",
-        bold = true,
-        color = beautiful.icons.volume.off.color,
-        text = "Sources"
-    }
-
-    local sources_radio_group = wibox.widget {
-        widget = widgets.radio_group.vertical,
-        forced_height = dpi(300),
-        on_select = function(id)
-            audio_daemon:set_default_source(id)
         end,
         widget_template = wibox.widget {
             layout = wibox.layout.overflow.vertical,
@@ -326,6 +301,39 @@ local function devices()
         sinks_radio_group:remove_value(id)
     end)
 
+    return wibox.widget {
+        layout = wibox.layout.fixed.vertical,
+        spacing = dpi(15),
+        sinks_header,
+        separator(),
+        sinks_radio_group
+    }
+end
+
+local function sources()
+    local sources_header = wibox.widget {
+        widget = widgets.text,
+        halign = "left",
+        bold = true,
+        color = beautiful.icons.volume.off.color,
+        text = "Sources"
+    }
+
+    local sources_radio_group = wibox.widget {
+        widget = widgets.radio_group.vertical,
+        on_select = function(id)
+            audio_daemon:set_default_source(id)
+        end,
+        widget_template = wibox.widget {
+            layout = wibox.layout.overflow.vertical,
+            id = "buttons_layout",
+            spacing = dpi(15),
+            scrollbar_widget = widgets.scrollbar,
+            scrollbar_width = dpi(10),
+            step = 50,
+        }
+    }
+
     audio_daemon:connect_signal("sources::added", function(self, source)
         sources_radio_group:add_value{
             id = source.id,
@@ -345,20 +353,32 @@ local function devices()
 
     return wibox.widget {
         layout = wibox.layout.fixed.vertical,
-        spacing = dpi(30),
-        {
-            layout = wibox.layout.fixed.vertical,
-            spacing = dpi(15),
-            sinks_header,
-            separator(),
-            sinks_radio_group
-        },
-        {
-            layout = wibox.layout.fixed.vertical,
-            spacing = dpi(15),
-            sources_header,
-            separator(),
-            sources_radio_group
+        spacing = dpi(15),
+        sources_header,
+        separator(),
+        sources_radio_group
+    }
+end
+
+local function devices()
+    return wibox.widget {
+        widget = widgets.navigator.horizontal,
+        buttons_selected_color = beautiful.icons.volume.high.color,
+        tabs = {
+            {
+                {
+                    id = "sinks",
+                    title = "Sinks",
+                    halign = "center",
+                    tab = sinks()
+                },
+                {
+                    id = "sources",
+                    title = "Sources",
+                    halign = "center",
+                    tab = sources()
+                },
+            }
         }
     }
 end
@@ -366,7 +386,7 @@ end
 local function new()
     local navigator = wibox.widget {
         widget = widgets.navigator.horizontal,
-        buttons_selected_color = beautiful.icons.computer.color,
+        buttons_selected_color = beautiful.icons.volume.high.color,
         tabs = {
             {
                 {
