@@ -6,7 +6,7 @@ local awful = require("awful")
 local gtimer = require("gears.timer")
 local ruled = require("ruled")
 local picom_daemon = require("daemons.system.picom")
-local theme_daemon = require("daemons.system.theme")
+local ui_daemon = require("daemons.system.ui")
 local helpers = require("helpers")
 local capi = {
     awesome = awesome,
@@ -484,11 +484,11 @@ ruled.client.connect_signal("request::rules", function()
         callback = function(c)
             -- Kill picom when a game starts
             -- Respawn picom when the game is closed
-            theme_daemon:set_ui_animations(false, false)
+            ui_daemon:set_animations(false, false)
             picom_daemon:turn_off(false)
             c:connect_signal("unmanage", function()
                 if helpers.settings["ui.animations.enabled"] ~= false then
-                    theme_daemon:set_ui_animations(true, false)
+                    ui_daemon:set_animations(true, false)
                 end
 
                 if helpers.settings["picom.enabled"] ~= false then

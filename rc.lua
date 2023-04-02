@@ -33,10 +33,10 @@ gtimer.start_new(5, function()
 end)
 
 local beautiful = require("beautiful")
-local theme_daemon = require("daemons.system.theme")
+local ui_daemon = require("daemons.system.ui")
 local filesystem = require("external.filesystem")
 
-beautiful.xresources.set_dpi(theme_daemon:get_dpi())
+beautiful.xresources.set_dpi(ui_daemon:get_dpi())
 beautiful.init(filesystem.filesystem.get_awesome_config_dir("ui") .. "theme.lua")
 
 require("config")

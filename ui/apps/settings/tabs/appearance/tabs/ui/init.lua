@@ -5,7 +5,7 @@ local checkbox = require("ui.apps.settings.checkbox")
 local picker = require("ui.apps.settings.picker")
 local separator = require("ui.apps.settings.separator")
 local beautiful = require("beautiful")
-local theme_daemon = require("daemons.system.theme")
+local ui_daemon = require("daemons.system.ui")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 
@@ -21,12 +21,12 @@ local function checkbox_widget(key)
 
     local widget = checkbox {
         title = title,
-        state = theme_daemon["get_ui_" .. key](theme_daemon),
+        state = ui_daemon["get_" .. key](ui_daemon),
         on_turn_on = function()
-            theme_daemon["set_ui_" .. key](theme_daemon, true)
+            ui_daemon["set_" .. key](ui_daemon, true)
         end,
         on_turn_off = function()
-            theme_daemon["set_ui_" .. key](theme_daemon, false)
+            ui_daemon["set_" .. key](ui_daemon, false)
         end
     }
 
@@ -44,7 +44,7 @@ local function slider(title, initial_value, maximum, round, on_changed, minimum,
     }
 
     if signal then
-        theme_daemon:connect_signal(signal, function(self, value)
+        ui_daemon:connect_signal(signal, function(self, value)
             widget:get_slider_text_input():set_value(tostring(value))
         end)
     end
@@ -61,9 +61,9 @@ local function new()
         spacing = dpi(15),
         picker.file {
             title = "Profile image:",
-            initial_value = theme_daemon:get_profile_image(),
+            initial_value = ui_daemon:get_profile_image(),
             on_changed = function(text)
-                theme_daemon:set_profile_image(text)
+                ui_daemon:set_profile_image(text)
             end
         },
         separator(),
@@ -71,8 +71,8 @@ local function new()
             layout = wibox.layout.fixed.vertical,
             forced_height = dpi(60),
             spacing = dpi(5),
-            slider("DPI:", theme_daemon:get_dpi(), 250, true, function(value)
-                theme_daemon:set_dpi(value)
+            slider("DPI:", ui_daemon:get_dpi(), 250, true, function(value)
+                ui_daemon:set_dpi(value)
             end),
             {
                 widget = widgets.text,
@@ -82,22 +82,22 @@ local function new()
             }
         },
         separator(),
-        slider("Useless gap:", theme_daemon:get_useless_gap(), 250, true, function(value)
-            theme_daemon:set_useless_gap(value)
+        slider("Useless gap:", ui_daemon:get_useless_gap(), 250, true, function(value)
+            ui_daemon:set_useless_gap(value)
         end, 0, "useless_gap"),
-        slider("Client gap:", theme_daemon:get_client_gap(), 250, true, function(value)
-            theme_daemon:set_client_gap(value)
+        slider("Client gap:", ui_daemon:get_client_gap(), 250, true, function(value)
+            ui_daemon:set_client_gap(value)
         end, 0, "client_gap"),
         separator(),
-        slider("Opacity:", theme_daemon:get_ui_opacity(), 1, false, function(value)
-            theme_daemon:set_ui_opacity(value)
+        slider("Opacity:", ui_daemon:get_opacity(), 1, false, function(value)
+            ui_daemon:set_opacity(value)
         end),
-        slider("Corner Radius:", theme_daemon:get_ui_border_radius(), 100, true, function(value)
-            theme_daemon:set_ui_border_radius(value)
+        slider("Corner Radius:", ui_daemon:get_border_radius(), 100, true, function(value)
+            ui_daemon:set_border_radius(value)
         end),
         separator(),
-        slider("Animations FPS:", theme_daemon:get_ui_animations_framerate(), 360, true, function(value)
-            theme_daemon:set_ui_animations_framerate(value)
+        slider("Animations FPS:", ui_daemon:get_animations_framerate(), 360, true, function(value)
+            ui_daemon:set_animations_framerate(value)
         end, 1),
         checkbox_widget("animations"),
         separator(),

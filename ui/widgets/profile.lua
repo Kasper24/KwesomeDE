@@ -7,7 +7,7 @@ local wibox = require("wibox")
 local bwidget = require("ui.widgets.background")
 local twidget = require("ui.widgets.text")
 local beautiful = require("beautiful")
-local theme_daemon = require("daemons.system.theme")
+local ui_daemon = require("daemons.system.ui")
 local setmetatable = setmetatable
 local os = os
 
@@ -30,7 +30,7 @@ local function new()
     }
 
     local profile = wibox.widget {
-        image = theme_daemon:get_profile_image()
+        image = ui_daemon:get_profile_image()
     }
 
     local stack = wibox.widget {
@@ -40,11 +40,11 @@ local function new()
         profile
     }
 
-    if theme_daemon:get_profile_image() then
+    if ui_daemon:get_profile_image() then
         stack:raise_widget(profile)
     end
 
-    theme_daemon:connect_signal("profile_image", function(self, profile_image)
+    ui_daemon:connect_signal("profile_image", function(self, profile_image)
         profile.image = profile_image
         stack:raise_widget(profile)
     end)

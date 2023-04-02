@@ -14,7 +14,7 @@ local playerctl_daemon = require("daemons.system.playerctl")
 local audio_daemon = require("daemons.hardware.audio")
 local brightness_daemon = require("daemons.system.brightness")
 local rgb_daemon = require("daemons.hardware.rgb")
-local theme_daemon = require("daemons.system.theme")
+local ui_daemon = require("daemons.system.ui")
 local screenshot_daemon = require("daemons.system.screenshot")
 local record_daemon = require("daemons.system.record")
 local helpers = require("helpers")
@@ -482,8 +482,8 @@ awful.keyboard.append_global_keybindings({ -- Add padding
         group = "layout",
         description = "increase padding",
         on_press = function()
-            local current_client_gap = theme_daemon:get_client_gap()
-            theme_daemon:set_client_gap(current_client_gap + 5)
+            local current_client_gap = ui_daemon:get_client_gap()
+            ui_daemon:set_client_gap(current_client_gap + 5)
         end
     }, -- Subtract padding
     awful.key {
@@ -492,8 +492,8 @@ awful.keyboard.append_global_keybindings({ -- Add padding
         group = "layout",
         description = "decrease padding",
         on_press = function()
-            local current_client_gap = theme_daemon:get_client_gap()
-            theme_daemon:set_client_gap(current_client_gap - 5)
+            local current_client_gap = ui_daemon:get_client_gap()
+            ui_daemon:set_client_gap(current_client_gap - 5)
         end
     }, -- Increase useless gaps
     awful.key {
@@ -502,8 +502,8 @@ awful.keyboard.append_global_keybindings({ -- Add padding
         group = "layout",
         description = "increase useless gaps",
         on_press = function()
-            local current_useless_gap = theme_daemon:get_useless_gap()
-            theme_daemon:set_useless_gap(current_useless_gap + 5)
+            local current_useless_gap = ui_daemon:get_useless_gap()
+            ui_daemon:set_useless_gap(current_useless_gap + 5)
         end
     }, -- Decrease useless gaps
     awful.key {
@@ -512,8 +512,8 @@ awful.keyboard.append_global_keybindings({ -- Add padding
         group = "layout",
         description = "decrease useless gaps",
         on_press = function()
-            local current_useless_gap = theme_daemon:get_useless_gap()
-            theme_daemon:set_useless_gap(current_useless_gap - 5)
+            local current_useless_gap = ui_daemon:get_useless_gap()
+            ui_daemon:set_useless_gap(current_useless_gap - 5)
         end
     }, -- Increase master width
     awful.key {

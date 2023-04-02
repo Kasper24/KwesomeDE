@@ -13,7 +13,7 @@ local audio_popup = require(... .. ".applets.audio")
 local wifi_popup = require(... .. ".applets.wifi")
 local bluetooth_popup = require(... .. ".applets.bluetooth")
 local system_daemon = require("daemons.system.system")
-local theme_daemon = require("daemons.system.theme")
+local ui_daemon = require("daemons.system.ui")
 local helpers = require("helpers")
 local capi = {
     screen = screen,
@@ -236,7 +236,7 @@ awful.screen.connect_for_each_screen(function(s)
 end)
 
 if DEBUG ~= true and helpers.misc.is_restart() == false then
-    if theme_daemon:get_ui_show_lockscreen_on_login() then
+    if ui_daemon:get_show_lockscreen_on_login() then
         lock_popup:show()
     else
         require(... .. ".screens.loading")

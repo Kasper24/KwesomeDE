@@ -17,19 +17,19 @@ local capi = {
 local _ui = {}
 
 function _ui.rrect()
-    local theme_daemon = require("daemons.system.theme")
+    local ui_daemon = require("daemons.system.ui")
 
     return function(cr, width, height)
-        local radius = theme_daemon:get_ui_border_radius()
+        local radius = ui_daemon:get_border_radius()
         gshape.rounded_rect(cr, width, height, radius)
     end
 end
 
 function _ui.prrect(tl, tr, br, bl)
-    local theme_daemon = require("daemons.system.theme")
+    local ui_daemon = require("daemons.system.ui")
 
     return function(cr, width, height)
-        local radius = theme_daemon:get_ui_border_radius()
+        local radius = ui_daemon:get_border_radius()
         gshape.partially_rounded_rect(cr, width, height, tl, tr, br, bl, radius)
     end
 end

@@ -8,6 +8,7 @@ local gcolor = require("gears.color")
 local gsurface = require("gears.surface")
 local beautiful = require("beautiful")
 local theme_daemon = require("daemons.system.theme")
+local ui_daemon = require("daemons.system.ui")
 local helpers = require("helpers")
 local filesystem = require("external.filesystem")
 local layout_machi = require("external.layout-machi")
@@ -39,11 +40,11 @@ local function colors()
         cyan = colors[7],
         bright_cyan = colors[15],
 
-        background = helpers.color.add_opacity(colors[1], theme_daemon:get_ui_opacity()),
+        background = helpers.color.add_opacity(colors[1], ui_daemon:get_opacity()),
         background_blur = helpers.color.add_opacity(colors[1], 0.9),
         background_no_opacity = colors[1],
 
-        surface = helpers.color.add_opacity(colors[9], theme_daemon:get_ui_opacity()),
+        surface = helpers.color.add_opacity(colors[9], ui_daemon:get_opacity()),
         surface_no_opacity = colors[9],
 
         error = colors[2],
