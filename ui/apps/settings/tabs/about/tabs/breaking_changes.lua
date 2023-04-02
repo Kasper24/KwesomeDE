@@ -3,12 +3,22 @@ local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
 local system_daemon = require("daemons.system.system")
+local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 
 local breaking_changes = {
     mt = {}
 }
+
+local function separator()
+    return wibox.widget {
+        widget = widgets.background,
+        forced_height = dpi(1),
+        shape = helpers.ui.rrect(),
+        bg = beautiful.colors.surface
+    }
+end
 
 local function change_widget(message)
     return wibox.widget {
@@ -33,7 +43,7 @@ local function version_widget(version)
     local layout = wibox.widget {
         layout = wibox.layout.fixed.vertical,
         forced_width = dpi(200),
-        forced_height = dpi(200),
+        forced_height = dpi(80),
         spacing = dpi(15),
         {
             widget = widgets.text,
@@ -59,8 +69,13 @@ local function new()
         spacing = dpi(15),
     }
 
-    for _, version in ipairs(system_daemon:get_versions()) do
+    local versions = system_daemon:get_versions()
+    for index, version in ipairs(versions) do
         layout:add(version_widget(version))
+
+        if index ~= #versions then
+            layout:add(separator())
+        end
     end
 
     return layout
