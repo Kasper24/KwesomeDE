@@ -32,6 +32,7 @@ function weather:set_api_key(api_key)
             local success = Secret.password_store_finish(result)
             if success then
                 self._private.api_key = api_key
+                self:refresh()
             end
         end
     )
@@ -48,6 +49,7 @@ end
 function weather:set_unit(unit)
     self._private.unit = unit
     helpers.settings["openweather.unit"] = unit
+    self:refresh()
 end
 
 function weather:get_unit()
@@ -57,6 +59,7 @@ end
 function weather:set_latitude(latitude)
     self._private.latitude = latitude
     helpers.settings["openweather.latitude"] = latitude
+    self:refresh()
 end
 
 function weather:get_latitude()
@@ -66,6 +69,7 @@ end
 function weather:set_longitude(longitude)
     self._private.longitude = longitude
     helpers.settings["openweather.longitude"] = longitude
+    self:refresh()
 end
 
 function weather:get_longitude()

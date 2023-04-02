@@ -35,7 +35,6 @@ local function new()
         title = "Unit:",
         on_select = function(id)
             weather_daemon:set_unit(id)
-            weather_daemon:refresh()
         end,
         values = {
             {
@@ -61,17 +60,14 @@ local function new()
 
     api_key_text_input:connect_signal("unfocus", function(self, context, text)
         weather_daemon:set_api_key(text)
-        weather_daemon:refresh()
     end)
 
     latitude_text_input:connect_signal("unfocus", function(self, context, text)
         weather_daemon:set_latitude(text)
-        weather_daemon:refresh()
     end)
 
     longitude_text_input:connect_signal("unfocus", function(self, context, text)
         weather_daemon:set_longitude(text)
-        weather_daemon:refresh()
     end)
 
     return wibox.widget {

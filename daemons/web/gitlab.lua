@@ -26,6 +26,7 @@ local UPDATE_INTERVAL = 60 * 30 -- 30 mins
 function gitlab:set_host(host)
     self._private.host = host
     helpers.settings["gitlab.host"] = host
+    self:refresh()
 end
 
 function gitlab:get_host()
@@ -44,6 +45,7 @@ function gitlab:set_access_token(access_token)
             local success = Secret.password_store_finish(result)
             if success then
                 self._private.access_token = access_token
+                self:refresh()
             end
         end
     )

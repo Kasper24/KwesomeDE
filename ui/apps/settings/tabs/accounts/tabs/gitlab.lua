@@ -25,12 +25,10 @@ local function new()
 
     host_text_input:connect_signal("unfocus", function(self, context, text)
         gitlab_daemon:set_host(text)
-        gitlab_daemon:refresh()
     end)
 
     access_token_text_input:connect_signal("unfocus", function(self, context, text)
         gitlab_daemon:set_access_token(text)
-        gitlab_daemon:refresh()
     end)
 
     return wibox.widget {

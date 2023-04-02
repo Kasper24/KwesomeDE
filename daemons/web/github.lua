@@ -29,6 +29,7 @@ local EVENTS_DATA_PATH = EVENTS_PATH .. "data.json"
 function github:set_username(username)
     self._private.username = username
     helpers.settings["github.username"] = username
+    self:refresh()
 end
 
 function github:get_username()
