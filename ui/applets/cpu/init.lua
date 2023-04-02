@@ -122,8 +122,8 @@ local function process_widget(process)
     }
 end
 
-local function widget()
-    local cores_header = wibox.widget {
+local function cores()
+    local header = wibox.widget {
         layout = wibox.layout.fixed.horizontal,
         spacing = dpi(15),
         {
@@ -144,7 +144,7 @@ local function widget()
         }
     }
 
-    local cores_layout = wibox.widget {
+    local layout = wibox.widget {
         layout = wibox.layout.overflow.vertical,
         forced_height = dpi(300),
         spacing = dpi(15),
@@ -153,7 +153,25 @@ local function widget()
         step = 50
     }
 
-    local processes_header = wibox.widget {
+    cpu_daemon:connect_signal("core", function(self, core)
+        layout:add(core_widget(core))
+    end)
+
+    return wibox.widget {
+        layout = wibox.layout.fixed.vertical,
+        spacing = dpi(30),
+        {
+            layout = wibox.layout.fixed.vertical,
+            spacing = dpi(15),
+            header,
+            separator(),
+            layout
+        }
+    }
+end
+
+local function processes()
+    local header = wibox.widget {
         layout = wibox.layout.fixed.horizontal,
         {
             widget = widgets.text,
@@ -189,7 +207,7 @@ local function widget()
         }
     }
 
-    local processes_layout = wibox.widget {
+    local layout = wibox.widget {
         layout = wibox.layout.overflow.vertical,
         forced_height = dpi(300),
         spacing = dpi(15),
@@ -198,16 +216,12 @@ local function widget()
         step = 50
     }
 
-    cpu_daemon:connect_signal("core", function(self, core)
-        cores_layout:add(core_widget(core))
-    end)
-
     cpu_daemon:connect_signal("process", function(self, process)
         local widget = process_widget(process)
-        processes_layout:add(widget)
+        layout:add(widget)
 
         process:connect_signal("removed", function()
-            processes_layout:remove_widgets(widget)
+            layout:remove_widgets(widget)
             process:dynamic_disconnect_signals("update")
         end)
     end)
@@ -218,21 +232,35 @@ local function widget()
         {
             layout = wibox.layout.fixed.vertical,
             spacing = dpi(15),
-            cores_header,
+            header,
             separator(),
-            cores_layout
-        },
-        {
-            layout = wibox.layout.fixed.vertical,
-            spacing = dpi(15),
-            processes_header,
-            separator(),
-            processes_layout
+            layout
         }
     }
 end
 
 local function new()
+    local navigator = wibox.widget {
+        widget = widgets.navigator.horizontal,
+        buttons_selected_color = beautiful.icons.volume.high.color,
+        tabs = {
+            {
+                {
+                    id = "cores",
+                    title = "Cores",
+                    halign = "center",
+                    tab = cores()
+                },
+                {
+                    id = "processes",
+                    title = "Processes",
+                    halign = "center",
+                    tab = processes()
+                },
+            }
+        }
+    }
+
     local widget = widgets.animated_panel {
         ontop = true,
         visible = false,
@@ -251,7 +279,7 @@ local function new()
         widget = wibox.widget {
             widget = wibox.container.margin,
             margins = dpi(25),
-            widget()
+            navigator
         }
     }
 
