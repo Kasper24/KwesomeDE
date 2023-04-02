@@ -146,7 +146,6 @@ local function cores()
 
     local layout = wibox.widget {
         layout = wibox.layout.overflow.vertical,
-        forced_height = dpi(300),
         spacing = dpi(15),
         scrollbar_widget = widgets.scrollbar,
         scrollbar_width = dpi(10),
@@ -209,7 +208,6 @@ local function processes()
 
     local layout = wibox.widget {
         layout = wibox.layout.overflow.vertical,
-        forced_height = dpi(300),
         spacing = dpi(15),
         scrollbar_widget = widgets.scrollbar,
         scrollbar_width = dpi(10),
@@ -267,6 +265,8 @@ local function new()
         shape = helpers.ui.rrect(),
         minimum_width = dpi(600),
         maximum_width = dpi(600),
+        minimum_height = dpi(800),
+        maximum_height = dpi(800),
         placement = function(widget)
             awful.placement.bottom_right(widget, {
                 honor_workarea = true,
