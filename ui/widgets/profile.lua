@@ -2,22 +2,54 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
+local gshape = require("gears.shape")
 local wibox = require("wibox")
+local bwidget = require("ui.widgets.background")
+local twidget = require("ui.widgets.text")
+local beautiful = require("beautiful")
 local theme_daemon = require("daemons.system.theme")
 local setmetatable = setmetatable
+local os = os
 
 local profile = {
     mt = {}
 }
 
 local function new()
-    local widget = wibox.widget.imagebox(theme_daemon:get_profile_image())
+    local fake_profile = wibox.widget {
+        widget = bwidget,
+        shape = gshape.circle,
+        bg = beautiful.icons.computer.color,
+        {
+            widget = twidget,
+            bold = true,
+            size = 10,
+            color = beautiful.colors.on_accent,
+            text = os.getenv("USER"):sub(1, 1):upper()
+        }
+    }
 
-    theme_daemon:connect_signal("profile_image", function()
-        widget.image = theme_daemon:get_profile_image()
+    local profile = wibox.widget {
+        image = theme_daemon:get_profile_image()
+    }
+
+    local stack = wibox.widget {
+        widget = wibox.layout.stack,
+        top_only = true,
+        fake_profile,
+        profile
+    }
+
+    if theme_daemon:get_profile_image() then
+        stack:raise_widget(profile)
+    end
+
+    theme_daemon:connect_signal("profile_image", function(self, profile_image)
+        profile.image = profile_image
+        stack:raise_widget(profile)
     end)
 
-    return widget
+    return stack
 end
 
 function profile.mt:__call(...)
