@@ -12,101 +12,21 @@ local string = string
 local pairs = pairs
 
 local audio = {}
+
+local sink = {}
+local source = {}
+
+local sink_input = {}
+local source_output = {}
+
 local instance = nil
 
-function audio:set_default_sink(sink)
-    awful.spawn(string.format("pactl set-default-sink %d", sink), false)
+function audio:set_default_sink(id)
+    awful.spawn(string.format("pactl set-default-sink %d", id), false)
 end
 
-function audio:sink_toggle_mute(sink)
-    if sink == 0 or sink == nil then
-        awful.spawn(string.format("pactl set-sink-mute @DEFAULT_SINK@ toggle"), false)
-    else
-        awful.spawn(string.format("pactl set-sink-mute %d toggle", sink), false)
-    end
-end
-
-function audio:sink_volume_up(sink, step)
-    if sink == 0 or sink == nil then
-        awful.spawn(string.format("pactl set-sink-volume @DEFAULT_SINK@ +%d%%", step), false)
-    else
-        awful.spawn(string.format("pactl set-sink-volume %d +%d%%", sink, step), false)
-    end
-end
-
-function audio:sink_volume_down(sink, step)
-    if sink == 0 or sink == nil then
-        awful.spawn(string.format("pactl set-sink-volume @DEFAULT_SINK@ -%d%%", step), false)
-    else
-        awful.spawn(string.format("pactl set-sink-volume %d -%d%%", sink, step), false)
-    end
-end
-
-function audio:sink_set_volume(sink, volume)
-    volume = gmath.round(volume)
-    if sink == 0 or sink == nil then
-        awful.spawn(string.format("pactl set-sink-volume @DEFAULT_SINK@ %d%%", volume), false)
-    else
-        awful.spawn(string.format("pactl set-sink-volume %d %d%%", sink, volume), false)
-    end
-end
-
-function audio:set_default_source(source)
-    awful.spawn(string.format("pactl set-default-source %d", source), false)
-end
-
-function audio:source_toggle_mute(source)
-    if source == 0 or source == nil then
-        awful.spawn(string.format("pactl set-source-mute @DEFAULT_SOURCE@ toggle", source), false)
-    else
-        awful.spawn(string.format("pactl set-source-mute %d toggle", source), false)
-    end
-end
-
-function audio:source_volume_up(source, step)
-    if source == 0 or source == nil then
-        awful.spawn(string.format("pactl set-source-volume @DEFAULT_SOURCE@ +%d%%", step), false)
-    else
-        awful.spawn(string.format("pactl set-source-volume %d +%d%%", source, step), false)
-    end
-end
-
-function audio:source_volume_down(source, step)
-    if source == 0 or source == nil then
-        awful.spawn(string.format("pactl set-source-volume @DEFAULT_SOURCE@ -%d%%", step), false)
-    else
-        awful.spawn(string.format("pactl set-source-volume %d -%d%%", source, step), false)
-    end
-end
-
-function audio:source_set_volume(source, volume)
-    volume = gmath.round(volume)
-
-    if source == 0 or source == nil then
-        awful.spawn(string.format("pactl set-source-volume @DEFAULT_SOURCE@ %d%%", volume), false)
-    else
-        awful.spawn(string.format("pactl set-source-volume %d %d%%", source, volume), false)
-    end
-end
-
-function audio:sink_input_toggle_mute(sink_input)
-    awful.spawn(string.format("pactl set-sink-input-mute %d toggle", sink_input), false)
-end
-
-function audio:sink_input_set_volume(sink_input, volume)
-    volume = gmath.round(volume)
-
-    awful.spawn(string.format("pactl set-sink-input-volume %d %d%%", sink_input, volume), false)
-end
-
-function audio:source_output_toggle_mute(source_output)
-    awful.spawn(string.format("pactl set-source-output-mute %d toggle", source_output), false)
-end
-
-function audio:source_output_set_volume(source_output, volume)
-    volume = gmath.round(volume)
-
-    awful.spawn(string.format("pactl set-source-output-volume %d %d%%", source_output, volume), false)
+function audio:set_default_source(id)
+    awful.spawn(string.format("pactl set-default-source %d", id), false)
 end
 
 function audio:get_sinks()
@@ -133,6 +53,58 @@ function audio:get_default_source()
     end
 end
 
+function sink:toggle_mute()
+    awful.spawn(string.format("pactl set-sink-mute %d toggle", self.id), false)
+end
+
+function sink:volume_up(step)
+    awful.spawn(string.format("pactl set-sink-volume %d +%d%%", self.id, step), false)
+end
+
+function sink:volume_down(step)
+    awful.spawn(string.format("pactl set-sink-volume %d -%d%%", self.id, step), false)
+end
+
+function sink:set_volume(volume)
+    volume = gmath.round(volume)
+    awful.spawn(string.format("pactl set-sink-volume %d %d%%", self.id, volume), false)
+end
+
+function source:toggle_mute()
+    awful.spawn(string.format("pactl set-source-mute %d toggle", self.id), false)
+end
+
+function source:volume_up(step)
+    awful.spawn(string.format("pactl set-source-volume %d +%d%%", self.id, step), false)
+end
+
+function source:volume_down(step)
+    awful.spawn(string.format("pactl set-source-volume %d -%d%%", self.id, step), false)
+end
+
+function source:set_volume(volume)
+    volume = gmath.round(volume)
+    awful.spawn(string.format("pactl set-source-volume %d %d%%", self.id, volume), false)
+end
+
+function sink_input:toggle_mute()
+    awful.spawn(string.format("pactl set-sink-input-mute %d toggle", self.id), false)
+end
+
+function sink_input:set_volume(volume)
+    volume = gmath.round(volume)
+    awful.spawn(string.format("pactl set-sink-input-volume %d %d%%", self.id, volume), false)
+end
+
+function source_output:toggle_mute()
+    awful.spawn(string.format("pactl set-source-output-mute %d toggle", self.id), false)
+end
+
+function source_output:set_volume(volume)
+    volume = gmath.round(volume)
+    awful.spawn(string.format("pactl set-source-output-volume %d %d%%", self.id, volume), false)
+end
+
 local function on_default_device_changed(self)
     awful.spawn.easy_async_with_shell([[pactl info | grep "Default Sink:\|Default Source:"]], function(stdout)
         for line in stdout:gmatch("[^\r\n]+") do
@@ -147,7 +119,7 @@ local function on_default_device_changed(self)
                 else
                     device.default = false
                 end
-                self:emit_signal(string.format("%s::%s::updated", type, device.id), device)
+                device:emit_signal("updated")
             end
         end
     end)
@@ -156,14 +128,14 @@ end
 local function get_devices(self)
     awful.spawn.easy_async_with_shell([[pactl list sinks | grep "Sink #\|Name:\|Description:\|Mute:\|Volume: ";
         pactl list sources | grep "Source #\|Name:\|Description:\|Mute:\|Volume:"]], function(stdout)
-        local device = {}
+        local device = gobject {}
         for line in stdout:gmatch("[^\r\n]+") do
             if line:match("Sink") or line:match("Source") then
-                device = {
-                    id = line:match("#(%d+)"),
-                    type = line:match("Sink") and "sinks" or "sources",
-                    default = false
-                }
+                device = gobject {}
+                device.id = line:match("#(%d+)")
+                device.type = line:match("Sink") and "sinks" or "sources"
+                device.default = false
+                gtable.crush(device, device.type == "sinks" and sink or source, true)
             elseif line:match("Name") then
                 device.name = line:match(": (.*)")
             elseif line:match("Description") then
@@ -189,14 +161,13 @@ local function get_applications(self)
         [[pactl list sink-inputs | grep "Sink Input #\|application.name = \|application.icon_name = \|Mute:\|Volume: ";
         pactl list source-outputs | grep "Source Output #\|application.name = \|application.icon_name = \|Mute:\|Volume: "]],
         function(stdout)
-
-            local application = {}
+            local application = gobject {}
             for line in stdout:gmatch("[^\r\n]+") do
                 if line:match("Sink Input") or line:match("Source Output") then
-                    application = {
-                        id = line:match("#(%d+)"),
-                        type = line:match("Sink Input") and "sink_inputs" or "source_outputs"
-                    }
+                    application = gobject {}
+                    application.id = line:match("#(%d+)")
+                    application.type = line:match("Sink Input") and "sink_inputs" or "source_outputs"
+                    gtable.crush(application, application.type == "sink_inputs" and sink_input or source_output, true)
                 elseif line:match("Mute") then
                     application.mute = line:match(": (.*)") == "yes" and true or false
                 elseif line:match("Volume") then
@@ -209,13 +180,13 @@ local function get_applications(self)
                         self:emit_signal(application.type .. "::added", application)
                     elseif (application.volume ~= old_application_copy.volume) or
                         (application.mute ~= old_application_copy.mute) then
-                        self:emit_signal(application.type .. "::" .. application.id .. "::updated", application)
+                        application:emit_signal("updated")
                     end
 
                     self._private[application.type][application.id] = application
                 elseif line:match("application.icon_name") then
                     application.icon_name = line:match(" = (.*)"):gsub('"', "")
-                    self:emit_signal(application.type .. "::" .. application.id .. "::icon_name", application.icon_name)
+                    application:emit_signal("icon_name")
                 end
             end
         end)
@@ -255,7 +226,7 @@ local function on_device_updated(self, type, id)
         end
 
         if was_there_any_change == true then
-            self:emit_signal(type .. "::" .. id .. "::updated", self._private[type][id])
+            self._private[type][id]:emit_signal("updated")
             if self._private[type][id].default == true then
                 self:emit_signal(type .. "::default", self._private[type][id])
             end

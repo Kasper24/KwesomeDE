@@ -10,6 +10,7 @@ local audio_daemon = require("daemons.hardware.audio")
 local tasklist_daemon = require("daemons.system.tasklist")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
+local string = string
 
 local instance = nil
 
@@ -22,16 +23,9 @@ local function separator()
     }
 end
 
-local function application_widget(args)
-    args = args or {}
-
-    args.type = args.type or ""
-    args.application = args.application or nil
-    args.on_mute_press = args.on_mute_press or nil
-    args.on_slider_moved = args.on_slider_moved or nil
-    args.on_removed_cb = args.on_removed_cb or nil
-
-    local font_icon = tasklist_daemon:get_font_icon(args.application.name)
+local function application_widget(application)
+    local font_icon = tasklist_daemon:get_font_icon(application.name)
+    local accent_color = font_icon and font_icon.color or beautiful.icons.volume.high.color
     local icon = nil
     if font_icon == nil then
         icon = wibox.widget {
@@ -40,7 +34,7 @@ local function application_widget(args)
             valign = "center",
             forced_height = dpi(25),
             forced_width = dpi(25),
-            image = helpers.icon_theme.choose_icon{args.application.name, "gnome-audio", "org.pulseaudio.pavucontrol"}
+            image = helpers.icon_theme.choose_icon{application.name, "gnome-audio", "org.pulseaudio.pavucontrol"}
         }
     else
         icon = wibox.widget {
@@ -54,36 +48,37 @@ local function application_widget(args)
         widget = widgets.text,
         halign = "left",
         size = 15,
-        text = args.application.name
+        text = application.name
     }
 
     local mute = wibox.widget {
         widget = widgets.button.text.state,
         forced_width = dpi(40),
         forced_height = dpi(40),
-        on_by_default = args.application.mute,
-        text_normal_bg = font_icon.color,
-        on_normal_bg = font_icon.color,
+        on_by_default = application.mute,
+        text_normal_bg = accent_color,
+        on_normal_bg = accent_color,
         text_on_normal_bg = beautiful.colors.on_accent,
         icon = beautiful.icons.volume.off,
         size = 12,
         halign = "right",
         on_release = function()
-            args.on_mute_press()
+            application:toggle_mute()
         end
     }
 
     local slider = widgets.slider {
         forced_height = dpi(20),
-        value = args.application.volume,
+        value = application.volume,
         maximum = 100,
-        bar_active_color = font_icon.color,
+        bar_active_color = accent_color,
         handle_width = dpi(20),
         handle_height = dpi(20),
     }
 
     local widget = wibox.widget {
         layout = wibox.layout.fixed.vertical,
+        id = application.id,
         forced_height = dpi(80),
         spacing = dpi(15),
         {
@@ -104,20 +99,7 @@ local function application_widget(args)
         }
     }
 
-    audio_daemon:dynamic_connect_signal(args.type .. "::" .. args.application.id .. "::removed", function(self)
-        args.on_removed_cb(widget)
-        audio_daemon:dynamic_disconnect_signals(args.type .. "::" .. args.application.id .. "::removed")
-        audio_daemon:dynamic_disconnect_signals(args.type .. "::" .. args.application.id .. "::icon_name")
-        audio_daemon:dynamic_disconnect_signals(args.type .. "::" .. args.application.id .. "::updated")
-        slider:dynamic_disconnect_signals("property::value")
-    end)
-
-    audio_daemon:dynamic_connect_signal(args.type .. "::" .. args.application.id .. "::icon_name", function(self, icon_name)
-        icon.image = helpers.icon_theme.choose_icon{icon_name, args.application.name, "gnome-audio",
-                                                    "org.pulseaudio.pavucontrol"}
-    end)
-
-    audio_daemon:dynamic_connect_signal(args.type .. "::" .. args.application.id .. "::updated", function(self, application)
+    application:connect_signal("updated", function(self)
         slider:set_value(application.volume)
 
         if application.mute == true then
@@ -127,48 +109,48 @@ local function application_widget(args)
         end
     end)
 
-    slider:dynamic_connect_signal("property::value", function(self, value, instant)
-        args.on_slider_moved(value)
+    application:connect_signal("icon_name", function(self)
+        icon.image = helpers.icon_theme.choose_icon{
+            application.icon_name,
+            application.name,
+            "gnome-audio",
+            "org.pulseaudio.pavucontrol"
+        }
+    end)
+
+    slider:connect_signal("property::value", function(self, value, instant)
+        application:set_volume(value)
     end)
 
     return widget
 end
 
-local function device_widget(args)
-    args = args or {}
-
-    args.type = args.type or ""
-    args.device = args.device or nil
-    args.on_mute_press = args.on_mute_press or nil
-    args.on_default_press = args.on_default_press or nil
-    args.on_slider_moved = args.on_slider_moved or nil
-    args.on_removed_cb = args.on_removed_cb or nil
-
+local function device_widget(device)
     local name = wibox.widget {
         widget = widgets.text,
         forced_width = dpi(400),
         halign = "left",
         size = 12,
-        text = args.device.description
+        text = device.description
     }
 
     local mute = wibox.widget {
         widget = widgets.button.text.state,
         forced_width = dpi(40),
         forced_height = dpi(40),
-        on_by_default = args.device.mute,
+        on_by_default = device.mute,
         on_normal_bg = beautiful.icons.volume.off.color,
         text_on_normal_bg = beautiful.colors.on_accent,
         icon = beautiful.icons.volume.off,
         size = 12,
         on_release = function()
-            args.on_mute_press()
+            device:toggle_mute()
         end
     }
 
     local slider = widgets.slider {
         forced_height = dpi(20),
-        value = args.device.volume,
+        value = device.volume,
         maximum = 100,
         handle_width = dpi(20),
         handle_height = dpi(20),
@@ -193,7 +175,17 @@ local function device_widget(args)
     }
 
     slider:connect_signal("property::value", function(self, value, instant)
-        args.on_slider_moved(value)
+        device:set_volume(value)
+    end)
+
+    device:connect_signal("updated", function()
+        slider:set_value(device.volume)
+
+        if device.mute == true then
+            mute:turn_on()
+        else
+            mute:turn_off()
+        end
     end)
 
     return widget
@@ -234,35 +226,19 @@ local function applications()
     }
 
     audio_daemon:connect_signal("sink_inputs::added", function(self, sink_input)
-        sinks_inputs_layout:add(application_widget {
-            type = "sink_inputs",
-            application = sink_input,
-            on_mute_press = function()
-                audio_daemon:sink_input_toggle_mute(sink_input.id)
-            end,
-            on_slider_moved = function(volume)
-                audio_daemon:sink_input_set_volume(sink_input.id, volume)
-            end,
-            on_removed_cb = function(widget)
-                sinks_inputs_layout:remove_widgets(widget)
-            end
-        })
+        sinks_inputs_layout:add(application_widget(sink_input))
     end)
 
     audio_daemon:connect_signal("source_outputs::added", function(self, source_output)
-        source_outputs_layout:add(application_widget {
-            type = "source_output",
-            application = source_output,
-            on_mute_press = function()
-                audio_daemon:source_output_toggle_mute(source_output.id)
-            end,
-            on_slider_moved = function(volume)
-                audio_daemon:source_output_set_volume(source_output.id, volume)
-            end,
-            on_removed_cb = function(widget)
-                source_outputs_layout:remove_widgets(widget)
-            end
-        })
+        source_outputs_layout:add(application_widget(source_output))
+    end)
+
+    audio_daemon:connect_signal("sink_inputs::removed", function(self, sink_input)
+        sinks_inputs_layout:remove_widgets(sinks_inputs_layout:get_children_by_id(sink_input.id)[1])
+    end)
+
+    audio_daemon:connect_signal("source_outputs::removed", function(self, source_output)
+        source_outputs_layout:remove_widgets(sinks_inputs_layout:get_children_by_id(source_output.id)[1])
     end)
 
     return wibox.widget {
@@ -339,22 +315,7 @@ local function devices()
             id = sink.id,
             color = beautiful.colors.background,
             check_color = beautiful.icons.volume.high.color,
-            widget = device_widget {
-                type = "sinks",
-                device = sink,
-                on_mute_press = function()
-                    audio_daemon:sink_toggle_mute(sink.id)
-                end,
-                on_default_press = function()
-                    audio_daemon:set_default_sink(sink.id)
-                end,
-                on_slider_moved = function(volume)
-                    audio_daemon:sink_set_volume(sink.id, volume)
-                end,
-                on_removed_cb = function(widget)
-                    sinks_layout:remove_widgets(widget)
-                end
-            }
+            widget = device_widget(sink)
         }
     end)
 
@@ -362,17 +323,7 @@ local function devices()
         sinks_radio_group:select(sink.id)
     end)
 
-    audio_daemon:dynamic_connect_signal("sinks::updated", function(self, sink)
-        -- slider:set_value(sink.volume)
-
-        -- if sink.mute == true then
-        --     mute:turn_on()
-        -- else
-        --     mute:turn_off()
-        -- end
-    end)
-
-    audio_daemon:dynamic_connect_signal("sinks::removed", function(self, id)
+    audio_daemon:connect_signal("sinks::removed", function(self, id)
         sinks_radio_group:remove_value(id)
     end)
 
@@ -381,22 +332,7 @@ local function devices()
             id = source.id,
             color = beautiful.colors.background,
             check_color = beautiful.icons.volume.high.color,
-            widget = device_widget {
-                type = "sources",
-                device = source,
-                on_mute_press = function()
-                    audio_daemon:source_toggle_mute(source.id)
-                end,
-                on_default_press = function()
-                    audio_daemon:set_default_source(source.id)
-                end,
-                on_slider_moved = function(volume)
-                    audio_daemon:source_set_volume(source.id, volume)
-                end,
-                on_removed_cb = function(widget)
-                    sources_layout:remove_widgets(widget)
-                end
-            }
+            widget = device_widget(source)
         }
     end)
 
@@ -404,17 +340,7 @@ local function devices()
         sources_radio_group:select(source.id)
     end)
 
-    audio_daemon:dynamic_connect_signal("sources::updated", function(self, source)
-        -- slider:set_value(source.volume)
-
-        -- if source.mute == true then
-        --     mute:turn_on()
-        -- else
-        --     mute:turn_off()
-        -- end
-    end)
-
-    audio_daemon:dynamic_connect_signal("sources::removed", function(self, id)
+    audio_daemon:connect_signal("sources::removed", function(self, id)
         sources_radio_group:remove_value(id)
     end)
 

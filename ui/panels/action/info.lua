@@ -210,7 +210,7 @@ local function audio()
     }
 
     slider:connect_signal("property::value", function(self, value)
-        audio_daemon:sink_set_volume(0, value)
+        audio_daemon:get_default_sink():set_volume(value)
     end)
 
     local icon = icon:get_children_by_id("icon")[1]
