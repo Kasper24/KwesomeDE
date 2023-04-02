@@ -141,7 +141,7 @@ local function new(is_state)
                                 old_colorscheme_to_new_map[wp.defaults.text_normal_bg]
         wp.text_on_normal_bg = old_colorscheme_to_new_map[wp.text_on_normal_bg] or
                                 old_colorscheme_to_new_map[wp.defaults.text_on_normal_bg] or
-                                helpers.color.button_color(wp.text_normal_bg, 0.2)
+                                helpers.color.darken_or_lighten(wp.text_normal_bg, 0.2)
 
         widget:text_effect(true)
     end)

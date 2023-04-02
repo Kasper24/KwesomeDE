@@ -11,7 +11,7 @@
 -- d = duration == running time. How much time has passed *right now*
 local gobject = require("gears.object")
 local gtable = require("gears.table")
-local hcolor = require("helpers.color")
+local Color = require("external.lua-color")
 local tostring = tostring
 local assert = assert
 local table = table
@@ -445,15 +445,15 @@ local function performEasingOnSubject(subject, target, initial, clock, duration,
 end
 
 local function performEasingOnColor(initial, target, clock, duration, easing)
-    local initial_color = hcolor.hex_to_rgb(initial)
-    local target_color = hcolor.hex_to_rgb(target)
+    initial = Color(initial)
+    target = Color(target)
 
-    local r = easing(clock, initial_color.r, target_color.r - initial_color.r, duration)
-    local g = easing(clock, initial_color.g, target_color.g - initial_color.g, duration)
-    local b = easing(clock, initial_color.b, target_color.b - initial_color.b, duration)
-    local a = easing(clock, initial_color.a, target_color.a - initial_color.a, duration)
+    local r = easing(clock, initial.r, target.r - initial.r, duration)
+    local g = easing(clock, initial.g, target.g - initial.g, duration)
+    local b = easing(clock, initial.b, target.b - initial.b, duration)
+    local a = easing(clock, initial.a, target.a - initial.a, duration)
 
-    return hcolor.rgb_to_hex({r = r, g = g, b = b, a = a})
+    return tostring(Color({r = r, g = g, b = b, a = a}))
 end
 
 local function performEasing(table, initial, target, clock, duration, easing)

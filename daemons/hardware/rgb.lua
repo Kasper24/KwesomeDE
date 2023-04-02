@@ -6,7 +6,7 @@ local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local beautiful = require("beautiful")
-local helpers = require("helpers")
+local Color = require("external.lua-color")
 
 local rgb = {}
 local instance = nil
@@ -75,14 +75,14 @@ END
 
 function rgb:sync_colors_script(new_colors)
     if new_colors == true then
-        self._private.color_1 = helpers.color.hex_to_hsv(beautiful.colors.random_accent_color())
-        self._private.color_2 = helpers.color.hex_to_hsv(beautiful.colors.random_accent_color())
+        self._private.hue_1 = Color(beautiful.colors.random_accent_color()):hsv()
+        self._private.hue_2 = Color(beautiful.colors.random_accent_color()):hsv()
     end
 
     local _script = script
 
-    _script = _script:gsub("h1", self._private.color_1.h)
-    _script = _script:gsub("h2", self._private.color_2.h)
+    _script = _script:gsub("h1", self._private.hue_1)
+    _script = _script:gsub("h2", self._private.hue_2)
 
     awful.spawn.with_shell(_script)
 end
@@ -92,8 +92,8 @@ local function new()
     gtable.crush(ret, rgb, true)
     ret._private = {}
 
-    ret._private.color_1 = helpers.color.hex_to_hsv(beautiful.colors.random_accent_color())
-    ret._private.color_2 = helpers.color.hex_to_hsv(beautiful.colors.random_accent_color())
+    ret._private.hue_1 = Color(beautiful.colors.random_accent_color()):hsv()
+    ret._private.hue_2 = Color(beautiful.colors.random_accent_color()):hsv()
 
     return ret
 end

@@ -40,11 +40,11 @@ local function colors()
         cyan = colors[7],
         bright_cyan = colors[15],
 
-        background = helpers.color.add_opacity(colors[1], ui_daemon:get_opacity()),
-        background_blur = helpers.color.add_opacity(colors[1], 0.9),
+        background = helpers.color.change_opacity(colors[1], ui_daemon:get_opacity()),
+        background_blur = helpers.color.change_opacity(colors[1], 0.9),
         background_no_opacity = colors[1],
 
-        surface = helpers.color.add_opacity(colors[9], ui_daemon:get_opacity()),
+        surface = helpers.color.change_opacity(colors[9], ui_daemon:get_opacity()),
         surface_no_opacity = colors[9],
 
         error = colors[2],
@@ -54,7 +54,7 @@ local function colors()
         transparent = colors[1] .. "00",
 
         on_background = colors[8],
-        on_background_dark = helpers.color.is_dark(colors[1]) and helpers.color.pywal_darken(colors[8], 0.4) or helpers.color.pywal_lighten(colors[8], 0.4),
+        on_background_dark = helpers.color.darken_or_lighten(colors[1], 0.4),
         on_surface = colors[8],
         on_error = colors[1],
         on_accent = colors[1]

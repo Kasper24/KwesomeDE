@@ -11,8 +11,9 @@ local gcolor = require("gears.color")
 local gtimer = require("gears.timer")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
-local color_libary = require("external.color")
+local Color = require("external.lua-color")
 local helpers = require("helpers")
+local utils = require(... .. ".utils")
 local sanitize_filename = helpers.string.sanitize_filename
 local filesystem = require("external.filesystem")
 local json = require("external.json")
@@ -62,33 +63,6 @@ local PICTURES_MIMETYPES = {
     ["image/tiff"] = "lximage", -- TIFF
     ["image/webp"] = "lximage" -- webp
 }
-
-local function distance(hex_src, hex_tgt)
-    local color_1 = color_libary.color {
-        hex = hex_src
-    }
-    local color_2 = color_libary.color {
-        hex = hex_tgt
-    }
-
-    return math.sqrt((color_2.r - color_1.r)^2 + (color_2.g - color_1.g)^2 + (color_2.b - color_1.b)^2)
-end
-
-local function closet_color(colors, reference)
-    local minDistance = math.huge
-    local closest
-    local closestIndex
-    for i, color in ipairs(colors) do
-      local d = distance(color, reference)
-      if d < minDistance then
-        minDistance = d
-        closest = color
-        closestIndex = i
-      end
-    end
-    table.remove(colors, closestIndex)
-    return closest
-end
 
 local function generate_colorscheme(self, wallpaper, reset, light)
     if self:get_colorschemes()[wallpaper] ~= nil and reset ~= true then
@@ -161,42 +135,40 @@ local function generate_colorscheme(self, wallpaper, reset, light)
                 local color1 = colors[1]
 
                 for _, color in ipairs(colors) do
-                    color = helpers.color.pywal_saturate_color(color, 0.5)
+                    color = utils.saturate_color(color, 0.5)
                 end
 
-                colors[1] = helpers.color.pywal_lighten(raw_colors[#raw_colors], 0.85)
+                colors[1] = utils.lighten(raw_colors[#raw_colors], 0.85)
                 colors[8] = color1
-                colors[9] = helpers.color.pywal_darken(raw_colors[#raw_colors], 0.4)
+                colors[9] = utils.darken(raw_colors[#raw_colors], 0.4)
                 colors[16] = raw_colors[1]
             else
                 if string.sub(colors[1], 2, 2) ~= "0" then
-                    colors[1] = helpers.color.pywal_darken(colors[1], 0.4)
+                    colors[1] = utils.darken(colors[1], 0.4)
                 end
-                colors[8] = helpers.color.pywal_blend(colors[8], "#EEEEEE")
-                colors[9] = helpers.color.pywal_darken(colors[8], 0.3)
-                colors[16] = helpers.color.pywal_blend(colors[16], "#EEEEEE")
+                colors[8] = utils.blend(colors[8], "#EEEEEE")
+                colors[9] = utils.darken(colors[8], 0.3)
+                colors[16] = utils.blend(colors[16], "#EEEEEE")
             end
 
             local sorted_colors = gtable.clone({unpack(colors, 2, 7)})
-            colors[2] = closet_color(sorted_colors, "#FF0000")
-            colors[3] = closet_color(sorted_colors, "#00FF00")
-            colors[4] = closet_color(sorted_colors, "#FFFF00")
-            colors[5] = closet_color(sorted_colors, "#800080")
-            colors[6] = closet_color(sorted_colors, "#FF00FF")
-            colors[7] = closet_color(sorted_colors, "#0000FF")
+            colors[2] = utils.closet_color(sorted_colors, "#FF0000")
+            colors[3] = utils.closet_color(sorted_colors, "#00FF00")
+            colors[4] = utils.closet_color(sorted_colors, "#FFFF00")
+            colors[5] = utils.closet_color(sorted_colors, "#800080")
+            colors[6] = utils.closet_color(sorted_colors, "#FF00FF")
+            colors[7] = utils.closet_color(sorted_colors, "#0000FF")
 
             local added_sat = light and 0.5 or 0.3
             local sign = light and -1 or 1
 
             for index = 10, 15 do
-                local color = color_libary.color {
-                    hex = colors[index - 8]
-                }
-                colors[index] = helpers.color.pywal_alter_brightness(colors[index - 8], (sign * color.l * 0.3) / 255, added_sat)
+                local _, __, l = Color(colors[index - 8]):hsl()
+                colors[index] = utils.alter_brightness(colors[index - 8], (sign * l * 0.3) / 255, added_sat)
             end
 
-            colors[9] = helpers.color.pywal_alter_brightness(colors[1], sign * 0.098039216)
-            colors[16] = helpers.color.pywal_alter_brightness(colors[8], sign * 0.235294118)
+            colors[9] = utils.alter_brightness(colors[1], sign * 0.098039216)
+            colors[16] = utils.alter_brightness(colors[8], sign * 0.235294118)
 
             self:get_colorschemes()[wallpaper] = colors
             self:save_colorscheme()
@@ -274,7 +246,7 @@ local function reload_awesome_colorscheme()
     capi.awesome.emit_signal("colorscheme::changed", old_colorscheme_to_new_map, new_colorscheme)
 end
 
-local function on_finished_generating(self)
+local function on_finished_generating()
     gtimer.start_new(5, function()
         reload_gtk()
         return false
@@ -329,9 +301,7 @@ local function generate_sequences(colors)
 end
 
 local function replace_template_colors(color, color_name, line)
-    color = color_libary.color {
-        hex = color
-    }
+    color = Color(color)
 
     if line:match("{" .. color_name .. ".rgba}") then
         local string = string.format("%s, %s, %s, %s", color.r, color.g, color.b, color.a)
@@ -346,7 +316,7 @@ local function replace_template_colors(color, color_name, line)
         local string = string.format("%s/%s/%s/%s", color.r, color.g, color.b, color.a)
         return line:gsub("{" .. color_name .. ".xrgba}", string)
     elseif line:match("{" .. color_name .. ".strip}") then
-        local string = color.hex:gsub("#", "")
+        local string = tostring(color):gsub("#", "")
         return line:gsub("{" .. color_name .. ".strip}", string)
     elseif line:match("{" .. color_name .. ".red}") then
         return line:gsub("{" .. color_name .. ".red}", color.r)
@@ -355,7 +325,7 @@ local function replace_template_colors(color, color_name, line)
     elseif line:match("{" .. color_name .. ".blue}") then
         return line:gsub("{" .. color_name .. ".blue}", color.b)
     elseif line:match("{" .. color_name .. "}") then
-        return line:gsub("{" .. color_name .. "}", color.hex)
+        return line:gsub("{" .. color_name .. "}", tostring(color))
     end
 end
 
@@ -463,7 +433,7 @@ local function generate_templates(self)
                             end
 
                             if index >= #files then
-                                on_finished_generating(self)
+                                on_finished_generating()
                             end
                         end
                     end)

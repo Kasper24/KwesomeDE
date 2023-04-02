@@ -746,7 +746,7 @@ function playerctl.volume(width, daemon)
     }
 
     playerctl_daemon:connect_signal("volume", function(self, volume)
-        slider:set_value_instant(volume)
+        slider:set_value(volume)
 
         if volume == 0 then
             icon:set_icon(beautiful.icons.volume.off)

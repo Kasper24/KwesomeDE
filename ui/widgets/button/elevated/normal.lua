@@ -86,7 +86,7 @@ function elevated_button_normal:build_animable_child_anims(child)
                                     old_colorscheme_to_new_map[wp.defaults.text_normal_bg]
             wp.text_on_normal_bg = old_colorscheme_to_new_map[wp.text_on_normal_bg] or
                                     old_colorscheme_to_new_map[wp.defaults.text_on_normal_bg] or
-                                    helpers.color.button_color(wp.text_normal_bg, 0.2)
+                                    helpers.color.darken_or_lighten(wp.text_normal_bg, 0.2)
 
             self:effect(true)
         end)
@@ -108,7 +108,7 @@ function elevated_button_normal:build_animable_child_anims(child)
                                     old_colorscheme_to_new_map[wp.defaults.normal_bg]
             wp.on_normal_bg = old_colorscheme_to_new_map[wp.on_normal_bg] or
                                     old_colorscheme_to_new_map[wp.defaults.on_normal_bg] or
-                                    helpers.color.button_color(wp.normal_bg, 0.2)
+                                    helpers.color.darken_or_lighten(wp.normal_bg, 0.2)
 
             self:effect(true)
         end)
@@ -482,7 +482,7 @@ local function new(is_state)
                     old_colorscheme_to_new_map[wp.defaults.normal_bg]
         wp.on_normal_bg = old_colorscheme_to_new_map[wp.on_normal_bg] or
                     old_colorscheme_to_new_map[wp.defaults.on_normal_bg] or
-                    helpers.color.button_color(wp.normal_bg, 0.2)
+                    helpers.color.darken_or_lighten(wp.normal_bg, 0.2)
 
         wp.normal_border_color = old_colorscheme_to_new_map[wp.normal_border_color] or
                                 old_colorscheme_to_new_map[wp.defaults.normal_border_color]

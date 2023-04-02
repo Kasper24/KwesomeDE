@@ -74,7 +74,7 @@ function elevated_button_state:set_normal_bg(normal_bg)
     self:effect(true)
 
     if wp.on_normal_bg == nil then
-        self:set_on_normal_bg(helpers.color.button_color(normal_bg, 0.2))
+        self:set_on_normal_bg(helpers.color.darken_or_lighten(normal_bg, 0.2))
     end
 end
 
@@ -151,7 +151,7 @@ local function new()
     local wp = widget._private
     wp.state = false
 
-    wp.defaults.on_normal_bg = helpers.color.button_color(wp.defaults.normal_bg, 0.2)
+    wp.defaults.on_normal_bg = helpers.color.darken_or_lighten(wp.defaults.normal_bg, 0.2)
 
     wp.defaults.on_normal_shape = wp.defaults.normal_shape
     wp.defaults.on_hover_shape = wp.defaults.normal_shape

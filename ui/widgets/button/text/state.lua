@@ -40,7 +40,7 @@ function text_button_state:set_text_normal_bg(text_normal_bg)
     self:text_effect(true)
 
     if self._private.text_on_normal_bg == nil then
-        self:set_text_on_normal_bg(helpers.color.button_color(text_normal_bg, 0.2))
+        self:set_text_on_normal_bg(helpers.color.darken_or_lighten(text_normal_bg, 0.2))
     end
 end
 
@@ -57,7 +57,7 @@ local function new()
     local wp = widget._private
 
     -- Setup default values
-    wp.defaults.text_on_normal_bg = helpers.color.button_color(wp.defaults.text_normal_bg, 0.2)
+    wp.defaults.text_on_normal_bg = helpers.color.darken_or_lighten(wp.defaults.text_normal_bg, 0.2)
 
     widget:text_effect(true)
 

@@ -4,9 +4,6 @@
 [submodule "layout-machi"]
 	path = external/layout-machi
 	url = https://github.com/xinhaoyuan/layout-machi
-[submodule "color"]
-	path = external/color
-	url = https://github.com/andOrlando/color
 [submodule "xml2lua"]
 	path = external/xml2lua
 	url = https://github.com/Kasper24/xml2lua
