@@ -713,7 +713,7 @@ awful.keyboard.append_global_keybindings({ -- Toogle media
         group = "media",
         description = "increase volume",
         on_press = function()
-            audio_daemon:get_default_sink():volume_up(nil, 5)
+            audio_daemon:get_default_sink():volume_up(5)
         end
     }, -- Lower volume
     awful.key {
@@ -722,7 +722,7 @@ awful.keyboard.append_global_keybindings({ -- Toogle media
         group = "media",
         description = "decrease volume",
         on_press = function()
-            audio_daemon:get_default_sink():volume_down(nil, 5)
+            audio_daemon:get_default_sink():volume_down(5)
         end
     }, -- Mute volume
     awful.key {
