@@ -13,12 +13,7 @@ local ui = {
     mt = {}
 }
 
-local function checkbox_widget(key)
-    local title = key:gsub("(%l)(%w*)", function(a, b)
-        return string.upper(a) .. b
-    end)
-    title = title:gsub("_", " ") .. ":"
-
+local function checkbox_widget(key, title)
     local widget = checkbox {
         title = title,
         state = ui_daemon["get_" .. key](ui_daemon),
@@ -99,9 +94,9 @@ local function new()
         slider("Animations FPS:", ui_daemon:get_animations_framerate(), 360, true, function(value)
             ui_daemon:set_animations_framerate(value)
         end, 1),
-        checkbox_widget("animations"),
+        checkbox_widget("animations", "Animations:"),
         separator(),
-        checkbox_widget("show_lockscreen_on_login"),
+        checkbox_widget("show_lockscreen_on_login", "Lock on Login:"),
     }
 end
 
