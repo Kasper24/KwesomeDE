@@ -173,10 +173,13 @@ function ui:get_animations()
 end
 
 -- Animations Framerate
-function ui:set_animations_framerate(framerate)
+function ui:set_animations_framerate(framerate, save)
     helpers.animation:set_framerate(framerate)
     self._private.ui_animations_framerate = framerate
-    helpers.settings["ui.animations.framerate"] = framerate
+
+    if save ~= false then
+        helpers.settings["ui.animations.framerate"] = framerate
+    end
 end
 
 function ui:get_animations_framerate()
@@ -207,9 +210,10 @@ local function new()
 
     ret._private = {}
 
+    ret:set_useless_gap(ret:get_useless_gap(), false)
     ret:set_client_gap(ret:get_client_gap(), false)
-    ret:set_animations(ret:get_animations())
-    ret:set_animations_framerate(ret:get_animations_framerate())
+    ret:set_animations(ret:get_animations(), false)
+    ret:set_animations_framerate(ret:get_animations_framerate(), false)
 
     setup_profile_image(ret)
 
