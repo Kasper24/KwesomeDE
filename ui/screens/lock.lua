@@ -220,6 +220,7 @@ local function new()
         visible = false,
         ontop = true,
         placement = awful.placement.maximize,
+        bg = beautiful.colors.background,
         widget = widget(ret)
     }
 
