@@ -108,7 +108,7 @@ yay/paru -S awesome-git
 | Dependency                              | Why/Where is it needed?                                   |
 |-----------------------------------------|-----------------------------------------------------------|
 | networkmanager                          | Network notifcations, applet/wibar widget                 |
-| blueman                                 | Bluetooth notifcations, applet/wibar widget               |
+| bluez                                   | Bluetooth notifcations, applet/wibar widget               |
 | pipewire-pulse/pulsaudio + pactl        | Audio notifcations, applet/wibar widget                   |
 | libgudev                                | Used for USB notifications (optional - use commands)      |
 | libusb                                  | Used for USB notifications                                |
@@ -129,7 +129,7 @@ yay/paru -S awesome-git
 
 **Arch Linux (and other Arch-based distributions)**
    ```sh
-      pacman -Sy networkmanager blueman pipewire pipewire-pulse libusb libgudev upower lm_sensors brightnessctl
+      pacman -Sy networkmanager bluez pipewire pipewire-pulse libusb libgudev upower lm_sensors brightnessctl
       redshift inotify-tools maim xcolor ffmpeg playerctl fortune-mod imagemagick neofetch gnome-keyring --needed
    ```
    Assuming your **AUR Helper** is [yay](https://github.com/Jguer/yay) or [paru](https://github.com/Morganamilo/paru).
