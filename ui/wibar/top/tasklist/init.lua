@@ -220,8 +220,8 @@ local function new()
                     tasklist_layout:move_widget(widget, { x = pos, y = 0})
                 end
             }
-            widget.remove_animation = helpers.animation:new {
-                pos = dpi(80),
+            widget.width_animation = helpers.animation:new {
+                pos = 1,
                 duration = 0.2,
                 easing = helpers.animation.easing.linear,
                 update = function(self, pos)
@@ -229,10 +229,14 @@ local function new()
                 end,
                 signals = {
                     ["ended"] = function()
-                        tasklist_layout:remove_widgets(widget)
+                        if widget.pending_remove then
+                            tasklist_layout:remove_widgets(widget)
+                            widget = nil
+                        end
                     end
                 }
             }
+            widget.width_animation:set(dpi(80))
             tasklist_layout:add_at(widget, { x =  pos * dpi(80), y = 0})
         else
             client.tasklist_widget.move_animation:set(pos * dpi(80))
@@ -240,7 +244,8 @@ local function new()
     end)
 
     tasklist_daemon:connect_signal("client::removed", function(self, client)
-        client.tasklist_widget.remove_animation:set(0)
+        client.tasklist_widget.pending_remove = true
+        client.tasklist_widget.width_animation:set(1)
     end)
 
     tasklist_daemon:connect_signal("pinned_app::pos", function(self, pinned_app, pos)
