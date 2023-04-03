@@ -15,19 +15,6 @@ local path = ...
 local calender = require(path .. ".calendar")
 local weather = require(path .. ".weather")
 
-local function widget()
-    return wibox.widget {
-        widget = wibox.container.margin,
-        margins = dpi(25),
-        {
-            layout = wibox.layout.flex.horizontal,
-            spacing = dpi(15),
-            calender,
-            weather
-        }
-    }
-end
-
 local function new()
     return widgets.animated_panel {
         visible = false,
