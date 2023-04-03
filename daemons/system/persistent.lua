@@ -6,6 +6,7 @@ local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
+local gdebug = require("gears.debug")
 local bling = require("external.bling")
 local tabbed = bling.module.tabbed
 local helpers = require("helpers")
@@ -228,8 +229,17 @@ function persistent:save()
     self:save_tags()
     self:save_clients()
 
-    local json_settings = json.encode(self.settings)
-    awful.spawn.with_shell(string.format("mkdir -p %s && echo '%s' > %s", PATH, json_settings, DATA_PATH))
+    local _settings_status, settings = pcall(function()
+        return json.encode(self.settings)
+    end)
+    if not _settings_status or not settings then
+        gdebug.print_warning(
+            "Failed to encode settings! " ..
+            "Settings will not be saved. "
+        )
+    else
+        awful.spawn.with_shell(string.format("mkdir -p %s && echo '%s' > %s", PATH, settings, DATA_PATH))
+    end
 end
 
 function persistent:restore()

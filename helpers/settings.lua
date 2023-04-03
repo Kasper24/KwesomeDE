@@ -436,7 +436,17 @@ local function new()
         call_now = false,
         single_shot = true,
         callback = function()
-            file:write(json.encode(ret.settings))
+            local _settings_status, settings = pcall(function()
+                return json.encode(ret.settings)
+            end)
+            if not _settings_status or not settings then
+                gdebug.print_warning(
+                    "Failed to encode settings! " ..
+                    "Settings will not be saved. "
+                )
+            else
+                file:write(settings)
+            end
         end
     }
 

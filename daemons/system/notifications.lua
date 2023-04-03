@@ -7,6 +7,7 @@ local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local gstring = require("gears.string")
+local gdebug = require("gears.debug")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
 local naughty = require("naughty")
@@ -175,13 +176,24 @@ local function new()
 
     ret._private = {}
     ret._private.notifications = {}
+
+    local file = filesystem.file.new_for_path(DATA_PATH)
     ret._private.save_timer = gtimer {
         timeout = 1,
         autostart = false,
         single_shot = true,
         callback = function()
-            local file = filesystem.file.new_for_path(DATA_PATH)
-            file:write(json.encode(ret._private.notifications))
+            local _notifications_status, notifications = pcall(function()
+                return json.encode(ret._private.notifications)
+            end)
+            if not _notifications_status or not notifications then
+                gdebug.print_warning(
+                    "Failed to encode notifications! " ..
+                    "Notifications will not be saved. "
+                )
+            else
+                file:write(notifications)
+            end
         end
     }
 
