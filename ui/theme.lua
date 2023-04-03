@@ -420,7 +420,7 @@ local function widgets()
     theme.tabbar_ontop = true
     theme.tabbar_radius = 0 -- border radius of the tabbar
     theme.tabbar_style = "default" -- style of the tabbar ("default", "boxes" or "modern")
-    theme.tabbar_font = theme.font_name .. dpi(12) -- font of the tabbar
+    theme.tabbar_font = theme.font -- font of the tabbar
     theme.tabbar_size = dpi(40) -- size of the tabbar
     theme.tabbar_position = "top" -- position of the tabbar
     theme.tabbar_bg_normal = theme.colors.background
