@@ -39,7 +39,6 @@ local properties = {
     "pattern", "obscure",
     "cursor_blink", "cursor_blink_rate","cursor_size", "cursor_bg",
     "selection_bg",
-    "private_text"
 }
 
 text_input.patterns = {
@@ -226,7 +225,7 @@ function text_input:set_widget_template(widget_template)
     wp.text_widget.forced_width = math.huge
     local text_draw = wp.text_widget.draw
     if self:get_initial() then
-        self:set_text(self:get_initial())
+        self:replace_text(self:get_initial())
     end
 
     local placeholder_widget = widget_template:get_children_by_id("placeholder_role")
@@ -338,18 +337,8 @@ end
 
 function text_input:set_obscure(obscure)
     self._private.obscure = obscure
-    self:update_text_widget()
+    self:set_text(self:get_text())
 end
-
-function text_input:update_text_widget(text)
-    local to_set_text = text or self:get_text()
-    if self._private.obscure then
-        self:get_text_widget():set_text(string.rep("*", #to_set_text))
-    else
-        self:get_text_widget():set_text(to_set_text)
-    end
-end
-
 
 function text_input:toggle_obscure()
     self:set_obscure(not self._private.obscure)
@@ -357,7 +346,7 @@ end
 
 function text_input:set_initial(initial)
     self._private.initial = initial
-    self:set_text(initial)
+    self:replace_text(initial)
 end
 
 function text_input:update_text(text)
@@ -368,19 +357,29 @@ function text_input:update_text(text)
     end
 end
 
-function text_input:set_text(text, update_cursor)
-    update_cursor = update_cursor == nil and true or update_cursor
+function text_input:set_text(text)
+    self._private.text_buffer = text
 
-    self._private.private_text = text
+    if self:get_obscure() then
+        self:get_text_widget():set_text(string.rep("*", #text))
+    else
+        self:get_text_widget():set_text(text)
+    end
+end
 
-    self:update_text_widget(text)
-    
-    if update_cursor then
-        if self:get_text() == "" then
-            self:set_cursor_index(0)
-        else
-            self:set_cursor_index(#text)
-        end
+function text_input:replace_text(text)
+    self._private.text_buffer = text
+
+    if self:get_obscure() then
+        self:set_text(string.rep("*", #text))
+    else
+        self:set_text(text)
+    end
+
+    if self:get_text() == "" then
+        self:set_cursor_index(0)
+    else
+        self:set_cursor_index(#text)
     end
 end
 
@@ -395,12 +394,12 @@ function text_input:insert_text(text)
     if wp.pattern then
         new_text = new_text:match(wp.pattern)
         if new_text then
-            self:set_text(new_text, false)
+            self:set_text(new_text)
             self:set_cursor_index(self:get_cursor_index() + #text)
             self:emit_signal("property::text", self:get_text())
         end
     else
-        self:set_text(new_text, false)
+        self:set_text(new_text)
         self:set_cursor_index(self:get_cursor_index() + #text)
         self:emit_signal("property::text", self:get_text())
     end
@@ -423,12 +422,12 @@ function text_input:overwrite_text(text)
     if wp.pattern then
         new_text = new_text:match(wp.pattern)
         if new_text then
-            self:set_text(new_text, false)
+            self:set_text(new_text)
             self:set_cursor_index(#left_text)
             self:emit_signal("property::text", self:get_text())
         end
     else
-        self:set_text(new_text, false)
+        self:set_text(new_text)
         self:set_cursor_index(#left_text)
         self:emit_signal("property::text", self:get_text())
     end
@@ -464,7 +463,7 @@ function text_input:delete_next_word()
 
     local left_text = old_text:sub(1, cursor_index)
     local right_text = old_text:sub(cword_end(old_text, cursor_index + 1))
-    self:set_text(left_text .. right_text, false)
+    self:set_text(left_text .. right_text)
     self:emit_signal("property::text", self:get_text())
 end
 
@@ -474,7 +473,7 @@ function text_input:delete_previous_word()
     local wstart = cword_start(old_text, cursor_index + 1) - 1
     local left_text = old_text:sub(1, wstart)
     local right_text = old_text:sub(cursor_index + 1)
-    self:set_text(left_text .. right_text, false)
+    self:set_text(left_text .. right_text)
     self:set_cursor_index(wstart)
     self:emit_signal("property::text", self:get_text())
 end
@@ -493,7 +492,7 @@ function text_input:delete_text_before_cursor()
         local old_text = self:get_text()
         local left_text = old_text:sub(1, cursor_index - 1)
         local right_text = old_text:sub(cursor_index + 1)
-        self:set_text(left_text .. right_text, false)
+        self:set_text(left_text .. right_text)
         self:set_cursor_index(cursor_index - 1)
         self:emit_signal("property::text", self:get_text())
     end
@@ -505,14 +504,13 @@ function text_input:delete_text_after_cursor()
         local old_text = self:get_text()
         local left_text = old_text:sub(1, cursor_index)
         local right_text = old_text:sub(cursor_index + 2)
-        self:set_text(left_text .. right_text, false)
+        self:set_text(left_text .. right_text)
         self:emit_signal("property::text", self:get_text())
     end
 end
 
 function text_input:get_text()
-    return self._private.private_text or ""
-    -- self:get_text_widget():get_text()
+    return self._private.text_buffer or ""
 end
 
 function text_input:get_text_widget()
@@ -801,7 +799,7 @@ function text_input:unfocus(context)
     wp.cursor_blink_timer:stop()
     self:hide_selection()
     if self.reset_on_unfocus == true then
-        self:set_text("")
+        self:replace_text("")
     end
 
     awful.keygrabber.stop(wp.keygrabber)
