@@ -137,6 +137,7 @@ local function check_version(self)
             for index = find_current_version_index(), #VERSIONS do
                 self:emit_signal("version::new", VERSIONS[index])
             end
+            self:emit_signal("version::new::single")
             helpers.settings["kwesomede.version"] = last_version.version
         end)
         return true

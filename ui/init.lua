@@ -29,7 +29,7 @@ require(... .. ".quick_notifications")
 require(... .. ".titlebar")
 require(... .. ".wibar")
 
-system_daemon:connect_signal("version::new", function()
+system_daemon:connect_signal("version::new::single", function()
     settings_app:connect_signal("managed", function()
         SETTINGS_APP_NAVIGATOR:select("about")
     end)
