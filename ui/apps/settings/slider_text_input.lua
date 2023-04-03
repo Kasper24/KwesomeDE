@@ -40,15 +40,15 @@ local function new(args)
         slider_text_input:get_text_input():unfocus()
     end)
 
-    SETTINGS_APP:get_client():connect_signal("request::unmanage", function()
+    SETTINGS_APP:connect_signal("request::unmanage", function()
         slider_text_input:get_text_input():unfocus()
     end)
 
-    SETTINGS_APP:get_client():connect_signal("unfocus", function()
+    SETTINGS_APP:connect_signal("unfocus", function()
         slider_text_input:get_text_input():unfocus()
     end)
 
-    SETTINGS_APP:get_client():connect_signal("mouse::leave", function()
+    SETTINGS_APP:connect_signal("mouse::leave", function()
         slider_text_input:get_text_input():unfocus()
     end)
 

@@ -21,17 +21,17 @@ local app = {
     mt = {}
 }
 
-local function titlebar(client)
+local function titlebar(self)
     local minimize = wibox.widget {
         widget = widgets.button.elevated.state,
         forced_width = dpi(20),
         forced_height = dpi(20),
-        on_by_default = capi.client.focus == client,
+        on_by_default = capi.client.focus == self:get_client(),
         normal_shape = gshape.isosceles_triangle,
         normal_bg = beautiful.colors.surface,
-        on_normal_bg = client.font_icon.color,
+        on_normal_bg = self:get_client().font_icon.color,
         on_release = function(self)
-            client.minimized = not client.minimized
+            self:get_client().minimized = not self:get_client().minimized
         end
     }
 
@@ -39,12 +39,12 @@ local function titlebar(client)
         widget = widgets.button.elevated.state,
         forced_width = dpi(20),
         forced_height = dpi(20),
-        on_by_default = capi.client.focus == client,
+        on_by_default = capi.client.focus == self:get_client(),
         normal_shape = gshape.circle,
         normal_bg = beautiful.colors.surface,
-        on_normal_bg = client.font_icon.color,
+        on_normal_bg = self:get_client().font_icon.color,
         on_release = function()
-            client:kill()
+            self:get_client():kill()
         end
     }
 
@@ -53,30 +53,30 @@ local function titlebar(client)
         halign = "center",
         disabled = true,
         paddings = 0,
-        on_by_default = capi.client.focus == client,
-        icon = client.font_icon,
+        on_by_default = capi.client.focus == self:get_client(),
+        icon = self:get_client().font_icon,
         scale = 1,
         normal_bg = beautiful.colors.background,
         on_normal_bg = beautiful.colors.background,
         text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = client.font_icon.color,
+        text_on_normal_bg = self:get_client().font_icon.color,
     }
 
     local title = wibox.widget {
         widget = widgets.text,
         halign = "center",
         size = 15,
-        text = client.name,
+        text = self:get_client().name,
         color = beautiful.colors.on_background,
     }
 
-    client:connect_signal("focus", function()
+    self:connect_signal("focus", function()
         font_icon:turn_on()
         minimize:turn_on()
         close:turn_on()
     end)
 
-    client:connect_signal("unfocus", function()
+    self:connect_signal("unfocus", function()
         font_icon:turn_off()
         minimize:turn_off()
         close:turn_off()
@@ -189,6 +189,8 @@ local function new(args)
             },
             callback = function(c)
                 ret._private.client = c
+                ret:emit_signal("client", c)
+
                 c.width = ret._private.width
                 c.custom_titlebar = true
                 c.can_resize = false
@@ -215,7 +217,7 @@ local function new(args)
                         if ret._private.show_titlebar then
                             ret._private.widget = wibox.widget {
                                 layout = wibox.layout.align.vertical,
-                                titlebar(c),
+                                titlebar(ret),
                                 ret._private.widget
                             }
                         end
@@ -232,6 +234,20 @@ local function new(args)
 
                 c:connect_signal("request::unmanage", function()
                     ret._private.client = nil
+                    ret:emit_signal("request::unmanage")
+                end)
+
+                c:connect_signal("focus", function()
+                    ret:emit_signal("focus")
+
+                end)
+
+                c:connect_signal("unfocus", function()
+                    ret:emit_signal("unfocus")
+                end)
+
+                c:connect_signal("mouse::leave", function()
+                    ret:emit_signal("mouse::leave")
                 end)
 
                 capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)

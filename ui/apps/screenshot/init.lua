@@ -144,15 +144,15 @@ local function folder_picker()
         end
     }
 
-    SCREENSHOT_APP:get_client():connect_signal("request::unmanage", function()
+    SCREENSHOT_APP:connect_signal("request::unmanage", function()
         folder_picker:get_text_input():unfocus()
     end)
 
-    SCREENSHOT_APP:get_client():connect_signal("unfocus", function()
+    SCREENSHOT_APP:connect_signal("unfocus", function()
         folder_picker:get_text_input():unfocus()
     end)
 
-    SCREENSHOT_APP:get_client():connect_signal("mouse::leave", function()
+    SCREENSHOT_APP:connect_signal("mouse::leave", function()
         folder_picker:get_text_input():unfocus()
     end)
 

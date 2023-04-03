@@ -55,7 +55,7 @@ local function resolution()
         end
     }
 
-    RECORD_APP:get_client():connect_signal("request::unmanage", function()
+    RECORD_APP:connect_signal("request::unmanage", function()
         dropdown:hide()
     end)
 
@@ -173,7 +173,7 @@ local function audio_source()
         dropdown:select(default_source.description, default_source.name)
     end
 
-    RECORD_APP:get_client():connect_signal("request::unmanage", function()
+    RECORD_APP:connect_signal("request::unmanage", function()
         dropdown:hide()
     end)
 
@@ -202,15 +202,15 @@ local function folder_picker()
         end
     }
 
-    RECORD_APP:get_client():connect_signal("request::unmanage", function()
+    RECORD_APP:connect_signal("request::unmanage", function()
         folder_picker:get_text_input():unfocus()
     end)
 
-    RECORD_APP:get_client():connect_signal("unfocus", function()
+    RECORD_APP:connect_signal("unfocus", function()
         folder_picker:get_text_input():unfocus()
     end)
 
-    RECORD_APP:get_client():connect_signal("mouse::leave", function()
+    RECORD_APP:connect_signal("mouse::leave", function()
         folder_picker:get_text_input():unfocus()
     end)
 
@@ -243,7 +243,7 @@ local function format()
         end
     }
 
-    RECORD_APP:get_client():connect_signal("request::unmanage", function()
+    RECORD_APP:connect_signal("request::unmanage", function()
         dropdown:hide()
     end)
 
