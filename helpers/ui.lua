@@ -7,6 +7,8 @@ local gcolor = require("gears.color")
 local gshape = require("gears.shape")
 local gtimer = require("gears.timer")
 local filesystem = require("external.filesystem")
+local beautiful = require("beautiful")
+local dpi = beautiful.xresources.apply_dpi
 local ipairs = ipairs
 local floor = math.floor
 local type = type
@@ -21,7 +23,7 @@ function _ui.rrect()
 
     return function(cr, width, height)
         local radius = ui_daemon:get_border_radius()
-        gshape.rounded_rect(cr, width, height, radius)
+        gshape.rounded_rect(cr, width, height, dpi(radius))
     end
 end
 
@@ -30,7 +32,7 @@ function _ui.prrect(tl, tr, br, bl)
 
     return function(cr, width, height)
         local radius = ui_daemon:get_border_radius()
-        gshape.partially_rounded_rect(cr, width, height, tl, tr, br, bl, radius)
+        gshape.partially_rounded_rect(cr, width, height, tl, tr, br, bl, dpi(radius))
     end
 end
 
