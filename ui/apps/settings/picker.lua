@@ -42,6 +42,7 @@ local function new(args, type)
 
     return wibox.widget {
         layout = wibox.layout.align.horizontal,
+        forced_height = dpi(40),
         {
             widget = widgets.text,
             forced_width = dpi(200),
