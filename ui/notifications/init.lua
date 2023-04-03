@@ -61,7 +61,7 @@ local function get_notification_position(n, screen)
 
     if #screen.notifications > 1 then
         local parent = screen.notifications[#screen.notifications - 1]
-        y = parent.widget.y + parent.widget.height + 30
+        y = parent.widget.y + parent.widget.height + dpi(30)
     end
 
     return { x = x, y = y }
@@ -158,7 +158,7 @@ local function destroy_notif(n, screen)
     local destroyed_n_height = n.widget.height
     for _, n in ipairs(screen.notifications) do
         if #screen.notifications > 0 and n.widget.y ~= min_y then
-            n.anim:set{y = n.widget.y - destroyed_n_height - 30, height = 300}
+            n.anim:set{y = n.widget.y - destroyed_n_height - dpi(30), height = 300}
         end
     end
 
