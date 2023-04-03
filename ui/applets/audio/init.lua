@@ -276,8 +276,8 @@ local function sinks()
         radio_group:select(sink.id)
     end)
 
-    audio_daemon:connect_signal("sinks::removed", function(self, id)
-        radio_group:remove_value(id)
+    audio_daemon:connect_signal("sinks::removed", function(self, sink)
+        radio_group:remove_value(sink.id)
     end)
 
     return radio_group
@@ -312,8 +312,8 @@ local function sources()
         radio_group:select(source.id)
     end)
 
-    audio_daemon:connect_signal("sources::removed", function(self, id)
-        radio_group:remove_value(id)
+    audio_daemon:connect_signal("sources::removed", function(self, source)
+        radio_group:remove_value(source.id)
     end)
 
     return radio_group

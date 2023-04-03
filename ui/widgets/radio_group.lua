@@ -93,9 +93,9 @@ function radio_group:add_value(value)
     table.insert(self._private.values, value)
 end
 
-function radio_group:remove_value(value_to_remove)
+function radio_group:remove_value(id)
     for index, value in ipairs(self._private.values) do
-        if value.id == value_to_remove.id then
+        if value.id == id then
             self._private.buttons_layout:remove_widgets(value.button)
             table.remove(self._private.values, index)
         end
