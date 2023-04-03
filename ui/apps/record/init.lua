@@ -259,6 +259,7 @@ end
 local function main()
     local record_button = wibox.widget {
         widget = widgets.button.text.normal,
+        forced_height = dpi(50),
         size = 15,
         normal_bg = beautiful.icons.video.color,
         text_normal_bg = beautiful.colors.on_accent,
