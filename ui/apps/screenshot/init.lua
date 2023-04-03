@@ -92,7 +92,7 @@ local function show_cursor()
     return wibox.widget {
         layout = wibox.layout.fixed.horizontal,
         forced_height = dpi(35),
-        spacing = dpi(5),
+        spacing = dpi(15),
         text,
         checkbox
     }
@@ -196,6 +196,7 @@ local function main()
 
     local screenshot_button = wibox.widget {
         widget = widgets.button.text.normal,
+        forced_height = dpi(50),
         size = 15,
         normal_bg = beautiful.icons.camera_retro.color,
         text_normal_bg = beautiful.colors.on_accent,
@@ -233,7 +234,7 @@ local function new()
         title ="Screenshot",
         class = "Screenshot",
         width = dpi(560),
-        height = dpi(455),
+        height = dpi(465),
         show_titlebar = true,
         widget_fn = function()
             return main()
