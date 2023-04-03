@@ -162,28 +162,34 @@ local function get_applications(self)
         pactl list source-outputs | grep "Source Output #\|application.name = \|application.icon_name = \|Mute:\|Volume: "]],
         function(stdout)
             local application = gobject {}
+            local new_application = nil
+
             for line in stdout:gmatch("[^\r\n]+") do
                 if line:match("Sink Input") or line:match("Source Output") then
-                    application = gobject {}
-                    application.id = line:match("#(%d+)")
-                    application.type = line:match("Sink Input") and "sink_inputs" or "source_outputs"
-                    gtable.crush(application, application.type == "sink_inputs" and sink_input or source_output, true)
+                    local id = line:match("#(%d+)")
+                    local type = line:match("Sink Input") and "sink_inputs" or "source_outputs"
+                    application = self._private[type][id]
+                    new_application = application == nil
+                    if new_application then
+                        application = gobject {}
+                        application.id = id
+                        application.type = type
+                        gtable.crush(application, application.type == "sink_inputs" and sink_input or source_output, true)
+                    elseif application.makred_to_remove then
+                        return
+                    end
                 elseif line:match("Mute") then
                     application.mute = line:match(": (.*)") == "yes" and true or false
                 elseif line:match("Volume") then
                     application.volume = tonumber(line:match("(%d+)%%"))
                 elseif line:match("application.name") then
                     application.name = line:match(" = (.*)"):gsub('"', "")
-
-                    local old_application_copy = self._private[application.type][application.id]
-                    if old_application_copy == nil then
+                    if new_application then
                         self:emit_signal(application.type .. "::added", application)
-                    elseif (application.volume ~= old_application_copy.volume) or
-                        (application.mute ~= old_application_copy.mute) then
+                        self._private[application.type][application.id] = application
+                    else
                         application:emit_signal("updated")
                     end
-
-                    self._private[application.type][application.id] = application
                 elseif line:match("application.icon_name") then
                     application.icon_name = line:match(" = (.*)"):gsub('"', "")
                     application:emit_signal("icon_name")
@@ -193,8 +199,15 @@ local function get_applications(self)
 end
 
 local function on_object_removed(self, type, id)
-    self._private[type][id] = nil
-    self:emit_signal(type .. "::removed", id)
+    -- get_applications is an async function, some object might get added and removed very quickly
+    -- sink_inputs are  primiarlay prone to this, so we might get a remove event before the object was initialized
+    if self._private[type][id] == nil then
+        self._private[type][id] = {}
+        self._private[type][id].makred_to_remove = true
+    else
+        self:emit_signal(type .. "::removed", self._private[type][id])
+        self._private[type][id] = nil
+    end
 end
 
 local function on_device_updated(self, type, id)

@@ -68,7 +68,6 @@ local function application_widget(application)
 
     local widget = wibox.widget {
         layout = wibox.layout.fixed.vertical,
-        id = application.id,
         forced_height = dpi(80),
         spacing = dpi(15),
         {
@@ -99,7 +98,7 @@ local function application_widget(application)
         end
     end)
 
-    application:connect_signal("icon_name", function(self)
+    application:connect_signal("icon_name", function()
         icon.image = helpers.icon_theme.choose_icon{
             application.icon_name,
             application.name,
@@ -191,11 +190,13 @@ local function sink_inputs()
     }
 
     audio_daemon:connect_signal("sink_inputs::added", function(self, sink_input)
-        layout:add(application_widget(sink_input))
+        sink_input.widget = application_widget(sink_input)
+        layout:add(sink_input.widget)
     end)
 
     audio_daemon:connect_signal("sink_inputs::removed", function(self, sink_input)
-        layout:remove_widgets(layout:get_children_by_id(sink_input.id)[1])
+        layout:remove_widgets(sink_input.widget)
+        sink_input.widget = nil
     end)
 
     return layout
@@ -211,11 +212,13 @@ local function source_outputs()
     }
 
     audio_daemon:connect_signal("source_outputs::added", function(self, source_output)
-        layout:add(application_widget(source_output))
+        source_output.widget = application_widget(source_output)
+        layout:add(source_output.widget)
     end)
 
     audio_daemon:connect_signal("source_outputs::removed", function(self, source_output)
-        layout:remove_widgets(layout:get_children_by_id(source_output.id)[1])
+        layout:remove_widgets(source_output.widget)
+        source_output.widget = nil
     end)
 
     return layout
