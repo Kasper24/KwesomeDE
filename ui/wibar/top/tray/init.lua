@@ -12,6 +12,7 @@ local network_daemon = require("daemons.hardware.network")
 local bluetooth_daemon = require("daemons.hardware.bluetooth")
 local audio_daemon = require("daemons.hardware.audio")
 local upower_daemon = require("daemons.hardware.upower")
+local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 
 local tray = {
