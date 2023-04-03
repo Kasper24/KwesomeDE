@@ -37,52 +37,48 @@ end
 
 local function client_widget(self, client)
     return wibox.widget {
-        widget = wibox.container.constraint,
-        mode = "max",
-        width = dpi(300),
-        height = dpi(200),
+        widget = widgets.button.elevated.state,
+        id = "button",
+        forced_width = dpi(300),
+        forced_height = dpi(200),
+        normal_bg = beautiful.colors.surface,
+        on_normal_bg = client.font_icon.color,
+        on_release = function()
+            self:select_client(client)
+        end,
         {
-            widget = widgets.button.elevated.state,
-            id = "button",
-            normal_bg = beautiful.colors.surface,
-            on_normal_bg = client.font_icon.color,
-            on_release = function()
-                self:select_client(client)
-            end,
+            widget = wibox.container.margin,
+            margins = dpi(15),
             {
-                widget = wibox.container.margin,
-                margins = dpi(15),
+                layout = wibox.layout.fixed.vertical,
+                spacing = dpi(15),
                 {
-                    layout = wibox.layout.fixed.vertical,
-                    spacing = dpi(15),
+                    layout = wibox.layout.fixed.horizontal,
+                    forced_height = dpi(30),
+                    spacing = dpi(10),
                     {
-                        layout = wibox.layout.fixed.horizontal,
-                        forced_height = dpi(30),
-                        spacing = dpi(10),
-                        {
-                            widget = widgets.client_font_icon,
-                            halign = "center",
-                            valign = "center",
-                            text_normal_bg = client.font_icon.color,
-                            text_on_normal_bg = beautiful.colors.transparent,
-                            client = client
-                        },
-                        {
-                            widget = widgets.text,
-                            halign = "center",
-                            valign = "center",
-                            size = 15,
-                            text_normal_bg = beautiful.colors.on_background,
-                            text_on_normal_bg = beautiful.colors.transparent,
-                            text = client.name
-                        }
-                    },
-                    {
-                        widget = widgets.client_thumbnail,
+                        widget = widgets.client_font_icon,
+                        halign = "center",
+                        valign = "center",
                         text_normal_bg = client.font_icon.color,
                         text_on_normal_bg = beautiful.colors.transparent,
                         client = client
+                    },
+                    {
+                        widget = widgets.text,
+                        halign = "center",
+                        valign = "center",
+                        size = 15,
+                        text_normal_bg = beautiful.colors.on_background,
+                        text_on_normal_bg = beautiful.colors.transparent,
+                        text = client.name
                     }
+                },
+                {
+                    widget = widgets.client_thumbnail,
+                    text_normal_bg = client.font_icon.color,
+                    text_on_normal_bg = beautiful.colors.transparent,
+                    client = client
                 }
             }
         }
@@ -125,7 +121,7 @@ function window_switcher:show()
         self:select_client(clients[1])
     end
 
-    self:_show(#clients * dpi(300) + #clients * dpi(15))
+    self:_show(#clients * 315 + 15)
 end
 
 function window_switcher:hide(focus)
@@ -175,12 +171,12 @@ local function new()
     tasklist_daemon:connect_signal("client::pos", function(self, client, pos, pos_without_pinned_apps)
         if client.window_switcher_widget == nil then
             client.window_switcher_widget = client_widget(widget, client)
-            clients_layout:add_at(client.window_switcher_widget, { x =  pos_without_pinned_apps * 310, y = 0})
+            clients_layout:add_at(client.window_switcher_widget, { x =  pos_without_pinned_apps * dpi(315), y = 0})
             if widget.visible then
-                widget:_show(#tasklist_daemon:get_clients() * dpi(300) + #tasklist_daemon:get_clients() * dpi(15), true)
+                widget:_show(#tasklist_daemon:get_clients() * 315 + 15, true)
             end
         else
-            clients_layout:move_widget(client.window_switcher_widget, { x = pos_without_pinned_apps * 310, y = 0})
+            clients_layout:move_widget(client.window_switcher_widget, { x = pos_without_pinned_apps * dpi(315), y = 0})
         end
     end)
 
