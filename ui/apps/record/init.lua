@@ -59,14 +59,6 @@ local function resolution()
         dropdown:hide()
     end)
 
-    RECORD_APP:get_client():connect_signal("unfocus", function()
-        dropdown:hide()
-    end)
-
-    RECORD_APP:get_client():connect_signal("mouse::leave", function()
-        dropdown:hide()
-    end)
-
     return wibox.widget {
         layout = wibox.layout.fixed.horizontal,
         forced_height = dpi(35),
@@ -185,14 +177,6 @@ local function audio_source()
         dropdown:hide()
     end)
 
-    RECORD_APP:get_client():connect_signal("unfocus", function()
-        dropdown:hide()
-    end)
-
-    RECORD_APP:get_client():connect_signal("mouse::leave", function()
-        dropdown:hide()
-    end)
-
     return wibox.widget {
         layout = wibox.layout.fixed.horizontal,
         forced_height = dpi(35),
@@ -260,14 +244,6 @@ local function format()
     }
 
     RECORD_APP:get_client():connect_signal("request::unmanage", function()
-        dropdown:hide()
-    end)
-
-    RECORD_APP:get_client():connect_signal("unfocus", function()
-        dropdown:hide()
-    end)
-
-    RECORD_APP:get_client():connect_signal("mouse::leave", function()
         dropdown:hide()
     end)
 
