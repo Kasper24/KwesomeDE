@@ -38,7 +38,7 @@ local properties = {
     "placeholder", "initial",
     "pattern", "obscure",
     "cursor_blink", "cursor_blink_rate","cursor_size", "cursor_bg",
-    "selection_bg",
+    "selection_bg"
 }
 
 text_input.patterns = {
