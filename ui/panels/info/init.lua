@@ -3,10 +3,10 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 local awful = require("awful")
-local gshape = require("gears.shape")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
 local widgets = require("ui.widgets")
+local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 
 local instance = nil
@@ -32,9 +32,7 @@ local function new()
                 attach = true
             })
         end,
-        shape = function(cr, width, height)
-            gshape.infobubble(cr, width, height, nil, nil, dpi(360))
-        end,
+        shape = helpers.ui.rrect(),
         bg = beautiful.colors.background,
         widget = wibox.widget {
             widget = wibox.container.margin,

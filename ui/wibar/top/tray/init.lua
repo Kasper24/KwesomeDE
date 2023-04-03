@@ -34,9 +34,7 @@ local function system_tray()
                 offset = { x = -dpi(220) }
             })
         end,
-        shape = function(cr, width, height)
-            ghsape.infobubble(cr, width, dpi(200), nil, nil, dpi(137))
-        end,
+        shape = helpers.ui.rrect(),
         bg = beautiful.colors.background,
         widget = wibox.widget {
             widget = wibox.container.margin,

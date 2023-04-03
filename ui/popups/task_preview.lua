@@ -60,9 +60,7 @@ local function new()
     local widget = widgets.popup {
         visible = false,
         ontop = true,
-        shape = function(cr, width, height)
-            gshape.infobubble(cr, width, height, nil, nil, dpi(22))
-        end,
+        shape = helpers.ui.rrect(),
         bg = beautiful.colors.background,
         minimum_width = dpi(300),
         maximum_width = dpi(300),
