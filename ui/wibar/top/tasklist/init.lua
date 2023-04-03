@@ -177,6 +177,7 @@ local function client_widget(client)
 
     local widget = wibox.widget {
         widget = wibox.layout.stack,
+        id = client.pid,
         button,
         indicator
     }
@@ -209,24 +210,45 @@ local function new()
 
     tasklist_daemon:connect_signal("client::pos", function(self, client, pos)
         if client.tasklist_widget == nil then
-            client.tasklist_widget = client_widget(client)
-            tasklist_layout:add_at(client.tasklist_widget, { x =  pos * 80, y = 0})
+            local widget = client_widget(client)
+            client.tasklist_widget = widget
+            widget.move_animation = helpers.animation:new {
+                pos = pos * dpi(80),
+                duration = 0.2,
+                easing = helpers.animation.easing.linear,
+                update = function(self, pos)
+                    tasklist_layout:move_widget(widget, { x = pos, y = 0})
+                end
+            }
+            widget.remove_animation = helpers.animation:new {
+                pos = dpi(80),
+                duration = 0.2,
+                easing = helpers.animation.easing.linear,
+                update = function(self, pos)
+                    widget.forced_width = pos
+                end,
+                signals = {
+                    ["ended"] = function()
+                        tasklist_layout:remove_widgets(widget)
+                    end
+                }
+            }
+            tasklist_layout:add_at(widget, { x =  pos * dpi(80), y = 0})
         else
-            tasklist_layout:move_widget(client.tasklist_widget, { x = pos * 80, y = 0})
+            client.tasklist_widget.move_animation:set(pos * dpi(80))
         end
     end)
 
     tasklist_daemon:connect_signal("client::removed", function(self, client)
-        tasklist_layout:remove_widgets(client.tasklist_widget)
-        client.tasklist_widget = nil
+        client.tasklist_widget.remove_animation:set(0)
     end)
 
     tasklist_daemon:connect_signal("pinned_app::pos", function(self, pinned_app, pos)
         if pinned_app.widget == nil then
             pinned_app.widget = pinned_app_widget(pinned_app)
-            tasklist_layout:add_at(pinned_app.widget, { x =  pos * 80, y = 0})
+            tasklist_layout:add_at(pinned_app.widget, { x =  pos * dpi(80), y = 0})
         else
-            tasklist_layout:move_widget(pinned_app.widget, { x = pos * 80, y = 0})
+            tasklist_layout:move_widget(pinned_app.widget, { x = pos * dpi(80), y = 0})
         end
     end)
 
