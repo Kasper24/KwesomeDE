@@ -69,9 +69,9 @@ end
 
 local function fonts()
     theme.font_name = "Iosevka "
-    theme.font = theme.font_name .. 12
+    theme.font = theme.font_name .. dpi(12)
     theme.secondary_font_name = "Oswald Medium "
-    theme.secondary_font = theme.secondary_font_name .. 12
+    theme.secondary_font = theme.secondary_font_name .. dpi(12)
     theme.font_awesome_6_brands_font_name = "Font Awesome 6 Brands "
 end
 
