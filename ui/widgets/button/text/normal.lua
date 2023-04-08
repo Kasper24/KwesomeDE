@@ -105,6 +105,7 @@ function text_button_normal:set_size(size)
     local wp = self._private
     self:get_content_widget():set_size(size)
     wp.original_size = self:get_content_widget():get_size()
+    self:text_effect(true)
 end
 
 local function new(is_state)
