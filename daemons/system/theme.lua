@@ -13,7 +13,6 @@ local wibox = require("wibox")
 local beautiful = require("beautiful")
 local Color = require("external.lua-color")
 local helpers = require("helpers")
-local utils = require(... .. ".utils")
 local sanitize_filename = helpers.string.sanitize_filename
 local filesystem = require("external.filesystem")
 local json = require("external.json")
@@ -135,40 +134,41 @@ local function generate_colorscheme(self, wallpaper, reset, light)
                 local color1 = colors[1]
 
                 for _, color in ipairs(colors) do
-                    color = utils.saturate_color(color, 0.5)
+                    color = helpers.color.change_saturation(color, 0.5)
                 end
 
-                colors[1] = utils.lighten(raw_colors[#raw_colors], 0.85)
+                colors[1] = helpers.color.lighten(raw_colors[#raw_colors], 0.85)
                 colors[8] = color1
-                colors[9] = utils.darken(raw_colors[#raw_colors], 0.4)
+                colors[9] = helpers.color.darken(raw_colors[#raw_colors], 0.4)
                 colors[16] = raw_colors[1]
             else
                 if string.sub(colors[1], 2, 2) ~= "0" then
-                    colors[1] = utils.darken(colors[1], 0.4)
+                    colors[1] = helpers.color.darken(colors[1], 0.4)
                 end
-                colors[8] = utils.blend(colors[8], "#EEEEEE")
-                colors[9] = utils.darken(colors[8], 0.3)
-                colors[16] = utils.blend(colors[16], "#EEEEEE")
+                colors[8] = helpers.color.blend(colors[8], "#EEEEEE")
+                colors[9] = helpers.color.darken(colors[8], 0.3)
+                colors[16] = helpers.color.blend(colors[16], "#EEEEEE")
             end
 
             local sorted_colors = gtable.clone({unpack(colors, 2, 7)})
-            colors[2] = utils.closet_color(sorted_colors, "#FF0000")
-            colors[3] = utils.closet_color(sorted_colors, "#00FF00")
-            colors[4] = utils.closet_color(sorted_colors, "#FFFF00")
-            colors[5] = utils.closet_color(sorted_colors, "#800080")
-            colors[6] = utils.closet_color(sorted_colors, "#FF00FF")
-            colors[7] = utils.closet_color(sorted_colors, "#0000FF")
+            colors[2] = helpers.color.closet_color(sorted_colors, "#FF0000")
+            colors[3] = helpers.color.closet_color(sorted_colors, "#00FF00")
+            colors[4] = helpers.color.closet_color(sorted_colors, "#FFFF00")
+            colors[5] = helpers.color.closet_color(sorted_colors, "#800080")
+            colors[6] = helpers.color.closet_color(sorted_colors, "#FF00FF")
+            colors[7] = helpers.color.closet_color(sorted_colors, "#0000FF")
 
             local added_sat = light and 0.5 or 0.3
             local sign = light and -1 or 1
 
             for index = 10, 15 do
                 local _, __, l = Color(colors[index - 8]):hsl()
-                colors[index] = utils.alter_brightness(colors[index - 8], (sign * l * 0.3) / 255, added_sat)
+                colors[index] = helpers.color.lighten(colors[index - 8], sign * l * 0.3)
+                colors[index] = helpers.color.saturate(colors[index - 8], added_sat)
             end
 
-            colors[9] = utils.alter_brightness(colors[1], sign * 0.098039216)
-            colors[16] = utils.alter_brightness(colors[8], sign * 0.235294118)
+            colors[9] = helpers.color.lighten(colors[1], sign * 0.098039216)
+            colors[16] = helpers.color.lighten(colors[8], sign * 0.235294118)
 
             self:get_colorschemes()[wallpaper] = colors
             self:save_colorscheme()
