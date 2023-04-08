@@ -145,6 +145,10 @@ function menu:add(widget, index)
 
     if widget:get_children_by_id("button")[1] ~= nil then
         widget:get_children_by_id("button")[1].menu = self
+        local constraint = widget:get_children_by_id("constraint")
+        if constraint and constraint[1] then
+            constraint[1].width = self.maximum_width
+        end
     end
 
     local height_without_dpi = widget.forced_height * 96 / beautiful.xresources.get_dpi()
@@ -266,6 +270,7 @@ function menu.sub_menu_button(args)
         {
             widget = ebwidget.state,
             id = "button",
+            halign = "left",
             on_hover = function(self)
                 local coords = helpers.ui.get_widget_geometry_in_device_space({wibox = self.menu}, self)
                 coords.x = coords.x + self.menu.x + self.menu.width
@@ -279,16 +284,20 @@ function menu.sub_menu_button(args)
                 self:turn_on()
             end,
             {
-                layout = wibox.layout.align.horizontal,
-                forced_width = dpi(270),
+                widget = wibox.container.constraint,
+                strategy = "min",
+                id = "constraint",
                 {
-                    layout = wibox.layout.fixed.horizontal,
-                    spacing = dpi(15),
-                    icon,
-                    text
-                },
-                nil,
-                arrow
+                    layout = wibox.layout.align.horizontal,
+                    {
+                        layout = wibox.layout.fixed.horizontal,
+                        spacing = dpi(15),
+                        icon,
+                        text
+                    },
+                    nil,
+                    arrow
+                }
             }
         }
     }
@@ -341,11 +350,15 @@ function menu.button(args)
                 self.menu:hide_children_menus()
             end,
             {
-                layout = wibox.layout.fixed.horizontal,
-                forced_width = dpi(270),
-                spacing = dpi(15),
-                icon,
-                text_widget
+                widget = wibox.container.constraint,
+                strategy = "min",
+                id = "constraint",
+                {
+                    layout = wibox.layout.fixed.horizontal,
+                    spacing = dpi(15),
+                    icon,
+                    text_widget
+                }
             }
         }
     }
@@ -398,20 +411,21 @@ function menu.checkbox_button(args)
         forced_height = dpi(45),
         margins = dpi(5),
         {
-            widget = wibox.container.place,
+            widget = ebwidget.normal,
             halign = "left",
+            id = "button",
+            on_release = function()
+                args.on_release(widget)
+            end,
+            on_hover = function(self)
+                self.menu:hide_children_menus()
+            end,
             {
-                widget = ebwidget.normal,
-                id = "button",
-                on_release = function()
-                    args.on_release(widget)
-                end,
-                on_hover = function(self)
-                    self.menu:hide_children_menus()
-                end,
+                widget = wibox.container.constraint,
+                strategy = "min",
+                id = "constraint",
                 {
                     layout = wibox.layout.align.horizontal,
-                    forced_width = dpi(270),
                     {
                         layout = wibox.layout.fixed.horizontal,
                         spacing = dpi(15),
