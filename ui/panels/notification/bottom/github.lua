@@ -321,7 +321,6 @@ local function new()
     return wibox.widget {
         widget = widgets.navigator.horizontal,
         buttons_selected_color = beautiful.icons.envelope.color,
-        buttons_spacing = 0,
         tabs = {
             {
                 {

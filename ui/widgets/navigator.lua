@@ -26,7 +26,7 @@ local function separator()
     }
 end
 
-local function tab_button(tab, navigator)
+local function tab_button(navigator, tab, pos)
     local icon = tab.icon and wibox.widget {
         widget = twidget,
         size = 12,
@@ -35,9 +35,20 @@ local function tab_button(tab, navigator)
         icon = tab.icon,
     } or nil
 
+    local shape = nil
+    if navigator._private.type == "horizontal" then
+        shape = helpers.ui.prrect(false, false, false, false)
+        if pos == "left" then
+            shape = helpers.ui.prrect(true, false, false, true)
+        elseif pos == "right" then
+            shape = helpers.ui.prrect(false, true, true, false)
+        end
+    end
+
     local widget = wibox.widget {
         widget = ebwidget.state,
         halign = tab.halign or "left",
+        normal_shape = shape,
         on_normal_bg = navigator._private.buttons_selected_color,
         on_release = function(self)
             navigator:select(tab.id)
@@ -81,8 +92,15 @@ function navigator:set_tabs(tabs)
     self._private.tabs = tabs
 
     for group_index, group in ipairs(tabs) do
-        for _, tab in ipairs(group) do
-            tab.button = tab_button(tab, self)
+        for index, tab in ipairs(group) do
+            local pos = nil
+            if index == 1 then
+                pos = "left"
+            elseif index == #group then
+                pos = "right"
+            end
+
+            tab.button = tab_button(self, tab, pos)
             self._private.tabs_buttons:add(tab.button)
             self._private.tabs_stack:add(tab.tab)
         end
@@ -128,15 +146,17 @@ function navigator:set_on_select(on_select)
     self._private.on_select = on_select
 end
 
-local function new()
+local function new(type)
     local widget = wibox.container.background()
     gtable.crush(widget, navigator, true)
+
+    widget._private.type = type
 
     return widget
 end
 
 function navigator.horizontal()
-    local widget = new()
+    local widget = new("horizontal")
     widget:set_widget_template(wibox.widget {
         layout = wibox.layout.fixed.vertical,
         fill_space = true,
@@ -144,7 +164,7 @@ function navigator.horizontal()
         {
             layout = wibox.layout.flex.horizontal,
             id = "tabs_buttons",
-            spacing = dpi(15),
+            spacing = 0,
         },
         {
             widget = bwidget,
@@ -158,11 +178,12 @@ function navigator.horizontal()
             top_only = true,
         }
     })
+
     return widget
 end
 
 function navigator.vertical()
-    local widget = new()
+    local widget = new("vertical")
     widget:set_widget_template(wibox.widget {
         layout = wibox.layout.fixed.horizontal,
         fill_space = true,
