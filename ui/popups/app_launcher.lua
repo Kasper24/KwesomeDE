@@ -231,7 +231,6 @@ local function new()
                                 bar_color = beautiful.colors.transparent,
                                 bar_active_color = beautiful.colors.transparent,
                                 handle_width = dpi(50),
-                                handle_color = beautiful.bg_normal,
                                 handle_shape = helpers.ui.rrect(),
                                 handle_color = beautiful.colors.on_background
                             }
