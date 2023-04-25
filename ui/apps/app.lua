@@ -55,9 +55,9 @@ local function titlebar(self)
         paddings = 0,
         on_by_default = capi.client.focus == self:get_client(),
         icon = self:get_client().font_icon,
-        scale = 1,
-        normal_bg = beautiful.colors.background,
-        on_normal_bg = beautiful.colors.background,
+        scale = 0.7,
+        normal_bg = beautiful.colors.transparent,
+        on_normal_bg = beautiful.colors.transparent,
         text_normal_bg = beautiful.colors.on_background,
         text_on_normal_bg = self:get_client().font_icon.color,
     }
