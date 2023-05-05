@@ -176,9 +176,10 @@ local function new()
     ret._private = {}
     ret._private.cell_size = 100
 
-    generate_grid()
-    scan_for_desktop_files_on_init(ret)
-    watch_desktop_directory(ret)
+    -- TODO fix
+    --generate_grid()
+    --scan_for_desktop_files_on_init(ret)
+    --watch_desktop_directory(ret)
 
     return ret
 end
