@@ -65,7 +65,9 @@ local function button(icon, text, on_release)
         normal_border_color = icon.color,
         icon = icon,
         size = 40,
-        on_release = on_release
+        on_release = function ()
+            on_release()
+        end
     }
 
     local text = wibox.widget {
