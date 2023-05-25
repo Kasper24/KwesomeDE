@@ -5,6 +5,7 @@
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
+local gtimer = require("gears.timer")
 local helpers = require("helpers")
 local tonumber = tonumber
 
@@ -19,12 +20,17 @@ function brightness:decrease_brightness(step)
     awful.spawn("brightnessctl s " .. step .. "%-", false)
 end
 
+function brightness:set_brightness(brightness)
+    awful.spawn("brightnessctl s " .. brightness .. "%", false)
+end
+
 local function get_brightness(self)
-    awful.spawn.easy_async("brightnessctl g", function(value)
-        awful.spawn.easy_async("brightnessctl m", function(max)
-            local percentage = tonumber(value) / tonumber(max) * 100
-            self:emit_signal("update", percentage)
-        end)
+    awful.spawn.easy_async("brightnessctl info", function(stdout)
+        local brightness = stdout:match("%((%d+)%%%)")
+        if brightness ~= self._private.brightness then
+            self._private.brightness = brightness
+            self:emit_signal("update", self._private.brightness)
+        end
     end)
 end
 
@@ -32,12 +38,17 @@ local function new()
     local ret = gobject {}
     gtable.crush(ret, brightness, true)
 
+    ret._private = {}
+    ret._private.brightness = nil
+
     get_brightness(ret)
 
-    local watcher = helpers.inotify:watch("/sys/class/backlight/?**/brightness", {helpers.inotify.Events.modify})
-    watcher:connect_signal("event", function(_, __, __)
-        get_brightness(ret)
-    end)
+    gtimer.poller {
+        timeout = 5,
+        callback = function()
+            get_brightness(ret)
+        end
+    }
 
     return ret
 end

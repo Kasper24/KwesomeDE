@@ -130,43 +130,6 @@ local function disk()
     return widget
 end
 
-local function temperature()
-    local widget = progress_bar(beautiful.icons.thermometer.full)
-
-    temperature_daemon:connect_signal("update", function(self, value)
-        if value == nil then
-            widget:set_icon(beautiful.icons.thermometer.quarter)
-            widget:set_value(10)
-        else
-            if value == 0 then
-                widget:set_icon(beautiful.icons.thermometer.quarter)
-            elseif value <= 33 then
-                widget:set_icon(beautiful.icons.thermometer.half)
-            elseif value <= 66 then
-                widget:set_icon(beautiful.icons.thermometer.three_quarter)
-            elseif value > 66 then
-                widget:set_icon(beautiful.icons.thermometer.full)
-            end
-
-            widget:set_value(value)
-        end
-    end)
-
-    return widget
-end
-
-local function brightness()
-    local widget = progress_bar(beautiful.icons.brightness)
-
-    brightness_daemon:connect_signal("update", function(self, value)
-        if value >= 0 then
-            widget:set_value(value)
-        end
-    end)
-
-    return widget
-end
-
 local function audio()
     local slider = widgets.slider {
         forced_width = dpi(390),
@@ -231,6 +194,71 @@ local function audio()
     return widget
 end
 
+local function brightness()
+    local slider = widgets.slider {
+        forced_width = dpi(420),
+        maximum = 100,
+        bar_active_color = beautiful.icons.brightness.color,
+    }
+
+    local icon = wibox.widget {
+        widget = widgets.background,
+        shape = helpers.ui.rrect(),
+        bg = beautiful.colors.surface,
+        {
+            widget = widgets.text,
+            id = "icon",
+            forced_width = dpi(40),
+            forced_height = dpi(40),
+            halign = "center",
+            size = 15,
+            icon = beautiful.icons.brightness
+        }
+    }
+
+    local widget = wibox.widget {
+        layout = wibox.layout.fixed.horizontal,
+        spacing = dpi(15),
+        icon,
+        slider,
+    }
+
+    slider:connect_signal("property::value", function(self, value)
+        brightness_daemon:set_brightness(value)
+    end)
+
+    brightness_daemon:connect_signal("update", function(self, value)
+        slider:set_value(value)
+    end)
+
+    return widget
+end
+
+local function temperature()
+    local widget = progress_bar(beautiful.icons.thermometer.full)
+
+    temperature_daemon:connect_signal("update", function(self, value)
+        if value == nil then
+            widget:set_icon(beautiful.icons.thermometer.quarter)
+            widget:set_value(10)
+        else
+            if value == 0 then
+                widget:set_icon(beautiful.icons.thermometer.quarter)
+            elseif value <= 33 then
+                widget:set_icon(beautiful.icons.thermometer.half)
+            elseif value <= 66 then
+                widget:set_icon(beautiful.icons.thermometer.three_quarter)
+            elseif value > 66 then
+                widget:set_icon(beautiful.icons.thermometer.full)
+            end
+
+            widget:set_value(value)
+        end
+    end)
+
+    return widget
+end
+
 local function new()
     return wibox.widget {
         layout = wibox.layout.flex.vertical,
@@ -239,8 +267,8 @@ local function new()
         ram(),
         disk(),
         audio(),
-        temperature(),
         brightness(),
+        temperature(),
     }
 end
 
