@@ -2,69 +2,96 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
+local gshape = require("gears.shape")
 local wibox = require("wibox")
 local twidget = require("ui.widgets.text")
+local pbwidget = require("ui.widgets.progressbar")
+local bwidget = require("ui.widgets.background")
 local beautiful = require("beautiful")
 local upower_daemon = require("daemons.hardware.upower")
+local helpers = require("helpers")
+local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 
 local battery_icon = {
     mt = {}
 }
 
-local UPower_States = {
-    Unknown = 0,
-    Charging = 1,
-    Discharging = 2,
-    Empty = 3,
-    Fully_charged = 4,
-    Pending_charge = 5,
-    Pending_discharge = 6
-}
+local function new(device, args)
+    args = args or {}
+    args.forced_width = args.forced_width or dpi(35)
+    args.forced_height = args.forced_height or nil
+    args.margins_vertical = args.margins_vertical or nil
+    args.color = args.color or beautiful.icons.bolt.color
 
-local Battery_States = {
-    Low = 0,
-    Medium = 1,
-    High = 2,
-    Full = 3,
-    Charging = 4
-}
-
-local battery_state = nil
-
-local function new()
-    local widget = wibox.widget {
-        widget = twidget,
-        halign = "center",
-        icon = beautiful.icons.battery.full,
-        size = 17
+    local progress_bar = wibox.widget  {
+        widget = pbwidget,
+        shape = function(cr, width, height)
+            gshape.rounded_rect(cr, width, height, dpi(3))
+        end,
+        max_value = 100,
+        value = device.Percentage,
+        bar_shape = helpers.ui.rrect(),
+        background_color = beautiful.colors.surface,
+        color = args.color
     }
 
-    upower_daemon:connect_signal("battery::update", function(self, device)
-        if device.state == UPower_States.Discharging then
-            if device.percentage < 25 and battery_state ~= Battery_States.Low then
-                widget:set_icon(beautiful.icons.battery.quarter)
-                battery_state = Battery_States.Low
-            end
+    local charging_icon = wibox.widget {
+        widget = twidget,
+        forced_width = args.forced_width,
+        forced_height = args.forced_height,
+        halign = "center",
+        icon = beautiful.icons.bolt,
+        color = args.color,
+        size = 12
+    }
 
-            if device.percentage > 50 and battery_state ~= Battery_States.Medium then
-                widget:set_icon(beautiful.icons.battery.half)
-                battery_state = Battery_States.Medium
-            end
+    local widget = wibox.widget {
+        layout = wibox.layout.fixed.horizontal,
+        forced_height = args.forced_height,
+        {
+            widget = wibox.container.margin,
+            margins = { top = args.margins_vertical, bottom = args.margins_vertical },
+            {
+                widget = bwidget,
+                id = "border",
+                forced_width = args.forced_width,
+                shape = function(cr, width, height)
+                    gshape.rounded_rect(cr, width, height, dpi(3))
+                end,
+                border_width = dpi(4),
+                border_color = args.color,
+                {
+                    widget = wibox.container.margin,
+                    margins = dpi(7),
+                    progress_bar
+                }
+            }
+        }
+    }
 
-            if device.percentage > 75 and battery_state ~= Battery_States.High then
-                widget:set_icon(beautiful.icons.battery.three_quarter)
-                battery_state = Battery_States.High
+    if device.State == upower_daemon.UPower_States.Charging then
+        widget:add(charging_icon)
+    end
+
+    -- update_icon(device, progress_bar)
+    upower_daemon:connect_signal("battery::update", function(self, device, data)
+        if data.State then
+            if data.State == upower_daemon.UPower_States.Charging then
+                widget:add(charging_icon)
+            elseif data.State == upower_daemon.UPower_States.Discharging then
+                widget:remove_widgets(charging_icon)
             end
-        elseif device.state == UPower_States.Fully_charged and device.percentage > 90 and battery_state ~=
-            Battery_States.Full then
-            widget:set_icon(beautiful.icons.battery.full)
-            battery_state = Battery_States.Full
-        elseif device.state == UPower_States.Charging and battery_state ~= Battery_States.Charging then
-            widget:set_icon(beautiful.icons.battery.bolt)
-            battery_state = Battery_States.Charging
         end
+        -- update_icon(device, widget)
+        progress_bar.value = device.Percentage
     end)
+
+    function widget:set_color(color)
+        widget:get_children_by_id("border")[1].border_color = color
+        progress_bar.color = color
+        charging_icon:set_color(color)
+    end
 
     return widget
 end

@@ -164,19 +164,28 @@ end
 local function custom_tray()
     local layout = wibox.widget {
         layout = wibox.layout.fixed.horizontal,
-        forced_width = dpi(120),
         spacing = dpi(15),
         network(),
         bluetooth(),
         volume()
     }
 
-    local startup = true
-    upower_daemon:connect_signal("battery::update", function()
-        if startup == true then
-            layout:add(widgets.battery_icon())
-            startup = false
-        end
+    upower_daemon:connect_signal("battery::init", function(self, device)
+        local battery_icon = widgets.battery_icon(device,
+            {
+                margins_vertical = dpi(7),
+                color = beautiful.icons.envelope.color,
+            }
+        )
+        layout:add(battery_icon)
+
+        action_panel:connect_signal("visibility", function(self, visibility)
+            if visibility == true then
+                battery_icon:set_color(beautiful.colors.background)
+            else
+                battery_icon:set_color(beautiful.icons.envelope.color)
+            end
+        end)
     end)
 
     local widget = wibox.widget {

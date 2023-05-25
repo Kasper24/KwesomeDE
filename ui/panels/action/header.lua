@@ -85,12 +85,12 @@ local function new()
 
     local battery = wibox.widget {
         layout = wibox.layout.fixed.horizontal,
-        spacing = dpi(15),
-        widgets.battery_icon(),
+        spacing = dpi(5),
         {
             widget = widgets.text,
+            id = "info",
             size = 12,
-            text = "50 %"
+            text = ""
         }
     }
 
@@ -107,18 +107,22 @@ local function new()
         packages,
     }
 
-    local startup = true
+    upower_daemon:connect_signal("battery::init", function(self, device)
+        battery:insert(1, widgets.battery_icon(device, {
+            forced_width = dpi(40),
+            forced_height = dpi(10)
+        }))
+        info:insert(4, battery)
+        battery:get_children_by_id("info")[1]:set_text(device.Percentage .. " % | " .. device:get_time_string())
+    end)
+
     upower_daemon:connect_signal("battery::update", function(self, device)
-        if startup == true then
-            info:insert(5, battery)
-            startup = false
-        end
-        battery.children[2]:set_text(device.percentage .. " %")
+        battery:get_children_by_id("info")[1]:set_text(device.Percentage .. " % | " .. device:get_time_string())
     end)
 
     return wibox.widget {
         layout = wibox.layout.fixed.horizontal,
-        forced_height = dpi(180),
+        forced_height = dpi(200),
         spacing = dpi(30),
         picture,
         info

@@ -92,7 +92,11 @@ local function app_icon_widget(n)
 end
 
 local function icon_widget(n)
-    if n._private.color then
+    if n._private.battery_device then
+        return widgets.battery_icon(n._private.battery_device, {
+            forced_height = dpi(10)
+        })
+    elseif n._private.color then
         return wibox.widget {
             widget = widgets.background,
             forced_width = dpi(40),

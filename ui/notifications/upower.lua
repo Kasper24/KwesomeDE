@@ -6,94 +6,81 @@ local beautiful = require("beautiful")
 local naughty = require("naughty")
 local upower_daemon = require("daemons.hardware.upower")
 
-local UPower_States = {
-    Unknown = 0,
-    Charging = 1,
-    Discharging = 2,
-    Empty = 3,
-    Fully_charged = 4,
-    Pending_charge = 5,
-    Pending_discharge = 6
-}
-
-local Battery_States = {
-    Low = 0,
-    Medium = 1,
-    High = 2,
-    Full = 3,
-    Charging = 4
-}
-local battery_state = -1
-
-local function notification(title, device, device_state)
-    if device.state == UPower_States.Discharging then
-        if device.percentage < 25 and device_state ~= Battery_States.Low then
-            naughty.notification {
-                app_font_icon = beautiful.icons.car_battery,
-                app_icon = "battery",
-                app_name = "UPower",
-                font_icon = beautiful.icons.battery.quarter,
-                title = title,
-                text = "Running low at " .. device.percentage .. "%"
-            }
-            device_state = Battery_States.Low
-        end
-
-        if device.percentage > 50 and device_state ~= Battery_States.Medium then
-            naughty.notification {
-                app_font_icon = beautiful.icons.car_battery,
-                app_icon = "battery",
-                app_name = "UPower",
-                font_icon = beautiful.icons.battery.half,
-                title = title,
-                text = "Battery is at " .. device.percentage .. "%"
-            }
-            device_state = Battery_States.Medium
-        end
-
-        if device.percentage > 75 and device_state ~= Battery_States.High then
-            naughty.notification {
-                app_font_icon = beautiful.icons.car_battery,
-                app_icon = "battery",
-                app_name = "UPower",
-                font_icon = beautiful.icons.battery.three_quarter,
-                title = title,
-                text = "Battery is at " .. device.percentage .. "%"
-            }
-            device_state = Battery_States.High
-        end
-    elseif device.state == UPower_States.Fully_charged and device.percentage > 90 and device_state ~=
-        Battery_States.Full then
-        naughty.notification {
-            app_font_icon = beautiful.icons.car_battery,
-            app_icon = "battery",
-            app_name = "UPower",
-            font_icon = beautiful.icons.battery.full,
-            title = title,
-            text = "Fully charged!"
-        }
-        device_state = Battery_States.Full
-    elseif device.state == UPower_States.Charging and device_state ~= Battery_States.Charging then
-        naughty.notification {
-            app_font_icon = beautiful.icons.car_battery,
-            app_icon = "battery",
-            app_name = "UPower",
-            font_icon = beautiful.icons.battery.bolt,
-            title = title,
-            text = "Charging"
-        }
-        device_state = Battery_States.Charging
-    end
+local function notification(title, device)
+    naughty.notification {
+        app_font_icon = beautiful.icons.car_battery,
+        app_icon = "battery",
+        app_name = "UPower",
+        battery_device = device,
+        title = title,
+        text = "Battery is at " .. device.Percentage .. "% " .. device:get_time_string()
+    }
 end
 
-upower_daemon:connect_signal("battery::update", function(self, device)
-    notification("Battery Status", device, battery_state)
-end)
-
-local device_states = {}
-upower_daemon:connect_signal("device::update", function(self, device)
-    if device_states[device.model] == nil then
-        device_states[device.model] = -1
+upower_daemon:connect_signal("battery::update", function(self, device, data)
+    if data.State then
+        if data.State == upower_daemon.UPower_States.Charging then
+            local text = "Battery is at " .. device.Percentage .. "%"
+            -- Only show the time string if TimeToFull was updated in this signal
+            -- sometimes ther's a bug that data will have TimeToFull
+            -- but show the same value as TimeToEmpty
+            if data.TimeToFull and data.TimeToFull ~= 0 and data.TimeToFull ~= device.TimeToEmpty then
+                text = text .. ". " .. device:get_time_string()
+            end
+            naughty.notification {
+                app_font_icon = beautiful.icons.car_battery,
+                app_icon = "battery",
+                app_name = "UPower",
+                battery_device = device,
+                title = "Battery is charging",
+                text = text
+            }
+        elseif data.State == upower_daemon.UPower_States.Discharging then
+            local text = "Battery is at " .. device.Percentage .. "%"
+            -- Only show the time string if TimeToEmpty was updated in this signal
+            -- sometimes ther's a bug that data will have TimeToEmpty
+            --but show the same value as TimeToFull
+            if data.TimeToEmpty and data.TimeToEmpty ~= 0 and data.TimeToEmpty ~= device.TimeToFull then
+                text = text .. ". " .. device:get_time_string()
+            end
+            naughty.notification {
+                app_font_icon = beautiful.icons.car_battery,
+                app_icon = "battery",
+                app_name = "UPower",
+                battery_device = device,
+                title = "Battery is discharging",
+                text = "Battery is at " .. device.Percentage .. "%"
+            }
+        elseif data.State == upower_daemon.UPower_States.Empty then
+            naughty.notification {
+                app_font_icon = beautiful.icons.car_battery,
+                app_icon = "battery",
+                app_name = "UPower",
+                battery_device = device,
+                title = "Battery is empty",
+                text = "Please recharge now"
+            }
+        elseif data.State == upower_daemon.UPower_States.Fully_charged then
+            naughty.notification {
+                app_font_icon = beautiful.icons.car_battery,
+                app_icon = "battery",
+                app_name = "UPower",
+                battery_device = device,
+                title = "Battery is fully charged",
+                text = "Please disconnect the charger now"
+            }
+        end
+    elseif device.State == upower_daemon.UPower_States.Discharging and data.Percentage then
+        if data.Percentage == 5 then
+            notification("Living on the edge", device)
+        elseif data.Percentage == 10 then
+            notification("Low! Low!", device)
+        elseif data.Percentage == 25 then
+            notification("I still got a little left on me", device)
+        elseif data.Percentage == 50 then
+            notification("It's getting low!", device)
+        elseif data.Percentage == 75 then
+            notification("I'm fine.", device)
+        end
     end
-    notification(device.Model, device, device_states[device.model])
 end)
