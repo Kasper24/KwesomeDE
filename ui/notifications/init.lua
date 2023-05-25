@@ -145,6 +145,10 @@ local function actions_widget(n)
 end
 
 local function destroy_notif(n, screen)
+    if n == nil or n.widget == nil then
+        return
+    end
+
     local min_y = awful.placement.top_right(n.widget, {
         honor_workarea = true,
         honor_padding = true,
