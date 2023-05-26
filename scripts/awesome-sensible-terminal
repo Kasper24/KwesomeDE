@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 # Based on i3-sensible-terminal
 
 #

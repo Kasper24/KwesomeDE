@@ -1,4 +1,4 @@
-#!/usr/bin/lua
+#!/usr/bin/env lua
 
 local lgi = require('lgi')
 local Gtk = lgi.require('Gtk', '3.0')
