@@ -181,7 +181,7 @@ local function blue_light()
         redshift_daemon:toggle()
     end)
 
-    redshift_daemon:connect_signal("update", function(self, state)
+    redshift_daemon:connect_signal("state", function(self, state)
         if state == true then
             widget:turn_on("Blue Light")
         else
