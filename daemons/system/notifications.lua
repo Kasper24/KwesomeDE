@@ -45,6 +45,8 @@ local function save_notification(self, notification)
         time = notification.time
     })
 
+    filesystem.filesystem.make_directory(ICONS_PATH)
+
     wibox.widget.draw_to_svg_file(wibox.widget {
         widget = wibox.widget.imagebox,
         forced_width = 35,
@@ -72,14 +74,11 @@ local function read_notifications(self)
                 for _, notification in ipairs(self._private.notifications) do
                     local tasks = {}
 
-                    if notification.font_icon == nil then
-                        local icon = filesystem.file.new_for_path(notification.icon)
-                        table.insert(tasks, async.callback(icon, icon.exists))
-                    end
-                    if notification.app_font_icon == nil then
-                        local icon = filesystem.file.new_for_path(notification.app_icon)
-                        table.insert(tasks, async.callback(icon, icon.exists))
-                    end
+                    local icon = filesystem.file.new_for_path(notification.icon)
+                    table.insert(tasks, async.callback(icon, icon.exists))
+
+                    local app_icon = filesystem.file.new_for_path(notification.app_icon)
+                    table.insert(tasks, async.callback(app_icon, app_icon.exists))
 
                     async.all(tasks, function(error, results)
                         if results then
@@ -196,8 +195,6 @@ local function new()
             end
         end
     }
-
-    filesystem.filesystem.make_directory(ICONS_PATH)
 
     gtimer.delayed_call(function()
         ret:set_dont_disturb(helpers.settings["notifications.dont_disturb"])
