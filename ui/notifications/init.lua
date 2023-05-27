@@ -92,19 +92,7 @@ local function app_icon_widget(n)
 end
 
 local function icon_widget(n)
-    if n._private.battery_device then
-        return widgets.battery_icon(n._private.battery_device, {
-            forced_height = dpi(10)
-        })
-    elseif n._private.color then
-        return wibox.widget {
-            widget = widgets.background,
-            forced_width = dpi(40),
-            forced_height = dpi(40),
-            shape = helpers.ui.rrect(),
-            bg = n._private.color,
-        }
-    elseif n.font_icon == nil then
+    if n.font_icon == nil then
         return wibox.widget {
             widget = wibox.container.constraint,
             strategy = "max",
@@ -368,6 +356,7 @@ naughty.connect_signal("added", function(n)
     else
         n.app_font_icon = n._private.app_font_icon
     end
+
     n.font_icon = n._private.font_icon
 
     if type(n._private.app_icon) == "table" then

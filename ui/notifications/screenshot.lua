@@ -3,9 +3,13 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 local awful = require("awful")
+local wibox = require("wibox")
+local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
 local naughty = require("naughty")
 local screenshot_daemon = require("daemons.system.screenshot")
+local helpers = require("helpers")
+local dpi = beautiful.xresources.apply_dpi
 
 local icons = {"camera", "camera-app", "camera-photo", "gscreenshot", "kscreenshot", "accessories-screenshot"}
 
@@ -58,11 +62,19 @@ screenshot_daemon:connect_signal("color::picked", function(self, color)
         screenshot_daemon:copy_color(color)
     end)
 
+    local icon = wibox.widget.draw_to_image_surface(wibox.widget {
+        widget = widgets.background,
+        forced_width = dpi(40),
+        forced_height = dpi(40),
+        shape = helpers.ui.rrect(),
+        bg = color,
+    }, dpi(40), dpi(40))
+
     naughty.notification {
         app_font_icon = beautiful.icons.camera_retro,
         app_icon = icons,
         app_name = "Screenshot",
-        color = color,
+        icon = icon,
         title = "Color picked",
         message = color,
         actions = { copy }

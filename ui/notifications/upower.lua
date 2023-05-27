@@ -4,14 +4,28 @@
 -------------------------------------------
 local beautiful = require("beautiful")
 local naughty = require("naughty")
+local wibox = require("wibox")
+local widgets = require("ui.widgets")
 local upower_daemon = require("daemons.hardware.upower")
+local dpi = beautiful.xresources.apply_dpi
+
+local function battery_icon(device)
+    return wibox.widget.draw_to_image_surface(wibox.widget {
+        widget = widgets.background,
+        forced_width = dpi(40),
+        forced_height = dpi(40),
+        widgets.battery_icon(device, {
+            forced_height = dpi(10)
+        }),
+    }, dpi(40), dpi(40))
+end
 
 local function notification(title, device)
     naughty.notification {
         app_font_icon = beautiful.icons.car_battery,
         app_icon = "battery",
         app_name = "UPower",
-        battery_device = device,
+        icon = battery_icon(device),
         title = title,
         text = "Battery is at " .. device.Percentage .. "% " .. device:get_time_string()
     }
@@ -31,7 +45,7 @@ upower_daemon:connect_signal("battery::update", function(self, device, data)
                 app_font_icon = beautiful.icons.car_battery,
                 app_icon = "battery",
                 app_name = "UPower",
-                battery_device = device,
+                icon = battery_icon(device),
                 title = "Battery is charging",
                 text = text
             }
@@ -47,7 +61,7 @@ upower_daemon:connect_signal("battery::update", function(self, device, data)
                 app_font_icon = beautiful.icons.car_battery,
                 app_icon = "battery",
                 app_name = "UPower",
-                battery_device = device,
+                icon = battery_icon(device),
                 title = "Battery is discharging",
                 text = "Battery is at " .. device.Percentage .. "%"
             }
@@ -56,7 +70,7 @@ upower_daemon:connect_signal("battery::update", function(self, device, data)
                 app_font_icon = beautiful.icons.car_battery,
                 app_icon = "battery",
                 app_name = "UPower",
-                battery_device = device,
+                icon = battery_icon(device),
                 title = "Battery is empty",
                 text = "Please recharge now"
             }
@@ -65,7 +79,7 @@ upower_daemon:connect_signal("battery::update", function(self, device, data)
                 app_font_icon = beautiful.icons.car_battery,
                 app_icon = "battery",
                 app_name = "UPower",
-                battery_device = device,
+                icon = battery_icon(device),
                 title = "Battery is fully charged",
                 text = "Please disconnect the charger now"
             }
