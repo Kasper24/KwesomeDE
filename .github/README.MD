@@ -108,12 +108,12 @@ yay/paru -S awesome-git
 | Dependency                              | Why/Where is it needed?                                   |
 |-----------------------------------------|-----------------------------------------------------------|
 | networkmanager                          | Network notifcations, applet/wibar widget                 |
-| nm-connection-editor                    | Used in the wifi applet settings button                 |
+| nm-connection-editor                    | Used in the wifi applet settings button                   |
 | bluez                                   | Bluetooth notifcations, applet/wibar widget               |
-| blueman                                 | Used in the bluetooth applet settings button               |
+| blueman                                 | Used in the bluetooth applet settings button              |
 | pipewire-pulse/pulsaudio + pactl        | Audio notifcations, applet/wibar widget                   |
 | libgudev                                | Used for USB notifications (optional - use commands)      |
-| libusb                                  | Used for USB notifications                                |
+| libgusb                                 | Used for USB notifications                                |
 | upower                                  | Battery notifications/widgets                             |
 | lm_sensors                              | CPU Temperature                                           |
 | brightnessctl                           | Brightness daemon and widget                              |
@@ -127,12 +127,11 @@ yay/paru -S awesome-git
 | fortune-mod                             | Fortune daemon (unused, but might change)                 |
 | imagemagick                             | Used to generate colors from wallpapers                   |
 | neofetch                                | Used to display system info                               |
-| gnome-keyring                           | Used to secrets in a secured way                          |
+| libsecret                           | Used to secrets in a secured way                              |
 
 **Arch Linux (and other Arch-based distributions)**
    ```sh
-      pacman -Sy networkmanager nm-connection-editor bluez blueman pipewire pipewire-pulse libusb libgudev upower lm_sensors brightnessctl
-      redshift inotify-tools maim xcolor ffmpeg playerctl fortune-mod imagemagick neofetch gnome-keyring --needed
+      pacman -Sy networkmanager nm-connection-editor bluez blueman pipewire pipewire-pulse libgusb libgudev upower lm_sensors brightnessctl redshift inotify-tools maim xcolor ffmpeg playerctl fortune-mod imagemagick neofetch libsecret --needed
    ```
    Assuming your **AUR Helper** is [yay](https://github.com/Jguer/yay) or [paru](https://github.com/Morganamilo/paru).
    ```sh
