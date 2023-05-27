@@ -158,6 +158,7 @@ local function destroy_notif(n, screen)
         end
     end
 
+    n.widget.widget:get_children_by_id("top_row")[1]:set_third(nil)
     n.anim:set{y = n.widget.y, height = 1}
     n:destroy()
 end
@@ -175,15 +176,28 @@ local function create_notification(n, screen)
 
     local dismiss = wibox.widget {
         widget = widgets.button.text.normal,
-        forced_width = dpi(45),
-        forced_height = dpi(45),
-        normal_shape = gshape.circle,
         icon = beautiful.icons.xmark,
-        text_normal_bg = accent_color,
-        size = 20,
+        text_normal_bg = beautiful.colors.on_background,
+        size = 12,
         on_release = function()
             destroy_notif(n, screen)
         end
+    }
+
+    local timeout_arc = wibox.widget {
+        widget = widgets.arcchart,
+        forced_width = dpi(45),
+        forced_height = dpi(45),
+        max_value = 100,
+        min_value = 0,
+        value = 0,
+        thickness = dpi(6),
+        rounded_edge = true,
+        bg = beautiful.colors.surface,
+        colors = {
+            accent_color
+        },
+        dismiss
     }
 
     local title = wibox.widget {
@@ -198,13 +212,11 @@ local function create_notification(n, screen)
         }
     }
 
-    local progressbar = wibox.widget {
-        widget = widgets.progressbar,
-        max_value = 100,
+    local bar = wibox.widget {
+        widget = widgets.background,
         forced_height = dpi(10),
         shape = helpers.ui.rrect(),
-        background_color = beautiful.colors.surface,
-        color = accent_color
+        bg = accent_color
     }
 
     local message = wibox.widget {
@@ -243,6 +255,7 @@ local function create_notification(n, screen)
                     spacing = dpi(15),
                     {
                         layout = wibox.layout.align.horizontal,
+                        id = "top_row",
                         {
                             layout = wibox.layout.fixed.horizontal,
                             spacing = dpi(15),
@@ -250,7 +263,6 @@ local function create_notification(n, screen)
                             app_name
                         },
                         nil,
-                        dismiss,
                     },
                     {
                         layout = wibox.layout.fixed.horizontal,
@@ -258,7 +270,7 @@ local function create_notification(n, screen)
                         icon_widget(n),
                         title
                     },
-                    progressbar,
+                    bar,
                     message,
                     actions_widget(n)
                 }
@@ -273,7 +285,7 @@ local function create_notification(n, screen)
         override_instant = true,
         reset_on_stop = false,
         update = function(self, pos)
-            progressbar.value = pos
+            timeout_arc.value = pos
         end,
         signals = {
             ["ended"] = function()
@@ -313,6 +325,7 @@ local function create_notification(n, screen)
                     n.widget.visible = false
                     n.widget = nil
                 else
+                    n.widget.widget:get_children_by_id("top_row")[1]:set_third(timeout_arc)
                     timeout_arc_anim:set()
                 end
             end
