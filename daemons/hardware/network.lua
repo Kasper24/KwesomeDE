@@ -361,7 +361,7 @@ function access_point:connect(password, auto_connect)
         -- AddAndActivateConnectionAsync doesn't actually verify that the profile is valid
         -- The NetworkManager libary has methods to verify manually, but they are not exposed to DBus
         -- so instead I'm using the 2 seperate methods
-        self._private.client_proxy:AddAndActivateConnectionAsync(function(proxy, context, success, failure)
+        self.network_manager._private.client_proxy:AddAndActivateConnectionAsync(function(proxy, context, success, failure)
             if failure ~= nil then
                 print("Failed to activate connection: ", failure)
                 print("Failed to activate connection error code: ", failure.code)

@@ -90,9 +90,9 @@ local function network()
 
     network_daemon:connect_signal("wireless_state", function(self, state)
         if state then
-            widget:set_icon(beautiful.icons.router)
-        else
             widget:set_icon(beautiful.icons.network.wifi_off)
+        else
+            widget:set_icon(beautiful.icons.router)
         end
     end)
 
