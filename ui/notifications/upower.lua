@@ -12,12 +12,8 @@ local dpi = beautiful.xresources.apply_dpi
 local function battery_icon(device)
     return wibox.widget.draw_to_image_surface(wibox.widget {
         widget = widgets.background,
-        forced_width = dpi(40),
-        forced_height = dpi(40),
-        widgets.battery_icon(device, {
-            forced_height = dpi(10)
-        }),
-    }, dpi(40), dpi(40))
+        widgets.battery_icon(device),
+    }, dpi(35), dpi(20))
 end
 
 local function notification(title, device)
