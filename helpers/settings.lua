@@ -17,7 +17,7 @@ local type = type
 local settings = {}
 local instance = nil
 
-local DATA_PATH = filesystem.filesystem.get_awesome_config_dir("assets/settings") .. "data.json"
+local DATA_PATH = filesystem.filesystem.get_cache_dir("settings") .. "data.json"
 
 local function get_setting_from_string(self, paths)
     local setting = self.settings
