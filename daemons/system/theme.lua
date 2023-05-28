@@ -45,7 +45,6 @@ local GENERATED_TEMPLATES_PATH = filesystem.filesystem.get_cache_dir("templates"
 local WAL_CACHE_PATH = filesystem.filesystem.get_xdg_cache_home("wal")
 local RUN_AS_ROOT_SCRIPT_PATH = filesystem.filesystem.get_awesome_config_dir("scripts") .. "run-as-root.sh"
 local COLOR_PICKER_SCRIPT_PATH = filesystem.filesystem.get_awesome_config_dir("scripts") .. "color-picker.lua"
-local WE_PATH = filesystem.filesystem.get_awesome_config_dir("assets/wallpaper-engine/binary")
 local THUMBNAIL_PATH = filesystem.filesystem.get_cache_dir("thumbnails/wallpapers/100-70")
 
 local PICTURES_MIMETYPES = {
@@ -640,8 +639,8 @@ local function we_error_handler(self)
     end
 
     local id = get_we_wallpaper_id(self:get_active_wallpaper())
-    local test_cmd = string.format("cd %s && ./linux-wallpaperengine --assets-dir %s %s --fps %s --class linux-wallpaperengine --x %s --y %s --width %s --height %s",
-        WE_PATH,
+    local test_cmd = string.format("%s --assets-dir %s %s --fps %s --class linux-wallpaperengine --x %s --y %s --width %s --height %s",
+        self:get_wallpaper_engine_command(),
         self:get_wallpaper_engine_assets_folder(),
         self:get_wallpaper_engine_workshop_folder() .. "/" .. id,
         self:get_wallpaper_engine_fps(),
@@ -673,8 +672,8 @@ local function we_wallpaper(self, screen)
     end
 
     local id = get_we_wallpaper_id(self:get_active_wallpaper())
-    local cmd = string.format("cd %s && ./linux-wallpaperengine --assets-dir %s %s --fps %s --class linux-wallpaperengine --x %s --y %s --width %s --height %s",
-        WE_PATH,
+    local cmd = string.format("%s --assets-dir %s %s --fps %s --class linux-wallpaperengine --x %s --y %s --width %s --height %s",
+        self:get_wallpaper_engine_command(),
         self:get_wallpaper_engine_assets_folder(),
         self:get_wallpaper_engine_workshop_folder() .. "/" .. id,
         self:get_wallpaper_engine_fps(),
@@ -925,8 +924,8 @@ end
 
 function theme:preview_we_wallpaper(we_wallpaper, geometry)
     local id = get_we_wallpaper_id(we_wallpaper)
-    local cmd = string.format("cd %s && ./linux-wallpaperengine --assets-dir %s %s --class linux-wallpaperengine-preview --fps %s --x %s --y %s",
-        WE_PATH,
+    local cmd = string.format("%s --assets-dir %s %s --class linux-wallpaperengine-preview --fps %s --x %s --y %s",
+        self:get_wallpaper_engine_command(),
         self:get_wallpaper_engine_assets_folder(),
         self:get_wallpaper_engine_workshop_folder() .. "/" .. id,
         self:get_wallpaper_engine_fps(),
@@ -1002,6 +1001,20 @@ function theme:get_run_on_set()
     end
 
     return self._private.run_on_set
+end
+
+-- Wallpaper engine command
+function theme:set_wallpaper_engine_command(wallpaper_engine_command)
+    self._private.wallpaper_engine_command = wallpaper_engine_command
+    helpers.settings["wallpaper_engine.command"] = wallpaper_engine_command
+end
+
+function theme:get_wallpaper_engine_command()
+    if self._private.wallpaper_engine_command == nil then
+        self._private.wallpaper_engine_command = helpers.settings["wallpaper_engine.command"]:gsub("~", os.getenv("HOME"))
+    end
+
+    return self._private.wallpaper_engine_command
 end
 
 -- Wallpaper engine assets folder

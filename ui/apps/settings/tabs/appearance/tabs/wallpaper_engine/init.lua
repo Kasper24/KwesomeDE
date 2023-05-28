@@ -72,6 +72,13 @@ local function new()
         step = 50,
         spacing = dpi(15),
         picker.folder {
+            title = "Wallpaper Engine Command/Path:",
+            initial_value = theme_daemon:get_wallpaper_engine_command(),
+            on_changed = function(text)
+                theme_daemon:set_wallpaper_engine_command(text)
+            end
+        },
+        picker.folder {
             title = "Assets Folder:",
             initial_value = theme_daemon:get_wallpaper_engine_assets_folder(),
             on_changed = function(text)
