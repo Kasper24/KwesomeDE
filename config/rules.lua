@@ -283,7 +283,7 @@ ruled.client.connect_signal("request::rules", function()
         },
         callback = function(c)
             awful.spawn.with_shell(
-                "bash -c \"exec -a start-page-server python -m http.server --directory /usr/share/start-page\"", false)
+                "bash -c \"exec -a start-page-server python -m http.server --directory ~/.config/root-startpage\"", false)
             c:connect_signal("unmanage", function()
                 awful.spawn("pkill -f start-page-server", false)
             end)
