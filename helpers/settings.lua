@@ -29,6 +29,26 @@ local function get_setting_from_string(self, paths)
     return setting
 end
 
+local function merge_settings(default_settings, saved_settings)
+    for key, value in pairs(default_settings) do
+        if type(value) == "table" then
+            -- Check if the table exists in saved settings
+            if saved_settings[key] == nil or type(saved_settings[key]) ~= "table" then
+                saved_settings[key] = value
+                print("Table '" .. key .. "' is missing or invalid in saved settings.")
+            else
+                -- Recursively compare nested tables
+                merge_settings(value, saved_settings[key])
+            end
+        else
+            -- Check if the setting exists in saved settings
+            if saved_settings[key] == nil then
+                print("Setting '" .. key .. "' is missing in saved settings.")
+            end
+        end
+    end
+end
+
 local function get_default_settings()
     return [[{
         "kwesomede": {
@@ -285,6 +305,11 @@ local function get_default_settings()
             }
         },
         "wallpaper_engine": {
+            "command": {
+                "default": "~/.config/awesome/assets/wallpaper-engine/binary/linux-wallpaperengine",
+                "type": "string",
+                "description": "The command to launch or path to wallpaper engine binary"
+            },
             "workshop_folder": {
                 "default": "",
                 "type": "string",
@@ -415,15 +440,12 @@ local function new()
 
     local file = filesystem.file.new_for_path(DATA_PATH)
     if file:exists_block() then
-        ret.settings = gtable.join(
-            json.decode(get_default_settings()),
-            json.decode(Gio.File.new_for_path(DATA_PATH):load_contents())
-        )
+        ret.settings = json.decode(Gio.File.new_for_path(DATA_PATH):load_contents())
     else
-        ret.settings = gtable.join(
-            json.decode(get_default_settings())
-        )
+        ret.settings = json.decode(get_default_settings())
     end
+    ret.default_settings = json.decode(get_default_settings())
+    merge_settings(ret.default_settings, ret.settings)
 
     ret.save_timer = gtimer
     {
