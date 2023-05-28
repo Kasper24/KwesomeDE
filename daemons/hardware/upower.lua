@@ -5,6 +5,7 @@
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
+local gdebug = require("gears.debug")
 local dbus_proxy = require("external.dbus_proxy")
 local string = string
 
@@ -61,6 +62,11 @@ local function new()
         gtimer.delayed_call(function()
             ret:emit_signal("battery::init", ret._private.display_device_proxy)
         end)
+    else
+        gdebug.print_warning(
+            "Can't find UPower display device. "..
+            "Seems like UPower is not installed or your PC has no battery. "
+        )
     end
 
     return ret
