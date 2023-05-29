@@ -197,6 +197,7 @@ end
 local function brightness()
     local slider = widgets.slider {
         forced_width = dpi(420),
+        minimum = 1,
         maximum = 100,
         bar_active_color = beautiful.icons.brightness.color,
     }
