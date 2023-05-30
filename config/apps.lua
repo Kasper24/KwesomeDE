@@ -159,13 +159,13 @@ local function new()
     gtable.crush(ret, apps, true)
 
     ret:new("qutebrowser", "q", "qutebrowser", "qutebrowser")
-    ret:new("vivaldi", "b", "vivaldi-stable", "Vivaldi-stable")
+    ret:new("vivaldi", "b", "vivaldi", "Vivaldi-stable")
     ret:new("vscode", "e", "code", "Code")
     ret:new("lazygit", "g", "kitty --class gitqlient lazygit", "gitqlient", {
         run_or_raise = false
     })
     ret:new("kotatogram", "t", "kotatogram-desktop", "KotatogramDesktop")
-    ret:new("discord", "d", "discocss", "discord")
+    ret:new("discord", "d", "discord", "discord")
     ret:new("ncmpcpp", "n", "kitty --class mopidy ncmpcpp", "mopidy")
     ret:new("spotify", "s", "spotify", "Spotify")
     ret:new("openrgb", "o", "openrgb --server --gui", "openrgb")
