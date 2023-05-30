@@ -278,29 +278,32 @@ local function create_notification(n, screen)
         }
     }
 
-    local timeout_arc_anim = helpers.animation:new{
-        duration = 5,
-        target = 100,
-        easing = helpers.animation.easing.linear,
-        override_instant = true,
-        reset_on_stop = false,
-        update = function(self, pos)
-            timeout_arc.value = pos
-        end,
-        signals = {
-            ["ended"] = function()
-                destroy_notif(n, screen)
-            end
+    local timeout_arc_anim = nil
+    if n.urgency ~= "critical" then
+        timeout_arc_anim = helpers.animation:new{
+            duration = 5,
+            target = 100,
+            easing = helpers.animation.easing.linear,
+            override_instant = true,
+            reset_on_stop = false,
+            update = function(self, pos)
+                timeout_arc.value = pos
+            end,
+            signals = {
+                ["ended"] = function()
+                    destroy_notif(n, screen)
+                end
+            }
         }
-    }
 
-    n.widget:connect_signal("mouse::enter", function()
-        timeout_arc_anim:stop()
-    end)
+        n.widget:connect_signal("mouse::enter", function()
+            timeout_arc_anim:stop()
+        end)
 
-    n.widget:connect_signal("mouse::leave", function()
-        timeout_arc_anim:set()
-    end)
+        n.widget:connect_signal("mouse::leave", function()
+            timeout_arc_anim:set()
+        end)
+    end
 
     local pos = get_notification_position(n, screen)
     n.widget.x = pos.x
@@ -326,7 +329,10 @@ local function create_notification(n, screen)
                     n.widget = nil
                 else
                     n.widget.widget:get_children_by_id("top_row")[1]:set_third(timeout_arc)
-                    timeout_arc_anim:set()
+                    if timeout_arc_anim then
+                        timeout_arc_anim:set()
+                        print(timeout_arc_anim)
+                    end
                 end
             end
         }

@@ -16,8 +16,9 @@ local function battery_icon(device)
     }, dpi(35), dpi(20))
 end
 
-local function notification(title, device)
+local function notification(title, device, urgency)
     naughty.notification {
+        urgency = urgency or "normal",
         app_font_icon = beautiful.icons.car_battery,
         app_icon = "battery",
         app_name = "UPower",
@@ -63,6 +64,7 @@ upower_daemon:connect_signal("battery::update", function(self, device, data)
             }
         elseif data.State == upower_daemon.UPower_States.Empty then
             naughty.notification {
+                urgency = "critical",
                 app_font_icon = beautiful.icons.car_battery,
                 app_icon = "battery",
                 app_name = "UPower",
@@ -72,6 +74,7 @@ upower_daemon:connect_signal("battery::update", function(self, device, data)
             }
         elseif data.State == upower_daemon.UPower_States.Fully_charged then
             naughty.notification {
+                urgency = "critical",
                 app_font_icon = beautiful.icons.car_battery,
                 app_icon = "battery",
                 app_name = "UPower",
@@ -82,9 +85,9 @@ upower_daemon:connect_signal("battery::update", function(self, device, data)
         end
     elseif device.State == upower_daemon.UPower_States.Discharging and data.Percentage then
         if data.Percentage == 5 then
-            notification("Living on the edge", device)
+            notification("Living on the edge", device, "critical")
         elseif data.Percentage == 10 then
-            notification("Low! Low!", device)
+            notification("Low! Low!", device, "critical")
         elseif data.Percentage == 25 then
             notification("I still got a little left on me", device)
         elseif data.Percentage == 50 then
