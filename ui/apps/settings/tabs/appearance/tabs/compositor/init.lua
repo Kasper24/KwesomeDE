@@ -102,7 +102,7 @@ local function new()
         layout:add(slider_text_input_widget("animation-dampening",  0.1, 500, true))
         layout:add(slider_text_input_widget("animation-window-mass",  0.1, 100, false))
         layout:add(checkbox {
-            title = "Animation Clamping",
+            title = "Animation Clamping:",
             state = picom_daemon["get_animation-clamping"](picom_daemon),
             on_turn_on = function()
                 picom_daemon["set_animation-clamping"](picom_daemon, true)
@@ -112,7 +112,7 @@ local function new()
             end
         })
         layout:add(checkbox {
-            title = "Animations",
+            title = "Animations:",
             state = picom_daemon:get_animations(),
             on_turn_on = function()
                 picom_daemon:set_animations(true)
@@ -127,7 +127,7 @@ local function new()
         layout:add(slider_text_input_widget("animation-dampening",  0.1, 500, true))
         layout:add(slider_text_input_widget("animation-window-mass",  0.1, 100, false))
         layout:add(checkbox {
-            title = "Animation Clamping",
+            title = "Animation Clamping:",
             state = picom_daemon["get_animation-clamping"](picom_daemon),
             on_turn_on = function()
                 picom_daemon["set_animation-clamping"](picom_daemon, true)
@@ -137,7 +137,7 @@ local function new()
             end
         })
         layout:add(checkbox {
-            title = "Animations",
+            title = "Animations:",
             state = picom_daemon:get_animations(),
             on_turn_on = function()
                 picom_daemon:set_animations(true)
