@@ -21,7 +21,7 @@ local CONFIG_PATH = filesystem.filesystem.get_awesome_config_dir("config") .. "p
 
 local properties = {"active-opacity", "inactive-opacity", "fade-delta", "fade-in-step", "fade-out-step",
                     "corner-radius", "blur-strength", "shadow-radius", "shadow-opacity", "shadow-offset-x",
-                    "shadow-offset-y", "animation-stiffness", "animation-dampening", "animation-window-mass"}
+                    "shadow-offset-y", "animation-stiffness", "animation-stiffness-in-tag", "animation-stiffness-tag-change", "animation-dampening", "animation-window-mass"}
 
 local bool_properties = {"shadow", "fading", "animation-clamping", "animations"}
 
@@ -38,10 +38,19 @@ function picom:turn_on(save)
         end
         if stdout:find("--animations", 1, true) == nil then
             helpers.table.remove_value(properties, "animation-stiffness")
+            helpers.table.remove_value(properties, "animation-stiffness-in-tag")
+            helpers.table.remove_value(properties, "animation-stiffness-tag-change")
             helpers.table.remove_value(properties, "animation-dampening")
             helpers.table.remove_value(properties, "animation-window-mass")
             helpers.table.remove_value(bool_properties, "animations")
             helpers.table.remove_value(bool_properties, "animation-clamping")
+        elseif stdout:find("--animation-stiffness-in-tag", 1, true) ~= nil then
+            helpers.table.remove_value(properties, "animation-stiffness")
+            self:emit_signal("brnach::ft-labs")
+        else
+            helpers.table.remove_value(properties, "animation-stiffness-in-tag")
+            helpers.table.remove_value(properties, "animation-stiffness-tag-change")
+            self:emit_signal("brnach::dccsillag")
         end
 
         cmd = cmd .. "--config " .. CONFIG_PATH .. " "
@@ -82,8 +91,8 @@ function picom:toggle(save)
     end
 end
 
-function picom:has_animation_support()
-    return self._private.has_animation_support
+function picom:get_branch()
+    return self._private.branch
 end
 
 function picom:get_state()
@@ -122,7 +131,7 @@ local function new()
 
     ret._private = {}
     ret._private.state = -1
-    ret._private.has_animation_support = false
+    ret._private.branch = nil
 
     for _, prop in ipairs(properties) do
         local setting_prop = prop:gsub("-", "_")
@@ -162,8 +171,11 @@ local function new()
 
         awful.spawn.easy_async("picom --help", function(stdout)
             if stdout:find("--animations", 1, true) ~= nil then
-                ret._private.has_animation_support = true
-                ret:emit_signal("animations::support")
+                if stdout:find("--animation-stiffness-in-tag", 1, true) ~= nil then
+                    ret._private.branch = "ft-labs"
+                else
+                    ret._private.branch = "dccsillag"
+                end
             end
         end)
     end)

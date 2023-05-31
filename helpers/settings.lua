@@ -119,6 +119,16 @@ local function get_default_settings()
                 "type": "number",
                 "description": "Stiffness (a.k.a. tension) parameter for spring-based animation"
             },
+            "animation_stiffness_in_tag": {
+                "default": 200,
+                "type": "number",
+                "description": "Animation speed in current tag (float)."
+            },
+            "animation_stiffness_tag_change": {
+                "default": 200,
+                "type": "number",
+                "description": "Animation speed when tag changes (change to a new desktop)."
+            },
             "animation_dampening": {
                 "default": 25,
                 "type": "number",
