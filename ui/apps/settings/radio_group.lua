@@ -17,7 +17,7 @@ local function new(args)
 
     local title = wibox.widget {
         widget = widgets.text,
-        size = 15,
+        size = 12,
         text = args.title
     }
 

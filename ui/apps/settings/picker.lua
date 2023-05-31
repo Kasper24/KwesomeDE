@@ -45,8 +45,8 @@ local function new(args, type)
         forced_height = dpi(40),
         {
             widget = widgets.text,
-            forced_width = dpi(200),
-            size = 15,
+            forced_width = dpi(250),
+            size = 12,
             text = args.title,
         },
         widget
