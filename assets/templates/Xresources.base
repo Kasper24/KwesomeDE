@@ -68,4 +68,3 @@ XClock*secondColor: rgba:d2/cf/ff/ff
 
 ! Set depth to make transparency work.
 URxvt*depth: 32
-Xft.dpi: 96
