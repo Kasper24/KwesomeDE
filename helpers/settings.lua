@@ -435,7 +435,10 @@ end
 
 function settings:get(key)
     local setting = get_setting_from_string(self, key)
-    local value = setting.value ~= nil and setting.value or setting.default
+    local value = setting.value
+    if value == nil then
+        value = setting.default
+    end
 
     if type(value) == "table" then
         value = gtable.clone(value, true)
