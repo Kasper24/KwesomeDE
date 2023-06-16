@@ -31,10 +31,6 @@ local function configure_keyboard()
         callback = function()
             awful.spawn("xset r rate 200 30", false)
 
-            gtimer.delayed_call(function()
-                awful.spawn("setxkbmap -layout us,il -variant , -option grp:alt_shift_toggle", false)
-            end)
-
             awful.spawn.with_shell([[
         xkbcomp -xkb "$DISPLAY" - | sed 's#key <CAPS>.*#key <CAPS> {\
            repeat=no,\

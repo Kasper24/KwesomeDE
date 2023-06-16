@@ -10,13 +10,19 @@ local string = string
 local keyboard_layout = {}
 local instance = nil
 
+function keyboard_layout:cycle_layout()
+    self._private.widget:next_layout()
+end
+
 local function new()
     local ret = gobject {}
     gtable.crush(ret, keyboard_layout, true)
 
-    local dummy_keyboardlayout_widget = awful.widget.keyboardlayout()
-    dummy_keyboardlayout_widget:connect_signal("widget::redraw_needed", function()
-        ret:emit_signal("update", string.gsub(dummy_keyboardlayout_widget.widget.text:upper(), "%s+", ""))
+    ret._private = {}
+
+    ret._private.widget = awful.widget.keyboardlayout()
+    ret._private.widget:connect_signal("widget::redraw_needed", function()
+        ret:emit_signal("update", string.gsub(ret._private.widget.widget.text:upper(), "%s+", ""))
     end)
 
     return ret

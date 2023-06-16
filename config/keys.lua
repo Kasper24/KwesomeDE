@@ -17,6 +17,7 @@ local rgb_daemon = require("daemons.hardware.rgb")
 local ui_daemon = require("daemons.system.ui")
 local screenshot_daemon = require("daemons.system.screenshot")
 local record_daemon = require("daemons.system.record")
+local keyboard_layout_daemon = require("daemons.system.keyboard_layout")
 local helpers = require("helpers")
 local bling = require("external.bling")
 local machi = require("external.layout-machi")
@@ -50,6 +51,17 @@ awful.keyboard.append_global_keybindings({
         group = "awesome",
         description = "quit",
         on_press = capi.awesome.quit
+    },
+
+    -- cycle keyboard layout
+    awful.key {
+        modifiers = {keys.alt},
+        key = "Shift_L",
+        group = "awesome",
+        description = "cycle keyboard layout",
+        on_press = function()
+            keyboard_layout_daemon:cycle_layout()
+        end
     }
 })
 
