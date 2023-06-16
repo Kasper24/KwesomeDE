@@ -175,8 +175,8 @@ local function keyboard_layout()
 
     local widget = wibox.widget {
         widget = widgets.background,
-        forced_width = dpi(30),
-        forced_height = dpi(30),
+        forced_width = dpi(40),
+        forced_height = dpi(40),
         normal_bg = beautiful.icons.envelope.color,
         on_normal_bg = beautiful.colors.background_no_opacity,
         shape = helpers.ui.rrect(),
