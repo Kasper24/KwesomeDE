@@ -12,6 +12,7 @@ local network_daemon = require("daemons.hardware.network")
 local bluetooth_daemon = require("daemons.hardware.bluetooth")
 local audio_daemon = require("daemons.hardware.audio")
 local upower_daemon = require("daemons.hardware.upower")
+local keyboard_layout_daemon = require("daemons.system.keyboard_layout")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 
@@ -161,13 +162,42 @@ local function volume()
     return widget
 end
 
+local function keyboard_layout()
+    local text = wibox.widget {
+        widget = widgets.text,
+        halign = "center",
+        text_normal_bg = beautiful.colors.background_no_opacity,
+        text_on_normal_bg = beautiful.icons.envelope.color,
+        text = keyboard_layout_daemon:get_current_layout_as_text(),
+        size = 15,
+        bold = true,
+    }
+
+    local widget = wibox.widget {
+        widget = widgets.background,
+        forced_width = dpi(30),
+        forced_height = dpi(30),
+        normal_bg = beautiful.icons.envelope.color,
+        on_normal_bg = beautiful.colors.background_no_opacity,
+        shape = helpers.ui.rrect(),
+        text
+    }
+
+    keyboard_layout_daemon:connect_signal("update", function(self, layout)
+        text:set_text(layout)
+    end)
+
+    return widget
+end
+
 local function custom_tray()
     local layout = wibox.widget {
         layout = wibox.layout.fixed.horizontal,
         spacing = dpi(15),
         network(),
         bluetooth(),
-        volume()
+        volume(),
+        keyboard_layout()
     }
 
     upower_daemon:connect_signal("battery::init", function(self, device)
@@ -177,7 +207,7 @@ local function custom_tray()
                 color = beautiful.icons.envelope.color,
             }
         )
-        layout:add(battery_icon)
+        layout:insert(4, battery_icon)
 
         action_panel:connect_signal("visibility", function(self, visibility)
             if visibility == true then
