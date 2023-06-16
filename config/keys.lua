@@ -34,14 +34,16 @@ local keys = {
 -- =============================================================================
 --  Awesome
 -- =============================================================================
-awful.keyboard.append_global_keybindings({ -- restart awesomewm
+awful.keyboard.append_global_keybindings({
+    -- restart awesomewm
     awful.key {
         modifiers = {keys.mod},
         key = "r",
         group = "awesome",
         description = "reload",
         on_press = capi.awesome.restart
-    }, -- quit awesomewm
+    },
+    -- quit awesomewm
     awful.key {
         modifiers = {keys.mod, keys.shift},
         key = "q",
@@ -54,7 +56,8 @@ awful.keyboard.append_global_keybindings({ -- restart awesomewm
 -- =============================================================================
 --  Screen
 -- =============================================================================
-awful.keyboard.append_global_keybindings({ -- Focus the next screen
+awful.keyboard.append_global_keybindings({
+    -- Focus the next screen
     awful.key {
         modifiers = {keys.mod, keys.ctrl},
         key = "j",
@@ -63,7 +66,8 @@ awful.keyboard.append_global_keybindings({ -- Focus the next screen
         on_press = function(c)
             awful.screen.focus_relative(1)
         end
-    }, -- Focus the previous screen
+    },
+    -- Focus the previous screen
     awful.key {
         modifiers = {keys.mod, keys.ctrl},
         key = "k",
@@ -79,7 +83,8 @@ awful.keyboard.append_global_keybindings({ -- Focus the next screen
 --  Client
 -- =============================================================================
 capi.client.connect_signal("request::default_mousebindings", function()
-    awful.mouse.append_client_mousebindings({ -- Focus a client
+    awful.mouse.append_client_mousebindings({
+        -- Focus a client
         awful.button {
             modifiers = {},
             button = 1,
@@ -90,7 +95,8 @@ capi.client.connect_signal("request::default_mousebindings", function()
                     }
                 end
             end
-        }, -- Make a client floating and move it
+        },
+        -- Make a client floating and move it
         awful.button {
             modifiers = {keys.mod},
             button = 1,
@@ -105,7 +111,8 @@ capi.client.connect_signal("request::default_mousebindings", function()
                     }
                 end
             end
-        }, -- Make a client floating and resize it
+        },
+        -- Make a client floating and resize it
         awful.button {
             modifiers = {keys.mod},
             button = 3,
@@ -125,7 +132,8 @@ capi.client.connect_signal("request::default_mousebindings", function()
 end)
 
 capi.client.connect_signal("request::default_keybindings", function()
-    awful.keyboard.append_client_keybindings({ -- Close client
+    awful.keyboard.append_client_keybindings({
+        -- Close client
         awful.key {
             modifiers = {keys.mod},
             key = "c",
@@ -136,7 +144,8 @@ capi.client.connect_signal("request::default_keybindings", function()
                     c:kill()
                 end
             end
-        }, -- Toggle titlebar
+        },
+        -- Toggle titlebar
         awful.key {
             modifiers = {keys.mod},
             key = "t",
@@ -152,7 +161,8 @@ capi.client.connect_signal("request::default_keybindings", function()
                     awful.titlebar.toggle(c)
                 end
             end
-        }, -- Toggle floating
+        },
+        -- Toggle floating
         awful.key {
             modifiers = {keys.mod},
             key = "space",
@@ -164,7 +174,8 @@ capi.client.connect_signal("request::default_keybindings", function()
                 end
                 awful.client.floating.toggle()
             end
-        }, -- Toggle fullscreen
+        },
+        -- Toggle fullscreen
         awful.key {
             modifiers = {keys.mod},
             key = "f",
@@ -174,7 +185,8 @@ capi.client.connect_signal("request::default_keybindings", function()
                 c.fullscreen = not c.fullscreen
                 c:raise()
             end
-        }, -- Toggle maximize client
+        },
+        -- Toggle maximize client
         awful.key {
             modifiers = {keys.mod},
             key = "m",
@@ -184,7 +196,8 @@ capi.client.connect_signal("request::default_keybindings", function()
                 c.maximized = not c.maximized
                 c:raise()
             end
-        }, -- Toggle maximize client vertically
+        },
+        -- Toggle maximize client vertically
         awful.key {
             modifiers = {keys.mod, keys.ctrl},
             key = "m",
@@ -194,7 +207,8 @@ capi.client.connect_signal("request::default_keybindings", function()
                 c.maximized_vertical = not c.maximized_vertical
                 c:raise()
             end
-        }, -- Toggle maximize client horizontally
+        },
+        -- Toggle maximize client horizontally
         awful.key {
             modifiers = {keys.mod, keys.shift},
             key = "m",
@@ -204,7 +218,8 @@ capi.client.connect_signal("request::default_keybindings", function()
                 c.maximized_horizontal = not c.maximized_horizontal
                 c:raise()
             end
-        }, -- Minimize client
+        },
+        -- Minimize client
         awful.key {
             modifiers = {keys.mod},
             key = "n",
@@ -213,7 +228,8 @@ capi.client.connect_signal("request::default_keybindings", function()
             on_press = function(c)
                 c.minimized = true
             end
-        }, -- Restore minimized clients
+        },
+        -- Restore minimized clients
         awful.key {
             modifiers = {keys.mod, keys.shift},
             key = "n",
@@ -228,7 +244,8 @@ capi.client.connect_signal("request::default_keybindings", function()
                     }
                 end
             end
-        }, -- Make tiny float and keep on top
+        },
+        -- Make tiny float and keep on top
         awful.key {
             modifiers = {keys.mod, keys.shift},
             key = "b",
@@ -241,7 +258,8 @@ capi.client.connect_signal("request::default_keybindings", function()
                 awful.placement.bottom_right(c)
                 c.sticky = not c.sticky
             end
-        }, -- Move and resize to center
+        },
+        -- Move and resize to center
         awful.key {
             modifiers = {keys.mod, keys.shift},
             key = "c",
@@ -251,7 +269,8 @@ capi.client.connect_signal("request::default_keybindings", function()
                 helpers.client.float_and_resize(c, awful.screen.focused().geometry.width * 0.9,
                     awful.screen.focused().geometry.height * 0.9)
             end
-        }, -- Center a client
+        },
+        -- Center a client
         awful.key {
             modifiers = {keys.mod},
             key = "c",
@@ -263,7 +282,8 @@ capi.client.connect_signal("request::default_keybindings", function()
                     honor_padding = true
                 })
             end
-        }, -- Move up
+        },
+        -- Move up
         awful.key {
             modifiers = {keys.mod, keys.shift},
             key = "Up",
@@ -272,7 +292,8 @@ capi.client.connect_signal("request::default_keybindings", function()
             on_press = function(c)
                 helpers.client.move(c, "up")
             end
-        }, -- Move down
+        },
+        -- Move down
         awful.key {
             modifiers = {keys.mod, keys.shift},
             key = "Down",
@@ -281,7 +302,8 @@ capi.client.connect_signal("request::default_keybindings", function()
             on_press = function(c)
                 helpers.client.move(c, "down")
             end
-        }, -- Move left
+        },
+        -- Move left
         awful.key {
             modifiers = {keys.mod, keys.shift},
             key = "Left",
@@ -290,7 +312,8 @@ capi.client.connect_signal("request::default_keybindings", function()
             on_press = function(c)
                 helpers.client.move(c, "left")
             end
-        }, -- Move right
+        },
+        -- Move right
         awful.key {
             modifiers = {keys.mod, keys.shift},
             key = "Right",
@@ -299,7 +322,8 @@ capi.client.connect_signal("request::default_keybindings", function()
             on_press = function(c)
                 helpers.client.move(c, "right")
             end
-        }, -- Resize up
+        },
+        -- Resize up
         awful.key {
             modifiers = {keys.mod, keys.ctrl},
             key = "Up",
@@ -310,7 +334,8 @@ capi.client.connect_signal("request::default_keybindings", function()
                     helpers.client.resize(c, "up")
                 end
             end
-        }, -- Resize down
+        },
+        -- Resize down
         awful.key {
             modifiers = {keys.mod, keys.ctrl},
             key = "Down",
@@ -321,7 +346,8 @@ capi.client.connect_signal("request::default_keybindings", function()
                     helpers.client.resize(c, "down")
                 end
             end
-        }, -- Resize left
+        },
+        -- Resize left
         awful.key {
             modifiers = {keys.mod, keys.ctrl},
             key = "Left",
@@ -332,7 +358,8 @@ capi.client.connect_signal("request::default_keybindings", function()
                     helpers.client.resize(c, "left")
                 end
             end
-        }, -- Resize right
+        },
+        -- Resize right
         awful.key {
             modifiers = {keys.mod, keys.ctrl},
             key = "Right",
@@ -343,7 +370,8 @@ capi.client.connect_signal("request::default_keybindings", function()
                     helpers.client.resize(c, "right")
                 end
             end
-        }, -- Focus up
+        },
+        -- Focus up
         awful.key {
             modifiers = {keys.mod},
             key = "Up",
@@ -352,7 +380,8 @@ capi.client.connect_signal("request::default_keybindings", function()
             on_press = function(c)
                 awful.client.focus.bydirection("up")
             end
-        }, -- Focus down
+        },
+        -- Focus down
         awful.key {
             modifiers = {keys.mod},
             key = "Down",
@@ -361,7 +390,8 @@ capi.client.connect_signal("request::default_keybindings", function()
             on_press = function(c)
                 awful.client.focus.bydirection("down")
             end
-        }, -- Focus left
+        },
+        -- Focus left
         awful.key {
             modifiers = {keys.mod},
             key = "Left",
@@ -370,7 +400,8 @@ capi.client.connect_signal("request::default_keybindings", function()
             on_press = function(c)
                 awful.client.focus.bydirection("left")
             end
-        }, -- Focus right
+        },
+        -- Focus right
         awful.key {
             modifiers = {keys.mod},
             key = "Right",
@@ -379,7 +410,8 @@ capi.client.connect_signal("request::default_keybindings", function()
             on_press = function(c)
                 awful.client.focus.bydirection("right")
             end
-        }, -- Focus next
+        },
+        -- Focus next
         awful.key {
             modifiers = {keys.mod},
             key = "j",
@@ -388,7 +420,8 @@ capi.client.connect_signal("request::default_keybindings", function()
             on_press = function()
                 awful.client.focus.byidx(1)
             end
-        }, -- Focus previous
+        },
+        -- Focus previous
         awful.key {
             modifiers = {keys.mod},
             key = "k",
@@ -397,7 +430,8 @@ capi.client.connect_signal("request::default_keybindings", function()
             on_press = function()
                 awful.client.focus.byidx(-1)
             end
-        }, -- Swap with next
+        },
+        -- Swap with next
         awful.key {
             modifiers = {keys.mod, keys.shift},
             key = "k",
@@ -406,7 +440,8 @@ capi.client.connect_signal("request::default_keybindings", function()
             on_press = function()
                 awful.client.swap.byidx(1)
             end
-        }, -- Swap with previous
+        },
+        -- Swap with previous
         awful.key {
             modifiers = {keys.mod, keys.shift},
             key = "j",
@@ -415,7 +450,8 @@ capi.client.connect_signal("request::default_keybindings", function()
             on_press = function()
                 awful.client.swap.byidx(-1)
             end
-        }, -- Swap focused client with master
+        },
+        -- Swap focused client with master
         awful.key {
             modifiers = {keys.mod, keys.shift},
             key = "Return",
@@ -424,7 +460,8 @@ capi.client.connect_signal("request::default_keybindings", function()
             on_press = function(c)
                 c:swap(awful.client.getmaster())
             end
-        }, -- Go back in history
+        },
+        -- Go back in history
         awful.key {
             modifiers = {keys.mod},
             key = "Tab",
@@ -434,14 +471,16 @@ capi.client.connect_signal("request::default_keybindings", function()
                 awful.client.focus.history.previous()
                 c:raise()
             end
-        }, -- Jump to urgent
+        },
+        -- Jump to urgent
         awful.key {
             modifiers = {keys.mod, keys.shift},
             key = "u",
             group = "client",
             description = "jump to urgent",
             on_press = awful.client.urgent.jumpto
-        }, -- Bling-tabbed - pick client to add to tab group
+        },
+        -- Bling-tabbed - pick client to add to tab group
         awful.key {
             modifiers = {keys.alt},
             key = "a",
@@ -450,7 +489,8 @@ capi.client.connect_signal("request::default_keybindings", function()
             on_press = function(c)
                 bling.module.tabbed.pick()
             end
-        }, -- Bling-tabbed - iterate through tabbing group
+        },
+        -- Bling-tabbed - iterate through tabbing group
         awful.key {
             modifiers = {keys.alt},
             key = "s",
@@ -459,7 +499,8 @@ capi.client.connect_signal("request::default_keybindings", function()
             on_press = function(c)
                 bling.module.tabbed.iter()
             end
-        }, -- Bling-tabbed - remove focused client from tabbing group
+        },
+        -- Bling-tabbed - remove focused client from tabbing group
         awful.key {
             modifiers = {keys.alt},
             key = "d",
@@ -475,7 +516,8 @@ end)
 -- =============================================================================
 --  Layout
 -- =============================================================================
-awful.keyboard.append_global_keybindings({ -- Add padding
+awful.keyboard.append_global_keybindings({
+    -- Add padding
     awful.key {
         modifiers = {keys.mod, keys.shift},
         key = "=",
@@ -485,7 +527,8 @@ awful.keyboard.append_global_keybindings({ -- Add padding
             local current_client_gap = ui_daemon:get_client_gap()
             ui_daemon:set_client_gap(current_client_gap + 5)
         end
-    }, -- Subtract padding
+    },
+    -- Subtract padding
     awful.key {
         modifiers = {keys.mod, keys.shift},
         key = "-",
@@ -495,7 +538,9 @@ awful.keyboard.append_global_keybindings({ -- Add padding
             local current_client_gap = ui_daemon:get_client_gap()
             ui_daemon:set_client_gap(current_client_gap - 5)
         end
-    }, -- Increase useless gaps
+    },
+
+    -- Increase useless gaps
     awful.key {
         modifiers = {keys.mod},
         key = "=",
@@ -505,7 +550,8 @@ awful.keyboard.append_global_keybindings({ -- Add padding
             local current_useless_gap = ui_daemon:get_useless_gap()
             ui_daemon:set_useless_gap(current_useless_gap + 5)
         end
-    }, -- Decrease useless gaps
+    },
+    -- Decrease useless gaps
     awful.key {
         modifiers = {keys.mod},
         key = "-",
@@ -515,7 +561,9 @@ awful.keyboard.append_global_keybindings({ -- Add padding
             local current_useless_gap = ui_daemon:get_useless_gap()
             ui_daemon:set_useless_gap(current_useless_gap - 5)
         end
-    }, -- Increase master width
+    },
+
+    -- Increase master width
     awful.key {
         modifiers = {keys.mod},
         key = "h",
@@ -524,7 +572,8 @@ awful.keyboard.append_global_keybindings({ -- Add padding
         on_press = function()
             awful.tag.incmwfact(0.05)
         end
-    }, -- Decrease master width
+    },
+    -- Decrease master width
     awful.key {
         modifiers = {keys.mod},
         key = "l",
@@ -534,6 +583,7 @@ awful.keyboard.append_global_keybindings({ -- Add padding
             awful.tag.incmwfact(-0.05)
         end
     },
+
     -- Decrase number of master clients
     awful.key {
         modifiers = {keys.mod, keys.shift},
@@ -554,6 +604,7 @@ awful.keyboard.append_global_keybindings({ -- Add padding
             awful.tag.incnmaster(1, nil, true)
         end
     },
+
     -- Increase number of columns
     awful.key {
         modifiers = {keys.mod, keys.ctrl},
@@ -563,7 +614,8 @@ awful.keyboard.append_global_keybindings({ -- Add padding
         on_press = function()
             awful.tag.incncol(1, nil, true)
         end
-    }, -- Decrease number of columns
+    },
+    -- Decrease number of columns
     awful.key {
         modifiers = {keys.mod, keys.ctrl},
         key = "l",
@@ -572,7 +624,9 @@ awful.keyboard.append_global_keybindings({ -- Add padding
         on_press = function()
             awful.tag.incncol(-1, nil, true)
         end
-    }, -- layout-machi - Edit the current layout if it is a machi layout
+    },
+
+    -- layout-machi - Edit the current layout if it is a machi layout
     awful.key {
         modifiers = {keys.mod},
         key = ".",
@@ -581,7 +635,8 @@ awful.keyboard.append_global_keybindings({ -- Add padding
         on_press = function()
             machi.default_editor.start_interactive()
         end
-    }, -- layout-machi - Switch between windows for a machi layout
+    },
+    -- layout-machi - Switch between windows for a machi layout
     awful.key {
         modifiers = {keys.mod},
         key = "/",
@@ -596,7 +651,8 @@ awful.keyboard.append_global_keybindings({ -- Add padding
 -- =============================================================================
 --  Tag
 -- =============================================================================
-awful.keyboard.append_global_keybindings({ -- View desktop
+awful.keyboard.append_global_keybindings({
+    -- View desktop
     awful.key {
         modifiers = {keys.mod},
         key = "s",
@@ -605,7 +661,8 @@ awful.keyboard.append_global_keybindings({ -- View desktop
         on_press = function()
             awful.tag.viewnone()
         end
-    }, -- View a tag
+    },
+    -- View a tag
     awful.key {
         modifiers = {keys.mod},
         keygroup = "numrow",
@@ -618,7 +675,8 @@ awful.keyboard.append_global_keybindings({ -- View desktop
             end
             helpers.misc.tag_back_and_forth(index)
         end
-    }, -- Toggle tag
+    },
+    -- Toggle tag
     awful.key {
         modifiers = {keys.mod, keys.alt},
         keygroup = "numrow",
@@ -634,7 +692,8 @@ awful.keyboard.append_global_keybindings({ -- View desktop
                 awful.tag.viewtoggle(tag)
             end
         end
-    }, -- Move focused client to tag
+    },
+    -- Move focused client to tag
     awful.key {
         modifiers = {keys.mod, keys.shift},
         keygroup = "numrow",
@@ -653,7 +712,8 @@ awful.keyboard.append_global_keybindings({ -- View desktop
                 end
             end
         end
-    }, -- Move focused client and switch to tag
+    },
+    -- Move focused client and switch to tag
     awful.key {
         modifiers = {keys.mod, keys.ctrl},
         keygroup = "numrow",
@@ -679,7 +739,8 @@ awful.keyboard.append_global_keybindings({ -- View desktop
 -- =============================================================================
 --  Media
 -- =============================================================================
-awful.keyboard.append_global_keybindings({ -- Toogle media
+awful.keyboard.append_global_keybindings({
+    -- Toogle media
     awful.key {
         modifiers = {},
         key = "XF86AudioPlay",
@@ -688,7 +749,8 @@ awful.keyboard.append_global_keybindings({ -- Toogle media
         on_press = function()
             playerctl_daemon:play_pause()
         end
-    }, -- Previous media
+    },
+    -- Previous media
     awful.key {
         modifiers = {},
         key = "XF86AudioPrev",
@@ -697,7 +759,8 @@ awful.keyboard.append_global_keybindings({ -- Toogle media
         on_press = function()
             playerctl_daemon:previous()
         end
-    }, -- Next media
+    },
+    -- Next media
     awful.key {
         modifiers = {},
         key = "XF86AudioNext",
@@ -706,7 +769,9 @@ awful.keyboard.append_global_keybindings({ -- Toogle media
         on_press = function()
             playerctl_daemon:next()
         end
-    }, -- Raise volume
+    },
+
+    -- Raise volume
     awful.key {
         modifiers = {},
         key = "XF86AudioRaiseVolume",
@@ -715,7 +780,8 @@ awful.keyboard.append_global_keybindings({ -- Toogle media
         on_press = function()
             audio_daemon:get_default_sink():volume_up(5)
         end
-    }, -- Lower volume
+    },
+    -- Lower volume
     awful.key {
         modifiers = {},
         key = "XF86AudioLowerVolume",
@@ -724,7 +790,8 @@ awful.keyboard.append_global_keybindings({ -- Toogle media
         on_press = function()
             audio_daemon:get_default_sink():volume_down(5)
         end
-    }, -- Mute volume
+    },
+    -- Mute volume
     awful.key {
         modifiers = {},
         key = "XF86AudioMute",
@@ -733,7 +800,9 @@ awful.keyboard.append_global_keybindings({ -- Toogle media
         on_press = function()
             audio_daemon:get_default_sink():toggle_mute()
         end
-    }, -- Increase brightness
+    },
+
+    -- Increase brightness
     awful.key {
         modifiers = {},
         key = "XF86MonBrightnessUp",
@@ -742,7 +811,8 @@ awful.keyboard.append_global_keybindings({ -- Toogle media
         on_press = function()
             brightness_daemon:increase_brightness(5)
         end
-    }, -- Decrease brightness
+    },
+    -- Decrease brightness
     awful.key {
         modifiers = {},
         key = "XF86MonBrightnessDown",
@@ -751,7 +821,9 @@ awful.keyboard.append_global_keybindings({ -- Toogle media
         on_press = function()
             brightness_daemon:decrease_brightness(5)
         end
-    }, -- Toggle Screenshot app
+    },
+
+    -- Toggle Screenshot app
     awful.key {
         modifiers = {},
         key = "Print",
@@ -760,7 +832,8 @@ awful.keyboard.append_global_keybindings({ -- Toogle media
         on_press = function()
             screenshot_app:show()
         end
-    }, -- Take a screenshot
+    },
+    -- Take a screenshot
     awful.key {
         modifiers = { keys.mod },
         key = "Print",
@@ -770,6 +843,7 @@ awful.keyboard.append_global_keybindings({ -- Toogle media
             screenshot_daemon:screenshot()
         end
     },
+
     -- Pick a coilor
     awful.key {
         modifiers = {keys.alt},
@@ -780,6 +854,8 @@ awful.keyboard.append_global_keybindings({ -- Toogle media
             screenshot_daemon:pick_color()
         end
     },
+
+    -- Start recording
     awful.key {
         modifiers = { keys.mod },
         key = "F5",
@@ -789,6 +865,7 @@ awful.keyboard.append_global_keybindings({ -- Toogle media
             record_daemon:start_video()
         end
     },
+    -- Stop recording
     awful.key {
         modifiers = { keys.mod },
         key = "F6",
@@ -798,6 +875,7 @@ awful.keyboard.append_global_keybindings({ -- Toogle media
             record_daemon:stop_video()
         end
     },
+
     -- Openrgb sync script
     awful.key {
         modifiers = {keys.mod, keys.ctrl},
@@ -834,7 +912,8 @@ awful.mouse.append_global_mousebindings({
     end)
 })
 
-awful.keyboard.append_global_keybindings({ -- Toggle app launcher
+awful.keyboard.append_global_keybindings({
+    -- Toggle app launcher
     awful.key {
         modifiers = {keys.mod},
         key = "d",
@@ -843,7 +922,8 @@ awful.keyboard.append_global_keybindings({ -- Toggle app launcher
         on_press = function()
             app_launcher:show()
         end
-    }, -- Toggle exit screen
+    },
+    -- Toggle exit screen
     awful.key {
         modifiers = {keys.mod},
         key = "Escape",
@@ -852,7 +932,8 @@ awful.keyboard.append_global_keybindings({ -- Toggle app launcher
         on_press = function()
             power_popup:toggle()
         end
-    }, -- Toggle hotkeys
+    },
+    -- Toggle hotkeys
     awful.key {
         modifiers = {},
         key = "F1",
