@@ -58,10 +58,18 @@ function sink:toggle_mute()
 end
 
 function sink:volume_up(step)
+    if self.description == "GSX 1000 Main Audio analog-output-surround71" then
+        return
+    end
+
     awful.spawn(string.format("pactl set-sink-volume %d +%d%%", self.id, step), false)
 end
 
 function sink:volume_down(step)
+    if self.description == "GSX 1000 Main Audio analog-output-surround71" then
+        return
+    end
+
     awful.spawn(string.format("pactl set-sink-volume %d -%d%%", self.id, step), false)
 end
 
