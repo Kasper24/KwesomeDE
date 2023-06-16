@@ -19,8 +19,7 @@ end)
 
 awful.spawn("xset s off", false)
 awful.spawn("xset -dpms", false)
-awful.spawn("xset s noblank", fwalse)
-
+awful.spawn("xset s noblank", false)
 awful.spawn.with_shell([[
     xkbcomp -xkb "$DISPLAY" - | sed 's#key <CAPS>.*#key <CAPS> {\
        repeat=no,\

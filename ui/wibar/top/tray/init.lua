@@ -211,7 +211,7 @@ local function custom_tray()
 
         action_panel:connect_signal("visibility", function(self, visibility)
             if visibility == true then
-                battery_icon:set_color(beautiful.colors.background)
+                battery_icon:set_color(beautiful.colors.background_no_opacity)
             else
                 battery_icon:set_color(beautiful.icons.envelope.color)
             end

@@ -32,7 +32,7 @@ local function new(device, args)
         max_value = 100,
         value = device.Percentage,
         bar_shape = helpers.ui.rrect(),
-        background_color = beautiful.colors.surface,
+        background_color = beautiful.colors.transparent,
         color = args.color
     }
 
