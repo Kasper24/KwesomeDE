@@ -888,14 +888,14 @@ awful.keyboard.append_global_keybindings({
         end
     },
 
-    -- Openrgb sync script
+    -- sync openrgb colors with theme
     awful.key {
         modifiers = {keys.mod, keys.ctrl},
         key = "w",
         group = "media",
-        description = "openrgb wpgtk script",
+        description = "sync openrgb colors with theme",
         on_press = function()
-            rgb_daemon:sync_colors_script(true)
+            rgb_daemon:update_colors()
         end
     }
 })

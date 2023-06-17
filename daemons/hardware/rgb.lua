@@ -11,80 +11,88 @@ local Color = require("external.lua-color")
 local rgb = {}
 local instance = nil
 
-local script = [[python3 - <<END
-from openrgb import OpenRGBClient
-from openrgb.utils import RGBColor, DeviceType
+local function print_device_info(self)
+    -- Print the extracted device information
+    for _, device in pairs(self._private.devices) do
+        print("Device ID: " .. device.id)
+        print("Name: " .. device.name)
+        print("Type: " .. device.type)
+        print("Description: " .. device.description)
+        print("Modes:")
+        for _, mode in ipairs(device.modes) do
+            print("  - " .. mode)
+        end
+        print("Zones:")
+        for _, zone in ipairs(device.zones) do
+            print("  - " .. zone)
+        end
+        print("------------------------------------")
+    end
+end
 
-client = OpenRGBClient()
-mobo = client.get_devices_by_type(DeviceType.MOTHERBOARD)[0]
-ram1 = client.get_devices_by_type(DeviceType.DRAM)[0]
-ram2 = client.get_devices_by_type(DeviceType.DRAM)[1]
-aio = client.get_devices_by_type(DeviceType.COOLER)[0]
-fans = client.get_devices_by_type(DeviceType.LEDSTRIP)[0]
-gpu = client.get_devices_by_type(DeviceType.GPU)[0]
-#mouse = client.get_devices_by_type(DeviceType.MOUSE)[0]
-#keyboard = client.get_devices_by_type(DeviceType.KEYBOARD)[0]
-led_strip = client.get_devices_by_type(DeviceType.LEDSTRIP)[1]
-led_strip2 = client.get_devices_by_type(DeviceType.LEDSTRIP)[2]
-led_strip3 = client.get_devices_by_type(DeviceType.LEDSTRIP)[3]
+function rgb:update_colors()
+    local h, _, __ = Color(beautiful.colors.random_accent_color()):hsv()
+    local color = tostring(Color {
+        h = h,
+        s = 1,
+        v = 1
+    }):gsub("#", "")
 
-if mobo is not None:
-    mobo.set_mode('direct')
-    mobo.set_color(RGBColor.fromHSV(h1, 100, 100))
-
-if ram1 is not None:
-    ram1.set_mode('direct')
-    ram1.set_color(RGBColor.fromHSV(h1, 100, 100))
-
-if ram2 is not None:
-    ram2.set_mode('direct')
-    ram2.set_color(RGBColor.fromHSV(h1, 100, 100))
-
-if aio is not None:
-    aio.set_mode('direct')
-    aio.set_color(RGBColor.fromHSV(h1, 100, 100))
-
-if fans is not None:
-    fans.set_mode('direct')
-    fans.set_color(RGBColor.fromHSV(h2, 100, 100))
-
-if gpu is not None:
-    gpu.set_mode('off')
-    #gpu.set_mode('static')
-    #gpu.set_color(RGBColor.fromHSV(h1, 100, 100))
-
-#if mouse is not None:
-    #mouse.set_mode('static')
-    #mouse.set_color(RGBColor.fromHSV(h2, 100, 100), 0, 1)
-    #mouse.set_color(RGBColor.fromHSV(h1, 100, 100), 1, 2)
-
-#if keyboard is not None:
-    #keyboard.set_mode('direct')
-    #keyboard.set_color(RGBColor.fromHSV(h2, 100, 100))
-
-if led_strip is not None:
-    led_strip.set_color(RGBColor.fromHSV(h2, 100, 100))
-
-if led_strip2 is not None:
-    led_strip2.set_color(RGBColor.fromHSV(h2, 100, 100))
-
-if led_strip3 is not None:
-    led_strip3.set_color(RGBColor.fromHSV(h1, 100, 100))
-END
-]]
-
-function rgb:sync_colors_script(new_colors)
-    if new_colors == true then
-        self._private.hue_1 = Color(beautiful.colors.random_accent_color()):hsv()
-        self._private.hue_2 = Color(beautiful.colors.random_accent_color()):hsv()
+    local cmd = "openrgb "
+    for _, device in pairs(self._private.devices) do
+        cmd = cmd .. "-d " .. device.id .. " -c " .. color .. " "
     end
 
-    local _script = script
+    awful.spawn.with_shell(cmd)
+end
 
-    _script = _script:gsub("h1", self._private.hue_1)
-    _script = _script:gsub("h2", self._private.hue_2)
+local function extract_zones(zonesString)
+    local tempZones = {}
+    for zone in zonesString:gmatch("'([^']+)'") do
+        table.insert(tempZones, zone)
+    end
 
-    awful.spawn.with_shell(_script)
+    local remainingZonesString = zonesString:gsub("'%s?([^']+)'%s?", "")
+    for zone in remainingZonesString:gmatch("([^%s]+)") do
+        table.insert(tempZones, zone)
+    end
+    return tempZones
+end
+
+local function get_device_info(self)
+    self._private.devices = {}
+
+    awful.spawn.easy_async("openrgb -l", function(stdout)
+        local id, name, type, description, modes, zones, leds
+
+        for line in stdout:gmatch("[^\r\n]+") do
+            local temp_id, temp_name = line:match("(%d+):%s+(.+)")
+            if temp_id and temp_name then
+                id = tonumber(temp_id)
+                name = temp_name
+                self._private.devices[id] = { id = id, name = name }
+            elseif line:find("Type:") then
+                type = line:match("Type:%s+(.+)")
+                self._private.devices[id].type = type
+            elseif line:find("Description:") then
+                description = line:match("Description:%s+(.+)")
+                self._private.devices[id].description = description
+            elseif line:find("Modes:") then
+                modes = {}
+                local modesString = line:match("Modes:%s+(.+)")
+                for mode in modesString:gmatch("%S+") do
+                  table.insert(modes, mode)
+                end
+                self._private.devices[id].modes = modes
+            elseif line:find("Zones:") then
+                zones = line:match("Zones:%s+(.+)")
+                self._private.devices[id].zones = extract_zones(zones)
+            end
+        end
+
+        print_device_info(self)
+
+    end)
 end
 
 local function new()
@@ -92,8 +100,7 @@ local function new()
     gtable.crush(ret, rgb, true)
     ret._private = {}
 
-    ret._private.hue_1 = Color(beautiful.colors.random_accent_color()):hsv()
-    ret._private.hue_2 = Color(beautiful.colors.random_accent_color()):hsv()
+    get_device_info(ret)
 
     return ret
 end
