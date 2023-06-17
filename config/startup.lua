@@ -3,7 +3,6 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 local awful = require("awful")
-local gtimer = require("gears.timer")
 local helpers = require("helpers")
 
 helpers.run.run_once_grep("blueman-applet")
@@ -12,10 +11,6 @@ helpers.run.run_once_grep("kdeconnect-indicator")
 helpers.run.run_once_grep("mopidy")
 helpers.run.run_once_grep("bitwarden")
 helpers.run.run_once_grep("dropbox start -i", "dropbox")
-gtimer.start_new(10, function()
-    helpers.run.run_once_grep("openrgb --server --gui")
-    return false
-end)
 
 awful.spawn("xset s off", false)
 awful.spawn("xset -dpms", false)
