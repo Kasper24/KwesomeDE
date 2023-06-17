@@ -30,31 +30,6 @@ local function print_device_info(self)
     end
 end
 
-function openrgb_daemon:turn_off()
-    local cmd = "openrgb "
-    for _, device in pairs(self._private.devices) do
-        cmd = cmd .. "-d " .. device.id .. " -c " .. "000000 -m Direct "
-    end
-
-    awful.spawn.with_shell(cmd)
-end
-
-function openrgb_daemon:update_colors()
-    local h, _, __ = Color(beautiful.colors.random_accent_color()):hsv()
-    local color = tostring(Color {
-        h = h,
-        s = 1,
-        v = 1
-    }):gsub("#", "")
-
-    local cmd = "openrgb "
-    for _, device in pairs(self._private.devices) do
-        cmd = cmd .. "-d " .. device.id .. " -c " .. color .. " -m Direct "
-    end
-
-    awful.spawn.with_shell(cmd)
-end
-
 local function extract_zones(zonesString)
     local tempZones = {}
     for zone in zonesString:gmatch("'([^']+)'") do
@@ -68,39 +43,72 @@ local function extract_zones(zonesString)
     return tempZones
 end
 
-local function get_device_info(self)
-    self._private.devices = {}
+local function get_device_info(callback)
+    local devices = {}
 
     awful.spawn.easy_async("openrgb -l", function(stdout)
-        local id, name, type, description, modes, zones, leds
+        local id, name, type, description, modes, zones
 
         for line in stdout:gmatch("[^\r\n]+") do
             local temp_id, temp_name = line:match("(%d+):%s+(.+)")
             if temp_id and temp_name then
                 id = tonumber(temp_id)
                 name = temp_name
-                self._private.devices[id] = { id = id, name = name }
+                devices[id] = { id = id, name = name }
             elseif line:find("Type:") then
                 type = line:match("Type:%s+(.+)")
-                self._private.devices[id].type = type
+                devices[id].type = type
             elseif line:find("Description:") then
                 description = line:match("Description:%s+(.+)")
-                self._private.devices[id].description = description
+                devices[id].description = description
             elseif line:find("Modes:") then
                 modes = {}
                 local modesString = line:match("Modes:%s+(.+)")
                 for mode in modesString:gmatch("%S+") do
+                    if mode:find("Direct") then
+                        devices[id].sdk_mode = "Direct"
+                    elseif mode:find("Static") and devices[id].sdk_mode == nil then
+                        devices[id].sdk_mode = "Static"
+                    end
                   table.insert(modes, mode)
                 end
-                self._private.devices[id].modes = modes
+                devices[id].modes = modes
             elseif line:find("Zones:") then
                 zones = line:match("Zones:%s+(.+)")
-                self._private.devices[id].zones = extract_zones(zones)
+                devices[id].zones = extract_zones(zones)
             end
         end
 
-        print_device_info(self)
+        callback(devices)
+    end)
+end
 
+function openrgb_daemon:turn_off()
+    get_device_info(function(devices)
+        local cmd = "openrgb "
+        for _, device in pairs(devices) do
+            cmd = cmd .. "-d " .. device.id .. " -c " .. "000000 -m " .. device.sdk_mode .. " -b 0 "
+        end
+
+        awful.spawn.with_shell(cmd)
+    end)
+end
+
+function openrgb_daemon:update_colors()
+    get_device_info(function(devices)
+        local h, _, __ = Color(beautiful.colors.random_accent_color()):hsv()
+        local color = tostring(Color {
+            h = h,
+            s = 1,
+            v = 1
+        }):gsub("#", "")
+
+        local cmd = "openrgb "
+        for _, device in pairs(devices) do
+            cmd = cmd .. "-d " .. device.id .. " -c " .. color .. " -m " .. device.sdk_mode .. " -b 100 "
+        end
+
+        awful.spawn.with_shell(cmd)
     end)
 end
 
@@ -108,8 +116,6 @@ local function new()
     local ret = gobject {}
     gtable.crush(ret, openrgb_daemon, true)
     ret._private = {}
-
-    get_device_info(ret)
 
     return ret
 end
