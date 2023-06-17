@@ -33,7 +33,7 @@ end
 function openrgb_daemon:turn_off()
     local cmd = "openrgb "
     for _, device in pairs(self._private.devices) do
-        cmd = cmd .. "-d " .. device.id .. " -c " .. "000000 "
+        cmd = cmd .. "-d " .. device.id .. " -c " .. "000000 -m Direct "
     end
 
     awful.spawn.with_shell(cmd)
@@ -49,7 +49,7 @@ function openrgb_daemon:update_colors()
 
     local cmd = "openrgb "
     for _, device in pairs(self._private.devices) do
-        cmd = cmd .. "-d " .. device.id .. " -c " .. color .. " "
+        cmd = cmd .. "-d " .. device.id .. " -c " .. color .. " -m Direct "
     end
 
     awful.spawn.with_shell(cmd)
