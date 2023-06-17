@@ -30,6 +30,15 @@ local function print_device_info(self)
     end
 end
 
+function openrgb_daemon:turn_off()
+    local cmd = "openrgb "
+    for _, device in pairs(self._private.devices) do
+        cmd = cmd .. "-d " .. device.id .. " -c " .. "000000 "
+    end
+
+    awful.spawn.with_shell(cmd)
+end
+
 function openrgb_daemon:update_colors()
     local h, _, __ = Color(beautiful.colors.random_accent_color()):hsv()
     local color = tostring(Color {

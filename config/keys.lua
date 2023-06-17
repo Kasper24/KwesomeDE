@@ -897,6 +897,17 @@ awful.keyboard.append_global_keybindings({
         on_press = function()
             openrgb_daemon:update_colors()
         end
+    },
+
+    -- turn off all openrgb leds
+    awful.key {
+        modifiers = {keys.mod, keys.alt},
+        key = "w",
+        group = "media",
+        description = "turn off all openrgb leds",
+        on_press = function()
+            openrgb_daemon:turn_off()
+        end
     }
 })
 
