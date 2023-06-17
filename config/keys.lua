@@ -13,7 +13,7 @@ local layout_switcher = require("ui.popups.layout_switcher")
 local playerctl_daemon = require("daemons.system.playerctl")
 local audio_daemon = require("daemons.hardware.audio")
 local brightness_daemon = require("daemons.system.brightness")
-local rgb_daemon = require("daemons.hardware.rgb")
+local openrgb_daemon = require("daemons.system.openrgb")
 local ui_daemon = require("daemons.system.ui")
 local screenshot_daemon = require("daemons.system.screenshot")
 local record_daemon = require("daemons.system.record")
@@ -895,7 +895,7 @@ awful.keyboard.append_global_keybindings({
         group = "media",
         description = "sync openrgb colors with theme",
         on_press = function()
-            rgb_daemon:update_colors()
+            openrgb_daemon:update_colors()
         end
     }
 })

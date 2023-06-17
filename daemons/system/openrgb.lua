@@ -8,7 +8,7 @@ local gtable = require("gears.table")
 local beautiful = require("beautiful")
 local Color = require("external.lua-color")
 
-local rgb = {}
+local openrgb_daemon = {}
 local instance = nil
 
 local function print_device_info(self)
@@ -30,7 +30,7 @@ local function print_device_info(self)
     end
 end
 
-function rgb:update_colors()
+function openrgb_daemon:update_colors()
     local h, _, __ = Color(beautiful.colors.random_accent_color()):hsv()
     local color = tostring(Color {
         h = h,
@@ -97,7 +97,7 @@ end
 
 local function new()
     local ret = gobject {}
-    gtable.crush(ret, rgb, true)
+    gtable.crush(ret, openrgb_daemon, true)
     ret._private = {}
 
     get_device_info(ret)
