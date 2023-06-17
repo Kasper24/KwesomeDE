@@ -159,7 +159,7 @@ local function new()
     gtable.crush(ret, apps, true)
 
     ret:new("qutebrowser", "q", "qutebrowser", "qutebrowser")
-    ret:new("vivaldi", "b", "vivaldi", "Vivaldi-stable")
+    ret:new("vivaldi", "v", "vivaldi", "Vivaldi-stable")
     ret:new("vscode", "e", "code", "Code")
     ret:new("lazygit", "g", "kitty --class gitqlient lazygit", "gitqlient", {
         run_or_raise = false
@@ -169,7 +169,10 @@ local function new()
     ret:new("ncmpcpp", "n", "kitty --class mopidy ncmpcpp", "mopidy")
     ret:new("spotify", "s", "spotify", "Spotify")
     ret:new("openrgb", "o", "openrgb --server --gui", "openrgb")
-    ret:new("artemis", "a", "artemis", "artemis.ui.exe")
+    ret:new("authy", "a", "authy", "Authy Desktop", {
+        geometry = centered_gemotery(400, 800)
+    })
+    ret:new("bitwarden", "b", "bitwarden", "Bitwarden")
     ret:new("ranger", "f", "kitty --class ranger ranger", "ranger", {
         run_or_raise = false
     })
