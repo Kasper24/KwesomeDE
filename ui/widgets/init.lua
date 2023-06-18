@@ -16,6 +16,7 @@ return {
     client_menu = require(... .. ".client_menu"),
     client_thumbnail = require(... .. ".client_thumbnail"),
     dropdown = require(... .. ".dropdown"),
+    icon = require(... .. ".icon"),
     menu = require(... .. ".menu"),
     navigator = require(... .. ".navigator"),
     picker = require(... .. ".picker"),

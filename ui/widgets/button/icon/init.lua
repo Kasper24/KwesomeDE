@@ -3,7 +3,6 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 return {
-    elevated = require("ui.widgets.button.elevated"),
-    icon = require("ui.widgets.button.icon"),
-    text = require("ui.widgets.button.text")
+    normal = require("ui.widgets.button.icon.normal"),
+    state = require("ui.widgets.button.icon.state")
 }
