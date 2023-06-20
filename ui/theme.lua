@@ -15,6 +15,9 @@ local layout_machi = require("external.layout-machi")
 local dpi = beautiful.xresources.apply_dpi
 local pairs = pairs
 local math = math
+local capi = {
+    awesome = awesome
+}
 
 local theme = {}
 
@@ -453,6 +456,19 @@ local function widgets()
     theme.machi_switcher_box_opacity = 0.85
     theme.machi_switcher_fill_color_hl = theme.colors.background
     theme.machi_switcher_fill_hl_opacity = 1
+end
+
+function theme.reload()
+    local old_colorscheme = beautiful.colors
+    beautiful.init(filesystem.filesystem.get_awesome_config_dir("ui") .. "theme.lua")
+    local new_colorscheme = beautiful.colors
+
+    local old_colorscheme_to_new_map = {}
+    for index, color in pairs(old_colorscheme) do
+        old_colorscheme_to_new_map[color] = new_colorscheme[index]
+    end
+
+    capi.awesome.emit_signal("colorscheme::changed", old_colorscheme_to_new_map, new_colorscheme)
 end
 
 colors()

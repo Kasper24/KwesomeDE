@@ -37,7 +37,7 @@ local function new()
 end
 
 function background.mt:__call(...)
-    return new(...)
+    return new()
 end
 
 return setmetatable(background, background.mt)

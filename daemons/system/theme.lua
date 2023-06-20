@@ -232,19 +232,6 @@ org.gnome.desktop.interface gtk-theme '%s'
     end)
 end
 
-local function reload_awesome_colorscheme()
-    local old_colorscheme = beautiful.colors
-    beautiful.init(filesystem.filesystem.get_awesome_config_dir("ui") .. "theme.lua")
-    local new_colorscheme = beautiful.colors
-
-    local old_colorscheme_to_new_map = {}
-    for index, color in pairs(old_colorscheme) do
-        old_colorscheme_to_new_map[color] = new_colorscheme[index]
-    end
-
-    capi.awesome.emit_signal("colorscheme::changed", old_colorscheme_to_new_map, new_colorscheme)
-end
-
 local function on_finished_generating()
     gtimer.start_new(5, function()
         reload_gtk()
@@ -942,7 +929,7 @@ function theme:set_colorscheme(colorscheme)
 
     self:save_colorscheme()
 
-    reload_awesome_colorscheme()
+    beautiful.reload()
     install_gtk_theme()
     generate_templates(self)
     generate_sequences(self:get_active_colorscheme_colors())

@@ -111,7 +111,7 @@ local function new()
 end
 
 function client_thumbnail.mt:__call(...)
-    return new(...)
+    return new()
 end
 
 return setmetatable(client_thumbnail, client_thumbnail.mt)

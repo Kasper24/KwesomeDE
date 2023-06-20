@@ -5,6 +5,7 @@
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
+local beautiful = require("beautiful")
 local helpers = require("helpers")
 local filesystem = require("external.filesystem")
 local ipairs = ipairs
@@ -68,7 +69,7 @@ end
 function ui:set_opacity(opacity)
     self._private.ui_opacity = opacity
     helpers.settings["ui.opacity"] = opacity
-    reload_awesome_colorscheme()
+    beautiful.reload()
 end
 
 function ui:get_opacity()
@@ -83,7 +84,7 @@ end
 function ui:set_border_radius(border_radius)
     self._private.ui_border_radius = border_radius
     helpers.settings["ui.border_radius"] = border_radius
-    reload_awesome_colorscheme()
+    beautiful.reload()
 end
 
 function ui:get_border_radius()

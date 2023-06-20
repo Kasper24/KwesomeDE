@@ -244,7 +244,7 @@ local function new()
 end
 
 function elevated_button_state.mt:__call(...)
-    return new(...)
+    return new()
 end
 
 build_properties(elevated_button_state, properties)

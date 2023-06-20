@@ -24,7 +24,7 @@ local function new()
 end
 
 function progressbar.mt:__call(...)
-    return new(...)
+    return new()
 end
 
 return setmetatable(progressbar, progressbar.mt)

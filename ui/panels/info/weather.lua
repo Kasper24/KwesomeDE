@@ -465,7 +465,7 @@ local function new()
 end
 
 function weather.mt:__call(...)
-    return new(...)
+    return new()
 end
 
 return setmetatable(weather, weather.mt)

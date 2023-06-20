@@ -266,7 +266,7 @@ local function new()
 end
 
 function tasklist.mt:__call(...)
-    return new(...)
+    return new()
 end
 
 return setmetatable(tasklist, tasklist.mt)

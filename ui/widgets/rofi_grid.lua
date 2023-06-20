@@ -713,7 +713,7 @@ local function new()
 end
 
 function rofi_grid.mt:__call(...)
-    return new(...)
+    return new()
 end
 
 build_properties(rofi_grid, properties)

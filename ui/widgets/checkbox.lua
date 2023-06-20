@@ -228,7 +228,7 @@ local function new()
 end
 
 function checkbox.mt:__call(...)
-    return new(...)
+    return new()
 end
 
 build_properties(checkbox, properties)

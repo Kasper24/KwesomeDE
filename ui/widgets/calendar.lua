@@ -262,7 +262,7 @@ local function new()
 end
 
 function calendar.mt:__call(...)
-    return new(...)
+    return new()
 end
 
 return setmetatable(calendar, calendar.mt)

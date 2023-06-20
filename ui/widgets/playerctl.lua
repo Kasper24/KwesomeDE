@@ -63,7 +63,7 @@ function playerctl.art_opacity(daemon)
         image = image_surface(theme_daemon:get_wallpaper_path()),
     }
 
-    local image = false
+    local image = nil
     playerctl_daemon:connect_signal("metadata", function(_, title, artist, album_path, _, new, player_name)
         if album_path ~= "" then
             image = album_path
@@ -585,8 +585,8 @@ function playerctl.previous_play_next(daemon)
             layout = wibox.layout.fixed.horizontal,
             spacing = dpi(15),
             playerctl.previous(nil, nil, playerctl_daemon),
-            playerctl.play(nil, nil, playerctl_daemon),
-            playerctl.next(nil, nil, playerctl_daemon)
+            playerctl.play(playerctl_daemon),
+            playerctl.next(playerctl_daemon)
         }
     }
 end

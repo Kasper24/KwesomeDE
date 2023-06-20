@@ -926,7 +926,7 @@ local function new()
 end
 
 function text_input.mt:__call(...)
-    return new(...)
+    return new()
 end
 
 build_properties(text_input, properties)

@@ -85,9 +85,9 @@ end
 
 function picom:toggle(save)
     if capi.awesome.composite_manager_running == true then
-        self:turn_off(save, true)
+        self:turn_off(save)
     else
-        self:turn_on(save, true)
+        self:turn_on(save)
     end
 end
 

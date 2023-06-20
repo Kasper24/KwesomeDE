@@ -21,7 +21,6 @@ local instance = nil
 
 local mimetype_to_image_lookup_table = {
     -- Image
-    ["application/pdf"] = "lximage", -- AI
     ["image/x-ms-bmp"] = "lximage", -- BMP
     ["application/postscript"] = "lximage", -- EPS
     ["image/gif"] = "lximage", -- GIF
@@ -190,10 +189,10 @@ local function desktop_icon(self, pos, path, name, mimetype)
                     end
                 }
             end,
-            on_release = function()
-                widget.ontop = false
-                on_drag_end(widget, path)
-            end,
+            -- on_release = function()
+            --     widget.ontop = false
+            --     on_drag_end(widget, path)
+            -- end,
             on_secondary_release = function()
                 menu:toggle{}
             end,

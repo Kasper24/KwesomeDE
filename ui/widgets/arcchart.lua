@@ -27,7 +27,7 @@ local function new()
 end
 
 function arcchart.mt:__call(...)
-    return new(...)
+    return new()
 end
 
 return setmetatable(arcchart, arcchart.mt)

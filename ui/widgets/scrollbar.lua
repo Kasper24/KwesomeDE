@@ -29,7 +29,7 @@ local function new()
 end
 
 function scrollbar.mt:__call(...)
-    return new(...)
+    return new()
 end
 
 return setmetatable(scrollbar, scrollbar.mt)

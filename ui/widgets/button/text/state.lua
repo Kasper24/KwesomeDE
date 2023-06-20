@@ -65,7 +65,7 @@ local function new()
 end
 
 function text_button_state.mt:__call(...)
-    return new(...)
+    return new()
 end
 
 build_properties(text_button_state, properties)

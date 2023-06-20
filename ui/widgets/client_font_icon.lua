@@ -22,7 +22,7 @@ local function new()
 end
 
 function client_font_icon.mt:__call(...)
-    return new(...)
+    return new()
 end
 
 return setmetatable(client_font_icon, client_font_icon.mt)

@@ -64,7 +64,7 @@ local function new()
 end
 
 function icon_button_state.mt:__call(...)
-    return new(...)
+    return new()
 end
 
 build_properties(icon_button_state, properties)
