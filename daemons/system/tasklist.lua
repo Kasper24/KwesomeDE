@@ -238,7 +238,7 @@ function tasklist:get_icon(desktop_app_info)
         icon = desktop_app_info:get_string("Icon") or ""
     end
 
-    return helpers.icon_theme.get_icon_path(icon)
+    return helpers.icon_theme.get_app_icon_path(icon)
 end
 
 function tasklist:get_font_icon(client)
