@@ -94,7 +94,7 @@ end
 
 function _icon_theme.get_app_icon_path(icon_name, icon_theme, icon_size)
     return _icon_theme.get_icon_path(icon_name, icon_theme, icon_size) or
-            _icon_theme.choose_icon({"window", "window-manager", "xfwm4-default", "window_list"})
+            _icon_theme.get_icon_path("window", icon_theme, icon_size)
 end
 
 function _icon_theme:get_app_font_icon(...)
