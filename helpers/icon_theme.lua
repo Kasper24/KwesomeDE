@@ -11,10 +11,12 @@ local beautiful = require("beautiful")
 local string = string
 local ipairs = ipairs
 
+local _icon_theme = {}
+
 local ICON_SIZE = 48
 local GTK_THEME = Gtk.IconTheme.get_default()
 
-local _icon_theme = {}
+local icons = {}
 
 function _icon_theme.has_icon(icon_name, icon_theme, icon_size)
     if icon_theme then
@@ -73,6 +75,10 @@ function _icon_theme.get_gicon_path(gicon, icon_theme, icon_size)
 end
 
 function _icon_theme.get_icon_path(icon_name, icon_theme, icon_size)
+    if icons[icon_name] then
+        return icons[icon_name]
+    end
+
     if icon_theme then
         GTK_THEME = Gtk.IconTheme.new()
         Gtk.IconTheme.set_custom_theme(GTK_THEME, icon_theme);
@@ -85,7 +91,8 @@ function _icon_theme.get_icon_path(icon_name, icon_theme, icon_size)
     if icon_info then
         local icon_path = icon_info:get_filename()
         if icon_path then
-            return icon_path
+            icons[icon_name] = { path = icon_path, color = beautiful.colors.random_accent_color() }
+            return icons[icon_name]
         end
     end
 
@@ -94,7 +101,7 @@ end
 
 function _icon_theme.get_app_icon_path(icon_name, icon_theme, icon_size)
     return _icon_theme.get_icon_path(icon_name, icon_theme, icon_size) or
-            _icon_theme.get_icon_path("window", icon_theme, icon_size)
+            _icon_theme.get_icon_path("application-x-ktheme", icon_theme, icon_size)
 end
 
 function _icon_theme:get_app_font_icon(...)

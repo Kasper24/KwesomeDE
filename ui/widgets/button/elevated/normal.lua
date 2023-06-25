@@ -93,7 +93,7 @@ function elevated_button_normal:build_animable_child_anims(child)
     elseif child._private.icon_normal_bg or child._private.icon_on_normal_bg then
         table.insert(wp.animable_childs, {
             widget = child,
-            original_size = child:get_size(),
+            original_size = 50,
             color_anim = helpers.animation:new{
                 easing = helpers.animation.easing.linear,
                 duration = 0.2,
@@ -102,7 +102,7 @@ function elevated_button_normal:build_animable_child_anims(child)
                 end
             },
             size_anim = helpers.animation:new{
-                pos = child:get_size(),
+                pos = 50,
                 easing = helpers.animation.easing.linear,
                 duration = 0.125,
                 update = function(self, pos)
@@ -178,7 +178,7 @@ function elevated_button_normal:effect(instant)
         for _, child in ipairs(wp.animable_childs) do
             if child.color_anim then
                 child.color_anim:stop()
-                local child_color = child.widget._private["text_" .. on_prefix .. "normal_bg"]
+                local child_color = child.widget._private["text_" .. on_prefix .. "normal_bg"] or child.widget._private["icon_" .. on_prefix .. "normal_bg"]
                 child.color_anim.pos = child_color
                 child.widget:set_color(child_color)
             elseif child.bg_anim then

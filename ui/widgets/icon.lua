@@ -17,7 +17,8 @@ local icon = {
 }
 
 local properties = {
-    "icon", "color"
+    "icon", "color",
+    "icon_normal_bg", "icon_on_normal_bg"
 }
 
 local function build_properties(prototype, prop_names)
@@ -41,18 +42,18 @@ local function build_properties(prototype, prop_names)
 end
 
 function icon:set_color(color)
-    color = color or "#ffffff"
     local wp = self._private
     wp.color = color
-    print(string.format("path { fill: %s; }", color))
-    self:set_stylesheet(string.format("path { fill: %s; }", color))
+    self:set_stylesheet(string.format("path { stroke-width=1; stroke: %s; fill: %s; }", color, color))
 end
 
 function icon:set_icon(icon)
     local wp = self._private
     wp.icon = icon
-    self.image = icon
-    self:set_color(wp.color or wp.defaults.color)
+    self.image = icon.path
+    wp.defaults.color = wp.color or icon.color
+    local color = wp.defaults.color or wp.color
+    self:set_stylesheet(string.format("path { stroke-width=1; stroke: %s; fill: %s; }", color, color))
 end
 
 local function new(hot_reload)
