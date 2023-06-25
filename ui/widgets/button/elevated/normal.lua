@@ -90,6 +90,37 @@ function elevated_button_normal:build_animable_child_anims(child)
 
             self:effect(true)
         end)
+    elseif child._private.icon_normal_bg or child._private.icon_on_normal_bg then
+        table.insert(wp.animable_childs, {
+            widget = child,
+            original_size = child:get_size(),
+            color_anim = helpers.animation:new{
+                easing = helpers.animation.easing.linear,
+                duration = 0.2,
+                update = function(self, pos)
+                    child:set_color(pos)
+                end
+            },
+            size_anim = helpers.animation:new{
+                pos = child:get_size(),
+                easing = helpers.animation.easing.linear,
+                duration = 0.125,
+                update = function(self, pos)
+                    child:set_size(pos)
+                end
+            }
+        })
+        self:effect(true)
+        capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+            local wp = child._private
+            wp.icon_normal_bg = old_colorscheme_to_new_map[wp.icon_normal_bg] or
+                                    old_colorscheme_to_new_map[wp.defaults.icon_normal_bg]
+            wp.icon_on_normal_bg = old_colorscheme_to_new_map[wp.icon_on_normal_bg] or
+                                    old_colorscheme_to_new_map[wp.defaults.icon_on_normal_bg] or
+                                    helpers.color.darken_or_lighten(wp.icon_normal_bg, 0.2)
+
+            self:effect(true)
+        end)
     elseif child._private.normal_bg or child._private.on_normal_bg then
         table.insert(wp.animable_childs, {
             widget = child,
