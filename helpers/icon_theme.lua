@@ -33,7 +33,7 @@ function _icon_theme.choose_icon(icons_names, icon_theme, icon_size)
         end
     end
 
-    return ""
+    return nil
 end
 
 function _icon_theme.get_gicon_path(gicon, icon_theme, icon_size)
@@ -57,7 +57,7 @@ function _icon_theme.get_gicon_path(gicon, icon_theme, icon_size)
         end
     end
 
-    return ""
+    return nil
 end
 
 function _icon_theme.get_icon_path(icon_name, icon_theme, icon_size)
@@ -77,7 +77,7 @@ function _icon_theme.get_icon_path(icon_name, icon_theme, icon_size)
         end
     end
 
-    return ""
+    return nil
 end
 
 function _icon_theme.get_app_icon_path(icon_name, icon_theme, icon_size)
