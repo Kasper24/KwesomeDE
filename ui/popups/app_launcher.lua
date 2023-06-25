@@ -5,7 +5,6 @@
 local wibox = require("wibox")
 local beautiful = require("beautiful")
 local widgets = require("ui.widgets")
-local tasklist_daemon = require("daemons.system.tasklist")
 local app_launcher_daemon = require("daemons.system.app_launcher")
 local bling = require("external.bling")
 local helpers = require("helpers")
@@ -66,7 +65,7 @@ local function app_menu(app, app_widget, font_icon)
 end
 
 local function app(app, app_launcher)
-    local font_icon = tasklist_daemon:get_font_icon(app.id:gsub(".desktop", ""),
+    local font_icon = helpers.icon_theme.get_app_font_icon(app.id:gsub(".desktop", ""),
         app.name,
         app.exec,
         app.startup_wm_class,

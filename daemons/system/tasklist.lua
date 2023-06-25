@@ -89,7 +89,7 @@ local function on_pinned_app_added(self, pinned_app)
         cloned_pinned_app.desktop_app_info = desktop_app_info
         cloned_pinned_app.actions = self:get_actions(desktop_app_info)
     end
-    cloned_pinned_app.font_icon = self:get_font_icon(pinned_app.class, pinned_app.name)
+    cloned_pinned_app.font_icon = self:get_font_icon(pinned_app)
 
     function cloned_pinned_app:run()
         awful.spawn(cloned_pinned_app.exec)
@@ -117,8 +117,8 @@ local function on_client_added(self, client)
     client.desktop_app_info = desktop_app_info
     client.desktop_app_info_id = id
     client.actions = self:get_actions(client.desktop_app_info)
-    client.icon = self:get_icon(client.desktop_app_info) -- not used
-    client.font_icon = self:get_font_icon(client.class, client.name)
+    client._icon = self:get_icon(client.desktop_app_info)
+    client.font_icon = self:get_font_icon(client)
     client.managed = true
     client:emit_signal("managed")
 
@@ -232,34 +232,17 @@ function tasklist:get_actions(desktop_app_info)
 end
 
 function tasklist:get_icon(desktop_app_info)
+    local icon = ""
+
     if desktop_app_info then
-        local icon = desktop_app_info:get_string("Icon")
-        if icon ~= nil then
-            return helpers.icon_theme.get_icon_path(icon)
-        end
+        icon = desktop_app_info:get_string("Icon") or ""
     end
 
-    return helpers.icon_theme.choose_icon({"window", "window-manager", "xfwm4-default", "window_list"})
+    return helpers.icon_theme.get_icon_path(icon)
 end
 
-function tasklist:get_font_icon(...)
-    local args = { ... }
-
-    for _, arg in ipairs(args) do
-        if arg then
-            arg = arg:lower()
-            arg = arg:gsub("_", "")
-            arg = arg:gsub("%s+", "")
-            arg = arg:gsub("-", "")
-            arg = arg:gsub("%.", "")
-            local icon = beautiful.app_icons[arg]
-            if icon then
-                return icon
-            end
-        end
-    end
-
-    return beautiful.icons.window
+function tasklist:get_font_icon(client)
+    return helpers.icon_theme.get_app_font_icon(client.class, client.name)
 end
 
 function tasklist:is_app_pinned(class)

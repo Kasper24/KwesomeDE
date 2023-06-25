@@ -14,7 +14,7 @@ local dpi = beautiful.xresources.apply_dpi
 local instance = nil
 
 local function application_widget(application)
-    local font_icon = tasklist_daemon:get_font_icon(application.name)
+    local font_icon = helpers.icon_theme.get_app_font_icon(application.name)
     local accent_color = font_icon and font_icon.color or beautiful.icons.volume.high.color
     local icon = nil
     if font_icon == nil then

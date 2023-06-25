@@ -2,8 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-local cairo = require("lgi").cairo
-local gsurface = require("gears.surface")
 local gshape = require("gears.shape")
 local gcolor = require("gears.color")
 local wibox = require("wibox")
@@ -12,7 +10,6 @@ local tbwidget = require("ui.widgets.button.text")
 local ebwidget = require("ui.widgets.button.elevated")
 local swidget = require("ui.widgets.slider")
 local beautiful = require("beautiful")
-local tasklist_daemon = require("daemons.system.tasklist")
 local general_playerctl_daemon = require("daemons.system.playerctl")
 local theme_daemon = require("daemons.system.theme")
 local helpers = require("helpers")
@@ -130,7 +127,7 @@ function playerctl.art(halign, valign, size, default_icon_size, daemon)
             icon.image = album_path
             stack:raise_widget(icon)
         else
-            local app_font_icon = tasklist_daemon:get_font_icon(player_name, "spotfy")
+            local app_font_icon = helpers.icon_theme.get_app_font_icon(player_name, "spotfy")
             default_icon:set_icon(app_font_icon)
             stack:raise_widget(default_icon)
         end
@@ -183,7 +180,7 @@ function playerctl.player_art(halign, valign, daemon)
 
     playerctl_daemon:connect_signal("metadata", function(self, title, artist, album_path, album, new, player_name)
         if player_name ~= "" then
-            local app_font_icon = tasklist_daemon:get_font_icon(player_name, "spotify")
+            local app_font_icon = helpers.icon_theme.get_app_font_icon(player_name, "spotify")
             icon:set_icon(app_font_icon)
         end
     end)
@@ -470,7 +467,7 @@ function playerctl.play(daemon)
 
     playerctl_daemon:connect_signal("metadata", function(self, title, artist, album_path, album, new, player_name)
         if player_name ~= "" then
-            local app_font_icon = tasklist_daemon:get_font_icon(player_name, "spotify")
+            local app_font_icon = helpers.icon_theme.get_app_font_icon(player_name, "spotify")
             button:set_normal_bg(app_font_icon.color)
         end
     end)

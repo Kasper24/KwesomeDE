@@ -5,7 +5,7 @@
 local beautiful = require("beautiful")
 local naughty = require("naughty")
 local playerctl_daemon = require("daemons.system.playerctl")
-local tasklist_daemon = require("daemons.system.tasklist")
+local helpers = require("helpers")
 local string = string
 
 playerctl_daemon:connect_signal("metadata", function(self, title, artist, album_path, album, new, player_name)
@@ -13,7 +13,7 @@ playerctl_daemon:connect_signal("metadata", function(self, title, artist, album_
         return
     end
 
-    local app_font_icon = tasklist_daemon:get_font_icon(player_name, "spotify")
+    local app_font_icon = helpers.icon_theme.get_app_font_icon(player_name, "spotify")
     local text = (artist ~= "") and artist or (album ~= "") and album or player_name:gsub("^%l", string.upper)
     local icon = album_path ~= "" and album_path or {"youtube"}
     local font_icon = album_path == "" and beautiful.icons.youtube or nil

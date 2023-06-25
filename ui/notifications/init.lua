@@ -4,14 +4,12 @@
 -------------------------------------------
 local awful = require("awful")
 local gtimer = require("gears.timer")
-local gshape = require("gears.shape")
 local ruled = require("ruled")
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
 local naughty = require("naughty")
 local notifications_daemon = require("daemons.system.notifications")
-local tasklist_daemon = require("daemons.system.tasklist")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local max = math.max
@@ -371,7 +369,7 @@ naughty.connect_signal("added", function(n)
     end
 
     if n._private.app_font_icon == nil then
-        n.app_font_icon = tasklist_daemon:get_font_icon(n.app_name)
+        n.app_font_icon = helpers.icon_theme.get_app_font_icon(n.app_name)
     else
         n.app_font_icon = n._private.app_font_icon
     end

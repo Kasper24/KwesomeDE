@@ -7,6 +7,7 @@ local Gio = lgi.Gio
 local DesktopAppInfo = Gio.DesktopAppInfo
 local AppInfo = Gio.DesktopAppInfo
 local Gtk = lgi.require("Gtk", "3.0")
+local beautiful = require("beautiful")
 local string = string
 local ipairs = ipairs
 
@@ -77,6 +78,31 @@ function _icon_theme.get_icon_path(icon_name, icon_theme, icon_size)
     end
 
     return ""
+end
+
+function _icon_theme.get_app_icon_path(icon_name, icon_theme, icon_size)
+    return _icon_theme.get_icon_path(icon_name, icon_theme, icon_size) or
+            _icon_theme.choose_icon({"window", "window-manager", "xfwm4-default", "window_list"})
+end
+
+function _icon_theme:get_app_font_icon(...)
+    local args = { ... }
+
+    for _, arg in ipairs(args) do
+        if arg then
+            arg = arg:lower()
+            arg = arg:gsub("_", "")
+            arg = arg:gsub("%s+", "")
+            arg = arg:gsub("-", "")
+            arg = arg:gsub("%.", "")
+            local icon = beautiful.app_icons[arg]
+            if icon then
+                return icon
+            end
+        end
+    end
+
+    return beautiful.icons.window
 end
 
 return _icon_theme

@@ -70,26 +70,6 @@ function app_launcher:get_actions(desktop_app_info)
     return actions
 end
 
-function app_launcher:get_font_icon(...)
-    local args = { ... }
-
-    for _, arg in ipairs(args) do
-        if arg then
-            arg = arg:lower()
-            arg = arg:gsub("_", "")
-            arg = arg:gsub("%s+", "")
-            arg = arg:gsub("-", "")
-            arg = arg:gsub("%.", "")
-            local icon = beautiful.app_icons[arg]
-            if icon then
-                return icon
-            end
-        end
-    end
-
-    return beautiful.icons.window
-end
-
 function app_launcher:is_app_pinned(id)
     for _, pinned_app in ipairs(self._private.pinned_apps) do
         if id == pinned_app.id then
