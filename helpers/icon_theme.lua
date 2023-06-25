@@ -16,6 +16,18 @@ local GTK_THEME = Gtk.IconTheme.get_default()
 
 local _icon_theme = {}
 
+function _icon_theme.has_icon(icon_name, icon_theme, icon_size)
+    if icon_theme then
+        GTK_THEME = Gtk.IconTheme.new()
+        Gtk.IconTheme.set_custom_theme(GTK_THEME, icon_theme);
+    end
+    if icon_size then
+        ICON_SIZE = icon_size
+    end
+
+    return GTK_THEME:has_icon(icon_name)
+end
+
 function _icon_theme.choose_icon(icons_names, icon_theme, icon_size)
     if icon_theme then
         GTK_THEME = Gtk.IconTheme.new()
