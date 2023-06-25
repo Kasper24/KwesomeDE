@@ -56,11 +56,7 @@ function icon:set_icon(icon)
 end
 
 local function new(hot_reload)
-    local widget = require("wibox").widget {
-        widget = imagebox,
-        image = "/home/kasper/.local/share/icons/candy-icons/apps/scalable/kalarm.svg",
-        -- stylesheet ="path { fill: #ff0000; } "
-    }
+    local widget = imagebox()
     gtable.crush(widget, icon, true)
 
     local wp = widget._private
