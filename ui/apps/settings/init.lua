@@ -92,7 +92,7 @@ end
 local function new()
     SETTINGS_APP = app {
         title ="Settings",
-        class = "Settings",
+        class = "gnome-settings",
         width = dpi(1650),
         height = dpi(1080),
         show_titlebar = true,

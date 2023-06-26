@@ -232,7 +232,7 @@ end
 local function new()
     SCREENSHOT_APP = app {
         title ="Screenshot",
-        class = "Screenshot",
+        class = "gnome-screenshot",
         width = dpi(560),
         height = dpi(465),
         show_titlebar = true,

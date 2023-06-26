@@ -308,7 +308,7 @@ end
 local function new()
     RECORD_APP = app {
         title ="Recorder",
-        class = "Recorder",
+        class = "record-desktop",
         width = dpi(550),
         height = dpi(520),
         show_titlebar = true,
