@@ -160,6 +160,7 @@ local function new()
 
     ret:new("qutebrowser", "q", "qutebrowser", "qutebrowser")
     ret:new("vivaldi", "v", "vivaldi", "Vivaldi-stable")
+    ret:new("firefox", "f", "firefox", "firefox")
     ret:new("vscode", "e", "code", "Code")
     ret:new("lazygit", "g", "kitty --class gitqlient lazygit", "gitqlient", {
         run_or_raise = false
@@ -173,7 +174,7 @@ local function new()
         geometry = centered_gemotery(400, 800)
     })
     ret:new("bitwarden", "b", "bitwarden", "Bitwarden")
-    ret:new("ranger", "f", "kitty --class ranger ranger", "ranger", {
+    ret:new("ranger", "r", "kitty --class ranger ranger", "ranger", {
         run_or_raise = false
     })
     ret:new("kitty", "Return", "kitty", "kitty", {
