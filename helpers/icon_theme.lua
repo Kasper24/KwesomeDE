@@ -99,8 +99,13 @@ function _icon_theme.get_icon_path(icon_name, icon_theme, icon_size)
     return nil
 end
 
-function _icon_theme.get_app_icon_path(icon_name, icon_theme, icon_size)
-    return _icon_theme.get_icon_path(icon_name, icon_theme, icon_size) or
+function _icon_theme.get_app_icon_path(icon_names, icon_theme, icon_size)
+    if type(icon_names) == "table" then
+        return _icon_theme.choose_icon(icon_names, icon_theme, icon_size) or
+                _icon_theme.get_icon_path("application-x-ktheme", icon_theme, icon_size)
+    end
+
+    return _icon_theme.get_icon_path(icon_names, icon_theme, icon_size) or
             _icon_theme.get_icon_path("application-x-ktheme", icon_theme, icon_size)
 end
 
