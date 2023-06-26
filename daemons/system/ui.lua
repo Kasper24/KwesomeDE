@@ -205,6 +205,34 @@ function ui:get_show_lockscreen_on_login()
     return self._private.show_lockscreen_on_login
 end
 
+-- Double bars
+function ui:set_double_bars(double_bars)
+    self._private.double_bars = double_bars
+    helpers.settings["ui.bar.double_bars"] = double_bars
+end
+
+function ui:get_double_bars()
+    if self._private.double_bars == nil then
+        self._private.double_bars = helpers.settings["ui.bar.double_bars"]
+    end
+
+    return self._private.double_bars
+end
+
+-- Icon taglist
+function ui:set_icon_taglist(icon_taglist)
+    self._private.icon_taglist = icon_taglist
+    helpers.settings["ui.bar.icon_taglist"] = icon_taglist
+end
+
+function ui:get_icon_taglist()
+    if self._private.icon_taglist == nil then
+        self._private.icon_taglist = helpers.settings["ui.bar.icon_taglist"]
+    end
+
+    return self._private.icon_taglist
+end
+
 local function new()
     local ret = gobject {}
     gtable.crush(ret, ui, true)

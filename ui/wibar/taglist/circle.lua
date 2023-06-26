@@ -3,10 +3,12 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 local awful = require("awful")
+local gshape = require("gears.shape")
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 -- local tag_preview = require("ui.popups.tag_preview")
 local beautiful = require("beautiful")
+local ui_daemon = require("daemons.system.ui")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local ipairs = ipairs
@@ -14,7 +16,7 @@ local capi = {
     client = client
 }
 
-local taglist = {
+local circle = {
     mt = {}
 }
 
@@ -75,28 +77,35 @@ end
 local function update_taglist(self, tag)
     local clients = tag:clients()
 
-    if (#clients == 1 and clients[1].skip_taskbar ~= true) or #clients > 1 then
-        self.indicator_animation:set(dpi(40))
+    local has_clients = (#clients == 1 and clients[1].skip_taskbar ~= true) or #clients > 1
+
+    if has_clients then
+        self.widget:turn_on()
     else
-        self.indicator_animation:set(dpi(0))
+        self.widget:turn_off()
     end
 
     if tag.selected then
-        self.widget.children[1]:turn_on()
+        self.size_animation:set(dpi(40))
+        self.widget:turn_on()
     else
-        self.widget.children[1]:turn_off()
+        self.size_animation:set(dpi(20))
+        if not has_clients then
+            self.widget:turn_off()
+        end
     end
 end
 
-local function tag_widget(self, tag, index)
+local function tag_widget(self, tag, accent_color, direction)
     local menu = tag_menu(tag)
 
-    local button = wibox.widget {
-        widget = widgets.button.text.state,
-        id = "button",
-        icon = tag.font_icon,
-        on_normal_bg = tag.font_icon.color,
-        text_on_normal_bg = beautiful.colors.transparent,
+    local widget = wibox.widget {
+        widget = widgets.button.elevated.state,
+        forced_width = dpi(30),
+        forced_height = dpi(30),
+        normal_shape = gshape.circle,
+        normal_bg = beautiful.colors.on_surface,
+        on_normal_bg = accent_color,
         -- on_hover = function()
         --     if #tag:clients() > 0 then
         --         tag_preview:show(tag, {
@@ -132,63 +141,61 @@ local function tag_widget(self, tag, index)
         end,
         on_scroll_down = function()
             awful.tag.viewnext(tag.screen)
-        end
-    }
-
-    local indicator = wibox.widget {
-        widget = widgets.background,
-        id = "background",
-        forced_width = dpi(5),
-        shape = helpers.ui.rrect(),
-        bg = tag.font_icon.color
-    }
-
-    local stack = wibox.widget {
-        widget = wibox.layout.stack,
-        button,
+        end,
         {
-            widget = wibox.container.place,
-            halign = "right",
-            valign = "center",
-            indicator
+            widget = wibox.container.margin,
+            margins = dpi(15),
+
+            {
+                widget = widgets.background,
+                bg = "#FF0000",
+            }
         }
     }
 
-    self.indicator_animation = helpers.animation:new{
+    local prop = direction == "horizontal" and "forced_width" or "forced_height"
+    self.size_animation = helpers.animation:new {
         duration = 0.2,
         easing = helpers.animation.easing.linear,
         update = function(self, pos)
-            indicator.forced_height = pos
+            widget[prop] = pos
         end
     }
 
-    self:set_widget(stack)
+    self:set_widget(widget)
 end
 
-local function new(s)
-    return awful.widget.taglist {
-        screen = s,
-        filter = awful.widget.taglist.filter.all,
-        layout = {
-            layout = wibox.layout.fixed.vertical
-        },
-        widget_template = {
-            widget = wibox.container.margin,
-            forced_width = dpi(60),
-            forced_height = dpi(60),
-            create_callback = function(self, tag, index, tags)
-                tag_widget(self, tag, index)
-                update_taglist(self, tag)
-            end,
-            update_callback = function(self, tag, index, tags)
-                update_taglist(self, tag)
-            end
+local function new(screen, direction)
+    local accent_color = beautiful.colors.random_accent_color()
+
+    return wibox.widget {
+        widget = wibox.container.margin,
+        margins = { top = ui_daemon:get_double_bars() and dpi(15) or 0},
+        {
+            widget = awful.widget.taglist {
+                screen = screen,
+                filter = awful.widget.taglist.filter.all,
+                layout = {
+                    layout = direction == "horizontal" and wibox.layout.fixed.horizontal or wibox.layout.fixed.vertical,
+                    spacing = dpi(15)
+                },
+                widget_template = {
+                    widget = widgets.background,
+                    create_callback = function(self, tag, index, tags)
+                        tag_widget(self, tag, accent_color, direction)
+                        update_taglist(self, tag)
+                    end,
+                    update_callback = function(self, tag, index, tags)
+                        update_taglist(self, tag)
+                    end
+                }
+            }
         }
     }
 end
 
-function taglist.mt:__call(...)
+function circle.mt:__call(...)
     return new(...)
 end
 
-return setmetatable(taglist, taglist.mt)
+return setmetatable(circle, circle.mt)

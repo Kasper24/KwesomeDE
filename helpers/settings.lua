@@ -300,6 +300,18 @@ local function get_default_settings()
                     "type": "number",
                     "description": "The framerate of the UI animations"
                 }
+            },
+            "bar": {
+                "double_bars": {
+                    "default": true,
+                    "type": "boolean",
+                    "description": "Show bars both on the left and top side of the screen"
+                },
+                "icon_taglist": {
+                    "default": true,
+                    "type": "boolean",
+                    "description": "Use icons based taglist"
+                }
             }
         },
         "layout": {

@@ -6,23 +6,28 @@ local awful = require("awful")
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
+local ui_daemon = require("daemons.system.ui")
 local dpi = beautiful.xresources.apply_dpi
 
-local path = ...
-local start = require(path .. ".start")
-local tasklist = require(path .. ".tasklist")
-local tray = require(path .. ".tray")
-local time = require(path .. ".time")
-local notification = require(path .. ".notification")
+local start = require("ui.wibar.start")
+local taglist = require("ui.wibar.taglist")
+local tasklist = require("ui.wibar.tasklist")
+local tray = require("ui.wibar.tray")
+local time = require("ui.wibar.time")
 
-awful.screen.connect_for_each_screen(function(s)
+awful.screen.connect_for_each_screen(function(screen)
+    local _taglist = nil
+    if ui_daemon:get_double_bars() == false then
+        _taglist = taglist(screen, "horizontal")
+    end
+
     -- Using popup instead of the wibar widget because it has some edge case bugs with detecting mouse input correctly
-    s.top_wibar = widgets.popup {
+    screen.top_wibar = widgets.popup {
         ontop = true,
-        screen = s,
+        screen = screen,
         maximum_height = dpi(65),
-        minimum_width = s.geometry.width,
-        maximum_width = s.geometry.width,
+        minimum_width = screen.geometry.width,
+        maximum_width = screen.geometry.width,
         bg = beautiful.colors.background,
         widget = {
             layout = wibox.layout.align.horizontal,
@@ -31,7 +36,8 @@ awful.screen.connect_for_each_screen(function(s)
                 layout = wibox.layout.fixed.horizontal,
                 spacing = dpi(15),
                 start(),
-                tasklist(s)
+                _taglist,
+                tasklist(screen)
             },
             time(),
             {
@@ -39,14 +45,16 @@ awful.screen.connect_for_each_screen(function(s)
                 halign = "right",
                 {
                     layout = wibox.layout.fixed.horizontal,
-                    spacing = dpi(20),
+                    spacing = dpi(5),
                     tray(),
-                    notification(),
+                    {
+                        widget = wibox.container.margin,
+                    }
                 }
             }
         }
     }
-    s.top_wibar:struts{
+    screen.top_wibar:struts{
         top = dpi(65)
     }
 end)

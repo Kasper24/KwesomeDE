@@ -102,12 +102,14 @@ local function client_widget(client)
         forced_width = dpi(80),
         forced_height = dpi(80),
         {
-            widget = widgets.button.text.state,
+            widget = widgets.button.icon.state,
             id = "button",
             on_by_default = capi.client.focus == client,
-            icon = client.font_icon,
-            on_normal_bg=  client.font_icon.color,
-            text_on_normal_bg = beautiful.colors.transparent,
+            icon = client._icon,
+            on_normal_bg =  client._icon.color,
+            icon_normal_bg = client._icon.color,
+            icon_on_normal_bg = "#000000",
+            halign = "center",
             on_hover = function(self)
                 task_preview:show(client, {
                     wibox = awful.screen.focused().top_wibar,
@@ -162,7 +164,7 @@ local function client_widget(client)
             forced_width = capi.client.focus == client and dpi(50) or dpi(20),
             forced_height = dpi(5),
             shape = helpers.ui.rrect(),
-            bg = client.font_icon.color
+            bg = client._icon.color
         }
     }
 
@@ -183,7 +185,7 @@ local function client_widget(client)
     }
 
     client:connect_signal("property::font_icon", function()
-        button:get_children_by_id("button")[1]:set_icon(client.font_icon)
+        button:get_children_by_id("button")[1]:set_icon(client._icon)
     end)
 
     client:connect_signal("focus", function()
