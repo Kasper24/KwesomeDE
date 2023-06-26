@@ -227,6 +227,10 @@ function elevated_button_normal:effect(instant)
     if self.text_effect then
         self:text_effect(instant)
     end
+
+    if self.icon_effect then
+        self:icon_effect(instant)
+    end
 end
 
 function elevated_button_normal:set_widget(new_widget)

@@ -36,7 +36,7 @@ end
 function icon_button_state:set_icon_normal_bg(icon_normal_bg)
     local wp = self._private
     wp.icon_normal_bg = icon_normal_bg
-    self:text_effect(true)
+    self:icon_effect(true)
 
     if self._private.icon_on_normal_bg == nil then
         self:set_icon_on_normal_bg(helpers.color.darken_or_lighten(icon_normal_bg, 0.2))
@@ -46,7 +46,7 @@ end
 function icon_button_state:set_icon_on_normal_bg(icon_on_normal_bg)
     local wp = self._private
     wp.icon_on_normal_bg = icon_on_normal_bg
-    self:text_effect(true)
+    self:icon_effect(true)
 end
 
 local function new()
@@ -58,7 +58,7 @@ local function new()
     -- Setup default values
     wp.defaults.icon_on_normal_bg = helpers.color.darken_or_lighten(wp.defaults.icon_normal_bg, 0.2)
 
-    widget:text_effect(true)
+    widget:icon_effect(true)
 
     return widget
 end

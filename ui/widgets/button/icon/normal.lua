@@ -64,7 +64,7 @@ local function build_icon_properties(prototype, prop_names)
     end
 end
 
-function icon_button_normal:text_effect(instant)
+function icon_button_normal:icon_effect(instant)
     local wp = self._private
     local on_prefix = wp.state and "on_" or ""
     local key = "icon_" .. on_prefix .. "normal" .. "_"
@@ -88,7 +88,7 @@ end
 function icon_button_normal:set_icon_normal_bg(icon_normal_bg)
     local wp = self._private
     wp.icon_normal_bg = icon_normal_bg
-    self:text_effect(true)
+    self:icon_effect(true)
 end
 
 local function new(is_state)
@@ -131,10 +131,10 @@ local function new(is_state)
                                 old_colorscheme_to_new_map[wp.defaults.icon_on_normal_bg] or
                                 helpers.color.darken_or_lighten(wp.icon_normal_bg, 0.2)
 
-        widget:text_effect(true)
+        widget:icon_effect(true)
     end)
 
-    widget:text_effect(true)
+    widget:icon_effect(true)
 
     return widget
 end
