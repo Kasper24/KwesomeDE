@@ -129,7 +129,7 @@ function playerctl.art(halign, valign, size, default_icon_size, daemon)
             icon.image = album_path
             stack:raise_widget(icon)
         else
-            default_icon:set_icon(helpers.icon_theme.get_icon_path({player_name, "spotify"}))
+            default_icon:set_icon(helpers.icon_theme.get_icon_path(player_name, "spotify"))
             stack:raise_widget(default_icon)
         end
     end)
@@ -183,7 +183,7 @@ function playerctl.player_art(halign, valign, daemon)
 
     playerctl_daemon:connect_signal("metadata", function(self, title, artist, album_path, album, new, player_name)
         if player_name ~= "" then
-            icon:set_icon(helpers.icon_theme.get_icon_path({player_name, "spotify"}))
+            icon:set_icon(helpers.icon_theme.get_icon_path(player_name, "spotify"))
         end
     end)
 
@@ -469,7 +469,7 @@ function playerctl.play(daemon)
 
     playerctl_daemon:connect_signal("metadata", function(self, title, artist, album_path, album, new, player_name)
         if player_name ~= "" then
-            local app_icon = helpers.icon_theme.get_icon_path({player_name, "spotify"})
+            local app_icon = helpers.icon_theme.get_icon_path(player_name, "spotify")
             button:set_normal_bg(app_icon.color)
         end
     end)

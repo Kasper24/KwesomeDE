@@ -206,7 +206,7 @@ local function desktop_icon(self, pos, path, name, mimetype)
                     halign = "center",
                     clip_shape = helpers.ui.rrect(),
                     image = helpers.icon_theme.get_icon_path(
-                        mimetype_to_image_lookup_table[mimetype] or "org.gnome.gedit")
+                        mimetype_to_image_lookup_table[mimetype], "org.gnome.gedit")
                 },
                 {
                     widget = widgets.text,

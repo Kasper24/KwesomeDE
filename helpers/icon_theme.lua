@@ -39,25 +39,21 @@ function _icon_theme.get_gicon_path(gicon)
     return get_icon_path(icon_info) or nil
 end
 
-function _icon_theme.get_icon_path(icons_names)
-    local icon_info = nil
-    if type(icons_names) == "table" then
-        icon_info = GTK_THEME:choose_icon(icons_names, ICON_SIZE, 0);
+function _icon_theme.get_icon_path(...)
+    local icons_names = { ... }
 
-    else
-        icon_info = GTK_THEME:lookup_icon(icons_names, ICON_SIZE, 0)
+    local icon_info = nil
+    if #icons_names == 1 then
+        icon_info = GTK_THEME:lookup_icon(icons_names[1], ICON_SIZE, 0)
+    elseif #icons_names > 1 then
+        icon_info = GTK_THEME:choose_icon(icons_names, ICON_SIZE, 0);
     end
 
     return get_icon_path(icon_info) or nil
 end
 
-function _icon_theme.get_app_icon_path(icons_names)
-    if type(icons_names) == "table" then
-        table.insert(icons_names, "application-x-ktheme")
-        return _icon_theme.get_icon_path(icons_names)
-    end
-
-    return _icon_theme.get_icon_path({icons_names, "application-x-ktheme"})
+function _icon_theme.get_app_icon_path(...)
+    return _icon_theme.get_icon_path(..., "application-x-ktheme")
 end
 
 function _icon_theme:get_app_font_icon(...)
