@@ -41,10 +41,42 @@ local function build_properties(prototype, prop_names)
     end
 end
 
+local function generate_style(color)
+    local style = [[
+        rect {
+            fill-rule=evenodd !important;
+            stroke-width=1 !important;
+            stroke: %s !important;
+            fill: %s !important;
+        }
+        circle {
+            fill-rule=evenodd !important;
+            stroke-width=1 !important;
+            stroke: %s !important;
+            fill: %s !important;
+        }
+        path {
+            fill-rule=evenodd !important;
+            stroke-width=1 !important;
+            stroke: %s !important;
+            fill: %s !important;
+        }
+        text {
+            fill-rule=evenodd !important;
+            stroke-width=1 !important;
+            stroke: %s !important;
+            fill: %s !important;
+        }
+    ]]
+
+    return string.format(style, color, color, color, color, color, color, color, color)
+end
+
 function icon:set_color(color)
     local wp = self._private
     wp.color = color
-    self:set_stylesheet(string.format("path { fill-rule=evenodd !important; stroke-width=1 !important; stroke: %s !important; fill: %s !important; }", color, color))
+
+    self:set_stylesheet(generate_style(color))
 end
 
 function icon:set_icon(icon)
@@ -53,7 +85,7 @@ function icon:set_icon(icon)
     self.image = icon.path
     wp.defaults.color = wp.color or icon.color
     local color = wp.defaults.color or wp.color
-    self:set_stylesheet(string.format("path { fill-rule=evenodd !important; stroke-width=1 !important; stroke: %s !important; fill: %s !important; }", color, color))
+    self:set_stylesheet(generate_style(color))
 end
 
 local function new(hot_reload)
