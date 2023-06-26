@@ -15,61 +15,44 @@ local GTK_THEME = Gtk.IconTheme.new()
 GTK_THEME:set_search_path({filesystem.filesystem.get_awesome_config_dir("assets")})
 Gtk.IconTheme.set_custom_theme(GTK_THEME, "candy-icons")
 
-local icons = {}
+local icons_cache = {}
+
+local function get_icon_path(icon_info)
+    if icon_info then
+        local icon_path = icon_info:get_filename()
+
+        if not icons_cache[icon_path] then
+            icons_cache[icon_path] = { path = icon_path, color = beautiful.colors.random_accent_color() }
+        end
+
+        return icons_cache[icon_path]
+    end
+
+    return nil
+end
 
 function _icon_theme.choose_icon(icons_names)
     local icon_info = GTK_THEME:choose_icon(icons_names, ICON_SIZE, 0);
-    if icon_info then
-        local icon_path = icon_info:get_filename()
-        if icon_path then
-            return icon_path
-        end
-    end
-
-    return nil
+    return get_icon_path(icon_info) or nil
 end
 
 function _icon_theme.get_gicon_path(gicon)
-    if gicon == nil then
-        return nil
-    end
-
     local icon_info = GTK_THEME:lookup_by_gicon(gicon, ICON_SIZE, 0);
-    if icon_info then
-        local icon_path = icon_info:get_filename()
-        if icon_path then
-            return icon_path
-        end
-    end
-
-    return nil
+    return get_icon_path(icon_info) or nil
 end
 
 function _icon_theme.get_icon_path(icon_name)
-    if icons[icon_name] then
-        return icons[icon_name]
-    end
-
     local icon_info = GTK_THEME:lookup_icon(icon_name, ICON_SIZE, 0)
-    if icon_info then
-        local icon_path = icon_info:get_filename()
-        if icon_path then
-            icons[icon_name] = { path = icon_path, color = beautiful.colors.random_accent_color() }
-            return icons[icon_name]
-        end
-    end
-
-    return nil
+    return get_icon_path(icon_info) or nil
 end
 
 function _icon_theme.get_app_icon_path(icon_names)
     if type(icon_names) == "table" then
-        return _icon_theme.choose_icon(icon_names) or
-                _icon_theme.get_icon_path("application-x-ktheme")
+        table.insert(icon_names, "application-x-ktheme")
+        return _icon_theme.choose_icon(icon_names)
     end
 
-    return _icon_theme.get_icon_path(icon_names) or
-            _icon_theme.get_icon_path("application-x-ktheme")
+    return _icon_theme.choose_icon({icon_names, "application-x-ktheme"})
 end
 
 function _icon_theme:get_app_font_icon(...)
