@@ -22,7 +22,7 @@ local function new()
         timeout = 1800,
         callback = function()
             awful.spawn.easy_async_with_shell("df | tail -n +2", function(stdout)
-                for line in stdout:gmatch("[^\r\n$]+") do
+                for line in stdout:gmatch("[^\r\n]+") do
                     local filesystem, size, used, avail, perc, mount = line:match(
                         "([%p%w]+)%s+([%d%w]+)%s+([%d%w]+)%s+([%d%w]+)%s+([%d]+)%%%s+([%p%w]+)")
 

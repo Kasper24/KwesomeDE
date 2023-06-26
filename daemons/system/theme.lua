@@ -330,7 +330,7 @@ local function generate_templates(self)
                             local copy_to = {}
 
                             if content ~= nil then
-                                for line in content:gmatch("[^\r\n$]+") do
+                                for line in content:gmatch("[^\r\n]+") do
                                     if line:match("{{") then
                                         line = line:gsub("{{", "{")
                                     end

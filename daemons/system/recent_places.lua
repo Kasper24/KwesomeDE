@@ -22,7 +22,7 @@ local function get_places(self)
             local recent_places = {}
             local place = {}
 
-            for line in content:gmatch("[^\r\n$]+") do
+            for line in content:gmatch("[^\r\n]+") do
                 in_bookmark = (in_bookmark or string.match(line, "<bookmark ")) and
                                   not string.match(line, "</bookmark>")
                 place.path = place.path or (in_bookmark and string.match(line, '<bookmark href=\"file://(.*)">'))
