@@ -94,6 +94,7 @@ local function tag_widget(self, tag, direction)
     local button = wibox.widget {
         widget = widgets.button.icon.state,
         id = "button",
+        size = 30,
         halign = "center",
         icon = tag.icon,
         on_normal_bg = tag.icon.color,
