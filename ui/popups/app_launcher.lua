@@ -88,8 +88,7 @@ local function app(app, app_launcher)
             spacing = dpi(15),
             {
                 widget = widgets.icon,
-                forced_width = dpi(100),
-                forced_height = dpi(50),
+                size = 50,
                 halign = "center",
                 icon_normal_bg = icon.color,
                 icon_on_normal_bg = "#000000",

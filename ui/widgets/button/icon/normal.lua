@@ -19,7 +19,8 @@ local icon_button_normal = {
 
 local properties = {"icon_normal_bg"}
 local icon_properties = {
-    "icon", "clip_shape",
+    "color", "size", "icon",
+    "clip_shape",
     "resize","upscale", "downscale",
     "stylesheet", "dpi", "auto_dpi",
     "horizontal_fit_policy", "vertical_fit_policy",
@@ -77,10 +78,12 @@ function icon_button_normal:icon_effect(instant)
         self:get_content_widget():set_color(bg)
     else
         wp.color_anim:set(bg)
-        if wp.old_mode ~= "press" and wp.mode == "press" then
-            wp.size_anim:set(wp.original_size * 0.5)
-        elseif wp.old_mode == "press" and wp.mode ~= "press" then
-            wp.size_anim:set(wp.original_size)
+        if self:get_content_widget():get_icon() and wp.original_size then
+            if wp.old_mode ~= "press" and wp.mode == "press" then
+                wp.size_anim:set(wp.original_size * 0.5)
+            elseif wp.old_mode == "press" and wp.mode ~= "press" then
+                wp.size_anim:set(wp.original_size)
+            end
         end
     end
 end
@@ -88,6 +91,23 @@ end
 function icon_button_normal:set_icon_normal_bg(icon_normal_bg)
     local wp = self._private
     wp.icon_normal_bg = icon_normal_bg
+    self:icon_effect(true)
+end
+
+function icon_button_normal:set_icon(icon)
+    local wp = self._private
+    self:get_content_widget():set_icon(icon)
+    wp.original_size = self:get_content_widget():get_size()
+
+    if wp.icon_normal_bg == nil then
+        self:set_icon_normal_bg(icon.color)
+    end
+end
+
+function icon_button_normal:set_size(size)
+    local wp = self._private
+    self:get_content_widget():set_size(size)
+    wp.original_size = self:get_content_widget():get_size()
     self:icon_effect(true)
 end
 
@@ -102,9 +122,6 @@ local function new(is_state)
     -- Setup default values
     wp.defaults.icon_normal_bg = beautiful.colors.random_accent_color()
 
-    -- TODO REMOVE
-    wp.original_size = 50
-
     -- Setup animations
     wp.color_anim = helpers.animation:new{
         easing = helpers.animation.easing.linear,
@@ -115,12 +132,11 @@ local function new(is_state)
     }
 
     wp.size_anim = helpers.animation:new{
-        pos = wp.original_size,
+        pos = widget:get_content_widget():get_size(),
         easing = helpers.animation.easing.linear,
         duration = 0.125,
         update = function(self, pos)
-            widget:get_content_widget():set_forced_width(pos)
-            widget:get_content_widget():set_forced_height(pos)
+            widget:get_content_widget():set_size(pos)
         end
     }
 

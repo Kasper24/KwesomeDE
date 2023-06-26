@@ -108,8 +108,7 @@ function playerctl.art(halign, valign, size, default_icon_size, daemon)
 
     local default_icon = wibox.widget {
         widget = iwidget,
-        forced_width = default_icon_size or dpi(150),
-        forced_height = default_icon_size or dpi(150),
+        sie = default_icon_size or 150,
         halign = halign or "left",
         valign = valign or "center",
         icon = helpers.icon_theme.get_icon_path("spotify"),
@@ -174,8 +173,7 @@ function playerctl.player_art(halign, valign, daemon)
 
     local icon = wibox.widget {
         widget = iwidget,
-        forced_width = dpi(25),
-        forced_height = dpi(25),
+        size = 25,
         halign = halign or "left",
         valign = valign or "center",
         icon = helpers.icon_theme.get_icon_path("spotify"),

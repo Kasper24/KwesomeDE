@@ -20,8 +20,7 @@ local function application_widget(application)
 
     local icon = wibox.widget {
         widget = widgets.icon,
-        forced_width = dpi(25),
-        forced_height = dpi(25),
+        size = 25,
         halign = "center",
         valign = "center",
         icon = icon_image

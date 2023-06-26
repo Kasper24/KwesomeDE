@@ -5,6 +5,7 @@
 local gtable = require("gears.table")
 local imagebox = require("wibox.widget.imagebox")
 local beautiful = require("beautiful")
+local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 local ipairs = ipairs
 
@@ -17,7 +18,7 @@ local icon = {
 }
 
 local properties = {
-    "icon", "color",
+    "color", "size", "icon",
     "icon_normal_bg", "icon_on_normal_bg"
 }
 
@@ -72,19 +73,26 @@ local function generate_style(color)
     return string.format(style, color, color, color, color, color, color, color, color)
 end
 
-function icon:set_color(color)
-    local wp = self._private
-    wp.color = color
-
-    self:set_stylesheet(generate_style(color))
-end
-
 function icon:set_icon(icon)
     local wp = self._private
     wp.icon = icon
     self.image = icon.path
     wp.defaults.color = wp.color or icon.color
     local color = wp.defaults.color or wp.color
+    self:set_stylesheet(generate_style(color))
+end
+
+function icon:set_size(size)
+    local wp = self._private
+    wp.size = size
+    self.forced_width = dpi(size)
+    self.forced_height = dpi(size)
+end
+
+function icon:set_color(color)
+    local wp = self._private
+    wp.color = color
+
     self:set_stylesheet(generate_style(color))
 end
 
@@ -97,6 +105,7 @@ local function new(hot_reload)
     -- Setup default values
     wp.defaults = {}
     wp.defaults.color = beautiful.colors.random_accent_color()
+    wp.defaults.size = dpi(50)
 
     if hot_reload ~= false then
         capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
@@ -115,6 +124,8 @@ local function new(hot_reload)
             end
         end)
     end
+
+    widget:set_size(wp.defaults.size)
 
     return widget
 end

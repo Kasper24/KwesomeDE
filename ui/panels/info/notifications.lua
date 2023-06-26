@@ -161,8 +161,7 @@ local function notification_group(notification)
     if notification.app_font_icon == nil then
         icon = wibox.widget {
             widget = widgets.icon,
-            forced_width = dpi(40),
-            forced_height = dpi(40),
+            size = 40,
             halign = "left",
             valign = "top",
             clip_shape = helpers.ui.rrect(),

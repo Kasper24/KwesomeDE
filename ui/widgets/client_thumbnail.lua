@@ -74,8 +74,7 @@ local function new()
     local widget = wibox.widget {
         widget = ciwidget,
         id = "fake_preview",
-        forced_width = dpi(300),
-        forced_height = dpi(300),
+        size = 30,
         halign = "center",
         valign = "center",
         scale = 2,
