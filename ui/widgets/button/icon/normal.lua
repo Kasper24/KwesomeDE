@@ -9,6 +9,9 @@ local beautiful = require("beautiful")
 local helpers = require("helpers")
 local setmetatable = setmetatable
 local ipairs = ipairs
+local capi = {
+    awesome = awesome
+}
 
 local icon_button_normal = {
     mt = {}
@@ -90,7 +93,7 @@ end
 
 local function new(is_state)
     local widget = is_state and ebwidget.state {} or ebwidget.normal {}
-    widget:set_widget(iwidget())
+    widget:set_widget(iwidget(false))
 
     gtable.crush(widget, icon_button_normal, true)
 
@@ -120,6 +123,16 @@ local function new(is_state)
             widget:get_content_widget():set_forced_height(pos)
         end
     }
+
+    capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+        wp.icon_normal_bg = old_colorscheme_to_new_map[wp.icon_normal_bg] or
+                                old_colorscheme_to_new_map[wp.defaults.icon_normal_bg]
+        wp.icon_on_normal_bg = old_colorscheme_to_new_map[wp.icon_on_normal_bg] or
+                                old_colorscheme_to_new_map[wp.defaults.icon_on_normal_bg] or
+                                helpers.color.darken_or_lighten(wp.icon_normal_bg, 0.2)
+
+        widget:text_effect(true)
+    end)
 
     widget:text_effect(true)
 
