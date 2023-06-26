@@ -143,21 +143,21 @@ end
 local function desktop_icon(self, pos, path, name, mimetype)
     local menu = widgets.menu {
         widgets.menu.button {
-            icon = beautiful.icons.launcher,
+            font_icon = beautiful.icons.launcher,
             text = "Launch",
             on_release = function()
                 awful.spawn("xdg-open " .. path, false)
             end
         },
         widgets.menu.button {
-            icon = beautiful.icons.trash,
+            font_icon = beautiful.icons.trash,
             text = "Move to Trash",
             on_release = function()
                 awful.spawn("trash-put " .. path, false)
             end
         },
         widgets.menu.button {
-            icon = beautiful.icons.xmark_fw,
+            font_icon = beautiful.icons.xmark_fw,
             text = "Delete",
             on_release = function()
                 local file = filesystem.file.new_for_path(path)

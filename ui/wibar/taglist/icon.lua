@@ -21,7 +21,7 @@ local icon = {
 local function tag_menu(tag)
     local menu = widgets.menu {
         widgets.menu.button {
-            image = tag.icon,
+            icon = tag.icon,
             text = tag.index,
             on_release = function()
                 tag:view_only()

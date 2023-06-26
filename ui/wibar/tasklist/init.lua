@@ -22,7 +22,7 @@ local tasklist = {
 local function pinned_app_menu(pinned_app)
     local menu = widgets.menu {
         widgets.menu.button {
-            image = pinned_app.icon,
+            icon = pinned_app.icon,
             text = pinned_app.class,
             on_release = function()
                 pinned_app:run()

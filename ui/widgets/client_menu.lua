@@ -49,7 +49,7 @@ local function new(client)
     }
 
     local client_icon_button = mwidget.button {
-        image = client._icon,
+        icon = client._icon,
         text = client.class,
         on_release = function()
             client:jump_to()

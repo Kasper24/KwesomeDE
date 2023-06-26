@@ -20,7 +20,7 @@ local instance = nil
 local function app_menu(app, app_widget, icon)
     local menu = widgets.menu {
         widgets.menu.button {
-            image = icon,
+            icon = icon,
             text = app.name,
             on_release = function(self)
                 app_widget:run()

@@ -240,15 +240,30 @@ end
 function menu.sub_menu_button(args)
     args = args or {}
 
+    args.font_icon = args.font_icon or nil
     args.icon = args.icon or nil
+    args.image = args.image
     args.text = args.text or ""
     args.sub_menu = args.sub_menu or nil
 
-    local icon = args.icon ~= nil and wibox.widget {
-        widget = twidget,
-        scale = 0.5,
-        icon = args.icon
-    } or nil
+    local icon = nil
+    if args.font_icon ~= nil then
+        icon = wibox.widget {
+            widget = twidget,
+            scale = 0.5,
+            icon = args.font_icon
+        }
+    elseif args.icon ~= nil then
+        icon = wibox.widget {
+            widget = iwidget,
+            icon = args.icon
+        }
+    elseif args.image ~= nil then
+        icon = wibox.widget {
+            widget = wibox.widget.imagebox,
+            image = args.image
+        }
+    end
 
     local text = wibox.widget {
         widget = twidget,
@@ -309,6 +324,7 @@ end
 function menu.button(args)
     args = args or {}
 
+    args.font_icon = args.font_icon or nil
     args.icon = args.icon or nil
     args.image = args.image
     args.text = args.text or ""
@@ -316,16 +332,21 @@ function menu.button(args)
 
     local icon = nil
 
-    if args.icon ~= nil then
+    if args.font_icon ~= nil then
         icon = wibox.widget {
             widget = twidget,
             scale = 0.5,
+            icon = args.font_icon
+        }
+    elseif args.icon ~= nil then
+        icon = wibox.widget {
+            widget = iwidget,
             icon = args.icon
         }
     elseif args.image ~= nil then
         icon = wibox.widget {
-            widget = iwidget,
-            icon = args.image
+            widget = wibox.widget.imagebox,
+            image = args.image
         }
     end
 
@@ -374,6 +395,7 @@ end
 function menu.checkbox_button(args)
     args = args or {}
 
+    args.font_icon = args.font_icon or nil
     args.icon = args.icon or nil
     args.image = args.image
     args.text = args.text or ""
@@ -382,10 +404,15 @@ function menu.checkbox_button(args)
     args.on_release = args.on_release or nil
 
     local icon = nil
-    if args.icon ~= nil then
+    if args.font_icon ~= nil then
         icon = wibox.widget {
             widget = twidget,
             scale = 0.5,
+            icon = args.font_icon
+        }
+    elseif args.icon ~= nil then
+        icon = wibox.widget {
+            widget = iwidget,
             icon = args.icon
         }
     elseif args.image ~= nil then

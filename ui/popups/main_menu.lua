@@ -39,7 +39,7 @@ local function recent_places_sub_menu(recent_places)
     end
 
     local button = widgets.menu.sub_menu_button {
-        icon = beautiful.icons.folder_open,
+        font_icon = beautiful.icons.folder_open,
         text = "Recent Places",
         sub_menu = menu
     }
@@ -52,7 +52,7 @@ local function tag_sub_menu()
 
     for _, tag in ipairs(capi.root.tags()) do
         local button = widgets.menu.checkbox_button {
-            image = tag.icon,
+            icon = tag.icon,
             text = tag.name,
             handle_active_color = tag.icon.color,
             on_release = function()
@@ -123,28 +123,28 @@ end
 local function widget()
     local menu = widgets.menu {
         widgets.menu.button {
-            icon = beautiful.icons.launcher,
+            font_icon = beautiful.icons.launcher,
             text = "Applicaitons",
             on_release = function()
                 app_launcher:show()
             end
         },
         widgets.menu.button {
-            icon = beautiful.icons.industry,
+            font_icon = beautiful.icons.industry,
             text = "Action Panel",
             on_release = function()
                 action_panel:toggle()
             end
         },
         widgets.menu.button {
-            icon = beautiful.icons.calendar,
+            font_icon = beautiful.icons.calendar,
             text = "Info Panel",
             on_release = function()
                 info_panel:toggle()
             end
         },
         widgets.menu.button {
-            icon = beautiful.icons.keyboard,
+            font_icon = beautiful.icons.keyboard,
             text = "Keybinds",
             on_release = function()
                 hotkeys_popup.show_help()
@@ -152,14 +152,14 @@ local function widget()
         },
         widgets.menu.separator(),
         widgets.menu.button {
-            icon = beautiful.icons.camera_retro,
+            font_icon = beautiful.icons.camera_retro,
             text = "Screenshot",
             on_release = function()
                 screenshot_app:show()
             end
         },
         widgets.menu.button {
-            icon = beautiful.icons.video,
+            font_icon = beautiful.icons.video,
             text = "Record",
             on_release = function()
                 record_app:show()
@@ -167,18 +167,18 @@ local function widget()
         },
         widgets.menu.separator(),
         widgets.menu.sub_menu_button {
-            icon = beautiful.icons.tag,
+            font_icon = beautiful.icons.tag,
             text = "Tag",
             sub_menu = tag_sub_menu()
         },
         widgets.menu.sub_menu_button {
-            icon = beautiful.icons.table_layout,
+            font_icon = beautiful.icons.table_layout,
             text = "Layout",
             sub_menu = layout_sub_menu()
         },
         widgets.menu.separator(),
         widgets.menu.button {
-            icon = beautiful.icons.gear,
+            font_icon = beautiful.icons.gear,
             text = "Settings",
             on_release = function()
                 settings_app:show()
@@ -186,14 +186,14 @@ local function widget()
         },
         widgets.menu.separator(),
         widgets.menu.button {
-            icon = beautiful.icons.reboot,
+            font_icon = beautiful.icons.reboot,
             text = "Restart",
             on_release = function()
                 capi.awesome.restart()
             end
         },
         widgets.menu.button {
-            icon = beautiful.icons.exit,
+            font_icon = beautiful.icons.exit,
             text = "Exit",
             on_release = function()
                 power_popup:show()
