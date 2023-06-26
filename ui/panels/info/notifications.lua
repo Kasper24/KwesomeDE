@@ -12,7 +12,7 @@ local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 local ipairs = ipairs
 local string = string
-local top = {
+local notifications = {
     mt = {}
 }
 
@@ -117,7 +117,7 @@ local function notification_widget(notification, on_removed)
                 on_release = function()
                     on_removed(widget)
                     notifications_daemon:remove_notification(notification)
-                    notification_panel:dynamic_disconnect_signals("visibility")
+                    INFO_PANEL:dynamic_disconnect_signals("visibility")
                 end
             }
         }
@@ -147,7 +147,7 @@ local function notification_widget(notification, on_removed)
         }
     }
 
-    notification_panel:dynamic_connect_signal("visibility", function(self, visible)
+    INFO_PANEL:dynamic_connect_signal("visibility", function(self, visible)
         if visible then
             time:set_text(helpers.string.to_time_ago(notification.time))
         end
@@ -160,13 +160,13 @@ local function notification_group(notification)
     local icon = nil
     if notification.app_font_icon == nil then
         icon = wibox.widget {
-            widget = wibox.widget.imagebox,
+            widget = widgets.icon,
             forced_width = dpi(40),
             forced_height = dpi(40),
             halign = "left",
             valign = "top",
             clip_shape = helpers.ui.rrect(),
-            image = notification.app_icon
+            icon = notification.app_icon
         }
     else
         icon = wibox.widget {
@@ -248,7 +248,7 @@ local function new()
         icon = beautiful.icons.trash,
         on_release = function()
             notifications_daemon:remove_all_notifications()
-            notification_panel:dynamic_disconnect_signals("visibility")
+            INFO_PANEL:dynamic_disconnect_signals("visibility")
         end
     }
 
@@ -336,8 +336,8 @@ local function new()
     }
 end
 
-function top.mt:__call()
+function notifications.mt:__call()
     return new()
 end
 
-return setmetatable(top, top.mt)
+return setmetatable(notifications, notifications.mt)

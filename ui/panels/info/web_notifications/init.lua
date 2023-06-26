@@ -9,7 +9,7 @@ local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 
-local bottom = { mt = {} }
+local web_notifications = { mt = {} }
 
 local path = ...
 local email = require(path .. ".email")
@@ -48,8 +48,8 @@ local function new()
     }
 end
 
-function bottom.mt:__call()
+function web_notifications.mt:__call()
     return new()
 end
 
-return setmetatable(bottom, bottom.mt)
+return setmetatable(web_notifications, web_notifications.mt)

@@ -3,7 +3,6 @@ local widgets = require("ui.widgets")
 local settings_app = require("ui.apps.settings")
 local action_panel = require(... .. ".panels.action")
 local info_panel = require(... .. ".panels.info")
-local notification_panel = require(... .. ".panels.notification")
 local power_popup = require(... .. ".screens.power")
 local lock_popup = require(... .. ".screens.lock")
 local cpu_popup = require(... .. ".applets.cpu")
@@ -48,7 +47,6 @@ capi.client.connect_signal("property::fullscreen", function(client)
     if client.fullscreen then
         action_panel:hide()
         info_panel:hide()
-        notification_panel:hide()
         cpu_popup:hide()
         ram_popup:hide()
         disk_popup:hide()
@@ -74,7 +72,6 @@ capi.client.connect_signal("focus", function(client)
     if client.fullscreen then
         action_panel:hide()
         info_panel:hide()
-        notification_panel:hide()
         cpu_popup:hide()
         ram_popup:hide()
         disk_popup:hide()
@@ -87,7 +84,6 @@ end)
 action_panel:connect_signal("visibility", function(self, visible)
     if visible == true then
         power_popup:hide()
-        notification_panel:hide()
     else
         cpu_popup:hide()
         ram_popup:hide()
@@ -104,18 +100,10 @@ info_panel:connect_signal("visibility", function(self, visible)
     end
 end)
 
-notification_panel:connect_signal("visibility", function(self, visible)
-    if visible == true then
-        action_panel:hide()
-        power_popup:hide()
-    end
-end)
-
 power_popup:connect_signal("visibility", function(self, visible)
     if visible == true then
         action_panel:hide()
         info_panel:hide()
-        notification_panel:hide()
     end
 end)
 
