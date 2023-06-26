@@ -36,36 +36,54 @@ local function vertical_separator()
 end
 
 local function new()
-    local left = wibox.widget {
-        layout = wibox.layout.ratio.vertical,
-        spacing = dpi(15),
-        calender,
-        vertical_separator(),
-        notifications
-    }
-    left:adjust_ratio(2, 0.4, 0.003, 0.6)
-
-    local right = wibox.widget {
-        layout = wibox.layout.ratio.vertical,
-        spacing = dpi(15),
-        weather,
-        vertical_separator(),
-        web_notifications
-    }
-    right:adjust_ratio(2, 0.4, 0.003, 0.6)
-
-    local left_right = wibox.widget {
+    local widget = wibox.widget {
         widget = wibox.container.margin,
-        margins = { right = dpi(25) },
+        margins = dpi(25),
         {
-            layout = wibox.layout.ratio.horizontal,
-            spacing = dpi(15),
-            left,
-            horizontal_separator(),
-            right
+            layout = wibox.layout.overflow.vertical,
+            spacing = dpi(25),
+            scrollbar_widget = widgets.scrollbar,
+            scrollbar_width = dpi(0),
+            scrollbar_spacing = 0,
+            step = 300,
+            {
+                layout = wibox.layout.fixed.horizontal,
+                forced_height = dpi(1500),
+                spacing = dpi(15),
+                {
+                    layout = wibox.layout.fixed.vertical,
+                    spacing = dpi(15),
+                    {
+                        widget = wibox.container.margin,
+                        forced_width = dpi(400),
+                        forced_height = dpi(500),
+                        calender
+                    },
+                    vertical_separator(),
+                    {
+                        widget = wibox.container.margin,
+                        forced_width = dpi(400),
+                        notifications
+                    },
+                },
+                horizontal_separator(),
+                {
+                    layout = wibox.layout.fixed.vertical,
+                    spacing = dpi(15),
+                    {
+                        widget = wibox.container.margin,
+                        forced_height = dpi(500),
+                        weather
+                    },
+                    vertical_separator(),
+                    {
+                        widget = wibox.container.margin,
+                        web_notifications
+                    },
+                }
+            }
         }
     }
-    left_right.children[1]:adjust_ratio(2, 0.45, 0.003, 0.55)
 
     INFO_PANEL = widgets.animated_panel {
         visible = false,
@@ -84,11 +102,7 @@ local function new()
         end,
         shape = helpers.ui.rrect(),
         bg = beautiful.colors.background,
-        widget = wibox.widget {
-            widget = wibox.container.margin,
-            margins = dpi(25),
-            left_right
-        }
+        widget = widget
     }
 
     return INFO_PANEL

@@ -323,7 +323,6 @@ local function new()
 
     return wibox.widget {
         layout = wibox.layout.fixed.vertical,
-        forced_height = dpi(500),
         spacing = dpi(10),
         {
             layout = wibox.layout.align.horizontal,
