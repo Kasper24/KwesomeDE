@@ -11,9 +11,9 @@ local ipairs = ipairs
 local _icon_theme = {}
 
 local ICON_SIZE = 48
-local GTK_THEME = Gtk.IconTheme.get_default()
-GTK_THEME:set_custom_theme("candy-icons")
+local GTK_THEME = Gtk.IconTheme.new()
 GTK_THEME:set_search_path({filesystem.filesystem.get_awesome_config_dir("assets")})
+Gtk.IconTheme.set_custom_theme(GTK_THEME, "candy-icons")
 
 local icons = {}
 
