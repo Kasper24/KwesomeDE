@@ -13,13 +13,13 @@ local dpi = beautiful.xresources.apply_dpi
 local instance = nil
 
 local function application_widget(application)
-    local icon_image = helpers.icon_theme.get_app_icon_path({application.icon_name, application.name, "multimedia-audio-player"})
+    local icon_image = helpers.icon_theme.get_icon_path({application.icon_name, application.name, "multimedia-audio-player"})
     local icon = wibox.widget {
         widget = widgets.icon,
+        forced_width = dpi(25),
+        forced_height = dpi(25),
         halign = "center",
         valign = "center",
-        forced_height = dpi(25),
-        forced_width = dpi(25),
         icon = icon_image
     }
 
@@ -88,7 +88,7 @@ local function application_widget(application)
     end)
 
     application:connect_signal("icon_name", function()
-        icon:set_icon(helpers.icon_theme.get_app_icon_path{
+        icon:set_icon(helpers.icon_theme.get_icon_path{
             application.icon_name,
             application.name,
             "multimedia-audio-player",

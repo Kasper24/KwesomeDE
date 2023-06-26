@@ -22,7 +22,10 @@ local function get_icon_path(icon_info)
         local icon_path = icon_info:get_filename()
 
         if not icons_cache[icon_path] then
-            icons_cache[icon_path] = { path = icon_path, color = beautiful.colors.random_accent_color() }
+            icons_cache[icon_path] = {
+                path = icon_path,
+                color = beautiful.colors.random_accent_color()
+            }
         end
 
         return icons_cache[icon_path]
@@ -31,28 +34,30 @@ local function get_icon_path(icon_info)
     return nil
 end
 
-function _icon_theme.choose_icon(icons_names)
-    local icon_info = GTK_THEME:choose_icon(icons_names, ICON_SIZE, 0);
-    return get_icon_path(icon_info) or nil
-end
-
 function _icon_theme.get_gicon_path(gicon)
     local icon_info = GTK_THEME:lookup_by_gicon(gicon, ICON_SIZE, 0);
     return get_icon_path(icon_info) or nil
 end
 
-function _icon_theme.get_icon_path(icon_name)
-    local icon_info = GTK_THEME:lookup_icon(icon_name, ICON_SIZE, 0)
+function _icon_theme.get_icon_path(icons_names)
+    local icon_info = nil
+    if type(icons_names) == "table" then
+        icon_info = GTK_THEME:choose_icon(icons_names, ICON_SIZE, 0);
+
+    else
+        icon_info = GTK_THEME:lookup_icon(icons_names, ICON_SIZE, 0)
+    end
+
     return get_icon_path(icon_info) or nil
 end
 
-function _icon_theme.get_app_icon_path(icon_names)
-    if type(icon_names) == "table" then
-        table.insert(icon_names, "application-x-ktheme")
-        return _icon_theme.choose_icon(icon_names)
+function _icon_theme.get_app_icon_path(icons_names)
+    if type(icons_names) == "table" then
+        table.insert(icons_names, "application-x-ktheme")
+        return _icon_theme.get_icon_path(icons_names)
     end
 
-    return _icon_theme.choose_icon({icon_names, "application-x-ktheme"})
+    return _icon_theme.get_icon_path({icons_names, "application-x-ktheme"})
 end
 
 function _icon_theme:get_app_font_icon(...)

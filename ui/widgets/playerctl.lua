@@ -112,7 +112,7 @@ function playerctl.art(halign, valign, size, default_icon_size, daemon)
         forced_height = default_icon_size or dpi(150),
         halign = halign or "left",
         valign = valign or "center",
-        icon = helpers.icon_theme.get_app_icon_path("spotify"),
+        icon = helpers.icon_theme.get_icon_path("spotify"),
     }
 
     local stack = wibox.widget {
@@ -129,14 +129,13 @@ function playerctl.art(halign, valign, size, default_icon_size, daemon)
             icon.image = album_path
             stack:raise_widget(icon)
         else
-            local app_icon = helpers.icon_theme.get_app_icon_path({player_name, "spotify"})
-            default_icon:set_icon(app_icon)
+            default_icon:set_icon(helpers.icon_theme.get_icon_path({player_name, "spotify"}))
             stack:raise_widget(default_icon)
         end
     end)
 
     playerctl_daemon:connect_signal("no_players", function(self)
-        default_icon:set_icon(helpers.icon_theme.get_app_icon_path("spotify"))
+        default_icon:set_icon(helpers.icon_theme.get_icon_path("spotify"))
         stack:raise_widget(default_icon)
     end)
 
@@ -175,20 +174,21 @@ function playerctl.player_art(halign, valign, daemon)
 
     local icon = wibox.widget {
         widget = iwidget,
+        forced_width = dpi(25),
+        forced_height = dpi(25),
         halign = halign or "left",
         valign = valign or "center",
-        icon = helpers.icon_theme.get_app_icon_path("spotify"),
+        icon = helpers.icon_theme.get_icon_path("spotify"),
     }
 
     playerctl_daemon:connect_signal("metadata", function(self, title, artist, album_path, album, new, player_name)
         if player_name ~= "" then
-            local app_icon = helpers.icon_theme.get_app_icon_path({player_name, "spotify"})
-            icon:set_icon(app_icon)
+            icon:set_icon(helpers.icon_theme.get_icon_path({player_name, "spotify"}))
         end
     end)
 
     playerctl_daemon:connect_signal("no_players", function(self)
-        icon:set_icon(helpers.icon_theme.get_app_icon_path("spotify"))
+        icon:set_icon(helpers.icon_theme.get_icon_path("spotify"))
     end)
 
     return icon
@@ -443,7 +443,7 @@ function playerctl.play(daemon)
     local button = wibox.widget {
         widget = ebwidget.normal,
         normal_shape = gshape.circle,
-        normal_bg = helpers.icon_theme.get_app_icon_path("spotify").color,
+        normal_bg = helpers.icon_theme.get_icon_path("spotify").color,
         on_release = function()
             playerctl_daemon:play_pause()
         end,
@@ -469,7 +469,7 @@ function playerctl.play(daemon)
 
     playerctl_daemon:connect_signal("metadata", function(self, title, artist, album_path, album, new, player_name)
         if player_name ~= "" then
-            local app_icon = helpers.icon_theme.get_app_icon_path({player_name, "spotify"})
+            local app_icon = helpers.icon_theme.get_icon_path({player_name, "spotify"})
             button:set_normal_bg(app_icon.color)
         end
     end)

@@ -383,7 +383,7 @@ naughty.connect_signal("added", function(n)
     end
 
     if type(n.icon) == "table" then
-        n.icon = helpers.icon_theme.choose_icon(n.icon)
+        n.icon = helpers.icon_theme.get_icon_path(n.icon)
     end
 
     if n.app_icon == "" or n.app_icon == nil then
