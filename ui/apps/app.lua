@@ -58,8 +58,8 @@ local function titlebar(self)
         scale = 0.7,
         normal_bg = beautiful.colors.transparent,
         on_normal_bg = beautiful.colors.transparent,
-        text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = self:get_client()._icon.color,
+        icon_normal_bg = beautiful.colors.on_background,
+        icon_on_normal_bg = self:get_client()._icon.color,
     }
 
     local title = wibox.widget {
