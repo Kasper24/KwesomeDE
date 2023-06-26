@@ -17,10 +17,10 @@ local capi = {
 
 local instance = nil
 
-local function app_menu(app, app_widget, font_icon)
+local function app_menu(app, app_widget, icon)
     local menu = widgets.menu {
         widgets.menu.button {
-            icon = font_icon,
+            image = icon,
             text = app.name,
             on_release = function(self)
                 app_widget:run()
@@ -34,7 +34,7 @@ local function app_menu(app, app_widget, font_icon)
         },
         widgets.menu.checkbox_button {
             state = app_launcher_daemon:is_app_pinned(app.id),
-            handle_active_color = font_icon.color,
+            handle_active_color = icon.color,
             text = "Pin App",
             on_release = function(self)
                 if app_launcher_daemon:is_app_pinned(app.id) then
@@ -65,23 +65,17 @@ local function app_menu(app, app_widget, font_icon)
 end
 
 local function app(app, app_launcher)
-    local font_icon = helpers.icon_theme.get_app_font_icon(app.id:gsub(".desktop", ""),
-        app.name,
-        app.exec,
-        app.startup_wm_class,
-        app.icon_name
-    )
-
+    local icon = helpers.icon_theme.get_app_icon_path(app.icon_name)
     local menu = nil
 
     local widget = wibox.widget {
         widget = widgets.button.elevated.state,
         id = "button",
-        forced_width = dpi(325),
-        forced_height = dpi(50),
+        -- forced_width = dpi(150),
+        -- forced_height = dpi(150),
         paddings = dpi(15),
         halign = "left",
-        on_normal_bg = font_icon.color,
+        on_normal_bg = icon.color,
         on_release = function(self)
             self:select_or_exec("press")
         end,
@@ -90,31 +84,31 @@ local function app(app, app_launcher)
             menu:toggle()
         end,
         {
-            layout = wibox.layout.fixed.horizontal,
+            layout = wibox.layout.fixed.vertical,
             spacing = dpi(15),
             {
-                widget = widgets.text,
-                scale = 0.8,
-                text_normal_bg = font_icon.color,
-                text_on_normal_bg = beautiful.colors.transparent,
-                icon = font_icon
+                widget = widgets.icon,
+                forced_width = dpi(100),
+                forced_height = dpi(50),
+                halign = "center",
+                icon_normal_bg = icon.color,
+                icon_on_normal_bg = "#000000",
+                icon = icon
             },
             {
-                widget = wibox.container.place,
+                widget = widgets.text,
+                forced_width = dpi(100),
+                forced_height = dpi(25),
                 halign = "center",
-                valign = "center",
-                {
-                    widget = widgets.text,
-                    size = 12,
-                    text_normal_bg = beautiful.colors.on_background,
-                    text_on_normal_bg = beautiful.colors.transparent,
-                    text = app.name
-                }
+                size = 12,
+                text_normal_bg = beautiful.colors.on_background,
+                text_on_normal_bg = beautiful.colors.transparent,
+                text = app.name
             }
         }
     }
 
-    menu = app_menu(app, widget, font_icon)
+    menu = app_menu(app, widget, icon)
 
     widget:connect_signal("select", function(self, context)
         local instant = context ~= "press"
@@ -163,7 +157,7 @@ local function new()
                     {
                         widget = widgets.text_input,
                         id = "text_input_role",
-                        forced_width = dpi(650),
+                        forced_width = dpi(550),
                         forced_height = dpi(60),
                         unfocus_keys = { },
                         unfocus_on_clicked_inside = false,
@@ -212,8 +206,8 @@ local function new()
                             orientation = "horizontal",
                             homogeneous = true,
                             spacing = dpi(15),
-                            forced_num_cols = 2,
-                            forced_num_rows = 8,
+                            forced_num_cols = 4,
+                            forced_num_rows = 4,
                         },
                         {
                             layout = wibox.container.rotate,

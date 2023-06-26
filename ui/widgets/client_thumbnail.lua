@@ -7,7 +7,7 @@ local gtable = require("gears.table")
 -- local gsurface = require("gears.surface")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
-local cfiwidget = require("ui.widgets.client_font_icon")
+local ciwidget = require("ui.widgets.client_icon")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 
@@ -72,7 +72,7 @@ local client_thumbnail = {
 
 local function new()
     local widget = wibox.widget {
-        widget = cfiwidget,
+        widget = ciwidget,
         id = "fake_preview",
         forced_width = dpi(300),
         forced_height = dpi(300),

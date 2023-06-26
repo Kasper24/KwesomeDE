@@ -261,9 +261,14 @@ local function icons()
     }
 
     theme.taglist_icons = {
-        theme.icons.firefox, theme.icons.vscode, theme.icons.git,
-        theme.icons.discord, theme.icons.spotify, theme.icons.steam,
-        theme.icons.gamepad_alt, theme.icons.lights_holiday
+        "google-chrome",
+        "vscode",
+        "github-desktop",
+        "discord",
+        "spotify",
+        "steam",
+        "applications-games",
+        "openrgb"
     }
 
     theme.app_icons = {

@@ -7,32 +7,21 @@ local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
 local audio_daemon = require("daemons.hardware.audio")
-local tasklist_daemon = require("daemons.system.tasklist")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 
 local instance = nil
 
 local function application_widget(application)
-    local font_icon = helpers.icon_theme.get_app_font_icon(application.name)
-    local accent_color = font_icon and font_icon.color or beautiful.icons.volume.high.color
-    local icon = nil
-    if font_icon == nil then
-        icon = wibox.widget {
-            widget = wibox.widget.imagebox,
-            halign = "center",
-            valign = "center",
-            forced_height = dpi(25),
-            forced_width = dpi(25),
-            image = helpers.icon_theme.choose_icon{application.name, "gnome-audio", "org.pulseaudio.pavucontrol"}
-        }
-    else
-        icon = wibox.widget {
-            widget = widgets.text,
-            size = font_icon.size,
-            icon = font_icon
-        }
-    end
+    local icon_image = helpers.icon_theme.get_app_icon_path({application.icon_name, application.name, "multimedia-audio-player"})
+    local icon = wibox.widget {
+        widget = widgets.icon,
+        halign = "center",
+        valign = "center",
+        forced_height = dpi(25),
+        forced_width = dpi(25),
+        icon = icon_image
+    }
 
     local name = wibox.widget {
         widget = widgets.text,
@@ -46,8 +35,8 @@ local function application_widget(application)
         forced_width = dpi(40),
         forced_height = dpi(40),
         on_by_default = application.mute,
-        text_normal_bg = accent_color,
-        on_normal_bg = accent_color,
+        text_normal_bg = icon_image.color,
+        on_normal_bg = icon_image.color,
         text_on_normal_bg = beautiful.colors.on_accent,
         icon = beautiful.icons.volume.off,
         size = 12,
@@ -61,7 +50,7 @@ local function application_widget(application)
         forced_height = dpi(20),
         value = application.volume,
         maximum = 100,
-        bar_active_color = accent_color,
+        bar_active_color = icon_image.color,
         handle_width = dpi(20),
         handle_height = dpi(20),
     }
@@ -99,12 +88,11 @@ local function application_widget(application)
     end)
 
     application:connect_signal("icon_name", function()
-        icon.image = helpers.icon_theme.choose_icon{
+        icon:set_icon(helpers.icon_theme.get_app_icon_path{
             application.icon_name,
             application.name,
-            "gnome-audio",
-            "org.pulseaudio.pavucontrol"
-        }
+            "multimedia-audio-player",
+        })
     end)
 
     slider:connect_signal("property::value", function(self, value, instant)

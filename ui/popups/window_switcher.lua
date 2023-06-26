@@ -42,7 +42,7 @@ local function client_widget(self, client)
         forced_width = dpi(300),
         forced_height = dpi(200),
         normal_bg = beautiful.colors.surface,
-        on_normal_bg = client.font_icon.color,
+        on_normal_bg = client._icon.color,
         on_release = function()
             self:select_client(client)
         end,
@@ -57,11 +57,11 @@ local function client_widget(self, client)
                     forced_height = dpi(30),
                     spacing = dpi(10),
                     {
-                        widget = widgets.client_font_icon,
+                        widget = widgets.client_icon,
                         halign = "center",
                         valign = "center",
-                        text_normal_bg = client.font_icon.color,
-                        text_on_normal_bg = beautiful.colors.transparent,
+                        icon_normal_bg = client._icon.color,
+                        icon_on_normal_bg = "#000000",
                         client = client
                     },
                     {
@@ -76,8 +76,8 @@ local function client_widget(self, client)
                 },
                 {
                     widget = widgets.client_thumbnail,
-                    text_normal_bg = client.font_icon.color,
-                    text_on_normal_bg = beautiful.colors.transparent,
+                    icon_normal_bg = client._icon.color,
+                    icon_on_normal_bg = "#000000",
                     client = client
                 }
             }

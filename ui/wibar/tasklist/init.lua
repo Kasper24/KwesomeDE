@@ -22,7 +22,7 @@ local tasklist = {
 local function pinned_app_menu(pinned_app)
     local menu = widgets.menu {
         widgets.menu.button {
-            icon = pinned_app.font_icon,
+            image = pinned_app.icon,
             text = pinned_app.class,
             on_release = function()
                 pinned_app:run()
@@ -68,8 +68,8 @@ local function pinned_app_widget(pinned_app)
         forced_height = dpi(70),
         margins = dpi(5),
         {
-            widget = widgets.button.text.state,
-            icon = pinned_app.font_icon,
+            widget = widgets.button.icon.state,
+            icon = pinned_app.icon,
             on_release = function()
                 menu:hide()
                 pinned_app:run()

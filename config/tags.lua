@@ -5,6 +5,7 @@
 local awful = require("awful")
 local beautiful = require("beautiful")
 local ui_daemon = require("daemons.system.ui")
+local helpers = require("helpers")
 
 awful.screen.connect_for_each_screen(function(s)
     for i = 1, 8, 1  do
@@ -13,7 +14,7 @@ awful.screen.connect_for_each_screen(function(s)
             layout = awful.layout.layouts[1],
             centered_layout_master_fill_policy = "master_width_factor",
             selected = i == 1 and true or false,
-            font_icon = beautiful.taglist_icons[i],
+            icon = helpers.icon_theme.get_icon_path(beautiful.taglist_icons[i]),
             gap = ui_daemon:get_useless_gap(),
         })
     end

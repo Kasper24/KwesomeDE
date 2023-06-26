@@ -23,7 +23,7 @@ local circle = {
 local function tag_menu(tag)
     local menu = widgets.menu {
         widgets.menu.button {
-            icon = tag.font_icon,
+            image = tag.icon,
             text = tag.index,
             on_release = function()
                 tag:view_only()

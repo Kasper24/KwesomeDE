@@ -14,7 +14,7 @@ local client_menu = {
 
 local function client_checkbox_button(client, property, text, on_release)
     local button = mwidget.checkbox_button {
-        handle_active_color = client.font_icon.color,
+        handle_active_color = client._icon.color,
         text = text,
         on_release = function()
             client[property] = not client[property]
@@ -49,7 +49,7 @@ local function new(client)
     }
 
     local client_icon_button = mwidget.button {
-        icon = client.font_icon,
+        image = client._icon,
         text = client.class,
         on_release = function()
             client:jump_to()
@@ -58,7 +58,7 @@ local function new(client)
 
     local pin_to_taskbar_button = mwidget.checkbox_button {
         state = tasklist_daemon:is_app_pinned(client.class),
-        handle_active_color = client.font_icon.color,
+        handle_active_color = client._icon.color,
         text = "Pin App",
         on_release = function(self)
             if tasklist_daemon:is_app_pinned(client.class) then

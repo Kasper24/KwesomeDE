@@ -21,7 +21,7 @@ local icon = {
 local function tag_menu(tag)
     local menu = widgets.menu {
         widgets.menu.button {
-            icon = tag.font_icon,
+            image = tag.icon,
             text = tag.index,
             on_release = function()
                 tag:view_only()
@@ -92,11 +92,12 @@ local function tag_widget(self, tag, direction)
     local menu = tag_menu(tag)
 
     local button = wibox.widget {
-        widget = widgets.button.text.state,
+        widget = widgets.button.icon.state,
         id = "button",
-        icon = tag.font_icon,
-        on_normal_bg = tag.font_icon.color,
-        text_on_normal_bg = beautiful.colors.transparent,
+        halign = "center",
+        icon = tag.icon,
+        on_normal_bg = tag.icon.color,
+        icon_on_normal_bg = "#000000",
         -- on_hover = function()
         --     if #tag:clients() > 0 then
         --         tag_preview:show(tag, {
@@ -139,7 +140,7 @@ local function tag_widget(self, tag, direction)
         widget = widgets.background,
         id = "background",
         shape = helpers.ui.rrect(),
-        bg = tag.font_icon.color
+        bg = tag.icon.color
     }
 
     if direction == "horizontal" then

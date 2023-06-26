@@ -52,9 +52,9 @@ local function tag_sub_menu()
 
     for _, tag in ipairs(capi.root.tags()) do
         local button = widgets.menu.checkbox_button {
-            icon = tag.font_icon,
+            image = tag.icon,
             text = tag.name,
-            handle_active_color = tag.font_icon.color,
+            handle_active_color = tag.icon.color,
             on_release = function()
                 tag:view_only()
             end

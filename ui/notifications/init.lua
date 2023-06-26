@@ -73,11 +73,11 @@ local function app_icon_widget(n)
             height = dpi(20),
             width = dpi(20),
             {
-                widget = wibox.widget.imagebox,
+                widget = widgets.icon,
                 halign = "center",
                 valign = "center",
                 clip_shape = helpers.ui.rrect(),
-                image = n.app_icon
+                icon = n.app_icon
             }
         }
     else
@@ -369,17 +369,17 @@ naughty.connect_signal("added", function(n)
     end
 
     if n._private.app_font_icon == nil then
-        n.app_font_icon = helpers.icon_theme.get_app_font_icon(n.app_name)
+        -- n.app_font_icon = helpers.icon_theme.get_app_font_icon(n.app_name)
     else
-        n.app_font_icon = n._private.app_font_icon
+        -- n.app_font_icon = n._private.app_font_icon
     end
 
     n.font_icon = n._private.font_icon
 
     if type(n._private.app_icon) == "table" then
-        n.app_icon = helpers.icon_theme.choose_icon(n._private.app_icon)
+        n.app_icon = helpers.icon_theme.get_app_icon_path(n._private.app_icon)
     else
-        n.app_icon = helpers.icon_theme.get_icon_path(n._private.app_icon or n.app_name)
+        n.app_icon = helpers.icon_theme.get_app_icon_path({n._private.app_icon or n.app_name})
     end
 
     if type(n.icon) == "table" then
@@ -387,7 +387,7 @@ naughty.connect_signal("added", function(n)
     end
 
     if n.app_icon == "" or n.app_icon == nil then
-        n.app_icon = helpers.icon_theme.get_icon_path("application-default-icon")
+        -- n.app_icon = helpers.icon_theme.get_icon_path("application-default-icon")
     end
 
     if (n.icon == "" or n.icon == nil) and n.font_icon == nil then

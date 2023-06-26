@@ -76,7 +76,7 @@ local function new()
                     forced_height = dpi(30),
                     spacing = dpi(10),
                     {
-                        widget = widgets.client_font_icon,
+                        widget = widgets.client_icon,
                         id = "font_icon",
                         halign = "center",
                         valign = "center",

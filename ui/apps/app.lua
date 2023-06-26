@@ -29,7 +29,7 @@ local function titlebar(self)
         on_by_default = capi.client.focus == self:get_client(),
         normal_shape = gshape.isosceles_triangle,
         normal_bg = beautiful.colors.surface,
-        on_normal_bg = self:get_client().font_icon.color,
+        on_normal_bg = self:get_client()._icon.color,
         on_release = function(self)
             self:get_client().minimized = not self:get_client().minimized
         end
@@ -42,24 +42,24 @@ local function titlebar(self)
         on_by_default = capi.client.focus == self:get_client(),
         normal_shape = gshape.circle,
         normal_bg = beautiful.colors.surface,
-        on_normal_bg = self:get_client().font_icon.color,
+        on_normal_bg = self:get_client()._icon.color,
         on_release = function()
             self:get_client():kill()
         end
     }
 
-    local font_icon = wibox.widget {
-        widget = widgets.button.text.state,
+    local icon = wibox.widget {
+        widget = widgets.button.icon.state,
         halign = "center",
         disabled = true,
         paddings = 0,
         on_by_default = capi.client.focus == self:get_client(),
-        icon = self:get_client().font_icon,
+        icon = self:get_client()._icon,
         scale = 0.7,
         normal_bg = beautiful.colors.transparent,
         on_normal_bg = beautiful.colors.transparent,
         text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = self:get_client().font_icon.color,
+        text_on_normal_bg = self:get_client()._icon.color,
     }
 
     local title = wibox.widget {
@@ -71,13 +71,13 @@ local function titlebar(self)
     }
 
     self:connect_signal("focus", function()
-        font_icon:turn_on()
+        icon:turn_on()
         minimize:turn_on()
         close:turn_on()
     end)
 
     self:connect_signal("unfocus", function()
-        font_icon:turn_off()
+        icon:turn_off()
         minimize:turn_off()
         close:turn_off()
     end)
@@ -95,7 +95,7 @@ local function titlebar(self)
                 {
                     layout = wibox.layout.fixed.horizontal,
                     spacing = dpi(15),
-                    font_icon,
+                    icon,
                     title
                 }
             },

@@ -7,6 +7,7 @@ local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local wibox = require("wibox")
 local ebwidget = require("ui.widgets.button.elevated")
+local iwidget = require("ui.widgets.icon")
 local twidget = require("ui.widgets.text")
 local cbwidget = require("ui.widgets.checkbox")
 local pwidget = require("ui.widgets.popup")
@@ -323,8 +324,8 @@ function menu.button(args)
         }
     elseif args.image ~= nil then
         icon = wibox.widget {
-            widget = wibox.widget.imagebox,
-            image = args.image
+            widget = iwidget,
+            icon = args.image
         }
     end
 

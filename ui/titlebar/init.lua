@@ -15,18 +15,18 @@ local capi = {
 }
 
 capi.client.connect_signal("request::titlebars", function(client)
-    local font_icon = wibox.widget {
-        widget = widgets.button.text.state,
+    local icon = wibox.widget {
+        widget = widgets.button.icon.state,
         halign = "center",
         disabled = true,
         paddings = 0,
         on_by_default = capi.client.focus == client,
-        icon = client.font_icon,
+        icon = client._icon,
         scale = 0.7,
         normal_bg = beautiful.colors.transparent,
         on_normal_bg = beautiful.colors.transparent,
-        text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = client.font_icon.color,
+        icon_normal_bg = beautiful.colors.on_background,
+        icon_on_normal_bg = client._icon.color,
     }
 
     local title = wibox.widget {
@@ -44,7 +44,7 @@ capi.client.connect_signal("request::titlebars", function(client)
         on_by_default = capi.client.focus == client,
         normal_shape = gshape.isosceles_triangle,
         normal_bg = beautiful.colors.surface,
-        on_normal_bg = client.font_icon.color,
+        on_normal_bg = client._icon.color,
         on_release = function(self)
             client.minimized = not client.minimized
         end
@@ -59,7 +59,7 @@ capi.client.connect_signal("request::titlebars", function(client)
             gshape.rounded_rect(cr, width, hegiht, 5)
         end,
         normal_bg = beautiful.colors.surface,
-        on_normal_bg = client.font_icon.color,
+        on_normal_bg = client._icon.color,
         on_release = function(self)
             client.maximized = not client.maximized
             client:raise()
@@ -73,21 +73,21 @@ capi.client.connect_signal("request::titlebars", function(client)
         on_by_default = capi.client.focus == client,
         normal_shape = gshape.circle,
         normal_bg = beautiful.colors.surface,
-        on_normal_bg = client.font_icon.color,
+        on_normal_bg = client._icon.color,
         on_release = function()
             client:kill()
         end
     }
 
     client:connect_signal("focus", function()
-        font_icon:turn_on()
+        icon:turn_on()
         minimize:turn_on()
         maximize:turn_on()
         close:turn_on()
     end)
 
     client:connect_signal("unfocus", function()
-        font_icon:turn_off()
+        icon:turn_off()
         minimize:turn_off()
         maximize:turn_off()
         close:turn_off()
@@ -165,7 +165,7 @@ capi.client.connect_signal("request::titlebars", function(client)
             {
                 layout = wibox.layout.fixed.horizontal,
                 spacing = dpi(15),
-                font_icon,
+                icon,
                 title
             },
         },

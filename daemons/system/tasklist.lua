@@ -85,11 +85,11 @@ end
 local function on_pinned_app_added(self, pinned_app)
     local cloned_pinned_app = gtable.clone(pinned_app, true)
     if cloned_pinned_app.desktop_app_info_id then
-        local desktop_app_info = DesktopAppInfo.new(cloned_pinned_app.desktop_app_info_id)
-        cloned_pinned_app.desktop_app_info = desktop_app_info
-        cloned_pinned_app.actions = self:get_actions(desktop_app_info)
+        cloned_pinned_app.desktop_app_info = DesktopAppInfo.new(cloned_pinned_app.desktop_app_info_id)
+        cloned_pinned_app.actions = self:get_actions(pinned_app)
     end
     cloned_pinned_app.font_icon = self:get_font_icon(pinned_app)
+    cloned_pinned_app.icon = self:get_icon(cloned_pinned_app)
 
     function cloned_pinned_app:run()
         awful.spawn(cloned_pinned_app.exec)
@@ -116,8 +116,8 @@ local function on_client_added(self, client)
     local desktop_app_info, id = self:get_desktop_app_info(client)
     client.desktop_app_info = desktop_app_info
     client.desktop_app_info_id = id
-    client.actions = self:get_actions(client.desktop_app_info)
-    client._icon = self:get_icon(client.desktop_app_info)
+    client.actions = self:get_actions(client)
+    client._icon = self:get_icon(client)
     client.font_icon = self:get_font_icon(client)
     client.managed = true
     client:emit_signal("managed")
@@ -211,19 +211,19 @@ function tasklist:get_desktop_app_info(client)
     end
 end
 
-function tasklist:get_actions(desktop_app_info)
+function tasklist:get_actions(client)
     local actions = {}
 
-    if desktop_app_info == nil then
+    if client.desktop_app_info == nil then
         return actions
     end
 
-    for _, action in ipairs(desktop_app_info:list_actions()) do
+    for _, action in ipairs(client.desktop_app_info:list_actions()) do
         table.insert(actions,
         {
-            name = desktop_app_info:get_action_name(action),
+            name = client.desktop_app_info:get_action_name(action),
             launch = function()
-                desktop_app_info:launch_action(action)
+                client.desktop_app_info:launch_action(action)
             end
         })
     end
@@ -231,11 +231,11 @@ function tasklist:get_actions(desktop_app_info)
     return actions
 end
 
-function tasklist:get_icon(desktop_app_info)
+function tasklist:get_icon(client)
     local icon = ""
 
-    if desktop_app_info then
-        icon = desktop_app_info:get_string("Icon") or ""
+    if client.desktop_app_info then
+        icon = client.desktop_app_info:get_string("Icon") or ""
     end
 
     return helpers.icon_theme.get_app_icon_path(icon)
@@ -360,6 +360,7 @@ local function new()
         for _, client in ipairs(capi.client.get()) do
             if client.font_icon then
                 client.font_icon.color = old_colorscheme_to_new_map[client.font_icon.color]
+                client._icon.color = old_colorscheme_to_new_map[client._icon.color]
             end
         end
     end)
