@@ -41,8 +41,9 @@ local function is_suspended(n)
 end
 
 local function get_notification_accent_color(n)
-    return n.app_font_icon.color or
-            n.font_icon.color or
+    return (n.app_font_icon and n.app_font_icon.color) or
+            (n.font_icon and n.font_icon.color) or
+            n.app_icon.color or
             beautiful.colors.random_accent_color()
 end
 
