@@ -63,14 +63,14 @@ function elevated_button_normal:build_animable_child_anims(child)
         table.insert(wp.animable_childs, {
             widget = child,
             original_size = child:get_size(),
-            color_anim = helpers.animation:new{
+            text_color_anim = helpers.animation:new{
                 easing = helpers.animation.easing.linear,
                 duration = 0.2,
                 update = function(self, pos)
                     child:set_color(pos)
                 end
             },
-            size_anim = helpers.animation:new{
+            text_size_anim = helpers.animation:new{
                 pos = child:get_size(),
                 easing = helpers.animation.easing.linear,
                 duration = 0.125,
@@ -93,16 +93,16 @@ function elevated_button_normal:build_animable_child_anims(child)
     elseif child._private.icon_normal_bg or child._private.icon_on_normal_bg then
         table.insert(wp.animable_childs, {
             widget = child,
-            original_size = 50,
-            color_anim = helpers.animation:new{
+            original_size = child:get_size(),
+            icon_color_anim = helpers.animation:new{
                 easing = helpers.animation.easing.linear,
                 duration = 0.2,
                 update = function(self, pos)
                     child:set_color(pos)
                 end
             },
-            size_anim = helpers.animation:new{
-                pos = 50,
+            icon_size_anim = helpers.animation:new{
+                pos = child:get_size(),
                 easing = helpers.animation.easing.linear,
                 duration = 0.125,
                 update = function(self, pos)
@@ -124,7 +124,7 @@ function elevated_button_normal:build_animable_child_anims(child)
     elseif child._private.normal_bg or child._private.on_normal_bg then
         table.insert(wp.animable_childs, {
             widget = child,
-            bg_anim = helpers.animation:new{
+            bg_color_anim = helpers.animation:new{
                 easing = helpers.animation.easing.linear,
                 duration = 0.2,
                 update = function(self, pos)
@@ -176,15 +176,20 @@ function elevated_button_normal:effect(instant)
             state_layer_opacity = state_layer_opacity
         }
         for _, child in ipairs(wp.animable_childs) do
-            if child.color_anim then
-                child.color_anim:stop()
-                local child_color = child.widget._private["text_" .. on_prefix .. "normal_bg"] or child.widget._private["icon_" .. on_prefix .. "normal_bg"]
-                child.color_anim.pos = child_color
+            if child.text_color_anim then
+                child.text_color_anim:stop()
+                local child_color = child.widget._private["text_" .. on_prefix .. "normal_bg"]
+                child.text_color_anim.pos = child_color
                 child.widget:set_color(child_color)
-            elseif child.bg_anim then
-                child.bg_anim:stop()
+            elseif child.icon_color_anim then
+                    child.icon_color_anim:stop()
+                    local child_color = child.widget._private["icon_" .. on_prefix .. "normal_bg"]
+                    child.icon_color_anim.pos = child_color
+                    child.widget:set_color(child_color)
+            elseif child.bg_color_anim then
+                child.bg_color_anim:stop()
                 local child_bg = child.widget._private[on_prefix .. "normal_bg"]
-                child.bg_anim.pos = child_bg
+                child.bg_color_anim.pos = child_bg
                 child.widget.bg = child_bg
             end
         end
@@ -206,19 +211,29 @@ function elevated_button_normal:effect(instant)
             self:get_ripple_layer():emit_signal("widget::redraw_needed")
         end
         for _, child in ipairs(wp.animable_childs) do
-            if child.color_anim then
+            if child.text_color_anim then
                 local child_color = child.widget._private["text_" .. on_prefix .. "normal" .. "_" .. "bg"]
-                child.color_anim:set(child_color)
+                child.text_color_anim:set(child_color)
                 if child.widget:get_icon() then
                     if wp.old_mode ~= "press" and wp.mode == "press" then
-                        child.size_anim:set(child.original_size * 0.7)
+                        child.text_size_anim:set(child.original_size * 0.7)
                     elseif wp.old_mode == "press" and wp.mode ~= "press" then
-                        child.size_anim:set(child.original_size)
+                        child.text_size_anim:set(child.original_size)
                     end
                 end
-            elseif child.bg_anim then
+            elseif child.icon_color_anim then
+                    local child_color = child.widget._private["icon_" .. on_prefix .. "normal" .. "_" .. "bg"]
+                    child.icon_color_anim:set(child_color)
+                    if child.widget:get_icon() then
+                        if wp.old_mode ~= "press" and wp.mode == "press" then
+                            child.icon_size_anim:set(child.original_size * 0.7)
+                        elseif wp.old_mode == "press" and wp.mode ~= "press" then
+                            child.icon_size_anim:set(child.original_size)
+                        end
+                    end
+            elseif child.bg_color_anim then
                 local child_bg = child.widget._private[on_prefix .. "normal" .. "_" .. "bg"]
-                child.bg_anim:set(child_bg)
+                child.bg_color_anim:set(child_bg)
             end
         end
     end
