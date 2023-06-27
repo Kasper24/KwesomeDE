@@ -31,12 +31,10 @@ local function save_notification(self, notification)
     notification.uuid = helpers.string.random_uuid()
 
     local icon_path = ICONS_PATH .. notification.uuid .. ".svg"
-    local app_icon_path = ICONS_PATH .. notification.uuid .. "_app.svg"
 
     table.insert(self._private.notifications, {
         uuid = notification.uuid,
-        app_font_icon = notification.app_font_icon,
-        app_icon = app_icon_path,
+        app_icon = notification.app_icon.names,
         app_name = notification.app_name,
         font_icon = notification.font_icon,
         icon = icon_path,
@@ -54,13 +52,6 @@ local function save_notification(self, notification)
         image = notification.icon
     }, icon_path, 35, 35)
 
-    wibox.widget.draw_to_svg_file(wibox.widget {
-        widget = wibox.widget.imagebox,
-        forced_width = 35,
-        forced_height = 35,
-        image = notification.app_icon
-    }, app_icon_path, 35, 35)
-
     self._private.save_timer:again()
 end
 
@@ -74,6 +65,7 @@ local function read_notifications(self)
                 for _, notification in ipairs(self._private.notifications) do
                     local tasks = {}
 
+                    notification.app_icon = beautiful.get_svg_icon(notification.app_icon)
                     local icon = filesystem.file.new_for_path(notification.icon)
                     table.insert(tasks, async.callback(icon, icon.exists))
 

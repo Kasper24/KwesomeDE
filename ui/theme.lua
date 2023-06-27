@@ -405,6 +405,7 @@ local function icons()
 
             if not beautiful.svg_icons[icon_path] then
                 beautiful.svg_icons[icon_path] = {
+                    names = names,
                     path = icon_path,
                     color = beautiful.colors.random_accent_color()
                 }
