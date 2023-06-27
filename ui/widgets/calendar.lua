@@ -85,8 +85,8 @@ function calendar:set_date(date)
         month = date.month,
         day = 1
     }
-    self:get_children_by_id("current_month_text")[1]:set_text(os.date("%B", time))
-    self:get_children_by_id("current_year_text")[1]:set_text(os.date("%Y", time))
+    self:get_children_by_id("current_month_button")[1]:set_text(os.date("%B", time))
+    self:get_children_by_id("current_year_button")[1]:set_text(os.date("%Y", time))
 
     local index = 1
     local days_to_add_at_month_start = first_day.wday - 1
@@ -181,13 +181,13 @@ local function new()
                 },
                 {
                     widget = ebwidget.normal,
+                    id = "current_month_button",
                     forced_width = dpi(120),
                     on_release = function()
                         widget:set_month_current()
                     end,
                     {
                         widget = twidget,
-                        id = "current_month_text",
                         text_normal_bg = beautiful.colors.on_background,
                         size = 15,
                         text = os.date("%B"),
@@ -225,13 +225,13 @@ local function new()
                 },
                 {
                     widget = ebwidget.normal,
+                    id = "current_year_button",
                     forced_width = dpi(120),
                     on_release = function()
                         widget:set_year_current()
                     end,
                     {
                         widget = twidget,
-                        id = "current_year_text",
                         text_normal_bg = beautiful.colors.on_background,
                         size = 15,
                         text = os.date("%Y")
