@@ -397,7 +397,7 @@ ruled.client.connect_signal("request::rules", function()
         rule_any = {
             class = {
                 "GitKraken",
-                "gitqlient"
+                "github-desktop"
             }
         },
         except = {
@@ -432,7 +432,7 @@ ruled.client.connect_signal("request::rules", function()
         rule_any = {
             class = {
                 "Spotify",
-                "mopidy"
+                "gnome-music"
             }
         },
         except = {

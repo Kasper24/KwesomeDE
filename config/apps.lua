@@ -162,19 +162,19 @@ local function new()
     ret:new("vivaldi", "v", "vivaldi", "Vivaldi-stable")
     ret:new("firefox", "f", "firefox", "firefox")
     ret:new("vscode", "e", "code", "Code")
-    ret:new("lazygit", "g", "kitty --class gitqlient lazygit", "gitqlient", {
+    ret:new("lazygit", "g", "kitty --class github-desktop lazygit", "github-desktop", {
         run_or_raise = false
     })
     ret:new("kotatogram", "t", "kotatogram-desktop", "KotatogramDesktop")
     ret:new("discord", "d", "discord", "discord")
-    ret:new("ncmpcpp", "n", "kitty --class mopidy ncmpcpp", "mopidy")
+    ret:new("ncmpcpp", "n", "kitty --class gnome-music ncmpcpp", "gnome-music")
     ret:new("spotify", "s", "spotify", "Spotify")
     ret:new("openrgb", "o", "openrgb --server --gui", "openrgb")
     ret:new("authy", "a", "authy", "Authy Desktop", {
         geometry = centered_gemotery(400, 800)
     })
     ret:new("bitwarden", "b", "bitwarden", "Bitwarden")
-    ret:new("ranger", "r", "kitty --class ranger ranger", "ranger", {
+    ret:new("ranger", "r", "kitty --class file-manager ranger", "file-manager", {
         run_or_raise = false
     })
     ret:new("kitty", "Return", "kitty", "kitty", {
