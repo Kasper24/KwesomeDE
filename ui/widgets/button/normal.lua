@@ -20,7 +20,7 @@ local capi = {
     mouse = mouse
 }
 
-local elevated_button_normal = {
+local button_normal = {
     mt = {}
 }
 
@@ -57,7 +57,7 @@ local function build_properties(prototype, prop_names)
     end
 end
 
-function elevated_button_normal:build_animable_child_anims(child)
+function button_normal:build_animable_child_anims(child)
     local wp = self._private
     if child._private.text_normal_bg or child._private.text_on_normal_bg then
         table.insert(wp.animable_childs, {
@@ -146,7 +146,7 @@ function elevated_button_normal:build_animable_child_anims(child)
     end
 end
 
-function elevated_button_normal:effect(instant)
+function button_normal:effect(instant)
     local wp = self._private
     local on_prefix = wp.state and "on_" or ""
     local key = on_prefix .. wp.mode .. "_"
@@ -248,19 +248,19 @@ function elevated_button_normal:effect(instant)
     end
 end
 
-function elevated_button_normal:set_text(text)
+function button_normal:set_text(text)
     if self:get_content_widget():get_text() then
         self:get_content_widget():set_text(text)
     end
 end
 
-function elevated_button_normal:get_text()
+function button_normal:get_text()
     if self:get_content_widget():get_text() then
         return self:get_content_widget():get_text()
     end
 end
 
-function elevated_button_normal:set_widget(widget)
+function button_normal:set_widget(widget)
     local wp = self._private
 
     local w = widget and wibox.widget.base.make_widget_from_value(widget)
@@ -320,19 +320,19 @@ function elevated_button_normal:set_widget(widget)
     self:emit_signal("widget::layout_changed")
 end
 
-function elevated_button_normal:get_content_widget()
+function button_normal:get_content_widget()
     return self._private.content_widget
 end
 
-function elevated_button_normal:get_ripple_layer()
+function button_normal:get_ripple_layer()
     return self._private.ripple_layer
 end
 
-function elevated_button_normal:get_state_layer()
+function button_normal:get_state_layer()
     return self._private.state_layer
 end
 
-function elevated_button_normal:set_halign(halign)
+function button_normal:set_halign(halign)
     self._private.halign = halign
     local widget = self:get_widget()
     if widget then
@@ -340,7 +340,7 @@ function elevated_button_normal:set_halign(halign)
     end
 end
 
-function elevated_button_normal:set_valign(valign)
+function button_normal:set_valign(valign)
     self._private.valign = valign
     local widget = self:get_widget()
     if widget then
@@ -348,7 +348,7 @@ function elevated_button_normal:set_valign(valign)
     end
 end
 
-function elevated_button_normal:set_paddings(paddings)
+function button_normal:set_paddings(paddings)
     self._private.paddings = paddings
     local widget = self:get_widget()
     if widget then
@@ -356,13 +356,13 @@ function elevated_button_normal:set_paddings(paddings)
     end
 end
 
-function elevated_button_normal:set_normal_bg(normal_bg)
+function button_normal:set_normal_bg(normal_bg)
     local wp = self._private
     wp.normal_bg = normal_bg
     self:effect(true)
 end
 
-function elevated_button_normal:set_normal_shape(normal_shape)
+function button_normal:set_normal_shape(normal_shape)
     local wp = self._private
     wp.normal_shape = normal_shape
     wp.defaults.hover_shape = normal_shape
@@ -370,7 +370,7 @@ function elevated_button_normal:set_normal_shape(normal_shape)
     self:effect(true)
 end
 
-function elevated_button_normal:set_normal_border_width(normal_border_width)
+function button_normal:set_normal_border_width(normal_border_width)
     local wp = self._private
     wp.normal_border_width = normal_border_width
     wp.defaults.hover_border_width = normal_border_width
@@ -378,7 +378,7 @@ function elevated_button_normal:set_normal_border_width(normal_border_width)
     self:effect(true)
 end
 
-function elevated_button_normal:set_normal_border_color(normal_border_color)
+function button_normal:set_normal_border_color(normal_border_color)
     local wp = self._private
     wp.normal_border_color = normal_border_color
     wp.defaults.hover_border_color = normal_border_color
@@ -388,7 +388,7 @@ end
 
 local function new(is_state)
     local widget = wibox.container.background()
-    gtable.crush(widget, elevated_button_normal, true)
+    gtable.crush(widget, button_normal, true)
 
     widget:set_widget(wibox.container.margin())
 
@@ -571,10 +571,10 @@ local function new(is_state)
     return widget
 end
 
-function elevated_button_normal.mt:__call(...)
+function button_normal.mt:__call(...)
     return new(...)
 end
 
-build_properties(elevated_button_normal, properties)
+build_properties(button_normal, properties)
 
-return setmetatable(elevated_button_normal, elevated_button_normal.mt)
+return setmetatable(button_normal, button_normal.mt)

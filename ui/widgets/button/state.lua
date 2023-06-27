@@ -8,7 +8,7 @@ local helpers = require("helpers")
 local setmetatable = setmetatable
 local ipairs = ipairs
 
-local elevated_button_state = {
+local button_state = {
     mt = {}
 }
 
@@ -40,26 +40,26 @@ local function build_properties(prototype, prop_names)
     end
 end
 
-function elevated_button_state:set_on_by_default(value)
+function button_state:set_on_by_default(value)
     if value == true then
         self:turn_on()
     end
 end
 
-function elevated_button_state:turn_on(instant)
+function button_state:turn_on(instant)
     local wp = self._private
     wp.state = true
     self:effect(instant)
     self:emit_signal("turn_on")
 end
 
-function elevated_button_state:turn_off(instant)
+function button_state:turn_off(instant)
     local wp = self._private
     wp.state = false
     self:effect(instant)
 end
 
-function elevated_button_state:toggle()
+function button_state:toggle()
     local wp = self._private
     if wp.state == true then
         self:turn_off()
@@ -68,7 +68,7 @@ function elevated_button_state:toggle()
     end
 end
 
-function elevated_button_state:set_normal_bg(normal_bg)
+function button_state:set_normal_bg(normal_bg)
     local wp = self._private
     wp.normal_bg = normal_bg
     self:effect(true)
@@ -78,7 +78,7 @@ function elevated_button_state:set_normal_bg(normal_bg)
     end
 end
 
-function elevated_button_state:set_normal_shape(normal_shape)
+function button_state:set_normal_shape(normal_shape)
     local wp = self._private
     wp.normal_shape = normal_shape
     wp.defaults.hover_shape = normal_shape
@@ -90,7 +90,7 @@ function elevated_button_state:set_normal_shape(normal_shape)
     end
 end
 
-function elevated_button_state:set_normal_border_width(normal_border_width)
+function button_state:set_normal_border_width(normal_border_width)
     local wp = self._private
     wp.normal_border_width = normal_border_width
     wp.defaults.hover_border_width = normal_border_width
@@ -102,7 +102,7 @@ function elevated_button_state:set_normal_border_width(normal_border_width)
     end
 end
 
-function elevated_button_state:set_normal_border_color(normal_border_color)
+function button_state:set_normal_border_color(normal_border_color)
     local wp = self._private
     wp.normal_border_color = normal_border_color
     wp.defaults.hover_border_color = normal_border_color
@@ -114,13 +114,13 @@ function elevated_button_state:set_normal_border_color(normal_border_color)
     end
 end
 
-function elevated_button_state:set_on_normal_bg(on_normal_bg)
+function button_state:set_on_normal_bg(on_normal_bg)
     local wp = self._private
     wp.on_normal_bg = on_normal_bg
     self:effect(true)
 end
 
-function elevated_button_state:set_on_normal_shape(on_normal_shape)
+function button_state:set_on_normal_shape(on_normal_shape)
     local wp = self._private
     wp.on_normal_shape = on_normal_shape
     wp.defaults.on_hover_shape = on_normal_shape
@@ -128,7 +128,7 @@ function elevated_button_state:set_on_normal_shape(on_normal_shape)
     self:effect(true)
 end
 
-function elevated_button_state:set_on_normal_border_width(on_normal_border_width)
+function button_state:set_on_normal_border_width(on_normal_border_width)
     local wp = self._private
     wp.on_normal_border_width = on_normal_border_width
     wp.defaults.on_hover_border_width = on_normal_border_width
@@ -136,7 +136,7 @@ function elevated_button_state:set_on_normal_border_width(on_normal_border_width
     self:effect(true)
 end
 
-function elevated_button_state:set_on_normal_border_color(on_normal_border_color)
+function button_state:set_on_normal_border_color(on_normal_border_color)
     local wp = self._private
     wp.on_normal_border_color = on_normal_border_color
     wp.defaults.on_hover_border_color = on_normal_border_color
@@ -146,7 +146,7 @@ end
 
 local function new()
     local widget = ebnwidget(true)
-    gtable.crush(widget, elevated_button_state, true)
+    gtable.crush(widget, button_state, true)
 
     local wp = widget._private
     wp.state = false
@@ -243,10 +243,10 @@ local function new()
     return widget
 end
 
-function elevated_button_state.mt:__call(...)
+function button_state.mt:__call(...)
     return new()
 end
 
-build_properties(elevated_button_state, properties)
+build_properties(button_state, properties)
 
-return setmetatable(elevated_button_state, elevated_button_state.mt)
+return setmetatable(button_state, button_state.mt)
