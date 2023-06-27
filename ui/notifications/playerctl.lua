@@ -5,7 +5,6 @@
 local beautiful = require("beautiful")
 local naughty = require("naughty")
 local playerctl_daemon = require("daemons.system.playerctl")
-local helpers = require("helpers")
 local string = string
 
 playerctl_daemon:connect_signal("metadata", function(self, title, artist, album_path, album, new, player_name)
@@ -13,7 +12,6 @@ playerctl_daemon:connect_signal("metadata", function(self, title, artist, album_
         return
     end
 
-    local app_font_icon = beautiful.get_svg_icon(player_name, "spotify")
     local text = (artist ~= "") and artist or (album ~= "") and album or player_name:gsub("^%l", string.upper)
     local icon = album_path ~= "" and album_path or {"youtube"}
     local font_icon = album_path == "" and beautiful.icons.youtube or nil
@@ -42,7 +40,7 @@ playerctl_daemon:connect_signal("metadata", function(self, title, artist, album_
     end)
 
     naughty.notification {
-        app_font_icon = app_font_icon,
+        app_icon = { player_name, "spotify" },
         app_name = app_name,
         font_icon = font_icon,
         icon = icon,
