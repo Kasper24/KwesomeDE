@@ -347,7 +347,7 @@ ruled.notification.connect_signal("request::rules", function()
             app_name = "networkmanager-dmenu"
         },
         properties = {
-            icon = helpers.icon_theme.get_icon_path("networkmanager")
+            icon = beautiful.get_svg_icon("networkmanager")
         }
     }
     ruled.notification.append_rule {
@@ -355,13 +355,13 @@ ruled.notification.connect_signal("request::rules", function()
             app_name = "blueman"
         },
         properties = {
-            icon = helpers.icon_theme.get_icon_path("blueman-device")
+            icon = beautiful.get_svg_icon("blueman-device")
         }
     }
 end)
 
 naughty.connect_signal("request::action_icon", function(a, context, hints)
-    a.icon = helpers.icon_theme.get_icon_path(hints.id)
+    a.icon = beautiful.get_svg_icon(hints.id)
 end)
 
 naughty.connect_signal("added", function(n)
@@ -370,7 +370,7 @@ naughty.connect_signal("added", function(n)
     end
 
     if n._private.app_font_icon == nil then
-        -- n.app_font_icon = helpers.icon_theme.get_app_font_icon(n.app_name)
+        -- n.app_font_icon = beautiful.get_app_font_icon(n.app_name)
     else
         -- n.app_font_icon = n._private.app_font_icon
     end
@@ -378,22 +378,22 @@ naughty.connect_signal("added", function(n)
     n.font_icon = n._private.font_icon
 
     if type(n._private.app_icon) == "table" then
-        n.app_icon = helpers.icon_theme.get_app_icon_path(n._private.app_icon)
+        n.app_icon = beautiful.get_app_svg_icon(n._private.app_icon)
     else
-        n.app_icon = helpers.icon_theme.get_app_icon_path(n._private.app_icon or n.app_name)
+        n.app_icon = beautiful.get_app_svg_icon(n._private.app_icon or n.app_name)
     end
 
     if type(n.icon) == "table" then
-        n.icon = helpers.icon_theme.get_icon_path(n.icon)
+        n.icon = beautiful.get_svg_icon(n.icon)
     end
 
     if n.app_icon == "" or n.app_icon == nil then
-        -- n.app_icon = helpers.icon_theme.get_icon_path("application-default-icon")
+        -- n.app_icon = beautiful.get_svg_icon("application-default-icon")
     end
 
     if (n.icon == "" or n.icon == nil) and n.font_icon == nil then
         n.font_icon = beautiful.icons.message
-        n.icon = helpers.icon_theme.get_icon_path("preferences-desktop-notification-bell")
+        n.icon = beautiful.get_svg_icon("preferences-desktop-notification-bell")
     end
 end)
 

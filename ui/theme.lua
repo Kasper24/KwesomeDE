@@ -3,6 +3,8 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 local unpack = unpack or table.unpack -- luacheck: globals unpack (compatibility with Lua 5.1)
+local lgi = require("lgi")
+local Gtk = lgi.require("Gtk", "3.0")
 local gfilesystem = require("gears.filesystem")
 local gcolor = require("gears.color")
 local gsurface = require("gears.surface")
@@ -382,6 +384,67 @@ local function icons()
         else
             set_icon_default_props(icon)
         end
+    end
+
+    local gtk_theme = Gtk.IconTheme.new()
+    gtk_theme:set_search_path({filesystem.filesystem.get_awesome_config_dir("assets")})
+    Gtk.IconTheme.set_custom_theme(gtk_theme, "candy-icons")
+
+    function theme.get_svg_icon(...)
+        local icons_names = { ... }
+
+        local icon_info = nil
+        if #icons_names == 1 then
+            icon_info = gtk_theme:lookup_icon(icons_names[1], 48, 0)
+        elseif #icons_names > 1 then
+            icon_info = gtk_theme:choose_icon(icons_names, 48, 0);
+        end
+
+        if icon_info then
+            local icon_path = icon_info:get_filename()
+
+            if not beautiful.svg_icons[icon_path] then
+                beautiful.svg_icons[icon_path] = {
+                    path = icon_path,
+                    color = beautiful.colors.random_accent_color()
+                }
+            end
+
+            return beautiful.svg_icons[icon_path]
+        end
+
+        return nil
+    end
+
+    function theme.get_app_svg_icon(...)
+        return theme.get_svg_icon(..., "application-x-ktheme")
+    end
+
+    if not theme.svg_icons then
+        theme.svg_icons = {}
+    end
+    for _, icon in pairs(theme.svg_icons) do
+        icon.color = theme.colors.random_accent_color()
+    end
+
+    function theme.get_app_font_icon(...)
+        local args = { ... }
+
+        for _, arg in ipairs(args) do
+            if arg then
+                arg = arg:lower()
+                arg = arg:gsub("_", "")
+                arg = arg:gsub("%s+", "")
+                arg = arg:gsub("-", "")
+                arg = arg:gsub("%.", "")
+                local icon = beautiful.app_icons[arg]
+                if icon then
+                    return icon
+                end
+            end
+        end
+
+        return beautiful.icons.window
     end
 end
 

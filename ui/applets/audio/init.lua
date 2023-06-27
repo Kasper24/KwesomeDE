@@ -13,7 +13,7 @@ local dpi = beautiful.xresources.apply_dpi
 local instance = nil
 
 local function application_widget(application)
-    local icon_image = helpers.icon_theme.get_icon_path(
+    local icon_image = beautiful.get_svg_icon(
         application.icon_name or application.name,
         "multimedia-audio-player"
     )
@@ -91,7 +91,7 @@ local function application_widget(application)
     end)
 
     application:connect_signal("icon_name", function()
-        icon:set_icon(helpers.icon_theme.get_icon_path(
+        icon:set_icon(beautiful.get_svg_icon(
             application.icon_name or application.name,
             "multimedia-audio-player"
         ))

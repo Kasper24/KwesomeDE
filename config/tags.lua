@@ -14,7 +14,7 @@ awful.screen.connect_for_each_screen(function(s)
             layout = awful.layout.layouts[1],
             centered_layout_master_fill_policy = "master_width_factor",
             selected = i == 1 and true or false,
-            icon = helpers.icon_theme.get_icon_path(beautiful.taglist_icons[i]),
+            icon = beautiful.get_svg_icon(beautiful.taglist_icons[i]),
             gap = ui_daemon:get_useless_gap(),
         })
     end

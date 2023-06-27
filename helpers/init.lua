@@ -4,7 +4,6 @@ return {
     client = require(... .. ".client"),
     color = require(... .. ".color"),
     fzy = require(... .. ".fzy"),
-    icon_theme = require(... .. ".icon_theme"),
     inotify = require(... .. ".inotify"),
     input = require(... .. ".input"),
     math = require(... .. ".math"),

@@ -65,7 +65,7 @@ local function app_menu(app, app_widget, icon)
 end
 
 local function app(app, app_launcher)
-    local icon = helpers.icon_theme.get_app_icon_path(app.icon_name)
+    local icon = beautiful.get_app_svg_icon(app.icon_name)
     local menu = nil
 
     local widget = wibox.widget {

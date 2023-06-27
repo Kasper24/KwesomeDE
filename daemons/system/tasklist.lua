@@ -233,11 +233,11 @@ end
 
 function tasklist:get_icon(client)
     local icon = client.desktop_app_info and client.desktop_app_info:get_string("Icon")
-    return helpers.icon_theme.get_icon_path(client.class) or helpers.icon_theme.get_app_icon_path(icon)
+    return beautiful.get_svg_icon(client.class) or beautiful.get_app_svg_icon(icon)
 end
 
 function tasklist:get_font_icon(client)
-    return helpers.icon_theme.get_app_font_icon(client.class, client.name)
+    return beautiful.get_app_font_icon(client.class, client.name)
 end
 
 function tasklist:is_app_pinned(class)
