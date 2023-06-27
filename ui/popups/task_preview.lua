@@ -37,7 +37,7 @@ function task_preview:show(c, args)
         self.y = args.coords.y
     end
 
-    self.widget:get_children_by_id("font_icon")[1]:set_client(c)
+    self.widget:get_children_by_id("icon")[1]:set_client(c)
     self.widget:get_children_by_id("name")[1]:set_text(c.name)
     self.widget:get_children_by_id("thumbnail")[1]:set_client(c)
 
@@ -77,7 +77,7 @@ local function new()
                     spacing = dpi(10),
                     {
                         widget = widgets.client_icon,
-                        id = "font_icon",
+                        id = "icon",
                         halign = "center",
                         valign = "center",
                     },
