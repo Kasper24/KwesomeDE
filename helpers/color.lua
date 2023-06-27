@@ -11,7 +11,7 @@ local _color = {}
 
 function _color.is_dark(color)
     local _, __, l = Color(color):hsl()
-    return l <= 0.4
+    return l <= 0.2
 end
 
 function _color.darken_or_lighten(color, amount)
