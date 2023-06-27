@@ -13,10 +13,10 @@ local dpi = beautiful.xresources.apply_dpi
 local instance = nil
 
 local function application_widget(application)
-    local icon_image = beautiful.get_svg_icon(
+    local icon_image = beautiful.get_svg_icon{
         application.icon_name or application.name,
         "multimedia-audio-player"
-    )
+    }
 
     local icon = wibox.widget {
         widget = widgets.icon,
@@ -91,10 +91,10 @@ local function application_widget(application)
     end)
 
     application:connect_signal("icon_name", function()
-        icon:set_icon(beautiful.get_svg_icon(
+        icon:set_icon(beautiful.get_svg_icon{
             application.icon_name or application.name,
             "multimedia-audio-player"
-        ))
+        })
     end)
 
     slider:connect_signal("property::value", function(self, value, instant)

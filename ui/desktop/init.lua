@@ -205,8 +205,10 @@ local function desktop_icon(self, pos, path, name, mimetype)
                     forced_width = dpi(40),
                     halign = "center",
                     clip_shape = helpers.ui.rrect(),
-                    image = beautiful.get_svg_icon(
-                        mimetype_to_image_lookup_table[mimetype], "org.gnome.gedit")
+                    image = beautiful.get_svg_icon {
+                        mimetype_to_image_lookup_table[mimetype],
+                        "org.gnome.gedit"
+                    }
                 },
                 {
                     widget = widgets.text,

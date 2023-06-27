@@ -342,7 +342,7 @@ ruled.notification.connect_signal("request::rules", function()
             app_name = "networkmanager-dmenu"
         },
         properties = {
-            icon = beautiful.get_svg_icon("networkmanager")
+            icon = beautiful.get_svg_icon{"networkmanager"}
         }
     }
     ruled.notification.append_rule {
@@ -350,13 +350,13 @@ ruled.notification.connect_signal("request::rules", function()
             app_name = "blueman"
         },
         properties = {
-            icon = beautiful.get_svg_icon("blueman-device")
+            icon = beautiful.get_svg_icon{"blueman-device"}
         }
     }
 end)
 
 naughty.connect_signal("request::action_icon", function(a, context, hints)
-    a.icon = beautiful.get_svg_icon(hints.id)
+    a.icon = beautiful.get_svg_icon{hints.id}
 end)
 
 naughty.connect_signal("added", function(n)
@@ -388,7 +388,7 @@ naughty.connect_signal("added", function(n)
 
     if (n.icon == "" or n.icon == nil) and n.font_icon == nil then
         n.font_icon = beautiful.icons.message
-        n.icon = beautiful.get_svg_icon("preferences-desktop-notification-bell")
+        n.icon = beautiful.get_svg_icon{"preferences-desktop-notification-bell"}
     end
 end)
 

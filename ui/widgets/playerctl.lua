@@ -103,7 +103,7 @@ function playerctl.art(halign, valign, size, default_icon_size, daemon)
         halign = halign or "left",
         valign = valign or "top",
         clip_shape = helpers.ui.rrect(),
-        image = beautiful.get_svg_icon("spotify")
+        image = beautiful.get_svg_icon{"spotify"}
     }
 
     local default_icon = wibox.widget {
@@ -111,7 +111,7 @@ function playerctl.art(halign, valign, size, default_icon_size, daemon)
         sie = default_icon_size or 150,
         halign = halign or "left",
         valign = valign or "center",
-        icon = beautiful.get_svg_icon("spotify"),
+        icon = beautiful.get_svg_icon{"spotify"}
     }
 
     local stack = wibox.widget {
@@ -128,13 +128,13 @@ function playerctl.art(halign, valign, size, default_icon_size, daemon)
             icon.image = album_path
             stack:raise_widget(icon)
         else
-            default_icon:set_icon(beautiful.get_svg_icon(player_name, "spotify"))
+            default_icon:set_icon(beautiful.get_svg_icon{player_name, "spotify"})
             stack:raise_widget(default_icon)
         end
     end)
 
     playerctl_daemon:connect_signal("no_players", function(self)
-        default_icon:set_icon(beautiful.get_svg_icon("spotify"))
+        default_icon:set_icon(beautiful.get_svg_icon{"spotify"})
         stack:raise_widget(default_icon)
     end)
 
@@ -176,17 +176,17 @@ function playerctl.player_art(halign, valign, daemon)
         size = 25,
         halign = halign or "left",
         valign = valign or "center",
-        icon = beautiful.get_svg_icon("spotify"),
+        icon = beautiful.get_svg_icon{"spotify"},
     }
 
     playerctl_daemon:connect_signal("metadata", function(self, title, artist, album_path, album, new, player_name)
         if player_name ~= "" then
-            icon:set_icon(beautiful.get_svg_icon(player_name, "spotify"))
+            icon:set_icon(beautiful.get_svg_icon{player_name, "spotify"})
         end
     end)
 
     playerctl_daemon:connect_signal("no_players", function(self)
-        icon:set_icon(beautiful.get_svg_icon("spotify"))
+        icon:set_icon(beautiful.get_svg_icon{"spotify"})
     end)
 
     return icon
@@ -441,7 +441,7 @@ function playerctl.play(daemon)
     local button = wibox.widget {
         widget = ebwidget.normal,
         normal_shape = gshape.circle,
-        normal_bg = beautiful.get_svg_icon("spotify").color,
+        normal_bg = beautiful.get_svg_icon{"spotify"}.color,
         on_release = function()
             playerctl_daemon:play_pause()
         end,
@@ -467,7 +467,7 @@ function playerctl.play(daemon)
 
     playerctl_daemon:connect_signal("metadata", function(self, title, artist, album_path, album, new, player_name)
         if player_name ~= "" then
-            local app_icon = beautiful.get_svg_icon(player_name, "spotify")
+            local app_icon = beautiful.get_svg_icon{player_name, "spotify"}
             button:set_normal_bg(app_icon.color)
         end
     end)

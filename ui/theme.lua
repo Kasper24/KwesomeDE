@@ -390,14 +390,12 @@ local function icons()
     gtk_theme:set_search_path({filesystem.filesystem.get_awesome_config_dir("assets")})
     Gtk.IconTheme.set_custom_theme(gtk_theme, "candy-icons")
 
-    function theme.get_svg_icon(...)
-        local icons_names = { ... }
-
+    function theme.get_svg_icon(names)
         local icon_info = nil
-        if #icons_names == 1 then
-            icon_info = gtk_theme:lookup_icon(icons_names[1], 48, 0)
-        elseif #icons_names > 1 then
-            icon_info = gtk_theme:choose_icon(icons_names, 48, 0);
+        if #names == 1 then
+            icon_info = gtk_theme:lookup_icon(names[1], 48, 0)
+        elseif #names > 1 then
+            icon_info = gtk_theme:choose_icon(names, 48, 0);
         end
 
         if icon_info then
@@ -417,8 +415,9 @@ local function icons()
         return nil
     end
 
-    function theme.get_app_svg_icon(...)
-        return theme.get_svg_icon(..., "application-x-ktheme")
+    function theme.get_app_svg_icon(names)
+        table.insert(names, "application-x-ktheme")
+        return theme.get_svg_icon(names)
     end
 
     if not theme.svg_icons then
