@@ -38,7 +38,7 @@ local function device_widget(device, path)
     }
 
     local cancel = wibox.widget {
-        widget = widgets.button.elevated.normal,
+        widget = widgets.button.normal,
         normal_bg = beautiful.colors.surface,
         on_release = function()
             widget:get_children_by_id("button")[1]:turn_off()
@@ -53,7 +53,7 @@ local function device_widget(device, path)
     }
 
     local connect_or_disconnect = wibox.widget {
-        widget = widgets.button.elevated.normal,
+        widget = widgets.button.normal,
         normal_bg = beautiful.colors.surface,
         on_release = function()
             device:toggle_connect()
@@ -67,7 +67,7 @@ local function device_widget(device, path)
     }
 
     local trust_or_untrust = wibox.widget {
-        widget = widgets.button.elevated.normal,
+        widget = widgets.button.normal,
         normal_bg = beautiful.colors.surface,
         on_release = function()
             device:toggle_trust()
@@ -81,7 +81,7 @@ local function device_widget(device, path)
     }
 
     local pair_or_unpair = wibox.widget {
-        widget = widgets.button.elevated.normal,
+        widget = widgets.button.normal,
         normal_bg = beautiful.colors.surface,
         on_release = function()
             device:toggle_pair()
@@ -99,7 +99,7 @@ local function device_widget(device, path)
         mode = "exact",
         height = dpi(60),
         {
-            widget = widgets.button.elevated.state,
+            widget = widgets.button.state,
             on_normal_bg = beautiful.colors.transparent,
             id = "button",
             on_release = function(self)
@@ -165,7 +165,7 @@ local function new()
     }
 
     local scan = wibox.widget {
-        widget = widgets.button.elevated.normal,
+        widget = widgets.button.normal,
         on_release = function()
             bluetooth_daemon:scan()
         end,
@@ -178,7 +178,7 @@ local function new()
     }
 
     local settings = wibox.widget {
-        widget = widgets.button.elevated.normal,
+        widget = widgets.button.normal,
         on_release = function()
             bluetooth_daemon:open_settings()
         end,

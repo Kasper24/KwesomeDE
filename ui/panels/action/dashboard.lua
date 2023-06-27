@@ -27,7 +27,7 @@ local dashboard = {
 
 local function arrow_button(icon, text, on_icon_release, on_arrow_release)
     local icon = wibox.widget {
-        widget = widgets.button.elevated.state,
+        widget = widgets.button.state,
         forced_height = dpi(90),
         normal_shape = helpers.ui.prrect(true, false, false, true),
         normal_bg = beautiful.colors.surface,
@@ -42,7 +42,7 @@ local function arrow_button(icon, text, on_icon_release, on_arrow_release)
     }
 
     local arrow = wibox.widget {
-        widget = widgets.button.elevated.state,
+        widget = widgets.button.state,
         forced_height = dpi(90),
         normal_shape = helpers.ui.prrect(false, true, true, false),
         normal_bg = beautiful.colors.surface,
@@ -91,7 +91,7 @@ end
 
 local function button(icon, text, on_release)
     local icon = wibox.widget {
-        widget = widgets.button.elevated.state,
+        widget = widgets.button.state,
         forced_width = dpi(150),
         forced_height = dpi(90),
         normal_bg = beautiful.colors.surface,

@@ -85,7 +85,7 @@ local function notification_widget(notification, on_removed)
     if notification.actions ~= nil then
         for _, action in ipairs(notification.actions) do
             local button = wibox.widget {
-                widget = widgets.button.elevated.normal,
+                widget = widgets.button.normal,
                 -- forced_height = dpi(40),
                 normal_bg = beautiful.colors.surface,
                 on_release = function()
@@ -113,7 +113,7 @@ local function notification_widget(notification, on_removed)
                 bottom = dpi(10)
             },
             {
-                widget = widgets.button.elevated.normal,
+                widget = widgets.button.normal,
                 forced_width = dpi(40),
                 forced_height = dpi(40),
                 on_release = function()
@@ -180,7 +180,7 @@ local function notification_group(notification)
 
     local widget = nil
     local button = wibox.widget {
-        widget = widgets.button.elevated.state,
+        widget = widgets.button.state,
         forced_width = dpi(600),
         halign = "left",
         on_turn_on = function()
@@ -237,7 +237,7 @@ local function new()
     }
 
     local clear_notifications = wibox.widget {
-        widget = widgets.button.elevated.normal,
+        widget = widgets.button.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
         on_release = function()

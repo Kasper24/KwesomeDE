@@ -175,7 +175,7 @@ local function desktop_icon(self, pos, path, name, mimetype)
         y = pos.y,
         bg = beautiful.colors.transparent,
         widget = wibox.widget {
-            widget = widgets.button.elevated.state,
+            widget = widgets.button.state,
             normal_bg = beautiful.colors.transparent,
             forced_width = dpi(100),
             forced_height = dpi(100),

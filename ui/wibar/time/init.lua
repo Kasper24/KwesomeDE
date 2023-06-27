@@ -29,7 +29,7 @@ local function new()
         widget = wibox.container.margin,
         margins = dpi(5),
         {
-            widget = widgets.button.elevated.state,
+            widget = widgets.button.state,
             on_normal_bg = beautiful.icons.envelope.color,
             id = "button",
             on_release = function()

@@ -89,7 +89,7 @@ local function actions_widget(n)
 
     for _, action in ipairs(n.actions) do
         local button = wibox.widget {
-            widget = widgets.button.elevated.normal,
+            widget = widgets.button.normal,
             normal_bg = beautiful.colors.surface,
             on_release = function()
                 action:invoke()
@@ -155,7 +155,7 @@ local function create_notification(n, screen)
     }
 
     local dismiss = wibox.widget {
-        widget = widgets.button.elevated.normal,
+        widget = widgets.button.normal,
         on_release = function()
             destroy_notif(n, screen)
         end,

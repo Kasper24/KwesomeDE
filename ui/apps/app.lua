@@ -23,7 +23,7 @@ local app = {
 
 local function titlebar(self)
     local minimize = wibox.widget {
-        widget = widgets.button.elevated.state,
+        widget = widgets.button.state,
         forced_width = dpi(20),
         forced_height = dpi(20),
         on_by_default = capi.client.focus == self:get_client(),
@@ -36,7 +36,7 @@ local function titlebar(self)
     }
 
     local close = wibox.widget {
-        widget = widgets.button.elevated.state,
+        widget = widgets.button.state,
         forced_width = dpi(20),
         forced_height = dpi(20),
         on_by_default = capi.client.focus == self:get_client(),
@@ -49,7 +49,7 @@ local function titlebar(self)
     }
 
     local icon = wibox.widget {
-        widget = widgets.button.elevated.state,
+        widget = widgets.button.state,
         halign = "center",
         disabled = true,
         paddings = 0,

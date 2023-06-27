@@ -44,7 +44,7 @@ local function color_button(index)
             text = index
         },
         {
-            widget = widgets.button.elevated.normal,
+            widget = widgets.button.normal,
             on_secondary_release = function()
                 theme_daemon:set_color(index)
             end,
@@ -140,7 +140,7 @@ local function new()
     }
 
     local light_dark = wibox.widget {
-        widget = widgets.button.elevated.normal,
+        widget = widgets.button.normal,
         normal_bg = beautiful.icons.computer.color,
         on_release = function()
             theme_daemon:toggle_dark_light()
@@ -154,7 +154,7 @@ local function new()
     }
 
     local reset_colorscheme = wibox.widget {
-        widget = widgets.button.elevated.normal,
+        widget = widgets.button.normal,
         normal_bg = beautiful.icons.computer.color,
         on_release = function()
             theme_daemon:reset_colorscheme()
@@ -168,7 +168,7 @@ local function new()
     }
 
     local save_colorscheme = wibox.widget {
-        widget = widgets.button.elevated.normal,
+        widget = widgets.button.normal,
         normal_bg = beautiful.icons.computer.color,
         on_release = function()
             theme_daemon:save_colorscheme()
@@ -182,7 +182,7 @@ local function new()
     }
 
     local set_wallpaper = wibox.widget {
-        widget = widgets.button.elevated.normal,
+        widget = widgets.button.normal,
         normal_bg = beautiful.icons.computer.color,
         on_release = function()
             theme_daemon:set_wallpaper(theme_daemon:get_selected_colorscheme())
@@ -196,7 +196,7 @@ local function new()
     }
 
     local set_colorscheme = wibox.widget {
-        widget = widgets.button.elevated.normal,
+        widget = widgets.button.normal,
         normal_bg = beautiful.icons.computer.color,
         on_release = function()
             theme_daemon:set_colorscheme(theme_daemon:get_selected_colorscheme())
@@ -210,7 +210,7 @@ local function new()
     }
 
     local set_both = wibox.widget {
-        widget = widgets.button.elevated.normal,
+        widget = widgets.button.normal,
         normal_bg = beautiful.icons.computer.color,
         on_release = function()
             theme_daemon:set_wallpaper(theme_daemon:get_selected_colorscheme())

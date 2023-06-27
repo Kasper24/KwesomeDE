@@ -92,7 +92,7 @@ local function tag_widget(self, tag, direction)
     local menu = tag_menu(tag)
 
     local button = wibox.widget {
-        widget = widgets.button.elevated.state,
+        widget = widgets.button.state,
         id = "button",
         halign = "center",
         on_normal_bg = tag.icon.color,

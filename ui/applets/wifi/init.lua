@@ -111,7 +111,7 @@ local function access_point_widget(layout, access_point)
     }
 
     local cancel = wibox.widget {
-        widget = widgets.button.elevated.normal,
+        widget = widgets.button.normal,
         normal_bg = beautiful.colors.surface,
         on_release = function()
             text_input:unfocus()
@@ -126,7 +126,7 @@ local function access_point_widget(layout, access_point)
     }
 
     local connect_or_disconnect = wibox.widget {
-        widget = widgets.button.elevated.normal,
+        widget = widgets.button.normal,
         normal_bg = beautiful.colors.surface,
         on_release = function()
             access_point:toggle(text_input:get_text(), auto_connect_checkbox:get_state())
@@ -186,7 +186,7 @@ local function access_point_widget(layout, access_point)
         mode = "exact",
         height = dpi(65),
         {
-            widget = widgets.button.elevated.normal,
+            widget = widgets.button.normal,
             id = "button",
             on_release = function(self)
                 capi.awesome.emit_signal("access_point_widget::expanded", widget)
@@ -254,7 +254,7 @@ local function new()
     }
 
     local rescan = wibox.widget {
-        widget = widgets.button.elevated.normal,
+        widget = widgets.button.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
         on_release = function()
@@ -269,7 +269,7 @@ local function new()
     }
 
     local settings = wibox.widget {
-        widget = widgets.button.elevated.normal,
+        widget = widgets.button.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
         on_release = function()

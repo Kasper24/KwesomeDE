@@ -51,7 +51,7 @@ local function button(icon, text, on_release, on_by_default)
     }
 
     return wibox.widget {
-        widget = widgets.button.elevated.state,
+        widget = widgets.button.state,
         on_by_default = on_by_default,
         forced_width = dpi(120),
         forced_height = dpi(120),
@@ -195,7 +195,7 @@ local function main()
     }
 
     local screenshot_button = wibox.widget {
-        widget = widgets.button.elevated.normal,
+        widget = widgets.button.normal,
         forced_height = dpi(50),
         normal_bg = beautiful.icons.camera_retro.color,
         on_release = function()

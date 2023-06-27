@@ -94,7 +94,7 @@ local function new()
     }
 
     local button = wibox.widget {
-        widget = widgets.button.elevated.state,
+        widget = widgets.button.state,
         on_normal_bg = beautiful.icons.envelope.color,
         on_release = function()
             app_launcher:toggle()

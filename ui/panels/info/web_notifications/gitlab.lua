@@ -28,7 +28,7 @@ local function mr_widget(mr)
     }
 
     local avatar = wibox.widget {
-        widget = widgets.button.elevated.normal,
+        widget = widgets.button.normal,
         normal_shape = gshape.circle,
         forced_width = dpi(60),
         forced_height = dpi(60),
@@ -105,7 +105,7 @@ local function mr_widget(mr)
     }
 
     local button = wibox.widget {
-        widget = widgets.button.elevated.normal,
+        widget = widgets.button.normal,
         on_release = function()
             awful.spawn("xdg-open " .. mr.web_url, false)
         end,

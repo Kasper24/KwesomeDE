@@ -34,7 +34,7 @@ local function application_widget(application)
     }
 
     local mute = wibox.widget {
-        widget = widgets.button.elevated.state,
+        widget = widgets.button.state,
         forced_width = dpi(40),
         forced_height = dpi(40),
         on_by_default = application.mute,
@@ -117,7 +117,7 @@ local function device_widget(device)
     }
 
     local mute = wibox.widget {
-        widget = widgets.button.elevated.state,
+        widget = widgets.button.state,
         forced_width = dpi(40),
         forced_height = dpi(40),
         on_by_default = device.mute,

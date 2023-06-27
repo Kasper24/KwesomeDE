@@ -100,7 +100,7 @@ local function tag_widget(self, tag, accent_color, direction)
     local menu = tag_menu(tag)
 
     local widget = wibox.widget {
-        widget = widgets.button.elevated.state,
+        widget = widgets.button.state,
         forced_width = dpi(30),
         forced_height = dpi(30),
         normal_shape = gshape.circle,

@@ -61,7 +61,7 @@ local function email_widget(email)
     }
 
     return wibox.widget {
-        widget = widgets.button.elevated.normal,
+        widget = widgets.button.normal,
         forced_height = dpi(150),
         on_release = function()
             email_daemon:open(email)

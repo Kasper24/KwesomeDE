@@ -73,7 +73,7 @@ local function event_widget(event)
     }
 
     local avatar = wibox.widget {
-        widget = widgets.button.elevated.normal,
+        widget = widgets.button.normal,
         normal_shape = gshape.circle,
         on_release = function()
             awful.spawn("xdg-open http://github.com/" .. event.actor.login, false)
@@ -125,7 +125,7 @@ local function event_widget(event)
     }
 
     local info = wibox.widget {
-        widget = widgets.button.elevated.normal,
+        widget = widgets.button.normal,
         halign = "right",
         on_release = function()
             awful.spawn("xdg-open " .. action_and_link.link, false)
@@ -206,7 +206,7 @@ local function pr_widget(pr)
     }
 
     local avatar = wibox.widget {
-        widget = widgets.button.elevated.normal,
+        widget = widgets.button.normal,
         normal_shape = gshape.circle,
         on_release = function()
             awful.spawn("xdg-open " .. pr.user.html_url, false)
@@ -255,7 +255,7 @@ local function pr_widget(pr)
     }
 
     local button = wibox.widget {
-        widget = widgets.button.elevated.normal,
+        widget = widgets.button.normal,
         haling = "left",
         on_release = function()
             awful.spawn("xdg-open " .. pr.html_url, false)

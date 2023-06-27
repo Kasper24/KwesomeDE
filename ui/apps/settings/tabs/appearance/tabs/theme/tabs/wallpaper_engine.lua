@@ -27,7 +27,7 @@ local function new()
     local wallpapers = wallpapers_grid("we_wallpapers", function(entry, rofi_grid)
         local widget = nil
         local button = wibox.widget {
-            widget = widgets.button.elevated.state,
+            widget = widgets.button.state,
             id = "button",
             forced_width = dpi(146),
             forced_height = dpi(105),

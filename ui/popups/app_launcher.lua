@@ -69,7 +69,7 @@ local function app(app, app_launcher)
     local menu = nil
 
     local widget = wibox.widget {
-        widget = widgets.button.elevated.state,
+        widget = widgets.button.state,
         id = "button",
         -- forced_width = dpi(150),
         -- forced_height = dpi(150),

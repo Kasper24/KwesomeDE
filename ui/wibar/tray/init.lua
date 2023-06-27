@@ -49,7 +49,7 @@ local function system_tray()
     }
 
     local button = wibox.widget {
-        widget = widgets.button.elevated.state,
+        widget = widgets.button.state,
         forced_width = dpi(50),
         forced_height = dpi(50),
         on_normal_bg = beautiful.icons.envelope.color,
@@ -225,7 +225,7 @@ local function custom_tray()
         widget = wibox.container.margin,
         margins = dpi(5),
         {
-            widget = widgets.button.elevated.state,
+            widget = widgets.button.state,
             on_normal_bg = beautiful.icons.envelope.color,
             id = "button",
             on_release = function()

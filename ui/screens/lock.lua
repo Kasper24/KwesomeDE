@@ -46,7 +46,7 @@ local function action_button(icon, title, on_release)
         layout = wibox.layout.fixed.vertical,
         spacing = dpi(15),
         {
-            widget = widgets.button.elevated.normal,
+            widget = widgets.button.normal,
             forced_width = dpi(75),
             forced_height = dpi(75),
             -- normal_bg = beautiful.icons.lock.color,
@@ -157,7 +157,7 @@ local function widget(self)
     }
 
     local unlock_button = wibox.widget {
-        widget = widgets.button.elevated.normal,
+        widget = widgets.button.normal,
         normal_bg = beautiful.icons.lock.color,
         on_release = function()
             system_daemon:unlock(self._private.text_input:get_text())

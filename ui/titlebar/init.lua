@@ -16,7 +16,7 @@ local capi = {
 
 capi.client.connect_signal("request::titlebars", function(client)
     local icon = wibox.widget {
-        widget = widgets.button.elevated.state,
+        widget = widgets.button.state,
         halign = "center",
         disabled = true,
         paddings = 0,
@@ -41,7 +41,7 @@ capi.client.connect_signal("request::titlebars", function(client)
     }
 
     local minimize = wibox.widget {
-        widget = widgets.button.elevated.state,
+        widget = widgets.button.state,
         forced_width = dpi(20),
         forced_height = dpi(20),
         on_by_default = capi.client.focus == client,
@@ -54,7 +54,7 @@ capi.client.connect_signal("request::titlebars", function(client)
     }
 
     local maximize = wibox.widget {
-        widget = widgets.button.elevated.state,
+        widget = widgets.button.state,
         forced_width = dpi(20),
         forced_height = dpi(20),
         on_by_default = capi.client.focus == client,
@@ -70,7 +70,7 @@ capi.client.connect_signal("request::titlebars", function(client)
     }
 
     local close = wibox.widget {
-        widget = widgets.button.elevated.state,
+        widget = widgets.button.state,
         forced_width = dpi(20),
         forced_height = dpi(20),
         on_by_default = capi.client.focus == client,

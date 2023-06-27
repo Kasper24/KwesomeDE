@@ -35,7 +35,7 @@ local function new()
     }
 
     local power_button = wibox.widget {
-        widget = widgets.button.elevated.normal,
+        widget = widgets.button.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
         on_release = function()

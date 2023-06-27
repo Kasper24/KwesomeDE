@@ -68,7 +68,7 @@ local function pinned_app_widget(pinned_app)
         forced_height = dpi(70),
         margins = dpi(5),
         {
-            widget = widgets.button.elevated.state,
+            widget = widgets.button.state,
             on_release = function()
                 menu:hide()
                 pinned_app:run()
@@ -105,7 +105,7 @@ local function client_widget(client)
         forced_width = dpi(80),
         forced_height = dpi(80),
         {
-            widget = widgets.button.elevated.state,
+            widget = widgets.button.state,
             id = "button",
             on_by_default = capi.client.focus == client,
             on_normal_bg =  client._icon.color,

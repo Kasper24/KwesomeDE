@@ -3,7 +3,7 @@
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
 local gtable = require("gears.table")
-local ebnwidget = require("ui.widgets.button.elevated.normal")
+local ebnwidget = require("ui.widgets.button.normal")
 local helpers = require("helpers")
 local setmetatable = setmetatable
 local ipairs = ipairs

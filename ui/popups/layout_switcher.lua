@@ -29,7 +29,7 @@ end
 local function layout_widget(self, layout)
     local widget = wibox.widget
     {
-        widget = widgets.button.elevated.state,
+        widget = widgets.button.state,
         layout_name = layout.name,
         on_release = function()
             awful.screen.focused().selected_tag.layout = layout

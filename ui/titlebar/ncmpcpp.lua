@@ -16,7 +16,7 @@ local capi = {
 
 local function tab_button(title)
     return wibox.widget {
-        widget = widgets.button.elevated.state,
+        widget = widgets.button.state,
         on_by_default = true,
         halign = "left",
         on_normal_bg = beautiful.icons.list_music.color,

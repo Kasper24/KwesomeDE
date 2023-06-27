@@ -37,7 +37,7 @@ end
 
 local function client_widget(self, client)
     return wibox.widget {
-        widget = widgets.button.elevated.state,
+        widget = widgets.button.state,
         id = "button",
         forced_width = dpi(300),
         forced_height = dpi(200),
