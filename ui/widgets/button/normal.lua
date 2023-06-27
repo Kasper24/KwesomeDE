@@ -226,7 +226,7 @@ function button_normal:effect(instant)
                     child.icon_color_anim:set(child_color)
                     if child.widget:get_icon() then
                         if wp.old_mode ~= "press" and wp.mode == "press" then
-                            child.icon_size_anim:set(child.original_size * 0.7)
+                            child.icon_size_anim:set(child.original_size * 0.5)
                         elseif wp.old_mode == "press" and wp.mode ~= "press" then
                             child.icon_size_anim:set(child.original_size)
                         end
