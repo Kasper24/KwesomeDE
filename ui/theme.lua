@@ -426,7 +426,7 @@ function theme.reload()
         icon.color = old_colorscheme_to_new_map[icon.color]
     end
 
-    capi.awesome.emit_signal("colorscheme::changed", old_colorscheme_to_new_map, new_colorscheme)
+    capi.awesome.emit_signal("colorscheme::changed", old_colorscheme_to_new_map)
 end
 
 colors()
