@@ -77,7 +77,7 @@ local function new()
         size = 30,
         halign = "center",
         valign = "center",
-        scale = 2,
+        size = 100,
     }
 
     -- local widget = wibox.widget {

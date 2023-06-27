@@ -22,7 +22,7 @@ capi.client.connect_signal("request::titlebars", function(client)
         paddings = 0,
         on_by_default = capi.client.focus == client,
         icon = client._icon,
-        scale = 0.7,
+        size = 25,
         normal_bg = beautiful.colors.transparent,
         on_normal_bg = beautiful.colors.transparent,
         icon_normal_bg = beautiful.colors.on_background,
