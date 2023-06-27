@@ -68,8 +68,7 @@ local function pinned_app_widget(pinned_app)
         forced_height = dpi(70),
         margins = dpi(5),
         {
-            widget = widgets.button.icon.state,
-            icon = pinned_app.icon,
+            widget = widgets.button.elevated.state,
             on_release = function()
                 menu:hide()
                 pinned_app:run()
@@ -82,7 +81,11 @@ local function pinned_app_widget(pinned_app)
                         y = dpi(70)
                     }
                 }
-            end
+            end,
+            {
+                widget = widgets.icon,
+                icon = pinned_app.icon,
+            }
         }
     }
 
@@ -102,13 +105,10 @@ local function client_widget(client)
         forced_width = dpi(80),
         forced_height = dpi(80),
         {
-            widget = widgets.button.icon.state,
+            widget = widgets.button.elevated.state,
             id = "button",
             on_by_default = capi.client.focus == client,
-            icon = client._icon,
             on_normal_bg =  client._icon.color,
-            icon_normal_bg = client._icon.color,
-            icon_on_normal_bg = beautiful.colors.icon_transparent,
             halign = "center",
             on_hover = function(self)
                 task_preview:show(client, {
@@ -151,7 +151,13 @@ local function client_widget(client)
                         y = dpi(70)
                     }
                 }
-            end
+            end,
+            {
+                widget = widgets.icon,
+                icon_normal_bg = client._icon.color,
+                icon_on_normal_bg = beautiful.colors.icon_transparent,
+                icon = client._icon,
+            }
         }
     }
 

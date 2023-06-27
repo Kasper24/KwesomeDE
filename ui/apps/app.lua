@@ -49,17 +49,20 @@ local function titlebar(self)
     }
 
     local icon = wibox.widget {
-        widget = widgets.button.icon.state,
+        widget = widgets.button.elevated.state,
         halign = "center",
         disabled = true,
         paddings = 0,
         on_by_default = capi.client.focus == self:get_client(),
-        icon = self:get_client()._icon,
-        size = 25,
         normal_bg = beautiful.colors.transparent,
         on_normal_bg = beautiful.colors.transparent,
-        icon_normal_bg = beautiful.colors.on_background,
-        icon_on_normal_bg = self:get_client()._icon.color,
+        {
+            widget = widgets.icon,
+            size = 25,
+            icon_normal_bg = beautiful.colors.on_background,
+            icon_on_normal_bg = self:get_client()._icon.color,
+            icon = self:get_client()._icon,
+        }
     }
 
     local title = wibox.widget {

@@ -4,6 +4,5 @@
 -------------------------------------------
 return {
     elevated = require("ui.widgets.button.elevated"),
-    icon = require("ui.widgets.button.icon"),
     text = require("ui.widgets.button.text")
 }
