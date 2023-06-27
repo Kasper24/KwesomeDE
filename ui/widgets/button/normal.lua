@@ -238,14 +238,6 @@ function button_normal:effect(instant)
         end
     end
     self.shape = shape
-
-    if self.text_effect then
-        self:text_effect(instant)
-    end
-
-    if self.icon_effect then
-        self:icon_effect(instant)
-    end
 end
 
 function button_normal:set_text(text)
