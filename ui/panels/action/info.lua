@@ -64,15 +64,18 @@ local function progress_bar(icon, on_release)
 
     if on_release ~= nil then
         local arrow = wibox.widget {
-            widget = widgets.button.text.normal,
+            widget = widgets.button.elevated.normal,
             forced_width = dpi(40),
             forced_height = dpi(40),
-            size = 15,
-            icon = beautiful.icons.chevron.right,
-            text_normal_bg = beautiful.colors.on_background,
             on_release = function()
                 on_release()
-            end
+            end,
+            {
+                widget = widgets.text,
+                text_normal_bg = beautiful.colors.on_background,
+                size = 15,
+                icon = beautiful.icons.chevron.right
+            }
         }
         widget:add(arrow)
         progress_bar.forced_width = dpi(390)
@@ -153,15 +156,18 @@ local function audio()
     }
 
     local arrow = wibox.widget {
-        widget = widgets.button.text.normal,
+        widget = widgets.button.elevated.normal,
         forced_width = dpi(40),
         forced_height = dpi(40),
-        size = 15,
-        icon = beautiful.icons.chevron.right,
-        text_normal_bg = beautiful.colors.on_background,
         on_release = function()
             audio_popup:toggle()
-        end
+        end,
+        {
+            widget = widgets.text,
+            text_normal_bg = beautiful.colors.on_background,
+            size = 15,
+            icon = beautiful.icons.chevron.right,
+        }
     }
 
     local widget = wibox.widget {

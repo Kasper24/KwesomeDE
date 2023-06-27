@@ -27,27 +27,33 @@ local dashboard = {
 
 local function arrow_button(icon, text, on_icon_release, on_arrow_release)
     local icon = wibox.widget {
-        widget = widgets.button.text.state,
+        widget = widgets.button.elevated.state,
         forced_height = dpi(90),
         normal_shape = helpers.ui.prrect(true, false, false, true),
         normal_bg = beautiful.colors.surface,
         on_normal_bg = icon.color,
-        text_normal_bg = icon.color,
-        text_on_normal_bg = beautiful.colors.on_accent,
-        icon = icon,
-        on_release = on_icon_release
+        on_release = on_icon_release,
+        {
+            widget = widgets.text,
+            text_normal_bg = icon.color,
+            text_on_normal_bg = beautiful.colors.on_accent,
+            icon = icon,
+        }
     }
 
     local arrow = wibox.widget {
-        widget = widgets.button.text.state,
+        widget = widgets.button.elevated.state,
         forced_height = dpi(90),
         normal_shape = helpers.ui.prrect(false, true, true, false),
         normal_bg = beautiful.colors.surface,
         on_normal_bg = icon.color,
-        text_normal_bg = icon.color,
-        text_on_normal_bg = beautiful.colors.on_accent,
-        icon = beautiful.icons.chevron.right,
-        on_release = on_arrow_release
+        on_release = on_arrow_release,
+        {
+            widget = widgets.text,
+            text_normal_bg = icon.color,
+            text_on_normal_bg = beautiful.colors.on_accent,
+            icon = beautiful.icons.chevron.right,
+        }
     }
 
     local button = wibox.widget {
@@ -85,15 +91,18 @@ end
 
 local function button(icon, text, on_release)
     local icon = wibox.widget {
-        widget = widgets.button.text.state,
+        widget = widgets.button.elevated.state,
         forced_width = dpi(150),
         forced_height = dpi(90),
         normal_bg = beautiful.colors.surface,
         on_normal_bg = icon.color,
-        text_normal_bg = icon.color,
-        text_on_normal_bg = beautiful.colors.on_accent,
-        icon = icon,
-        on_release = on_release
+        on_release = on_release,
+        {
+            widget = widgets.text,
+            text_normal_bg = icon.color,
+            text_on_normal_bg = beautiful.colors.on_accent,
+            icon = icon,
+        }
     }
 
     local name = wibox.widget {

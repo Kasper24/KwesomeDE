@@ -195,15 +195,18 @@ local function main()
     }
 
     local screenshot_button = wibox.widget {
-        widget = widgets.button.text.normal,
+        widget = widgets.button.elevated.normal,
         forced_height = dpi(50),
-        size = 15,
         normal_bg = beautiful.icons.camera_retro.color,
-        text_normal_bg = beautiful.colors.on_accent,
-        text = "Screenshot",
         on_release = function()
             screenshot_daemon:screenshot()
-        end
+        end,
+        {
+            widget = widgets.text,
+            text_normal_bg = beautiful.colors.on_accent,
+            size = 15,
+            text = "Screenshot",
+        }
     }
 
     return wibox.widget {

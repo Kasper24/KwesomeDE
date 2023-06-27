@@ -95,15 +95,18 @@ local function process_widget(process)
     }
 
     local dismiss = wibox.widget {
-        widget = widgets.button.text.normal,
+        widget = widgets.button.elevated.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
-        icon = beautiful.icons.xmark,
-        size = 15,
         on_release = function()
             awful.spawn("kill -9 " .. process.pid, false)
             process:emit_signal("removed")
-        end
+        end,
+        {
+            widget = widgets.text,
+            size = 15,
+            icon = beautiful.icons.xmark,
+        }
     }
 
     process:dynamic_connect_signal("update", function(self, process)

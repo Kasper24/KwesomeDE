@@ -34,19 +34,22 @@ local function application_widget(application)
     }
 
     local mute = wibox.widget {
-        widget = widgets.button.text.state,
+        widget = widgets.button.elevated.state,
         forced_width = dpi(40),
         forced_height = dpi(40),
         on_by_default = application.mute,
-        text_normal_bg = icon_image.color,
         on_normal_bg = icon_image.color,
-        text_on_normal_bg = beautiful.colors.on_accent,
-        icon = beautiful.icons.volume.off,
-        size = 12,
         halign = "right",
         on_release = function()
             application:toggle_mute()
-        end
+        end,
+        {
+            widget = widgets.text,
+            text_normal_bg = icon_image.color,
+            text_on_normal_bg = beautiful.colors.on_accent,
+            size = 12,
+            icon = beautiful.icons.volume.off,
+        }
     }
 
     local slider = widgets.slider {
@@ -114,17 +117,20 @@ local function device_widget(device)
     }
 
     local mute = wibox.widget {
-        widget = widgets.button.text.state,
+        widget = widgets.button.elevated.state,
         forced_width = dpi(40),
         forced_height = dpi(40),
         on_by_default = device.mute,
         on_normal_bg = beautiful.icons.volume.off.color,
-        text_on_normal_bg = beautiful.colors.on_accent,
-        icon = beautiful.icons.volume.off,
-        size = 12,
         on_release = function()
             device:toggle_mute()
-        end
+        end,
+        {
+            widget = widgets.text,
+            text_on_normal_bg = beautiful.colors.on_accent,
+            size = 12,
+            icon = beautiful.icons.volume.off,
+        }
     }
 
     local slider = widgets.slider {

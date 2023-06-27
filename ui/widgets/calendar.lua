@@ -6,7 +6,7 @@ local gtable = require("gears.table")
 local gshape = require("gears.shape")
 local wibox = require("wibox")
 local twidget = require("ui.widgets.text")
-local tbwidget = require("ui.widgets.button.text")
+local ebwidget = require("ui.widgets.button.elevated")
 local bwidget = require("ui.widgets.background")
 local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
@@ -85,8 +85,8 @@ function calendar:set_date(date)
         month = date.month,
         day = 1
     }
-    self:get_children_by_id("current_month_button")[1]:set_text(os.date("%B", time))
-    self:get_children_by_id("current_year_button")[1]:set_text(os.date("%Y", time))
+    self:get_children_by_id("current_month_text")[1]:set_text(os.date("%B", time))
+    self:get_children_by_id("current_year_text")[1]:set_text(os.date("%Y", time))
 
     local index = 1
     local days_to_add_at_month_start = first_day.wday - 1
@@ -167,70 +167,88 @@ local function new()
             {
                 layout = wibox.layout.align.horizontal,
                 {
-                    widget = tbwidget.normal,
+                    widget = ebwidget.normal,
                     forced_width = dpi(35),
-                    text_normal_bg = beautiful.colors.on_background,
-                    icon = beautiful.icons.caret.left,
-                    size = 15,
                     on_release = function()
                         widget:change_month(-1)
-                    end
+                    end,
+                    {
+                        widget = twidget,
+                        text_normal_bg = beautiful.colors.on_background,
+                        size = 15,
+                        icon = beautiful.icons.caret.left,
+                    }
                 },
                 {
-                    widget = tbwidget.normal,
+                    widget = ebwidget.normal,
                     forced_width = dpi(120),
-                    id = "current_month_button",
-                    text_normal_bg = beautiful.colors.on_background,
-                    size = 15,
-                    text = os.date("%B"),
                     on_release = function()
                         widget:set_month_current()
-                    end
+                    end,
+                    {
+                        widget = twidget,
+                        id = "current_month_text",
+                        text_normal_bg = beautiful.colors.on_background,
+                        size = 15,
+                        text = os.date("%B"),
+                    }
                 },
                 {
-                    widget = tbwidget.normal,
+                    widget = ebwidget.normal,
                     forced_width = dpi(35),
-                    text_normal_bg = beautiful.colors.on_background,
-                    icon = beautiful.icons.caret.right,
-                    size = 15,
                     on_release = function()
                         widget:change_month(1)
-                    end
+                    end,
+                    {
+                        widget = twidget,
+                        text_normal_bg = beautiful.colors.on_background,
+                        size = 15,
+                        icon = beautiful.icons.caret.right,
+                    }
                 },
             },
             nil,
             {
                 layout = wibox.layout.align.horizontal,
                 {
-                    widget = tbwidget.normal,
+                    widget = ebwidget.normal,
                     forced_width = dpi(35),
-                    text_normal_bg = beautiful.colors.on_background,
-                    icon = beautiful.icons.caret.left,
-                    size = 15,
                     on_release = function()
                         widget:change_year(-1)
-                    end
+                    end,
+                    {
+                        widget = twidget,
+                        text_normal_bg = beautiful.colors.on_background,
+                        size = 15,
+                        icon = beautiful.icons.caret.left
+                    }
                 },
                 {
-                    widget = tbwidget.normal,
+                    widget = ebwidget.normal,
                     forced_width = dpi(120),
-                    id = "current_year_button",
-                    text_normal_bg = beautiful.colors.on_background,
-                    size = 15,
-                    text = os.date("%Y"),
                     on_release = function()
                         widget:set_year_current()
-                    end
+                    end,
+                    {
+                        widget = twidget,
+                        id = "current_year_text",
+                        text_normal_bg = beautiful.colors.on_background,
+                        size = 15,
+                        text = os.date("%Y")
+                    }
                 },
                 {
-                    widget = tbwidget.normal,
+                    widget = ebwidget.normal,
                     forced_width = dpi(35),
-                    text_normal_bg = beautiful.colors.on_background,
-                    icon = beautiful.icons.caret.right,
-                    size = 15,
                     on_release = function()
                         widget:change_year(1)
-                    end
+                    end,
+                    {
+                        widget = twidget,
+                        text_normal_bg = beautiful.colors.on_background,
+                        size = 15,
+                        icon = beautiful.icons.caret.right,
+                    }
                 },
             }
         },

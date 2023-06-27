@@ -38,48 +38,60 @@ local function device_widget(device, path)
     }
 
     local cancel = wibox.widget {
-        widget = widgets.button.text.normal,
+        widget = widgets.button.elevated.normal,
         normal_bg = beautiful.colors.surface,
-        text_normal_bg = beautiful.colors.on_surface,
-        size = 12,
-        text = "Cancel",
         on_release = function()
             widget:get_children_by_id("button")[1]:turn_off()
             anim:set(dpi(60))
-        end
+        end,
+        {
+            widget = widgets.text,
+            text_normal_bg = beautiful.colors.on_surface,
+            size = 12,
+            text = "Cancel",
+        }
     }
 
     local connect_or_disconnect = wibox.widget {
-        widget = widgets.button.text.normal,
+        widget = widgets.button.elevated.normal,
         normal_bg = beautiful.colors.surface,
-        text_normal_bg = beautiful.colors.on_surface,
-        size = 12,
-        text = device:is_connected() == true and "Disconnect" or "Connect",
         on_release = function()
             device:toggle_connect()
-        end
+        end,
+        {
+            widget = widgets.text,
+            text_normal_bg = beautiful.colors.on_surface,
+            size = 12,
+            text = device:is_connected() == true and "Disconnect" or "Connect",
+        }
     }
 
     local trust_or_untrust = wibox.widget {
-        widget = widgets.button.text.normal,
+        widget = widgets.button.elevated.normal,
         normal_bg = beautiful.colors.surface,
-        text_normal_bg = beautiful.colors.on_surface,
-        size = 12,
-        text = device:is_trusted() == true and "Untrust" or "Trust",
         on_release = function()
             device:toggle_trust()
-        end
+        end,
+        {
+            widget = widgets.text,
+            text_normal_bg = beautiful.colors.on_surface,
+            size = 12,
+            text = device:is_trusted() == true and "Untrust" or "Trust",
+        }
     }
 
     local pair_or_unpair = wibox.widget {
-        widget = widgets.button.text.normal,
+        widget = widgets.button.elevated.normal,
         normal_bg = beautiful.colors.surface,
-        text_normal_bg = beautiful.colors.on_surface,
-        size = 12,
-        text = device:is_paired() == true and "Unpair" or "Pair",
         on_release = function()
             device:toggle_pair()
-        end
+        end,
+        {
+            widget = widgets.text,
+            text_normal_bg = beautiful.colors.on_surface,
+            size = 12,
+            text = device:is_paired() == true and "Unpair" or "Pair",
+        }
     }
 
     widget = wibox.widget {
@@ -153,23 +165,29 @@ local function new()
     }
 
     local scan = wibox.widget {
-        widget = widgets.button.text.normal,
-        text_normal_bg = beautiful.colors.on_background,
-        icon = beautiful.icons.arrow_rotate_right,
-        size = 15,
+        widget = widgets.button.elevated.normal,
         on_release = function()
             bluetooth_daemon:scan()
-        end
+        end,
+        {
+            widget = widgets.text,
+            text_normal_bg = beautiful.colors.on_background,
+            size = 15,
+            icon = beautiful.icons.arrow_rotate_right,
+        }
     }
 
     local settings = wibox.widget {
-        widget = widgets.button.text.normal,
-        text_normal_bg = beautiful.colors.on_background,
-        icon = beautiful.icons.gear,
-        size = 15,
+        widget = widgets.button.elevated.normal,
         on_release = function()
             bluetooth_daemon:open_settings()
-        end
+        end,
+        {
+            widget = widgets.text,
+            text_normal_bg = beautiful.colors.on_background,
+            size = 15,
+            icon = beautiful.icons.gear,
+        }
     }
 
     local layout = wibox.widget {

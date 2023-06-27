@@ -111,26 +111,32 @@ local function access_point_widget(layout, access_point)
     }
 
     local cancel = wibox.widget {
-        widget = widgets.button.text.normal,
+        widget = widgets.button.elevated.normal,
         normal_bg = beautiful.colors.surface,
-        text_normal_bg = beautiful.colors.on_surface,
-        size = 12,
-        text = "Cancel",
         on_release = function()
             text_input:unfocus()
             anim:set(dpi(65))
-        end
+        end,
+        {
+            widget = widgets.text,
+            text_normal_bg = beautiful.colors.on_surface,
+            size = 12,
+            text = "Cancel"
+        }
     }
 
     local connect_or_disconnect = wibox.widget {
-        widget = widgets.button.text.normal,
+        widget = widgets.button.elevated.normal,
         normal_bg = beautiful.colors.surface,
-        text_normal_bg = beautiful.colors.on_surface,
-        size = 12,
-        text = access_point:is_active() == true and "Disconnect" or "Connect",
         on_release = function()
             access_point:toggle(text_input:get_text(), auto_connect_checkbox:get_state())
-        end
+        end,
+        {
+            widget = widgets.text,
+            text_normal_bg = beautiful.colors.on_surface,
+            size = 12,
+            text = access_point:is_active() == true and "Disconnect" or "Connect"
+        }
     }
 
     local spinning_circle = widgets.spinning_circle {
@@ -248,27 +254,33 @@ local function new()
     }
 
     local rescan = wibox.widget {
-        widget = widgets.button.text.normal,
+        widget = widgets.button.elevated.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
-        text_normal_bg = beautiful.colors.on_background,
-        icon = beautiful.icons.arrow_rotate_right,
-        size = 15,
         on_release = function()
             network_daemon:scan_access_points()
-        end
+        end,
+        {
+            widget = widgets.text,
+            text_normal_bg = beautiful.colors.on_background,
+            size = 15,
+            icon = beautiful.icons.arrow_rotate_right,
+        }
     }
 
     local settings = wibox.widget {
-        widget = widgets.button.text.normal,
+        widget = widgets.button.elevated.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
-        text_normal_bg = beautiful.colors.on_background,
-        icon = beautiful.icons.gear,
-        size = 15,
         on_release = function()
             network_daemon:open_settings()
-        end
+        end,
+        {
+            widget = widgets.text,
+            text_normal_bg = beautiful.colors.on_background,
+            size = 15,
+            icon = beautiful.icons.gear,
+        }
     }
 
     local layout = wibox.widget {

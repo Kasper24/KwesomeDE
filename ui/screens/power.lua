@@ -55,19 +55,22 @@ end
 
 local function button(icon, text, on_release)
     local button = wibox.widget {
-        widget = widgets.button.text.normal,
+        widget = widgets.button.elevated.normal,
         forced_width = dpi(120),
         forced_height = dpi(120),
-        text_normal_bg = icon.color,
         normal_border_width = dpi(0),
         hover_border_width = dpi(10),
         press_border_width = dpi(10),
         normal_border_color = icon.color,
-        icon = icon,
-        size = 40,
         on_release = function ()
             on_release()
-        end
+        end,
+        {
+            widget = widgets.text,
+            text_normal_bg = icon.color,
+            size = 40,
+            icon = icon,
+        }
     }
 
     local text = wibox.widget {

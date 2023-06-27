@@ -5,7 +5,8 @@
 local gtable = require("gears.table")
 local wibox = require("wibox")
 local wmenu = require("ui.widgets.menu")
-local tbwidget = require("ui.widgets.button.text")
+local ebwidget = require("ui.widgets.button.elevated")
+local twidget = require("ui.widgets.text")
 local beautiful = require("beautiful")
 local setmetatable = setmetatable
 local pairs = pairs
@@ -31,18 +32,18 @@ function dropdown:add(key, value)
         text = key,
         on_release = function()
             self.on_value_selected(value)
-            self:set_text(self.label .. key)
+            self:get_children_by_id("text")[1]:set_text(self.label .. key)
         end
     })
 end
 
 function dropdown:select(key, value)
     self.on_value_selected(value)
-    self:set_text(self.label .. key)
+    self:get_children_by_id("text")[1]:set_text(self.label .. key)
 end
 
 function dropdown:get_value()
-    return self:get_text():gsub(self.label, "")
+    return self:get_children_by_id("text")[1]:get_text():gsub(self.label, "")
 end
 
 local function new(args)
@@ -59,14 +60,18 @@ local function new(args)
     local menu = wmenu({}, args.menu_width, false)
 
     dropdown_button = wibox.widget {
-        widget = tbwidget.state,
+        widget = ebwidget.state,
         halign = "left",
-        size = 12,
-        text = args.label .. args.initial_value,
-        text_normal_bg = beautiful.colors.on_background,
         on_release = function()
             menu:toggle()
-        end
+        end,
+        {
+            widget = twidget,
+            id = "text",
+            text_normal_bg = beautiful.colors.on_background,
+            size = 12,
+            text = args.label .. args.initial_value
+        }
     }
 
     gtable.crush(dropdown_button, dropdown)
@@ -77,7 +82,7 @@ local function new(args)
             text = key,
             on_release = function()
                 args.on_value_selected(value)
-                dropdown_button:set_text(args.label .. key)
+                dropdown_button:get_children_by_id("text")[1]:set_text(args.label .. key)
             end
         })
     end

@@ -49,16 +49,19 @@ local function system_tray()
     }
 
     local button = wibox.widget {
-        widget = widgets.button.text.state,
+        widget = widgets.button.elevated.state,
         forced_width = dpi(50),
         forced_height = dpi(50),
-        icon = beautiful.icons.chevron.down,
-        text_normal_bg = beautiful.icons.envelope.color,
         on_normal_bg = beautiful.icons.envelope.color,
-        text_on_normal_bg = beautiful.colors.transparent,
         on_press = function()
             system_tray:toggle()
-        end
+        end,
+        {
+            widget = widgets.text,
+            text_normal_bg = beautiful.icons.envelope.color,
+            text_on_normal_bg = beautiful.colors.transparent,
+            icon = beautiful.icons.chevron.down
+        }
     }
 
     system_tray:connect_signal("visibility", function(self, visibile)

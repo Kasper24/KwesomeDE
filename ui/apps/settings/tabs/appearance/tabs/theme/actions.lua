@@ -140,70 +140,88 @@ local function new()
     }
 
     local light_dark = wibox.widget {
-        widget = widgets.button.text.normal,
+        widget = widgets.button.elevated.normal,
         normal_bg = beautiful.icons.computer.color,
-        text_normal_bg = beautiful.colors.on_accent,
-        size = 15,
-        text = "Light",
         on_release = function()
             theme_daemon:toggle_dark_light()
-        end
+        end,
+        {
+            widget = widgets.text,
+            text_normal_bg = beautiful.colors.on_accent,
+            size = 15,
+            text = "Light",
+        }
     }
 
     local reset_colorscheme = wibox.widget {
-        widget = widgets.button.text.normal,
+        widget = widgets.button.elevated.normal,
         normal_bg = beautiful.icons.computer.color,
-        text_normal_bg = beautiful.colors.on_accent,
-        size = 15,
-        text = "Reset Colorscheme",
         on_release = function()
             theme_daemon:reset_colorscheme()
-        end
+        end,
+        {
+            widget = widgets.text,
+            text_normal_bg = beautiful.colors.on_accent,
+            size = 15,
+            text = "Reset Colorscheme",
+        }
     }
 
     local save_colorscheme = wibox.widget {
-        widget = widgets.button.text.normal,
+        widget = widgets.button.elevated.normal,
         normal_bg = beautiful.icons.computer.color,
-        text_normal_bg = beautiful.colors.on_accent,
-        size = 15,
-        text = "Save Colorscheme",
         on_release = function()
             theme_daemon:save_colorscheme()
-        end
+        end,
+        {
+            widget = widgets.text,
+            text_normal_bg = beautiful.colors.on_accent,
+            size = 15,
+            text = "Save Colorscheme",
+        }
     }
 
     local set_wallpaper = wibox.widget {
-        widget = widgets.button.text.normal,
+        widget = widgets.button.elevated.normal,
         normal_bg = beautiful.icons.computer.color,
-        text_normal_bg = beautiful.colors.on_accent,
-        size = 15,
-        text = "Set Wallpaper",
         on_release = function()
             theme_daemon:set_wallpaper(theme_daemon:get_selected_colorscheme())
-        end
+        end,
+        {
+            widget = widgets.text,
+            text_normal_bg = beautiful.colors.on_accent,
+            size = 15,
+            text = "Set Wallpaper",
+        }
     }
 
     local set_colorscheme = wibox.widget {
-        widget = widgets.button.text.normal,
+        widget = widgets.button.elevated.normal,
         normal_bg = beautiful.icons.computer.color,
-        text_normal_bg = beautiful.colors.on_accent,
-        size = 15,
-        text = "Set Colorscheme",
         on_release = function()
             theme_daemon:set_colorscheme(theme_daemon:get_selected_colorscheme())
-        end
+        end,
+        {
+            widget = widgets.text,
+            text_normal_bg = beautiful.colors.on_accent,
+            size = 15,
+            text = "Set Colorscheme",
+        }
     }
 
     local set_both = wibox.widget {
-        widget = widgets.button.text.normal,
+        widget = widgets.button.elevated.normal,
         normal_bg = beautiful.icons.computer.color,
-        text_normal_bg = beautiful.colors.on_accent,
-        size = 15,
-        text = "Set Both",
         on_release = function()
             theme_daemon:set_wallpaper(theme_daemon:get_selected_colorscheme())
             theme_daemon:set_colorscheme(theme_daemon:get_selected_colorscheme())
-        end
+        end,
+        {
+            widget = widgets.text,
+            text_normal_bg = beautiful.colors.on_accent,
+            size = 15,
+            text = "Set Both",
+        }
     }
 
     local widget = wibox.widget {

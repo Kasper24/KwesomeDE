@@ -6,8 +6,9 @@ local awful = require("awful")
 local gtable = require("gears.table")
 local wibox = require("wibox")
 local bwidget = require("ui.widgets.background")
+local twidget = require("ui.widgets.text")
 local tiwidget = require("ui.widgets.text_input")
-local tbwidget = require("ui.widgets.button.text")
+local ebwidget = require("ui.widgets.button.elevated")
 local beautiful = require("beautiful")
 local helpers = require("helpers")
 local filesystem = require("external.filesystem")
@@ -69,12 +70,9 @@ local function new(type)
     }
 
     local folder_button = wibox.widget {
-        widget = tbwidget.normal,
+        widget = ebwidget.normal,
         forced_width = dpi(60),
         forced_height = dpi(35),
-        size = 15,
-        text_normal_bg = beautiful.colors.on_background,
-        icon = type == "file" and beautiful.icons.file or beautiful.icons.folder_open,
         on_release = function()
             local script = type == "file" and FILE_PICKER_SCRIPT_PATH or FOLDER_PICKER_SCRIPT_PATH
 
@@ -85,7 +83,13 @@ local function new(type)
                     text_input:set_text(stdout)
                 end
             end)
-        end
+        end,
+        {
+            widget = twidget,
+            text_normal_bg = beautiful.colors.on_background,
+            size = 15,
+            icon = type == "file" and beautiful.icons.file or beautiful.icons.folder_open,
+        }
     }
 
     widget = wibox.widget {

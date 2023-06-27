@@ -85,15 +85,18 @@ local function notification_widget(notification, on_removed)
     if notification.actions ~= nil then
         for _, action in ipairs(notification.actions) do
             local button = wibox.widget {
-                widget = widgets.button.text.normal,
+                widget = widgets.button.elevated.normal,
                 -- forced_height = dpi(40),
-                size = 12,
                 normal_bg = beautiful.colors.surface,
-                text_normal_bg = beautiful.colors.on_surface,
-                text = action.name,
                 on_release = function()
                     action:invoke()
-                end
+                end,
+                {
+                    widget = widgets.text,
+                    text_normal_bg = beautiful.colors.on_surface,
+                    size = 12,
+                    text = action.name,
+                }
             }
             actions:add(button)
         end
@@ -110,15 +113,18 @@ local function notification_widget(notification, on_removed)
                 bottom = dpi(10)
             },
             {
-                widget = widgets.button.text.normal,
+                widget = widgets.button.elevated.normal,
                 forced_width = dpi(40),
                 forced_height = dpi(40),
-                icon = beautiful.icons.xmark,
                 on_release = function()
                     on_removed(widget)
                     notifications_daemon:remove_notification(notification)
                     INFO_PANEL:dynamic_disconnect_signals("visibility")
-                end
+                end,
+                {
+                    widget = widgets.text,
+                    icon = beautiful.icons.xmark,
+                }
             }
         }
     }
@@ -231,14 +237,17 @@ local function new()
     }
 
     local clear_notifications = wibox.widget {
-        widget = widgets.button.text.normal,
+        widget = widgets.button.elevated.normal,
         forced_width = dpi(50),
         forced_height = dpi(50),
-        icon = beautiful.icons.trash,
         on_release = function()
             notifications_daemon:remove_all_notifications()
             INFO_PANEL:dynamic_disconnect_signals("visibility")
-        end
+        end,
+        {
+            widget = widgets.text,
+            icon = beautiful.icons.trash,
+        }
     }
 
     local empty_notifications = wibox.widget {

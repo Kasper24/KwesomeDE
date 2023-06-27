@@ -46,16 +46,19 @@ local function action_button(icon, title, on_release)
         layout = wibox.layout.fixed.vertical,
         spacing = dpi(15),
         {
-            widget = widgets.button.text.normal,
+            widget = widgets.button.elevated.normal,
             forced_width = dpi(75),
             forced_height = dpi(75),
-            icon = icon,
             -- normal_bg = beautiful.icons.lock.color,
-            text_normal_bg = beautiful.colors.on_background,
-            size = 30,
             on_release = function()
                 on_release()
-            end
+            end,
+            {
+                widget = widgets.text,
+                text_normal_bg = beautiful.colors.on_background,
+                size = 30,
+                icon = icon,
+            }
         },
         {
             widget = widgets.text,
@@ -154,13 +157,16 @@ local function widget(self)
     }
 
     local unlock_button = wibox.widget {
-        widget = widgets.button.text.normal,
+        widget = widgets.button.elevated.normal,
         normal_bg = beautiful.icons.lock.color,
-        text_normal_bg = beautiful.colors.transparent,
-        text = "Unlock",
         on_release = function()
             system_daemon:unlock(self._private.text_input:get_text())
-        end
+        end,
+        {
+            widget = widgets.text,
+            text_normal_bg = beautiful.colors.transparent,
+            text = "Unlock"
+        }
     }
 
     return wibox.widget {

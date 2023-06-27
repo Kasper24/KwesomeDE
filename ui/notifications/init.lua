@@ -89,14 +89,17 @@ local function actions_widget(n)
 
     for _, action in ipairs(n.actions) do
         local button = wibox.widget {
-            widget = widgets.button.text.normal,
-            size = 12,
+            widget = widgets.button.elevated.normal,
             normal_bg = beautiful.colors.surface,
-            text_normal_bg = beautiful.colors.on_surface,
-            text = action.name,
             on_release = function()
                 action:invoke()
-            end
+            end,
+            {
+                widget = widgets.text,
+                text_normal_bg = beautiful.colors.on_surface,
+                size = 12,
+                text = action.name,
+            }
         }
         actions:add(button)
     end
@@ -152,13 +155,16 @@ local function create_notification(n, screen)
     }
 
     local dismiss = wibox.widget {
-        widget = widgets.button.text.normal,
-        icon = beautiful.icons.xmark,
-        text_normal_bg = beautiful.colors.on_background,
-        size = 12,
+        widget = widgets.button.elevated.normal,
         on_release = function()
             destroy_notif(n, screen)
-        end
+        end,
+        {
+            widget = widgets.text,
+            text_normal_bg = beautiful.colors.on_background,
+            size = 12,
+            icon = beautiful.icons.xmark,
+        }
     }
 
     local timeout_arc = wibox.widget {

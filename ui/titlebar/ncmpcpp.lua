@@ -16,14 +16,17 @@ local capi = {
 
 local function tab_button(title)
     return wibox.widget {
-        widget = widgets.button.text.state,
+        widget = widgets.button.elevated.state,
         on_by_default = true,
         halign = "left",
         on_normal_bg = beautiful.icons.list_music.color,
-        text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = beautiful.colors.on_accent,
-        size = 12,
-        text = title,
+        {
+            widget = widgets.text,
+            text_normal_bg = beautiful.colors.on_background,
+            text_on_normal_bg = beautiful.colors.on_accent,
+            size = 12,
+            text = title,
+        }
     }
 end
 

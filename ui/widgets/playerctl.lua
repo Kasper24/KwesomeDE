@@ -7,7 +7,6 @@ local gcolor = require("gears.color")
 local wibox = require("wibox")
 local twidget = require("ui.widgets.text")
 local iwidget = require("ui.widgets.icon")
-local tbwidget = require("ui.widgets.button.text")
 local ebwidget = require("ui.widgets.button.elevated")
 local swidget = require("ui.widgets.slider")
 local beautiful = require("beautiful")
@@ -484,17 +483,20 @@ function playerctl.previous(width, height, daemon)
     local playerctl_daemon = daemon or general_playerctl_daemon
 
     return wibox.widget {
-        widget = tbwidget.normal,
+        widget = ebwidget.normal,
         forced_width = width or dpi(50),
         forced_height = height or dpi(50),
         normal_shape = gshape.circle,
         normal_bg = beautiful.colors.transparent,
-        text_normal_bg = beautiful.colors.on_background,
-        icon = beautiful.icons.backward,
-        size = 12,
         on_release = function()
             playerctl_daemon:previous()
-        end
+        end,
+        {
+            widget = twidget,
+            text_normal_bg = beautiful.colors.on_background,
+            size = 12,
+            icon = beautiful.icons.backward
+        }
     }
 end
 
@@ -502,17 +504,20 @@ function playerctl.next(width, height, daemon)
     local playerctl_daemon = daemon or general_playerctl_daemon
 
     return wibox.widget {
-        widget = tbwidget.normal,
+        widget = ebwidget.normal,
         forced_width = width or dpi(50),
         forced_height = height or dpi(50),
         normal_shape = gshape.circle,
         normal_bg = beautiful.colors.transparent,
-        text_normal_bg = beautiful.colors.on_background,
-        icon = beautiful.icons.forward,
-        size = 12,
         on_release = function()
             playerctl_daemon:next()
-        end
+        end,
+        {
+            widget = twidget,
+            text_normal_bg = beautiful.colors.on_background,
+            size = 12,
+            icon = beautiful.icons.forward
+        }
     }
 end
 
@@ -520,17 +525,20 @@ function playerctl.loop(width, height, daemon)
     local playerctl_daemon = daemon or general_playerctl_daemon
 
     local widget = wibox.widget {
-        widget = tbwidget.state,
+        widget = ebwidget.state,
         forced_width = width or dpi(50),
         forced_height = height or dpi(50),
         normal_shape = gshape.circle,
         normal_bg = beautiful.colors.transparent,
-        text_normal_bg = beautiful.colors.on_background,
-        icon = beautiful.icons._repeat,
-        size = 12,
         on_release = function(self)
             playerctl_daemon:cycle_loop_status()
-        end
+        end,
+        {
+            widget = twidget,
+            text_normal_bg = beautiful.colors.on_background,
+            size = 12,
+            icon = beautiful.icons._repeat
+        }
     }
 
     playerctl_daemon:connect_signal("loop_status", function(self, loop_status, player)
@@ -548,17 +556,20 @@ function playerctl.shuffle(width, height, daemon)
     local playerctl_daemon = daemon or general_playerctl_daemon
 
     local widget = wibox.widget {
-        widget = tbwidget.state,
+        widget = ebwidget.state,
         forced_width = width or dpi(50),
         forced_height = height or dpi(50),
         normal_shape = gshape.circle,
         normal_bg = beautiful.colors.transparent,
-        text_normal_bg = beautiful.colors.on_background,
-        icon = beautiful.icons.shuffle,
-        size = 12,
         on_release = function(self)
             playerctl_daemon:cycle_shuffle()
-        end
+        end,
+        {
+            widget = twidget,
+            text_normal_bg = beautiful.colors.on_background,
+            size = 12,
+            icon = beautiful.icons.shuffle
+        }
     }
 
     playerctl_daemon:connect_signal("shuffle", function(self, shuffle, player)

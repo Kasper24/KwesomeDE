@@ -258,15 +258,18 @@ end
 
 local function main()
     local record_button = wibox.widget {
-        widget = widgets.button.text.normal,
+        widget = widgets.button.elevated.normal,
         forced_height = dpi(50),
-        size = 15,
         normal_bg = beautiful.icons.video.color,
-        text_normal_bg = beautiful.colors.on_accent,
-        text = record_daemon:get_is_recording() and "Stop" or "Record",
         on_release = function()
             record_daemon:toggle_video()
-        end
+        end,
+        {
+            widget = widgets.text,
+            text_normal_bg = beautiful.colors.on_accent,
+            size = 15,
+            text = record_daemon:get_is_recording() and "Stop" or "Record",
+        }
     }
 
     record_daemon:connect_signal("started", function()
