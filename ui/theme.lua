@@ -333,9 +333,6 @@ local function icons()
     if not theme.svg_icons then
         theme.svg_icons = {}
     end
-    for _, icon in pairs(theme.svg_icons) do
-        icon.color = theme.colors.random_accent_color()
-    end
 end
 
 local function assets()
@@ -424,6 +421,9 @@ function theme.reload()
     local old_colorscheme_to_new_map = {}
     for index, color in pairs(old_colorscheme) do
         old_colorscheme_to_new_map[color] = new_colorscheme[index]
+    end
+    for _, icon in pairs(theme.svg_icons) do
+        icon.color = old_colorscheme_to_new_map[icon.color]
     end
 
     capi.awesome.emit_signal("colorscheme::changed", old_colorscheme_to_new_map, new_colorscheme)
