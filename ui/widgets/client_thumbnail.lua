@@ -74,7 +74,6 @@ local function new()
     local widget = wibox.widget {
         widget = ciwidget,
         id = "fake_preview",
-        size = 30,
         halign = "center",
         valign = "center",
         size = 100,
