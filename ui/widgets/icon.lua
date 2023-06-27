@@ -78,8 +78,7 @@ function icon:set_icon(icon)
     wp.icon = icon
     self.image = icon.path
     wp.defaults.color = wp.color or icon.color
-    local color = wp.defaults.color or wp.color
-    self:set_stylesheet(generate_style(color))
+    self:set_stylesheet(generate_style(wp.defaults.color or wp.color))
 end
 
 function icon:set_size(size)
@@ -92,7 +91,6 @@ end
 function icon:set_color(color)
     local wp = self._private
     wp.color = color
-
     self:set_stylesheet(generate_style(color))
 end
 
