@@ -113,7 +113,6 @@ local function new(hot_reload)
                 wp.color = old_colorscheme_to_new_map[wp.color]
                 widget:set_color(wp.color)
             elseif wp.defaults.color then
-                -- TODO - Fix notif center icon not hot reloading
                 local new_color = old_colorscheme_to_new_map[wp.defaults.color]
                 if new_color then
                     wp.defaults.color = new_color
