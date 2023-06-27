@@ -12,7 +12,6 @@ return {
     button_group = require(... .. ".button_group"),
     calendar = require(... .. ".calendar"),
     checkbox = require(... .. ".checkbox"),
-    client_font_icon  = require(... .. ".client_font_icon"),
     client_icon  = require(... .. ".client_icon"),
     client_menu = require(... .. ".client_menu"),
     client_thumbnail = require(... .. ".client_thumbnail"),

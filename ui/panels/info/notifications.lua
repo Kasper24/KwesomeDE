@@ -157,24 +157,14 @@ local function notification_widget(notification, on_removed)
 end
 
 local function notification_group(notification)
-    local icon = nil
-    if notification.app_font_icon == nil then
-        icon = wibox.widget {
-            widget = widgets.icon,
-            size = 40,
-            halign = "left",
-            valign = "top",
-            clip_shape = helpers.ui.rrect(),
-            icon = notification.app_icon
-        }
-    else
-        icon = wibox.widget {
-            widget = widgets.text,
-            halign = "left",
-            icon = notification.app_font_icon,
-            size = 30
-        }
-    end
+    local icon = wibox.widget {
+        widget = widgets.icon,
+        size = 40,
+        halign = "left",
+        valign = "top",
+        clip_shape = helpers.ui.rrect(),
+        icon = notification.app_icon
+    }
 
     local title = wibox.widget {
         widget = widgets.text,

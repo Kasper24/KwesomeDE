@@ -273,96 +273,6 @@ local function icons()
         "openrgb"
     }
 
-    theme.app_icons = {
-        ["atom"] = theme.icons.atom,
-        ["alacritty"] = theme.icons.laptop_code,
-        ["artemisuiexe"] = theme.icons.lights_holiday,
-        ["authydesktop"] = theme.icons.unlock,
-        ["archivemanager"] = theme.icons.archeive,
-        ["bitwarden"] = theme.icons.unlock,
-        ["blender"] = theme.icons.cube,
-        ["bluemanmanager"] = theme.icons.bluetooth.on,
-        ["btop"] = theme.icons.system_monitor,
-        ["bravebrowser"] = theme.icons.chrome,
-        ["code"] = theme.icons.vscode,
-        ["colorpicker"] = theme.icons.palette,
-        ["chromium"] = theme.icons.chrome,
-        ["dconfeditor"] = theme.icons.computer,
-        ["discord"] = theme.icons.discord,
-        ["emacs"] = theme.icons.emacs,
-        ["eog"] = theme.icons.image,
-        ["feh"] = theme.icons.image,
-        ["filepicker"] = theme.icons.file_manager,
-        ["files"] = theme.icons.file_manager,
-        ["firefox"] = theme.icons.firefox,
-        ["flameshot"] = theme.icons.camera_retro,
-        ["folderpicker"] = theme.icons.file_manager,
-        ["gimp"] = theme.icons.photo_film,
-        ["gitkraken"] = theme.icons.gitkraken,
-        ["gitqlient"] = theme.icons.git,
-        ["gnomecalculator"] = theme.icons.calculator,
-        ["gnomesystemmonitor"] = theme.icons.system_monitor,
-        ["gparted"] = theme.icons.disc_drive,
-        ["grandtheftautov"] = theme.icons.gamepad_alt,
-        ["gwenview"] = theme.icons.image,
-        ["heroic"] = theme.icons.gamepad_alt,
-        ["htop"] = theme.icons.system_monitor,
-        ["goverlay"] = theme.icons.gamepad_alt,
-        ["jetbrainsstudio"] = theme.icons.code,
-        ["keepassxc"] = theme.icons.unlock,
-        ["kitty"] = theme.icons.laptop_code,
-        ["kotatogramdesktop"] = theme.icons.telegram,
-        ["lazygit"] = theme.icons.git,
-        ["libreofficewriter"] = theme.icons.word,
-        ["libreofficeimpress"] = theme.icons.powerpoint,
-        ["libreofficecalc"] = theme.icons.excel,
-        ["lutris"] = theme.icons.gamepad_alt,
-        ["lxappearance"] = theme.icons.palette,
-        ["mopidy"] = theme.icons.spotify,
-        ["mpv"] = theme.icons.video,
-        ["ncmpcpp"] = theme.icons.spotify,
-        ["nemo"] = theme.icons.file_manager,
-        ["networkmanagerdmenu"] = theme.icons.router,
-        ["nmconnectioneditor"] = theme.icons.router,
-        ["notepadqq"] = theme.icons.note,
-        ["nvidiasettings"] = theme.icons.nvidia,
-        ["nvim"] = theme.icons.vim,
-        ["obs"] = theme.icons.video,
-        ["openrgb"] = theme.icons.lights_holiday,
-        ["parcellite"] = theme.icons.clipboard,
-        ["pavucontrol"] = theme.icons.speaker,
-        ["protontricks"] = theme.icons.gamepad_alt,
-        ["ranger"] = theme.icons.file_manager,
-        ["screenshot"] = theme.icons.camera_retro,
-        ["spotify"] = theme.icons.spotify,
-        ["steam"] = theme.icons.steam,
-        ["steamapp252950"] = theme.icons.gamepad_alt,
-        ["thunar"] = theme.icons.file_manager,
-        ["qbittorrent"] = theme.icons.download,
-        ["qemusystemx8664"] = theme.icons.computer,
-        ["qutebrowser"] = theme.icons.chrome,
-        ["qtcreator"] = theme.icons.code,
-        ["recorder"] = theme.icons.video,
-        ["rockstargameslauncher"] = theme.icons.gamepad_alt,
-        ["st"] = theme.icons.laptop_code,
-        ["st256color"] = theme.icons.laptop_code,
-        ["telegramdesktop"] = theme.icons.telegram,
-        ["termite"] = theme.icons.laptop_code,
-        ["thunderbird"] = theme.icons.envelope,
-        ["thememanager"] = theme.icons.palette,
-        ["urxvt"] = theme.icons.laptop_code,
-        ["virtualboxmanager"] = theme.icons.computer,
-        ["vivaldistable"] = theme.icons.chrome,
-        ["vim"] = theme.icons.vim,
-        ["vlc"] = theme.icons.video,
-        ["wireshark"] = theme.icons.router,
-        ["wpg"] = theme.icons.spraycan,
-        ["webtorrent"] = theme.icons.video_download_icon,
-        ["settings"] = theme.icons.computer,
-        ["xcolor"] = theme.icons.palette,
-        ["xfce4settingsmanager"] = theme.icons.computer,
-    }
-
     local function set_icon_default_props(icon, color)
         if icon.color == nil then
             icon.color = color or theme.colors.random_accent_color()
@@ -425,26 +335,6 @@ local function icons()
     end
     for _, icon in pairs(theme.svg_icons) do
         icon.color = theme.colors.random_accent_color()
-    end
-
-    function theme.get_app_font_icon(...)
-        local args = { ... }
-
-        for _, arg in ipairs(args) do
-            if arg then
-                arg = arg:lower()
-                arg = arg:gsub("_", "")
-                arg = arg:gsub("%s+", "")
-                arg = arg:gsub("-", "")
-                arg = arg:gsub("%.", "")
-                local icon = beautiful.app_icons[arg]
-                if icon then
-                    return icon
-                end
-            end
-        end
-
-        return beautiful.icons.window
     end
 end
 

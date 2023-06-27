@@ -40,13 +40,6 @@ local function is_suspended(n)
     return false
 end
 
-local function get_notification_accent_color(n)
-    return (n.app_font_icon and n.app_font_icon.color) or
-            (n.font_icon and n.font_icon.color) or
-            n.app_icon.color or
-            beautiful.colors.random_accent_color()
-end
-
 local function get_notification_position(n, screen)
     local placement = awful.placement.top_right(n.widget, {
         honor_workarea = true,
@@ -64,25 +57,6 @@ local function get_notification_position(n, screen)
     end
 
     return { x = x, y = y }
-end
-
-local function app_icon_widget(n)
-    if n.app_font_icon == nil then
-        return wibox.widget {
-            widget = widgets.icon,
-            size = 30,
-            halign = "center",
-            valign = "center",
-            clip_shape = helpers.ui.rrect(),
-            icon = n.app_icon
-        }
-    else
-        return wibox.widget {
-            widget = widgets.text,
-            icon = n.app_font_icon,
-            size = n.app_font_icon.size
-        }
-    end
 end
 
 local function icon_widget(n)
@@ -158,9 +132,18 @@ local function destroy_notif(n, screen)
 end
 
 local function create_notification(n, screen)
-    local accent_color = get_notification_accent_color(n)
+    local accent_color = n.app_icon.color
 
     n:set_timeout(4294967)
+
+    local app_icon = wibox.widget {
+        widget = widgets.icon,
+        size = 30,
+        halign = "center",
+        valign = "center",
+        clip_shape = helpers.ui.rrect(),
+        icon = n.app_icon
+    }
 
     local app_name = wibox.widget {
         widget = widgets.text,
@@ -253,7 +236,7 @@ local function create_notification(n, screen)
                         {
                             layout = wibox.layout.fixed.horizontal,
                             spacing = dpi(15),
-                            app_icon_widget(n),
+                            app_icon,
                             app_name
                         },
                         nil,
@@ -325,7 +308,6 @@ local function create_notification(n, screen)
                     n.widget.widget:get_children_by_id("top_row")[1]:set_third(timeout_arc)
                     if timeout_arc_anim then
                         timeout_arc_anim:set()
-                        print(timeout_arc_anim)
                     end
                 end
             end
@@ -364,26 +346,11 @@ naughty.connect_signal("added", function(n)
         n.title = n.app_name
     end
 
-    if n._private.app_font_icon == nil then
-        -- n.app_font_icon = beautiful.get_app_font_icon(n.app_name)
-    else
-        -- n.app_font_icon = n._private.app_font_icon
-    end
-
+    n.app_icon = beautiful.get_app_svg_icon(n._private.app_icon or {n.app_name})
     n.font_icon = n._private.font_icon
 
-    if type(n._private.app_icon) == "table" then
-        n.app_icon = beautiful.get_app_svg_icon(n._private.app_icon)
-    else
-        n.app_icon = beautiful.get_app_svg_icon(n._private.app_icon or n.app_name)
-    end
-
     if type(n.icon) == "table" then
-        n.icon = beautiful.get_svg_icon(n.icon)
-    end
-
-    if n.app_icon == "" or n.app_icon == nil then
-        -- n.app_icon = beautiful.get_svg_icon("application-default-icon")
+        n.icon = beautiful.get_svg_icon{n.icon}
     end
 
     if (n.icon == "" or n.icon == nil) and n.font_icon == nil then

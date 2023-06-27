@@ -88,7 +88,6 @@ local function on_pinned_app_added(self, pinned_app)
         cloned_pinned_app.desktop_app_info = DesktopAppInfo.new(cloned_pinned_app.desktop_app_info_id)
         cloned_pinned_app.actions = self:get_actions(pinned_app)
     end
-    cloned_pinned_app.font_icon = self:get_font_icon(pinned_app)
     cloned_pinned_app.icon = self:get_icon(cloned_pinned_app)
 
     function cloned_pinned_app:run()
@@ -118,7 +117,6 @@ local function on_client_added(self, client)
     client.desktop_app_info_id = id
     client.actions = self:get_actions(client)
     client._icon = self:get_icon(client)
-    client.font_icon = self:get_font_icon(client)
     client.managed = true
     client:emit_signal("managed")
 
@@ -233,11 +231,7 @@ end
 
 function tasklist:get_icon(client)
     local icon = client.desktop_app_info and client.desktop_app_info:get_string("Icon")
-    return beautiful.get_svg_icon(client.class) or beautiful.get_app_svg_icon(icon)
-end
-
-function tasklist:get_font_icon(client)
-    return beautiful.get_app_font_icon(client.class, client.name)
+    return beautiful.get_svg_icon{client.class} or beautiful.get_app_svg_icon{icon}
 end
 
 function tasklist:is_app_pinned(class)
@@ -353,10 +347,7 @@ local function new()
 
     capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
         for _, client in ipairs(capi.client.get()) do
-            if client.font_icon then
-                client.font_icon.color = old_colorscheme_to_new_map[client.font_icon.color]
-                client._icon.color = old_colorscheme_to_new_map[client._icon.color]
-            end
+            client._icon.color = old_colorscheme_to_new_map[client._icon.color]
         end
     end)
 
