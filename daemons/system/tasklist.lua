@@ -232,12 +232,9 @@ function tasklist:get_actions(client)
 end
 
 function tasklist:get_icon(client)
-    local icon = ""
-
-    if client.desktop_app_info then
-        icon = client.desktop_app_info:get_string("Icon") or ""
-    end
-
+    local icon = client.desktop_app_info and
+        client.desktop_app_info:get_string("Icon") or
+        client.class
     return helpers.icon_theme.get_app_icon_path(icon)
 end
 
