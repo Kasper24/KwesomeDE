@@ -26,7 +26,7 @@ local dashboard = {
 }
 
 local function arrow_button(icon, text, on_icon_release, on_arrow_release)
-    local icon = wibox.widget {
+    local icon_widget = wibox.widget {
         widget = widgets.button.state,
         forced_height = dpi(90),
         normal_shape = helpers.ui.prrect(true, false, false, true),
@@ -41,7 +41,7 @@ local function arrow_button(icon, text, on_icon_release, on_arrow_release)
         }
     }
 
-    local arrow = wibox.widget {
+    local arrow_widget = wibox.widget {
         widget = widgets.button.state,
         forced_height = dpi(90),
         normal_shape = helpers.ui.prrect(false, true, true, false),
@@ -59,8 +59,8 @@ local function arrow_button(icon, text, on_icon_release, on_arrow_release)
     local button = wibox.widget {
         layout = wibox.layout.flex.horizontal,
         spacing = dpi(1),
-        icon,
-        arrow
+        icon_widget,
+        arrow_widget
     }
 
     local name = wibox.widget {
@@ -75,13 +75,13 @@ local function arrow_button(icon, text, on_icon_release, on_arrow_release)
         forced_height = dpi(130),
         spacing = dpi(15),
         turn_on = function(self, text)
-            icon:turn_on()
-            arrow:turn_on()
+            icon_widget:turn_on()
+            arrow_widget:turn_on()
             name:set_text(text)
         end,
         turn_off = function(self, text)
-            icon:turn_off()
-            arrow:turn_off()
+            icon_widget:turn_off()
+            arrow_widget:turn_off()
             name:set_text(text)
         end,
         button,
