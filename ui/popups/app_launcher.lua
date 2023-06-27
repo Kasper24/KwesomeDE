@@ -91,7 +91,7 @@ local function app(app, app_launcher)
                 size = 50,
                 halign = "center",
                 icon_normal_bg = icon.color,
-                icon_on_normal_bg = "#000000",
+                icon_on_normal_bg = beautiful.colors.icon_transparent,
                 icon = icon
             },
             {

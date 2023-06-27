@@ -98,7 +98,7 @@ local function tag_widget(self, tag, direction)
         halign = "center",
         icon = tag.icon,
         on_normal_bg = tag.icon.color,
-        icon_on_normal_bg = "#000000",
+        icon_on_normal_bg = beautiful.colors.icon_transparent,
         -- on_hover = function()
         --     if #tag:clients() > 0 then
         --         tag_preview:show(tag, {

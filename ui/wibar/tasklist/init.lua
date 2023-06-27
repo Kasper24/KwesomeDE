@@ -108,7 +108,7 @@ local function client_widget(client)
             icon = client._icon,
             on_normal_bg =  client._icon.color,
             icon_normal_bg = client._icon.color,
-            icon_on_normal_bg = "#000000",
+            icon_on_normal_bg = beautiful.colors.icon_transparent,
             halign = "center",
             on_hover = function(self)
                 task_preview:show(client, {

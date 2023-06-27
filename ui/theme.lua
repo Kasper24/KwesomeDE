@@ -57,6 +57,7 @@ local function colors()
         white = "#FFFFFF",
         black = "#000000",
         transparent = colors[1] .. "00",
+        icon_transparent = helpers.color.is_dark(colors[1]) and "#000000" or "#FFFFFF",
 
         on_background = colors[8],
         on_background_dark = helpers.color.darken_or_lighten(colors[1], 0.4),
