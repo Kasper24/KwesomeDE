@@ -248,10 +248,15 @@ function elevated_button_normal:effect(instant)
     end
 end
 
-function elevated_button_normal:set_widget(new_widget)
+function elevated_button_normal:set_widget(widget)
     local wp = self._private
 
-    local widget = wibox.widget {
+    local w = widget and wibox.widget.base.make_widget_from_value(widget)
+    if w then
+        wibox.widget.base.check_widget(w)
+    end
+
+    wp.widget = wibox.widget {
         layout = wibox.layout.stack,
         {
             widget = wibox.widget.base.make_widget,
@@ -281,24 +286,22 @@ function elevated_button_normal:set_widget(new_widget)
                 widget = wibox.container.margin,
                 id = "paddings",
                 margins = wp.paddings or dpi(10),
-                new_widget
+                w
             }
         }
     }
-
-    wp.widget = widget
-    wp.content_widget = new_widget
-    wp.ripple_layer = widget:get_children_by_id("ripple_layer")[1]
-    wp.state_layer = widget:get_children_by_id("state_layer")[1]
+    wp.content_widget = w
+    wp.ripple_layer = wp.widget:get_children_by_id("ripple_layer")[1]
+    wp.state_layer = wp.widget:get_children_by_id("state_layer")[1]
     wp.animable_childs = {}
 
-    if wp.color_animation == nil then
-        if new_widget.all_children then
-            for _, child in ipairs(new_widget.all_children) do
+    if widget and wp.color_animation == nil then
+        if widget.all_children then
+            for _, child in ipairs(widget.all_children) do
                 self:build_animable_child_anims(child)
             end
         end
-        self:build_animable_child_anims(new_widget)
+        self:build_animable_child_anims(widget)
     end
 
     self:emit_signal("property::widget")
