@@ -63,32 +63,19 @@ local function read_notifications(self)
 
             if #self._private.notifications > 0 then
                 for _, notification in ipairs(self._private.notifications) do
-                    local tasks = {}
-
                     notification.app_icon = beautiful.get_svg_icon(notification.app_icon)
                     local icon = filesystem.file.new_for_path(notification.icon)
-                    table.insert(tasks, async.callback(icon, icon.exists))
-
-                    local app_icon = filesystem.file.new_for_path(notification.app_icon)
-                    table.insert(tasks, async.callback(app_icon, app_icon.exists))
-
-                    async.all(tasks, function(error, results)
-                        if results then
-                            if error == nil then
-                                if results[1] == nil or results[1][1] == false then
-                                    notification.font_icon = beautiful.icons.message
-                                end
-                                if results[2] == nil or results[2][1] == false then
-                                    notification.app_font_icon = beautiful.icons.window
-                                end
-                            else
+                    if notification.font_icon == nil then
+                        icon:exists(function(error, exists)
+                            if error ~= nil or exists == false then
                                 notification.font_icon = beautiful.icons.message
-                                notification.app_font_icon = beautiful.icons.window
                             end
-                        end
 
+                            self:emit_signal("new", notification)
+                        end)
+                    else
                         self:emit_signal("new", notification)
-                    end)
+                    end
                 end
             else
                 self:emit_signal("empty")
