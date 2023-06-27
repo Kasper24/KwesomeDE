@@ -181,6 +181,8 @@ local function new(hot_reload)
         end)
     end
 
+    rawset(widget, "widget_name", "text")
+
     return widget
 end
 

@@ -124,6 +124,8 @@ local function new(hot_reload)
 
     widget:set_size(wp.defaults.size)
 
+    rawset(widget, "widget_name", "icon")
+
     return widget
 end
 

@@ -33,6 +33,8 @@ local function new()
         widget:emit_signal("widget::redraw_needed")
     end)
 
+    rawset(widget, "widget_name", "background")
+
     return widget
 end
 
