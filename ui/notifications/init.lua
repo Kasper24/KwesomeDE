@@ -69,17 +69,12 @@ end
 local function app_icon_widget(n)
     if n.app_font_icon == nil then
         return wibox.widget {
-            widget = wibox.container.constraint,
-            strategy = "max",
-            height = dpi(20),
-            width = dpi(20),
-            {
-                widget = widgets.icon,
-                halign = "center",
-                valign = "center",
-                clip_shape = helpers.ui.rrect(),
-                icon = n.app_icon
-            }
+            widget = widgets.icon,
+            size = 30,
+            halign = "center",
+            valign = "center",
+            clip_shape = helpers.ui.rrect(),
+            icon = n.app_icon
         }
     else
         return wibox.widget {
