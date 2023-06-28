@@ -139,7 +139,7 @@ function button_normal:effect(instant)
         for _, child in ipairs(wp.animable_childs) do
             if child.color_anim then
                 child.color_anim:stop()
-                local child_color = child.widget._private[on_prefix .. "color"]
+                local child_color = child.widget._private[bg_key] or child.widget._private.defaults[bg_key]
                 child.color_anim.pos = child_color
                 child.widget:update_display_color(child_color)
             end
