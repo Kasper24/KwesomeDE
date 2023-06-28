@@ -27,7 +27,7 @@ local button_normal = {
 local properties = {
     "halign", "valign",
     "hover_cursor", "disabled",
-    "normal_bg",
+    "color",
     "normal_shape", "hover_shape", "press_shape",
     "normal_border_width", "hover_border_width", "press_border_width",
     "normal_border_color", "hover_border_color", "press_border_color",
@@ -59,90 +59,52 @@ end
 
 function button_normal:build_animable_child_anims(child)
     local wp = self._private
-    if child._private.text_normal_bg or child._private.text_on_normal_bg then
+
+    local type = nil
+    if tostring(child):find("background (background", 1, true) then
+        type = "background"
+    elseif tostring(child):find("icon (icon", 1, true) then
+        type = "icon"
+    elseif tostring(child):find("text (text", 1, true) then
+        type = "text"
+    end
+
+    if type == "background" or type == "icon" or type == "text" then
         table.insert(wp.animable_childs, {
+            type = type,
             widget = child,
-            original_size = child:get_size(),
-            text_color_anim = helpers.animation:new{
-                easing = helpers.animation.easing.linear,
-                duration = 0.2,
-                update = function(self, pos)
-                    child:set_color(pos)
-                end
-            },
-            text_size_anim = helpers.animation:new{
+            original_size = child._private.icon and child:get_size() or nil,
+            color_anim = (child._private.color and child._private.on_color)
+                and helpers.animation:new{
+                    easing = helpers.animation.easing.linear,
+                    duration = 0.2,
+                    update = function(self, pos)
+                        child:set_color(pos)
+                    end
+                } or nil,
+            size_anim = child._private.icon and helpers.animation:new{
                 pos = child:get_size(),
                 easing = helpers.animation.easing.linear,
                 duration = 0.125,
                 update = function(self, pos)
                     child:set_size(pos)
                 end
-            }
+            } or nil
         })
-        self:effect(true)
-        capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
-            local wp = child._private
-            wp.text_normal_bg = old_colorscheme_to_new_map[wp.text_normal_bg] or
-                                    old_colorscheme_to_new_map[wp.defaults.text_normal_bg]
-            wp.text_on_normal_bg = old_colorscheme_to_new_map[wp.text_on_normal_bg] or
-                                    old_colorscheme_to_new_map[wp.defaults.text_on_normal_bg] or
-                                    helpers.color.darken_or_lighten(wp.text_normal_bg, 0.2)
 
+        if child._private.color and child._private.on_color then
             self:effect(true)
-        end)
-    elseif child._private.icon_normal_bg or child._private.icon_on_normal_bg then
-        table.insert(wp.animable_childs, {
-            widget = child,
-            original_size = child:get_size(),
-            icon_color_anim = helpers.animation:new{
-                easing = helpers.animation.easing.linear,
-                duration = 0.2,
-                update = function(self, pos)
-                    child:set_color(pos)
-                end
-            },
-            icon_size_anim = helpers.animation:new{
-                pos = child:get_size(),
-                easing = helpers.animation.easing.linear,
-                duration = 0.125,
-                update = function(self, pos)
-                    child:set_size(pos)
-                end
-            }
-        })
-        self:effect(true)
-        capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
-            local wp = child._private
-            wp.icon_normal_bg = old_colorscheme_to_new_map[wp.icon_normal_bg] or
-                                    old_colorscheme_to_new_map[wp.defaults.icon_normal_bg]
-            wp.icon_on_normal_bg = old_colorscheme_to_new_map[wp.icon_on_normal_bg] or
-                                    old_colorscheme_to_new_map[wp.defaults.icon_on_normal_bg] or
-                                    helpers.color.darken_or_lighten(wp.icon_normal_bg, 0.2)
+            capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
+                local cp = child._private
+                cp.color = old_colorscheme_to_new_map[cp.color] or
+                                        old_colorscheme_to_new_map[cp.defaults.color]
+                cp.on_color = old_colorscheme_to_new_map[cp.on_color] or
+                                        old_colorscheme_to_new_map[cp.defaults.on_color] or
+                                        helpers.color.darken_or_lighten(cp.color, 0.2)
 
-            self:effect(true)
-        end)
-    elseif child._private.normal_bg or child._private.on_normal_bg then
-        table.insert(wp.animable_childs, {
-            widget = child,
-            bg_color_anim = helpers.animation:new{
-                easing = helpers.animation.easing.linear,
-                duration = 0.2,
-                update = function(self, pos)
-                    child.bg = pos
-                end
-            },
-        })
-        self:effect(true)
-        capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
-            local wp = child._private
-            wp.normal_bg = old_colorscheme_to_new_map[wp.normal_bg] or
-                                    old_colorscheme_to_new_map[wp.defaults.normal_bg]
-            wp.on_normal_bg = old_colorscheme_to_new_map[wp.on_normal_bg] or
-                                    old_colorscheme_to_new_map[wp.defaults.on_normal_bg] or
-                                    helpers.color.darken_or_lighten(wp.normal_bg, 0.2)
-
-            self:effect(true)
-        end)
+                self:effect(true)
+            end)
+        end
     end
 end
 
@@ -150,7 +112,7 @@ function button_normal:effect(instant)
     local wp = self._private
     local on_prefix = wp.state and "on_" or ""
     local key = on_prefix .. wp.mode .. "_"
-    local bg_key = on_prefix .. "normal" .. "_" .. "bg"
+    local bg_key = on_prefix .. "color"
 
     local bg = wp[bg_key] or wp.defaults[bg_key]
     local shape = wp[key .. "shape"] or wp.defaults[key .. "shape"]
@@ -176,21 +138,11 @@ function button_normal:effect(instant)
             state_layer_opacity = state_layer_opacity
         }
         for _, child in ipairs(wp.animable_childs) do
-            if child.text_color_anim then
-                child.text_color_anim:stop()
-                local child_color = child.widget._private["text_" .. on_prefix .. "normal_bg"]
-                child.text_color_anim.pos = child_color
+            if child.color_anim then
+                child.color_anim:stop()
+                local child_color = child.widget._private[on_prefix .. "color"]
+                child.color_anim.pos = child_color
                 child.widget:set_color(child_color)
-            elseif child.icon_color_anim then
-                    child.icon_color_anim:stop()
-                    local child_color = child.widget._private["icon_" .. on_prefix .. "normal_bg"]
-                    child.icon_color_anim.pos = child_color
-                    child.widget:set_color(child_color)
-            elseif child.bg_color_anim then
-                child.bg_color_anim:stop()
-                local child_bg = child.widget._private[on_prefix .. "normal_bg"]
-                child.bg_color_anim.pos = child_bg
-                child.widget.bg = child_bg
             end
         end
     else
@@ -210,30 +162,19 @@ function button_normal:effect(instant)
             self:get_ripple_layer().radius = 0
             self:get_ripple_layer():emit_signal("widget::redraw_needed")
         end
+
         for _, child in ipairs(wp.animable_childs) do
-            if child.text_color_anim then
-                local child_color = child.widget._private["text_" .. on_prefix .. "normal" .. "_" .. "bg"]
-                child.text_color_anim:set(child_color)
-                if child.widget:get_icon() then
-                    if wp.old_mode ~= "press" and wp.mode == "press" then
-                        child.text_size_anim:set(child.original_size * 0.7)
-                    elseif wp.old_mode == "press" and wp.mode ~= "press" then
-                        child.text_size_anim:set(child.original_size)
-                    end
+            if child.color_anim then
+                local child_color = child.widget._private[on_prefix .. "color"]
+                child.color_anim:set(child_color)
+            end
+            if child.size_anim then
+                if wp.old_mode ~= "press" and wp.mode == "press" then
+                    local multiplier = child.type == "text" and 0.7 or 0.5
+                    child.size_anim:set(child.original_size * 0.7)
+                elseif wp.old_mode == "press" and wp.mode ~= "press" then
+                    child.size_anim:set(child.original_size)
                 end
-            elseif child.icon_color_anim then
-                    local child_color = child.widget._private["icon_" .. on_prefix .. "normal" .. "_" .. "bg"]
-                    child.icon_color_anim:set(child_color)
-                    if child.widget:get_icon() then
-                        if wp.old_mode ~= "press" and wp.mode == "press" then
-                            child.icon_size_anim:set(child.original_size * 0.5)
-                        elseif wp.old_mode == "press" and wp.mode ~= "press" then
-                            child.icon_size_anim:set(child.original_size)
-                        end
-                    end
-            elseif child.bg_color_anim then
-                local child_bg = child.widget._private[on_prefix .. "normal" .. "_" .. "bg"]
-                child.bg_color_anim:set(child_bg)
             end
         end
     end
@@ -348,9 +289,9 @@ function button_normal:set_paddings(paddings)
     end
 end
 
-function button_normal:set_normal_bg(normal_bg)
+function button_normal:set_color(color)
     local wp = self._private
-    wp.normal_bg = normal_bg
+    wp.color = color
     self:effect(true)
 end
 
@@ -392,7 +333,7 @@ local function new(is_state)
 
     wp.defaults.hover_cursor = "hand2"
 
-    wp.defaults.normal_bg = beautiful.colors.transparent
+    wp.defaults.color = beautiful.colors.transparent
 
     wp.defaults.normal_shape = helpers.ui.rrect()
     wp.defaults.hover_shape = wp.defaults.normal_shape
@@ -535,11 +476,11 @@ local function new(is_state)
     capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
         widget:emit_signal("widget::redraw_needed")
 
-        wp.normal_bg = old_colorscheme_to_new_map[wp.normal_bg] or
-                    old_colorscheme_to_new_map[wp.defaults.normal_bg]
-        wp.on_normal_bg = old_colorscheme_to_new_map[wp.on_normal_bg] or
-                    old_colorscheme_to_new_map[wp.defaults.on_normal_bg] or
-                    helpers.color.darken_or_lighten(wp.normal_bg, 0.2)
+        wp.color = old_colorscheme_to_new_map[wp.color] or
+                    old_colorscheme_to_new_map[wp.defaults.color]
+        wp.on_color = old_colorscheme_to_new_map[wp.on_color] or
+                    old_colorscheme_to_new_map[wp.defaults.on_color] or
+                    helpers.color.darken_or_lighten(wp.color, 0.2)
 
         wp.normal_border_color = old_colorscheme_to_new_map[wp.normal_border_color] or
                                 old_colorscheme_to_new_map[wp.defaults.normal_border_color]
