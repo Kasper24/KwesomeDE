@@ -179,13 +179,13 @@ function button_normal:effect(instant)
 end
 
 function button_normal:set_text(text)
-    if self:get_content_widget():get_text() then
+    if self:get_content_widget().get_text then
         self:get_content_widget():set_text(text)
     end
 end
 
 function button_normal:get_text()
-    if self:get_content_widget():get_text() then
+    if self:get_content_widget().get_text then
         return self:get_content_widget():get_text()
     end
 end
