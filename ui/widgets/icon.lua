@@ -72,6 +72,10 @@ local function generate_style(color)
     return string.format(style, color, color, color, color, color, color, color, color)
 end
 
+function icon:get_type()
+    return "icon"
+end
+
 function icon:set_icon(icon)
     local wp = self._private
     wp.icon = icon
@@ -122,8 +126,6 @@ local function new(hot_reload)
     end
 
     widget:set_size(wp.defaults.size)
-
-    rawset(widget, "widget_name", "icon")
 
     return widget
 end

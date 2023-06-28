@@ -57,18 +57,14 @@ local function build_properties(prototype, prop_names)
     end
 end
 
-function button_normal:build_animable_child_anims(child)
-    local wp = self._private
-
-    local type = nil
-    if tostring(child):find("background (background", 1, true) then
-        type = "background"
-    elseif tostring(child):find("icon (icon", 1, true) then
-        type = "icon"
-    elseif tostring(child):find("text (text", 1, true) then
-        type = "text"
+local function build_animable_child_anims(self, child)
+    if not child.get_type then
+        return
     end
 
+    local wp = self._private
+
+    local type = child:get_type()
     if type == "background" or type == "icon" or type == "text" then
         table.insert(wp.animable_childs, {
             type = type,
@@ -82,14 +78,15 @@ function button_normal:build_animable_child_anims(child)
                         child:set_color(pos)
                     end
                 } or nil,
-            size_anim = child._private.icon and helpers.animation:new{
-                pos = child:get_size(),
-                easing = helpers.animation.easing.linear,
-                duration = 0.125,
-                update = function(self, pos)
-                    child:set_size(pos)
-                end
-            } or nil
+            size_anim = child._private.icon
+                and helpers.animation:new{
+                    pos = child:get_size(),
+                    easing = helpers.animation.easing.linear,
+                    duration = 0.125,
+                    update = function(self, pos)
+                        child:set_size(pos)
+                    end
+                } or nil
         })
 
         if child._private.color and child._private.on_color then
@@ -165,13 +162,13 @@ function button_normal:effect(instant)
 
         for _, child in ipairs(wp.animable_childs) do
             if child.color_anim then
-                local child_color = child.widget._private[on_prefix .. "color"]
+                local child_color = child.widget._private[bg_key]
                 child.color_anim:set(child_color)
             end
             if child.size_anim then
                 if wp.old_mode ~= "press" and wp.mode == "press" then
                     local multiplier = child.type == "text" and 0.7 or 0.5
-                    child.size_anim:set(child.original_size * 0.7)
+                    child.size_anim:set(child.original_size * multiplier)
                 elseif wp.old_mode == "press" and wp.mode ~= "press" then
                     child.size_anim:set(child.original_size)
                 end
@@ -240,13 +237,11 @@ function button_normal:set_widget(widget)
     wp.state_layer = wp.widget:get_children_by_id("state_layer")[1]
     wp.animable_childs = {}
 
-    if widget and wp.color_animation == nil then
-        if widget.all_children then
-            for _, child in ipairs(widget.all_children) do
-                self:build_animable_child_anims(child)
-            end
+    if widget then
+        for _, child in ipairs(widget.all_children or {}) do
+            build_animable_child_anims(self, child)
         end
-        self:build_animable_child_anims(widget)
+        build_animable_child_anims(self, widget)
     end
 
     self:emit_signal("property::widget")

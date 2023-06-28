@@ -20,6 +20,9 @@ local function new()
         widget_bg = bg
     end)
 
+    function widget:get_type()
+        return "background"
+    end
     function widget:set_color(color)
         self._private.color = color
     end
@@ -32,8 +35,6 @@ local function new()
         widget.border_color = old_colorscheme_to_new_map[widget.border_color]
         widget:emit_signal("widget::redraw_needed")
     end)
-
-    rawset(widget, "widget_name", "background")
 
     return widget
 end

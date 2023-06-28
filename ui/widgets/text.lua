@@ -114,6 +114,10 @@ local function generate_markup(self)
     )
 end
 
+function text:get_type()
+    return "text"
+end
+
 function text:set_icon(icon)
     local wp = self._private
 
@@ -179,8 +183,6 @@ local function new(hot_reload)
             generate_markup(widget)
         end)
     end
-
-    rawset(widget, "widget_name", "text")
 
     return widget
 end
