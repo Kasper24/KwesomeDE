@@ -97,6 +97,10 @@ function icon:set_color(color)
     self:set_stylesheet(generate_style(color))
 end
 
+function icon:update_display_color(color)
+    self:set_stylesheet(generate_style(color))
+end
+
 local function new(hot_reload)
     local widget = imagebox()
     gtable.crush(widget, icon, true)

@@ -29,6 +29,9 @@ local function new()
     function widget:set_on_color(on_color)
         self._private.on_color = on_color
     end
+    function widget:update_display_color(color)
+        widget:set_bg(color)
+    end
 
     capi.awesome.connect_signal("colorscheme::changed", function( old_colorscheme_to_new_map)
         widget.bg = old_colorscheme_to_new_map[widget_bg]

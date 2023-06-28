@@ -75,7 +75,7 @@ local function build_animable_child_anims(self, child)
                     easing = helpers.animation.easing.linear,
                     duration = 0.2,
                     update = function(self, pos)
-                        child:set_color(pos)
+                        child:update_display_color(pos)
                     end
                 } or nil,
             size_anim = child._private.icon
@@ -139,7 +139,7 @@ function button_normal:effect(instant)
                 child.color_anim:stop()
                 local child_color = child.widget._private[on_prefix .. "color"]
                 child.color_anim.pos = child_color
-                child.widget:set_color(child_color)
+                child.widget:update_display_color(child_color)
             end
         end
     else

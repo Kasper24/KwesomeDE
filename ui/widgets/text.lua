@@ -29,27 +29,7 @@ local properties = {
     "scale", "size", "text", "icon"
 }
 
-local function build_properties(prototype, prop_names)
-    for _, prop in ipairs(prop_names) do
-        if not prototype["set_" .. prop] then
-            prototype["set_" .. prop] = function(self, value)
-                if self._private[prop] ~= value then
-                    self._private[prop] = value
-                    self:emit_signal("widget::redraw_needed")
-                    self:emit_signal("property::" .. prop, value)
-                end
-                return self
-            end
-        end
-        if not prototype["get_" .. prop] then
-            prototype["get_" .. prop] = function(self)
-                return self._private[prop]
-            end
-        end
-    end
-end
-
-local function generate_markup(self)
+local function generate_markup(self, color)
     local wp = self._private
 
     local bold_start = ""
@@ -72,7 +52,7 @@ local function generate_markup(self)
     local font_variant = wp.font_variant or wp.defaults.font_variant
     local size = max((wp.size or wp.defaults.size), 1)
     local scale = wp.scale or wp.defaults.scale
-    local color = wp.color or wp.defaults.color
+    color = color or wp.color or wp.defaults.color
     local underline = wp.underline or wp.defaults.underline
     local underline_color = wp.underline_color or wp.defaults.underline_color
     local strikethrough = wp.strikethrough or wp.defaults.strikethrough
@@ -114,6 +94,27 @@ local function generate_markup(self)
     )
 end
 
+local function build_properties(prototype, prop_names)
+    for _, prop in ipairs(prop_names) do
+        if not prototype["set_" .. prop] then
+            prototype["set_" .. prop] = function(self, value)
+                if self._private[prop] ~= value then
+                    self._private[prop] = value
+                    generate_markup(self)
+                    self:emit_signal("widget::redraw_needed")
+                    self:emit_signal("property::" .. prop, value)
+                end
+                return self
+            end
+        end
+        if not prototype["get_" .. prop] then
+            prototype["get_" .. prop] = function(self)
+                return self._private[prop]
+            end
+        end
+    end
+end
+
 function text:get_type()
     return "text"
 end
@@ -134,6 +135,10 @@ end
 function text:get_size()
     local wp = self._private
     return wp.size or wp.defaults.size
+end
+
+function text:update_display_color(color)
+    generate_markup(self, color)
 end
 
 local function new(hot_reload)
@@ -163,10 +168,6 @@ local function new(hot_reload)
     wp.defaults.line_height = 0
     wp.defaults.text = ""
 
-    widget:connect_signal("widget::redraw_needed", function()
-        generate_markup(widget)
-    end)
-
     if hot_reload ~= false then
         capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
             if wp.color then
@@ -183,6 +184,8 @@ local function new(hot_reload)
             generate_markup(widget)
         end)
     end
+
+    generate_markup(widget)
 
     return widget
 end
