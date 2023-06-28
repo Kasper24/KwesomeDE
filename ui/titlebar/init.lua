@@ -182,7 +182,7 @@ capi.client.connect_signal("request::titlebars", function(client)
                 maximize,
                 {
                     widget = wibox.container.margin,
-                    margins = { right = dpi(15) },
+                    margins = { right = dpi(8) },
                     close
                 }
             }
