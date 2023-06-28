@@ -55,13 +55,15 @@ local function new()
         }
         gtable.crush(ret._private.display_device_proxy, device, true)
 
-        ret._private.display_device_proxy_properties:connect_signal("PropertiesChanged", function(self, interface, data)
-            ret:emit_signal("battery::update", ret._private.display_device_proxy, data)
-        end)
+        if ret._private.display_device_proxy.IsPresent then
+            ret._private.display_device_proxy_properties:connect_signal("PropertiesChanged", function(self, interface, data)
+                ret:emit_signal("battery::update", ret._private.display_device_proxy, data)
+            end)
 
-        gtimer.delayed_call(function()
-            ret:emit_signal("battery::init", ret._private.display_device_proxy)
-        end)
+            gtimer.delayed_call(function()
+                ret:emit_signal("battery::init", ret._private.display_device_proxy)
+            end)
+        end
     else
         gdebug.print_warning(
             "Can't find UPower display device. "..
