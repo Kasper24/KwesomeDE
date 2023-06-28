@@ -25,6 +25,7 @@ local function new()
     end
     function widget:set_color(color)
         self._private.color = color
+        widget:set_bg(color)
     end
     function widget:set_on_color(on_color)
         self._private.on_color = on_color
