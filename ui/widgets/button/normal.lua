@@ -105,6 +105,8 @@ local function build_animable_child_anims(self, child)
             end)
         end
     end
+
+    self:effect(true)
 end
 
 function button_normal:effect(instant)
