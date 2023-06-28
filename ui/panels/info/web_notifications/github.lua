@@ -126,7 +126,8 @@ local function event_widget(event)
 
     local info = wibox.widget {
         widget = widgets.button.normal,
-        halign = "right",
+        forced_width = dpi(1000),
+        halign = "left",
         on_release = function()
             awful.spawn("xdg-open " .. action_and_link.link, false)
         end,
@@ -149,7 +150,6 @@ local function event_widget(event)
 
     return wibox.widget {
         layout = wibox.layout.fixed.horizontal,
-        forced_width = dpi(600),
         forced_height = dpi(60),
         spacing = dpi(5),
         avatar,
