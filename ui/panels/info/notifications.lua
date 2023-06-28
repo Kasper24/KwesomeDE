@@ -87,7 +87,7 @@ local function notification_widget(notification, on_removed)
             local button = wibox.widget {
                 widget = widgets.button.normal,
                 -- forced_height = dpi(40),
-                normal_bg = beautiful.colors.surface,
+                color = beautiful.colors.surface,
                 on_release = function()
                     action:invoke()
                 end,

@@ -30,8 +30,8 @@ local function arrow_button(icon, text, on_icon_release, on_arrow_release)
         widget = widgets.button.state,
         forced_height = dpi(90),
         normal_shape = helpers.ui.prrect(true, false, false, true),
-        normal_bg = beautiful.colors.surface,
-        on_normal_bg = icon.color,
+        color = beautiful.colors.surface,
+        on_color = icon.color,
         on_release = on_icon_release,
         {
             widget = widgets.text,
@@ -45,8 +45,8 @@ local function arrow_button(icon, text, on_icon_release, on_arrow_release)
         widget = widgets.button.state,
         forced_height = dpi(90),
         normal_shape = helpers.ui.prrect(false, true, true, false),
-        normal_bg = beautiful.colors.surface,
-        on_normal_bg = icon.color,
+        color = beautiful.colors.surface,
+        on_color = icon.color,
         on_release = on_arrow_release,
         {
             widget = widgets.text,
@@ -94,8 +94,8 @@ local function button(icon, text, on_release)
         widget = widgets.button.state,
         forced_width = dpi(150),
         forced_height = dpi(90),
-        normal_bg = beautiful.colors.surface,
-        on_normal_bg = icon.color,
+        color = beautiful.colors.surface,
+        on_color = icon.color,
         on_release = on_release,
         {
             widget = widgets.text,

@@ -108,7 +108,7 @@ local function client_widget(client)
             widget = widgets.button.state,
             id = "button",
             on_by_default = capi.client.focus == client,
-            on_normal_bg =  client._icon.color,
+            on_color =  client._icon.color,
             halign = "center",
             on_hover = function(self)
                 task_preview:show(client, {
@@ -154,8 +154,8 @@ local function client_widget(client)
             end,
             {
                 widget = widgets.icon,
-                icon_normal_bg = client._icon.color,
-                icon_on_normal_bg = beautiful.colors.icon_transparent,
+                color = client._icon.color,
+                on_color = beautiful.colors.icon_transparent,
                 icon = client._icon,
             }
         }

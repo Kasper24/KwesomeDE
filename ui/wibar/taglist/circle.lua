@@ -104,8 +104,8 @@ local function tag_widget(self, tag, accent_color, direction)
         forced_width = dpi(30),
         forced_height = dpi(30),
         normal_shape = gshape.circle,
-        normal_bg = beautiful.colors.on_surface,
-        on_normal_bg = accent_color,
+        color = beautiful.colors.on_surface,
+        on_color = accent_color,
         -- on_hover = function()
         --     if #tag:clients() > 0 then
         --         tag_preview:show(tag, {

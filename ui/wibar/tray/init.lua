@@ -52,7 +52,7 @@ local function system_tray()
         widget = widgets.button.state,
         forced_width = dpi(50),
         forced_height = dpi(50),
-        on_normal_bg = beautiful.icons.envelope.color,
+        on_color = beautiful.icons.envelope.color,
         on_press = function()
             system_tray:toggle()
         end,
@@ -179,8 +179,8 @@ local function keyboard_layout()
         widget = widgets.background,
         forced_width = dpi(40),
         forced_height = dpi(40),
-        normal_bg = beautiful.icons.envelope.color,
-        on_normal_bg = beautiful.colors.background_no_opacity,
+        color = beautiful.icons.envelope.color,
+        on_color = beautiful.colors.background_no_opacity,
         shape = helpers.ui.rrect(),
         text
     }
@@ -225,7 +225,7 @@ local function custom_tray()
         margins = dpi(5),
         {
             widget = widgets.button.state,
-            on_normal_bg = beautiful.icons.envelope.color,
+            on_color = beautiful.icons.envelope.color,
             id = "button",
             on_release = function()
                 action_panel:toggle()

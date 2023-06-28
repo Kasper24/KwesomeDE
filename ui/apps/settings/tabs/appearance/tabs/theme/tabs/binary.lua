@@ -37,7 +37,7 @@ local function new()
             id = "button",
             forced_width = dpi(146),
             forced_height = dpi(105),
-            on_normal_bg = beautiful.icons.computer.color,
+            on_color = beautiful.icons.computer.color,
             halign = "center",
             on_release = function()
                 widget:select()

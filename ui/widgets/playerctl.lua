@@ -440,7 +440,7 @@ function playerctl.play(daemon)
     local button = wibox.widget {
         widget = ebwidget.normal,
         normal_shape = gshape.circle,
-        normal_bg = beautiful.get_svg_icon{"spotify"}.color,
+        color = beautiful.get_svg_icon{"spotify"}.color,
         on_release = function()
             playerctl_daemon:play_pause()
         end,
@@ -467,13 +467,13 @@ function playerctl.play(daemon)
     playerctl_daemon:connect_signal("metadata", function(self, title, artist, album_path, album, new, player_name)
         if player_name ~= "" then
             local app_icon = beautiful.get_svg_icon{player_name, "spotify"}
-            button:set_normal_bg(app_icon.color)
+            button:set_color(app_icon.color)
         end
     end)
 
     playerctl_daemon:connect_signal("no_players", function(self)
         play_pause_animation:set(1)
-        button:set_normal_bg(beautiful.icons.spotify.color)
+        button:set_color(beautiful.icons.spotify.color)
     end)
 
     return button
@@ -487,7 +487,7 @@ function playerctl.previous(width, height, daemon)
         forced_width = width or dpi(50),
         forced_height = height or dpi(50),
         normal_shape = gshape.circle,
-        normal_bg = beautiful.colors.transparent,
+        color = beautiful.colors.transparent,
         on_release = function()
             playerctl_daemon:previous()
         end,
@@ -508,7 +508,7 @@ function playerctl.next(width, height, daemon)
         forced_width = width or dpi(50),
         forced_height = height or dpi(50),
         normal_shape = gshape.circle,
-        normal_bg = beautiful.colors.transparent,
+        color = beautiful.colors.transparent,
         on_release = function()
             playerctl_daemon:next()
         end,
@@ -529,7 +529,7 @@ function playerctl.loop(width, height, daemon)
         forced_width = width or dpi(50),
         forced_height = height or dpi(50),
         normal_shape = gshape.circle,
-        normal_bg = beautiful.colors.transparent,
+        color = beautiful.colors.transparent,
         on_release = function(self)
             playerctl_daemon:cycle_loop_status()
         end,
@@ -560,7 +560,7 @@ function playerctl.shuffle(width, height, daemon)
         forced_width = width or dpi(50),
         forced_height = height or dpi(50),
         normal_shape = gshape.circle,
-        normal_bg = beautiful.colors.transparent,
+        color = beautiful.colors.transparent,
         on_release = function(self)
             playerctl_daemon:cycle_shuffle()
         end,

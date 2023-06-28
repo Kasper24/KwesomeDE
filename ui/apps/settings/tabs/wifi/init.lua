@@ -115,7 +115,7 @@ local function access_point_widget(layout, access_point)
 
     local cancel = wibox.widget {
         widget = widgets.button.normal,
-        normal_bg = beautiful.colors.surface,
+        color = beautiful.colors.surface,
         on_release = function()
             text_input:unfocus()
             anim:set(dpi(65))
@@ -130,7 +130,7 @@ local function access_point_widget(layout, access_point)
 
     local connect_or_disconnect = wibox.widget {
         widget = widgets.button.normal,
-        normal_bg = beautiful.colors.surface,
+        color = beautiful.colors.surface,
         on_release = function()
             access_point:toggle(text_input:get_text(), auto_connect_checkbox:get_state())
         end,

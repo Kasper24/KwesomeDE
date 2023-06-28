@@ -13,7 +13,7 @@ local button_state = {
 }
 
 local properties = {
-    "on_normal_bg",
+    "on_color",
     "on_normal_shape", "on_hover_shape", "on_press_shape",
     "on_normal_border_width", "on_hover_border_width", "on_press_border_width",
     "on_normal_border_color", "on_hover_border_color", "on_press_border_color",
@@ -68,13 +68,13 @@ function button_state:toggle()
     end
 end
 
-function button_state:set_normal_bg(normal_bg)
+function button_state:set_color(color)
     local wp = self._private
-    wp.normal_bg = normal_bg
+    wp.color = color
     self:effect(true)
 
-    if wp.on_normal_bg == nil then
-        self:set_on_normal_bg(helpers.color.darken_or_lighten(normal_bg, 0.2))
+    if wp.on_color == nil then
+        self:set_on_color(helpers.color.darken_or_lighten(color, 0.2))
     end
 end
 
@@ -114,9 +114,9 @@ function button_state:set_normal_border_color(normal_border_color)
     end
 end
 
-function button_state:set_on_normal_bg(on_normal_bg)
+function button_state:set_on_color(on_color)
     local wp = self._private
-    wp.on_normal_bg = on_normal_bg
+    wp.on_color = on_color
     self:effect(true)
 end
 
@@ -151,7 +151,7 @@ local function new()
     local wp = widget._private
     wp.state = false
 
-    wp.defaults.on_normal_bg = helpers.color.darken_or_lighten(wp.defaults.normal_bg, 0.2)
+    wp.defaults.on_color = helpers.color.darken_or_lighten(wp.defaults.color, 0.2)
 
     wp.defaults.on_normal_shape = wp.defaults.normal_shape
     wp.defaults.on_hover_shape = wp.defaults.normal_shape

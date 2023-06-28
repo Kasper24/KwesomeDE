@@ -41,8 +41,8 @@ local function client_widget(self, client)
         id = "button",
         forced_width = dpi(300),
         forced_height = dpi(200),
-        normal_bg = beautiful.colors.surface,
-        on_normal_bg = client._icon.color,
+        color = beautiful.colors.surface,
+        on_color = client._icon.color,
         on_release = function()
             self:select_client(client)
         end,
@@ -60,8 +60,8 @@ local function client_widget(self, client)
                         widget = widgets.client_icon,
                         halign = "center",
                         valign = "center",
-                        icon_normal_bg = client._icon.color,
-                        icon_on_normal_bg = beautiful.colors.icon_transparent,
+                        color = client._icon.color,
+                        on_color = beautiful.colors.icon_transparent,
                         client = client
                     },
                     {
@@ -76,8 +76,8 @@ local function client_widget(self, client)
                 },
                 {
                     widget = widgets.client_thumbnail,
-                    icon_normal_bg = client._icon.color,
-                    icon_on_normal_bg = beautiful.colors.icon_transparent,
+                    color = client._icon.color,
+                    on_color = beautiful.colors.icon_transparent,
                     client = client
                 }
             }

@@ -95,7 +95,7 @@ local function tag_widget(self, tag, direction)
         widget = widgets.button.state,
         id = "button",
         halign = "center",
-        on_normal_bg = tag.icon.color,
+        on_color = tag.icon.color,
         -- on_hover = function()
         --     if #tag:clients() > 0 then
         --         tag_preview:show(tag, {
@@ -135,8 +135,8 @@ local function tag_widget(self, tag, direction)
         {
             widget = widgets.icon,
             size = 30,
-            icon_normal_bg = tag.icon.color,
-            icon_on_normal_bg = beautiful.colors.icon_transparent,
+            color = tag.icon.color,
+            on_color = beautiful.colors.icon_transparent,
             icon = tag.icon,
         }
     }

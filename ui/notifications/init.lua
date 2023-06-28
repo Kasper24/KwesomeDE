@@ -90,7 +90,7 @@ local function actions_widget(n)
     for _, action in ipairs(n.actions) do
         local button = wibox.widget {
             widget = widgets.button.normal,
-            normal_bg = beautiful.colors.surface,
+            color = beautiful.colors.surface,
             on_release = function()
                 action:invoke()
             end,

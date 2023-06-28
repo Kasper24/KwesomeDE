@@ -49,7 +49,7 @@ local function tab_button(navigator, tab, pos)
         widget = ebwidget.state,
         halign = tab.halign or "left",
         normal_shape = shape,
-        on_normal_bg = navigator._private.buttons_selected_color,
+        on_color = navigator._private.buttons_selected_color,
         on_release = function(self)
             navigator:select(tab.id)
         end,
@@ -136,7 +136,7 @@ function navigator:set_buttons_selected_color(buttons_selected_color)
     if self._private.tabs then
         for _, tab_group in ipairs(self._private.tabs) do
             for _, tab in ipairs(tab_group) do
-                tab.button:set_on_normal_bg(buttons_selected_color)
+                tab.button:set_on_color(buttons_selected_color)
             end
         end
     end

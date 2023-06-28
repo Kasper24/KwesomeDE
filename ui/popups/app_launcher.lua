@@ -75,7 +75,7 @@ local function app(app, app_launcher)
         -- forced_height = dpi(150),
         paddings = dpi(15),
         halign = "left",
-        on_normal_bg = icon.color,
+        on_color = icon.color,
         on_release = function(self)
             self:select_or_exec("press")
         end,
@@ -90,8 +90,8 @@ local function app(app, app_launcher)
                 widget = widgets.icon,
                 size = 50,
                 halign = "center",
-                icon_normal_bg = icon.color,
-                icon_on_normal_bg = beautiful.colors.icon_transparent,
+                color = icon.color,
+                on_color = beautiful.colors.icon_transparent,
                 icon = icon
             },
             {

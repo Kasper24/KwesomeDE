@@ -30,7 +30,7 @@ local function new()
         margins = dpi(5),
         {
             widget = widgets.button.state,
-            on_normal_bg = beautiful.icons.envelope.color,
+            on_color = beautiful.icons.envelope.color,
             id = "button",
             on_release = function()
                 info_panel:toggle()

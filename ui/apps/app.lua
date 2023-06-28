@@ -28,8 +28,8 @@ local function titlebar(self)
         forced_height = dpi(20),
         on_by_default = capi.client.focus == self:get_client(),
         normal_shape = gshape.isosceles_triangle,
-        normal_bg = beautiful.colors.surface,
-        on_normal_bg = self:get_client()._icon.color,
+        color = beautiful.colors.surface,
+        on_color = self:get_client()._icon.color,
         on_release = function(self)
             self:get_client().minimized = not self:get_client().minimized
         end
@@ -41,8 +41,8 @@ local function titlebar(self)
         forced_height = dpi(20),
         on_by_default = capi.client.focus == self:get_client(),
         normal_shape = gshape.circle,
-        normal_bg = beautiful.colors.surface,
-        on_normal_bg = self:get_client()._icon.color,
+        color = beautiful.colors.surface,
+        on_color = self:get_client()._icon.color,
         on_release = function()
             self:get_client():kill()
         end
@@ -54,13 +54,13 @@ local function titlebar(self)
         disabled = true,
         paddings = 0,
         on_by_default = capi.client.focus == self:get_client(),
-        normal_bg = beautiful.colors.transparent,
-        on_normal_bg = beautiful.colors.transparent,
+        color = beautiful.colors.transparent,
+        on_color = beautiful.colors.transparent,
         {
             widget = widgets.icon,
             size = 25,
-            icon_normal_bg = beautiful.colors.on_background,
-            icon_on_normal_bg = self:get_client()._icon.color,
+            color = beautiful.colors.on_background,
+            on_color = self:get_client()._icon.color,
             icon = self:get_client()._icon,
         }
     }

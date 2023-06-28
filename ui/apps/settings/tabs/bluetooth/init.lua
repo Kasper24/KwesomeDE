@@ -40,7 +40,7 @@ local function device_widget(device, path)
 
     local cancel = wibox.widget {
         widget = widgets.button.normal,
-        normal_bg = beautiful.colors.surface,
+        color = beautiful.colors.surface,
         on_release = function()
             widget:get_children_by_id("button")[1]:turn_off()
             anim:set(dpi(60))
@@ -55,7 +55,7 @@ local function device_widget(device, path)
 
     local connect_or_disconnect = wibox.widget {
         widget = widgets.button.normal,
-        normal_bg = beautiful.colors.surface,
+        color = beautiful.colors.surface,
         on_release = function()
             device:toggle_connect()
         end,
@@ -69,7 +69,7 @@ local function device_widget(device, path)
 
     local trust_or_untrust = wibox.widget {
         widget = widgets.button.normal,
-        normal_bg = beautiful.colors.surface,
+        color = beautiful.colors.surface,
         on_release = function()
             device:toggle_trust()
         end,
@@ -83,7 +83,7 @@ local function device_widget(device, path)
 
     local pair_or_unpair = wibox.widget {
         widget = widgets.button.normal,
-        normal_bg = beautiful.colors.surface,
+        color = beautiful.colors.surface,
         on_release = function()
             device:toggle_pair()
         end,
@@ -101,7 +101,7 @@ local function device_widget(device, path)
         height = dpi(60),
         {
             widget = widgets.button.state,
-            on_normal_bg = beautiful.colors.transparent,
+            on_color = beautiful.colors.transparent,
             id = "button",
             on_release = function(self)
                 if self._private.state == false then

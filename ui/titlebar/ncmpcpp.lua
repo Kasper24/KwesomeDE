@@ -19,7 +19,7 @@ local function tab_button(title)
         widget = widgets.button.state,
         on_by_default = true,
         halign = "left",
-        on_normal_bg = beautiful.icons.list_music.color,
+        on_color = beautiful.icons.list_music.color,
         {
             widget = widgets.text,
             color = beautiful.colors.on_background,

@@ -38,7 +38,7 @@ local function application_widget(application)
         forced_width = dpi(40),
         forced_height = dpi(40),
         on_by_default = application.mute,
-        on_normal_bg = icon_image.color,
+        on_color = icon_image.color,
         halign = "right",
         on_release = function()
             application:toggle_mute()
@@ -121,7 +121,7 @@ local function device_widget(device)
         forced_width = dpi(40),
         forced_height = dpi(40),
         on_by_default = device.mute,
-        on_normal_bg = beautiful.icons.volume.off.color,
+        on_color = beautiful.icons.volume.off.color,
         on_release = function()
             device:toggle_mute()
         end,

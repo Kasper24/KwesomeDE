@@ -21,12 +21,12 @@ capi.client.connect_signal("request::titlebars", function(client)
         disabled = true,
         paddings = 0,
         on_by_default = capi.client.focus == client,
-        normal_bg = beautiful.colors.transparent,
-        on_normal_bg = beautiful.colors.transparent,
+        color = beautiful.colors.transparent,
+        on_color = beautiful.colors.transparent,
         {
             widget = widgets.icon,
-            icon_normal_bg = beautiful.colors.on_background,
-            icon_on_normal_bg = client._icon.color,
+            color = beautiful.colors.on_background,
+            on_color = client._icon.color,
             icon = client._icon,
             size = 25,
         }
@@ -46,8 +46,8 @@ capi.client.connect_signal("request::titlebars", function(client)
         forced_height = dpi(20),
         on_by_default = capi.client.focus == client,
         normal_shape = gshape.isosceles_triangle,
-        normal_bg = beautiful.colors.surface,
-        on_normal_bg = client._icon.color,
+        color = beautiful.colors.surface,
+        on_color = client._icon.color,
         on_release = function(self)
             client.minimized = not client.minimized
         end
@@ -61,8 +61,8 @@ capi.client.connect_signal("request::titlebars", function(client)
         normal_shape = function(cr, width, hegiht)
             gshape.rounded_rect(cr, width, hegiht, 5)
         end,
-        normal_bg = beautiful.colors.surface,
-        on_normal_bg = client._icon.color,
+        color = beautiful.colors.surface,
+        on_color = client._icon.color,
         on_release = function(self)
             client.maximized = not client.maximized
             client:raise()
@@ -75,8 +75,8 @@ capi.client.connect_signal("request::titlebars", function(client)
         forced_height = dpi(20),
         on_by_default = capi.client.focus == client,
         normal_shape = gshape.circle,
-        normal_bg = beautiful.colors.surface,
-        on_normal_bg = client._icon.color,
+        color = beautiful.colors.surface,
+        on_color = client._icon.color,
         on_release = function()
             client:kill()
         end
