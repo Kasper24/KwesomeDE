@@ -66,11 +66,13 @@ local function build_animable_child_anims(self, child)
 
     local type = child:get_type()
     if type == "background" or type == "icon" or type == "text" then
+        local animate_color = ((child._private.color or (child._private.defaults and child._private.defaults.color)) and child._private.on_color)
+
         table.insert(wp.animable_childs, {
             type = type,
             widget = child,
             original_size = child._private.icon and child:get_size() or nil,
-            color_anim = (child._private.color and child._private.on_color)
+            color_anim = animate_color
                 and helpers.animation:new{
                     easing = helpers.animation.easing.linear,
                     duration = 0.2,
@@ -89,7 +91,7 @@ local function build_animable_child_anims(self, child)
                 } or nil
         })
 
-        if child._private.color and child._private.on_color then
+        if animate_color then
             self:effect(true)
             capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
                 local cp = child._private
@@ -162,7 +164,7 @@ function button_normal:effect(instant)
 
         for _, child in ipairs(wp.animable_childs) do
             if child.color_anim then
-                local child_color = child.widget._private[bg_key]
+                local child_color = child.widget._private[bg_key] or child.widget._private.defaults[bg_key]
                 child.color_anim:set(child_color)
             end
             if child.size_anim then
