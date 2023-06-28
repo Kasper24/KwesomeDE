@@ -12,15 +12,15 @@ local redshift = {}
 local instance = nil
 
 function redshift:turn_on()
-    awful.spawn("redshift -x")
-    awful.spawn("redshift -O 4500")
+    awful.spawn("redshift -x", false)
+    awful.spawn("redshift -O 4500", false)
     self._private.state = true
     helpers.settings["redshift.enabled"] = true
     self:emit_signal("state", true)
 end
 
 function redshift:turn_off()
-    awful.spawn("redshift -x")
+    awful.spawn("redshift -x", false)
     self._private.state = false
     helpers.settings["redshift.enabled"]= false
     self:emit_signal("state", false)
