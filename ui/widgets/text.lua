@@ -128,7 +128,7 @@ function text:set_icon(icon)
     wp.defaults.color = wp.color or icon.color
     wp.defaults.text = icon.icon
 
-    self:emit_signal("widget::redraw_needed")
+    generate_markup(self)
     self:emit_signal("property::icon", icon)
 end
 
