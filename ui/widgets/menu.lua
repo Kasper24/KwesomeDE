@@ -256,6 +256,7 @@ function menu.sub_menu_button(args)
     elseif args.icon ~= nil then
         icon = wibox.widget {
             widget = iwidget,
+            size = 15,
             icon = args.icon
         }
     elseif args.image ~= nil then
@@ -341,6 +342,7 @@ function menu.button(args)
     elseif args.icon ~= nil then
         icon = wibox.widget {
             widget = iwidget,
+            size = 15,
             icon = args.icon
         }
     elseif args.image ~= nil then
@@ -413,6 +415,7 @@ function menu.checkbox_button(args)
     elseif args.icon ~= nil then
         icon = wibox.widget {
             widget = iwidget,
+            size = 15,
             icon = args.icon
         }
     elseif args.image ~= nil then
