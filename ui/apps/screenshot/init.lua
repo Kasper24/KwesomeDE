@@ -35,7 +35,6 @@ local function button(icon, text, on_release, on_by_default)
         widget = widgets.text,
         halign = "center",
         color = beautiful.icons.camera_retro.color,
-        color = beautiful.icons.camera_retro.color,
         on_color = beautiful.colors.transparent,
         icon = icon
     }
@@ -44,7 +43,6 @@ local function button(icon, text, on_release, on_by_default)
         widget = widgets.text,
         halign = "center",
         size = 12,
-        color = beautiful.colors.on_surface,
         color = beautiful.colors.on_surface,
         on_color = beautiful.colors.transparent,
         text = text
