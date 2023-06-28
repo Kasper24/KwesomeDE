@@ -257,6 +257,7 @@ local function new()
             return
         end
 
+        app_launcher:refresh_app_list()
         app_launcher._private.state = true
         app_launcher:get_widget().visible = true
         app_launcher:get_text_input():focus()
