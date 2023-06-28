@@ -277,6 +277,12 @@ local function new()
                     ---------------------------------------------------------------------------------------------------------
                     if line:match("Event 'new' on sink #") or line:match("Event 'new' on source #") then
                         get_devices(ret)
+                    elseif line:match("Event 'remove' on sink #") then
+                        local id = line:match("Event 'remove' on sink #(.*)")
+                        on_object_removed(ret, "sinks", id)
+                    elseif line:match("Event 'remove' on source #") then
+                        local id = line:match("Event 'remove' on source #(.*)")
+                        on_object_removed(ret, "sources", id)
                     elseif line:match("Event 'change' on server") then
                         on_default_device_changed(ret)
                     elseif line:match("Event 'change' on sink #") then
@@ -285,12 +291,7 @@ local function new()
                     elseif line:match("Event 'change' on source #") then
                         local id = line:match("Event 'change' on source #(.*)")
                         on_device_updated(ret, "sources", id)
-                    elseif line:match("Event 'remove' on sink #") then
-                        local id = line:match("Event 'remove' on sink #(.*)")
-                        on_object_removed(ret, "sinks", id)
-                    elseif line:match("Event 'remove' on source #") then
-                        local id = line:match("Event 'remove' on source #(.*)")
-                        on_object_removed(ret, "sources", id)
+
                     ---------------------------------------------------------------------------------------------------------
                     -- Applications
                     ---------------------------------------------------------------------------------------------------------
