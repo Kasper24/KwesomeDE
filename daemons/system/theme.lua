@@ -712,6 +712,7 @@ local function scan_wallpapers(self)
                     if PICTURES_MIMETYPES[mimetype] then
                         helpers.ui.scale_image_save(file.full_path, THUMBNAIL_PATH .. file.name, 100, 70, function(image)
                             table.insert(self._private.wallpapers, {
+                                uid = file.full_path,
                                 path = file.full_path,
                                 thumbnail = image,
                                 name = file.name
@@ -732,6 +733,7 @@ local function scan_wallpapers(self)
                                     local name = json.decode(content).title
                                     helpers.ui.scale_image_save(file.full_path, THUMBNAIL_PATH .. sanitize_filename(name), 100, 70, function(image)
                                         table.insert(self._private.we_wallpapers, {
+                                            uid = file.full_path,
                                             path = file.full_path,
                                             thumbnail = image,
                                             name = name
