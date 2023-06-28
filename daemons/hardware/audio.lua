@@ -155,8 +155,8 @@ local function get_devices(self)
 
                 if self._private[device.type][device.id] == nil then
                     self:emit_signal(device.type .. "::added", device)
+                    self._private[device.type][device.id] = device
                 end
-                self._private[device.type][device.id] = device
             end
         end
 
