@@ -154,6 +154,7 @@ local function client_widget(client)
             end,
             {
                 widget = widgets.icon,
+                halign = "center",
                 color = client._icon.color,
                 on_color = beautiful.colors.icon_transparent,
                 icon = client._icon,

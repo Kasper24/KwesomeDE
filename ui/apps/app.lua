@@ -58,6 +58,7 @@ local function titlebar(self)
         on_color = beautiful.colors.transparent,
         {
             widget = widgets.icon,
+            halign = "center",
             size = 25,
             color = beautiful.colors.on_background,
             on_color = self:get_client()._icon.color,
