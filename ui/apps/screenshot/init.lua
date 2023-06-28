@@ -35,8 +35,8 @@ local function button(icon, text, on_release, on_by_default)
         widget = widgets.text,
         halign = "center",
         color = beautiful.icons.camera_retro.color,
-        text_normal_bg = beautiful.icons.camera_retro.color,
-        text_on_normal_bg = beautiful.colors.transparent,
+        color = beautiful.icons.camera_retro.color,
+        on_color = beautiful.colors.transparent,
         icon = icon
     }
 
@@ -45,8 +45,8 @@ local function button(icon, text, on_release, on_by_default)
         halign = "center",
         size = 12,
         color = beautiful.colors.on_surface,
-        text_normal_bg = beautiful.colors.on_surface,
-        text_on_normal_bg = beautiful.colors.transparent,
+        color = beautiful.colors.on_surface,
+        on_color = beautiful.colors.transparent,
         text = text
     }
 
@@ -203,7 +203,7 @@ local function main()
         end,
         {
             widget = widgets.text,
-            text_normal_bg = beautiful.colors.on_accent,
+            color = beautiful.colors.on_accent,
             size = 15,
             text = "Screenshot",
         }

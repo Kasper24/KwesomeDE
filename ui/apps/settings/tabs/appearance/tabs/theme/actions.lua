@@ -147,7 +147,7 @@ local function new()
         end,
         {
             widget = widgets.text,
-            text_normal_bg = beautiful.colors.on_accent,
+            color = beautiful.colors.on_accent,
             size = 15,
             text = "Light",
         }
@@ -161,7 +161,7 @@ local function new()
         end,
         {
             widget = widgets.text,
-            text_normal_bg = beautiful.colors.on_accent,
+            color = beautiful.colors.on_accent,
             size = 15,
             text = "Reset Colorscheme",
         }
@@ -175,7 +175,7 @@ local function new()
         end,
         {
             widget = widgets.text,
-            text_normal_bg = beautiful.colors.on_accent,
+            color = beautiful.colors.on_accent,
             size = 15,
             text = "Save Colorscheme",
         }
@@ -189,7 +189,7 @@ local function new()
         end,
         {
             widget = widgets.text,
-            text_normal_bg = beautiful.colors.on_accent,
+            color = beautiful.colors.on_accent,
             size = 15,
             text = "Set Wallpaper",
         }
@@ -203,7 +203,7 @@ local function new()
         end,
         {
             widget = widgets.text,
-            text_normal_bg = beautiful.colors.on_accent,
+            color = beautiful.colors.on_accent,
             size = 15,
             text = "Set Colorscheme",
         }
@@ -218,7 +218,7 @@ local function new()
         end,
         {
             widget = widgets.text,
-            text_normal_bg = beautiful.colors.on_accent,
+            color = beautiful.colors.on_accent,
             size = 15,
             text = "Set Both",
         }

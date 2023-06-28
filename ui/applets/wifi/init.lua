@@ -119,7 +119,7 @@ local function access_point_widget(layout, access_point)
         end,
         {
             widget = widgets.text,
-            text_normal_bg = beautiful.colors.on_surface,
+            color = beautiful.colors.on_surface,
             size = 12,
             text = "Cancel"
         }
@@ -133,7 +133,7 @@ local function access_point_widget(layout, access_point)
         end,
         {
             widget = widgets.text,
-            text_normal_bg = beautiful.colors.on_surface,
+            color = beautiful.colors.on_surface,
             size = 12,
             text = access_point:is_active() == true and "Disconnect" or "Connect"
         }
@@ -262,7 +262,7 @@ local function new()
         end,
         {
             widget = widgets.text,
-            text_normal_bg = beautiful.colors.on_background,
+            color = beautiful.colors.on_background,
             size = 15,
             icon = beautiful.icons.arrow_rotate_right,
         }
@@ -277,7 +277,7 @@ local function new()
         end,
         {
             widget = widgets.text,
-            text_normal_bg = beautiful.colors.on_background,
+            color = beautiful.colors.on_background,
             size = 15,
             icon = beautiful.icons.gear,
         }

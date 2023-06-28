@@ -45,8 +45,8 @@ local function application_widget(application)
         end,
         {
             widget = widgets.text,
-            text_normal_bg = icon_image.color,
-            text_on_normal_bg = beautiful.colors.on_accent,
+            color = icon_image.color,
+            on_color = beautiful.colors.on_accent,
             size = 12,
             icon = beautiful.icons.volume.off,
         }
@@ -127,7 +127,7 @@ local function device_widget(device)
         end,
         {
             widget = widgets.text,
-            text_on_normal_bg = beautiful.colors.on_accent,
+            on_color = beautiful.colors.on_accent,
             size = 12,
             icon = beautiful.icons.volume.off,
         }

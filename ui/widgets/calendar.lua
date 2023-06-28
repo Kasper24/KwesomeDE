@@ -174,7 +174,7 @@ local function new()
                     end,
                     {
                         widget = twidget,
-                        text_normal_bg = beautiful.colors.on_background,
+                        color = beautiful.colors.on_background,
                         size = 15,
                         icon = beautiful.icons.caret.left,
                     }
@@ -188,7 +188,7 @@ local function new()
                     end,
                     {
                         widget = twidget,
-                        text_normal_bg = beautiful.colors.on_background,
+                        color = beautiful.colors.on_background,
                         size = 15,
                         text = os.date("%B"),
                     }
@@ -201,7 +201,7 @@ local function new()
                     end,
                     {
                         widget = twidget,
-                        text_normal_bg = beautiful.colors.on_background,
+                        color = beautiful.colors.on_background,
                         size = 15,
                         icon = beautiful.icons.caret.right,
                     }
@@ -218,7 +218,7 @@ local function new()
                     end,
                     {
                         widget = twidget,
-                        text_normal_bg = beautiful.colors.on_background,
+                        color = beautiful.colors.on_background,
                         size = 15,
                         icon = beautiful.icons.caret.left
                     }
@@ -232,7 +232,7 @@ local function new()
                     end,
                     {
                         widget = twidget,
-                        text_normal_bg = beautiful.colors.on_background,
+                        color = beautiful.colors.on_background,
                         size = 15,
                         text = os.date("%Y")
                     }
@@ -245,7 +245,7 @@ local function new()
                     end,
                     {
                         widget = twidget,
-                        text_normal_bg = beautiful.colors.on_background,
+                        color = beautiful.colors.on_background,
                         size = 15,
                         icon = beautiful.icons.caret.right,
                     }

@@ -67,7 +67,7 @@ local function button(icon, text, on_release)
         end,
         {
             widget = widgets.text,
-            text_normal_bg = icon.color,
+            color = icon.color,
             size = 40,
             icon = icon,
         }

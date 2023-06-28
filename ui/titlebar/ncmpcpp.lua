@@ -22,8 +22,8 @@ local function tab_button(title)
         on_normal_bg = beautiful.icons.list_music.color,
         {
             widget = widgets.text,
-            text_normal_bg = beautiful.colors.on_background,
-            text_on_normal_bg = beautiful.colors.on_accent,
+            color = beautiful.colors.on_background,
+            on_color = beautiful.colors.on_accent,
             size = 12,
             text = title,
         }

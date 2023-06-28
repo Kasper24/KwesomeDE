@@ -30,8 +30,8 @@ local function tab_button(navigator, tab, pos)
     local icon = tab.icon and wibox.widget {
         widget = twidget,
         size = 12,
-        text_normal_bg = beautiful.colors.on_background,
-        text_on_normal_bg = beautiful.colors.on_accent,
+        color = beautiful.colors.on_background,
+        on_color = beautiful.colors.on_accent,
         icon = tab.icon,
     } or nil
 
@@ -61,8 +61,8 @@ local function tab_button(navigator, tab, pos)
                 widget = twidget,
                 size = 12,
                 halign = "left",
-                text_normal_bg = beautiful.colors.on_background,
-                text_on_normal_bg = beautiful.colors.on_accent,
+                color = beautiful.colors.on_background,
+                on_color = beautiful.colors.on_accent,
                 text = tab.title,
             }
         }

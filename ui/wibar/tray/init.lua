@@ -58,8 +58,8 @@ local function system_tray()
         end,
         {
             widget = widgets.text,
-            text_normal_bg = beautiful.icons.envelope.color,
-            text_on_normal_bg = beautiful.colors.transparent,
+            color = beautiful.icons.envelope.color,
+            on_color = beautiful.colors.transparent,
             icon = beautiful.icons.chevron.down
         }
     }
@@ -87,8 +87,8 @@ local function network()
         halign = "center",
         icon = beautiful.icons.network.wifi_off,
         color = beautiful.icons.envelope.color,
-        text_normal_bg = beautiful.icons.envelope.color,
-        text_on_normal_bg = beautiful.colors.transparent,
+        color = beautiful.icons.envelope.color,
+        on_color = beautiful.colors.transparent,
         size = 17
     }
 
@@ -121,8 +121,8 @@ local function bluetooth()
         halign = "center",
         icon = beautiful.icons.bluetooth.on,
         color = beautiful.icons.envelope.color,
-        text_normal_bg = beautiful.icons.envelope.color,
-        text_on_normal_bg = beautiful.colors.transparent,
+        color = beautiful.icons.envelope.color,
+        on_color = beautiful.colors.transparent,
         size = 17
     }
 
@@ -145,8 +145,7 @@ local function volume()
         halign = "center",
         icon = beautiful.icons.volume.normal,
         color = beautiful.icons.envelope.color,
-        text_normal_bg = beautiful.icons.envelope.color,
-        text_on_normal_bg = beautiful.colors.transparent,
+        on_color = beautiful.colors.transparent,
         size = 17
     }
 
@@ -169,8 +168,8 @@ local function keyboard_layout()
     local text = wibox.widget {
         widget = widgets.text,
         halign = "center",
-        text_normal_bg = beautiful.colors.background_no_opacity,
-        text_on_normal_bg = beautiful.icons.envelope.color,
+        color = beautiful.colors.background_no_opacity,
+        on_color = beautiful.icons.envelope.color,
         text = keyboard_layout_daemon:get_current_layout_as_text(),
         size = 15,
         bold = true,

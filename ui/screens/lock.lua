@@ -55,7 +55,7 @@ local function action_button(icon, title, on_release)
             end,
             {
                 widget = widgets.text,
-                text_normal_bg = beautiful.colors.on_background,
+                color = beautiful.colors.on_background,
                 size = 30,
                 icon = icon,
             }
@@ -164,7 +164,7 @@ local function widget(self)
         end,
         {
             widget = widgets.text,
-            text_normal_bg = beautiful.colors.transparent,
+            color = beautiful.colors.transparent,
             text = "Unlock"
         }
     }

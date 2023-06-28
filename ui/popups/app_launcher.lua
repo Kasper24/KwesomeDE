@@ -100,8 +100,8 @@ local function app(app, app_launcher)
                 forced_height = dpi(25),
                 halign = "center",
                 size = 12,
-                text_normal_bg = beautiful.colors.on_background,
-                text_on_normal_bg = beautiful.colors.transparent,
+                color = beautiful.colors.on_background,
+                on_color = beautiful.colors.transparent,
                 text = app.name
             }
         }

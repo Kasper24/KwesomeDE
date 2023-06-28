@@ -68,7 +68,7 @@ local function new(args)
         {
             widget = twidget,
             id = "text",
-            text_normal_bg = beautiful.colors.on_background,
+            color = beautiful.colors.on_background,
             size = 12,
             text = args.label .. args.initial_value
         }

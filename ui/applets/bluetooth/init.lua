@@ -46,7 +46,7 @@ local function device_widget(device, path)
         end,
         {
             widget = widgets.text,
-            text_normal_bg = beautiful.colors.on_surface,
+            color = beautiful.colors.on_surface,
             size = 12,
             text = "Cancel",
         }
@@ -60,7 +60,7 @@ local function device_widget(device, path)
         end,
         {
             widget = widgets.text,
-            text_normal_bg = beautiful.colors.on_surface,
+            color = beautiful.colors.on_surface,
             size = 12,
             text = device:is_connected() == true and "Disconnect" or "Connect",
         }
@@ -74,7 +74,7 @@ local function device_widget(device, path)
         end,
         {
             widget = widgets.text,
-            text_normal_bg = beautiful.colors.on_surface,
+            color = beautiful.colors.on_surface,
             size = 12,
             text = device:is_trusted() == true and "Untrust" or "Trust",
         }
@@ -88,7 +88,7 @@ local function device_widget(device, path)
         end,
         {
             widget = widgets.text,
-            text_normal_bg = beautiful.colors.on_surface,
+            color = beautiful.colors.on_surface,
             size = 12,
             text = device:is_paired() == true and "Unpair" or "Pair",
         }
@@ -171,7 +171,7 @@ local function new()
         end,
         {
             widget = widgets.text,
-            text_normal_bg = beautiful.colors.on_background,
+            color = beautiful.colors.on_background,
             size = 15,
             icon = beautiful.icons.arrow_rotate_right,
         }
@@ -184,7 +184,7 @@ local function new()
         end,
         {
             widget = widgets.text,
-            text_normal_bg = beautiful.colors.on_background,
+            color = beautiful.colors.on_background,
             size = 15,
             icon = beautiful.icons.gear,
         }

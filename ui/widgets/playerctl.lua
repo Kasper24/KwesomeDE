@@ -493,7 +493,7 @@ function playerctl.previous(width, height, daemon)
         end,
         {
             widget = twidget,
-            text_normal_bg = beautiful.colors.on_background,
+            color = beautiful.colors.on_background,
             size = 12,
             icon = beautiful.icons.backward
         }
@@ -514,7 +514,7 @@ function playerctl.next(width, height, daemon)
         end,
         {
             widget = twidget,
-            text_normal_bg = beautiful.colors.on_background,
+            color = beautiful.colors.on_background,
             size = 12,
             icon = beautiful.icons.forward
         }
@@ -535,7 +535,7 @@ function playerctl.loop(width, height, daemon)
         end,
         {
             widget = twidget,
-            text_normal_bg = beautiful.colors.on_background,
+            color = beautiful.colors.on_background,
             size = 12,
             icon = beautiful.icons._repeat
         }
@@ -566,7 +566,7 @@ function playerctl.shuffle(width, height, daemon)
         end,
         {
             widget = twidget,
-            text_normal_bg = beautiful.colors.on_background,
+            color = beautiful.colors.on_background,
             size = 12,
             icon = beautiful.icons.shuffle
         }

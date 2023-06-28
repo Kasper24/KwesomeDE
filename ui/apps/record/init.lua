@@ -266,7 +266,7 @@ local function main()
         end,
         {
             widget = widgets.text,
-            text_normal_bg = beautiful.colors.on_accent,
+            color = beautiful.colors.on_accent,
             size = 15,
             text = record_daemon:get_is_recording() and "Stop" or "Record",
         }

@@ -72,7 +72,7 @@ local function progress_bar(icon, on_release)
             end,
             {
                 widget = widgets.text,
-                text_normal_bg = beautiful.colors.on_background,
+                color = beautiful.colors.on_background,
                 size = 15,
                 icon = beautiful.icons.chevron.right
             }
@@ -164,7 +164,7 @@ local function audio()
         end,
         {
             widget = widgets.text,
-            text_normal_bg = beautiful.colors.on_background,
+            color = beautiful.colors.on_background,
             size = 15,
             icon = beautiful.icons.chevron.right,
         }

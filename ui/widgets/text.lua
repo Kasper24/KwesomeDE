@@ -24,10 +24,9 @@ local text = {
 
 local properties = {
     "font_family", "font_weight", "font_stretch", "font_variant", "bold", "italic",
-    "color","underline_color", "strikethrough_color",
+    "color", "on_color", "underline_color", "strikethrough_color",
     "letter_spacing", "gravity", "gravity_hint", "insert_hyphens", "text_transform", "line_height", "underline", "strikethrough",
-    "scale", "size", "text", "icon",
-    "text_normal_bg", "text_on_normal_bg",
+    "scale", "size", "text", "icon"
 }
 
 local function build_properties(prototype, prop_names)

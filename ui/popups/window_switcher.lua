@@ -69,8 +69,8 @@ local function client_widget(self, client)
                         halign = "center",
                         valign = "center",
                         size = 15,
-                        text_normal_bg = beautiful.colors.on_background,
-                        text_on_normal_bg = beautiful.colors.transparent,
+                        color = beautiful.colors.on_background,
+                        on_color = beautiful.colors.transparent,
                         text = client.name
                     }
                 },

@@ -96,7 +96,7 @@ local function actions_widget(n)
             end,
             {
                 widget = widgets.text,
-                text_normal_bg = beautiful.colors.on_surface,
+                color = beautiful.colors.on_surface,
                 size = 12,
                 text = action.name,
             }
@@ -161,7 +161,7 @@ local function create_notification(n, screen)
         end,
         {
             widget = widgets.text,
-            text_normal_bg = beautiful.colors.on_background,
+            color = beautiful.colors.on_background,
             size = 12,
             icon = beautiful.icons.xmark,
         }

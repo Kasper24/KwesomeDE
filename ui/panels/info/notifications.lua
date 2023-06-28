@@ -93,7 +93,7 @@ local function notification_widget(notification, on_removed)
                 end,
                 {
                     widget = widgets.text,
-                    text_normal_bg = beautiful.colors.on_surface,
+                    color = beautiful.colors.on_surface,
                     size = 12,
                     text = action.name,
                 }

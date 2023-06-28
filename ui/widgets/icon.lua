@@ -18,8 +18,7 @@ local icon = {
 }
 
 local properties = {
-    "color", "size", "icon",
-    "icon_normal_bg", "icon_on_normal_bg"
+    "color", "on_color", "size", "icon"
 }
 
 local function build_properties(prototype, prop_names)

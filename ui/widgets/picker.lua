@@ -86,7 +86,7 @@ local function new(type)
         end,
         {
             widget = twidget,
-            text_normal_bg = beautiful.colors.on_background,
+            color = beautiful.colors.on_background,
             size = 15,
             icon = type == "file" and beautiful.icons.file or beautiful.icons.folder_open,
         }
