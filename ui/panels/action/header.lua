@@ -102,7 +102,7 @@ local function new()
         spacing = dpi(15),
         {
             layout = wibox.layout.fixed.horizontal,
-            spacing = dpi(140),
+            spacing = dpi(180),
             name,
             power_button
         },
