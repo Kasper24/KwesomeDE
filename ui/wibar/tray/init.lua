@@ -87,7 +87,6 @@ local function network()
         halign = "center",
         icon = beautiful.icons.network.wifi_off,
         color = beautiful.icons.envelope.color,
-        color = beautiful.icons.envelope.color,
         on_color = beautiful.colors.transparent,
         size = 17
     }
@@ -120,7 +119,6 @@ local function bluetooth()
         forced_height = dpi(30),
         halign = "center",
         icon = beautiful.icons.bluetooth.on,
-        color = beautiful.icons.envelope.color,
         color = beautiful.icons.envelope.color,
         on_color = beautiful.colors.transparent,
         size = 17
