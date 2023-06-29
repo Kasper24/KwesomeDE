@@ -224,7 +224,6 @@ local function new()
         easing = helpers.animation.easing.linear,
         update = function(self, pos)
             tasklist_layout.forced_width = pos
-            print(pos)
         end
     }
 
