@@ -2,6 +2,7 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
+local awful = require("awful")
 local gtable = require("gears.table")
 local wibox = require("wibox")
 local pwidget = require("ui.widgets.popup")
@@ -21,9 +22,21 @@ function animated_popup:show(value, reshow)
 
     self.animation.pos = 1
     self.animation.easing = helpers.animation.easing.outExpo
-    if self.method == "forced_height" then
+    if self.animate_method == "forced_height" then
+        self.minimum_height = 1
+        if self.max_height then
+            self.screen = awful.screen.focused()
+            self.maximum_height = awful.screen.focused().workarea.height
+            value = self.maximum_height
+        end
         self.animation:set(value or self.maximum_height)
     else
+        if self.max_height then
+            self.screen = awful.screen.focused()
+            self.minimum_height = awful.screen.focused().workarea.height
+            self.maximum_height = self.minimum_height
+        end
+        self.minimum_width = 1
         self.animation:set(value or self.maximum_width)
     end
     self.visible = true
@@ -58,7 +71,9 @@ local function new(args)
     local ret = pwidget(args)
     gtable.crush(ret, animated_popup, true)
 
-    ret.method = "forced_" .. (args.animate_method or "height")
+    ret.animate_method = "forced_" .. (args.animate_method or "height")
+
+    ret.max_height = args.max_height
 
     ret.state = false
     ret.animation = helpers.animation:new{
@@ -66,7 +81,7 @@ local function new(args)
         easing = helpers.animation.easing.outExpo,
         duration = 0.8,
         update = function(_, pos)
-            ret.widget[ret.method] = dpi(pos)
+            ret.widget[ret.animate_method] = dpi(pos)
         end,
         signals = {
             ["ended"] = function()
