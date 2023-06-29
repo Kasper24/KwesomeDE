@@ -356,7 +356,7 @@ naughty.connect_signal("added", function(n)
     n.font_icon = n._private.font_icon
 
     if type(n.icon) == "table" then
-        n.icon = beautiful.get_svg_icon{n.icon}
+        n.icon = beautiful.get_svg_icon(n.icon)
     end
 
     if (n.icon == "" or n.icon == nil) and n.font_icon == nil then
