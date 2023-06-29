@@ -21,6 +21,8 @@ awful.screen.connect_for_each_screen(function(screen)
         _taglist = taglist(screen, "horizontal")
     end
 
+    local center_tasklist = ui_daemon:get_center_tasklist()
+
     -- Using popup instead of the wibar widget because it has some edge case bugs with detecting mouse input correctly
     screen.top_wibar = widgets.popup {
         ontop = true,
@@ -37,9 +39,9 @@ awful.screen.connect_for_each_screen(function(screen)
                 spacing = dpi(15),
                 start(),
                 _taglist,
-                tasklist(screen)
+                not center_tasklist and tasklist(screen) or nil
             },
-            time(),
+            center_tasklist and tasklist(screen) or time(),
             {
                 widget = wibox.container.place,
                 halign = "right",
@@ -49,7 +51,8 @@ awful.screen.connect_for_each_screen(function(screen)
                     tray(),
                     {
                         widget = wibox.container.margin,
-                    }
+                    },
+                    center_tasklist and time() or nil
                 }
             }
         }

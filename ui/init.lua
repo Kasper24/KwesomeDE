@@ -84,6 +84,9 @@ end)
 action_panel:connect_signal("visibility", function(self, visible)
     if visible == true then
         power_popup:hide()
+        if ui_daemon:get_center_tasklist() then
+            info_panel:hide()
+        end
     else
         cpu_popup:hide()
         ram_popup:hide()
@@ -97,6 +100,9 @@ end)
 info_panel:connect_signal("visibility", function(self, visible)
     if visible == true then
         power_popup:hide()
+        if ui_daemon:get_center_tasklist() then
+            action_panel:hide()
+        end
     end
 end)
 

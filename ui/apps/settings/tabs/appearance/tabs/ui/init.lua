@@ -99,6 +99,7 @@ local function new()
         checkbox_widget("show_lockscreen_on_login", "Lock on Login:"),
         checkbox_widget("double_bars", "Double Bars:"),
         checkbox_widget("icon_taglist", "Icon Taglist:"),
+        checkbox_widget("center_tasklist", "Center Tasklist:"),
     }
 end
 

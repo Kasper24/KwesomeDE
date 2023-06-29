@@ -233,6 +233,21 @@ function ui:get_icon_taglist()
     return self._private.icon_taglist
 end
 
+-- Center tasklist
+function ui:set_center_tasklist(center_tasklist)
+    self._private.center_tasklist = center_tasklist
+    helpers.settings["ui.bar.center_tasklist"] = center_tasklist
+end
+
+function ui:get_center_tasklist()
+    if self._private.center_tasklist == nil then
+        self._private.center_tasklist = helpers.settings["ui.bar.center_tasklist"]
+    end
+
+    return self._private.center_tasklist
+end
+
+
 local function new()
     local ret = gobject {}
     gtable.crush(ret, ui, true)

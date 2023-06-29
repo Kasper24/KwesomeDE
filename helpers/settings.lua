@@ -311,6 +311,11 @@ local function get_default_settings()
                     "default": true,
                     "type": "boolean",
                     "description": "Use icons based taglist"
+                },
+                "center_tasklist": {
+                    "default": false,
+                    "type": "boolean",
+                    "description": "Center the taglist"
                 }
             }
         },

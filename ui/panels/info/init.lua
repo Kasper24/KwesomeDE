@@ -6,6 +6,7 @@ local awful = require("awful")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
 local widgets = require("ui.widgets")
+local ui_daemon = require("daemons.system.ui")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 
@@ -93,13 +94,21 @@ local function new()
         max_height = true,
         axis = "y",
         start_pos = -500,
-        placement = function(widget)
-            awful.placement.top(widget, {
-                honor_workarea = true,
-                honor_padding = true,
-                attach = true
-            })
-        end,
+        placement = ui_daemon:get_center_tasklist() and
+            function(widget)
+                awful.placement.top_right(widget, {
+                    honor_workarea = true,
+                    honor_padding = true,
+                    attach = true
+                })
+            end or
+            function(widget)
+                awful.placement.top(widget, {
+                    honor_workarea = true,
+                    honor_padding = true,
+                    attach = true
+                })
+            end,
         shape = helpers.ui.rrect(),
         bg = beautiful.colors.background,
         widget = widget
