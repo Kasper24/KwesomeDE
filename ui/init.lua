@@ -55,14 +55,22 @@ capi.client.connect_signal("property::fullscreen", function(client)
         bluetooth_popup:hide()
 
         for screen in capi.screen do
-            screen.vertical_wibar.ontop = false
-            screen.horizontal_wibar.ontop = false
+            if screen.vertical_wibar then
+                screen.vertical_wibar.ontop = false
+            end
+            if screen.horizontal_wibar then
+                screen.horizontal_wibar.ontop = false
+            end
         end
     else
         if #helpers.client.find({fullscreen = true}) == 0 then
             for screen in capi.screen do
-                screen.vertical_wibar.ontop = true
-                screen.horizontal_wibar.ontop = true
+                if screen.vertical_wibar then
+                    screen.vertical_wibar.ontop = true
+                end
+                if screen.horizontal_wibar then
+                    screen.horizontal_wibar.ontop = true
+                end
             end
         end
     end
@@ -201,13 +209,21 @@ lock_popup:connect_signal("visibility", function(self, visibie)
             if s ~= awful.screen.focused() then
                 s.screen_mask.visible = true
             end
-            s.vertical_wibar.ontop = false
-            s.horizontal_wibar.ontop = false
+            if s.vertical_wibar then
+                s.vertical_wibar.ontop = false
+            end
+            if s.horizontal_wibar then
+                s.horizontal_wibar.ontop = false
+            end
         else
             s.screen_mask.visible = false
             if #helpers.client.find({fullscreen = true}) == 0 then
-                s.vertical_wibar.ontop = true
-                s.horizontal_wibar.ontop = true
+                if s.vertical_wibar then
+                    s.vertical_wibar.ontop = true
+                end
+                if s.horizontal_wibar then
+                    s.horizontal_wibar.ontop = true
+                end
             end
         end
     end
