@@ -84,7 +84,7 @@ end)
 action_panel:connect_signal("visibility", function(self, visible)
     if visible == true then
         power_popup:hide()
-        if ui_daemon:get_center_tasklist() then
+        if ui_daemon:get_widget_at_center() == "tasklist" then
             info_panel:hide()
         end
     else
@@ -100,7 +100,7 @@ end)
 info_panel:connect_signal("visibility", function(self, visible)
     if visible == true then
         power_popup:hide()
-        if ui_daemon:get_center_tasklist() then
+        if ui_daemon:get_widget_at_center() == "tasklist" then
             action_panel:hide()
         end
     end

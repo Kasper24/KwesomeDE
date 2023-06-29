@@ -16,8 +16,8 @@ local ui = {
 
 local function radio_group_widget(key, title, values)
     return radio_group {
-        forced_height = dpi(200),
         title = title,
+        forced_height = #values * dpi(60),
         on_select = function(id)
             ui_daemon["set_" .. key](ui_daemon, id)
         end,
@@ -110,8 +110,6 @@ local function new()
         checkbox_widget("animations", "Animations:"),
         separator(),
         checkbox_widget("show_lockscreen_on_login", "Lock on Login:"),
-        checkbox_widget("icon_taglist", "Icon Taglist:"),
-        checkbox_widget("center_tasklist", "Center Tasklist:"),
         radio_group_widget("bars_layout", "Bars Layout:", {
             {
                 id = "vertical_horizontal",
@@ -142,6 +140,34 @@ local function new()
             {
                 id = "bottom",
                 title = "Bottom",
+                color = beautiful.colors.background,
+                check_color = beautiful.icons.computer.color
+            },
+        }),
+        radio_group_widget("taglist_type", "Taglist Type:", {
+            {
+                id = "icon",
+                title = "Icon",
+                color = beautiful.colors.background,
+                check_color = beautiful.icons.computer.color
+            },
+            {
+                id = "circle",
+                title = "Circle",
+                color = beautiful.colors.background,
+                check_color = beautiful.icons.computer.color
+            },
+        }),
+        radio_group_widget("widget_at_center", "Widget at Center:", {
+            {
+                id = "clock",
+                title = "Clock",
+                color = beautiful.colors.background,
+                check_color = beautiful.icons.computer.color
+            },
+            {
+                id = "tasklist",
+                title = "Tasklist",
                 color = beautiful.colors.background,
                 check_color = beautiful.icons.computer.color
             },

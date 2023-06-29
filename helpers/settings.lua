@@ -307,20 +307,20 @@ local function get_default_settings()
                     "type": "string",
                     "description": "Bars layout - vertical + horionztal / vertical / horionztal"
                 },
-                "icon_taglist": {
-                    "default": true,
-                    "type": "boolean",
-                    "description": "Use icons based taglist"
-                },
-                "center_tasklist": {
-                    "default": false,
-                    "type": "boolean",
-                    "description": "Center the taglist"
-                },
                 "horizontal_bar_position": {
                     "default": "top",
                     "type": "string",
                     "description": "Verical bar position"
+                },
+                "taglist_type": {
+                    "default": "icon",
+                    "type": "string",
+                    "description": "Taglist type - icon or cicle"
+                },
+                "widget_at_center": {
+                    "default": "clock",
+                    "type": "string",
+                    "description": "Center the taglist"
                 },
             }
         },

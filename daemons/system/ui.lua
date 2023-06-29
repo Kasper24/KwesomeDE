@@ -205,7 +205,7 @@ function ui:get_show_lockscreen_on_login()
     return self._private.show_lockscreen_on_login
 end
 
--- Double bars
+-- Bars layout
 function ui:set_bars_layout(bar_layout)
     self._private.bars_layout = bar_layout
     helpers.settings["ui.bar.layout"] = bar_layout
@@ -219,35 +219,35 @@ function ui:get_bars_layout()
     return self._private.bars_layout
 end
 
--- Icon taglist
-function ui:set_icon_taglist(icon_taglist)
-    self._private.icon_taglist = icon_taglist
-    helpers.settings["ui.bar.icon_taglist"] = icon_taglist
+-- Taglist type
+function ui:set_taglist_type(taglist_type)
+    self._private.taglist_type = taglist_type
+    helpers.settings["ui.bar.taglist_type"] = taglist_type
 end
 
-function ui:get_icon_taglist()
-    if self._private.icon_taglist == nil then
-        self._private.icon_taglist = helpers.settings["ui.bar.icon_taglist"]
+function ui:get_taglist_type()
+    if self._private.taglist_type == nil then
+        self._private.taglist_type = helpers.settings["ui.bar.taglist_type"]
     end
 
-    return self._private.icon_taglist
+    return self._private.taglist_type
 end
 
--- Center tasklist
-function ui:set_center_tasklist(center_tasklist)
-    self._private.center_tasklist = center_tasklist
-    helpers.settings["ui.bar.center_tasklist"] = center_tasklist
+-- Widget at center
+function ui:set_widget_at_center(widget_at_center)
+    self._private.widget_at_center = widget_at_center
+    helpers.settings["ui.bar.widget_at_center"] = widget_at_center
 end
 
-function ui:get_center_tasklist()
-    if self._private.center_tasklist == nil then
-        self._private.center_tasklist = helpers.settings["ui.bar.center_tasklist"]
+function ui:get_widget_at_center()
+    if self._private.widget_at_center == nil then
+        self._private.widget_at_center = helpers.settings["ui.bar.widget_at_center"]
     end
 
-    return self._private.center_tasklist
+    return self._private.widget_at_center
 end
 
--- Vertical bar position
+-- Horizontal bar position
 function ui:set_horizontal_bar_position(horizontal_bar_position)
     self._private.horizontal_bar_position = horizontal_bar_position
     helpers.settings["ui.bar.horizontal_bar_position"] = horizontal_bar_position

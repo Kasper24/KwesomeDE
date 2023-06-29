@@ -8,7 +8,7 @@ local taglist = {
 }
 
 local function new(screen)
-    if ui_daemon:get_icon_taglist() then
+    if ui_daemon:get_taglist_type() == "icon" then
         return icon(screen)
     else
         return circle(screen)

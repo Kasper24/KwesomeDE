@@ -39,7 +39,7 @@ end
 local function new()
     local function placement(widget)
         if ui_daemon:get_bars_layout() ~= "vertical" then
-            if ui_daemon:get_center_tasklist() then
+            if ui_daemon:get_widget_at_center() == "tasklist" then
                 return awful.placement.top_right(widget, {
                     honor_workarea = true,
                     honor_padding = true,
@@ -111,7 +111,7 @@ local function new()
     }
 
     local animate_method = "width"
-    if ui_daemon:get_center_tasklist() == false and ui_daemon:get_bars_layout() ~= "vertical" then
+    if ui_daemon:get_widget_at_center() == "clock" and ui_daemon:get_bars_layout() ~= "vertical" then
         animate_method = "height"
     end
 

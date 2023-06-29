@@ -18,8 +18,10 @@ local time = require("ui.wibar.time")
 awful.screen.connect_for_each_screen(function(screen)
     local horizontal_bar_position = ui_daemon:get_horizontal_bar_position()
     local bars_layout = ui_daemon:get_bars_layout()
-    local center_tasklist = ui_daemon:get_center_tasklist()
+    local widget_at_center = ui_daemon:get_widget_at_center()
     local place_taglist_at_bottom = (horizontal_bar_position == "bottom" and bars_layout == "vertical_horizontal")
+
+
 
     local widget = place_taglist_at_bottom and wibox.widget {
         layout = wibox.layout.align.vertical,
@@ -39,9 +41,9 @@ awful.screen.connect_for_each_screen(function(screen)
                 spacing = dpi(0),
                 start(),
                 taglist(screen),
-                not center_tasklist and tasklist(screen) or nil
+                widget_at_center == "clock" and tasklist(screen) or nil
             },
-            center_tasklist and tasklist(screen) or time(),
+            widget_at_center == "clock" and time() or tasklist(screen),
             {
                 widget = wibox.container.place,
                 valign = "bottom",
@@ -52,7 +54,7 @@ awful.screen.connect_for_each_screen(function(screen)
                     {
                         widget = wibox.container.margin,
                     },
-                    center_tasklist and time() or nil
+                    widget_at_center == "tasklist" and time() or nil
                 }
             }
         } or

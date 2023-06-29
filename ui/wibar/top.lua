@@ -16,8 +16,7 @@ local tray = require("ui.wibar.tray")
 local time = require("ui.wibar.time")
 
 awful.screen.connect_for_each_screen(function(screen)
-    local center_tasklist = ui_daemon:get_center_tasklist()
-
+    local widget_at_center = ui_daemon:get_widget_at_center()
     local y_pos = ui_daemon:get_horizontal_bar_position() == "top" and 0 or screen.geometry.height - dpi(65)
 
     -- Using popup instead of the wibar widget because it has some edge case bugs with detecting mouse input correctly
@@ -37,9 +36,9 @@ awful.screen.connect_for_each_screen(function(screen)
                 spacing = dpi(15),
                 start(),
                 ui_daemon:get_bars_layout() == "horizontal" and taglist(screen) or nil,
-                not center_tasklist and tasklist(screen) or nil
+                widget_at_center == "clock" and tasklist(screen) or nil
             },
-            center_tasklist and tasklist(screen) or time(),
+            widget_at_center == "tasklist" and tasklist(screen) or time(),
             {
                 widget = wibox.container.place,
                 halign = "right",
@@ -50,7 +49,7 @@ awful.screen.connect_for_each_screen(function(screen)
                     {
                         widget = wibox.container.margin,
                     },
-                    center_tasklist and time() or nil
+                    widget_at_center == "tasklist" and time() or nil
                 }
             }
         }
