@@ -26,6 +26,8 @@ local function fake_widget(self)
     local image = wibox.widget.draw_to_image_surface(self.widget, self.width, self.height)
     self.widget = wibox.widget {
         widget = wibox.widget.imagebox,
+        horizontal_fit_policy = "fit",
+        vertical_fit_policy = "fit",
         image = image
     }
 end
