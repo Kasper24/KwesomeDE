@@ -97,6 +97,8 @@ local function pinned_app_widget(pinned_app)
             end,
             {
                 widget = widgets.icon,
+                halign = "center",
+                valign = "center",
                 icon = pinned_app.icon,
             }
         }
@@ -122,7 +124,6 @@ local function client_widget(client)
             id = "button",
             on_by_default = capi.client.focus == client,
             on_color =  client._icon.color,
-            halign = "center",
             on_hover = function(self)
                 local coords = nil
                 if ui_daemon:get_bars_layout() == "vertical" then
@@ -176,6 +177,7 @@ local function client_widget(client)
             {
                 widget = widgets.icon,
                 halign = "center",
+                valign = "center",
                 color = client._icon.color,
                 on_color = beautiful.colors.icon_transparent,
                 icon = client._icon,
