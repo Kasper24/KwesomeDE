@@ -7,6 +7,7 @@ local wibox = require("wibox")
 local widgets = require("ui.widgets")
 -- local tag_preview = require("ui.popups.tag_preview")
 local beautiful = require("beautiful")
+local ui_daemon = require("daemons.system.ui")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local ipairs = ipairs
@@ -178,6 +179,8 @@ local function tag_widget(self, tag, direction)
 end
 
 local function new(screen, direction)
+    -- Rotating imageboxes results in some cairo error, so if both bars are shown
+    -- and the top bar is at the bottom, the tag-order in the ui will look reversed
     return awful.widget.taglist {
         screen = screen,
         filter = awful.widget.taglist.filter.all,

@@ -160,31 +160,44 @@ end
 local function new(screen, direction)
     local accent_color = beautiful.colors.random_accent_color()
 
-    local margins = direction == "horizontal" and
+    local tags_margins = ui_daemon:get_vertical_bar_position() == "top" and
+        { top = ui_daemon:get_double_bars() and dpi(15) or 0} or
+        { bottom = ui_daemon:get_double_bars() and dpi(15) or 0}
+
+    local tag_margins = direction == "horizontal" and
         { top = dpi(25), bottom = dpi(25)} or
         { left = dpi(25), right = dpi(25)}
 
+    local direction = "north"
+    if ui_daemon:get_vertical_bar_position() == "bottom" and ui_daemon:get_double_bars() then
+        direction = "south"
+    end
+
     return wibox.widget {
-        widget = wibox.container.margin,
-        margins = { top = ui_daemon:get_double_bars() and dpi(15) or 0},
+        widget = wibox.container.rotate,
+        direction = direction,
         {
-            widget = awful.widget.taglist {
-                screen = screen,
-                filter = awful.widget.taglist.filter.all,
-                layout = {
-                    layout = direction == "horizontal" and wibox.layout.fixed.horizontal or wibox.layout.fixed.vertical,
-                    spacing = dpi(15)
-                },
-                widget_template = {
-                    widget = wibox.container.margin,
-                    margins = margins,
-                    create_callback = function(self, tag, index, tags)
-                        tag_widget(self, tag, accent_color, direction)
-                        update_taglist(self, tag)
-                    end,
-                    update_callback = function(self, tag, index, tags)
-                        update_taglist(self, tag)
-                    end
+            widget = wibox.container.margin,
+            margins = tags_margins,
+            {
+                widget = awful.widget.taglist {
+                    screen = screen,
+                    filter = awful.widget.taglist.filter.all,
+                    layout = {
+                        layout = direction == "horizontal" and wibox.layout.fixed.horizontal or wibox.layout.fixed.vertical,
+                        spacing = dpi(15)
+                    },
+                    widget_template = {
+                        widget = wibox.container.margin,
+                        margins = tag_margins,
+                        create_callback = function(self, tag, index, tags)
+                            tag_widget(self, tag, accent_color, direction)
+                            update_taglist(self, tag)
+                        end,
+                        update_callback = function(self, tag, index, tags)
+                            update_taglist(self, tag)
+                        end
+                    }
                 }
             }
         }
