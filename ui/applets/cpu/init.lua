@@ -7,6 +7,7 @@ local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
 local cpu_daemon = require("daemons.hardware.cpu")
+local ui_daemon = require("daemons.system.ui")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local math = math
@@ -262,21 +263,31 @@ local function new()
         }
     }
 
-    local widget = widgets.animated_panel {
+    local widget = widgets.animated_popup {
         ontop = true,
         visible = false,
         shape = helpers.ui.rrect(),
-        minimum_width = dpi(600),
         maximum_width = dpi(600),
         minimum_height = dpi(800),
         maximum_height = dpi(800),
+        animate_method = "width",
+        hide_on_clicked_outside = true,
         placement = function(widget)
-            awful.placement.bottom_right(widget, {
-                honor_workarea = true,
-                honor_padding = true,
-                attach = true,
-                margins = { right = dpi(550)}
-            })
+            if ui_daemon:get_bars_layout() == "vertical" then
+                awful.placement.bottom_left(widget, {
+                    honor_workarea = true,
+                    honor_padding = true,
+                    attach = true,
+                    margins = { left = dpi(550)}
+                })
+            else
+                awful.placement.bottom_right(widget, {
+                    honor_workarea = true,
+                    honor_padding = true,
+                    attach = true,
+                    margins = { right = dpi(550)}
+                })
+            end
         end,
         bg = beautiful.colors.background,
         widget = wibox.widget {
