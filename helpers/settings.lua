@@ -302,10 +302,10 @@ local function get_default_settings()
                 }
             },
             "bar": {
-                "double_bars": {
-                    "default": true,
-                    "type": "boolean",
-                    "description": "Show bars both on the left and top side of the screen"
+                "layout": {
+                    "default": "vertical_horizontal",
+                    "type": "string",
+                    "description": "Bars layout - vertical + horionztal / vertical / horionztal"
                 },
                 "icon_taglist": {
                     "default": true,
@@ -317,7 +317,7 @@ local function get_default_settings()
                     "type": "boolean",
                     "description": "Center the taglist"
                 },
-                "vertical_bar_position": {
+                "horizontal_bar_position": {
                     "default": "top",
                     "type": "string",
                     "description": "Verical bar position"

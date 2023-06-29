@@ -84,7 +84,7 @@ local function new()
     local widget = wibox.widget {
         widget = wibox.widget.make_base_widget,
         forced_width = dpi(45),
-        forced_height = dpi(60),
+        forced_height = dpi(45),
         pos = 0,
         color = off_color,
         draw = draw(),

@@ -9,37 +9,72 @@ local widgets = require("ui.widgets")
 local ui_daemon = require("daemons.system.ui")
 local dpi = beautiful.xresources.apply_dpi
 
+local start = require("ui.wibar.start")
 local taglist = require("ui.wibar.taglist")
+local tasklist = require("ui.wibar.tasklist")
+local tray = require("ui.wibar.tray")
+local time = require("ui.wibar.time")
 
 awful.screen.connect_for_each_screen(function(screen)
-    local vertical_bar_position = ui_daemon:get_vertical_bar_position()
+    local horizontal_bar_position = ui_daemon:get_horizontal_bar_position()
+    local bars_layout = ui_daemon:get_bars_layout()
+    local center_tasklist = ui_daemon:get_center_tasklist()
+    local place_taglist_at_bottom = (horizontal_bar_position == "bottom" and bars_layout == "vertical_horizontal")
 
-    local widget = vertical_bar_position == "top" and wibox.widget {
-        widget = wibox.container.margin,
-        forced_width = dpi(65),
-        taglist(screen, "vertical")
-    } or wibox.widget {
+    local widget = place_taglist_at_bottom and wibox.widget {
         layout = wibox.layout.align.vertical,
         nil,
         nil,
         {
             widget = wibox.container.margin,
             forced_width = dpi(65),
-            taglist(screen, "vertical")
+            taglist(screen)
         }
-    }
+    } or bars_layout == "vertical" and
+        wibox.widget {
+            layout = wibox.layout.align.vertical,
+            expand = "outside",
+            {
+                layout = wibox.layout.fixed.vertical,
+                spacing = dpi(0),
+                start(),
+                taglist(screen),
+                not center_tasklist and tasklist(screen) or nil
+            },
+            center_tasklist and tasklist(screen) or time(),
+            {
+                widget = wibox.container.place,
+                valign = "bottom",
+                {
+                    layout = wibox.layout.fixed.vertical,
+                    spacing = dpi(5),
+                    tray(),
+                    {
+                        widget = wibox.container.margin,
+                    },
+                    center_tasklist and time() or nil
+                }
+            }
+        } or
+        wibox.widget {
+            widget = wibox.container.margin,
+            forced_width = dpi(65),
+            taglist(screen)
+        }
 
-    screen.left_wibar = widgets.popup {
+    screen.vertical_wibar = widgets.popup {
         ontop = true,
         screen = screen,
-        y = vertical_bar_position == "top" and dpi(65) or 0,
+        y = (horizontal_bar_position == "top" and bars_layout == "vertical_horizontal") and dpi(65) or 0,
         maximum_width = dpi(65),
-        minimum_height = vertical_bar_position == "top" and screen.geometry.height or screen.geometry.height - dpi(65),
-        maximum_height = vertical_bar_position == "top" and screen.geometry.height or screen.geometry.height - dpi(65),
+        minimum_height = (horizontal_bar_position == "top" and bars_layout == "vertical_horizontal") and
+            screen.geometry.height - dpi(65) or screen.geometry.height,
+        maximum_height = (horizontal_bar_position == "top" and bars_layout == "vertical_horizontal") and
+            screen.geometry.height - dpi(65) or screen.geometry.height,
         bg = beautiful.colors.background,
         widget = widget
     }
-    screen.left_wibar:struts{
+    screen.vertical_wibar:struts{
         left = dpi(65)
     }
 end)

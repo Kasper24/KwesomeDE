@@ -6,6 +6,7 @@ local awful = require("awful")
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
+local ui_daemon = require("daemons.system.ui")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local capi = {
@@ -30,6 +31,22 @@ local function seperator()
 end
 
 local function new()
+    local function placement(widget)
+        if ui_daemon:get_bars_layout() ~= "vertical" then
+            awful.placement.top_right(widget, {
+                honor_workarea = true,
+                honor_padding = true,
+                attach = true
+            })
+        else
+            awful.placement.top_left(widget, {
+                honor_workarea = true,
+                honor_padding = true,
+                attach = true
+            })
+        end
+    end
+
     local widget = wibox.widget {
         widget = wibox.container.margin,
         margins = dpi(25),
@@ -57,13 +74,7 @@ local function new()
         max_height = true,
         animate_method = "width",
         hide_on_clicked_outside = true,
-        placement = function(widget)
-            awful.placement.top_right(widget, {
-                honor_workarea = true,
-                honor_padding = true,
-                attach = true
-            })
-        end,
+        placement = placement,
         shape = helpers.ui.rrect(),
         bg = beautiful.colors.background,
         widget = widget

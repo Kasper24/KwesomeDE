@@ -6,7 +6,7 @@ local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local info_panel = require("ui.panels.info")
 local beautiful = require("beautiful")
-local helpers = require("helpers")
+local ui_daemon = require("daemons.system.ui")
 local dpi = beautiful.xresources.apply_dpi
 local capi = {
     awesome = awesome
@@ -16,14 +16,39 @@ local time = {
     mt = {}
 }
 
-local function new()
-    local clock = wibox.widget {
+local function vertical()
+    return wibox.widget {
+        layout = wibox.layout.fixed.vertical,
+        {
+            widget = wibox.widget.textclock,
+            format = "%H",
+            bold = true,
+            size = 15,
+            color = beautiful.icons.envelope.color,
+            on_color = beautiful.colors.transparent
+        },
+        {
+            widget = wibox.widget.textclock,
+            format = "%M",
+            size = 14,
+            color = beautiful.icons.envelope.color,
+            on_color = beautiful.colors.transparent
+        },
+    }
+end
+
+local function horizontal()
+    return wibox.widget {
         widget = wibox.widget.textclock,
         format = "%d %b %H:%M",
         size = 14,
         color = beautiful.icons.envelope.color,
         on_color = beautiful.colors.transparent
     }
+end
+
+local function new()
+    local clock = ui_daemon:get_bars_layout() == "vertical" and vertical() or horizontal()
 
     local widget = wibox.widget {
         widget = wibox.container.margin,

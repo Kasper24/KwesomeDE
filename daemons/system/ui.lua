@@ -206,17 +206,17 @@ function ui:get_show_lockscreen_on_login()
 end
 
 -- Double bars
-function ui:set_double_bars(double_bars)
-    self._private.double_bars = double_bars
-    helpers.settings["ui.bar.double_bars"] = double_bars
+function ui:set_bars_layout(bar_layout)
+    self._private.bars_layout = bar_layout
+    helpers.settings["ui.bar.layout"] = bar_layout
 end
 
-function ui:get_double_bars()
-    if self._private.double_bars == nil then
-        self._private.double_bars = helpers.settings["ui.bar.double_bars"]
+function ui:get_bars_layout()
+    if self._private.bars_layout == nil then
+        self._private.bars_layout = helpers.settings["ui.bar.layout"]
     end
 
-    return self._private.double_bars
+    return self._private.bars_layout
 end
 
 -- Icon taglist
@@ -248,19 +248,18 @@ function ui:get_center_tasklist()
 end
 
 -- Vertical bar position
-function ui:set_vertical_bar_position(vertical_bar_position)
-    self._private.vertical_bar_position = vertical_bar_position
-    helpers.settings["ui.bar.vertical_bar_position"] = vertical_bar_position
+function ui:set_horizontal_bar_position(horizontal_bar_position)
+    self._private.horizontal_bar_position = horizontal_bar_position
+    helpers.settings["ui.bar.horizontal_bar_position"] = horizontal_bar_position
 end
 
-function ui:get_vertical_bar_position()
-    if self._private.vertical_bar_position == nil then
-        self._private.vertical_bar_position = helpers.settings["ui.bar.vertical_bar_position"]
+function ui:get_horizontal_bar_position()
+    if self._private.horizontal_bar_position == nil then
+        self._private.horizontal_bar_position = helpers.settings["ui.bar.horizontal_bar_position"]
     end
 
-    return self._private.vertical_bar_position
+    return self._private.horizontal_bar_position
 end
-
 
 
 local function new()

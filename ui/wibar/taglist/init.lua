@@ -7,11 +7,11 @@ local taglist = {
     mt = {}
 }
 
-local function new(screen, direction)
+local function new(screen)
     if ui_daemon:get_icon_taglist() then
-        return icon(screen, direction)
+        return icon(screen)
     else
-        return circle(screen, direction)
+        return circle(screen)
     end
 
 end

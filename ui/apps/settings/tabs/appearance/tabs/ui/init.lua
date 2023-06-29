@@ -110,10 +110,29 @@ local function new()
         checkbox_widget("animations", "Animations:"),
         separator(),
         checkbox_widget("show_lockscreen_on_login", "Lock on Login:"),
-        checkbox_widget("double_bars", "Double Bars:"),
         checkbox_widget("icon_taglist", "Icon Taglist:"),
         checkbox_widget("center_tasklist", "Center Tasklist:"),
-        radio_group_widget("vertical_bar_position", "Vertical Bar Position:", {
+        radio_group_widget("bars_layout", "Bars Layout:", {
+            {
+                id = "vertical_horizontal",
+                title = "Vertical + Horizontal",
+                color = beautiful.colors.background,
+                check_color = beautiful.icons.computer.color
+            },
+            {
+                id = "vertical",
+                title = "Vertical",
+                color = beautiful.colors.background,
+                check_color = beautiful.icons.computer.color
+            },
+            {
+                id = "horizontal",
+                title = "Horizontal",
+                color = beautiful.colors.background,
+                check_color = beautiful.icons.computer.color
+            },
+        }),
+        radio_group_widget("horizontal_bar_position", "Horizontal Bar Position:", {
             {
                 id = "top",
                 title = "Top",

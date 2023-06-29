@@ -40,8 +40,8 @@ function desktop:ask_for_new_position(widget, path)
         y = new_y
     })
 
-    if (new_x >= awful.screen.focused().left_wibar.maximum_width) and
-        (new_y >= awful.screen.focused().top_wibar.maximum_height) and
+    if (new_x >= awful.screen.focused().vertical_wibar.maximum_width) and
+        (new_y >= awful.screen.focused().horizontal_wibar.maximum_height) and
         (grid[new_grid_pos.x][new_grid_pos.y].empty == true) then
         local old_grid_pos = get_grid_pos_from_real_pos(self, widget.pos_before_move)
         grid[old_grid_pos.x][old_grid_pos.y].empty = true

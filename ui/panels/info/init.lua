@@ -37,6 +37,30 @@ local function vertical_separator()
 end
 
 local function new()
+    local function placement(widget)
+        if ui_daemon:get_bars_layout() ~= "vertical" then
+            if ui_daemon:get_center_tasklist() then
+                return awful.placement.top_right(widget, {
+                    honor_workarea = true,
+                    honor_padding = true,
+                    attach = true
+                })
+            else
+                return awful.placement.top(widget, {
+                    honor_workarea = true,
+                    honor_padding = true,
+                    attach = true
+                })
+            end
+        else
+            return awful.placement.top_left(widget, {
+                honor_workarea = true,
+                honor_padding = true,
+                attach = true
+            })
+        end
+    end
+
     local widget = wibox.widget {
         widget = wibox.container.margin,
         margins = dpi(25),
@@ -86,28 +110,19 @@ local function new()
         }
     }
 
+    local animate_method = "width"
+    if ui_daemon:get_center_tasklist() == false and ui_daemon:get_bars_layout() ~= "vertical" then
+        animate_method = "height"
+    end
+
     INFO_PANEL = widgets.animated_popup {
         visible = false,
         ontop = true,
         maximum_width = dpi(1000),
         max_height = true,
-        animate_method = "width",
+        animate_method = animate_method,
         hide_on_clicked_outside = true,
-        placement = ui_daemon:get_center_tasklist() and
-            function(widget)
-                awful.placement.top_right(widget, {
-                    honor_workarea = true,
-                    honor_padding = true,
-                    attach = true
-                })
-            end or
-            function(widget)
-                awful.placement.top(widget, {
-                    honor_workarea = true,
-                    honor_padding = true,
-                    attach = true
-                })
-            end,
+        placement = placement,
         shape = helpers.ui.rrect(),
         bg = beautiful.colors.background,
         widget = widget

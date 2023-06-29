@@ -109,7 +109,7 @@ local function tag_widget(self, tag, accent_color, direction)
         -- on_hover = function()
         --     if #tag:clients() > 0 then
         --         tag_preview:show(tag, {
-        --             wibox = awful.screen.focused().left_wibar,
+        --             wibox = awful.screen.focused().vertical_wibar,
         --             widget = self,
         --             offset = {
         --                 x = dpi(70),
@@ -127,7 +127,7 @@ local function tag_widget(self, tag, accent_color, direction)
         end,
         on_secondary_release = function(self)
             menu:toggle{
-                wibox = awful.screen.focused().left_wibar,
+                wibox = awful.screen.focused().vertical_wibar,
                 widget = self,
                 offset = {
                     x = dpi(70),
@@ -160,16 +160,18 @@ end
 local function new(screen, direction)
     local accent_color = beautiful.colors.random_accent_color()
 
-    local tags_margins = ui_daemon:get_vertical_bar_position() == "top" and
-        { top = ui_daemon:get_double_bars() and dpi(15) or 0} or
-        { bottom = ui_daemon:get_double_bars() and dpi(15) or 0}
+    local tags_margins = ui_daemon:get_horizontal_bar_position() == "top" and
+        { top = ui_daemon:get_bars_layout() == "vertical_horizontal" and dpi(15) or 0} or
+        { bottom = ui_daemon:get_bars_layout() == "vertical_horizontal" and dpi(15) or 0}
 
     local tag_margins = direction == "horizontal" and
         { top = dpi(25), bottom = dpi(25)} or
         { left = dpi(25), right = dpi(25)}
 
     local direction = "north"
-    if ui_daemon:get_vertical_bar_position() == "bottom" and ui_daemon:get_double_bars() then
+    if ui_daemon:get_horizontal_bar_position() == "bottom" and
+        ui_daemon:get_bars_layout() == "vertical_horizontal"
+    then
         direction = "south"
     end
 

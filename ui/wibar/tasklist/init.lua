@@ -20,6 +20,18 @@ local tasklist = {
     mt = {}
 }
 
+local function get_widget_size()
+    return dpi(65)
+end
+
+local function get_widget_spacing()
+    return dpi(65)
+end
+
+local function animate_layout(tasklist_layout_animation)
+    tasklist_layout_animation:set(#tasklist_daemon:get_clients() * get_widget_spacing())
+end
+
 local function pinned_app_menu(pinned_app)
     local menu = widgets.menu {
         widgets.menu.button {
@@ -65,8 +77,8 @@ local function pinned_app_widget(pinned_app)
 
     local widget = wibox.widget {
         widget = wibox.container.margin,
-        forced_width = dpi(70),
-        forced_height = dpi(70),
+        forced_width = get_widget_size(),
+        forced_height = get_widget_size(),
         margins = dpi(5),
         {
             widget = widgets.button.state,
@@ -76,7 +88,7 @@ local function pinned_app_widget(pinned_app)
             end,
             on_secondary_release = function(self)
                 menu:toggle{
-                    wibox = awful.screen.focused().top_wibar,
+                    wibox = awful.screen.focused().horizontal_wibar,
                     widget = self,
                     offset = {
                         y = dpi(70)
@@ -103,8 +115,8 @@ local function client_widget(client)
     local button = wibox.widget {
         widget = wibox.container.margin,
         margins = { top = dpi(5), bottom = dpi(10), left = dpi(10), right = dpi(10)},
-        forced_width = dpi(80),
-        forced_height = dpi(80),
+        forced_width = get_widget_size(),
+        forced_height = get_widget_size(),
         {
             widget = widgets.button.state,
             id = "button",
@@ -112,17 +124,21 @@ local function client_widget(client)
             on_color =  client._icon.color,
             halign = "center",
             on_hover = function(self)
-                local coords = helpers.ui.get_widget_geometry_in_device_space({wibox = awful.screen.focused().top_wibar}, self)
-                coords.y = coords.y + awful.screen.focused().top_wibar.y
+                local coords = nil
+                if ui_daemon:get_bars_layout() == "vertical" then
+                    coords = helpers.ui.get_widget_geometry_in_device_space({wibox = awful.screen.focused().vertical_wibar}, self)
+                    coords.x = coords.x + dpi(65)
+                else
+                    coords = helpers.ui.get_widget_geometry_in_device_space({wibox = awful.screen.focused().horizontal_wibar}, self)
+                    coords.y = coords.y + awful.screen.focused().horizontal_wibar.y
+                    if ui_daemon:get_horizontal_bar_position() == "top" then
+                        coords.y = coords.y + dpi(65)
+                    else
+                        coords.y = coords.y + -dpi(190)
+                    end
+                end
 
-                local y_offset = ui_daemon:get_vertical_bar_position() == "top" and dpi(65) or -dpi(190)
-
-                task_preview:show(client, {
-                    coords = coords,
-                    offset = {
-                        y = y_offset
-                    }
-                })
+                task_preview:show(client, {coords = coords})
             end,
             on_leave = function()
                 task_preview:hide()
@@ -150,7 +166,7 @@ local function client_widget(client)
             on_secondary_release = function(self)
                 task_preview:hide()
                 client.menu:toggle{
-                    wibox = awful.screen.focused().top_wibar,
+                    wibox = awful.screen.focused().horizontal_wibar,
                     widget = self,
                     offset = {
                         y = dpi(70)
@@ -169,23 +185,36 @@ local function client_widget(client)
 
     local indicator = wibox.widget {
         widget = wibox.container.place,
-        valign = "bottom",
         {
             widget = widgets.background,
             id = "background",
-            forced_width = capi.client.focus == client and dpi(50) or dpi(20),
-            forced_height = dpi(5),
             shape = helpers.ui.rrect(),
             bg = client._icon.color
         }
     }
+
+    if ui_daemon:get_bars_layout() == "vertical" then
+        indicator.halign = "right"
+        indicator.valign = "center"
+        indicator.children[1].forced_width = dpi(5)
+        indicator.children[1].forced_height = capi.client.focus == client and dpi(50) or dpi(20)
+    else
+        indicator.halign = "center"
+        indicator.valign = "bottom"
+        indicator.children[1].forced_width = capi.client.focus == client and dpi(50) or dpi(20)
+        indicator.children[1].forced_height = dpi(5)
+    end
 
     local indicator_animation = helpers.animation:new{
         pos = capi.client.focus == client and dpi(50) or dpi(20),
         duration = 0.2,
         easing = helpers.animation.easing.linear,
         update = function(self, pos)
-            indicator.children[1].forced_width = pos
+            if ui_daemon:get_bars_layout() == "vertical" then
+                indicator.children[1].forced_height = pos
+            else
+                indicator.children[1].forced_width = pos
+            end
         end
     }
 
@@ -213,22 +242,27 @@ local function client_widget(client)
     return widget
 end
 
-local function animate_layout_width(tasklist_layout_animation)
-    tasklist_layout_animation:set(#tasklist_daemon:get_clients() * dpi(80))
-end
-
 local function new()
     local tasklist_layout = wibox.widget {
         layout = wibox.layout.manual,
-        forced_width = 0,
     }
+
+    if ui_daemon:get_bars_layout() == "vertical" then
+        tasklist_layout.forced_height = 0
+    else
+        tasklist_layout.forced_width = 0
+    end
 
     local tasklist_layout_animation = helpers.animation:new {
         pos = 0,
         duration = 0.2,
         easing = helpers.animation.easing.linear,
         update = function(self, pos)
-            tasklist_layout.forced_width = pos
+            if ui_daemon:get_bars_layout() == "vertical" then
+                tasklist_layout.forced_height = pos
+            else
+                tasklist_layout.forced_width = pos
+            end
         end
     }
 
@@ -237,19 +271,27 @@ local function new()
             local widget = client_widget(client)
             client.tasklist_widget = widget
             widget.move_animation = helpers.animation:new {
-                pos = pos * dpi(80),
+                pos = pos * get_widget_spacing(),
                 duration = 0.2,
                 easing = helpers.animation.easing.linear,
                 update = function(self, pos)
-                    tasklist_layout:move_widget(widget, { x = pos, y = 0})
+                    if ui_daemon:get_bars_layout() == "vertical" then
+                        tasklist_layout:move_widget(widget, { x = 0, y = pos})
+                    else
+                        tasklist_layout:move_widget(widget, { x = pos, y = 0})
+                    end
                 end
             }
-            widget.width_animation = helpers.animation:new {
+            widget.size_animation = helpers.animation:new {
                 pos = 1,
                 duration = 0.2,
                 easing = helpers.animation.easing.linear,
                 update = function(self, pos)
-                    widget.forced_width = pos
+                    if ui_daemon:get_bars_layout() == "vertical" then
+                        widget.forced_height = pos
+                    else
+                        widget.forced_width = pos
+                    end
                 end,
                 signals = {
                     ["ended"] = function()
@@ -260,38 +302,51 @@ local function new()
                     end
                 }
             }
-            widget.width_animation:set(dpi(80))
-            tasklist_layout:add_at(widget, { x =  pos * dpi(80), y = 0})
+            widget.size_animation:set(get_widget_size())
+
+            if ui_daemon:get_bars_layout() == "vertical" then
+                tasklist_layout:add_at(widget, { x =  0, y = pos * get_widget_spacing()})
+            else
+                tasklist_layout:add_at(widget, { x =  pos * get_widget_spacing(), y = 0})
+            end
         else
-            client.tasklist_widget.move_animation:set(pos * dpi(80))
+            client.tasklist_widget.move_animation:set(pos * get_widget_spacing())
         end
 
-        animate_layout_width(tasklist_layout_animation)
+        animate_layout(tasklist_layout_animation)
     end)
 
     tasklist_daemon:connect_signal("client::removed", function(self, client)
         client.tasklist_widget.pending_remove = true
-        client.tasklist_widget.width_animation:set(1)
+        client.tasklist_widget.size_animation:set(1)
 
-        animate_layout_width(tasklist_layout_animation)
+        animate_layout(tasklist_layout_animation)
     end)
 
     tasklist_daemon:connect_signal("pinned_app::pos", function(self, pinned_app, pos)
         if pinned_app.widget == nil then
             pinned_app.widget = pinned_app_widget(pinned_app)
-            tasklist_layout:add_at(pinned_app.widget, { x =  pos * dpi(80), y = 0})
+            if ui_daemon:get_bars_layout() == "vertical" then
+                tasklist_layout:add_at(pinned_app.widget, { x =  0, y = pos * get_widget_spacing()})
+            else
+                tasklist_layout:add_at(pinned_app.widget, { x =  pos * get_widget_spacing(), y = 0})
+            end
         else
-            tasklist_layout:move_widget(pinned_app.widget, { x = pos * dpi(80), y = 0})
+            if ui_daemon:get_bars_layout() == "vertical" then
+                tasklist_layout:move_widget(pinned_app.widget, { x = 0, y = pos * get_widget_spacing()})
+            else
+                tasklist_layout:move_widget(pinned_app.widget, { x = pos * get_widget_spacing(), y = 0})
+            end
         end
 
-        animate_layout_width(tasklist_layout_animation)
+        animate_layout(tasklist_layout_animation)
     end)
 
     tasklist_daemon:connect_signal("pinned_app::removed", function(self, pinned_app)
         tasklist_layout:remove_widgets(pinned_app.widget)
         pinned_app.widget = nil
 
-        animate_layout_width(tasklist_layout_animation)
+        animate_layout(tasklist_layout_animation)
     end)
 
     return tasklist_layout

@@ -22,6 +22,24 @@ local tray = {
 }
 
 local function system_tray()
+    local function placement(widget)
+        if ui_daemon:get_bars_layout() == "vertical" then
+            return awful.placement["bottom_left"](widget, {
+                honor_workarea = true,
+                honor_padding = true,
+                attach = true,
+                offset = { y = -dpi(160) }
+            })
+        else
+            return awful.placement[ui_daemon:get_horizontal_bar_position() .. "_right"](widget, {
+                honor_workarea = true,
+                honor_padding = true,
+                attach = true,
+                offset = { x = -dpi(220) }
+            })
+        end
+    end
+
     local system_tray = widgets.animated_popup {
         visible = false,
         ontop = true,
@@ -30,14 +48,7 @@ local function system_tray()
         maximum_height = dpi(200),
         animate_method = "height",
         hide_on_clicked_outside = true,
-        placement = function(widget)
-            awful.placement[ui_daemon:get_vertical_bar_position() .. "_right"](widget, {
-                honor_workarea = true,
-                honor_padding = true,
-                attach = true,
-                offset = { x = -dpi(220) }
-            })
-        end,
+        placement = placement,
         shape = helpers.ui.rrect(),
         bg = beautiful.colors.background,
         widget = wibox.widget {
@@ -194,7 +205,9 @@ end
 
 local function custom_tray()
     local layout = wibox.widget {
-        layout = wibox.layout.fixed.horizontal,
+        layout = ui_daemon:get_bars_layout() == "vertical" and
+            wibox.layout.fixed.vertical or
+            wibox.layout.fixed.horizontal,
         spacing = dpi(15),
         network(),
         bluetooth(),
@@ -247,7 +260,9 @@ end
 
 local function new()
     return wibox.widget {
-        layout = wibox.layout.fixed.horizontal,
+        layout = ui_daemon:get_bars_layout() == "vertical" and
+            wibox.layout.fixed.vertical or
+            wibox.layout.fixed.horizontal,
         system_tray(),
         custom_tray()
     }

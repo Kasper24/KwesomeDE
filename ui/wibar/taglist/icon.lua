@@ -89,7 +89,7 @@ local function update_taglist(self, tag)
     end
 end
 
-local function tag_widget(self, tag, direction)
+local function tag_widget(self, tag)
     local menu = tag_menu(tag)
 
     local button = wibox.widget {
@@ -100,7 +100,7 @@ local function tag_widget(self, tag, direction)
         -- on_hover = function()
         --     if #tag:clients() > 0 then
         --         tag_preview:show(tag, {
-        --             wibox = awful.screen.focused().left_wibar,
+        --             wibox = awful.screen.focused().vertical_wibar,
         --             widget = self,
         --             offset = {
         --                 x = dpi(70),
@@ -118,7 +118,7 @@ local function tag_widget(self, tag, direction)
         end,
         on_secondary_release = function(self)
             menu:toggle{
-                wibox = awful.screen.focused().left_wibar,
+                wibox = awful.screen.focused().vertical_wibar,
                 widget = self,
                 offset = {
                     x = dpi(70),
@@ -144,29 +144,25 @@ local function tag_widget(self, tag, direction)
 
     local indicator = wibox.widget {
         widget = widgets.background,
+        forced_width = ui_daemon:get_bars_layout() == "horizontal" and dpi(5) or nil,
+        forced_height = ui_daemon:get_bars_layout() ~= "horizontal" and dpi(5) or nil,
         id = "background",
         shape = helpers.ui.rrect(),
         bg = tag.icon.color
     }
-
-    if direction == "horizontal" then
-        indicator.forced_height = dpi(5)
-    else
-        indicator.forced_width = dpi(5)
-    end
 
     local stack = wibox.widget {
         widget = wibox.layout.stack,
         button,
         {
             widget = wibox.container.place,
-            halign = direction == "horizontal" and "center" or "right",
-            valign = direction == "horizontal" and "bottom" or "center",
+            halign = ui_daemon:get_bars_layout() == "horizontal" and "center" or "right",
+            valign = ui_daemon:get_bars_layout() == "horizontal" and "bottom" or "center",
             indicator
         }
     }
 
-    local prop = direction == "horizontal" and "forced_width" or "forced_height"
+    local prop = ui_daemon:get_bars_layout() == "horizontal" and "forced_width" or "forced_height"
     self.indicator_animation = helpers.animation:new{
         duration = 0.2,
         easing = helpers.animation.easing.linear,
@@ -178,21 +174,21 @@ local function tag_widget(self, tag, direction)
     self:set_widget(stack)
 end
 
-local function new(screen, direction)
+local function new(screen)
     -- Rotating imageboxes results in some cairo error, so if both bars are shown
     -- and the top bar is at the bottom, the tag-order in the ui will look reversed
     return awful.widget.taglist {
         screen = screen,
         filter = awful.widget.taglist.filter.all,
         layout = {
-            layout = direction == "horizontal" and wibox.layout.fixed.horizontal or wibox.layout.fixed.vertical,
+            layout = ui_daemon:get_bars_layout() == "horizontal" and wibox.layout.fixed.horizontal or wibox.layout.fixed.vertical,
         },
         widget_template = {
             widget = wibox.container.margin,
             forced_width = dpi(60),
             forced_height = dpi(60),
             create_callback = function(self, tag, index, tags)
-                tag_widget(self, tag, direction)
+                tag_widget(self, tag)
                 update_taglist(self, tag)
             end,
             update_callback = function(self, tag, index, tags)
