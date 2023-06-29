@@ -208,8 +208,8 @@ local function client_widget(client)
     return widget
 end
 
-local function calculate_layout_width(tasklist_layout)
-    return #tasklist_daemon:get_clients() * dpi(80)
+local function animate_layout_width(tasklist_layout_animation)
+    tasklist_layout_animation:set(#tasklist_daemon:get_clients() * dpi(80))
 end
 
 local function new()
@@ -261,14 +261,14 @@ local function new()
             client.tasklist_widget.move_animation:set(pos * dpi(80))
         end
 
-        tasklist_layout_animation:set(calculate_layout_width(tasklist_layout))
+        animate_layout_width(tasklist_layout_animation)
     end)
 
     tasklist_daemon:connect_signal("client::removed", function(self, client)
         client.tasklist_widget.pending_remove = true
         client.tasklist_widget.width_animation:set(1)
 
-        tasklist_layout_animation:set(calculate_layout_width(tasklist_layout))
+        animate_layout_width(tasklist_layout_animation)
     end)
 
     tasklist_daemon:connect_signal("pinned_app::pos", function(self, pinned_app, pos)
@@ -279,14 +279,14 @@ local function new()
             tasklist_layout:move_widget(pinned_app.widget, { x = pos * dpi(80), y = 0})
         end
 
-        tasklist_layout_animation:set(calculate_layout_width(tasklist_layout))
+        animate_layout_width(tasklist_layout_animation)
     end)
 
     tasklist_daemon:connect_signal("pinned_app::removed", function(self, pinned_app)
         tasklist_layout:remove_widgets(pinned_app.widget)
         pinned_app.widget = nil
 
-        tasklist_layout_animation:set(calculate_layout_width(tasklist_layout))
+        animate_layout_width(tasklist_layout_animation)
     end)
 
     return tasklist_layout
