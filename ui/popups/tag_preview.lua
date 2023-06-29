@@ -38,16 +38,10 @@ function tag_preview:show(t, args)
 
     if not args.coords and args.wibox and args.widget then
         args.coords = helpers.ui.get_widget_geometry_in_device_space({wibox = args.wibox}, args.widget)
-        if args.offset.x ~= nil then
-            args.coords.x = args.coords.x + args.offset.x
-        end
-        if args.offset.y ~= nil then
-            args.coords.y = args.coords.y + args.offset.y
-        end
-
-        self.x = args.coords.x
-        self.y = args.coords.y
     end
+
+    self.x = args.coords.x + (args.offset.x or 0)
+    self.y = args.coords.y + (args.offset.y or 0)
 
     save_tag_thumbnail(t)
     if t.thumbnail then
