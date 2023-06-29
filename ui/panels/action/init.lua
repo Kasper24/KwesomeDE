@@ -50,12 +50,12 @@ local function new()
         }
     }
 
-    local panel = widgets.animated_panel {
+    local panel = widgets.animated_popup {
         visible = false,
         ontop = true,
-        minimum_width = dpi(550),
         maximum_width = dpi(550),
         max_height = true,
+        animate_method = "width",
         placement = function(widget)
             awful.placement.top_right(widget, {
                 honor_workarea = true,

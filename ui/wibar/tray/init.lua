@@ -21,13 +21,13 @@ local tray = {
 }
 
 local function system_tray()
-    local system_tray = widgets.animated_panel {
+    local system_tray = widgets.animated_popup {
         visible = false,
         ontop = true,
         minimum_width = dpi(200),
         maximum_width = dpi(200),
-        axis = "y",
-        start_pos = -500,
+        maximum_height = dpi(200),
+        animate_method = "height",
         placement = function(widget)
             awful.placement.top_right(widget, {
                 honor_workarea = true,

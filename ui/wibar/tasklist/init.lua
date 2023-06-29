@@ -8,6 +8,7 @@ local widgets = require("ui.widgets")
 local task_preview = require("ui.popups.task_preview")
 local beautiful = require("beautiful")
 local tasklist_daemon = require("daemons.system.tasklist")
+local ui_daemon = require("daemons.system.ui")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 local ipairs = ipairs
@@ -111,11 +112,15 @@ local function client_widget(client)
             on_color =  client._icon.color,
             halign = "center",
             on_hover = function(self)
+                local coords = helpers.ui.get_widget_geometry_in_device_space({wibox = awful.screen.focused().top_wibar}, self)
+                coords.y = coords.y + awful.screen.focused().top_wibar.y
+
+                local y_offset = ui_daemon:get_vertical_bar_position() == "top" and dpi(65) or -dpi(190)
+
                 task_preview:show(client, {
-                    wibox = awful.screen.focused().top_wibar,
-                    widget = self,
+                    coords = coords,
                     offset = {
-                        y = dpi(70)
+                        y = y_offset
                     }
                 })
             end,

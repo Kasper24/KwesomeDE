@@ -86,14 +86,12 @@ local function new()
         }
     }
 
-    INFO_PANEL = widgets.animated_panel {
+    INFO_PANEL = widgets.animated_popup {
         visible = false,
         ontop = true,
-        minimum_width = dpi(1000),
         maximum_width = dpi(1000),
         max_height = true,
-        axis = "y",
-        start_pos = -500,
+        animate_method = "width",
         placement = ui_daemon:get_center_tasklist() and
             function(widget)
                 awful.placement.top_right(widget, {
