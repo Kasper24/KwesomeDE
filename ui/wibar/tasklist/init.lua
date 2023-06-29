@@ -208,9 +208,14 @@ local function client_widget(client)
     return widget
 end
 
+local function set_width(tasklist_layout)
+    tasklist_layout.forced_width = math.max(#tasklist_layout.children, 2) * dpi(80)
+end
+
 local function new()
     local tasklist_layout = wibox.widget {
-        layout = wibox.layout.manual
+        layout = wibox.layout.manual,
+        forced_width = 0,
     }
 
     tasklist_daemon:connect_signal("client::pos", function(self, client, pos)
@@ -246,11 +251,14 @@ local function new()
         else
             client.tasklist_widget.move_animation:set(pos * dpi(80))
         end
+
+        set_width(tasklist_layout)
     end)
 
     tasklist_daemon:connect_signal("client::removed", function(self, client)
         client.tasklist_widget.pending_remove = true
         client.tasklist_widget.width_animation:set(1)
+        set_width(tasklist_layout)
     end)
 
     tasklist_daemon:connect_signal("pinned_app::pos", function(self, pinned_app, pos)
@@ -260,11 +268,15 @@ local function new()
         else
             tasklist_layout:move_widget(pinned_app.widget, { x = pos * dpi(80), y = 0})
         end
+
+        set_width(tasklist_layout)
     end)
 
     tasklist_daemon:connect_signal("pinned_app::removed", function(self, pinned_app)
         tasklist_layout:remove_widgets(pinned_app.widget)
         pinned_app.widget = nil
+
+        set_width(tasklist_layout)
     end)
 
     return tasklist_layout
