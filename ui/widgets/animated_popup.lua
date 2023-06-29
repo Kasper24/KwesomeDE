@@ -21,9 +21,7 @@ local animated_popup = {
 
 local function fake_widget(self)
     self.visible = true
-    self.width = self.maximum_width
-    self.height = self.maximum_height
-    local image = wibox.widget.draw_to_image_surface(self.widget, self.width, self.height)
+    local image = wibox.widget.draw_to_image_surface(self.widget, self.maximum_width, self.maximum_height)
     self.widget = wibox.widget {
         widget = wibox.widget.imagebox,
         horizontal_fit_policy = "fit",
