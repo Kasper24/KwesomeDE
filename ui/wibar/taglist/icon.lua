@@ -144,8 +144,8 @@ local function tag_widget(self, tag)
 
     local indicator = wibox.widget {
         widget = widgets.background,
-        forced_width = ui_daemon:get_bars_layout() == "horizontal" and dpi(5) or nil,
-        forced_height = ui_daemon:get_bars_layout() ~= "horizontal" and dpi(5) or nil,
+        forced_width = dpi(5),
+        forced_height = dpi(5),
         id = "background",
         shape = helpers.ui.rrect(),
         bg = tag.icon.color
@@ -156,13 +156,21 @@ local function tag_widget(self, tag)
         button,
         {
             widget = wibox.container.place,
-            halign = ui_daemon:get_bars_layout() == "horizontal" and "center" or "right",
-            valign = ui_daemon:get_bars_layout() == "horizontal" and "bottom" or "center",
             indicator
         }
     }
 
-    local prop = ui_daemon:get_bars_layout() == "horizontal" and "forced_width" or "forced_height"
+    local prop = nil
+    if ui_daemon:get_bars_layout() == "vertical" then
+        prop = "forced_height"
+        stack.children[2].halign = "right"
+        stack.children[2].valign = "center"
+    else
+        prop = "forced_width"
+        stack.children[2].halign = "center"
+        stack.children[2].valign = "bottom"
+    end
+
     self.indicator_animation = helpers.animation:new{
         duration = 0.2,
         easing = helpers.animation.easing.linear,
