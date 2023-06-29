@@ -110,11 +110,20 @@ function radio_group:set_values(values)
         self._private.buttons_layout:add(value.button)
     end
 
-    self:select(self._private.values[1].id)
+    if self._private.initial_value_id then
+        self:select(self._private.initial_value_id)
+    else
+        self:select(self._private.values[1].id)
+    end
 end
 
 function radio_group:get_values()
     return self._private.values
+end
+
+function radio_group:set_initial_value_id(initial_value_id)
+    self._private.initial_value_id = initial_value_id
+    self:select(initial_value_id)
 end
 
 function radio_group:set_widget_template(widget_template)

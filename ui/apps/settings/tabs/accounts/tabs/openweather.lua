@@ -36,6 +36,7 @@ local function new()
         on_select = function(id)
             weather_daemon:set_unit(id)
         end,
+        initial_value_id = weather_daemon:get_unit(),
         values = {
             {
                 id = "metric",

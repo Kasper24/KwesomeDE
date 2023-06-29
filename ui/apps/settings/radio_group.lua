@@ -26,6 +26,7 @@ local function new(args)
         on_select = function(id)
             args.on_select(id)
         end,
+        initial_value_id = args.initial_value_id,
         values = args.values
     }
 
