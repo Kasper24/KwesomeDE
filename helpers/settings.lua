@@ -316,7 +316,12 @@ local function get_default_settings()
                     "default": false,
                     "type": "boolean",
                     "description": "Center the taglist"
-                }
+                },
+                "vertical_bar_position": {
+                    "default": "top",
+                    "type": "string",
+                    "description": "Verical bar position"
+                },
             }
         },
         "layout": {

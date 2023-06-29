@@ -13,6 +13,7 @@ local bluetooth_daemon = require("daemons.hardware.bluetooth")
 local audio_daemon = require("daemons.hardware.audio")
 local upower_daemon = require("daemons.hardware.upower")
 local keyboard_layout_daemon = require("daemons.system.keyboard_layout")
+local ui_daemon = require("daemons.system.ui")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 
@@ -29,7 +30,7 @@ local function system_tray()
         maximum_height = dpi(200),
         animate_method = "height",
         placement = function(widget)
-            awful.placement.top_right(widget, {
+            awful.placement[ui_daemon:get_vertical_bar_position() .. "_right"](widget, {
                 honor_workarea = true,
                 honor_padding = true,
                 attach = true,

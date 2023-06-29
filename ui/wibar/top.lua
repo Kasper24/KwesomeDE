@@ -23,6 +23,8 @@ awful.screen.connect_for_each_screen(function(screen)
 
     local center_tasklist = ui_daemon:get_center_tasklist()
 
+    local y_pos = ui_daemon:get_vertical_bar_position() == "top" and 0 or screen.geometry.height - dpi(65)
+
     -- Using popup instead of the wibar widget because it has some edge case bugs with detecting mouse input correctly
     screen.top_wibar = widgets.popup {
         ontop = true,
@@ -30,6 +32,7 @@ awful.screen.connect_for_each_screen(function(screen)
         maximum_height = dpi(65),
         minimum_width = screen.geometry.width,
         maximum_width = screen.geometry.width,
+        y = y_pos,
         bg = beautiful.colors.background,
         widget = {
             layout = wibox.layout.align.horizontal,
@@ -58,6 +61,7 @@ awful.screen.connect_for_each_screen(function(screen)
         }
     }
     screen.top_wibar:struts{
-        top = dpi(65)
+        top = ui_daemon:get_vertical_bar_position() == "top" and dpi(65) or 0,
+        bottom = ui_daemon:get_vertical_bar_position() == "bottom" and dpi(65) or 0
     }
 end)

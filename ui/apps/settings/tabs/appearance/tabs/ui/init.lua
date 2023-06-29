@@ -4,6 +4,7 @@ local slider_text_input = require("ui.apps.settings.slider_text_input")
 local checkbox = require("ui.apps.settings.checkbox")
 local picker = require("ui.apps.settings.picker")
 local separator = require("ui.apps.settings.separator")
+local radio_group  = require("ui.apps.settings.radio_group")
 local beautiful = require("beautiful")
 local ui_daemon = require("daemons.system.ui")
 local dpi = beautiful.xresources.apply_dpi
@@ -12,6 +13,18 @@ local setmetatable = setmetatable
 local ui = {
     mt = {}
 }
+
+local function radio_group_widget(key, title, values)
+    return radio_group {
+        forced_height = dpi(200),
+        title = title,
+        on_select = function(id)
+            ui_daemon["set_" .. key](ui_daemon, id)
+        end,
+        initial_value_id = ui_daemon["get_" .. key](ui_daemon),
+        values = values
+    }
+end
 
 local function checkbox_widget(key, title)
     local widget = checkbox {
@@ -100,6 +113,20 @@ local function new()
         checkbox_widget("double_bars", "Double Bars:"),
         checkbox_widget("icon_taglist", "Icon Taglist:"),
         checkbox_widget("center_tasklist", "Center Tasklist:"),
+        radio_group_widget("vertical_bar_position", "Vertical Bar Position:", {
+            {
+                id = "top",
+                title = "Top",
+                color = beautiful.colors.background,
+                check_color = beautiful.icons.computer.color
+            },
+            {
+                id = "bottom",
+                title = "Bottom",
+                color = beautiful.colors.background,
+                check_color = beautiful.icons.computer.color
+            },
+        })
     }
 end
 

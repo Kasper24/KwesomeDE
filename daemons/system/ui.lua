@@ -247,6 +247,21 @@ function ui:get_center_tasklist()
     return self._private.center_tasklist
 end
 
+-- Vertical bar position
+function ui:set_vertical_bar_position(vertical_bar_position)
+    self._private.vertical_bar_position = vertical_bar_position
+    helpers.settings["ui.bar.vertical_bar_position"] = vertical_bar_position
+end
+
+function ui:get_vertical_bar_position()
+    if self._private.vertical_bar_position == nil then
+        self._private.vertical_bar_position = helpers.settings["ui.bar.vertical_bar_position"]
+    end
+
+    return self._private.vertical_bar_position
+end
+
+
 
 local function new()
     local ret = gobject {}
