@@ -14,6 +14,18 @@ local animated_popup = {
     mt = {}
 }
 
+
+local function fake_widget(self)
+    self.visible = true
+    self.width = self.maximum_width
+    self.height = self.maximum_height
+    local image = wibox.widget.draw_to_image_surface(self.widget, self.width, self.height)
+    self.widget = wibox.widget {
+        widget = wibox.widget.imagebox,
+        image = image
+    }
+end
+
 function animated_popup:show(value, reshow)
     if self.state == true and reshow ~= true then
         return
@@ -22,24 +34,27 @@ function animated_popup:show(value, reshow)
 
     self.animation.pos = 1
     self.animation.easing = helpers.animation.easing.outExpo
+
+
+    self.screen = awful.screen.focused()
+
     if self.animate_method == "forced_height" then
         self.minimum_height = 1
         if self.max_height then
-            self.screen = awful.screen.focused()
-            self.maximum_height = awful.screen.focused().workarea.height
+            self.maximum_height = self.screen.workarea.height
             value = self.maximum_height
         end
         self.animation:set(value or self.maximum_height)
     else
+        self.minimum_width = 1
         if self.max_height then
-            self.screen = awful.screen.focused()
-            self.minimum_height = awful.screen.focused().workarea.height
+            self.minimum_height = self.screen.workarea.height
             self.maximum_height = self.minimum_height
         end
-        self.minimum_width = 1
         self.animation:set(value or self.maximum_width)
     end
-    self.visible = true
+
+    fake_widget(self)
     self:emit_signal("visibility", true)
 end
 
@@ -48,6 +63,8 @@ function animated_popup:hide()
         return
     end
     self.state = false
+
+    fake_widget(self)
 
     self.animation.easing = helpers.animation.easing.inExpo
     self.animation:set(1)
@@ -72,7 +89,6 @@ local function new(args)
     gtable.crush(ret, animated_popup, true)
 
     ret.animate_method = "forced_" .. (args.animate_method or "height")
-
     ret.max_height = args.max_height
 
     ret.state = false
@@ -85,7 +101,9 @@ local function new(args)
         end,
         signals = {
             ["ended"] = function()
-                if ret.state == false then
+                if ret.state == true then
+                    ret.widget = args.widget
+                else
                     ret.visible = false
                 end
             end
