@@ -248,6 +248,25 @@ function button_normal:set_widget(widget)
         build_animable_child_anims(self, widget)
     end
 
+    -- Dont animate the size where the nested widgets
+    -- contains both an icon and a non icon widget
+    local icon_animable_childs = {}
+    local has_non_icon_animable_child = false
+
+    for _, animable_child in ipairs(wp.animable_childs) do
+        if animable_child.size_anim then
+            table.insert(icon_animable_childs, animable_child)
+        else
+            has_non_icon_animable_child = true
+        end
+    end
+
+    if has_non_icon_animable_child then
+        for _, animable_child in ipairs(icon_animable_childs) do
+            animable_child.size_anim = nil
+        end
+    end
+
     self:emit_signal("property::widget")
     self:emit_signal("widget::layout_changed")
 end
