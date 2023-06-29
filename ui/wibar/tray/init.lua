@@ -56,6 +56,7 @@ local function system_tray()
             margins = dpi(30),
             {
                 widget = wibox.widget.systray,
+                forced_height = dpi(200),
                 horizontal = false
             }
         }
