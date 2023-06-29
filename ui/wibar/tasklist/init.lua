@@ -87,13 +87,21 @@ local function pinned_app_widget(pinned_app)
                 pinned_app:run()
             end,
             on_secondary_release = function(self)
-                menu:toggle{
-                    wibox = awful.screen.focused().horizontal_wibar,
-                    widget = self,
-                    offset = {
-                        y = dpi(70)
-                    }
-                }
+                local coords = nil
+                if ui_daemon:get_bars_layout() == "vertical" then
+                    coords = helpers.ui.get_widget_geometry_in_device_space({wibox = awful.screen.focused().vertical_wibar}, self)
+                    coords.x = coords.x + dpi(65)
+                else
+                    coords = helpers.ui.get_widget_geometry_in_device_space({wibox = awful.screen.focused().horizontal_wibar}, self)
+                    coords.y = coords.y + awful.screen.focused().horizontal_wibar.y
+                    if ui_daemon:get_horizontal_bar_position() == "top" then
+                        coords.y = coords.y + dpi(65)
+                    else
+                        coords.y = coords.y + -dpi(190)
+                    end
+                end
+
+                menu:toggle{coords = coords}
             end,
             {
                 widget = widgets.icon,
@@ -166,13 +174,22 @@ local function client_widget(client)
             end,
             on_secondary_release = function(self)
                 task_preview:hide()
-                client.menu:toggle{
-                    wibox = awful.screen.focused().horizontal_wibar,
-                    widget = self,
-                    offset = {
-                        y = dpi(70)
-                    }
-                }
+
+                local coords = nil
+                if ui_daemon:get_bars_layout() == "vertical" then
+                    coords = helpers.ui.get_widget_geometry_in_device_space({wibox = awful.screen.focused().vertical_wibar}, self)
+                    coords.x = coords.x + dpi(65)
+                else
+                    coords = helpers.ui.get_widget_geometry_in_device_space({wibox = awful.screen.focused().horizontal_wibar}, self)
+                    coords.y = coords.y + awful.screen.focused().horizontal_wibar.y
+                    if ui_daemon:get_horizontal_bar_position() == "top" then
+                        coords.y = coords.y + dpi(65)
+                    else
+                        coords.y = coords.y + -dpi(190)
+                    end
+                end
+
+                client.menu:toggle{coords = coords}
             end,
             {
                 widget = widgets.icon,
