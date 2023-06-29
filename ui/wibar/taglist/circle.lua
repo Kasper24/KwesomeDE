@@ -89,7 +89,7 @@ local function update_taglist(self, tag)
         self.size_animation:set(dpi(40))
         self.widget:turn_on()
     else
-        self.size_animation:set(dpi(20))
+        self.size_animation:set(dpi(15))
         if not has_clients then
             self.widget:turn_off()
         end
@@ -101,9 +101,9 @@ local function tag_widget(self, tag, accent_color, direction)
 
     local widget = wibox.widget {
         widget = widgets.button.state,
-        forced_width = dpi(30),
-        forced_height = dpi(30),
-        normal_shape = gshape.circle,
+        forced_width = dpi(20),
+        forced_height = dpi(40),
+        normal_shape = gshape.rounded_rect,
         color = beautiful.colors.on_surface,
         on_color = accent_color,
         -- on_hover = function()
@@ -142,18 +142,10 @@ local function tag_widget(self, tag, accent_color, direction)
         on_scroll_down = function()
             awful.tag.viewnext(tag.screen)
         end,
-        {
-            widget = wibox.container.margin,
-            margins = dpi(15),
-
-            {
-                widget = widgets.background,
-                bg = "#FF0000",
-            }
-        }
     }
 
     local prop = direction == "horizontal" and "forced_width" or "forced_height"
+
     self.size_animation = helpers.animation:new {
         duration = 0.2,
         easing = helpers.animation.easing.linear,
@@ -168,6 +160,10 @@ end
 local function new(screen, direction)
     local accent_color = beautiful.colors.random_accent_color()
 
+    local margins = direction == "horizontal" and
+        { top = dpi(25), bottom = dpi(25)} or
+        { left = dpi(25), right = dpi(25)}
+
     return wibox.widget {
         widget = wibox.container.margin,
         margins = { top = ui_daemon:get_double_bars() and dpi(15) or 0},
@@ -180,7 +176,8 @@ local function new(screen, direction)
                     spacing = dpi(15)
                 },
                 widget_template = {
-                    widget = widgets.background,
+                    widget = wibox.container.margin,
+                    margins = margins,
                     create_callback = function(self, tag, index, tags)
                         tag_widget(self, tag, accent_color, direction)
                         update_taglist(self, tag)
