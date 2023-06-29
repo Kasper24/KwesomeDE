@@ -193,6 +193,7 @@ local function client_widget(client)
             end,
             {
                 widget = widgets.icon,
+                size = 25,
                 halign = "center",
                 valign = "center",
                 color = client._icon.color,
