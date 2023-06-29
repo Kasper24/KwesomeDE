@@ -305,8 +305,8 @@ local function new()
             return
         end
 
-        ret:emit_signal("client::removed", client)
         on_client_updated(ret)
+        ret:emit_signal("client::removed", client)
     end)
 
     capi.client.connect_signal("tagged", function(client)
