@@ -9,6 +9,10 @@ local pwidget = require("ui.widgets.popup")
 local beautiful = require("beautiful")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
+local capi = {
+    awesome = awesome,
+    client = client
+}
 
 local animated_popup = {
     mt = {}
@@ -90,6 +94,7 @@ local function new(args)
 
     ret.animate_method = "forced_" .. (args.animate_method or "height")
     ret.max_height = args.max_height
+    ret.hide_on_clicked_outside = args.hide_on_clicked_outside
 
     ret.state = false
     ret.animation = helpers.animation:new{
@@ -109,6 +114,18 @@ local function new(args)
             end
         }
     }
+
+    capi.awesome.connect_signal("root::pressed", function()
+        if ret.hide_on_clicked_outside then
+            ret:hide()
+        end
+    end)
+
+    capi.client.connect_signal("button::press", function()
+        if ret.hide_on_clicked_outside then
+            ret:hide()
+        end
+    end)
 
     return ret
 end

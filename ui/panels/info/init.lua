@@ -92,6 +92,7 @@ local function new()
         maximum_width = dpi(1000),
         max_height = true,
         animate_method = "width",
+        hide_on_clicked_outside = true,
         placement = ui_daemon:get_center_tasklist() and
             function(widget)
                 awful.placement.top_right(widget, {

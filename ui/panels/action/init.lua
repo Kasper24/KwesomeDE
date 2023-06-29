@@ -56,6 +56,7 @@ local function new()
         maximum_width = dpi(550),
         max_height = true,
         animate_method = "width",
+        hide_on_clicked_outside = true,
         placement = function(widget)
             awful.placement.top_right(widget, {
                 honor_workarea = true,

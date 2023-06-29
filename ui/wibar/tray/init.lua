@@ -29,6 +29,7 @@ local function system_tray()
         maximum_width = dpi(200),
         maximum_height = dpi(200),
         animate_method = "height",
+        hide_on_clicked_outside = true,
         placement = function(widget)
             awful.placement[ui_daemon:get_vertical_bar_position() .. "_right"](widget, {
                 honor_workarea = true,
