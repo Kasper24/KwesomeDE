@@ -31,6 +31,7 @@ local function layout_widget(self, layout)
     {
         widget = widgets.button.state,
         layout_name = layout.name,
+        on_color = beautiful.colors.random_accent_color(),
         on_release = function()
             awful.screen.focused().selected_tag.layout = layout
         end,
@@ -46,7 +47,7 @@ local function layout_widget(self, layout)
             {
                 widget = widgets.text,
                 size = 12,
-                text = layout.name
+                text = layout.name,
             }
         }
     }
@@ -71,8 +72,11 @@ local function new()
         placement = awful.placement.centered,
         ontop = true,
         visible = false,
+        use_fake_widget = false,
         shape = helpers.ui.rrect(),
         bg = beautiful.colors.background,
+        minimum_width = dpi(300),
+        maximum_width = dpi(300),
         maximum_height = dpi(715),
         widget = wibox.widget {
             widget = wibox.container.margin,
