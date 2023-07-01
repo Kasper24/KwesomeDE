@@ -18,47 +18,65 @@ local animated_popup = {
     mt = {}
 }
 
-
 local function fake_widget(self)
-    self.visible = true
-    local image = wibox.widget.draw_to_image_surface(self.widget, self.maximum_width, self.maximum_height)
-    self.widget = wibox.widget {
-        widget = wibox.widget.imagebox,
-        horizontal_fit_policy = "fit",
-        vertical_fit_policy = "fit",
-        image = image
-    }
+    local image = wibox.widget.draw_to_image_surface(self.real_widget, self.maximum_width, self.maximum_height)
+    if not self.fake_widget then
+        self.fake_widget = wibox.widget {
+            widget = wibox.widget.imagebox,
+            forced_width = self.maximum_width,
+            forced_height = self.maximum_height,
+            horizontal_fit_policy = "fit",
+            vertical_fit_policy = "fit",
+            image = image
+        }
+    else
+        self.fake_widget.image = image
+    end
+
+    return self.fake_widget
 end
 
-function animated_popup:show(value, reshow)
-    if self.state == true and reshow ~= true then
-        return
-    end
-    self.state = true
-
+local function animate_in(self)
     self.animation.pos = 1
     self.animation.easing = helpers.animation.easing.outExpo
 
-
-    self.screen = awful.screen.focused()
-
     if self.animate_method == "forced_height" then
-        self.minimum_height = 1
         if self.max_height then
             self.maximum_height = self.screen.workarea.height
-            value = self.maximum_height
         end
-        self.animation:set(value or self.maximum_height)
+        self.animation:set(self.maximum_height)
     else
-        self.minimum_width = 1
         if self.max_height then
             self.minimum_height = self.screen.workarea.height
             self.maximum_height = self.minimum_height
         end
-        self.animation:set(value or self.maximum_width)
+        self.animation:set(self.maximum_width)
     end
 
-    fake_widget(self)
+    if self.animate_fake_widget then
+        self.widget = fake_widget(self)
+    end
+end
+
+local function animate_out(self)
+    if self.animate_fake_widget then
+        self.widget = fake_widget(self)
+    end
+    self.animation.easing = helpers.animation.easing.inExpo
+    self.animation:set(1)
+end
+
+function animated_popup:show()
+    if self.state == true then
+        return
+    end
+    self.state = true
+
+    if self.show_on_focused_screen then
+        self.screen = awful.screen.focused()
+    end
+    self.visible = true
+    animate_in(self)
     self:emit_signal("visibility", true)
 end
 
@@ -68,10 +86,7 @@ function animated_popup:hide()
     end
     self.state = false
 
-    fake_widget(self)
-
-    self.animation.easing = helpers.animation.easing.inExpo
-    self.animation:set(1)
+    animate_out(self)
     self:emit_signal("visibility", false)
 end
 
@@ -92,11 +107,26 @@ local function new(args)
     local ret = pwidget(args)
     gtable.crush(ret, animated_popup, true)
 
+    ret.state = false
+
+    ret.minimum_width = args.minimum_width or 1
+    ret.minimum_height = args.minimum_height or 1
+    ret.maximum_width = args.maximum_width or 1
+    ret.maximum_height = args.maximum_height or 1
+
     ret.animate_method = "forced_" .. (args.animate_method or "height")
     ret.max_height = args.max_height
     ret.hide_on_clicked_outside = args.hide_on_clicked_outside
+    ret.show_on_focused_screen = args.show_on_focused_screen == nil and true or args.show_on_focused_screen
+    ret.animate_fake_widget = args.animate_fake_widget == nil and true or args.animate_fake_widget
+    ret.real_widget = args.widget
 
-    ret.state = false
+    if ret.animate_method == "forced_height" then
+        ret.minimum_height = 1
+    else
+        ret.minimum_width = 1
+    end
+
     ret.animation = helpers.animation:new{
         pos = 1,
         easing = helpers.animation.easing.outExpo,

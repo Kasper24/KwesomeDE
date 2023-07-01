@@ -54,9 +54,10 @@ local function new()
         minimum_width = dpi(200),
         maximum_width = dpi(200),
         maximum_height = dpi(200),
+        animate_fake_widget = false,
         shape = helpers.ui.rrect(),
         bg = beautiful.colors.background,
-        widget = {
+        widget = wibox.widget {
             widget = wibox.container.place,
             halign = "center",
             valign = "center",
@@ -104,9 +105,7 @@ local function new()
             text:set_text(sink.volume)
             anim:set(sink.volume)
 
-            if widget.visible == false then
-                widget:show()
-            end
+            widget:show()
             hide_timer:again()
         else
             anim:set(sink.volume / 100)
