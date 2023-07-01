@@ -235,7 +235,7 @@ end
 
 local function dont_disturb()
     local widget = button(beautiful.icons.suspend, "Don't Disturb", function()
-        notifications_daemon:toggle()
+        notifications_daemon:toggle_dont_disturb()
     end)
 
     notifications_daemon:connect_signal("state", function(self, state)

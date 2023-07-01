@@ -2,7 +2,6 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2022 Kasper24
 -------------------------------------------
-local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
@@ -13,10 +12,8 @@ local beautiful = require("beautiful")
 local naughty = require("naughty")
 local helpers = require("helpers")
 local filesystem = require("external.filesystem")
-local async = require("external.async")
 local json = require("external.json")
-local ipairs = ipairs
-local table = table
+local pairs = pairs
 local os = os
 
 local notifications = {}
@@ -27,12 +24,9 @@ local ICONS_PATH = PATH .. "icons/"
 local DATA_PATH = PATH .. "data.json"
 
 local function save_notification(self, notification)
-    notification.time = os.date("%Y-%m-%dT%H:%M:%S")
-    notification.uuid = helpers.string.random_uuid()
-
     local icon_path = ICONS_PATH .. notification.uuid .. ".svg"
 
-    table.insert(self._private.notifications, {
+    self._private.notifications[notification.uuid] = {
         uuid = notification.uuid,
         app_icon = notification.app_icon.names,
         app_name = notification.app_name,
@@ -41,10 +35,9 @@ local function save_notification(self, notification)
         title = gstring.xml_unescape(notification.title),
         message = gstring.xml_unescape(notification.message),
         time = notification.time
-    })
+    }
 
     filesystem.filesystem.make_directory(ICONS_PATH)
-
     wibox.widget.draw_to_svg_file(wibox.widget {
         widget = wibox.widget.imagebox,
         forced_width = 35,
@@ -61,8 +54,8 @@ local function read_notifications(self)
         if error == nil then
             self._private.notifications = json.decode(content) or {}
 
-            if #self._private.notifications > 0 then
-                for _, notification in ipairs(self._private.notifications) do
+            if gtable.count_keys(self._private.notifications) > 0 then
+                for _, notification in pairs(self._private.notifications) do
                     notification.app_icon = beautiful.get_svg_icon(notification.app_icon)
                     local icon = filesystem.file.new_for_path(notification.icon)
                     if notification.font_icon == nil then
@@ -71,10 +64,10 @@ local function read_notifications(self)
                                 notification.font_icon = beautiful.icons.message
                             end
 
-                            self:emit_signal("new", notification)
+                            self:emit_signal("display::panel", notification)
                         end)
                     else
-                        self:emit_signal("new", notification)
+                        self:emit_signal("display::panel", notification)
                     end
                 end
             else
@@ -93,37 +86,19 @@ function notifications:remove_all_notifications()
     self:emit_signal("empty")
 end
 
-function notifications:remove_notification(notification_data)
-    local index = 0
-    for i, notification in ipairs(self._private.notifications) do
-        if notification.uuid == notification_data.uuid then
-            index = i
-            break
-        end
-    end
+function notifications:remove_notification(notification)
+    local file = filesystem.file.new_for_path(self._private.notifications[notification.uuid].icon)
+    file:delete()
+    self._private.notifications[notification.uuid] = nil
+    self._private.save_timer:again()
 
-    if index ~= 0 then
-        local file = filesystem.file.new_for_path(self._private.notifications[index].icon)
-        file:delete()
-
-        table.remove(self._private.notifications, index)
-        self._private.save_timer:again()
-        if #self._private.notifications == 0 then
-            self:emit_signal("empty")
-        end
+    if #self._private.notifications == 0 then
+        self:emit_signal("empty")
     end
 end
 
 function notifications:is_suspended()
     return self.suspended
-end
-
-function notifications:set_dont_disturb(value)
-    if self.suspended ~= value then
-        self.suspended = value
-        helpers.settings["notifications.dont_disturb"] = value
-        self:emit_signal("state", value)
-    end
 end
 
 function notifications:block_on_locked()
@@ -140,7 +115,15 @@ function notifications:unblock_on_unlocked()
     end
 end
 
-function notifications:toggle()
+function notifications:set_dont_disturb(value)
+    if self.suspended ~= value then
+        self.suspended = value
+        helpers.settings["notifications.dont_disturb"] = value
+        self:emit_signal("state", value)
+    end
+end
+
+function notifications:toggle_dont_disturb()
     if self.suspended == true then
         self:set_dont_disturb(false)
     else
@@ -180,9 +163,37 @@ local function new()
         read_notifications(ret)
     end)
 
+    naughty.connect_signal("request::action_icon", function(a, context, hints)
+        a.icon = beautiful.get_svg_icon{hints.id}
+    end)
+
+    naughty.connect_signal("added", function(n)
+        if n.title == "" or n.title == nil then
+            n.title = n.app_name
+        end
+
+        n.app_icon = beautiful.get_app_svg_icon(n._private.app_icon or {n.app_name})
+        n.font_icon = n._private.font_icon
+
+        if type(n.icon) == "table" then
+            n.icon = beautiful.get_svg_icon(n.icon)
+        end
+
+        if (n.icon == "" or n.icon == nil) and n.font_icon == nil then
+            n.font_icon = beautiful.icons.message
+            n.icon = beautiful.get_svg_icon{"preferences-desktop-notification-bell"}
+        end
+    end)
+
     naughty.connect_signal("request::display", function(notification)
+        notification.time = os.date("%Y-%m-%dT%H:%M:%S")
+        notification.uuid = helpers.string.random_uuid()
         save_notification(ret, notification)
-        ret:emit_signal("new", notification)
+        ret:emit_signal("display::panel", notification)
+
+        if ret:is_suspended() == false or notification.ignore_suspend == false then
+            ret:emit_signal("display::notification", notification)
+        end
     end)
 
     return ret

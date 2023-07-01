@@ -290,7 +290,7 @@ local function new()
 
     local notification_groups = {}
 
-    notifications_daemon:connect_signal("new", function(self, notification)
+    notifications_daemon:connect_signal("display::panel", function(self, notification)
         if notification.app_name ~= nil then
             if notification_groups[notification.app_name] == nil then
                 notification_groups[notification.app_name] = notification_group(notification)

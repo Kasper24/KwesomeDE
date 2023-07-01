@@ -8,7 +8,6 @@ local ruled = require("ruled")
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
-local naughty = require("naughty")
 local notifications_daemon = require("daemons.system.notifications")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
@@ -16,7 +15,6 @@ local max = math.max
 local ipairs = ipairs
 local string = string
 local table = table
-local type = type
 
 local function play_sound(n)
     if n.category == "device.added" or n.category == "network.connected" then
@@ -31,13 +29,6 @@ local function play_sound(n)
     else
         awful.spawn("canberra-gtk-play -i bell", false)
     end
-end
-
-local function is_suspended(n)
-    if notifications_daemon:is_suspended() == true and n.ignore_suspend ~= true then
-        return true
-    end
-    return false
 end
 
 local function get_notification_position(n, screen)
@@ -343,33 +334,7 @@ ruled.notification.connect_signal("request::rules", function()
     }
 end)
 
-naughty.connect_signal("request::action_icon", function(a, context, hints)
-    a.icon = beautiful.get_svg_icon{hints.id}
-end)
-
-naughty.connect_signal("added", function(n)
-    if n.title == "" or n.title == nil then
-        n.title = n.app_name
-    end
-
-    n.app_icon = beautiful.get_app_svg_icon(n._private.app_icon or {n.app_name})
-    n.font_icon = n._private.font_icon
-
-    if type(n.icon) == "table" then
-        n.icon = beautiful.get_svg_icon(n.icon)
-    end
-
-    if (n.icon == "" or n.icon == nil) and n.font_icon == nil then
-        n.font_icon = beautiful.icons.message
-        n.icon = beautiful.get_svg_icon{"preferences-desktop-notification-bell"}
-    end
-end)
-
-naughty.connect_signal("request::display", function(n)
-    if is_suspended(n) then
-        return
-    end
-
+notifications_daemon:connect_signal("display::notification", function(n)
     gtimer.start_new(0.2, function()
         local screen = awful.screen.focused()
 
