@@ -169,6 +169,10 @@ local function new()
     wp.on_turn_off = nil
 
     widget:connect_signal("button::press", function(self, lx, ly, button, mods, find_widgets_result)
+        if wp.disabled == true then
+            return
+        end
+
         if gtable.hasitem(mods, "Mod4") then
             return
         end
@@ -205,6 +209,10 @@ local function new()
     end)
 
     widget:connect_signal("button::release", function(self, lx, ly, button, mods, find_widgets_result)
+        if wp.disabled == true then
+            return
+        end
+
         if button == 1 then
             wp.old_mode = wp.mode
             wp.mode = "hover"

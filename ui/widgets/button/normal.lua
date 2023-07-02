@@ -437,6 +437,10 @@ local function new(is_state)
 
     if is_state ~= true then
         widget:connect_signal("button::press", function(self, lx, ly, button, mods, find_widgets_result)
+            if wp.disabled == true then
+                return
+            end
+
             if gtable.hasitem(mods, "Mod4") then
                 return
             end
@@ -471,6 +475,10 @@ local function new(is_state)
         end)
 
         widget:connect_signal("button::release", function(self, lx, ly, button, mods, find_widgets_result)
+            if wp.disabled == true then
+                return
+            end
+
             if button == 1 then
                 wp.old_mode = wp.mode
                 wp.mode = "hover"
