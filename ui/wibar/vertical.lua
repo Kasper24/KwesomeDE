@@ -21,8 +21,6 @@ awful.screen.connect_for_each_screen(function(screen)
     local widget_at_center = ui_daemon:get_widget_at_center()
     local place_taglist_at_bottom = (horizontal_bar_position == "bottom" and bars_layout == "vertical_horizontal")
 
-
-
     local widget = place_taglist_at_bottom and wibox.widget {
         layout = wibox.layout.align.vertical,
         nil,
