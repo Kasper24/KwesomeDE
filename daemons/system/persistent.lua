@@ -34,200 +34,203 @@ local client_properties = {"hidden", "minimized", "above", "ontop", "below", "fu
     "maximized_horizontal", "maximized_vertical", "sticky", "floating", "x", "y", "width",
     "height", "class"}
 
-function persistent:save_tags()
-    self.settings.tags = {}
-
-    for _, tag in ipairs(capi.root.tags()) do
-        self.settings.tags[tag.index] = {}
-        self.settings.tags[tag.index].name = tag.name
-        self.settings.tags[tag.index].selected = tag.selected
-        self.settings.tags[tag.index].activated = tag.activated
-        self.settings.tags[tag.index].screen = tag.screen.index
-        self.settings.tags[tag.index].master_width_factor = tag.master_width_factor
-        self.settings.tags[tag.index].layout = awful.layout.get_tag_layout_index(tag)
-        self.settings.tags[tag.index].volatile = tag.volatile or false
-        self.settings.tags[tag.index].gap = tag.gap
-        self.settings.tags[tag.index].gap_single_client = tag.gap_single_client
-        self.settings.tags[tag.index].master_fill_policy = tag.master_fill_policy
-        self.settings.tags[tag.index].master_count = tag.master_count
-        self.settings.tags[tag.index].column_count = tag.column_count
-    end
-end
-
-function persistent:save_clients()
-    self.settings.clients = {}
-
-    for _, client in ipairs(capi.client.get()) do
-        local pid = tostring(client.pid)
-        self.settings.clients[pid] = {}
-
-        -- Has to be blocking!
-        local handle = io.popen(string.format("ps -p %d -o args=", client.pid))
-        if handle ~= nil then
-            self.settings.clients[pid].command = handle:read("*a"):gsub('^%s*(.-)%s*$', '%1')
-            handle:close()
-        end
-
-        -- Properties
+local function restore_clients(self, screen)
+    local function apply_client(client, saved_client)
         for _, property in ipairs(client_properties) do
-            self.settings.clients[pid][property] = client[property]
+            client[property] = saved_client[property]
         end
-        self.settings.clients[pid].screen = client.screen.index
-
-        if client.titlebar_widget and not client.custom_titlebar then
-            self.settings.clients[pid].titlebar = true
+        --TODO
+        -- client:move_to_screen(saved_client.screen)
+        if saved_client.titlebar then
+            awful.titlebar.show(client)
         end
 
         -- Tags
-        self.settings.clients[pid].tags = {}
-        for index, client_tag in ipairs(client:tags()) do
-            self.settings.clients[pid].tags[index] = client_tag.index
-        end
-
-        -- Bling tabs
-        if client.bling_tabbed and client.bling_tabbed.parent == client.window then
-            self.settings.clients[pid].bling_tabbed = {}
-            self.settings.clients[pid].bling_tabbed.focused_idx = client.bling_tabbed.focused_idx
-
-            self.settings.clients[pid].bling_tabbed.clients = {}
-            for index, bling_tabbed_client in ipairs(client.bling_tabbed.clients) do
-                self.settings.clients[pid].bling_tabbed.clients[index] = bling_tabbed_client.window
+        gtimer.delayed_call(function()
+            local tags = {}
+            for _, tag in ipairs(saved_client.tags) do
+                table.insert(tags, capi.screen[client.screen].tags[tag])
             end
-        end
-    end
-end
+            client.first_tag = tags[1]
+            client:tags(tags)
+        end)
 
-function persistent:reapply_selected_tags()
-    if #self.restored_settings.selected_tags > 0 then
-        awful.tag.viewnone()
-    end
-
-    for _, tag in ipairs(self.restored_settings.selected_tags) do
-        awful.tag.viewtoggle(tag)
-    end
-end
-
-function persistent:reapply_tags()
-    self.restored_settings.selected_tags = {}
-
-    for index, tag in ipairs(capi.root.tags()) do
-        if self.restored_settings.tags[index] ~= nil then
-            tag.name = self.restored_settings.tags[index].name
-            tag.activated = self.restored_settings.tags[index].activated
-            tag.screen = self.restored_settings.tags[index].screen
-            tag.master_width_factor = self.restored_settings.tags[index].master_width_factor
-            tag.layout = awful.layout.layouts[self.restored_settings.tags[index].layout]
-            tag.volatile = self.restored_settings.tags[index].volatile
-            tag.gap = self.restored_settings.tags[index].gap
-            tag.gap_single_client = self.restored_settings.tags[index].gap_single_client
-            tag.master_fill_policy = self.restored_settings.tags[index].master_fill_policy
-            tag.master_count = self.restored_settings.tags[index].master_count
-            tag.column_count = self.restored_settings.tags[index].column_count
-            if self.restored_settings.tags[index].selected == true then
-                table.insert(self.restored_settings.selected_tags, tag)
-            end
-        end
-    end
-end
-
-function persistent:recreate_tags()
-    awful.tag.viewnone()
-
-    for _, tag in ipairs(self.restored_settings.tags) do
-        awful.tag.add(tag.name, tag)
-        if tag.selected == true then
-            awful.tag.viewtoggle(tag)
-        end
-    end
-end
-
-function persistent:reapply_clients()
-    self.restored_settings.clients = gtable.join(self.restored_settings.clients, self.restored_settings.new_clients)
-
-    for _, client in ipairs(capi.client.get()) do
-        local pid = tostring(client.pid)
-        if self.restored_settings.clients[pid] ~= nil then
-            for _, property in ipairs(client_properties) do
-                client[property] = self.restored_settings.clients[pid][property]
-            end
-            client:move_to_screen(self.restored_settings.clients[pid].screen)
-            if self.restored_settings.clients[pid].titlebar then
-                awful.titlebar.show(client)
-            end
-
-            -- Tags
-            gtimer.delayed_call(function()
-                local tags = {}
-                for _, tag in ipairs(self.restored_settings.clients[pid].tags) do
-                    table.insert(tags, capi.screen[client.screen].tags[tag])
-                end
-                client.first_tag = tags[1]
-                client:tags(tags)
-            end)
-
-            -- Bling tabbed
-            local parent = client
-            if self.restored_settings.clients[pid].bling_tabbed then
-                for _, window in ipairs(self.restored_settings.clients[pid].bling_tabbed.clients) do
-                    for _, client in ipairs(capi.client.get()) do
-                        if client.window == window then
-                            local focused_idx = self.restored_settings.clients[pid].bling_tabbed.focused_idx
-                            if not parent.bling_tabbed and not client.bling_tabbed then
-                                tabbed.init(parent)
-                                tabbed.add(client, parent.bling_tabbed)
-                                gtimer.delayed_call(function()
-                                    tabbed.switch_to(parent.bling_tabbed, focused_idx)
-                                end)
-                            end
-                            if not parent.bling_tabbed and client.bling_tabbed then
-                                tabbed.add(parent, client.bling_tabbed)
-                                gtimer.delayed_call(function()
-                                    tabbed.switch_to(client.bling_tabbed, focused_idx)
-                                end)
-                            end
-                            if parent.bling_tabbed and not client.bling_tabbed then
-                                tabbed.add(client, parent.bling_tabbed)
-                                gtimer.delayed_call(function()
-                                    tabbed.switch_to(parent.bling_tabbed, focused_idx)
-                                end)
-                            end
-                            client:tags({})
+        -- Bling tabbed
+        local parent = client
+        if saved_client.bling_tabbed then
+            for _, window in ipairs(saved_client.bling_tabbed.clients) do
+                for _, client in ipairs(capi.client.get()) do
+                    if client.window == window then
+                        local focused_idx = saved_client.bling_tabbed.focused_idx
+                        if not parent.bling_tabbed and not client.bling_tabbed then
+                            tabbed.init(parent)
+                            tabbed.add(client, parent.bling_tabbed)
+                            gtimer.delayed_call(function()
+                                tabbed.switch_to(parent.bling_tabbed, focused_idx)
+                            end)
                         end
+                        if not parent.bling_tabbed and client.bling_tabbed then
+                            tabbed.add(parent, client.bling_tabbed)
+                            gtimer.delayed_call(function()
+                                tabbed.switch_to(client.bling_tabbed, focused_idx)
+                            end)
+                        end
+                        if parent.bling_tabbed and not client.bling_tabbed then
+                            tabbed.add(client, parent.bling_tabbed)
+                            gtimer.delayed_call(function()
+                                tabbed.switch_to(parent.bling_tabbed, focused_idx)
+                            end)
+                        end
+                        client:tags({})
                     end
                 end
             end
         end
     end
-end
 
-function persistent:recreate_clients()
-    local clients_amount = gtable.count_keys(self.restored_settings.clients)
-    local index = 0
-
-    self.restored_settings.new_clients = {}
-
-    for pid, client in pairs(self.restored_settings.clients) do
-        index = index + 1
-
-        if #helpers.client.find({class = client.class}) == 0 then
-            local new_pid = awful.spawn(client.command, false)
-            self.restored_settings.new_clients[tostring(new_pid)] = self.restored_settings.clients[pid]
-            self.restored_settings.clients[pid] = nil
+    local new_pid = 0
+    local function wait_on_client(client)
+        if client.pid == new_pid then
+            apply_client(client, saved_client)
         end
+    end
 
-        if index == clients_amount then
-            gtimer.start_new(0.6, function()
-                self:reapply_clients()
-                self:reapply_selected_tags()
-                return false
-            end)
+    local saved_clients = self.restored_settings[screen.name].clients
+    for _, saved_client in ipairs(saved_clients) do
+        for index, client in ipairs(screen.all_clients) do
+            if client.pid == saved_client.pid then
+                apply_client(client, saved_client)
+            elseif index == #screen.clients then
+                new_pid = awful.spawn(client.command, false)
+                capi.client.connect_signal("request::manage", wait_on_client)
+                gtimer.start_new(1, function()
+                    capi.client.disconnect_signal("request::manage", wait_on_client)
+                    return false
+                end)
+            end
         end
     end
 end
 
-function persistent:save()
-    self:save_tags()
-    self:save_clients()
+local function restore_tags(self, screen)
+    local saved_tags = self.restored_settings[screen.name].tags
+    for _, saved_tag in ipairs(saved_tags) do
+        for index, tag in ipairs(screen.tags) do
+            if tag.name == saved_tag.name then
+                tag.activated = saved_tag.activated
+                tag.master_width_factor = saved_tag.master_width_factor
+                tag.layout = awful.layout.layouts[saved_tag.layout]
+                tag.volatile = saved_tag.volatile
+                tag.gap = saved_tag.gap
+                tag.gap_single_client = saved_tag.gap_single_client
+                tag.master_fill_policy = saved_tag.master_fill_policy
+                tag.master_count = saved_tag.master_count
+                tag.column_count = saved_tag.column_count
+                if saved_tag.selected then
+                    gtimer.start_new(1, function()
+                        awful.tag.viewtoggle(tag)
+                        return false
+                    end)
+                end
+            end
+        end
+    end
+end
+
+local function restore(self)
+    local file = filesystem.file.new_for_path(DATA_PATH)
+    file:read(function(error, content)
+        if error == nil then
+            self.restored_settings = json.decode(content)
+            if self.restored_settings ~= nil then
+                for s in screen do
+                    for key, output in pairs(s.outputs) do
+                        s.name = key
+                    end
+
+                    restore_tags(self, s)
+                    restore_clients(self, s)
+                end
+            end
+        end
+    end)
+end
+
+local function save_clients(self, screen)
+    self.settings[screen.name].clients = {}
+
+    for _, client in ipairs(screen.all_clients) do
+        local pid = tostring(client.pid)
+        local saved_client = {}
+
+        -- Has to be blocking!
+        local handle = io.popen(string.format("ps -p %d -o args=", client.pid))
+        if handle ~= nil then
+            saved_client.command = handle:read("*a"):gsub('^%s*(.-)%s*$', '%1')
+            handle:close()
+        end
+
+        -- Properties
+        for _, property in ipairs(client_properties) do
+            saved_client[property] = client[property]
+        end
+
+        if client.titlebar_widget and not client.custom_titlebar then
+            saved_client.titlebar = true
+        end
+
+        -- Tags
+        saved_client.tags = {}
+        for index, client_tag in ipairs(client:tags()) do
+            saved_client.tags[index] = client_tag.index
+        end
+
+        -- Bling tabs
+        if client.bling_tabbed and client.bling_tabbed.parent == client.window then
+            saved_client.bling_tabbed = {}
+            saved_client.bling_tabbed.focused_idx = client.bling_tabbed.focused_idx
+
+            saved_client.bling_tabbed.clients = {}
+            for index, bling_tabbed_client in ipairs(client.bling_tabbed.clients) do
+                saved_client.bling_tabbed.clients[index] = bling_tabbed_client.window
+            end
+        end
+
+        self.settings[screen.name].clients[pid] = saved_client
+    end
+end
+
+local function save_tags(self, screen)
+    self.settings[screen.name].tags = {}
+
+    for _, tag in ipairs(screen.tags) do
+        local saved_tag = {}
+        saved_tag.name = tag.name
+        saved_tag.selected = tag.selected
+        saved_tag.activated = tag.activated
+        saved_tag.master_width_factor = tag.master_width_factor
+        saved_tag.layout = awful.layout.get_tag_layout_index(tag)
+        saved_tag.volatile = tag.volatile or false
+        saved_tag.gap = tag.gap
+        saved_tag.gap_single_client = tag.gap_single_client
+        saved_tag.master_fill_policy = tag.master_fill_policy
+        saved_tag.master_count = tag.master_count
+        saved_tag.column_count = tag.column_count
+        self.settings[screen.name].tags[tag.index] = saved_tag
+    end
+end
+
+local function save(self)
+    self.settings = {}
+
+    for s in screen do
+        for key, output in pairs(s.outputs) do
+            s.name = key
+        end
+        self.settings[s.name] = {}
+        save_tags(self, s)
+        save_clients(self, s)
+    end
 
     local _settings_status, settings = pcall(function()
         return json.encode(self.settings)
@@ -242,34 +245,25 @@ function persistent:save()
     end
 end
 
-function persistent:restore()
-    local file = filesystem.file.new_for_path(DATA_PATH)
-    file:read(function(error, content)
-        if error == nil then
-            self.restored_settings = json.decode(content)
-            if self.restored_settings ~= nil then
-                self:recreate_clients()
-                self:reapply_tags()
-            end
-        end
-    end)
-end
-
 function persistent:enable()
+    -- Saving only once awesome exits won't work if it crashed
+    gtimer.start_new(30, function()
+        save(self)
+        return true
+    end)
+
     capi.awesome.connect_signal("exit", function()
-        self:save()
+        save(self)
     end)
 
     capi.client.connect_signal("scanned", function()
-        self:restore()
+        restore(self)
     end)
 end
 
 local function new()
     local ret = gobject {}
     gtable.crush(ret, persistent, true)
-
-    ret.settings = {}
 
     return ret
 end
