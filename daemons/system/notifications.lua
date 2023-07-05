@@ -167,25 +167,23 @@ local function new()
         a.icon = beautiful.get_svg_icon{hints.id}
     end)
 
-    naughty.connect_signal("added", function(n)
-        if n.title == "" or n.title == nil then
-            n.title = n.app_name
-        end
-
-        n.app_icon = beautiful.get_app_svg_icon(n._private.app_icon or {n.app_name})
-        n.font_icon = n._private.font_icon
-
-        if type(n.icon) == "table" then
-            n.icon = beautiful.get_svg_icon(n.icon)
-        end
-
-        if (n.icon == "" or n.icon == nil) and n.font_icon == nil then
-            n.font_icon = beautiful.icons.message
-            n.icon = beautiful.get_svg_icon{"preferences-desktop-notification-bell"}
-        end
-    end)
-
     naughty.connect_signal("request::display", function(notification)
+        if notification.title == "" or notification.title == nil then
+            notification.title = notification.app_name
+        end
+
+        notification.app_icon = beautiful.get_app_svg_icon(notification._private.app_icon or {notification.app_name})
+        notification.font_icon = notification._private.font_icon
+
+        if type(notification.icon) == "table" then
+            notification.icon = beautiful.get_svg_icon(notification.icon)
+        end
+
+        if (notification.icon == "" or notification.icon == nil) and notification.font_icon == nil then
+            notification.font_icon = beautiful.icons.message
+            notification.icon = beautiful.get_svg_icon{"preferences-desktop-notification-bell"}
+        end
+
         notification.time = os.date("%Y-%m-%dT%H:%M:%S")
         notification.uuid = helpers.string.random_uuid()
         save_notification(ret, notification)
