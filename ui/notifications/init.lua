@@ -334,7 +334,7 @@ ruled.notification.connect_signal("request::rules", function()
     }
 end)
 
-notifications_daemon:connect_signal("display::notification", function(n)
+notifications_daemon:connect_signal("display::notification", function(self, n)
     gtimer.start_new(0.2, function()
         local screen = awful.screen.focused()
 
