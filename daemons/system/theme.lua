@@ -92,24 +92,9 @@ local function generate_colorscheme(self, wallpaper, reset, light)
                 else
                     print("Imagemagick couldn't generate a suitable palette, using a default colorscheme instead")
                     self:emit_signal("colorscheme::generation::error", wallpaper)
-                    local colors = {
-                        "#2E3440",
-                        "#88C0D0",
-                        "#BF616A",
-                        "#5E81AC",
-                        "#EBCB8B",
-                        "#A3BE8C",
-                        "#D08770",
-                        "#E5E9F0",
-                        "#4C566A",
-                        "#88C0D0",
-                        "#BF616A",
-                        "#5E81AC",
-                        "#EBCB8B",
-                        "#A3BE8C",
-                        "#D08770",
-                        "#8FBCBB"
-                    }
+                    local colors = {"#2E3440", "#88C0D0", "#BF616A", "#5E81AC", "#EBCB8B", "#A3BE8C", "#D08770",
+                                    "#E5E9F0", "#4C566A", "#88C0D0", "#BF616A", "#5E81AC", "#EBCB8B", "#A3BE8C",
+                                    "#D08770", "#8FBCBB"}
                     self:get_colorschemes()[wallpaper] = colors
                     self:save_colorscheme()
 
@@ -310,6 +295,8 @@ local function replace_template_colors(color, color_name, line)
         return line:gsub("{" .. color_name .. ".green}", color.g)
     elseif line:match("{" .. color_name .. ".blue}") then
         return line:gsub("{" .. color_name .. ".blue}", color.b)
+    elseif line:match("{" .. color_name .. ".alpha}") then
+        return line:gsub("{" .. color_name .. ".alpha}", color.a * 100)
     elseif line:match("{" .. color_name .. "}") then
         return line:gsub("{" .. color_name .. "}", tostring(color))
     end
@@ -414,7 +401,8 @@ local function generate_templates(self)
                                     local file = filesystem.file.new_for_path(path)
                                     file:write(output)
                                 else
-                                    awful.spawn.with_shell(RUN_AS_ROOT_SCRIPT_PATH .. " 'cp -r " .. WAL_CACHE_PATH .. name .. " " .. path.. "'")
+                                    awful.spawn.with_shell(RUN_AS_ROOT_SCRIPT_PATH .. " 'cp -r " .. WAL_CACHE_PATH ..
+                                                               name .. " " .. path .. "'")
                                 end
                             end
 
@@ -468,11 +456,9 @@ local function mountain_wallpaper(self, screen)
                 type = 'linear',
                 from = {0, 0},
                 to = {0, 100},
-                stops = {
-                    {0, beautiful.colors.random_accent_color(colors)},
-                    {0.75, beautiful.colors.random_accent_color(colors)},
-                    {1, beautiful.colors.random_accent_color(colors)}
-                }
+                stops = {{0, beautiful.colors.random_accent_color(colors)},
+                         {0.75, beautiful.colors.random_accent_color(colors)},
+                         {1, beautiful.colors.random_accent_color(colors)}}
             }
         },
         {
@@ -481,7 +467,7 @@ local function mountain_wallpaper(self, screen)
             horizontal_fit_policy = "fit",
             vertical_fit_policy = "fit",
             image = beautiful.mountain_background
-        },
+        }
     }
 
     self._private.wallpaper_widget = widget
@@ -495,7 +481,7 @@ end
 local function digital_sun_wallpaper(self, screen)
     local colors = self:get_active_wallpaper_colors()
 
-    local widget =  wibox.widget {
+    local widget = wibox.widget {
         fit = function(_, width, height)
             return width, height
         end,
@@ -504,11 +490,7 @@ local function digital_sun_wallpaper(self, screen)
                 type = 'linear',
                 from = {0, 0},
                 to = {0, height},
-                stops = {
-                    {0, colors[1]},
-                    {0.75, colors[9]},
-                    {1, colors[1]}
-                }
+                stops = {{0, colors[1]}, {0.75, colors[9]}, {1, colors[1]}}
             })
             cr:paint()
             -- Clip the first 33% of the screen
@@ -525,10 +507,8 @@ local function digital_sun_wallpaper(self, screen)
                 type = 'linear',
                 from = {0, 0},
                 to = {0, height},
-                stops = {
-                    {0, beautiful.colors.random_accent_color(colors)},
-                    {1, beautiful.colors.random_accent_color(colors)}
-                }
+                stops = {{0, beautiful.colors.random_accent_color(colors)},
+                         {1, beautiful.colors.random_accent_color(colors)}}
             })
             cr:arc(width / 2, height / 2, height * .35, 0, math.pi * 2)
             cr:fill()
@@ -545,9 +525,9 @@ local function digital_sun_wallpaper(self, screen)
                 cr:stroke()
             end
 
-            for i=1, 10 do
-                cr:move_to(0, height*0.75 + i*30 + i*2)
-                cr:line_to(width, height*0.75 + i*30 + i*2)
+            for i = 1, 10 do
+                cr:move_to(0, height * 0.75 + i * 30 + i * 2)
+                cr:line_to(width, height * 0.75 + i * 30 + i * 2)
                 cr:stroke()
             end
         end
@@ -610,13 +590,13 @@ end
 local function get_we_wallpaper_id(path)
     local last_slash_pos = path:find("/[^/]*$")
     if last_slash_pos then
-      local prefix = path:sub(1, last_slash_pos - 1)
-      local second_to_last_slash_pos = prefix:find("/[^/]*$")
+        local prefix = path:sub(1, last_slash_pos - 1)
+        local second_to_last_slash_pos = prefix:find("/[^/]*$")
 
-      if second_to_last_slash_pos then
-        local substring = prefix:sub(second_to_last_slash_pos + 1, last_slash_pos - 1)
-        return substring
-      end
+        if second_to_last_slash_pos then
+            local substring = prefix:sub(second_to_last_slash_pos + 1, last_slash_pos - 1)
+            return substring
+        end
     end
 end
 
@@ -626,16 +606,10 @@ local function we_error_handler(self)
     end
 
     local id = get_we_wallpaper_id(self:get_active_wallpaper())
-    local test_cmd = string.format("%s --assets-dir %s %s --fps %s --class linux-wallpaperengine --x %s --y %s --width %s --height %s",
-        self:get_wallpaper_engine_command(),
-        self:get_wallpaper_engine_assets_folder(),
-        self:get_wallpaper_engine_workshop_folder() .. "/" .. id,
-        self:get_wallpaper_engine_fps(),
-        0,
-        0,
-        1,
-        1
-    )
+    local test_cmd = string.format(
+        "%s --assets-dir %s %s --fps %s --class linux-wallpaperengine --x %s --y %s --width %s --height %s",
+        self:get_wallpaper_engine_command(), self:get_wallpaper_engine_assets_folder(),
+        self:get_wallpaper_engine_workshop_folder() .. "/" .. id, self:get_wallpaper_engine_fps(), 0, 0, 1, 1)
 
     -- I'm not sure why, but running wallpaper engine inside easy_async_with_shell
     -- results in weird issues, so using it only for error handling then kill it
@@ -659,16 +633,11 @@ local function we_wallpaper(self, screen)
     end
 
     local id = get_we_wallpaper_id(self:get_active_wallpaper())
-    local cmd = string.format("%s --assets-dir %s %s --fps %s --class linux-wallpaperengine --x %s --y %s --width %s --height %s",
-        self:get_wallpaper_engine_command(),
-        self:get_wallpaper_engine_assets_folder(),
-        self:get_wallpaper_engine_workshop_folder() .. "/" .. id,
-        self:get_wallpaper_engine_fps(),
-        screen.geometry.x,
-        screen.geometry.y,
-        screen.geometry.width,
-        screen.geometry.height
-    )
+    local cmd = string.format(
+        "%s --assets-dir %s %s --fps %s --class linux-wallpaperengine --x %s --y %s --width %s --height %s",
+        self:get_wallpaper_engine_command(), self:get_wallpaper_engine_assets_folder(),
+        self:get_wallpaper_engine_workshop_folder() .. "/" .. id, self:get_wallpaper_engine_fps(), screen.geometry.x,
+        screen.geometry.y, screen.geometry.width, screen.geometry.height)
     awful.spawn.with_shell(cmd)
 end
 
@@ -697,7 +666,8 @@ local function on_wallpapers_updated(self)
         self:set_selected_colorscheme(self:get_we_wallpapers()[1].path, "wallpaper_engine")
     end
 
-    self:emit_signal("wallpapers", self:get_wallpapers(), self:get_wallpapers_and_we_wallpapers(), self:get_we_wallpapers())
+    self:emit_signal("wallpapers", self:get_wallpapers(), self:get_wallpapers_and_we_wallpapers(),
+        self:get_we_wallpapers())
 end
 
 local function scan_wallpapers(self)
@@ -710,14 +680,15 @@ local function scan_wallpapers(self)
                 for _, file in ipairs(files) do
                     local mimetype = Gio.content_type_guess(file.full_path)
                     if PICTURES_MIMETYPES[mimetype] then
-                        helpers.ui.scale_image_save(file.full_path, THUMBNAIL_PATH .. file.name, 100, 70, function(image)
-                            table.insert(self._private.wallpapers, {
-                                uid = file.full_path,
-                                path = file.full_path,
-                                thumbnail = image,
-                                name = file.name
-                            })
-                        end)
+                        helpers.ui.scale_image_save(file.full_path, THUMBNAIL_PATH .. file.name, 100, 70,
+                            function(image)
+                                table.insert(self._private.wallpapers, {
+                                    uid = file.full_path,
+                                    path = file.full_path,
+                                    thumbnail = image,
+                                    name = file.name
+                                })
+                            end)
                     end
                 end
             end
@@ -731,19 +702,20 @@ local function scan_wallpapers(self)
                             json_file:read(function(error, content)
                                 if error == nil then
                                     local name = json.decode(content).title
-                                    helpers.ui.scale_image_save(file.full_path, THUMBNAIL_PATH .. sanitize_filename(name), 100, 70, function(image)
-                                        table.insert(self._private.we_wallpapers, {
-                                            uid = file.full_path,
-                                            path = file.full_path,
-                                            thumbnail = image,
-                                            name = name
-                                        })
+                                    helpers.ui.scale_image_save(file.full_path,
+                                        THUMBNAIL_PATH .. sanitize_filename(name), 100, 70, function(image)
+                                            table.insert(self._private.we_wallpapers, {
+                                                uid = file.full_path,
+                                                path = file.full_path,
+                                                thumbnail = image,
+                                                name = name
+                                            })
 
-                                        if index == #files then
-                                            sort_wallpapers(self)
-                                            on_wallpapers_updated(self)
-                                        end
-                                    end)
+                                            if index == #files then
+                                                sort_wallpapers(self)
+                                                on_wallpapers_updated(self)
+                                            end
+                                        end)
                                 elseif index == #files then
                                     sort_wallpapers(self)
                                     on_wallpapers_updated(self)
@@ -781,13 +753,13 @@ local function watch_wallpapers_changes(self)
 
     self._private.we_wallpapers_watcher = helpers.inotify:watch(self:get_wallpaper_engine_workshop_folder(),
         {helpers.inotify.Events.create, helpers.inotify.Events.delete, helpers.inotify.Events.moved_from,
-        helpers.inotify.Events.moved_to})
-     self._private.we_wallpapers_watcher:connect_signal("event", function()
+         helpers.inotify.Events.moved_to})
+    self._private.we_wallpapers_watcher:connect_signal("event", function()
         self._private.watch_wallpapers_changes_debouncer:again()
     end)
 end
 
---Colorschemes
+-- Colorschemes
 function theme:save_colorscheme()
     helpers.settings["theme.colorschemes"] = self._private.colorschemes
 end
@@ -819,16 +791,19 @@ end
 
 function theme:set_color(index, color)
     if color == nil then
-        awful.spawn.easy_async(COLOR_PICKER_SCRIPT_PATH .. " '" .. self:get_selected_colorscheme_colors()[index] .. "'", function(stdout)
-            stdout = helpers.string.trim(stdout)
-            if stdout ~= "" and stdout ~= nil then
-                self:get_selected_colorscheme_colors()[index] = stdout
-                self:emit_signal("colorscheme::generation::success", self:get_selected_colorscheme_colors(), self:get_selected_colorscheme(), true)
-            end
-        end)
+        awful.spawn.easy_async(COLOR_PICKER_SCRIPT_PATH .. " '" .. self:get_selected_colorscheme_colors()[index] .. "'",
+            function(stdout)
+                stdout = helpers.string.trim(stdout)
+                if stdout ~= "" and stdout ~= nil then
+                    self:get_selected_colorscheme_colors()[index] = stdout
+                    self:emit_signal("colorscheme::generation::success", self:get_selected_colorscheme_colors(),
+                        self:get_selected_colorscheme(), true)
+                end
+            end)
     else
         self:get_selected_colorscheme_colors()[index] = color
-        self:emit_signal("colorscheme::generation::success", self:get_selected_colorscheme_colors(), self:get_selected_colorscheme(), true)
+        self:emit_signal("colorscheme::generation::success", self:get_selected_colorscheme_colors(),
+            self:get_selected_colorscheme(), true)
     end
 end
 
@@ -846,7 +821,10 @@ function theme:set_wallpaper(wallpaper, type)
     end
 
     for s in capi.screen do
-        local wallpaper_engine_instances = helpers.client.find({class = "linux-wallpaperengine", screen =  s})
+        local wallpaper_engine_instances = helpers.client.find({
+            class = "linux-wallpaperengine",
+            screen = s
+        })
         for _, wallpaper_engine_instance in ipairs(wallpaper_engine_instances) do
             wallpaper_engine_instance:kill()
         end
@@ -865,12 +843,8 @@ function theme:set_wallpaper(wallpaper, type)
     end
 
     if self:get_wallpaper_type() ~= "wallpaper_engine" then
-        wibox.widget.draw_to_svg_file(
-            self._private.wallpaper_widget,
-            BACKGROUND_PATH,
-            capi.screen.primary.geometry.width,
-            capi.screen.primary.geometry.height
-        )
+        wibox.widget.draw_to_svg_file(self._private.wallpaper_widget, BACKGROUND_PATH,
+            capi.screen.primary.geometry.width, capi.screen.primary.geometry.height)
         capi.awesome.emit_signal("wallpaper::changed", BACKGROUND_PATH)
     end
 end
@@ -914,13 +888,9 @@ end
 function theme:preview_we_wallpaper(we_wallpaper, geometry)
     local id = get_we_wallpaper_id(we_wallpaper)
     local cmd = string.format("%s --assets-dir %s %s --class linux-wallpaperengine-preview --fps %s --x %s --y %s",
-        self:get_wallpaper_engine_command(),
-        self:get_wallpaper_engine_assets_folder(),
-        self:get_wallpaper_engine_workshop_folder() .. "/" .. id,
-        self:get_wallpaper_engine_fps(),
-        geometry.x + geometry.width,
-        geometry.y
-    )
+        self:get_wallpaper_engine_command(), self:get_wallpaper_engine_assets_folder(),
+        self:get_wallpaper_engine_workshop_folder() .. "/" .. id, self:get_wallpaper_engine_fps(),
+        geometry.x + geometry.width, geometry.y)
     awful.spawn.with_shell(cmd)
 end
 
@@ -1000,7 +970,8 @@ end
 
 function theme:get_wallpaper_engine_command()
     if self._private.wallpaper_engine_command == nil then
-        self._private.wallpaper_engine_command = helpers.settings["wallpaper_engine.command"]:gsub("~", os.getenv("HOME"))
+        self._private.wallpaper_engine_command = helpers.settings["wallpaper_engine.command"]:gsub("~",
+            os.getenv("HOME"))
     end
 
     return self._private.wallpaper_engine_command
@@ -1014,7 +985,8 @@ end
 
 function theme:get_wallpaper_engine_assets_folder()
     if self._private.wallpaper_engine_assets_folder == nil then
-        self._private.wallpaper_engine_assets_folder = helpers.settings["wallpaper_engine.assets_folder"]:gsub("~", os.getenv("HOME"))
+        self._private.wallpaper_engine_assets_folder = helpers.settings["wallpaper_engine.assets_folder"]:gsub("~",
+            os.getenv("HOME"))
     end
 
     return self._private.wallpaper_engine_assets_folder
@@ -1028,7 +1000,7 @@ function theme:set_wallpaper_engine_workshop_folder(wallpaper_engine_workshop_fo
 
     self._private.we_wallpapers_watcher = helpers.inotify:watch(wallpaper_engine_workshop_folder,
         {helpers.inotify.Events.create, helpers.inotify.Events.delete, helpers.inotify.Events.moved_from,
-        helpers.inotify.Events.moved_to})
+         helpers.inotify.Events.moved_to})
     self._private.we_wallpapers_watcher:connect_signal("event", function()
         self._private.watch_wallpapers_changes_debouncer:again()
     end)
@@ -1036,7 +1008,8 @@ end
 
 function theme:get_wallpaper_engine_workshop_folder()
     if self._private.wallpaper_engine_workshop_folder == nil then
-        self._private.wallpaper_engine_workshop_folder = helpers.settings["wallpaper_engine.workshop_folder"]:gsub("~", os.getenv("HOME"))
+        self._private.wallpaper_engine_workshop_folder = helpers.settings["wallpaper_engine.workshop_folder"]:gsub("~",
+            os.getenv("HOME"))
     end
 
     return self._private.wallpaper_engine_workshop_folder
@@ -1047,7 +1020,9 @@ function theme:set_wallpaper_engine_fps(wallpaper_engine_fps)
     self._private.wallpaper_engine_fps = wallpaper_engine_fps
     helpers.settings["wallpaper_engine.fps"] = wallpaper_engine_fps
 
-    if #helpers.client.find({class = "linux-wallpaperengine"}) > 0 and self:get_wallpaper_type() == "wallpaper_engine" then
+    if #helpers.client.find({
+        class = "linux-wallpaperengine"
+    }) > 0 and self:get_wallpaper_type() == "wallpaper_engine" then
         self:set_wallpaper(self:get_active_wallpaper(), "wallpaper_engine")
     end
 end
@@ -1072,7 +1047,9 @@ local function new()
     ret._private.wallpaper_engine = {}
 
     gtimer.delayed_call(function()
-        if #helpers.client.find({class = "linux-wallpaperengine"}) > 0 and ret:get_wallpaper_type() == "wallpaper_engine" then
+        if #helpers.client.find({
+            class = "linux-wallpaperengine"
+        }) > 0 and ret:get_wallpaper_type() == "wallpaper_engine" then
             return
         end
         ret:set_wallpaper(ret:get_active_wallpaper(), ret:get_wallpaper_type())
@@ -1088,14 +1065,12 @@ local function new()
                     return
                 end
 
-                local screenshot = awful.screenshot { client = client }
+                local screenshot = awful.screenshot {
+                    client = client
+                }
                 screenshot:refresh()
-                wibox.widget.draw_to_svg_file(
-                    screenshot.content_widget,
-                    "/home/kasper/.cache/awesome/wallpaper.png",
-                    client.width,
-                    client.height
-                )
+                wibox.widget.draw_to_svg_file(screenshot.content_widget, "/home/kasper/.cache/awesome/wallpaper.png",
+                    client.width, client.height)
                 capi.awesome.emit_signal("wallpaper::changed")
                 return false
             end)
