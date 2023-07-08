@@ -35,7 +35,6 @@ local instance = nil
 local WALLPAPERS_PATH = filesystem.filesystem.get_awesome_config_dir("assets/wallpapers")
 local GTK_THEME_FLAT_COLOR_PATH = filesystem.filesystem.get_awesome_config_dir("assets/gtk-themes/FlatColor")
 local GTK_THEME_LINEA_NORD_COLOR = filesystem.filesystem.get_awesome_config_dir("assets/gtk-themes/linea-nord-color")
-local GTK_THEME_ALTO_COLOR = filesystem.filesystem.get_awesome_config_dir("assets/gtk-themes/alto-gtk")
 local GTK_CONFIG_FILE_PATH = filesystem.filesystem.get_xdg_config_dir("gtk-3.0") .. "settings.ini"
 local INSTALLED_GTK_THEMES_PATH = os.getenv("HOME") .. "/.local/share/themes/"
 local ALT_INSTALLED_GTK_THEMES_PATH = os.getenv("HOME") .. "/.themes/"
@@ -420,11 +419,9 @@ end
 local function install_gtk_theme()
     awful.spawn(string.format("cp -r %s %s", GTK_THEME_FLAT_COLOR_PATH, INSTALLED_GTK_THEMES_PATH), false)
     awful.spawn(string.format("cp -r %s %s", GTK_THEME_LINEA_NORD_COLOR, INSTALLED_GTK_THEMES_PATH), false)
-    awful.spawn(string.format("cp -r %s %s", GTK_THEME_ALTO_COLOR, INSTALLED_GTK_THEMES_PATH), false)
 
     awful.spawn(string.format("cp -r %s %s", GTK_THEME_FLAT_COLOR_PATH, ALT_INSTALLED_GTK_THEMES_PATH), false)
     awful.spawn(string.format("cp -r %s %s", GTK_THEME_LINEA_NORD_COLOR, ALT_INSTALLED_GTK_THEMES_PATH), false)
-    awful.spawn(string.format("cp -r %s %s", GTK_THEME_ALTO_COLOR, ALT_INSTALLED_GTK_THEMES_PATH), false)
 end
 
 local function image_wallpaper(self, screen)
