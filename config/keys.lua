@@ -282,19 +282,6 @@ capi.client.connect_signal("request::default_keybindings", function()
                     awful.screen.focused().geometry.height * 0.9)
             end
         },
-        -- Center a client
-        awful.key {
-            modifiers = {keys.mod},
-            key = "c",
-            group = "client",
-            description = "move to center",
-            on_press = function(c)
-                awful.placement.centered(c, {
-                    honor_workarea = true,
-                    honor_padding = true
-                })
-            end
-        },
         -- Move up
         awful.key {
             modifiers = {keys.mod, keys.shift},
