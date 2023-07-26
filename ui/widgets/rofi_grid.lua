@@ -611,6 +611,20 @@ function rofi_grid:set_page(page)
     end
 end
 
+function rofi_grid:set_grid_forced_num_cols(forced_num_cols)
+    self:get_grid().forced_num_cols = forced_num_cols
+    self._private.max_entries_per_page = self:get_grid().forced_num_cols * self:get_grid().forced_num_rows
+    self._private.entries_per_page = self._private.max_entries_per_page
+    self:reset()
+end
+
+function rofi_grid:set_grid_forced_num_rows(forced_num_rows)
+    self:get_grid().forced_num_rows = forced_num_rows
+    self._private.max_entries_per_page = self:get_grid().forced_num_cols * self:get_grid().forced_num_rows
+    self._private.entries_per_page = self._private.max_entries_per_page
+    self:reset()
+end
+
 function rofi_grid:get_scrollbar()
     return self._private.scrollbar
 end
