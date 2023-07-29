@@ -5,7 +5,7 @@
 local hotkeys_popup = require("ui.popups.hotkeys")
 local pairs = pairs
 
-local ranger_rule = { class = {"ranger", "ranger"} }
+local ranger_rule = { class = { "file-manager", "file-manager" } }
 for group_name, group_data in pairs({
     ["Ranger: file"] = { rule_any = ranger_rule },
     ["Ranger: movement"] = { rule_any = ranger_rule },
