@@ -383,7 +383,7 @@ local function generate_templates(self)
                             local output = table.concat(lines, "\n")
 
                             -- Get the name of the file
-                            name = name:gsub(".base", "")
+                            name = name:gsub("%.base$", "")
 
                             -- Save to ~/.cache/awesome/templates
                             local file = filesystem.file.new_for_path(GENERATED_TEMPLATES_PATH .. name)
