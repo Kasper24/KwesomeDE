@@ -168,7 +168,7 @@ local function tag_widget(self, tag)
     }
 
     local prop = nil
-    if ui_daemon:get_bars_layout() == "vertical" then
+	if ui_daemon:get_bars_layout() == "vertical" or ui_daemon:get_bars_layout() == "vertical_horizontal" then
         prop = "forced_height"
         stack.children[2].halign = "right"
         stack.children[2].valign = "center"

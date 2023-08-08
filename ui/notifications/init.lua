@@ -321,7 +321,7 @@ ruled.notification.connect_signal("request::rules", function()
             app_name = "networkmanager-dmenu"
         },
         properties = {
-            icon = beautiful.get_svg_icon{"networkmanager"}
+            icon = beautiful.get_svg_icon{"cs-network"}
         }
     }
     ruled.notification.append_rule {

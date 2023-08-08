@@ -347,6 +347,8 @@ local function new()
         ontop = true,
         visible = false,
         maximum_width = dpi(600),
+        minimum_height = dpi(800),
+        maximum_height = dpi(800),
         placement = function(widget)
             if ui_daemon:get_bars_layout() == "vertical" then
                 awful.placement.bottom_left(widget, {
