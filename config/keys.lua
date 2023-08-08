@@ -13,11 +13,11 @@ local layout_switcher = require("ui.popups.layout_switcher")
 local playerctl_daemon = require("daemons.system.playerctl")
 local audio_daemon = require("daemons.hardware.audio")
 local brightness_daemon = require("daemons.system.brightness")
-local openrgb_daemon = require("daemons.system.openrgb")
+local rgb_daemon = require("daemons.hardware.rgb")
 local ui_daemon = require("daemons.system.ui")
 local screenshot_daemon = require("daemons.system.screenshot")
 local record_daemon = require("daemons.system.record")
-local keyboard_layout_daemon = require("daemons.system.keyboard_layout")
+local keyboard_layout_daemon = require("daemons.hardware.keyboard_layout")
 local helpers = require("helpers")
 local bling = require("external.bling")
 local machi = require("external.layout-machi")
@@ -875,25 +875,25 @@ awful.keyboard.append_global_keybindings({
         end
     },
 
-    -- sync openrgb colors with theme
+    -- sync rgb colors with theme
     awful.key {
         modifiers = {keys.mod, keys.ctrl},
         key = "w",
         group = "media",
-        description = "sync openrgb colors with theme",
+        description = "sync rgb colors with theme",
         on_press = function()
-            openrgb_daemon:update_colors()
+            rgb_daemon:update_colors()
         end
     },
 
-    -- turn off all openrgb leds
+    -- turn off all rgb leds
     awful.key {
         modifiers = {keys.mod, keys.alt},
         key = "w",
         group = "media",
-        description = "turn off all openrgb leds",
+        description = "turn off all rgb leds",
         on_press = function()
-            openrgb_daemon:turn_off()
+            rgb_daemon:turn_off()
         end
     }
 })
