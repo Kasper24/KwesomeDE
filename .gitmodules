@@ -22,3 +22,6 @@
 [submodule "lua-color"]
 	path = external/lua-color
 	url = https://github.com/Kasper24/lua-color
+[submodule "awesome-treetile"]
+	path = external/awesome-treetile
+	url = https://github.com/guotsuan/awesome-treetile
