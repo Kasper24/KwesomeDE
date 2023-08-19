@@ -169,6 +169,7 @@ local function new()
     ret:new("discord", "d", "discord", "discord")
     ret:new("ncmpcpp", "n", "kitty --class gnome-music ncmpcpp", "gnome-music")
     ret:new("spotify", "s", "spotify", "Spotify")
+	ret:new("youtube music", "m", "youtube-music", "YouTube Music")
     ret:new("openrgb", "o", "openrgb --server --gui", "openrgb")
     ret:new("authy", "a", "authy", "Authy Desktop", {
         geometry = centered_gemotery(400, 800)
