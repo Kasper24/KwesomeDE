@@ -798,7 +798,7 @@ awful.keyboard.append_global_keybindings({
 		group = "media",
 		description = "increase volume",
 		on_press = function()
-			audio_daemon:get_default_sink():volume_up(5)
+			audio_daemon:default_sink_volume_up(5)
 		end,
 	}),
 	-- Lower volume
@@ -808,7 +808,7 @@ awful.keyboard.append_global_keybindings({
 		group = "media",
 		description = "decrease volume",
 		on_press = function()
-			audio_daemon:get_default_sink():volume_down(5)
+			audio_daemon:default_sink_volume_down(5)
 		end,
 	}),
 	-- Mute volume
@@ -818,7 +818,7 @@ awful.keyboard.append_global_keybindings({
 		group = "media",
 		description = "mute volume",
 		on_press = function()
-			audio_daemon:get_default_sink():toggle_mute()
+			audio_daemon:default_sink_toggle_mute()
 		end,
 	}),
 

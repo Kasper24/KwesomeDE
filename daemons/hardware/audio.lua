@@ -7,6 +7,7 @@ local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local gmath = require("gears.math")
+local gdebug = require("gears.debug")
 local tonumber = tonumber
 local string = string
 local pairs = pairs
@@ -57,6 +58,33 @@ function audio:get_default_sink()
 		if sink.default then
 			return sink
 		end
+	end
+end
+
+function audio:default_sink_toggle_mute(step)
+	local default_sink = self:get_default_sink()
+	if default_sink then
+		default_sink:toggle_mute()
+	else
+		gdebug.print_warning("Couldn't find default sink")
+	end
+end
+
+function audio:default_sink_volume_up(step)
+	local default_sink = self:get_default_sink()
+	if default_sink then
+		default_sink:volume_down(step)
+	else
+		gdebug.print_warning("Couldn't find default sink")
+	end
+end
+
+function audio:default_sink_volume_down(step)
+	local default_sink = self:get_default_sink()
+	if default_sink then
+		default_sink:volume_down(step)
+	else
+		gdebug.print_warning("Couldn't find default sink")
 	end
 end
 
