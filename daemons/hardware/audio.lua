@@ -211,6 +211,7 @@ local function get_devices(self)
 end
 
 local function get_applications(self)
+	self.retrieving_applications = true
 	awful.spawn.easy_async_with_shell(
 		[[pactl list sink-inputs | grep "Sink Input #\|application.name = \|application.icon_name = \|Mute:\|Volume: ";
         pactl list source-outputs | grep "Source Output #\|application.name = \|application.icon_name = \|Mute:\|Volume: "]],
@@ -233,8 +234,6 @@ local function get_applications(self)
 							application.type == "sink_inputs" and sink_input or source_output,
 							true
 						)
-					elseif application.makred_to_remove then
-						return
 					end
 				elseif line:match("Mute") then
 					application.mute = line:match(": (.*)") == "yes" and true or false
@@ -253,20 +252,33 @@ local function get_applications(self)
 					application:emit_signal("icon_name")
 				end
 			end
+
+			self.retrieving_applications = false
 		end
 	)
 end
 
 local function on_object_removed(self, type, id)
-	-- get_applications is an async function, some object might get added and removed very quickly
-	-- sink_inputs are  primiarlay prone to this, so we might get a remove event before the object was initialized
-	if self._private[type][id] == nil then
-		self._private[type][id] = {}
-		self._private[type][id].makred_to_remove = true
-	else
-		self:emit_signal(type .. "::removed", self._private[type][id])
-		self._private[type][id] = nil
-	end
+	-- checking for retrieving_applications  prevents the following scenerio:
+	-- A sink input was added and removed almost simultaneously
+	-- get_appllications (runs an async call!) will get called for the sink input
+	-- before the get_applications async call was finished, the sink input was removed calling on_object_removed
+	-- get_appllications async call has finished, now it will find the old sink input which we already removed and readd it
+	-- and that's because get_appllications was called when the old sink input was still present
+	-- so now there's is nothing that's going to remove the old sink input, because it was already removed
+	-- so with this check we won't remove any object until all get_applications calls are done
+	gtimer.start_new(0.2, function()
+		if self.retrieving_applications then
+			return true
+		end
+
+		if self._private[type][id] then
+			self:emit_signal(type .. "::removed", self._private[type][id])
+			self._private[type][id] = nil
+		end
+
+		return false
+	end)
 end
 
 local function on_device_updated(self, type, id)
