@@ -19,119 +19,110 @@ local notifications = require(path .. ".notifications")
 local web_notifications = require(path .. ".web_notifications")
 
 local function horizontal_separator()
-    return wibox.widget {
-        widget = widgets.background,
-        forced_width = dpi(1),
-        shape = helpers.ui.rrect(),
-        bg = beautiful.colors.surface
-    }
+	return wibox.widget({
+		widget = widgets.background,
+		forced_width = dpi(1),
+		shape = helpers.ui.rrect(),
+		bg = beautiful.colors.surface,
+	})
 end
 
 local function vertical_separator()
-    return wibox.widget {
-        widget = widgets.background,
-        forced_height = dpi(1),
-        shape = helpers.ui.rrect(),
-        bg = beautiful.colors.surface
-    }
+	return wibox.widget({
+		widget = widgets.background,
+		forced_height = dpi(1),
+		shape = helpers.ui.rrect(),
+		bg = beautiful.colors.surface,
+	})
 end
 
 local function new()
-    local function placement(widget)
-        if ui_daemon:get_bars_layout() ~= "vertical" then
-            if ui_daemon:get_widget_at_center() == "tasklist" then
-                return awful.placement.top_right(widget, {
-                    honor_workarea = true,
-                    honor_padding = true,
-                    attach = true
-                })
-            else
-                return awful.placement.top(widget, {
-                    honor_workarea = true,
-                    honor_padding = true,
-                    attach = true
-                })
-            end
-        else
-            return awful.placement.top_left(widget, {
-                honor_workarea = true,
-                honor_padding = true,
-                attach = true
-            })
-        end
-    end
+	local function placement(widget)
+		if ui_daemon:get_bars_layout() ~= "vertical" then
+			if ui_daemon:get_widget_at_center() == "tasklist" then
+				return awful.placement.top_right(widget, {
+					honor_workarea = true,
+					honor_padding = true,
+					attach = true,
+				})
+			else
+				return awful.placement.top(widget, {
+					honor_workarea = true,
+					honor_padding = true,
+					attach = true,
+				})
+			end
+		else
+			return awful.placement.top_left(widget, {
+				honor_workarea = true,
+				honor_padding = true,
+				attach = true,
+			})
+		end
+	end
 
-    local widget = wibox.widget {
-        widget = wibox.container.margin,
-        margins = dpi(25),
-        {
-            layout = wibox.layout.overflow.vertical,
-            spacing = dpi(25),
-            scrollbar_widget = widgets.scrollbar,
-            scrollbar_width = dpi(0),
-            scrollbar_spacing = 0,
-            step = 300,
-            {
-                layout = wibox.layout.fixed.horizontal,
-                forced_height = dpi(1500),
-                spacing = dpi(15),
-                {
-                    layout = wibox.layout.fixed.vertical,
-                    spacing = dpi(15),
-                    {
-                        widget = wibox.container.margin,
-                        forced_width = dpi(400),
-                        forced_height = dpi(500),
-                        calender
-                    },
-                    vertical_separator(),
-                    {
-                        widget = wibox.container.margin,
-                        forced_width = dpi(400),
-                        notifications
-                    },
-                },
-                horizontal_separator(),
-                {
-                    layout = wibox.layout.fixed.vertical,
-                    spacing = dpi(15),
-                    {
-                        widget = wibox.container.margin,
-                        forced_height = dpi(500),
-                        weather
-                    },
-                    vertical_separator(),
-                    {
-                        widget = wibox.container.margin,
-                        web_notifications
-                    },
-                }
-            }
-        }
-    }
+	local widget = wibox.widget({
+		widget = wibox.container.margin,
+		margins = dpi(25),
+		{
+			layout = wibox.layout.fixed.horizontal,
+			spacing = dpi(15),
+			{
+				layout = wibox.layout.fixed.vertical,
+				spacing = dpi(15),
+				{
+					widget = wibox.container.margin,
+					forced_width = dpi(400),
+					forced_height = dpi(500),
+					calender,
+				},
+				vertical_separator(),
+				{
+					widget = wibox.container.margin,
+					forced_width = dpi(400),
+					notifications,
+				},
+			},
+			horizontal_separator(),
+			{
+				layout = wibox.layout.fixed.vertical,
+				spacing = dpi(15),
+				{
+					widget = wibox.container.margin,
+					forced_height = dpi(500),
+					weather,
+				},
+				vertical_separator(),
+				{
+					widget = wibox.container.margin,
+					web_notifications,
+				},
+			},
+		},
+	})
 
-    local animate_method = "width"
-    if ui_daemon:get_widget_at_center() == "clock" and ui_daemon:get_bars_layout() ~= "vertical" then
-        animate_method = "height"
-    end
+	local animate_method = "width"
+	if ui_daemon:get_widget_at_center() == "clock" and ui_daemon:get_bars_layout() ~= "vertical" then
+		animate_method = "height"
+	end
 
-    INFO_PANEL = widgets.animated_popup {
-        visible = false,
-        ontop = true,
-        maximum_width = dpi(1000),
-        max_height = true,
-        animate_method = animate_method,
-        hide_on_clicked_outside = true,
-        placement = placement,
-        shape = helpers.ui.rrect(),
-        bg = beautiful.colors.background,
-        widget = widget
-    }
+	INFO_PANEL = widgets.animated_popup({
+		visible = false,
+		ontop = true,
+		maximum_width = dpi(1000),
+		max_height = true,
+		animate_method = animate_method,
+		hide_on_clicked_outside = true,
+		placement = placement,
+		shape = helpers.ui.rrect(),
+		bg = beautiful.colors.background,
+		widget = widget,
+	})
 
-    return INFO_PANEL
+	return INFO_PANEL
 end
 
 if not instance then
-    instance = new()
+	instance = new()
 end
 return instance
