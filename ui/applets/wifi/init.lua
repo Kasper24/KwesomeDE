@@ -346,6 +346,7 @@ local function new()
     local widget = widgets.animated_popup {
         ontop = true,
         visible = false,
+        minimum_width = dpi(600),
         maximum_width = dpi(600),
         minimum_height = dpi(800),
         maximum_height = dpi(800),

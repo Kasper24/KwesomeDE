@@ -109,6 +109,7 @@ local function new()
 	INFO_PANEL = widgets.animated_popup({
 		visible = false,
 		ontop = true,
+		minimum_width = dpi(1000),
 		maximum_width = dpi(1000),
 		max_height = true,
 		animate_method = animate_method,
