@@ -583,27 +583,6 @@ awful.keyboard.append_global_keybindings({
 		end,
 	}),
 
-	-- Increase master width
-	awful.key({
-		modifiers = { keys.mod },
-		key = "h",
-		group = "layout",
-		description = "increase master width",
-		on_press = function()
-			awful.tag.incmwfact(0.05)
-		end,
-	}),
-	-- Decrease master width
-	awful.key({
-		modifiers = { keys.mod },
-		key = "l",
-		group = "layout",
-		description = "decrease master width",
-		on_press = function()
-			awful.tag.incmwfact(-0.05)
-		end,
-	}),
-
 	-- Decrase number of master clients
 	awful.key({
 		modifiers = { keys.mod, keys.shift },
@@ -643,6 +622,27 @@ awful.keyboard.append_global_keybindings({
 		description = "decrease number of columns",
 		on_press = function()
 			awful.tag.incncol(-1, nil, true)
+		end,
+	}),
+
+	-- Make next treetile split horizontal
+	awful.key({
+		modifiers = { keys.mod },
+		key = "h",
+		group = "layout",
+		description = "make next treetile split horizontal",
+		on_press = function()
+			treetile.horizontal()
+		end,
+	}),
+	-- Make next treetile split vertical
+	awful.key({
+		modifiers = { keys.mod },
+		key = "v",
+		group = "layout",
+		description = "make next treetile split vertical",
+		on_press = function()
+			treetile.vertical()
 		end,
 	}),
 
