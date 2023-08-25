@@ -19,20 +19,20 @@ local function new()
 		halign = "center",
 		valign = "bottom",
 		icon = beautiful.icons.brightness,
-		size = 30,
+		size = 15,
 	})
 
 	local text = wibox.widget({
 		widget = widgets.text,
 		halign = "center",
 		valign = "bottom",
-		size = 15,
+		size = 12,
 	})
 
 	local slider = wibox.widget({
 		widget = widgets.progressbar,
-		forced_width = dpi(150),
-		forced_height = dpi(30),
+		forced_width = dpi(90),
+		forced_height = dpi(10),
 		shape = helpers.ui.rrect(),
 		bar_shape = helpers.ui.rrect(),
 		value = 0,
@@ -54,20 +54,24 @@ local function new()
 		end,
 		minimum_width = dpi(200),
 		maximum_width = dpi(200),
-		maximum_height = dpi(200),
+		maximum_height = dpi(50),
 		animate_fake_widget = false,
 		shape = helpers.ui.rrect(),
 		bg = beautiful.colors.background,
 		widget = wibox.widget({
-			widget = wibox.container.place,
-			halign = "center",
-			valign = "center",
+			widget = wibox.container.margin,
+			margins = dpi(15),
 			{
-				layout = wibox.layout.fixed.vertical,
-				spacing = dpi(15),
-				icon,
-				text,
-				slider,
+				widget = wibox.container.place,
+				halign = "center",
+				valign = "center",
+				{
+					layout = wibox.layout.fixed.horizontal,
+					spacing = dpi(15),
+					icon,
+					slider,
+					text,
+				},
 			},
 		}),
 	})

@@ -17,16 +17,16 @@ local function new()
 	local icon = wibox.widget({
 		widget = widgets.text,
 		halign = "center",
-		valign = "bottom",
+		valign = "center",
 		icon = beautiful.icons.spraycan,
-		size = 30,
+		size = 15,
 	})
 
 	local text = wibox.widget({
 		widget = widgets.text,
 		halign = "center",
-		valign = "bottom",
-		size = 15,
+		valign = "center",
+		size = 12,
 	})
 
 	local widget = widgets.animated_popup({
@@ -40,21 +40,25 @@ local function new()
 				},
 			})
 		end,
-		minimum_width = dpi(200),
-		maximum_width = dpi(200),
-		maximum_height = dpi(200),
+		minimum_width = dpi(150),
+		maximum_width = dpi(150),
+		maximum_height = dpi(50),
 		animate_fake_widget = false,
 		shape = helpers.ui.rrect(),
 		bg = beautiful.colors.background,
 		widget = wibox.widget({
-			widget = wibox.container.place,
-			halign = "center",
-			valign = "center",
+			widget = wibox.container.margin,
+			margins = dpi(15),
 			{
-				layout = wibox.layout.fixed.vertical,
-				spacing = dpi(30),
-				icon,
-				text,
+				widget = wibox.container.place,
+				halign = "center",
+				valign = "center",
+				{
+					layout = wibox.layout.fixed.horizontal,
+					spacing = dpi(15),
+					icon,
+					text,
+				},
 			},
 		}),
 	})
