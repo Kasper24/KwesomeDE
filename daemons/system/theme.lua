@@ -630,7 +630,7 @@ local function we_error_handler(self)
 
 	local id = get_we_wallpaper_id(self:get_active_wallpaper())
 	local test_cmd = string.format(
-		"%s --assets-dir %s %s --fps %s --class linux-wallpaperengine --x %s --y %s --width %s --height %s",
+		"%s --assets-dir %s %s --fps %s --window %sx%sx%sx%s",
 		self:get_wallpaper_engine_command(),
 		self:get_wallpaper_engine_assets_folder(),
 		self:get_wallpaper_engine_workshop_folder() .. "/" .. id,
@@ -664,7 +664,7 @@ local function we_wallpaper(self, screen)
 
 	local id = get_we_wallpaper_id(self:get_active_wallpaper())
 	local cmd = string.format(
-		"%s --assets-dir %s %s --fps %s --class linux-wallpaperengine --x %s --y %s --width %s --height %s",
+		"%s --assets-dir %s %s --fps %s --window %sx%sx%sx%s",
 		self:get_wallpaper_engine_command(),
 		self:get_wallpaper_engine_assets_folder(),
 		self:get_wallpaper_engine_workshop_folder() .. "/" .. id,
@@ -958,7 +958,7 @@ end
 function theme:preview_we_wallpaper(we_wallpaper, geometry)
 	local id = get_we_wallpaper_id(we_wallpaper)
 	local cmd = string.format(
-		"%s --assets-dir %s %s --class linux-wallpaperengine-preview --fps %s --x %s --y %s",
+		"%s --assets-dir %s %s --fps %s --window %sx%sx640x480",
 		self:get_wallpaper_engine_command(),
 		self:get_wallpaper_engine_assets_folder(),
 		self:get_wallpaper_engine_workshop_folder() .. "/" .. id,
