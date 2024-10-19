@@ -24,14 +24,14 @@ local function vertical()
             format = "%H",
             bold = true,
             size = 15,
-            color = beautiful.icons.envelope.color,
+            color = beautiful.colors.on_background,
             on_color = beautiful.colors.transparent
         },
         {
             widget = wibox.widget.textclock,
             format = "%M",
             size = 14,
-            color = beautiful.icons.envelope.color,
+            color = beautiful.colors.on_background,
             on_color = beautiful.colors.transparent
         },
     }
@@ -42,7 +42,7 @@ local function horizontal()
         widget = wibox.widget.textclock,
         format = "%d %b %H:%M",
         size = 14,
-        color = beautiful.icons.envelope.color,
+        color = beautiful.colors.on_background,
         on_color = beautiful.colors.transparent
     }
 end
