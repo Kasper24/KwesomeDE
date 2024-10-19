@@ -255,8 +255,8 @@ local function new()
         {
             layout = wibox.layout.grid,
             id = "days",
-            forced_num_rows = 6,
-            forced_num_cols = 7,
+            row_count = 6,
+            column_count = 7,
             spacing = dpi(15),
             expand = true,
             day_name_widget("Su"),

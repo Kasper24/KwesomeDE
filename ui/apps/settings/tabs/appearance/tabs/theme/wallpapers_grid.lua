@@ -67,8 +67,8 @@ local function new(wallpapers_key, entry_template)
                     orientation = "horizontal",
                     homogeneous = true,
                     spacing = dpi(5),
-                    forced_num_cols = 5,
-                    forced_num_rows = 4,
+                    column_count = 5,
+                    row_count = 4,
                 },
                 {
                     layout = wibox.container.rotate,

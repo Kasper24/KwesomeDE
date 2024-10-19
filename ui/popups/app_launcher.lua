@@ -204,8 +204,8 @@ local function new()
 							orientation = "horizontal",
 							homogeneous = true,
 							spacing = dpi(15),
-							forced_num_cols = 2,
-							forced_num_rows = 8,
+							column_count = 2,
+							row_count = 8,
 						},
 						{
 							layout = wibox.container.rotate,

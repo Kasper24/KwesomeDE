@@ -127,8 +127,8 @@ local function new()
     local colors = wibox.widget {
         widget = wibox.layout.grid,
         spacing = dpi(15),
-        forced_num_rows = 2,
-        forced_num_cols = 8,
+        row_count = 2,
+        column_count = 8,
         expand = true
     }
 
@@ -232,8 +232,8 @@ local function new()
         {
             layout = wibox.layout.grid,
             spacing = dpi(10),
-            forced_num_rows = 3,
-            forced_num_cols = 3,
+            row_count = 3,
+            column_count = 3,
             horizontal_expand = true,
             light_dark,
             reset_colorscheme,
