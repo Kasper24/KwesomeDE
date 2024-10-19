@@ -313,9 +313,13 @@ local function create_notification(n, screen)
 					n.widget.visible = false
 					n.widget = nil
 				else
-					n.widget.widget:get_children_by_id("top_row")[1]:set_third(timeout_arc)
-					if timeout_arc_anim then
-						timeout_arc_anim:set()
+					if n.urgency ~= "critical" then
+						n.widget.widget:get_children_by_id("top_row")[1]:set_third(timeout_arc)
+						if timeout_arc_anim then
+							timeout_arc_anim:set()
+						end
+					else
+						n.widget.widget:get_children_by_id("top_row")[1]:set_third(dismiss)
 					end
 				end
 			end,
