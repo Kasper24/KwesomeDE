@@ -32,6 +32,8 @@ gtimer.start_new(5, function()
 	return true
 end)
 
+require("daemons.hardware.display"):apply()
+
 local beautiful = require("beautiful")
 local ui_daemon = require("daemons.system.ui")
 local filesystem = require("external.filesystem")
