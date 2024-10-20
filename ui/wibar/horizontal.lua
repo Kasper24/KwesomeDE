@@ -9,6 +9,10 @@ local beautiful = require("beautiful")
 local ui_daemon = require("daemons.system.ui")
 local dpi = beautiful.xresources.apply_dpi
 
+local capi = {
+    screen = screen
+}
+
 local start = require("ui.wibar.start")
 local taglist = require("ui.wibar.taglist")
 local tasklist = require("ui.wibar.tasklist")
@@ -58,4 +62,9 @@ awful.screen.connect_for_each_screen(function(screen)
         top = ui_daemon:get_horizontal_bar_position() == "top" and dpi(65) or 0,
         bottom = ui_daemon:get_horizontal_bar_position() == "bottom" and dpi(65) or 0
     }
+
+    capi.screen.connect_signal("request::wallpaper", function()
+        screen.horizontal_wibar.minimum_width = screen.geometry.width
+        screen.horizontal_wibar.maximum_width = screen.geometry.width
+    end)
 end)
