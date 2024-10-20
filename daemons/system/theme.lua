@@ -623,40 +623,6 @@ local function get_we_wallpaper_id(path)
 	end
 end
 
-local function we_error_handler(self)
-	if DEBUG then
-		return
-	end
-
-	local id = get_we_wallpaper_id(self:get_active_wallpaper())
-	local test_cmd = string.format(
-		"%s --assets-dir %s %s --fps %s --window %sx%sx%sx%s",
-		self:get_wallpaper_engine_command(),
-		self:get_wallpaper_engine_assets_folder(),
-		self:get_wallpaper_engine_workshop_folder() .. "/" .. id,
-		self:get_wallpaper_engine_fps(),
-		0,
-		0,
-		1,
-		1
-	)
-
-	-- I'm not sure why, but running wallpaper engine inside easy_async_with_shell
-	-- results in weird issues, so using it only for error handling then kill it
-	-- and spawn a new one using .spawn
-	local pid = awful.spawn.easy_async_with_shell(test_cmd, function(_, stderr, __, exitcode)
-		stderr = helpers.string.trim(stderr)
-		if stderr ~= "" then
-			local crashed = exitcode == 6
-			self:emit_signal("wallpaper_engine::error", stderr, crashed)
-		end
-	end)
-	gtimer.start_new(1, function()
-		awful.spawn("kill -9 " .. pid, false)
-		return false
-	end)
-end
-
 local function we_wallpaper(self, screen)
 	if DEBUG then
 		return
@@ -881,10 +847,6 @@ function theme:set_wallpaper(wallpaper, type, is_startup)
 	type = type or self:get_selected_tab()
 	self._private.wallpaper_type = type
 	helpers.settings["theme.wallpaper_type"] = type
-
-	if type == "wallpaper_engine" then
-		we_error_handler(self)
-	end
 
 	for s in capi.screen do
 		local wallpaper_engine_instances = helpers.client.find({
