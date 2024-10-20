@@ -78,7 +78,7 @@ local function draw()
 end
 
 local function new()
-    local off_color = beautiful.icons.envelope.color
+    local off_color = beautiful.colors.on_background
     local on_color = beautiful.colors.background_no_opacity
 
     local widget = wibox.widget {

@@ -238,6 +238,7 @@ local function new()
 		{
 			widget = widgets.text,
 			icon = beautiful.icons.trash,
+			color = beautiful.colors.on_background
 		},
 	})
 

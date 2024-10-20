@@ -79,7 +79,7 @@ local function new()
         format = "%A, %b, %d",
         halign = "center",
         size = 20,
-        color = beautiful.colors.random_accent_color()
+        color = beautiful.colors.on_background
     }
 
     return wibox.widget {

@@ -72,7 +72,7 @@ local function system_tray()
 		end,
 		{
 			widget = widgets.text,
-			color = beautiful.icons.envelope.color,
+			color = beautiful.colors.on_background,
 			on_color = beautiful.colors.transparent,
 			icon = beautiful.icons.chevron.down,
 		},

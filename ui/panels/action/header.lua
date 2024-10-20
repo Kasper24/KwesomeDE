@@ -44,7 +44,8 @@ local function new()
         {
             widget = widgets.text,
             size = 15,
-            icon = beautiful.icons.poweroff
+            icon = beautiful.icons.poweroff,
+            color = beautiful.colors.on_background
         }
     }
 

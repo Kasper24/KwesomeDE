@@ -178,6 +178,7 @@ local function new()
 									{
 										widget = widgets.text,
 										icon = beautiful.icons.magnifying_glass,
+										color = beautiful.colors.on_background
 									},
 									{
 										layout = wibox.layout.stack,
