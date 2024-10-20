@@ -95,59 +95,6 @@ local function new()
         },
     }
 
-    if picom_daemon:get_branch() == "ft-labs" then
-        layout:add(separator())
-        layout:add(slider_text_input_widget("animation-stiffness-in-tag",  0.1, 1000, true))
-        layout:add(slider_text_input_widget("animation-stiffness-tag-change",  0.1, 1000, true))
-        layout:add(slider_text_input_widget("animation-dampening",  0.1, 500, true))
-        layout:add(slider_text_input_widget("animation-window-mass",  0.1, 100, false))
-        layout:add(checkbox {
-            title = "Animation Clamping:",
-            state = picom_daemon["get_animation-clamping"](picom_daemon),
-            on_turn_on = function()
-                picom_daemon["set_animation-clamping"](picom_daemon, true)
-            end,
-            on_turn_off = function()
-                picom_daemon["set_animation-clamping"](picom_daemon, false)
-            end
-        })
-        layout:add(checkbox {
-            title = "Animations:",
-            state = picom_daemon:get_animations(),
-            on_turn_on = function()
-                picom_daemon:set_animations(true)
-            end,
-            on_turn_off = function()
-                picom_daemon:set_animations(false)
-            end
-        })
-    elseif picom_daemon:get_branch() == "dccillag" then
-        layout:add(separator())
-        layout:add(slider_text_input_widget("animation-stiffness",  0.1, 1000, true))
-        layout:add(slider_text_input_widget("animation-dampening",  0.1, 500, true))
-        layout:add(slider_text_input_widget("animation-window-mass",  0.1, 100, false))
-        layout:add(checkbox {
-            title = "Animation Clamping:",
-            state = picom_daemon["get_animation-clamping"](picom_daemon),
-            on_turn_on = function()
-                picom_daemon["set_animation-clamping"](picom_daemon, true)
-            end,
-            on_turn_off = function()
-                picom_daemon["set_animation-clamping"](picom_daemon, false)
-            end
-        })
-        layout:add(checkbox {
-            title = "Animations:",
-            state = picom_daemon:get_animations(),
-            on_turn_on = function()
-                picom_daemon:set_animations(true)
-            end,
-            on_turn_off = function()
-                picom_daemon:set_animations(false)
-            end
-        })
-    end
-
     return layout
 end
 

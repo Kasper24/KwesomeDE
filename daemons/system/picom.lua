@@ -91,10 +91,6 @@ function picom:toggle(save)
     end
 end
 
-function picom:get_branch()
-    return self._private.branch
-end
-
 function picom:get_state()
     return capi.awesome.composite_manager_running
 end
@@ -131,7 +127,6 @@ local function new()
 
     ret._private = {}
     ret._private.state = -1
-    ret._private.branch = nil
 
     for _, prop in ipairs(properties) do
         local setting_prop = prop:gsub("-", "_")
@@ -168,16 +163,6 @@ local function new()
                 end
             end
         }
-
-        awful.spawn.easy_async("picom --help", function(stdout)
-            if stdout:find("--animations", 1, true) ~= nil then
-                if stdout:find("--animation-stiffness-in-tag", 1, true) ~= nil then
-                    ret._private.branch = "ft-labs"
-                else
-                    ret._private.branch = "dccsillag"
-                end
-            end
-        end)
     end)
 
     return ret
