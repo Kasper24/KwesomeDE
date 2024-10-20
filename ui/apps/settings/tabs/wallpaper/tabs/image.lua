@@ -20,8 +20,6 @@ local function new()
         local button = wibox.widget {
             widget = widgets.button.state,
             id = "button",
-            forced_width = dpi(146),
-            forced_height = dpi(105),
             on_color = beautiful.icons.computer.color,
             halign = "center",
             on_release = function()
@@ -32,16 +30,12 @@ local function new()
                 clip_shape = helpers.ui.rrect(),
                 horizontal_fit_policy = "fit",
                 vertical_fit_policy = "fit",
-                forced_width = dpi(146),
-                forced_height = dpi(105),
                 image = entry.thumbnail
             }
         }
 
         local name = wibox.widget {
             widget = widgets.text,
-            forced_width = dpi(130),
-            forced_height = dpi(20),
             halign = "center",
             size = 12,
             text = entry.name

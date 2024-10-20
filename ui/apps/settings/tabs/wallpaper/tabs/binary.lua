@@ -35,8 +35,6 @@ local function new()
         local button = wibox.widget {
             widget = widgets.button.state,
             id = "button",
-            forced_width = dpi(146),
-            forced_height = dpi(105),
             on_color = beautiful.icons.computer.color,
             halign = "center",
             on_release = function()
@@ -45,8 +43,6 @@ local function new()
             {
                 widget = wibox.container.background,
                 id = "background",
-                forced_width = dpi(146),
-                forced_height = dpi(105),
                 shape = helpers.ui.rrect(),
                 bg = colors[1],
                 fg = beautiful.colors.random_accent_color(colors),
@@ -77,8 +73,6 @@ local function new()
 
         local name = wibox.widget {
             widget = widgets.text,
-            forced_width = dpi(130),
-            forced_height = dpi(20),
             halign = "center",
             size = 12,
             text = entry.name
