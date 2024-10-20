@@ -17,6 +17,7 @@ local wallpapers_grid = {
 local function new(wallpapers_key, entry_template)
     local layout = wibox.widget {
         layout = widgets.rofi_grid,
+        forced_height = dpi(500),
         widget_template = wibox.widget {
             layout = wibox.layout.fixed.vertical,
             spacing = dpi(15),
@@ -69,6 +70,7 @@ local function new(wallpapers_key, entry_template)
                     spacing = dpi(5),
                     column_count = 5,
                     row_count = 4,
+                    expand = true,
                 },
                 {
                     layout = wibox.container.rotate,

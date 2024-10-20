@@ -3,9 +3,9 @@ local gcolor = require("gears.color")
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
-local empty_wallpapers = require("ui.apps.settings.tabs.appearance.tabs.theme.empty_wallpapers")
-local wallpapers_grid = require("ui.apps.settings.tabs.appearance.tabs.theme.wallpapers_grid")
-local actions = require("ui.apps.settings.tabs.appearance.tabs.theme.actions")
+local empty_wallpapers = require("ui.apps.settings.tabs.wallpaper.empty_wallpapers")
+local wallpapers_grid = require("ui.apps.settings.tabs.wallpaper.wallpapers_grid")
+local actions = require("ui.apps.settings.tabs.wallpaper.actions")
 local theme_daemon = require("daemons.system.theme")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
@@ -142,7 +142,7 @@ local function new()
     local empty_wallpapers_widget = empty_wallpapers()
 
     local content = wibox.widget {
-        layout = wibox.layout.fixed.vertical,
+        layout = wibox.layout.overflow.vertical,
         spacing = dpi(15),
         wallpapers,
         actions()

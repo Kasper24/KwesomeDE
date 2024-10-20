@@ -192,21 +192,25 @@ local function new(args)
                 placement = awful.placement.centered,
             },
             callback = function(c)
+                local padding = 100
+                local width = math.min(ret._private.width, (c.screen.geometry.width - padding))
+                local height = math.min(ret._private.height, (c.screen.geometry.height - padding))
+
                 ret._private.client = c
                 ret:emit_signal("client", c)
 
-                c.width = ret._private.width
+                c.width = width
                 c.custom_titlebar = true
                 c.can_resize = false
                 c.can_tile = false
 
                 -- Settings placement in properties doesn't work
-                c.x = (c.screen.geometry.width / 2) - (ret._private.width / 2)
-                c.y = (c.screen.geometry.height / 2) - (ret._private.height / 2)
+                c.x = (c.screen.geometry.width / 2) - (width / 2)
+                c.y = (c.screen.geometry.height / 2) - (height / 2)
 
                 ret._private.titlebar = widgets.titlebar(c, {
                     position = "top",
-                    size = ret._private.height,
+                    size = height,
                     bg = beautiful.colors.background
                 })
 

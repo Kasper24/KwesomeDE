@@ -9,6 +9,7 @@ local beautiful = require("beautiful")
 local wifi_tab = require("ui.apps.settings.tabs.wifi")
 local bluetooth_tab = require("ui.apps.settings.tabs.bluetooth")
 local accounts_tab = require("ui.apps.settings.tabs.accounts")
+local wallpaper_tab = require("ui.apps.settings.tabs.wallpaper")
 local appearance_tab = require("ui.apps.settings.tabs.appearance")
 local about_tab = require("ui.apps.settings.tabs.about")
 local network_daemon = require("daemons.hardware.network")
@@ -69,6 +70,12 @@ local function main()
             },
         },
         {
+            {
+                id = "wallpaper",
+                icon = beautiful.icons.image,
+                title = "Wallpaper",
+                tab = wallpaper_tab()
+            },
             {
                 id = "appearance",
                 icon = beautiful.icons.spraycan,

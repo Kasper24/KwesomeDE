@@ -2,9 +2,9 @@ local gtable = require("gears.table")
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
-local empty_wallpapers = require("ui.apps.settings.tabs.appearance.tabs.theme.empty_wallpapers")
-local wallpapers_grid = require("ui.apps.settings.tabs.appearance.tabs.theme.wallpapers_grid")
-local actions = require("ui.apps.settings.tabs.appearance.tabs.theme.actions")
+local empty_wallpapers = require("ui.apps.settings.tabs.wallpaper.empty_wallpapers")
+local wallpapers_grid = require("ui.apps.settings.tabs.wallpaper.wallpapers_grid")
+local actions = require("ui.apps.settings.tabs.wallpaper.actions")
 local theme_daemon = require("daemons.system.theme")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
@@ -15,16 +15,7 @@ local image = {
 }
 
 local function new()
-    local menu = widgets.menu {
-        widgets.menu.button {
-            text = "Preview",
-            on_release = function()
-                theme_daemon:preview_we_wallpaper(theme_daemon:get_selected_colorscheme(), SETTINGS_APP:get_client():geometry())
-            end
-        }
-    }
-
-    local wallpapers = wallpapers_grid("we_wallpapers", function(entry, rofi_grid)
+    local wallpapers = wallpapers_grid("wallpapers", function(entry)
         local widget = nil
         local button = wibox.widget {
             widget = widgets.button.state,
@@ -36,17 +27,13 @@ local function new()
             on_release = function()
                 widget:select()
             end,
-            on_secondary_release = function()
-                widget:select()
-                menu:toggle()
-            end,
             {
                 widget = wibox.widget.imagebox,
-                forced_width = dpi(146),
-                forced_height = dpi(105),
                 clip_shape = helpers.ui.rrect(),
                 horizontal_fit_policy = "fit",
                 vertical_fit_policy = "fit",
+                forced_width = dpi(146),
+                forced_height = dpi(105),
                 image = entry.thumbnail
             }
         }
@@ -69,7 +56,7 @@ local function new()
 
         widget:connect_signal("select", function()
             button:turn_on()
-            theme_daemon:set_selected_colorscheme(entry.path, "wallpaper_engine")
+            theme_daemon:set_selected_colorscheme(entry.path, "image")
         end)
 
         widget:connect_signal("unselect", function()
@@ -82,7 +69,7 @@ local function new()
     local empty_wallpapers_widget = empty_wallpapers()
 
     local content = wibox.widget {
-        layout = wibox.layout.fixed.vertical,
+        layout = wibox.layout.overflow.vertical,
         spacing = dpi(15),
         wallpapers,
         actions()
@@ -96,14 +83,14 @@ local function new()
     }
 
     theme_daemon:connect_signal("wallpapers", function(self, wallpapers, wallpapers_and_we_wallpapers, we_wallpapers)
-        if gtable.count_keys(we_wallpapers) == 0 then
+        if gtable.count_keys(wallpapers) == 0 then
             stack:raise_widget(empty_wallpapers_widget)
         else
             stack:raise_widget(content)
         end
     end)
 
-    if gtable.count_keys(theme_daemon:get_we_wallpapers()) == 0 then
+    if gtable.count_keys(theme_daemon:get_wallpapers()) == 0 then
         stack:raise_widget(empty_wallpapers_widget)
     else
         stack:raise_widget(content)

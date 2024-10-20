@@ -5,7 +5,6 @@
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
-local theme_tab = require("ui.apps.settings.tabs.appearance.tabs.theme")
 local ui_tab = require("ui.apps.settings.tabs.appearance.tabs.ui")
 local compositor_tab = require("ui.apps.settings.tabs.appearance.tabs.compositor")
 local wallpaper_engine_tab = require("ui.apps.settings.tabs.appearance.tabs.wallpaper_engine")
@@ -22,11 +21,6 @@ local function new()
         buttons_selected_color = beautiful.icons.computer.color,
         tabs = {
             {
-                {
-                    id = "theme",
-                    title = "Theme",
-                    tab = theme_tab()
-                },
                 {
                     id = "ui",
                     title = "UI",

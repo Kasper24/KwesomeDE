@@ -228,7 +228,8 @@ local function new()
         layout = wibox.layout.fixed.vertical,
         spacing = dpi(15),
         colors,
-        run_on_set(),
+        -- run_on_set(),
+        -- colors,
         {
             layout = wibox.layout.grid,
             spacing = dpi(10),
@@ -246,6 +247,7 @@ local function new()
 
     local stack = wibox.widget {
         layout = wibox.layout.stack,
+        forced_height = dpi(300),
         top_only = true,
         spinning_circle,
         widget
