@@ -1,6 +1,6 @@
 -------------------------------------------
 -- @author https://github.com/Kasper24
--- @copyright 2021-2022 Kasper24
+-- @copyright 2021-2025 Kasper24
 -------------------------------------------
 local lgi = require("lgi")
 local Secret = lgi.Secret

@@ -1,6 +1,6 @@
 -------------------------------------------
 -- @author https://github.com/Kasper24
--- @copyright 2021-2022 Kasper24
+-- @copyright 2021-2025 Kasper24
 -------------------------------------------
 ---------------------------------------------------------------------------
 --- Popup widget which shows current hotkeys and their descriptions.

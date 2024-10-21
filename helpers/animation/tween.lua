@@ -1,6 +1,6 @@
 -------------------------------------------
 -- @author https://github.com/Kasper24
--- @copyright 2021-2022 Kasper24
+-- @copyright 2021-2025 Kasper24
 -------------------------------------------
 -- easing
 -- Adapted from https://github.com/EmmanuelOga/easing. See LICENSE.txt for credits.
