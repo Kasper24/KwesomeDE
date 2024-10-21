@@ -644,19 +644,12 @@ local function we_wallpaper(self, screen)
 end
 
 local function kill_old_we_instances(screen)
-	local wallpaper_engine_instances = library.client.find({
-		class = "linux-wallpaperengine",
-		screen = screen,
-	})
-	for _, wallpaper_engine_instance in ipairs(wallpaper_engine_instances) do
-		wallpaper_engine_instance:kill()
-	end
+	awful.spawn("pkill -f linux-wallpaperengine", false)
 end
 
 local function adjust_we_on_res_change(self)
 	capi.screen.connect_signal("request::wallpaper", function(screen)
-        kill_old_we_instances(screen)
-		we_wallpaper(self, screen)
+        self:set_wallpaper(self:get_active_wallpaper(), "wallpaper_engine")
     end)
 end
 
