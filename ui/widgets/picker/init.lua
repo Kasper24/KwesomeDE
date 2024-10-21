@@ -10,7 +10,7 @@ local twidget = require("ui.widgets.text")
 local tiwidget = require("ui.widgets.text_input")
 local ebwidget = require("ui.widgets.button")
 local beautiful = require("beautiful")
-local helpers = require("helpers")
+local library = require("library")
 local filesystem = require("external.filesystem")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
@@ -56,7 +56,7 @@ local function new(type)
         selection_bg = beautiful.icons.spraycan.color,
         widget_template = wibox.widget {
             widget = bwidget,
-            shape = helpers.ui.rrect(),
+            shape = library.ui.rrect(),
             bg = beautiful.colors.surface,
             {
                 widget = wibox.container.margin,
@@ -77,7 +77,7 @@ local function new(type)
             local script = type == "file" and FILE_PICKER_SCRIPT_PATH or FOLDER_PICKER_SCRIPT_PATH
 
             awful.spawn.easy_async(script .. " '" .. widget._private.initial_value .. "'", function(stdout)
-                stdout = helpers.string.trim(stdout)
+                stdout = library.string.trim(stdout)
                 if stdout ~= "" and stdout ~= nil then
                     widget._private.on_changed(stdout)
                     text_input:set_text(stdout)

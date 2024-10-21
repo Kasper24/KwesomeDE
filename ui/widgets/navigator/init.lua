@@ -9,7 +9,7 @@ local sbwidget = require("ui.widgets.scrollbar")
 local ebwidget = require("ui.widgets.button")
 local twidget = require("ui.widgets.text")
 local beautiful = require("beautiful")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 
@@ -21,7 +21,7 @@ local function separator()
     return wibox.widget {
         widget = bwidget,
         forced_height = dpi(1),
-        shape = helpers.ui.rrect(),
+        shape = library.ui.rrect(),
         bg = beautiful.colors.surface
     }
 end
@@ -37,11 +37,11 @@ local function tab_button(navigator, tab, pos)
 
     local shape = nil
     if navigator._private.type == "horizontal" then
-        shape = helpers.ui.prrect(false, false, false, false)
+        shape = library.ui.prrect(false, false, false, false)
         if pos == "left" then
-            shape = helpers.ui.prrect(true, false, false, true)
+            shape = library.ui.prrect(true, false, false, true)
         elseif pos == "right" then
-            shape = helpers.ui.prrect(false, true, true, false)
+            shape = library.ui.prrect(false, true, true, false)
         end
     end
 
@@ -169,7 +169,7 @@ function navigator.horizontal()
         {
             widget = bwidget,
             forced_width = dpi(1),
-            shape = helpers.ui.rrect(),
+            shape = library.ui.rrect(),
             bg = beautiful.colors.surface
         },
         {
@@ -201,7 +201,7 @@ function navigator.vertical()
         {
             widget = bwidget,
             forced_width = dpi(1),
-            shape = helpers.ui.rrect(),
+            shape = library.ui.rrect(),
             bg = beautiful.colors.surface
         },
         {

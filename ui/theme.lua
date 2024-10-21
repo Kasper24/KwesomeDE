@@ -11,7 +11,7 @@ local gsurface = require("gears.surface")
 local beautiful = require("beautiful")
 local theme_daemon = require("daemons.system.theme")
 local ui_daemon = require("daemons.system.ui")
-local helpers = require("helpers")
+local library = require("library")
 local filesystem = require("external.filesystem")
 local layout_machi = require("external.layout-machi")
 local dpi = beautiful.xresources.apply_dpi
@@ -45,11 +45,11 @@ local function colors()
 		cyan = colors[7],
 		bright_cyan = colors[15],
 
-		background = helpers.color.change_opacity(colors[1], ui_daemon:get_opacity()),
-		background_blur = helpers.color.change_opacity(colors[1], 0.9),
+		background = library.color.change_opacity(colors[1], ui_daemon:get_opacity()),
+		background_blur = library.color.change_opacity(colors[1], 0.9),
 		background_no_opacity = colors[1],
 
-		surface = helpers.color.change_opacity(colors[9], ui_daemon:get_opacity()),
+		surface = library.color.change_opacity(colors[9], ui_daemon:get_opacity()),
 		surface_no_opacity = colors[9],
 
 		error = colors[2],
@@ -57,10 +57,10 @@ local function colors()
 		white = "#FFFFFF",
 		black = "#000000",
 		transparent = colors[1] .. "00",
-		icon_transparent = helpers.color.is_dark(colors[1]) and "#000000" or "#FFFFFF",
+		icon_transparent = library.color.is_dark(colors[1]) and "#000000" or "#FFFFFF",
 
 		on_background = colors[8],
-		on_background_dark = helpers.color.darken_or_lighten(colors[1], 0.4),
+		on_background_dark = library.color.darken_or_lighten(colors[1], 0.4),
 		on_surface = colors[8],
 		on_error = colors[1],
 		on_accent = colors[1],
@@ -344,7 +344,7 @@ local function assets()
 
 	local mountain_background_thumbnail_dir_path = filesystem.filesystem.get_cache_dir("thumbnails/mountain/100-70")
 	filesystem.filesystem.make_directory_with_parents(mountain_background_thumbnail_dir_path, function()
-		helpers.ui.scale_image_save(
+		library.ui.scale_image_save(
 			assets_folder .. "mountain.png",
 			mountain_background_thumbnail_dir_path .. "mountain",
 			100,

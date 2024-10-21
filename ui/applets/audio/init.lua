@@ -8,7 +8,7 @@ local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
 local audio_daemon = require("daemons.hardware.audio")
 local ui_daemon = require("daemons.system.ui")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 
 local instance = nil
@@ -386,7 +386,7 @@ local function new()
 				})
 			end
 		end,
-		shape = helpers.ui.rrect(),
+		shape = library.ui.rrect(),
 		bg = beautiful.colors.background,
 		widget = wibox.widget({
 			widget = wibox.container.margin,

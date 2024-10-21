@@ -6,7 +6,7 @@ local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
 local theme_daemon = require("daemons.system.theme")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 
@@ -19,7 +19,7 @@ local function color_button(index)
         widget = wibox.container.background,
         forced_width = dpi(200),
         forced_height = dpi(40),
-        shape = helpers.ui.rrect(),
+        shape = library.ui.rrect(),
     }
 
     local color_text_input = wibox.widget {
@@ -59,7 +59,7 @@ local function color_button(index)
     theme_daemon:connect_signal("colorscheme::generation::success", function(self, colors, wallpaper)
         if wallpaper == theme_daemon:get_selected_colorscheme() then
             local color = colors[index]
-            if helpers.color.is_dark(color) then
+            if library.color.is_dark(color) then
                 color_text_input:set_text_color(beautiful.colors.white)
             else
                 color_text_input:set_text_color(beautiful.colors.black)
@@ -86,7 +86,7 @@ local function run_on_set()
         selection_bg = beautiful.icons.computer.color,
         widget_template = wibox.widget {
             widget = widgets.background,
-            shape = helpers.ui.rrect(),
+            shape = library.ui.rrect(),
             bg = beautiful.colors.surface,
             {
                 widget = wibox.container.margin,
@@ -265,7 +265,7 @@ local function new()
 
     theme_daemon:connect_signal("colorscheme::generation::success", function(self, colors, wallpaper)
         if wallpaper == theme_daemon:get_selected_colorscheme() then
-            if helpers.color.is_dark(colors[1]) then
+            if library.color.is_dark(colors[1]) then
                 light_dark:set_text("Light")
             else
                 light_dark:set_text("Dark")

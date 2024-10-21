@@ -8,7 +8,7 @@ local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
 local disk_daemon = require("daemons.hardware.disk")
 local ui_daemon = require("daemons.system.ui")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 local tonumber = tonumber
 local ipairs = ipairs
@@ -20,7 +20,7 @@ local function separator()
     return wibox.widget {
         widget = widgets.background,
         forced_height = dpi(1),
-        shape = helpers.ui.rrect(),
+        shape = library.ui.rrect(),
         bg = beautiful.colors.surface
     }
 end
@@ -38,8 +38,8 @@ local function partition_widget(partition)
         widget = widgets.progressbar,
         forced_width = dpi(120),
         forced_height = dpi(30),
-        shape = helpers.ui.rrect(),
-        bar_shape = helpers.ui.rrect(),
+        shape = library.ui.rrect(),
+        bar_shape = library.ui.rrect(),
         margins = dpi(10),
         paddings = dpi(2),
         max_value = 100,
@@ -127,7 +127,7 @@ local function new()
                 })
             end
         end,
-        shape = helpers.ui.rrect(),
+        shape = library.ui.rrect(),
         bg = beautiful.colors.background,
         widget = wibox.widget {
             widget = wibox.container.margin,

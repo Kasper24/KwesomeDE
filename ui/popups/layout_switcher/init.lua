@@ -8,7 +8,7 @@ local gtable = require("gears.table")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
 local widgets = require("ui.widgets")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 local ipairs = ipairs
 local capi = {
@@ -74,7 +74,7 @@ local function new()
 		ontop = true,
 		visible = false,
 		use_fake_widget = false,
-		shape = helpers.ui.rrect(),
+		shape = library.ui.rrect(),
 		bg = beautiful.colors.background,
 		minimum_width = dpi(300),
 		maximum_width = dpi(300),

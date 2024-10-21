@@ -7,7 +7,7 @@ local gtimer = require("gears.timer")
 local ruled = require("ruled")
 local picom_daemon = require("daemons.system.picom")
 local ui_daemon = require("daemons.system.ui")
-local helpers = require("helpers")
+local library = require("library")
 local capi = {
     awesome = awesome,
     screen = screen,
@@ -487,11 +487,11 @@ ruled.client.connect_signal("request::rules", function()
             ui_daemon:set_animations(false, false)
             picom_daemon:turn_off(false)
             c:connect_signal("unmanage", function()
-                if helpers.settings["ui.animations.enabled"] ~= false then
+                if library.settings["ui.animations.enabled"] ~= false then
                     ui_daemon:set_animations(true, false)
                 end
 
-                if helpers.settings["picom.enabled"] ~= false then
+                if library.settings["picom.enabled"] ~= false then
                     picom_daemon:turn_on(false)
                 end
             end)

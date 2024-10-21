@@ -9,7 +9,7 @@ local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
 local notifications_daemon = require("daemons.system.notifications")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 local max = math.max
 local ipairs = ipairs
@@ -63,7 +63,7 @@ local function icon_widget(n)
 			width = dpi(40),
 			{
 				widget = wibox.widget.imagebox,
-				clip_shape = helpers.ui.rrect(),
+				clip_shape = library.ui.rrect(),
 				image = n.icon,
 			},
 		})
@@ -115,7 +115,7 @@ local function destroy_notif(n, screen)
 		margins = dpi(30),
 	}).y
 
-	helpers.table.remove_value(screen.notifications, n)
+	library.table.remove_value(screen.notifications, n)
 	n.destroyed = true
 	local destroyed_n_height = n.widget.height
 	for _, n in ipairs(screen.notifications) do
@@ -141,7 +141,7 @@ local function create_notification(n, screen)
 		size = 30,
 		halign = "center",
 		valign = "center",
-		clip_shape = helpers.ui.rrect(),
+		clip_shape = library.ui.rrect(),
 		icon = n.app_icon,
 	})
 
@@ -195,7 +195,7 @@ local function create_notification(n, screen)
 	local bar = wibox.widget({
 		widget = widgets.background,
 		forced_height = dpi(10),
-		shape = helpers.ui.rrect(),
+		shape = library.ui.rrect(),
 		bg = accent_color,
 	})
 
@@ -222,7 +222,7 @@ local function create_notification(n, screen)
 		maximum_width = dpi(400),
 		offset = { y = dpi(30) },
 		ontop = true,
-		shape = helpers.ui.rrect(),
+		shape = library.ui.rrect(),
 		bg = beautiful.colors.background,
 		border_width = 0,
 		widget = wibox.widget({
@@ -260,10 +260,10 @@ local function create_notification(n, screen)
 
 	local timeout_arc_anim = nil
 	if n.urgency ~= "critical" then
-		timeout_arc_anim = helpers.animation:new({
+		timeout_arc_anim = library.animation:new({
 			duration = 5,
 			target = 100,
-			easing = helpers.animation.easing.linear,
+			easing = library.animation.easing.linear,
 			override_instant = true,
 			reset_on_stop = false,
 			update = function(self, pos)
@@ -289,10 +289,10 @@ local function create_notification(n, screen)
 	n.widget.x = pos.x
 	n.widget.y = pos.y
 
-	n.anim = helpers.animation:new({
+	n.anim = library.animation:new({
 		pos = { y = pos.y, height = 1 },
 		duration = 0.2,
-		easing = helpers.animation.easing.linear,
+		easing = library.animation.easing.linear,
 		update = function(self, pos)
 			if pos.y then
 				n.widget.y = pos.y

@@ -8,7 +8,7 @@ local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local gdebug = require("gears.debug")
-local helpers = require("helpers")
+local library = require("library")
 local dbus_proxy = require("external.dbus_proxy")
 local ipairs = ipairs
 local string = string
@@ -170,11 +170,11 @@ local function create_profile(access_point, password, auto_connect)
 		if access_point.security:match("WPA") ~= nil then
 			s_wsec["key-mgmt"] = lgi.GLib.Variant("s", "wpa-psk")
 			s_wsec["auth-alg"] = lgi.GLib.Variant("s", "open")
-			s_wsec["psk"] = lgi.GLib.Variant("s", helpers.string.trim(password))
+			s_wsec["psk"] = lgi.GLib.Variant("s", library.string.trim(password))
 		else
 			s_wsec["key-mgmt"] = lgi.GLib.Variant("s", "None")
 			s_wsec["wep-key-type"] = lgi.GLib.Variant("s", NM.WepKeyType.PASSPHRASE)
-			s_wsec["wep-key0"] = lgi.GLib.Variant("s", helpers.string.trim(password))
+			s_wsec["wep-key0"] = lgi.GLib.Variant("s", library.string.trim(password))
 		end
 	end
 

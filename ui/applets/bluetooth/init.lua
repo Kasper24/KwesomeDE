@@ -9,7 +9,7 @@ local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
 local bluetooth_daemon = require("daemons.hardware.bluetooth")
 local ui_daemon = require("daemons.system.ui")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 local capi = {
 	awesome = awesome,
@@ -141,10 +141,10 @@ local function device_widget(device, path)
 		},
 	})
 
-	anim = helpers.animation:new({
+	anim = library.animation:new({
 		pos = dpi(60),
 		duration = 0.2,
-		easing = helpers.animation.easing.linear,
+		easing = library.animation.easing.linear,
 		update = function(self, pos)
 			widget.height = pos
 		end,
@@ -227,7 +227,7 @@ local function new()
 	local seperator = wibox.widget({
 		widget = widgets.background,
 		forced_height = dpi(1),
-		shape = helpers.ui.rrect(),
+		shape = library.ui.rrect(),
 		bg = beautiful.colors.surface,
 	})
 
@@ -273,7 +273,7 @@ local function new()
 				})
 			end
 		end,
-		shape = helpers.ui.rrect(),
+		shape = library.ui.rrect(),
 		bg = beautiful.colors.background,
 		widget = wibox.widget({
 			widget = wibox.container.margin,

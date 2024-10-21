@@ -7,7 +7,7 @@ local beautiful = require("beautiful")
 local widgets = require("ui.widgets")
 local app_launcher_daemon = require("daemons.system.app_launcher")
 local bling = require("external.bling")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 local ipairs = ipairs
 local table = table
@@ -167,7 +167,7 @@ local function new()
 						unfocus_on_subject_mouse_leave = nil,
 						widget_template = wibox.widget({
 							widget = widgets.background,
-							shape = helpers.ui.rrect(),
+							shape = library.ui.rrect(),
 							bg = beautiful.colors.surface,
 							{
 								widget = wibox.container.margin,
@@ -218,12 +218,12 @@ local function new()
 								forced_height = dpi(10),
 								minimum = 1,
 								value = 1,
-								bar_shape = helpers.ui.rrect(),
+								bar_shape = library.ui.rrect(),
 								bar_height = 3,
 								bar_color = beautiful.colors.transparent,
 								bar_active_color = beautiful.colors.transparent,
 								handle_width = dpi(50),
-								handle_shape = helpers.ui.rrect(),
+								handle_shape = library.ui.rrect(),
 								handle_color = beautiful.colors.on_background,
 							},
 						},
@@ -234,9 +234,9 @@ local function new()
 		}),
 	})
 
-	local animation = helpers.animation:new({
+	local animation = library.animation:new({
 		pos = 1,
-		easing = helpers.animation.easing.outExpo,
+		easing = library.animation.easing.outExpo,
 		duration = 0.5,
 		update = function(_, pos)
 			app_launcher:get_widget().widget.forced_height = pos
@@ -263,7 +263,7 @@ local function new()
 		app_launcher:get_text_input():focus()
 		app_launcher:emit_signal("visibility", true)
 
-		animation.easing = helpers.animation.easing.outExpo
+		animation.easing = library.animation.easing.outExpo
 		animation:set(dpi(750))
 	end
 
@@ -276,7 +276,7 @@ local function new()
 		app_launcher:get_text_input():unfocus()
 		app_launcher:emit_signal("visibility", false)
 
-		animation.easing = helpers.animation.easing.inExpo
+		animation.easing = library.animation.easing.inExpo
 		animation:set(1)
 	end
 
@@ -286,7 +286,7 @@ local function new()
 	end)
 
 	app_launcher_daemon:connect_signal("pinned_app::removed", function(self, pinned_app)
-		helpers.table.remove_value(pinned_apps, pinned_app.id)
+		library.table.remove_value(pinned_apps, pinned_app.id)
 		app_launcher:get_rofi_grid():set_favorites(pinned_apps)
 	end)
 

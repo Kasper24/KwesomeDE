@@ -8,7 +8,7 @@ local beautiful = require("beautiful")
 local widgets = require("ui.widgets")
 local ram_daemon = require("daemons.hardware.ram")
 local ui_daemon = require("daemons.system.ui")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 local math = math
 
@@ -52,7 +52,7 @@ local function new()
                 })
             end
         end,
-        shape = helpers.ui.rrect(),
+        shape = library.ui.rrect(),
         bg = beautiful.colors.background,
         widget = chart
     }

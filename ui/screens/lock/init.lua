@@ -9,7 +9,7 @@ local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
 local system_daemon = require("daemons.system.system")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 local os = os
 
@@ -99,7 +99,7 @@ local function widget(self)
 
     local date = wibox.widget {
         widget = wibox.widget.textclock,
-        format = "%d" .. helpers.string.day_ordinal_number() .. " of %B, %A",
+        format = "%d" .. library.string.day_ordinal_number() .. " of %B, %A",
         halign = "center",
         size = 30
     }

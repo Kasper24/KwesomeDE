@@ -8,7 +8,7 @@ local beautiful = require("beautiful")
 local record_daemon = require("daemons.system.record")
 local audio_daemon = require("daemons.hardware.audio")
 local app = require("ui.apps")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 local pairs = pairs
 
@@ -18,7 +18,7 @@ local function separator()
     return wibox.widget {
         widget = widgets.background,
         forced_height = dpi(2),
-        shape = helpers.ui.rrect(),
+        shape = library.ui.rrect(),
         bg = beautiful.colors.surface,
     }
 end
@@ -285,7 +285,7 @@ local function main()
         spacing = dpi(15),
         {
             widget = widgets.background,
-            shape = helpers.ui.rrect(),
+            shape = library.ui.rrect(),
             bg = beautiful.colors.background,
             border_width = dpi(2),
             border_color = beautiful.colors.surface,

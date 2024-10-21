@@ -7,7 +7,7 @@ local empty_wallpapers = require("ui.apps.settings.tabs.wallpaper.empty_wallpape
 local wallpapers_grid = require("ui.apps.settings.tabs.wallpaper.wallpapers_grid")
 local actions = require("ui.apps.settings.tabs.wallpaper.actions")
 local theme_daemon = require("daemons.system.theme")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 local sin = math.sin
@@ -93,7 +93,7 @@ local function new()
             end,
             {
                 widget = wibox.container.background,
-                shape = helpers.ui.rrect(),
+                shape = library.ui.rrect(),
                 sun
             }
         }

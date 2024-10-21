@@ -10,7 +10,7 @@ local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local beautiful = require("beautiful")
-local helpers = require("helpers")
+local library = require("library")
 local filesystem = require("external.filesystem")
 local floor = math.floor
 local string = string
@@ -32,7 +32,7 @@ local function update_positions(self)
 	local pos = 0
 	local pos_without_pinned_apps = 0
 	for _, pinned_app in ipairs(self._private.pinned_apps_with_userdata) do
-		if #helpers.client.find({ class = pinned_app.class }) == 0 then
+		if #library.client.find({ class = pinned_app.class }) == 0 then
 			self:emit_signal("pinned_app::pos", pinned_app, pos)
 			pos = pos + 1
 		else
@@ -257,7 +257,7 @@ function tasklist:add_pinned_app(client)
 			exec = stdout,
 		}
 		table.insert(self._private.pinned_apps, pinned_app)
-		helpers.settings["tasklist.pinned_apps"] = self._private.pinned_apps
+		library.settings["tasklist.pinned_apps"] = self._private.pinned_apps
 		on_pinned_app_added(self, pinned_app)
 	end)
 end
@@ -272,7 +272,7 @@ function tasklist:remove_pinned_app(class)
 		end
 	end
 
-	helpers.settings["tasklist.pinned_apps"] = self._private.pinned_apps
+	library.settings["tasklist.pinned_apps"] = self._private.pinned_apps
 	update_positions(self)
 end
 
@@ -286,7 +286,7 @@ local function new()
 
 	ret._private = {}
 	ret._private.clients = {}
-	ret._private.pinned_apps = helpers.settings["tasklist.pinned_apps"]
+	ret._private.pinned_apps = library.settings["tasklist.pinned_apps"]
 	ret._private.pinned_apps_with_userdata = {}
 
 	capi.client.connect_signal("scanned", function()

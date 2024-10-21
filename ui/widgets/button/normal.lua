@@ -7,7 +7,7 @@ local gcolor = require("gears.color")
 local wibox = require("wibox")
 local bwidget = require("ui.widgets.background")
 local beautiful = require("beautiful")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 local ipairs = ipairs
@@ -73,17 +73,17 @@ local function build_animable_child_anims(self, child)
             widget = child,
             original_size = child._private.icon and child:get_size() or nil,
             color_anim = animate_color
-                and helpers.animation:new{
-                    easing = helpers.animation.easing.linear,
+                and library.animation:new{
+                    easing = library.animation.easing.linear,
                     duration = 0.2,
                     update = function(self, pos)
                         child:update_display_color(pos)
                     end
                 } or nil,
             size_anim = child._private.icon
-                and helpers.animation:new{
+                and library.animation:new{
                     pos = child:get_size(),
-                    easing = helpers.animation.easing.linear,
+                    easing = library.animation.easing.linear,
                     duration = 0.125,
                     update = function(self, pos)
                         child:set_size(pos)
@@ -99,7 +99,7 @@ local function build_animable_child_anims(self, child)
                                         old_colorscheme_to_new_map[cp.defaults.color]
                 cp.on_color = old_colorscheme_to_new_map[cp.on_color] or
                                         old_colorscheme_to_new_map[cp.defaults.on_color] or
-                                        helpers.color.darken_or_lighten(cp.color, 0.2)
+                                        library.color.darken_or_lighten(cp.color, 0.2)
 
                 self:effect(true)
             end)
@@ -353,7 +353,7 @@ local function new(is_state)
 
     wp.defaults.color = beautiful.colors.transparent
 
-    wp.defaults.normal_shape = helpers.ui.rrect()
+    wp.defaults.normal_shape = library.ui.rrect()
     wp.defaults.hover_shape = wp.defaults.normal_shape
     wp.defaults.press_shape = wp.defaults.normal_shape
 
@@ -375,8 +375,8 @@ local function new(is_state)
     wp.on_scroll_down = nil
 
     wp.animable_childs = {}
-    wp.anim = helpers.animation:new{
-        easing = helpers.animation.easing.linear,
+    wp.anim = library.animation:new{
+        easing = library.animation.easing.linear,
         duration = 0.2,
         update = function(self, pos)
             widget.bg = pos.bg
@@ -385,8 +385,8 @@ local function new(is_state)
             widget:get_state_layer().opacity = pos.state_layer_opacity
         end
     }
-    wp.ripple_anim = helpers.animation:new{
-        easing = helpers.animation.easing.linear,
+    wp.ripple_anim = library.animation:new{
+        easing = library.animation.easing.linear,
         duration = 0.4,
         update = function(self, pos)
             widget:get_ripple_layer().radius = pos.radius
@@ -506,7 +506,7 @@ local function new(is_state)
                     old_colorscheme_to_new_map[wp.defaults.color]
         wp.on_color = old_colorscheme_to_new_map[wp.on_color] or
                     old_colorscheme_to_new_map[wp.defaults.on_color] or
-                    helpers.color.darken_or_lighten(wp.color, 0.2)
+                    library.color.darken_or_lighten(wp.color, 0.2)
 
         wp.normal_border_color = old_colorscheme_to_new_map[wp.normal_border_color] or
                                 old_colorscheme_to_new_map[wp.defaults.normal_border_color]

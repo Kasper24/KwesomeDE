@@ -6,7 +6,7 @@ local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
 local theme_daemon = require("daemons.system.theme")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 
@@ -30,7 +30,7 @@ local function new(wallpapers_key, entry_template)
                 selection_bg = beautiful.icons.computer.color,
                 widget_template = wibox.widget {
                     widget = widgets.background,
-                    shape = helpers.ui.rrect(),
+                    shape = library.ui.rrect(),
                     bg = beautiful.colors.surface,
                     {
                         widget = wibox.container.margin,
@@ -82,12 +82,12 @@ local function new(wallpapers_key, entry_template)
                         forced_height = dpi(10),
                         minimum = 1,
                         value = 1,
-                        bar_shape = helpers.ui.rrect(),
+                        bar_shape = library.ui.rrect(),
                         bar_height= 3,
                         bar_color = beautiful.colors.transparent,
                         bar_active_color = beautiful.colors.transparent,
                         handle_width = dpi(50),
-                        handle_shape = helpers.ui.rrect(),
+                        handle_shape = library.ui.rrect(),
                         handle_color = beautiful.colors.on_background
                     }
                 }

@@ -5,7 +5,7 @@
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 
@@ -17,7 +17,7 @@ local function new()
     return wibox.widget {
         widget = widgets.background,
         forced_height = dpi(225),
-        shape = helpers.ui.rrect(),
+        shape = library.ui.rrect(),
         {
             layout = wibox.layout.stack,
             widgets.playerctl.art_opacity(),

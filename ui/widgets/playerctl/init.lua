@@ -12,7 +12,7 @@ local swidget = require("ui.widgets.slider")
 local beautiful = require("beautiful")
 local general_playerctl_daemon = require("daemons.system.playerctl")
 local theme_daemon = require("daemons.system.theme")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 local math = math
@@ -48,8 +48,8 @@ function playerctl.art_opacity(daemon)
     end
 
     local function image_surface(path)
-        local scaled_image = helpers.ui.scale_image(path, 500, 225)
-        return helpers.ui.add_gradient_to_surface(scaled_image, colors())
+        local scaled_image = library.ui.scale_image(path, 500, 225)
+        return library.ui.add_gradient_to_surface(scaled_image, colors())
     end
 
     local art = wibox.widget{
@@ -101,7 +101,7 @@ function playerctl.art(halign, valign, size, default_icon_size, daemon)
         widget = wibox.widget.imagebox,
         halign = halign or "left",
         valign = valign or "top",
-        clip_shape = helpers.ui.rrect(),
+        clip_shape = library.ui.rrect(),
         image = beautiful.get_svg_icon{"spotify"}
     }
 
@@ -447,9 +447,9 @@ function playerctl.play(daemon)
         widget
     }
 
-    local play_pause_animation = helpers.animation:new{
+    local play_pause_animation = library.animation:new{
         duration = 0.2,
-        easing = helpers.animation.easing.linear,
+        easing = library.animation.easing.linear,
         update = function(self, pos)
             widget.pos = pos
             widget:emit_signal("widget::redraw_needed")

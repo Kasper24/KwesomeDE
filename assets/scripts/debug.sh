@@ -21,7 +21,8 @@ echo "Xephyr live on $DISPLAY PID=$XEPHYER_PID"
 
 echo "Starting awesome on $DISPLAY using: $CONFIG"
 echo
-awesome -c ~/.config/awesome/rc-debug.lua
+export AWM_DEBUG=true
+awesome -c ~/.config/awesome/rc.lua
 echo
 echo "awesome exitied - killing Xephyer:"
 kill $XEPHYER_PID

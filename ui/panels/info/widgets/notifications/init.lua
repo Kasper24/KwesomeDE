@@ -7,7 +7,7 @@ local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
 local notifications_daemon = require("daemons.system.notifications")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 local ipairs = ipairs
@@ -25,7 +25,7 @@ local function notification_widget(notification, on_removed)
 			forced_height = dpi(40),
 			halign = "left",
 			valign = "top",
-			clip_shape = helpers.ui.rrect(),
+			clip_shape = library.ui.rrect(),
 			image = notification.icon,
 		})
 	else
@@ -43,7 +43,7 @@ local function notification_widget(notification, on_removed)
 		halign = "left",
 		{
 			widget = widgets.text,
-			halign = helpers.string.contain_right_to_left_characters(notification.title) and "right" or "left",
+			halign = library.string.contain_right_to_left_characters(notification.title) and "right" or "left",
 			valign = "top",
 			size = 15,
 			bold = true,
@@ -146,7 +146,7 @@ local function notification_widget(notification, on_removed)
 
 	INFO_PANEL:dynamic_connect_signal("visibility", function(self, visible)
 		if visible then
-			time:set_text(helpers.string.to_time_ago(notification.time))
+			time:set_text(library.string.to_time_ago(notification.time))
 		end
 	end)
 
@@ -159,7 +159,7 @@ local function notification_group(notification)
 		size = 40,
 		halign = "left",
 		valign = "top",
-		clip_shape = helpers.ui.rrect(),
+		clip_shape = library.ui.rrect(),
 		icon = notification.app_icon,
 	})
 
@@ -191,7 +191,7 @@ local function notification_group(notification)
 	local seperator = wibox.widget({
 		widget = widgets.background,
 		forced_height = dpi(1),
-		shape = helpers.ui.rrect(),
+		shape = library.ui.rrect(),
 		bg = beautiful.colors.surface,
 	})
 

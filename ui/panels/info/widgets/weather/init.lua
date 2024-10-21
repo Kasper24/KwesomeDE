@@ -6,7 +6,7 @@ local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
 local weather_daemon = require("daemons.web.weather")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 local tonumber = tonumber
@@ -44,7 +44,7 @@ local icon_map = {
 }
 
 local function curvaceous(cr, x, y, b, step_width, options, draw_line)
-    local interpolate = helpers.bezier.cubic_from_derivative_and_points_min_stretch
+    local interpolate = library.bezier.cubic_from_derivative_and_points_min_stretch
 
     local state = options.curvaceous_state
     if not state or state.last_group ~= options._group_idx then
@@ -75,13 +75,13 @@ local function curvaceous(cr, x, y, b, step_width, options, draw_line)
     y = (y == y) and y or b
 
     -- Horizontal linear movement of the curves
-    local x_curve = {helpers.bezier.cubic_through_points(x0, x0 + step_width)}
+    local x_curve = {library.bezier.cubic_through_points(x0, x0 + step_width)}
 
     -- Vertical movement curve for y
     local y_curve = {interpolate(y_d, y0, y)}
-    state.y_d = helpers.bezier.curve_derivative_at_one(y_curve)
+    state.y_d = library.bezier.curve_derivative_at_one(y_curve)
     if step_fraction then
-        y_curve = helpers.bezier.curve_split_at(y_curve, step_fraction)
+        y_curve = library.bezier.curve_split_at(y_curve, step_fraction)
     end
 
     -- Paint the value curve
@@ -91,9 +91,9 @@ local function curvaceous(cr, x, y, b, step_width, options, draw_line)
     if not draw_line then
         -- Vertical movement curve for the baseline
         local b_curve = {interpolate(b_d, b0, b)}
-        state.b_d = helpers.bezier.curve_derivative_at_one(b_curve)
+        state.b_d = library.bezier.curve_derivative_at_one(b_curve)
         if step_fraction then
-            b_curve = helpers.bezier.curve_split_at(b_curve, step_fraction)
+            b_curve = library.bezier.curve_split_at(b_curve, step_fraction)
         end
 
         -- Paint the bar bounded by the baseline curve from below
@@ -261,7 +261,7 @@ local function new()
         step_width = dpi(18),
         step_hook = curvaceous,
         background_color = beautiful.colors.transparent,
-        color = helpers.color.darken(beautiful.icons.sun.color, 0.5),
+        color = library.color.darken(beautiful.icons.sun.color, 0.5),
         opacity = 1
     }
 
@@ -278,7 +278,7 @@ local function new()
     }
 
     capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
-        hourly_forecast_graph.color = helpers.color.darken(beautiful.icons.sun.color, 0.5)
+        hourly_forecast_graph.color = library.color.darken(beautiful.icons.sun.color, 0.5)
         hourly_forecast_graph_border.color = beautiful.icons.sun.color
     end)
 

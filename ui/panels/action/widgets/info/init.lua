@@ -15,7 +15,7 @@ local disk_daemon = require("daemons.hardware.disk")
 local temperature_daemon = require("daemons.hardware.temperature")
 local audio_daemon = require("daemons.hardware.audio")
 local brightness_daemon = require("daemons.hardware.brightness")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 local tonumber = tonumber
@@ -29,16 +29,16 @@ local function progress_bar(icon, on_release)
 		widget = widgets.progressbar,
 		forced_width = dpi(450),
 		forced_height = dpi(10),
-		shape = helpers.ui.rrect(),
+		shape = library.ui.rrect(),
 		max_value = 100,
-		bar_shape = helpers.ui.rrect(),
+		bar_shape = library.ui.rrect(),
 		background_color = beautiful.colors.surface,
 		color = icon.color,
 	})
 
 	local icon = wibox.widget({
 		widget = widgets.background,
-		shape = helpers.ui.rrect(),
+		shape = library.ui.rrect(),
 		bg = beautiful.colors.surface,
 		{
 			widget = widgets.text,
@@ -143,7 +143,7 @@ local function audio()
 
 	local icon = wibox.widget({
 		widget = widgets.background,
-		shape = helpers.ui.rrect(),
+		shape = library.ui.rrect(),
 		bg = beautiful.colors.surface,
 		{
 			widget = widgets.text,
@@ -211,7 +211,7 @@ local function brightness()
 
 	local icon = wibox.widget({
 		widget = widgets.background,
-		shape = helpers.ui.rrect(),
+		shape = library.ui.rrect(),
 		bg = beautiful.colors.surface,
 		{
 			widget = widgets.text,

@@ -8,7 +8,7 @@ local widgets = require("ui.widgets")
 -- local tag_preview = require("ui.popups.tag_preview")
 local beautiful = require("beautiful")
 local ui_daemon = require("daemons.system.ui")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 local ipairs = ipairs
 local capi = {
@@ -113,13 +113,13 @@ local function tag_widget(self, tag)
             -- tag_preview:hide()
         end,
         on_release = function()
-            helpers.misc.tag_back_and_forth(tag.index)
+            library.misc.tag_back_and_forth(tag.index)
             -- tag_preview:hide()
         end,
         on_secondary_release = function(self)
             local coords = nil
             if ui_daemon:get_bars_layout() == "horizontal" then
-                coords = helpers.ui.get_widget_geometry_in_device_space({wibox = awful.screen.focused().horizontal_wibar}, self)
+                coords = library.ui.get_widget_geometry_in_device_space({wibox = awful.screen.focused().horizontal_wibar}, self)
                 coords.y = coords.y + awful.screen.focused().horizontal_wibar.y
                 if ui_daemon:get_horizontal_bar_position() == "top" then
                     coords.y = coords.y + dpi(65)
@@ -127,7 +127,7 @@ local function tag_widget(self, tag)
                     coords.y = coords.y + -dpi(190)
                 end
             else
-                coords = helpers.ui.get_widget_geometry_in_device_space({wibox = awful.screen.focused().vertical_wibar}, self)
+                coords = library.ui.get_widget_geometry_in_device_space({wibox = awful.screen.focused().vertical_wibar}, self)
                 coords.x = coords.x + dpi(50)
             end
 
@@ -154,7 +154,7 @@ local function tag_widget(self, tag)
         forced_width = dpi(5),
         forced_height = dpi(5),
         id = "background",
-        shape = helpers.ui.rrect(),
+        shape = library.ui.rrect(),
         bg = tag.icon.color
     }
 
@@ -178,9 +178,9 @@ local function tag_widget(self, tag)
         stack.children[2].valign = "bottom"
     end
 
-    self.indicator_animation = helpers.animation:new{
+    self.indicator_animation = library.animation:new{
         duration = 0.2,
-        easing = helpers.animation.easing.linear,
+        easing = library.animation.easing.linear,
         update = function(self, pos)
             indicator[prop] = pos
         end

@@ -7,7 +7,7 @@ local gshape = require("gears.shape")
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 local capi = {
     awesome = awesome,
@@ -134,7 +134,7 @@ capi.client.connect_signal("request::titlebars", function(client)
                     modifiers = {},
                     button = 3,
                     on_press = function()
-                        helpers.input.tap_or_drag {
+                        library.input.tap_or_drag {
                             on_tap = function()
                                 client.menu:toggle{}
                             end,

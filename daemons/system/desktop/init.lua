@@ -6,7 +6,7 @@ local Gio = require("lgi").Gio
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
-local helpers = require("helpers")
+local library = require("library")
 local filesystem = require("external.filesystem")
 local json = require("external.json")
 local ipairs = ipairs
@@ -32,8 +32,8 @@ local function get_grid_pos_from_real_pos(self, pos)
 end
 
 function desktop:ask_for_new_position(widget, path)
-    local new_x = helpers.math.round_by_factor(widget.x, self._private.cell_size)
-    local new_y = helpers.math.round_by_factor(widget.y, self._private.cell_size)
+    local new_x = library.math.round_by_factor(widget.x, self._private.cell_size)
+    local new_y = library.math.round_by_factor(widget.y, self._private.cell_size)
 
     local new_grid_pos = get_grid_pos_from_real_pos(self, {
         x = new_x,
@@ -101,19 +101,19 @@ local function on_desktop_icon_removed(self, path)
 end
 
 local function watch_desktop_directory(self)
-    local watcher = helpers.inotify:watch(DESKTOP_PATH,
-        {helpers.inotify.Events.create, helpers.inotify.Events.delete, helpers.inotify.Events.moved_from,
-         helpers.inotify.Events.moved_to})
+    local watcher = library.inotify:watch(DESKTOP_PATH,
+        {library.inotify.Events.create, library.inotify.Events.delete, library.inotify.Events.moved_from,
+         library.inotify.Events.moved_to})
 
     watcher:connect_signal("event", function(_, event, path, file)
-        if event == helpers.inotify.Events.create or event == helpers.inotify.Events.moved_to then
+        if event == library.inotify.Events.create or event == library.inotify.Events.moved_to then
             local mimetype = Gio.content_type_guess(path)
             on_desktop_icon_added(self, get_position_for_new_desktop_file(), path, file, mimetype)
-        elseif event == helpers.inotify.Events.create .. ",isdir" or event == helpers.inotify.Events.moved_to ..
+        elseif event == library.inotify.Events.create .. ",isdir" or event == library.inotify.Events.moved_to ..
             ",isdir" then
             on_desktop_icon_added(self, get_position_for_new_desktop_file(), path, file, "folder")
-        elseif event == helpers.inotify.Events.delete or event == helpers.inotify.Events.moved_from or event ==
-            helpers.inotify.Events.delete .. ",isdir" or event == helpers.inotify.Events.moved_from .. ",isdir" then
+        elseif event == library.inotify.Events.delete or event == library.inotify.Events.moved_from or event ==
+            library.inotify.Events.delete .. ",isdir" or event == library.inotify.Events.moved_from .. ",isdir" then
             on_desktop_icon_removed(self, path)
         end
     end)
@@ -138,7 +138,7 @@ local function scan_for_desktop_files_on_init(self)
                                 mimetype = Gio.content_type_guess(path)
                             end
 
-                            local name = path:sub(helpers.string.find_last(path, "/") + 1, #path)
+                            local name = path:sub(library.string.find_last(path, "/") + 1, #path)
                             local pos = nil
                             if old_desktop_icons[path] ~= nil then
                                 pos = old_desktop_icons[path]

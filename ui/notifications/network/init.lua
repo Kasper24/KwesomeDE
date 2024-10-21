@@ -5,13 +5,13 @@
 local beautiful = require("beautiful")
 local naughty = require("naughty")
 local network_daemon = require("daemons.hardware.network")
-local helpers = require("helpers")
+local library = require("library")
 
 local icons = {"gnome-network-displays", "org.gnome.NetworkDisplays", "preferences-system-network", "networkmanager",
                "network-workgroup", "mate-network-properties", "cs-network"}
 
 network_daemon:connect_signal("wireless_state", function(self, state)
-    if helpers.ui.should_show_notification() == true then
+    if library.ui.should_show_notification() == true then
         local text = state == true and "Enabled" or "Disabled"
         local category = state == true and "network.connected" or "network.disconnected"
         local font_icon = state == true and beautiful.icons.network.wifi_high or beautiful.icons.network.wifi_off
@@ -39,7 +39,7 @@ network_daemon:connect_signal("access_point::connected", function(self, ssid, st
         font_icon = beautiful.icons.network.wifi_high
     end
 
-    if helpers.ui.should_show_notification() == true then
+    if library.ui.should_show_notification() == true then
         naughty.notification {
             app_font_icon = beautiful.icons.router,
             app_icon = icons,
@@ -54,7 +54,7 @@ network_daemon:connect_signal("access_point::connected", function(self, ssid, st
 end)
 
 network_daemon:connect_signal("scan_access_points::success", function(self)
-    if helpers.ui.should_show_notification() == true then
+    if library.ui.should_show_notification() == true then
         naughty.notification {
             app_font_icon = beautiful.icons.router,
             app_icon = icons,
@@ -68,7 +68,7 @@ network_daemon:connect_signal("scan_access_points::success", function(self)
 end)
 
 network_daemon:connect_signal("scan_access_points::failed", function(self, error, error_code)
-    if helpers.ui.should_show_notification() == true then
+    if library.ui.should_show_notification() == true then
         naughty.notification {
             app_font_icon = beautiful.icons.router,
             app_icon = icons,
@@ -76,7 +76,7 @@ network_daemon:connect_signal("scan_access_points::failed", function(self, error
             font_icon = beautiful.icons.circle_exclamation,
             icon = icons,
             title = "Failed to scan access points",
-            text = helpers.string.trim(error),
+            text = library.string.trim(error),
             category = "network.error"
         }
     end
@@ -102,7 +102,7 @@ network_daemon:connect_signal("add_connection::failed", function(self, error, er
         font_icon = beautiful.icons.circle_exclamation,
         icon = icons,
         title = "Failed to add Connection",
-        text = helpers.string.trim(error),
+        text = library.string.trim(error),
         category = "network.error"
     }
 end)
@@ -127,7 +127,7 @@ network_daemon:connect_signal("activate_access_point::failed", function(self, er
         font_icon = beautiful.icons.circle_exclamation,
         icon = icons,
         title = "Failed to activate access point",
-        text = helpers.string.trim(error),
+        text = library.string.trim(error),
         category = "network.error"
     }
 end)

@@ -7,7 +7,7 @@ local Secret = lgi.Secret
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
-local helpers = require("helpers")
+local library = require("library")
 local filesystem = require("external.filesystem")
 local json = require("external.json")
 local string = string
@@ -25,13 +25,13 @@ local UPDATE_INTERVAL = 60 * 30 -- 30 mins
 
 function gitlab:set_host(host)
     self._private.host = host
-    helpers.settings["gitlab.host"] = host
+    library.settings["gitlab.host"] = host
     self:refresh()
 end
 
 function gitlab:get_host()
     if self._private.host == nil then
-        self._private.host = helpers.settings["gitlab.host"]
+        self._private.host = library.settings["gitlab.host"]
     end
 
     return self._private.host or ""

@@ -8,7 +8,7 @@ local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
 local cpu_daemon = require("daemons.hardware.cpu")
 local ui_daemon = require("daemons.system.ui")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 local math = math
 
@@ -18,7 +18,7 @@ local function separator()
     return wibox.widget {
         widget = widgets.background,
         forced_height = dpi(1),
-        shape = helpers.ui.rrect(),
+        shape = library.ui.rrect(),
         bg = beautiful.colors.surface
     }
 end
@@ -42,8 +42,8 @@ local function core_widget(core)
         widget = widgets.progressbar,
         forced_height = dpi(20),
         forced_width = dpi(370),
-        shape = helpers.ui.rrect(),
-        bar_shape = helpers.ui.rrect(),
+        shape = library.ui.rrect(),
+        bar_shape = library.ui.rrect(),
         margins = dpi(10),
         paddings = dpi(2),
         max_value = 100,
@@ -266,7 +266,7 @@ local function new()
     local widget = widgets.animated_popup {
         ontop = true,
         visible = false,
-        shape = helpers.ui.rrect(),
+        shape = library.ui.rrect(),
         maximum_width = dpi(600),
         minimum_height = dpi(800),
         maximum_height = dpi(800),

@@ -9,7 +9,7 @@ local wibox = require("wibox")
 local beautiful = require("beautiful")
 local widgets = require("ui.widgets")
 local theme_daemon = require("daemons.system.theme")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 local capi = {
     screen = screen,
@@ -24,7 +24,7 @@ local function save_tag_thumbnail(tag)
     if tag.selected == true then
         local screen = awful.screen.focused()
         local geo = screen.geometry
-        tag.thumbnail = helpers.ui.scale_image(screen.content, 300, 150, geo.width, geo.height)
+        tag.thumbnail = library.ui.scale_image(screen.content, 300, 150, geo.width, geo.height)
     end
 end
 
@@ -37,7 +37,7 @@ function tag_preview:show(t, args)
     args.offset = args.offset or {}
 
     if not args.coords and args.wibox and args.widget then
-        args.coords = helpers.ui.get_widget_geometry_in_device_space({wibox = args.wibox}, args.widget)
+        args.coords = library.ui.get_widget_geometry_in_device_space({wibox = args.wibox}, args.widget)
     end
 
     self.x = args.coords.x + (args.offset.x or 0)
@@ -65,7 +65,7 @@ function tag_preview:toggle(t, args)
 end
 
 local function new()
-    -- local default_thumbnail = helpers.ui.scale_image(theme_daemon:get_wallpaper_path(), 300, 150)
+    -- local default_thumbnail = library.ui.scale_image(theme_daemon:get_wallpaper_path(), 300, 150)
     -- local thumbnail = wibox.widget {
     --     widget = wibox.widget.imagebox,
     --     forced_width = dpi(300),
@@ -79,14 +79,14 @@ local function new()
     -- local widget = widgets.popup {
     --     visible = false,
     --     ontop = true,
-    --     shape = helpers.ui.rrect(),
+    --     shape = library.ui.rrect(),
     --     maximum_width = dpi(300),
     --     maximum_height = dpi(150),
     --     animate_method = "width",
     --     bg = beautiful.colors.background,
     --     widget = thumbnail
     -- }
-    -- widget.default_thumbnail = helpers.ui.scale_image(theme_daemon:get_wallpaper_path(), 300, 150)
+    -- widget.default_thumbnail = library.ui.scale_image(theme_daemon:get_wallpaper_path(), 300, 150)
 
     -- gtable.crush(widget, tag_preview, true)
 

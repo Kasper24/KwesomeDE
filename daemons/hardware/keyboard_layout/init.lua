@@ -5,7 +5,7 @@
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
-local helpers = require("helpers")
+local library = require("library")
 local string = string
 
 local keyboard_layout = {}
@@ -16,7 +16,7 @@ function keyboard_layout:cycle_layout()
 end
 
 function keyboard_layout:get_current_layout_as_text()
-    return helpers.string.trim(self._private.widget.widget.text:upper())
+    return library.string.trim(self._private.widget.widget.text:upper())
 end
 
 local function new()

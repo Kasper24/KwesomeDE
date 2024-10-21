@@ -1,5 +1,5 @@
 local Color = require("external.lua-color")
-local clip = require("helpers.math").clip
+local clip = require("library.math").clip
 local format = string.format
 local floor = math.floor
 local remove = table.remove

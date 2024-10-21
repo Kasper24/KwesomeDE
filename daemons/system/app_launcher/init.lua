@@ -9,7 +9,7 @@ local AppInfo = Gio.AppInfo
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local beautiful = require("beautiful")
-local helpers = require("helpers")
+local library = require("library")
 local table = table
 local ipairs = ipairs
 
@@ -85,7 +85,7 @@ function app_launcher:add_pinned_app(id)
         id = id
     }
     table.insert(self._private.pinned_apps, pinned_app)
-    helpers.settings["app_launcher.pinned_apps"] = self._private.pinned_apps
+    library.settings["app_launcher.pinned_apps"] = self._private.pinned_apps
     self:emit_signal("pinned_app::added", pinned_app)
 end
 
@@ -97,7 +97,7 @@ function app_launcher:remove_pinned_app(id)
             break
         end
     end
-    helpers.settings["app_launcher.pinned_apps"] = self._private.pinned_apps
+    library.settings["app_launcher.pinned_apps"] = self._private.pinned_apps
 end
 
 function app_launcher:get_pinned_apps()
@@ -110,7 +110,7 @@ local function new()
 
     ret._private = {}
     ret._private.clients = {}
-    ret._private.pinned_apps = helpers.settings["app_launcher.pinned_apps"]
+    ret._private.pinned_apps = library.settings["app_launcher.pinned_apps"]
 
     for _, pinned_app in ipairs(ret._private.pinned_apps) do
         ret:emit_signal("pinned_app::added", pinned_app)

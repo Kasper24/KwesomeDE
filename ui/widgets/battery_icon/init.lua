@@ -9,7 +9,7 @@ local pbwidget = require("ui.widgets.progressbar")
 local bwidget = require("ui.widgets.background")
 local beautiful = require("beautiful")
 local upower_daemon = require("daemons.hardware.upower")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 
@@ -31,7 +31,7 @@ local function new(device, args)
         end,
         max_value = 100,
         value = device.Percentage,
-        bar_shape = helpers.ui.rrect(),
+        bar_shape = library.ui.rrect(),
         background_color = beautiful.colors.transparent,
         color = args.color
     }

@@ -7,7 +7,7 @@ local gtable = require("gears.table")
 local wibox = require("wibox")
 local pwidget = require("ui.widgets.popup")
 local beautiful = require("beautiful")
-local helpers = require("helpers")
+local library = require("library")
 local ui_daemon = require("daemons.system.ui")
 local dpi = beautiful.xresources.apply_dpi
 local capi = {
@@ -39,7 +39,7 @@ end
 
 local function animate_in(self)
 	self.animation.pos = 1
-	self.animation.easing = helpers.animation.easing.outExpo
+	self.animation.easing = library.animation.easing.outExpo
 
 	if self.animate_method == "forced_height" then
 		if self.max_height then
@@ -63,7 +63,7 @@ local function animate_out(self)
 	if self.animate_fake_widget then
 		self.widget = fake_widget(self)
 	end
-	self.animation.easing = helpers.animation.easing.inExpo
+	self.animation.easing = library.animation.easing.inExpo
 	self.animation:set(1)
 end
 
@@ -148,9 +148,9 @@ local function new(args)
 		ret.minimum_width = 1
 	end
 
-	ret.animation = helpers.animation:new({
+	ret.animation = library.animation:new({
 		pos = 1,
-		easing = helpers.animation.easing.outExpo,
+		easing = library.animation.easing.outExpo,
 		duration = 0.8,
 		update = function(_, pos)
 			ret.widget[ret.animate_method] = dpi(pos)

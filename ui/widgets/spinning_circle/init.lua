@@ -6,7 +6,7 @@ local gtable = require("gears.table")
 local wibox = require("wibox")
 local acwidget = require("ui.widgets.arcchart")
 local beautiful = require("beautiful")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 
@@ -54,10 +54,10 @@ local function new(args)
 
     local spinning_circle = widget:get_children_by_id("spinning_circle")[1]
 
-    widget._private.anim = helpers.animation:new{
+    widget._private.anim = library.animation:new{
         target = 100,
         duration = 10,
-        easing = helpers.animation.easing.linear,
+        easing = library.animation.easing.linear,
         loop = true,
         override_instant = true,
         reset_on_stop = false,

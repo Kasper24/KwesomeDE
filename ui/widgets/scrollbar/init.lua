@@ -4,7 +4,7 @@
 -------------------------------------------
 local wibox = require("wibox")
 local beautiful = require("beautiful")
-local helpers = require("helpers")
+local library = require("library")
 local setmetatable = setmetatable
 local capi = {
     awesome = awesome
@@ -17,7 +17,7 @@ local scrollbar = {
 local function new()
     local widget = wibox.widget {
         widget = wibox.widget.separator,
-        shape = helpers.ui.rrect(),
+        shape = library.ui.rrect(),
         color = beautiful.colors.on_background
     }
 

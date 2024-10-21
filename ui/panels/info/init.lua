@@ -7,7 +7,7 @@ local wibox = require("wibox")
 local beautiful = require("beautiful")
 local widgets = require("ui.widgets")
 local ui_daemon = require("daemons.system.ui")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 
 local instance = nil
@@ -21,7 +21,7 @@ local function horizontal_separator()
 	return wibox.widget({
 		widget = widgets.background,
 		forced_width = dpi(1),
-		shape = helpers.ui.rrect(),
+		shape = library.ui.rrect(),
 		bg = beautiful.colors.surface,
 	})
 end
@@ -30,7 +30,7 @@ local function vertical_separator()
 	return wibox.widget({
 		widget = widgets.background,
 		forced_height = dpi(1),
-		shape = helpers.ui.rrect(),
+		shape = library.ui.rrect(),
 		bg = beautiful.colors.surface,
 	})
 end
@@ -114,7 +114,7 @@ local function new()
 		animate_method = animate_method,
 		hide_on_clicked_outside = true,
 		placement = placement,
-		shape = helpers.ui.rrect(),
+		shape = library.ui.rrect(),
 		bg = beautiful.colors.background,
 		widget = widget,
 	})

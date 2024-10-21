@@ -8,7 +8,7 @@ local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local bluetooth_daemon = require("daemons.hardware.bluetooth")
 local network_daemon = require("daemons.hardware.network")
-local helpers = require("helpers")
+local library = require("library")
 
 local radio = {}
 local instance = nil
@@ -25,7 +25,7 @@ function radio:turn_on()
     awful.spawn("rfkill block all", false)
 
     self._private.enabled = true
-    helpers.settings["airplane.enabled"] =  true
+    library.settings["airplane.enabled"] =  true
     self:emit_signal("state", true)
 end
 
@@ -33,7 +33,7 @@ function radio:turn_off()
     awful.spawn("rfkill unblock all", false)
 
     self._private.enabled = false
-    helpers.settings["airplane.enabled"] =  false
+    library.settings["airplane.enabled"] =  false
     self:emit_signal("state", false)
 end
 
@@ -44,7 +44,7 @@ local function new()
     ret._private = {}
 
     gtimer.delayed_call(function()
-        local enabled = helpers.settings["airplane.enabled"]
+        local enabled = library.settings["airplane.enabled"]
         if enabled == true then
             ret:turn_on()
         elseif enabled == false then

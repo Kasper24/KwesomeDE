@@ -6,7 +6,7 @@ local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local bling = require("external.bling")
-local helpers = require("helpers")
+local library = require("library")
 local math = math
 local keys = {
     mod = "Mod4",
@@ -59,7 +59,7 @@ end
 
 function app:toggle()
     if self.run_or_raise == true then
-        helpers.client.run_or_raise({class = self.class}, false, self.command, { switchtotag = true })
+        library.client.run_or_raise({class = self.class}, false, self.command, { switchtotag = true })
     else
         awful.spawn(self.command)
     end
@@ -110,13 +110,13 @@ function apps:new(id, key, command, class, args)
         reapply = true,
         dont_focus_before_close = true,
         -- rubato = {
-        --     x = helpers.animation:new{
-        --         easing = helpers.animation.easing.inBounce,
+        --     x = library.animation:new{
+        --         easing = library.animation.easing.inBounce,
         --         pos = ret.x,
         --         duration = 1.5
         --     },
-        --     y = helpers.animation:new{
-        --         easing = helpers.animation.easing.inBounce,
+        --     y = library.animation:new{
+        --         easing = library.animation.easing.inBounce,
         --         pos = ret.y,
         --         duration = 1.5
         --     }
@@ -124,13 +124,13 @@ function apps:new(id, key, command, class, args)
     }
 
     -- ret.scratchpad:connect_signal("turn_on", function()
-    --     ret.scratchpad.rubato.x.easing = helpers.animation.easing.inBounce
-    --     ret.scratchpad.rubato.y.easing = helpers.animation.easing.inBounce
+    --     ret.scratchpad.rubato.x.easing = library.animation.easing.inBounce
+    --     ret.scratchpad.rubato.y.easing = library.animation.easing.inBounce
     -- end)
 
     -- ret.scratchpad:connect_signal("turn_off", function()
-    --     ret.scratchpad.rubato.x.easing = helpers.animation.easing.outBounce
-    --     ret.scratchpad.rubato.y.easing = helpers.animation.easing.outBounce
+    --     ret.scratchpad.rubato.x.easing = library.animation.easing.outBounce
+    --     ret.scratchpad.rubato.y.easing = library.animation.easing.outBounce
     -- end)
 
     awful.keyboard.append_global_keybindings({awful.key {

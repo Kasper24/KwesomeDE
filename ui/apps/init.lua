@@ -10,7 +10,7 @@ local ruled = require("ruled")
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 local capi = {
     awesome = awesome,
@@ -118,7 +118,7 @@ local function titlebar(self)
 end
 
 function app:show()
-    helpers.client.run_or_raise({
+    library.client.run_or_raise({
         class = self._private.class
     }, true, self._private.command, {shell = true})
 end

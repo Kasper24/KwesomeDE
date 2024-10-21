@@ -19,7 +19,7 @@ local screenshot_daemon = require("daemons.system.screenshot")
 local record_daemon = require("daemons.system.record")
 local keyboard_layout_daemon = require("daemons.hardware.keyboard_layout")
 
-local helpers = require("helpers")
+local library = require("library")
 local bling = require("external.bling")
 local machi = require("external.layout-machi")
 local treetile = require("external.awesome-treetile")
@@ -280,7 +280,7 @@ capi.client.connect_signal("request::default_keybindings", function()
 			group = "client",
 			description = "move and resize to center",
 			on_press = function(c)
-				helpers.client.float_and_resize(
+				library.client.float_and_resize(
 					c,
 					awful.screen.focused().geometry.width * 0.9,
 					awful.screen.focused().geometry.height * 0.9
@@ -294,7 +294,7 @@ capi.client.connect_signal("request::default_keybindings", function()
 			group = "client",
 			description = "move up",
 			on_press = function(c)
-				helpers.client.move(c, "up")
+				library.client.move(c, "up")
 			end,
 		}),
 		-- Move down
@@ -304,7 +304,7 @@ capi.client.connect_signal("request::default_keybindings", function()
 			group = "client",
 			description = "move down",
 			on_press = function(c)
-				helpers.client.move(c, "down")
+				library.client.move(c, "down")
 			end,
 		}),
 		-- Move left
@@ -314,7 +314,7 @@ capi.client.connect_signal("request::default_keybindings", function()
 			group = "client",
 			description = "move left",
 			on_press = function(c)
-				helpers.client.move(c, "left")
+				library.client.move(c, "left")
 			end,
 		}),
 		-- Move right
@@ -324,7 +324,7 @@ capi.client.connect_signal("request::default_keybindings", function()
 			group = "client",
 			description = "move right",
 			on_press = function(c)
-				helpers.client.move(c, "right")
+				library.client.move(c, "right")
 			end,
 		}),
 		-- Resize up
@@ -336,7 +336,7 @@ capi.client.connect_signal("request::default_keybindings", function()
 			on_press = function(c)
 				if c.can_resize ~= false then
 					if awful.layout.get(c.screen).name ~= "treetile" then
-						helpers.client.resize(c, "up")
+						library.client.resize(c, "up")
 					else
 						treetile.resize_client(-0.1)
 					end
@@ -352,7 +352,7 @@ capi.client.connect_signal("request::default_keybindings", function()
 			on_press = function(c)
 				if c.can_resize ~= false then
 					if awful.layout.get(c.screen).name ~= "treetile" then
-						helpers.client.resize(c, "down")
+						library.client.resize(c, "down")
 					else
 						treetile.resize_client(0.1)
 					end
@@ -368,7 +368,7 @@ capi.client.connect_signal("request::default_keybindings", function()
 			on_press = function(c)
 				if c.can_resize ~= false then
 					if awful.layout.get(c.screen).name ~= "treetile" then
-						helpers.client.resize(c, "left")
+						library.client.resize(c, "left")
 					else
 						treetile.resize_client(-0.1)
 					end
@@ -384,7 +384,7 @@ capi.client.connect_signal("request::default_keybindings", function()
 			on_press = function(c)
 				if c.can_resize ~= false then
 					if awful.layout.get(c.screen).name ~= "treetile" then
-						helpers.client.resize(c, "right")
+						library.client.resize(c, "right")
 					else
 						treetile.resize_client(0.1)
 					end
@@ -693,7 +693,7 @@ awful.keyboard.append_global_keybindings({
 			if index == 0 then
 				index = 10
 			end
-			helpers.misc.tag_back_and_forth(index)
+			library.misc.tag_back_and_forth(index)
 		end,
 	}),
 	-- Toggle tag

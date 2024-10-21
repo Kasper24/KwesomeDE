@@ -9,7 +9,7 @@ local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local gstring = require("gears.string")
-local helpers = require("helpers")
+local library = require("library")
 local filesystem = require("external.filesystem")
 local xml = require("external.xml2lua.xml2lua")
 local handler = require("external.xml2lua.xmlhandler.tree")
@@ -26,13 +26,13 @@ local UPDATE_INTERVAL = 60 * 30 -- 30 mins
 
 function email:set_feed_address(feed_address)
     self._private.feed_address = feed_address
-    helpers.settings["email.feed_address"] = feed_address
+    library.settings["email.feed_address"] = feed_address
     self:refresh()
 end
 
 function email:get_feed_address()
     if self._private.feed_address == nil then
-        self._private.feed_address = helpers.settings["email.feed_address"]
+        self._private.feed_address = library.settings["email.feed_address"]
     end
 
     return self._private.feed_address or ""

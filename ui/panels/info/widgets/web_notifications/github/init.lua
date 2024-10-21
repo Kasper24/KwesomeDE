@@ -8,7 +8,7 @@ local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
 local github_daemon = require("daemons.web.github")
-local helpers = require("helpers")
+local library = require("library")
 local filesystem = require("external.filesystem")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
@@ -68,7 +68,7 @@ local function event_widget(event)
         widget = wibox.widget.imagebox,
         forced_width = dpi(40),
         forced_height = dpi(40),
-        clip_shape = helpers.ui.rrect(),
+        clip_shape = library.ui.rrect(),
         image = beautiful.default_github_profile
     }
 
@@ -121,7 +121,7 @@ local function event_widget(event)
     local time = wibox.widget {
         widget = widgets.text,
         size = 12,
-        text = helpers.string.to_time_ago(event.created_at)
+        text = library.string.to_time_ago(event.created_at)
     }
 
     local info = wibox.widget {
@@ -201,7 +201,7 @@ local function pr_widget(pr)
         widget = wibox.widget.imagebox,
         forced_width = dpi(40),
         forced_height = dpi(40),
-        clip_shape = helpers.ui.rrect(),
+        clip_shape = library.ui.rrect(),
         image = beautiful.default_github_profile
     }
 
@@ -236,7 +236,7 @@ local function pr_widget(pr)
     local time = wibox.widget {
         widget = widgets.text,
         size = 12,
-        text = helpers.string .to_time_ago(pr.created_at)
+        text = library.string .to_time_ago(pr.created_at)
     }
 
     local comments = wibox.widget {

@@ -6,7 +6,7 @@ local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
-local helpers = require("helpers")
+local library = require("library")
 local filesystem = require("external.filesystem")
 local ipairs = ipairs
 local string = string
@@ -52,7 +52,7 @@ function picom:turn_on(save)
     end)
 
     if save == true then
-        helpers.settings["picom.enabled"] = true
+        library.settings["picom.enabled"] = true
     end
 end
 
@@ -63,7 +63,7 @@ function picom:turn_off(save)
 
     awful.spawn("pkill -f picom", false)
     if save == true then
-        helpers.settings["picom.enabled"] = false
+        library.settings["picom.enabled"] = false
     end
 end
 
@@ -90,7 +90,7 @@ local function build_properties(prototype, properties)
 
                     self._private[prop] = value
                     local setting_prop = prop:gsub("-", "_")
-                    helpers.settings["picom." .. setting_prop] = value
+                    library.settings["picom." .. setting_prop] = value
                     self._private.refreshing = true
                     self._private.refresh_timer:again()
                 end
@@ -114,11 +114,11 @@ local function new()
 
     for _, prop in ipairs(properties) do
         local setting_prop = prop:gsub("-", "_")
-        ret._private[prop] = helpers.settings["picom." .. setting_prop]
+        ret._private[prop] = library.settings["picom." .. setting_prop]
     end
     for _, prop in ipairs(bool_properties) do
         local setting_prop = prop:gsub("-", "_")
-        ret._private[prop] = helpers.settings["picom." .. setting_prop]
+        ret._private[prop] = library.settings["picom." .. setting_prop]
     end
 
     ret._private.refresh_timer = gtimer {
@@ -131,9 +131,9 @@ local function new()
         end
     }
 
-    if helpers.settings["picom.enabled"] == true and capi.awesome.composite_manager_running == false then
+    if library.settings["picom.enabled"] == true and capi.awesome.composite_manager_running == false then
         ret:turn_on()
-    elseif helpers.settings["picom.enabled"] == false then
+    elseif library.settings["picom.enabled"] == false then
         ret:turn_off()
     end
 

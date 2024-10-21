@@ -12,8 +12,8 @@ local gtimer = require("gears.timer")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
 local Color = require("external.lua-color")
-local helpers = require("helpers")
-local sanitize_filename = helpers.string.sanitize_filename
+local library = require("library")
+local sanitize_filename = library.string.sanitize_filename
 local filesystem = require("external.filesystem")
 local json = require("external.json")
 local string = string
@@ -132,41 +132,41 @@ local function generate_colorscheme(self, wallpaper, reset, light)
 				local color1 = colors[1]
 
 				for _, color in ipairs(colors) do
-					color = helpers.color.change_saturation(color, 0.5)
+					color = library.color.change_saturation(color, 0.5)
 				end
 
-				colors[1] = helpers.color.lighten(raw_colors[#raw_colors], 0.85)
+				colors[1] = library.color.lighten(raw_colors[#raw_colors], 0.85)
 				colors[8] = color1
-				colors[9] = helpers.color.darken(raw_colors[#raw_colors], 0.4)
+				colors[9] = library.color.darken(raw_colors[#raw_colors], 0.4)
 				colors[16] = raw_colors[1]
 			else
 				if string.sub(colors[1], 2, 2) ~= "0" then
-					colors[1] = helpers.color.darken(colors[1], 0.4)
+					colors[1] = library.color.darken(colors[1], 0.4)
 				end
-				colors[8] = helpers.color.blend(colors[8], "#EEEEEE")
-				colors[9] = helpers.color.darken(colors[8], 0.3)
-				colors[16] = helpers.color.blend(colors[16], "#EEEEEE")
+				colors[8] = library.color.blend(colors[8], "#EEEEEE")
+				colors[9] = library.color.darken(colors[8], 0.3)
+				colors[16] = library.color.blend(colors[16], "#EEEEEE")
 			end
 
 			local sorted_colors = gtable.clone({ unpack(colors, 2, 7) })
-			colors[2] = helpers.color.closet_color(sorted_colors, "#FF0000")
-			colors[3] = helpers.color.closet_color(sorted_colors, "#00FF00")
-			colors[4] = helpers.color.closet_color(sorted_colors, "#FFFF00")
-			colors[5] = helpers.color.closet_color(sorted_colors, "#800080")
-			colors[6] = helpers.color.closet_color(sorted_colors, "#FF00FF")
-			colors[7] = helpers.color.closet_color(sorted_colors, "#0000FF")
+			colors[2] = library.color.closet_color(sorted_colors, "#FF0000")
+			colors[3] = library.color.closet_color(sorted_colors, "#00FF00")
+			colors[4] = library.color.closet_color(sorted_colors, "#FFFF00")
+			colors[5] = library.color.closet_color(sorted_colors, "#800080")
+			colors[6] = library.color.closet_color(sorted_colors, "#FF00FF")
+			colors[7] = library.color.closet_color(sorted_colors, "#0000FF")
 
 			local added_sat = light and 0.5 or 0.3
 			local sign = light and -1 or 1
 
 			for index = 10, 15 do
 				local _, __, l = Color(colors[index - 8]):hsl()
-				colors[index] = helpers.color.lighten(colors[index - 8], sign * l * 0.3)
-				colors[index] = helpers.color.saturate(colors[index - 8], added_sat)
+				colors[index] = library.color.lighten(colors[index - 8], sign * l * 0.3)
+				colors[index] = library.color.saturate(colors[index - 8], added_sat)
 			end
 
-			colors[9] = helpers.color.lighten(colors[1], sign * 0.098039216)
-			colors[16] = helpers.color.lighten(colors[8], sign * 0.235294118)
+			colors[9] = library.color.lighten(colors[1], sign * 0.098039216)
+			colors[16] = library.color.lighten(colors[8], sign * 0.235294118)
 
 			self:get_colorschemes()[wallpaper] = colors
 			self:save_colorscheme()
@@ -203,19 +203,19 @@ org.gnome.desktop.interface gtk-theme '%s'
 		if error == nil then
 			local gtk_theme = content:match("gtk%-theme%-name=([^\n]+)")
 
-			helpers.run.is_installed("gsettings", function(is_installed)
+			library.run.is_installed("gsettings", function(is_installed)
 				if is_installed == true then
 					awful.spawn.with_shell(string.format(refresh_gsettings, gtk_theme, gtk_theme))
 				end
 			end)
 
-			helpers.run.is_installed("xfconf-query", function(is_installed)
+			library.run.is_installed("xfconf-query", function(is_installed)
 				if is_installed == true then
 					awful.spawn.with_shell(string.format(refresh_xfsettings, gtk_theme, gtk_theme))
 				end
 			end)
 
-			helpers.run.is_installed("xsettingsd", function(is_installed)
+			library.run.is_installed("xsettingsd", function(is_installed)
 				if is_installed == true then
 					local path = os.tmpname()
 					local file = filesystem.file.new_for_path(path)
@@ -644,7 +644,7 @@ local function we_wallpaper(self, screen)
 end
 
 local function kill_old_we_instances(screen)
-	local wallpaper_engine_instances = helpers.client.find({
+	local wallpaper_engine_instances = library.client.find({
 		class = "linux-wallpaperengine",
 		screen = screen,
 	})
@@ -728,7 +728,7 @@ local function scan_wallpapers(self)
 				for _, file in ipairs(files) do
 					local mimetype = Gio.content_type_guess(file.full_path)
 					if PICTURES_MIMETYPES[mimetype] then
-						helpers.ui.scale_image_save(
+						library.ui.scale_image_save(
 							file.full_path,
 							THUMBNAIL_PATH .. file.name,
 							100,
@@ -755,7 +755,7 @@ local function scan_wallpapers(self)
 							json_file:read(function(error, content)
 								if error == nil then
 									local name = json.decode(content).title
-									helpers.ui.scale_image_save(
+									library.ui.scale_image_save(
 										file.full_path,
 										THUMBNAIL_PATH .. sanitize_filename(name),
 										100,
@@ -802,21 +802,21 @@ local function watch_wallpapers_changes(self)
 		})
 	end
 
-	local wallpapers_watcher = helpers.inotify:watch(WALLPAPERS_PATH, {
-		helpers.inotify.Events.create,
-		helpers.inotify.Events.delete,
-		helpers.inotify.Events.moved_from,
-		helpers.inotify.Events.moved_to,
+	local wallpapers_watcher = library.inotify:watch(WALLPAPERS_PATH, {
+		library.inotify.Events.create,
+		library.inotify.Events.delete,
+		library.inotify.Events.moved_from,
+		library.inotify.Events.moved_to,
 	})
 	wallpapers_watcher:connect_signal("event", function()
 		self._private.watch_wallpapers_changes_debouncer:again()
 	end)
 
-	self._private.we_wallpapers_watcher = helpers.inotify:watch(self:get_wallpaper_engine_workshop_folder(), {
-		helpers.inotify.Events.create,
-		helpers.inotify.Events.delete,
-		helpers.inotify.Events.moved_from,
-		helpers.inotify.Events.moved_to,
+	self._private.we_wallpapers_watcher = library.inotify:watch(self:get_wallpaper_engine_workshop_folder(), {
+		library.inotify.Events.create,
+		library.inotify.Events.delete,
+		library.inotify.Events.moved_from,
+		library.inotify.Events.moved_to,
 	})
 	self._private.we_wallpapers_watcher:connect_signal("event", function()
 		self._private.watch_wallpapers_changes_debouncer:again()
@@ -836,7 +836,7 @@ end
 local function set_wallpaper_on_startup(self)
 	gtimer.delayed_call(function()
 		if
-			#helpers.client.find({
+			#library.client.find({
 				class = "linux-wallpaperengine",
 			}) > 0 and self:get_wallpaper_type() == "wallpaper_engine"
 		then
@@ -848,13 +848,13 @@ end
 
 -- Colorschemes
 function theme:save_colorscheme()
-	helpers.settings["theme.colorschemes"] = self._private.colorschemes
+	library.settings["theme.colorschemes"] = self._private.colorschemes
 end
 
 function theme:get_colorschemes()
 	if self._private.colorschemes == nil then
 		self._private.colorschemes = {}
-		local colorschemes = helpers.settings["theme.colorschemes"]
+		local colorschemes = library.settings["theme.colorschemes"]
 		for path, colorscheme in pairs(colorschemes) do
 			path = path:gsub("~", os.getenv("HOME"))
 			self._private.colorschemes[path] = colorscheme
@@ -866,13 +866,13 @@ end
 
 function theme:reset_colorscheme()
 	local bg = self:get_selected_colorscheme_colors()[1]
-	local light = not helpers.color.is_dark(bg)
+	local light = not library.color.is_dark(bg)
 	generate_colorscheme(self, self:get_selected_colorscheme(), true, light)
 end
 
 function theme:toggle_dark_light()
 	local bg = self:get_selected_colorscheme_colors()[1]
-	local light = helpers.color.is_dark(bg)
+	local light = library.color.is_dark(bg)
 	generate_colorscheme(self, self:get_selected_colorscheme(), true, light)
 end
 
@@ -881,7 +881,7 @@ function theme:set_color(index, color)
 		awful.spawn.easy_async(
 			COLOR_PICKER_SCRIPT_PATH .. " '" .. self:get_selected_colorscheme_colors()[index] .. "'",
 			function(stdout)
-				stdout = helpers.string.trim(stdout)
+				stdout = library.string.trim(stdout)
 				if stdout ~= "" and stdout ~= nil then
 					self:get_selected_colorscheme_colors()[index] = stdout
 					self:emit_signal(
@@ -907,11 +907,11 @@ end
 -- Wallpaper
 function theme:set_wallpaper(wallpaper, type, is_startup)
 	self._private.active_wallpaper = wallpaper
-	helpers.settings["theme.active_wallpaper"] = wallpaper
+	library.settings["theme.active_wallpaper"] = wallpaper
 
 	type = type or self:get_selected_tab()
 	self._private.wallpaper_type = type
-	helpers.settings["theme.wallpaper_type"] = type
+	library.settings["theme.wallpaper_type"] = type
 
 	for s in capi.screen do
 		kill_old_we_instances(s)
@@ -946,7 +946,7 @@ end
 
 function theme:get_wallpaper_type()
 	if self._private.wallpaper_type == nil then
-		self._private.wallpaper_type = helpers.settings["theme.wallpaper_type"]
+		self._private.wallpaper_type = library.settings["theme.wallpaper_type"]
 	end
 
 	return self._private.wallpaper_type
@@ -954,7 +954,7 @@ end
 
 function theme:get_active_wallpaper()
 	if self._private.active_wallpaper == nil then
-		self._private.active_wallpaper = helpers.settings["theme.active_wallpaper"]:gsub("~", os.getenv("HOME"))
+		self._private.active_wallpaper = library.settings["theme.active_wallpaper"]:gsub("~", os.getenv("HOME"))
 	end
 
 	return self._private.active_wallpaper
@@ -993,7 +993,7 @@ end
 -- Active colorscheme
 function theme:set_colorscheme(colorscheme)
 	self._private.active_colorscheme = colorscheme
-	helpers.settings["theme.active_colorscheme"] = colorscheme
+	library.settings["theme.active_colorscheme"] = colorscheme
 
 	self:save_colorscheme()
 
@@ -1005,7 +1005,7 @@ end
 
 function theme:get_active_colorscheme()
 	if self._private.active_colorscheme == nil then
-		self._private.active_colorscheme = helpers.settings["theme.active_colorscheme"]:gsub("~", os.getenv("HOME"))
+		self._private.active_colorscheme = library.settings["theme.active_colorscheme"]:gsub("~", os.getenv("HOME"))
 	end
 
 	return self._private.active_colorscheme
@@ -1047,12 +1047,12 @@ end
 -- Command after generation
 function theme:set_run_on_set(run_on_set)
 	self._private.run_on_set = run_on_set
-	helpers.settings["theme.run_on_set"] = run_on_set
+	library.settings["theme.run_on_set"] = run_on_set
 end
 
 function theme:get_run_on_set()
 	if self._private.run_on_set == nil then
-		self._private.run_on_set = helpers.settings["theme.run_on_set"]
+		self._private.run_on_set = library.settings["theme.run_on_set"]
 	end
 
 	return self._private.run_on_set
@@ -1061,13 +1061,13 @@ end
 -- Wallpaper engine command
 function theme:set_wallpaper_engine_command(wallpaper_engine_command)
 	self._private.wallpaper_engine_command = wallpaper_engine_command
-	helpers.settings["wallpaper_engine.command"] = wallpaper_engine_command
+	library.settings["wallpaper_engine.command"] = wallpaper_engine_command
 end
 
 function theme:get_wallpaper_engine_command()
 	if self._private.wallpaper_engine_command == nil then
 		self._private.wallpaper_engine_command =
-			helpers.settings["wallpaper_engine.command"]:gsub("~", os.getenv("HOME"))
+			library.settings["wallpaper_engine.command"]:gsub("~", os.getenv("HOME"))
 	end
 
 	return self._private.wallpaper_engine_command
@@ -1076,13 +1076,13 @@ end
 -- Wallpaper engine assets folder
 function theme:set_wallpaper_engine_assets_folder(wallpaper_engine_assets_folder)
 	self._private.wallpaper_engine_assets_folder = wallpaper_engine_assets_folder
-	helpers.settings["wallpaper_engine.assets_folder"] = wallpaper_engine_assets_folder
+	library.settings["wallpaper_engine.assets_folder"] = wallpaper_engine_assets_folder
 end
 
 function theme:get_wallpaper_engine_assets_folder()
 	if self._private.wallpaper_engine_assets_folder == nil then
 		self._private.wallpaper_engine_assets_folder =
-			helpers.settings["wallpaper_engine.assets_folder"]:gsub("~", os.getenv("HOME"))
+			library.settings["wallpaper_engine.assets_folder"]:gsub("~", os.getenv("HOME"))
 	end
 
 	return self._private.wallpaper_engine_assets_folder
@@ -1091,14 +1091,14 @@ end
 -- Wallpaper engine assets folder
 function theme:set_wallpaper_engine_workshop_folder(wallpaper_engine_workshop_folder)
 	self._private.wallpaper_engine_workshop_folder = wallpaper_engine_workshop_folder
-	helpers.settings["wallpaper_engine.workshop_folder"] = wallpaper_engine_workshop_folder
+	library.settings["wallpaper_engine.workshop_folder"] = wallpaper_engine_workshop_folder
 	scan_wallpapers(self)
 
-	self._private.we_wallpapers_watcher = helpers.inotify:watch(wallpaper_engine_workshop_folder, {
-		helpers.inotify.Events.create,
-		helpers.inotify.Events.delete,
-		helpers.inotify.Events.moved_from,
-		helpers.inotify.Events.moved_to,
+	self._private.we_wallpapers_watcher = library.inotify:watch(wallpaper_engine_workshop_folder, {
+		library.inotify.Events.create,
+		library.inotify.Events.delete,
+		library.inotify.Events.moved_from,
+		library.inotify.Events.moved_to,
 	})
 	self._private.we_wallpapers_watcher:connect_signal("event", function()
 		self._private.watch_wallpapers_changes_debouncer:again()
@@ -1108,7 +1108,7 @@ end
 function theme:get_wallpaper_engine_workshop_folder()
 	if self._private.wallpaper_engine_workshop_folder == nil then
 		self._private.wallpaper_engine_workshop_folder =
-			helpers.settings["wallpaper_engine.workshop_folder"]:gsub("~", os.getenv("HOME"))
+			library.settings["wallpaper_engine.workshop_folder"]:gsub("~", os.getenv("HOME"))
 	end
 
 	return self._private.wallpaper_engine_workshop_folder
@@ -1117,10 +1117,10 @@ end
 -- Wallpaper engine fps
 function theme:set_wallpaper_engine_fps(wallpaper_engine_fps)
 	self._private.wallpaper_engine_fps = wallpaper_engine_fps
-	helpers.settings["wallpaper_engine.fps"] = wallpaper_engine_fps
+	library.settings["wallpaper_engine.fps"] = wallpaper_engine_fps
 
 	if
-		#helpers.client.find({
+		#library.client.find({
 			class = "linux-wallpaperengine",
 		}) > 0 and self:get_wallpaper_type() == "wallpaper_engine"
 	then
@@ -1130,7 +1130,7 @@ end
 
 function theme:get_wallpaper_engine_fps()
 	if self._private.wallpaper_engine_fps == nil then
-		self._private.wallpaper_engine_fps = helpers.settings["wallpaper_engine.fps"]
+		self._private.wallpaper_engine_fps = library.settings["wallpaper_engine.fps"]
 	end
 
 	return self._private.wallpaper_engine_fps

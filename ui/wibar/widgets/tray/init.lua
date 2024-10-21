@@ -14,7 +14,7 @@ local audio_daemon = require("daemons.hardware.audio")
 local upower_daemon = require("daemons.hardware.upower")
 local keyboard_layout_daemon = require("daemons.hardware.keyboard_layout")
 local ui_daemon = require("daemons.system.ui")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 
 local tray = {
@@ -49,7 +49,7 @@ local function system_tray()
 		animate_method = "height",
 		hide_on_clicked_outside = true,
 		placement = placement,
-		shape = helpers.ui.rrect(),
+		shape = library.ui.rrect(),
 		bg = beautiful.colors.background,
 		widget = wibox.widget({
 			widget = wibox.container.margin,
@@ -193,7 +193,7 @@ local function keyboard_layout()
 		forced_height = dpi(40),
 		color = beautiful.icons.envelope.color,
 		on_color = beautiful.colors.background_no_opacity,
-		shape = helpers.ui.rrect(),
+		shape = library.ui.rrect(),
 		text,
 	})
 

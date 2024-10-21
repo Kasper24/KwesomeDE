@@ -6,7 +6,7 @@ local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
-local helpers = require("helpers")
+local library = require("library")
 
 local redshift = {}
 local instance = nil
@@ -15,14 +15,14 @@ function redshift:turn_on()
     awful.spawn("redshift -x", false)
     awful.spawn("redshift -O 4500", false)
     self._private.state = true
-    helpers.settings["redshift.enabled"] = true
+    library.settings["redshift.enabled"] = true
     self:emit_signal("state", true)
 end
 
 function redshift:turn_off()
     awful.spawn("redshift -x", false)
     self._private.state = false
-    helpers.settings["redshift.enabled"]= false
+    library.settings["redshift.enabled"]= false
     self:emit_signal("state", false)
 end
 
@@ -42,9 +42,9 @@ local function new()
     ret._private.state = nil
 
     gtimer.delayed_call(function()
-        if helpers.settings["redshift.enabled"] == true then
+        if library.settings["redshift.enabled"] == true then
             ret:turn_on()
-        elseif helpers.settings["redshift.enabled"] == false then
+        elseif library.settings["redshift.enabled"] == false then
             ret:turn_off()
         end
     end)

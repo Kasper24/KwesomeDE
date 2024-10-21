@@ -10,7 +10,7 @@ local gdebug = require("gears.debug")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
 local naughty = require("naughty")
-local helpers = require("helpers")
+local library = require("library")
 local filesystem = require("external.filesystem")
 local json = require("external.json")
 local ipairs = ipairs
@@ -54,8 +54,8 @@ local function save_notification(self, notification)
 end
 
 local function sort_notifications(a, b)
-	local dateA = helpers.string.parse_date(a.time)
-	local dateB = helpers.string.parse_date(b.time)
+	local dateA = library.string.parse_date(a.time)
+	local dateB = library.string.parse_date(b.time)
 
 	return dateA < dateB
 end
@@ -110,7 +110,7 @@ local function create_notification(notification, self)
 	end
 
 	notification.time = os.date("%Y-%m-%dT%H:%M:%S")
-	notification.uuid = helpers.string.random_uuid()
+	notification.uuid = library.string.random_uuid()
 	save_notification(self, notification)
 	self:emit_signal("display::panel", notification)
 
@@ -161,7 +161,7 @@ end
 function notifications:set_dont_disturb(value)
 	if self.suspended ~= value then
 		self.suspended = value
-		helpers.settings["notifications.dont_disturb"] = value
+		library.settings["notifications.dont_disturb"] = value
 		self:emit_signal("state", value)
 	end
 end
@@ -199,7 +199,7 @@ local function new()
 	})
 
 	gtimer.delayed_call(function()
-		ret:set_dont_disturb(helpers.settings["notifications.dont_disturb"])
+		ret:set_dont_disturb(library.settings["notifications.dont_disturb"])
 		read_notifications(ret)
 	end)
 

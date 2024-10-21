@@ -7,7 +7,7 @@ local gshape = require("gears.shape")
 local wibox = require("wibox")
 local bwidget = require("ui.widgets.background")
 local beautiful = require("beautiful")
-local helpers = require("helpers")
+local library = require("library")
 local setmetatable = setmetatable
 local dpi = beautiful.xresources.apply_dpi
 local capi = {
@@ -174,9 +174,9 @@ local function new()
     wp.handle_active_color = accent_color
     wp.handle_offset = 2
 
-    wp.animation = helpers.animation:new{
+    wp.animation = library.animation:new{
         duration = 0.2,
-        easing = helpers.animation.easing.inOutQuad,
+        easing = library.animation.easing.inOutQuad,
         pos = {
             handle_offset = -wp.handle_offset,
             handle_color = beautiful.colors.on_background

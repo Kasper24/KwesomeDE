@@ -8,7 +8,7 @@ local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
 local keyboard_layout_daemon = require("daemons.hardware.keyboard_layout")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 
 local instance = nil
@@ -44,7 +44,7 @@ local function new()
 		maximum_width = dpi(100),
 		maximum_height = dpi(50),
 		animate_fake_widget = false,
-		shape = helpers.ui.rrect(),
+		shape = library.ui.rrect(),
 		bg = beautiful.colors.background,
 		widget = wibox.widget({
 			widget = wibox.container.margin,

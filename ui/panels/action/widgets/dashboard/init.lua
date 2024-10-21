@@ -17,7 +17,7 @@ local picom_daemon = require("daemons.system.picom")
 local redshift_daemon = require("daemons.system.redshift")
 local record_daemon = require("daemons.system.record")
 local notifications_daemon = require("daemons.system.notifications")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 
@@ -29,7 +29,7 @@ local function arrow_button(icon, text, on_icon_release, on_arrow_release)
     local icon_widget = wibox.widget {
         widget = widgets.button.state,
         forced_height = dpi(90),
-        normal_shape = helpers.ui.prrect(true, false, false, true),
+        normal_shape = library.ui.prrect(true, false, false, true),
         color = beautiful.colors.surface,
         on_color = icon.color,
         on_release = on_icon_release,
@@ -44,7 +44,7 @@ local function arrow_button(icon, text, on_icon_release, on_arrow_release)
     local arrow_widget = wibox.widget {
         widget = widgets.button.state,
         forced_height = dpi(90),
-        normal_shape = helpers.ui.prrect(false, true, true, false),
+        normal_shape = library.ui.prrect(false, true, true, false),
         color = beautiful.colors.surface,
         on_color = icon.color,
         on_release = on_arrow_release,

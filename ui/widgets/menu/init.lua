@@ -13,7 +13,7 @@ local cbwidget = require("ui.widgets.checkbox")
 local pwidget = require("ui.widgets.popup")
 local bwidget = require("ui.widgets.background")
 local beautiful = require("beautiful")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 local ipairs = ipairs
@@ -51,7 +51,7 @@ function menu:set_pos(args)
     local screen_h = screen_workarea.y + screen_workarea.height
 
     if not coords and wibox and widget then
-        coords = helpers.ui.get_widget_geometry_in_device_space({wibox = wibox}, widget)
+        coords = library.ui.get_widget_geometry_in_device_space({wibox = wibox}, widget)
     else
         coords = args.coords or capi.mouse.coords()
     end
@@ -191,16 +191,16 @@ function menu.menu(widgets, width, hide_on_clicked_outside)
         ontop = true,
         minimum_width = width or dpi(300),
         maximum_width = width or dpi(300),
-        shape = helpers.ui.rrect(),
+        shape = library.ui.rrect(),
         bg = beautiful.colors.background,
         widget = menu_container
     }
     gtable.crush(widget, menu, true)
 
     -- -- Setup animations
-    widget.animation = helpers.animation:new{
+    widget.animation = library.animation:new{
         pos = 1,
-        easing = helpers.animation.easing.outInCirc,
+        easing = library.animation.easing.outInCirc,
         duration = 0.4,
         update = function(self, pos)
             menu_container.forced_height = dpi(pos)
@@ -289,7 +289,7 @@ function menu.sub_menu_button(args)
             id = "button",
             halign = "left",
             on_hover = function(self)
-                local coords = helpers.ui.get_widget_geometry_in_device_space({wibox = self.menu}, self)
+                local coords = library.ui.get_widget_geometry_in_device_space({wibox = self.menu}, self)
                 coords.x = coords.x + self.menu.x + self.menu.width
                 coords.y = coords.y + self.menu.y
                 args.sub_menu:show{
@@ -489,7 +489,7 @@ function menu.separator()
     return wibox.widget {
         widget = bwidget,
         forced_height = dpi(1),
-        shape = helpers.ui.rrect(),
+        shape = library.ui.rrect(),
         bg = beautiful.colors.surface
     }
 end

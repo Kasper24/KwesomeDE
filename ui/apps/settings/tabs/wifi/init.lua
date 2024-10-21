@@ -6,7 +6,7 @@ local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
 local network_daemon = require("daemons.hardware.network")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 local table = table
@@ -46,7 +46,7 @@ local function access_point_widget(layout, access_point)
         selection_bg = beautiful.icons.network.wifi_off.color,
         widget_template = wibox.widget {
             widget = widgets.background,
-            shape = helpers.ui.rrect(),
+            shape = library.ui.rrect(),
             bg = beautiful.colors.surface,
             {
                 widget = wibox.container.margin,
@@ -228,10 +228,10 @@ local function access_point_widget(layout, access_point)
         }
     }
 
-    anim = helpers.animation:new{
+    anim = library.animation:new{
         pos = dpi(65),
         duration = 0.2,
-        easing = helpers.animation.easing.linear,
+        easing = library.animation.easing.linear,
         update = function(self, pos)
             widget.height = pos
         end
@@ -334,7 +334,7 @@ local function new()
     local seperator = wibox.widget {
         widget = widgets.background,
         forced_height = dpi(1),
-        shape = helpers.ui.rrect(),
+        shape = library.ui.rrect(),
         bg = beautiful.colors.surface
     }
 

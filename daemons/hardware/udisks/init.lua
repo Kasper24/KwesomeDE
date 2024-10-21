@@ -5,7 +5,7 @@
 local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
-local helpers = require("helpers")
+local library = require("library")
 local dbus_proxy = require("external.dbus_proxy")
 local string = string
 local pairs = pairs
@@ -21,7 +21,7 @@ local function check_mounts(self)
             if partition ~= "tmpfs" and partition ~= "gvfsd-fuse" then
                 local device = {}
                 device.mount_point = line:match('TARGET="(.*)" SOURCE')
-                device.name = string.sub(device.mount_point, helpers.string.find_last(device.mount_point, "/") + 1,
+                device.name = string.sub(device.mount_point, library.string.find_last(device.mount_point, "/") + 1,
                     #device.mount_point)
                 device.partition = line:match('SOURCE="(.*)" FSTYPE')
                 device.fs_type = line:match('FSTYPE="(.*)" OPTIONS')

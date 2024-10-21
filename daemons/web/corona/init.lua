@@ -6,7 +6,7 @@ local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
-local helpers = require("helpers")
+local library = require("library")
 local filesystem = require("external.filesystem")
 local json = require("external.json")
 local string = string
@@ -22,12 +22,12 @@ local UPDATE_INTERVAL = 60 * 30 -- 30 mins
 
 function corona:set_country(country)
     self._private.country = country
-    helpers.settings["corona.country"] = country
+    library.settings["corona.country"] = country
 end
 
 function corona:get_country()
     if self._private.country == nil then
-        self._private.country = helpers.settings["corona.country"]
+        self._private.country = library.settings["corona.country"]
     end
 
     return self._private.country or ""

@@ -6,7 +6,7 @@ local awful = require("awful")
 local gtable = require("gears.table")
 local wibox = require("wibox")
 local pwidget = require("ui.widgets.popup")
-local helpers = require("helpers")
+local library = require("library")
 local capi = {
     awesome = awesome,
     client = client
@@ -41,7 +41,7 @@ function animated_panel:show()
         self.actual_pos = self[self.axis]
     end
 
-    self.animation.easing = helpers.animation.easing.outExpo
+    self.animation.easing = library.animation.easing.outExpo
     self.animation:set(self.actual_pos)
     self.visible = true
     self:emit_signal("visibility", true)
@@ -56,7 +56,7 @@ function animated_panel:hide()
 
     local image = wibox.widget.draw_to_image_surface(self.widget, self.width, self.height)
     self.widget = fake_widget(image)
-    self.animation.easing = helpers.animation.easing.inExpo
+    self.animation.easing = library.animation.easing.inExpo
     self.animation:set(self.start_pos)
     self:emit_signal("visibility", false)
 end
@@ -82,9 +82,9 @@ local function new(args)
     ret.max_height = args.max_height
 
     ret.state = false
-    ret.animation = helpers.animation:new{
+    ret.animation = library.animation:new{
         pos = ret.start_pos,
-        easing = helpers.animation.easing.outExpo,
+        easing = library.animation.easing.outExpo,
         duration = 0.8,
         update = function(_, pos)
             ret[ret.axis] = pos

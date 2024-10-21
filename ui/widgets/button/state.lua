@@ -4,7 +4,7 @@
 -------------------------------------------
 local gtable = require("gears.table")
 local ebnwidget = require("ui.widgets.button.normal")
-local helpers = require("helpers")
+local library = require("library")
 local setmetatable = setmetatable
 local ipairs = ipairs
 
@@ -74,7 +74,7 @@ function button_state:set_color(color)
     self:effect(true)
 
     if wp.on_color == nil then
-        self:set_on_color(helpers.color.darken_or_lighten(color, 0.2))
+        self:set_on_color(library.color.darken_or_lighten(color, 0.2))
     end
 end
 
@@ -151,7 +151,7 @@ local function new()
     local wp = widget._private
     wp.state = false
 
-    wp.defaults.on_color = helpers.color.darken_or_lighten(wp.defaults.color, 0.2)
+    wp.defaults.on_color = library.color.darken_or_lighten(wp.defaults.color, 0.2)
 
     wp.defaults.on_normal_shape = wp.defaults.normal_shape
     wp.defaults.on_hover_shape = wp.defaults.normal_shape

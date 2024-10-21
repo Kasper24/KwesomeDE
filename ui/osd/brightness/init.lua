@@ -8,7 +8,7 @@ local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
 local brightness_daemon = require("daemons.hardware.brightness")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 
 local instance = nil
@@ -33,8 +33,8 @@ local function new()
 		widget = widgets.progressbar,
 		forced_width = dpi(90),
 		forced_height = dpi(10),
-		shape = helpers.ui.rrect(),
-		bar_shape = helpers.ui.rrect(),
+		shape = library.ui.rrect(),
+		bar_shape = library.ui.rrect(),
 		value = 0,
 		max_value = 100,
 		background_color = beautiful.colors.surface,
@@ -56,7 +56,7 @@ local function new()
 		maximum_width = dpi(200),
 		maximum_height = dpi(50),
 		animate_fake_widget = false,
-		shape = helpers.ui.rrect(),
+		shape = library.ui.rrect(),
 		bg = beautiful.colors.background,
 		widget = wibox.widget({
 			widget = wibox.container.margin,
@@ -86,9 +86,9 @@ local function new()
 		end,
 	})
 
-	local anim = helpers.animation:new({
+	local anim = library.animation:new({
 		duration = 0.2,
-		easing = helpers.animation.easing.linear,
+		easing = library.animation.easing.linear,
 		update = function(self, pos)
 			slider.value = pos
 		end,

@@ -6,7 +6,7 @@ local empty_wallpapers = require("ui.apps.settings.tabs.wallpaper.empty_wallpape
 local wallpapers_grid = require("ui.apps.settings.tabs.wallpaper.wallpapers_grid")
 local actions = require("ui.apps.settings.tabs.wallpaper.actions")
 local theme_daemon = require("daemons.system.theme")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 
@@ -32,7 +32,7 @@ local function new()
                 {
                     widget = wibox.container.background,
                     id = "background",
-                    shape = helpers.ui.rrect(),
+                    shape = library.ui.rrect(),
                     bg = {
                         type = 'linear',
                         from = {0, 0},
@@ -46,7 +46,7 @@ local function new()
                 },
                 {
                     widget = wibox.widget.imagebox,
-                    clip_shape = helpers.ui.rrect(),
+                    clip_shape = library.ui.rrect(),
                     horizontal_fit_policy = "fit",
                     vertical_fit_policy = "fit",
                     image = beautiful.mountain_background_thumbnail

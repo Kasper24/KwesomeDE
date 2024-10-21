@@ -7,7 +7,7 @@ local gshape = require("gears.shape")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
 local widgets = require("ui.widgets")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 local capi = {
     client = client,
@@ -25,7 +25,7 @@ function task_preview:show(c, args)
     args.offset = args.offset or {}
 
     if not args.coords and args.wibox and args.widget then
-        args.coords = helpers.ui.get_widget_geometry_in_device_space({wibox = args.wibox}, args.widget)
+        args.coords = library.ui.get_widget_geometry_in_device_space({wibox = args.wibox}, args.widget)
     end
 
     self.x = args.coords.x + (args.offset.x or 0)
@@ -54,7 +54,7 @@ local function new()
     local widget = widgets.popup {
         visible = false,
         ontop = true,
-        shape = helpers.ui.rrect(),
+        shape = library.ui.rrect(),
         bg = beautiful.colors.background,
         minimum_width = dpi(300),
         maximum_width = dpi(300),

@@ -3,7 +3,7 @@ local swidget = require("ui.widgets.slider")
 local bwidget = require("ui.widgets.background")
 local tiwidget = require("ui.widgets.text_input")
 local beautiful = require("beautiful")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 local tostring = tostring
 local tonumber = tonumber
@@ -36,7 +36,7 @@ local function new(args)
 		selection_bg = args.selection_bg or beautiful.colors.random_accent_color(),
 		widget_template = wibox.widget {
 			widget = bwidget,
-			shape = helpers.ui.rrect(),
+			shape = library.ui.rrect(),
 			bg = beautiful.colors.surface,
 			{
 				widget = wibox.container.margin,

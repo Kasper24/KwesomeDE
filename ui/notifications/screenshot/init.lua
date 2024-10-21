@@ -8,7 +8,7 @@ local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
 local naughty = require("naughty")
 local screenshot_daemon = require("daemons.system.screenshot")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 
 local icons = {"camera", "camera-app", "camera-photo", "gscreenshot", "kscreenshot", "accessories-screenshot"}
@@ -66,7 +66,7 @@ screenshot_daemon:connect_signal("color::picked", function(self, color)
         widget = widgets.background,
         forced_width = dpi(40),
         forced_height = dpi(40),
-        shape = helpers.ui.rrect(),
+        shape = library.ui.rrect(),
         bg = color,
     }, dpi(40), dpi(40))
 

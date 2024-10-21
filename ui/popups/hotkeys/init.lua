@@ -55,7 +55,7 @@ local gstring = require("gears.string")
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 
 local matcher = require("gears.matcher")()
@@ -270,7 +270,7 @@ function widget.new(args)
         self.fg = args.fg or beautiful.colors.on_background or beautiful.fg_normal
         self.border_width = args.border_width or 0 or beautiful.border_width
         self.border_color = args.border_color or nil or self.fg
-        self.shape = args.shape or helpers.ui.rrect() or beautiful.hotkeys_shape
+        self.shape = args.shape or library.ui.rrect() or beautiful.hotkeys_shape
         self.modifiers_fg = beautiful.colors.random_accent_color()
         self.label_bg = beautiful.colors.random_accent_color()
         self.label_fg = beautiful.colors.transparent

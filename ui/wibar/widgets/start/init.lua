@@ -7,7 +7,7 @@ local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local app_launcher = require("ui.popups.app_launcher")
 local beautiful = require("beautiful")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 local pi = math.pi
 local capi = {
@@ -102,12 +102,12 @@ local function new()
         widget
     }
 
-    local animation = helpers.animation:new{
+    local animation = library.animation:new{
         pos = {
             height = 0,
             color = off_color
         },
-        easing = helpers.animation.easing.linear,
+        easing = library.animation.easing.linear,
         duration = 0.2,
         update = function(self, pos)
             widget.pos = pos.height

@@ -6,7 +6,7 @@ local awful = require("awful")
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local beautiful = require("beautiful")
-local helpers = require("helpers")
+local library = require("library")
 local filesystem = require("external.filesystem")
 local ipairs = ipairs
 local os = os
@@ -39,13 +39,13 @@ end
 -- Profile image
 function ui:set_profile_image(profile_image)
     self._private.profile_image = profile_image
-    helpers.settings["ui.profile_image"] = profile_image
+    library.settings["ui.profile_image"] = profile_image
     self:emit_signal("profile_image", profile_image)
 end
 
 function ui:get_profile_image()
     if self._private.profile_image == nil then
-        self._private.profile_image = helpers.settings["ui.profile_image"]
+        self._private.profile_image = library.settings["ui.profile_image"]
     end
 
     return self._private.profile_image
@@ -54,12 +54,12 @@ end
 -- DPI
 function ui:set_dpi(dpi)
     self._private.dpi = dpi
-    helpers.settings["ui.dpi"] = dpi
+    library.settings["ui.dpi"] = dpi
 end
 
 function ui:get_dpi()
     if self._private.dpi == nil then
-        self._private.dpi = helpers.settings["ui.dpi"]
+        self._private.dpi = library.settings["ui.dpi"]
     end
 
     return self._private.dpi
@@ -68,13 +68,13 @@ end
 -- Opacity
 function ui:set_opacity(opacity)
     self._private.ui_opacity = opacity
-    helpers.settings["ui.opacity"] = opacity
+    library.settings["ui.opacity"] = opacity
     beautiful.reload()
 end
 
 function ui:get_opacity()
     if self._private.ui_opacity == nil then
-        self._private.ui_opacity = helpers.settings["ui.opacity"]
+        self._private.ui_opacity = library.settings["ui.opacity"]
     end
 
     return self._private.ui_opacity
@@ -83,13 +83,13 @@ end
 -- Border radius
 function ui:set_border_radius(border_radius)
     self._private.ui_border_radius = border_radius
-    helpers.settings["ui.border_radius"] = border_radius
+    library.settings["ui.border_radius"] = border_radius
     beautiful.reload()
 end
 
 function ui:get_border_radius()
     if self._private.ui_border_radius == nil then
-        self._private.ui_border_radius = helpers.settings["ui.border_radius"]
+        self._private.ui_border_radius = library.settings["ui.border_radius"]
     end
 
     return self._private.ui_border_radius
@@ -112,13 +112,13 @@ function ui:set_useless_gap(useless_gap, save)
     self._private.useless_gap = useless_gap
     self:emit_signal("useless_gap", useless_gap)
     if save ~= false then
-        helpers.settings["layout.useless_gap"] = useless_gap
+        library.settings["layout.useless_gap"] = useless_gap
     end
 end
 
 function ui:get_useless_gap()
     if self._private.useless_gap == nil then
-        self._private.useless_gap = helpers.settings["layout.useless_gap"]
+        self._private.useless_gap = library.settings["layout.useless_gap"]
     end
 
     return self._private.useless_gap
@@ -143,13 +143,13 @@ function ui:set_client_gap(client_gap, save)
     self._private.client_gap = client_gap
     self:emit_signal("client_gap", client_gap)
     if save ~= false then
-        helpers.settings["layout.client_gap"] = client_gap
+        library.settings["layout.client_gap"] = client_gap
     end
 end
 
 function ui:get_client_gap()
     if self._private.client_gap == nil then
-        self._private.client_gap = helpers.settings["layout.client_gap"]
+        self._private.client_gap = library.settings["layout.client_gap"]
     end
 
     return self._private.client_gap
@@ -157,17 +157,17 @@ end
 
 -- Animations
 function ui:set_animations(animations, save)
-    helpers.animation:set_instant(not animations)
+    library.animation:set_instant(not animations)
 
     if save ~= false then
         self._private.ui_animations = animations
-        helpers.settings["ui.animations.enabled"] = animations
+        library.settings["ui.animations.enabled"] = animations
     end
 end
 
 function ui:get_animations()
     if self._private.ui_animations == nil then
-        self._private.ui_animations = helpers.settings["ui.animations.enabled"]
+        self._private.ui_animations = library.settings["ui.animations.enabled"]
     end
 
     return self._private.ui_animations
@@ -175,17 +175,17 @@ end
 
 -- Animations Framerate
 function ui:set_animations_framerate(framerate, save)
-    helpers.animation:set_framerate(framerate)
+    library.animation:set_framerate(framerate)
     self._private.ui_animations_framerate = framerate
 
     if save ~= false then
-        helpers.settings["ui.animations.framerate"] = framerate
+        library.settings["ui.animations.framerate"] = framerate
     end
 end
 
 function ui:get_animations_framerate()
     if self._private.ui_animations_framerate == nil then
-        self._private.ui_animations_framerate = helpers.settings["ui.animations.framerate"]
+        self._private.ui_animations_framerate = library.settings["ui.animations.framerate"]
     end
 
     return self._private.ui_animations_framerate
@@ -194,12 +194,12 @@ end
 -- Show lockscreen on login
 function ui:set_show_lockscreen_on_login(show_lockscreen_on_login)
     self._private.show_lockscreen_on_login = show_lockscreen_on_login
-    helpers.settings["ui.show_lockscreen_on_login"] = show_lockscreen_on_login
+    library.settings["ui.show_lockscreen_on_login"] = show_lockscreen_on_login
 end
 
 function ui:get_show_lockscreen_on_login()
     if self._private.show_lockscreen_on_login == nil then
-        self._private.show_lockscreen_on_login = helpers.settings["ui.show_lockscreen_on_login"]
+        self._private.show_lockscreen_on_login = library.settings["ui.show_lockscreen_on_login"]
     end
 
     return self._private.show_lockscreen_on_login
@@ -208,12 +208,12 @@ end
 -- Bars layout
 function ui:set_bars_layout(bar_layout)
     self._private.bars_layout = bar_layout
-    helpers.settings["ui.bar.layout"] = bar_layout
+    library.settings["ui.bar.layout"] = bar_layout
 end
 
 function ui:get_bars_layout()
     if self._private.bars_layout == nil then
-        self._private.bars_layout = helpers.settings["ui.bar.layout"]
+        self._private.bars_layout = library.settings["ui.bar.layout"]
     end
 
     return self._private.bars_layout
@@ -222,12 +222,12 @@ end
 -- Taglist type
 function ui:set_taglist_type(taglist_type)
     self._private.taglist_type = taglist_type
-    helpers.settings["ui.bar.taglist_type"] = taglist_type
+    library.settings["ui.bar.taglist_type"] = taglist_type
 end
 
 function ui:get_taglist_type()
     if self._private.taglist_type == nil then
-        self._private.taglist_type = helpers.settings["ui.bar.taglist_type"]
+        self._private.taglist_type = library.settings["ui.bar.taglist_type"]
     end
 
     return self._private.taglist_type
@@ -236,12 +236,12 @@ end
 -- Widget at center
 function ui:set_widget_at_center(widget_at_center)
     self._private.widget_at_center = widget_at_center
-    helpers.settings["ui.bar.widget_at_center"] = widget_at_center
+    library.settings["ui.bar.widget_at_center"] = widget_at_center
 end
 
 function ui:get_widget_at_center()
     if self._private.widget_at_center == nil then
-        self._private.widget_at_center = helpers.settings["ui.bar.widget_at_center"]
+        self._private.widget_at_center = library.settings["ui.bar.widget_at_center"]
     end
 
     return self._private.widget_at_center
@@ -250,12 +250,12 @@ end
 -- Horizontal bar position
 function ui:set_horizontal_bar_position(horizontal_bar_position)
     self._private.horizontal_bar_position = horizontal_bar_position
-    helpers.settings["ui.bar.horizontal_bar_position"] = horizontal_bar_position
+    library.settings["ui.bar.horizontal_bar_position"] = horizontal_bar_position
 end
 
 function ui:get_horizontal_bar_position()
     if self._private.horizontal_bar_position == nil then
-        self._private.horizontal_bar_position = helpers.settings["ui.bar.horizontal_bar_position"]
+        self._private.horizontal_bar_position = library.settings["ui.bar.horizontal_bar_position"]
     end
 
     return self._private.horizontal_bar_position

@@ -7,7 +7,7 @@ local Secret = lgi.Secret
 local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
-local helpers = require("helpers")
+local library = require("library")
 local filesystem = require("external.filesystem")
 local json = require("external.json")
 local string = string
@@ -48,13 +48,13 @@ end
 
 function weather:set_unit(unit)
     self._private.unit = unit
-    helpers.settings["openweather.unit"] = unit
+    library.settings["openweather.unit"] = unit
     self:refresh()
 end
 
 function weather:get_unit()
     if self._private.unit == nil then
-        self._private.unit = helpers.settings["openweather.unit"]
+        self._private.unit = library.settings["openweather.unit"]
     end
 
     return self._private.unit or ""
@@ -62,13 +62,13 @@ end
 
 function weather:set_latitude(latitude)
     self._private.latitude = latitude
-    helpers.settings["openweather.latitude"] = latitude
+    library.settings["openweather.latitude"] = latitude
     self:refresh()
 end
 
 function weather:get_latitude()
     if self._private.latitude == nil then
-        self._private.latitude = helpers.settings["openweather.latitude"]
+        self._private.latitude = library.settings["openweather.latitude"]
     end
 
     return self._private.latitude or ""
@@ -76,13 +76,13 @@ end
 
 function weather:set_longitude(longitude)
     self._private.longitude = longitude
-    helpers.settings["openweather.longitude"] = longitude
+    library.settings["openweather.longitude"] = longitude
     self:refresh()
 end
 
 function weather:get_longitude()
     if self._private.longitude == nil then
-        self._private.longitude = helpers.settings["openweather.longitude"]
+        self._private.longitude = library.settings["openweather.longitude"]
     end
 
     return self._private.longitude or ""

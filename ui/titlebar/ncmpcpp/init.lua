@@ -8,7 +8,7 @@ local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
 local bling = require("external.bling")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 local capi = {
     awesome = awesome
@@ -34,7 +34,7 @@ local function tabs_titlebar(c)
     local tabs = wibox.widget {
         widget = widgets.button_group.vertical,
         on_select = function(id)
-            helpers.input.send_string_to_client(c, id)
+            library.input.send_string_to_client(c, id)
         end,
         values = {
             {
@@ -99,7 +99,7 @@ local function tabs_titlebar(c)
             {
                 widget = widgets.background,
                 forced_height = dpi(1),
-                shape = helpers.ui.rrect(),
+                shape = library.ui.rrect(),
                 bg = beautiful.colors.surface
             },
             tabs

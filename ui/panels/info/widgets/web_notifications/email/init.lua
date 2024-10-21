@@ -6,7 +6,7 @@ local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
 local email_daemon = require("daemons.web.email")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 local tostring = tostring
@@ -17,15 +17,15 @@ local email = {
 }
 
 local function email_widget(email)
-    local halign = helpers.string.contain_right_to_left_characters(email.title) and "right" or "left"
+    local halign = library.string.contain_right_to_left_characters(email.title) and "right" or "left"
 
     local name_halign = "left"
-    if not helpers.string.contain_right_to_left_characters(email.author.name) then
+    if not library.string.contain_right_to_left_characters(email.author.name) then
         name_halign = halign
     end
 
     local title_halign = "left"
-    if not helpers.string.contain_right_to_left_characters(email.title) then
+    if not library.string.contain_right_to_left_characters(email.title) then
         title_halign = halign
     end
 
@@ -42,7 +42,7 @@ local function email_widget(email)
         halign = halign,
         size = 12,
         italic = true,
-        text = helpers.string.to_time_ago(email.modified)
+        text = library.string.to_time_ago(email.modified)
     }
 
     local title = wibox.widget {

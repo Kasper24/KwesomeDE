@@ -5,7 +5,7 @@
 local awful = require("awful")
 local beautiful = require("beautiful")
 local ui_daemon = require("daemons.system.ui")
-local helpers = require("helpers")
+local library = require("library")
 
 awful.screen.connect_for_each_screen(function(s)
     for i = 1, 8, 1  do

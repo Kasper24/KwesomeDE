@@ -5,7 +5,7 @@
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 
@@ -23,7 +23,7 @@ local function new(args)
         selection_bg = beautiful.icons.computer.color,
         widget_template = wibox.widget {
             widget = widgets.background,
-            shape = helpers.ui.rrect(),
+            shape = library.ui.rrect(),
             bg = beautiful.colors.surface,
             {
                 widget = wibox.container.margin,

@@ -9,7 +9,7 @@ local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
 local desktop_daemon = require("daemons.system.desktop")
-local helpers = require("helpers")
+local library = require("library")
 local filesystem = require("external.filesystem")
 local dpi = beautiful.xresources.apply_dpi
 local capi = {
@@ -180,7 +180,7 @@ local function desktop_icon(self, pos, path, name, mimetype)
             forced_width = dpi(100),
             forced_height = dpi(100),
             on_release = function(self)
-                helpers.input.tap_or_drag{
+                library.input.tap_or_drag{
                     on_tap = function()
                         awful.spawn("xdg-open " .. path, false)
                     end,
@@ -204,7 +204,7 @@ local function desktop_icon(self, pos, path, name, mimetype)
                     forced_height = dpi(40),
                     forced_width = dpi(40),
                     halign = "center",
-                    clip_shape = helpers.ui.rrect(),
+                    clip_shape = library.ui.rrect(),
                     image = beautiful.get_svg_icon {
                         mimetype_to_image_lookup_table[mimetype],
                         "org.gnome.gedit"

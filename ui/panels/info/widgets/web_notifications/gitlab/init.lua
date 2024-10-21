@@ -8,7 +8,7 @@ local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
 local gitlab_daemon = require("daemons.web.gitlab")
-local helpers = require("helpers")
+local library = require("library")
 local filesystem = require("external.filesystem")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
@@ -23,7 +23,7 @@ local function mr_widget(mr)
         widget = wibox.widget.imagebox,
         forced_width = dpi(40),
         forced_height = dpi(40),
-        clip_shape = helpers.ui.rrect(),
+        clip_shape = library.ui.rrect(),
         image = beautiful.default_github_profile
     }
 
@@ -70,7 +70,7 @@ local function mr_widget(mr)
         {
             widget = widgets.text,
             size = 12,
-            text = helpers.string.to_time_ago(mr.created_at)
+            text = library.string.to_time_ago(mr.created_at)
         }
     }
 

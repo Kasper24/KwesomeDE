@@ -13,7 +13,7 @@ local wifi_popup = require(... .. ".applets.wifi")
 local bluetooth_popup = require(... .. ".applets.bluetooth")
 local system_daemon = require("daemons.system.system")
 local ui_daemon = require("daemons.system.ui")
-local helpers = require("helpers")
+local library = require("library")
 local capi = {
     screen = screen,
     client = client
@@ -63,7 +63,7 @@ capi.client.connect_signal("property::fullscreen", function(client)
             end
         end
     else
-        if #helpers.client.find({fullscreen = true}) == 0 then
+        if #library.client.find({fullscreen = true}) == 0 then
             for screen in capi.screen do
                 if screen.vertical_wibar then
                     screen.vertical_wibar.ontop = true
@@ -217,7 +217,7 @@ lock_popup:connect_signal("visibility", function(self, visibie)
             end
         else
             s.screen_mask.visible = false
-            if #helpers.client.find({fullscreen = true}) == 0 then
+            if #library.client.find({fullscreen = true}) == 0 then
                 if s.vertical_wibar then
                     s.vertical_wibar.ontop = true
                 end
@@ -245,7 +245,7 @@ awful.screen.connect_for_each_screen(function(s)
     s.screen_mask = widgets.screen_mask(s)
 end)
 
-if DEBUG ~= true and helpers.misc.is_restart() == false then
+if DEBUG ~= true and library.misc.is_restart() == false then
     if ui_daemon:get_show_lockscreen_on_login() then
         lock_popup:show()
     else

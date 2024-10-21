@@ -8,7 +8,7 @@ local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
 local tasklist_daemon = require("daemons.system.tasklist")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 local pcall = pcall
 local capi = {
@@ -145,7 +145,7 @@ local function new()
         placement = awful.placement.centered,
         visible = false,
         ontop = true,
-        shape = helpers.ui.rrect(),
+        shape = library.ui.rrect(),
         bg = beautiful.colors.background,
         maximum_height = dpi(200),
         animate_method = "width",

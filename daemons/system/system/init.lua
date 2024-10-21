@@ -7,7 +7,7 @@ local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local notifications_daemon = require("daemons.system.notifications")
-local helpers = require("helpers")
+local library = require("library")
 local filesystem = require("external.filesystem")
 local capi = {
     awesome = awesome
@@ -82,10 +82,10 @@ local function system_info(self)
         timeout = 60,
         callback = function()
             awful.spawn.easy_async("neofetch packages", function(packages_count)
-                packages_count = helpers.string.trim(packages_count:gsub("packages", ""))
+                packages_count = library.string.trim(packages_count:gsub("packages", ""))
 
                 awful.spawn.easy_async("neofetch uptime", function(uptime)
-                    uptime = helpers.string.trim(uptime:gsub("time", ""):gsub("up  ", ""))
+                    uptime = library.string.trim(uptime:gsub("time", ""):gsub("up  ", ""))
                     self:emit_signal("info", packages_count, uptime)
                 end)
             end)
@@ -108,7 +108,7 @@ local function updates_info(self)
         timeout = 60 * 60 * 24,
         callback = function()
             awful.spawn.easy_async("neofetch distro", function(distro)
-                distro = helpers.string.trim(distro:gsub("distro ", ""))
+                distro = library.string.trim(distro:gsub("distro ", ""))
                 if distro == "Arch Linux" or distro == "EndeavourOS" or distro == "Manjaro Linux" then
                     pacman()
                 end
@@ -118,7 +118,7 @@ local function updates_info(self)
 end
 
 local function find_current_version_index()
-    local current_version = helpers.settings["kwesomede.version"]
+    local current_version = library.settings["kwesomede.version"]
     for index, version in ipairs(VERSIONS) do
         if version.version == current_version then
             return index
@@ -129,7 +129,7 @@ local function find_current_version_index()
 end
 
 local function check_version(self)
-    local version = helpers.settings["kwesomede.version"]
+    local version = library.settings["kwesomede.version"]
 
     local last_version = VERSIONS[#VERSIONS]
     if version ~= last_version.version then
@@ -138,7 +138,7 @@ local function check_version(self)
                 self:emit_signal("version::new", VERSIONS[index])
             end
             self:emit_signal("version::new::single")
-            helpers.settings["kwesomede.version"] = last_version.version
+            library.settings["kwesomede.version"] = last_version.version
         end)
         return true
     end

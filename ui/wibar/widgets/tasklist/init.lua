@@ -9,7 +9,7 @@ local task_preview = require("ui.popups.task_preview")
 local beautiful = require("beautiful")
 local tasklist_daemon = require("daemons.system.tasklist")
 local ui_daemon = require("daemons.system.ui")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 local ipairs = ipairs
 local capi = {
@@ -89,10 +89,10 @@ local function pinned_app_widget(pinned_app)
             on_secondary_release = function(self)
                 local coords = nil
                 if ui_daemon:get_bars_layout() == "vertical" then
-                    coords = helpers.ui.get_widget_geometry_in_device_space({wibox = awful.screen.focused().vertical_wibar}, self)
+                    coords = library.ui.get_widget_geometry_in_device_space({wibox = awful.screen.focused().vertical_wibar}, self)
                     coords.x = coords.x + dpi(65)
                 else
-                    coords = helpers.ui.get_widget_geometry_in_device_space({wibox = awful.screen.focused().horizontal_wibar}, self)
+                    coords = library.ui.get_widget_geometry_in_device_space({wibox = awful.screen.focused().horizontal_wibar}, self)
                     coords.y = coords.y + awful.screen.focused().horizontal_wibar.y
                     if ui_daemon:get_horizontal_bar_position() == "top" then
                         coords.y = coords.y + dpi(65)
@@ -135,10 +135,10 @@ local function client_widget(client)
             on_hover = function(self)
                 local coords = nil
                 if ui_daemon:get_bars_layout() == "vertical" then
-                    coords = helpers.ui.get_widget_geometry_in_device_space({wibox = awful.screen.focused().vertical_wibar}, self)
+                    coords = library.ui.get_widget_geometry_in_device_space({wibox = awful.screen.focused().vertical_wibar}, self)
                     coords.x = coords.x + dpi(65)
                 else
-                    coords = helpers.ui.get_widget_geometry_in_device_space({wibox = awful.screen.focused().horizontal_wibar}, self)
+                    coords = library.ui.get_widget_geometry_in_device_space({wibox = awful.screen.focused().horizontal_wibar}, self)
                     coords.y = coords.y + awful.screen.focused().horizontal_wibar.y
                     if ui_daemon:get_horizontal_bar_position() == "top" then
                         coords.y = coords.y + dpi(65)
@@ -177,10 +177,10 @@ local function client_widget(client)
 
                 local coords = nil
                 if ui_daemon:get_bars_layout() == "vertical" then
-                    coords = helpers.ui.get_widget_geometry_in_device_space({wibox = awful.screen.focused().vertical_wibar}, self)
+                    coords = library.ui.get_widget_geometry_in_device_space({wibox = awful.screen.focused().vertical_wibar}, self)
                     coords.x = coords.x + dpi(65)
                 else
-                    coords = helpers.ui.get_widget_geometry_in_device_space({wibox = awful.screen.focused().horizontal_wibar}, self)
+                    coords = library.ui.get_widget_geometry_in_device_space({wibox = awful.screen.focused().horizontal_wibar}, self)
                     coords.y = coords.y + awful.screen.focused().horizontal_wibar.y
                     if ui_daemon:get_horizontal_bar_position() == "top" then
                         coords.y = coords.y + dpi(65)
@@ -208,7 +208,7 @@ local function client_widget(client)
         {
             widget = widgets.background,
             id = "background",
-            shape = helpers.ui.rrect(),
+            shape = library.ui.rrect(),
             bg = client._icon.color
         }
     }
@@ -225,10 +225,10 @@ local function client_widget(client)
         indicator.children[1].forced_height = dpi(5)
     end
 
-    local indicator_animation = helpers.animation:new{
+    local indicator_animation = library.animation:new{
         pos = capi.client.focus == client and dpi(50) or dpi(20),
         duration = 0.2,
-        easing = helpers.animation.easing.linear,
+        easing = library.animation.easing.linear,
         update = function(self, pos)
             if ui_daemon:get_bars_layout() == "vertical" then
                 indicator.children[1].forced_height = pos
@@ -273,10 +273,10 @@ local function new()
         tasklist_layout.forced_width = 0
     end
 
-    local tasklist_layout_animation = helpers.animation:new {
+    local tasklist_layout_animation = library.animation:new {
         pos = 0,
         duration = 0.2,
-        easing = helpers.animation.easing.linear,
+        easing = library.animation.easing.linear,
         update = function(self, pos)
             if ui_daemon:get_bars_layout() == "vertical" then
                 tasklist_layout.forced_height = pos
@@ -290,10 +290,10 @@ local function new()
         if client.tasklist_widget == nil then
             local widget = client_widget(client)
             client.tasklist_widget = widget
-            widget.move_animation = helpers.animation:new {
+            widget.move_animation = library.animation:new {
                 pos = pos * get_widget_spacing(),
                 duration = 0.2,
-                easing = helpers.animation.easing.linear,
+                easing = library.animation.easing.linear,
                 update = function(self, pos)
                     if ui_daemon:get_bars_layout() == "vertical" then
                         tasklist_layout:move_widget(widget, { x = 0, y = pos})
@@ -302,10 +302,10 @@ local function new()
                     end
                 end
             }
-            widget.size_animation = helpers.animation:new {
+            widget.size_animation = library.animation:new {
                 pos = 1,
                 duration = 0.2,
-                easing = helpers.animation.easing.linear,
+                easing = library.animation.easing.linear,
                 update = function(self, pos)
                     if ui_daemon:get_bars_layout() == "vertical" then
                         widget.forced_height = pos

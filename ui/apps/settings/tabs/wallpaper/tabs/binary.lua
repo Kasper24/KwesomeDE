@@ -6,7 +6,7 @@ local empty_wallpapers = require("ui.apps.settings.tabs.wallpaper.empty_wallpape
 local wallpapers_grid = require("ui.apps.settings.tabs.wallpaper.wallpapers_grid")
 local actions = require("ui.apps.settings.tabs.wallpaper.actions")
 local theme_daemon = require("daemons.system.theme")
-local helpers = require("helpers")
+local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 local random = math.random
@@ -43,7 +43,7 @@ local function new()
             {
                 widget = wibox.container.background,
                 id = "background",
-                shape = helpers.ui.rrect(),
+                shape = library.ui.rrect(),
                 bg = colors[1],
                 fg = beautiful.colors.random_accent_color(colors),
                 {
@@ -51,7 +51,7 @@ local function new()
                     {
                         widget = wibox.container.background,
                         id = "system_failure",
-                        shape = helpers.ui.rrect(),
+                        shape = library.ui.rrect(),
                         fg = beautiful.colors.random_accent_color(colors),
                         {
                             widget = wibox.widget.textbox,

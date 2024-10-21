@@ -6,7 +6,7 @@ local gobject = require("gears.object")
 local gtable = require("gears.table")
 local gtimer = require("gears.timer")
 local beautiful = require("beautiful")
-local helpers = require("helpers")
+local library = require("library")
 local filesystem = require("external.filesystem")
 local json = require("external.json")
 local string = string
@@ -28,13 +28,13 @@ local EVENTS_DATA_PATH = EVENTS_PATH .. "data.json"
 
 function github:set_username(username)
     self._private.username = username
-    helpers.settings["github.username"] = username
+    library.settings["github.username"] = username
     self:refresh()
 end
 
 function github:get_username()
     if self._private.username == nil then
-        self._private.username = helpers.settings["github.username"]
+        self._private.username = library.settings["github.username"]
     end
 
     return self._private.username or ""
