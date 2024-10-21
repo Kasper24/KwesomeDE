@@ -7,6 +7,10 @@ local naughty = require("naughty")
 local playerctl_daemon = require("daemons.system.playerctl")
 local string = string
 
+local app_names_icon_lookup = {
+    ["edge"] = "microsoft-edge"
+}
+
 playerctl_daemon:connect_signal("metadata", function(self, title, artist, album_path, album, new, player_name)
     if new == false then
         return
@@ -39,8 +43,13 @@ playerctl_daemon:connect_signal("metadata", function(self, title, artist, album_
         playerctl_daemon:next()
     end)
 
+    local icons = { app_name, player_name, "spotify" }
+    if app_names_icon_lookup[player_name] then
+        table.insert(icons, 1, app_names_icon_lookup[player_name])
+    end
+
     naughty.notification {
-        app_icon = { player_name, "spotify" },
+        app_icon = icons,
         app_name = app_name,
         font_icon = font_icon,
         icon = icon,
