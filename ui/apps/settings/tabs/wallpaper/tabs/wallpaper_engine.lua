@@ -24,7 +24,7 @@ local function new()
         }
     }
 
-    local wallpapers = wallpapers_grid("we_wallpapers", function(entry, rofi_grid)
+    local wallpapers = wallpapers_grid("we_wallpapers", function(entry, scrollable_grid)
         local widget = nil
         local button = wibox.widget {
             widget = widgets.button.state,

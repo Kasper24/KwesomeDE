@@ -16,10 +16,10 @@ local capi = {
 local instance = nil
 
 local path = ...
-local header = require(path .. ".header")
-local dashboard = require(path .. ".dashboard")
-local info = require(path .. ".info")
-local media = require(path .. ".media")
+local header = require("ui.panels.action.widgets.header")
+local dashboard = require("ui.panels.action.widgets.dashboard")
+local info = require("ui.panels.action.widgets.info")
+local media = require("ui.panels.action.widgets.media")
 
 local function seperator()
     return wibox.widget {

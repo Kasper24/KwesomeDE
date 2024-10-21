@@ -25,7 +25,7 @@ return {
     profile = require(... .. ".profile"),
     progressbar = require(... .. ".progressbar"),
     radio_group = require(... .. ".radio_group"),
-    rofi_grid = require(... .. ".rofi_grid"),
+    scrollable_grid = require(... .. ".scrollable_grid"),
     screen_mask = require(... .. ".screen_mask"),
     scrollbar = require(... .. ".scrollbar"),
     slider_text_input = require(... .. ".slider_text_input"),

@@ -12,11 +12,10 @@ local dpi = beautiful.xresources.apply_dpi
 
 local instance = nil
 
-local path = ...
-local calender = require(path .. ".calendar")
-local weather = require(path .. ".weather")
-local notifications = require(path .. ".notifications")
-local web_notifications = require(path .. ".web_notifications")
+local calender = require("ui.panels.info.widgets.calendar")
+local weather = require("ui.panels.info.widgets.weather")
+local notifications = require("ui.panels.info.widgets.notifications")
+local web_notifications = require("ui.panels.info.widgets.web_notifications")
 
 local function horizontal_separator()
 	return wibox.widget({

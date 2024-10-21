@@ -24,7 +24,7 @@ require(... .. ".popups.hotkeys.qutebrowser")
 require(... .. ".popups.hotkeys.ranger")
 require(... .. ".popups.hotkeys.vim")
 require(... .. ".notifications")
-require(... .. ".quick_notifications")
+require(... .. ".osd")
 require(... .. ".titlebar")
 require(... .. ".wibar")
 

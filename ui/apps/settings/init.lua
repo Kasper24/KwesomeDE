@@ -4,7 +4,7 @@
 -------------------------------------------
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
-local app = require("ui.apps.app")
+local app = require("ui.apps")
 local beautiful = require("beautiful")
 local wifi_tab = require("ui.apps.settings.tabs.wifi")
 local bluetooth_tab = require("ui.apps.settings.tabs.bluetooth")

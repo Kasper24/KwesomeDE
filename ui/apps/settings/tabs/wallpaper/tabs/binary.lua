@@ -28,7 +28,7 @@ local function new()
         return table.concat(ret)
     end
 
-    local wallpapers = wallpapers_grid("wallpapers_and_we_wallpapers", function(entry, rofi_grid)
+    local wallpapers = wallpapers_grid("wallpapers_and_we_wallpapers", function(entry, scrollable_grid)
         local colors = theme_daemon:get_colorschemes()[entry.path] or theme_daemon:get_active_colorscheme_colors()
 
         local widget = nil

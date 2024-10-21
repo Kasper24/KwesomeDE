@@ -16,7 +16,7 @@ local wallpapers_grid = {
 
 local function new(wallpapers_key, entry_template)
     local layout = wibox.widget {
-        layout = widgets.rofi_grid,
+        layout = widgets.scrollable_grid,
         forced_height = dpi(800),
         widget_template = wibox.widget {
             layout = wibox.layout.fixed.vertical,

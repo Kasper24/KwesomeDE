@@ -15,7 +15,7 @@ local image = {
 }
 
 local function new()
-    local wallpapers = wallpapers_grid("wallpapers_and_we_wallpapers", function(entry, rofi_grid)
+    local wallpapers = wallpapers_grid("wallpapers_and_we_wallpapers", function(entry, scrollable_grid)
         local colors = theme_daemon:get_colorschemes()[entry.path]
 
         local widget = nil
