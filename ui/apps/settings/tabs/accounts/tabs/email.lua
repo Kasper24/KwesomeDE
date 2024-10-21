@@ -30,7 +30,7 @@ local function new()
     }
 
     feed_address_text_input:connect_signal("unfocus", function(self)
-        email_daemon:set_server(self:get_text())
+        email_daemon:set_feed_address(self:get_text())
     end)
 
     address_text_input:connect_signal("unfocus", function(self)
