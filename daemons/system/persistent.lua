@@ -113,6 +113,7 @@ local function restore_clients(self, screen)
 end
 
 local function restore_tags(self, screen)
+    awful.tag.viewnone()
     local saved_tags = self.restored_settings[screen.name].tags
     for _, saved_tag in ipairs(saved_tags) do
         for index, tag in ipairs(screen.tags) do
@@ -127,10 +128,7 @@ local function restore_tags(self, screen)
                 tag.master_count = saved_tag.master_count
                 tag.column_count = saved_tag.column_count
                 if saved_tag.selected then
-                    gtimer.start_new(1, function()
-                        awful.tag.viewtoggle(tag)
-                        return false
-                    end)
+                    awful.tag.viewtoggle(tag)
                 end
             end
         end
