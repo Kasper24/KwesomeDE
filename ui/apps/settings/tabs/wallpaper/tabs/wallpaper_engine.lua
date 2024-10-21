@@ -15,15 +15,6 @@ local image = {
 }
 
 local function new()
-    local menu = widgets.menu {
-        widgets.menu.button {
-            text = "Preview",
-            on_release = function()
-                theme_daemon:preview_we_wallpaper(theme_daemon:get_selected_colorscheme(), SETTINGS_APP:get_client():geometry())
-            end
-        }
-    }
-
     local wallpapers = wallpapers_grid("we_wallpapers", function(entry, scrollable_grid)
         local widget = nil
         local button = wibox.widget {
@@ -36,7 +27,6 @@ local function new()
             end,
             on_secondary_release = function()
                 widget:select()
-                menu:toggle()
             end,
             {
                 widget = wibox.widget.imagebox,

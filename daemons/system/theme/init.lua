@@ -976,20 +976,6 @@ function theme:get_wallpapers_and_we_wallpapers()
 	return gtable.join(self._private.wallpapers, self._private.we_wallpapers)
 end
 
-function theme:preview_we_wallpaper(we_wallpaper, geometry)
-	local id = get_we_wallpaper_id(we_wallpaper)
-	local cmd = string.format(
-		"%s --assets-dir %s %s --fps %s --window %sx%sx640x480",
-		self:get_wallpaper_engine_command(),
-		self:get_wallpaper_engine_assets_folder(),
-		self:get_wallpaper_engine_workshop_folder() .. "/" .. id,
-		self:get_wallpaper_engine_fps(),
-		geometry.x + geometry.width,
-		geometry.y
-	)
-	awful.spawn.with_shell(cmd)
-end
-
 -- Active colorscheme
 function theme:set_colorscheme(colorscheme)
 	self._private.active_colorscheme = colorscheme
