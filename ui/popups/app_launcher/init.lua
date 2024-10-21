@@ -29,7 +29,7 @@ local function app_menu(app, app_widget, icon)
 		widgets.menu.button({
 			text = "Run as Root",
 			on_release = function(self)
-				app_widget:run_as_root()
+				app_widget:exec_as_root()
 			end,
 		}),
 		widgets.menu.checkbox_button({
