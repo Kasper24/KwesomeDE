@@ -77,10 +77,19 @@ end
 local function update_taglist(self, tag)
     local clients = tag:clients()
 
-    local has_clients = (#clients == 1 and clients[1].skip_taskbar ~= true) or #clients > 1
-
-    if has_clients then
-        self.widget:turn_on()
+    if #clients > 0 then
+        local tag_has_non_skip_taskbar_client = false
+        for _, client in ipairs(clients) do
+            if not client.skip_taskbar then
+                tag_has_non_skip_taskbar_client = true
+                break
+            end
+        end
+        if tag_has_non_skip_taskbar_client then
+            self.widget:turn_on()
+        else
+            self.widget:turn_off()
+        end
     else
         self.widget:turn_off()
     end

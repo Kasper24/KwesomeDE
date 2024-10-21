@@ -76,11 +76,28 @@ end
 local function update_taglist(self, tag)
     local clients = tag:clients()
 
-    if (#clients == 1 and clients[1].skip_taskbar ~= true) or #clients > 1 then
-        self.indicator_animation:set(dpi(40))
+    if #clients > 0 then
+        local tag_has_non_skip_taskbar_client = false
+        for _, client in ipairs(clients) do
+            if not client.skip_taskbar then
+                tag_has_non_skip_taskbar_client = true
+                break
+            end
+        end
+        if tag_has_non_skip_taskbar_client then
+            self.indicator_animation:set(dpi(40))
+        else
+            self.indicator_animation:set(dpi(0))
+        end
     else
         self.indicator_animation:set(dpi(0))
     end
+
+    -- if (#clients == 1 and clients[1].skip_taskbar ~= true) or #clients > 1 then
+    --     self.indicator_animation:set(dpi(40))
+    -- else
+    --     self.indicator_animation:set(dpi(0))
+    -- end
 
     if tag.selected then
         self.widget.children[1]:turn_on()
