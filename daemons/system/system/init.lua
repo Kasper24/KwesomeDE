@@ -13,7 +13,7 @@ local capi = {
     awesome = awesome
 }
 
-local PATH = filesystem.filesystem.get_awesome_config_dir("external/pam")
+local PATH = filesystem.filesystem.get_awesome_config_dir("daemons/system/system/pam")
 package.cpath = package.cpath .. ";" .. PATH  .. "?.so;"
 local pam = require('liblua_pam')
 
