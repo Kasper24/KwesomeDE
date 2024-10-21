@@ -8,7 +8,7 @@ local beautiful = require("beautiful")
 local email_tab = require("ui.apps.settings.tabs.accounts.tabs.email")
 local github_tab = require("ui.apps.settings.tabs.accounts.tabs.github")
 local gitlab_tab = require("ui.apps.settings.tabs.accounts.tabs.gitlab")
-local openweather_tab = require("ui.apps.settings.tabs.accounts.tabs.openweather")
+local weather_tab = require("ui.apps.settings.tabs.accounts.tabs.weather")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 
@@ -41,10 +41,10 @@ local function new()
                     tab = gitlab_tab()
                 },
                 {
-                    id = "open_weather",
+                    id = "weather",
                     icon = beautiful.icons.clouds,
-                    title = "OpenWeather",
-                    tab = openweather_tab()
+                    title = "Weather",
+                    tab = weather_tab()
                 },
             }
         }

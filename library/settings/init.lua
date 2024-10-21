@@ -423,7 +423,7 @@ local function get_default_settings()
                 "description": "Your email feed address"
             }
         },
-        "openweather": {
+        "weather": {
             "latitude": {
                 "default": "40.730610",
                 "type": "string",
@@ -435,9 +435,9 @@ local function get_default_settings()
                 "description": "The Longitude at your location"
             },
             "unit": {
-                "default": "metric",
+                "default": "celsius",
                 "type": "string",
-                "description": "The measurement systems to use. 'metric' for Celcius, 'imperial' for Fahrenheit"
+                "description": "The measurement systems to use. 'celsius' for Celsius, 'fahrenheit' for Fahrenheit"
             }
         }
     }]]

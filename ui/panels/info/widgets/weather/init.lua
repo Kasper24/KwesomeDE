@@ -22,25 +22,60 @@ local weather = {
     mt = {}
 }
 
-local icon_map = {
-    ["01d"] = beautiful.icons.sun, -- clear-sky
-    ["02d"] = beautiful.icons.sun_cloud, -- few-clouds
-    ["03d"] = beautiful.icons.cloud, -- scattered-clouds
-    ["04d"] = beautiful.icons.cloud_sun, -- broken-clouds
-    ["09d"] = beautiful.icons.cloud_sun_rain, -- shower-rain
-    ["10d"] = beautiful.icons.raindrops, -- rain
-    ["11d"] = beautiful.icons.cloud_bolt_sun, -- thunderstorm
-    ["13d"] = beautiful.icons.snowflake, -- snow
-    ["50d"] = beautiful.icons.cloud_fog, -- mist
-    ["01n"] = beautiful.icons.moon, -- clear-sky-night
-    ["02n"] = beautiful.icons.moon_cloud, -- few-clouds-night
-    ["03n"] = beautiful.icons.cloud, -- scattered-clouds-night
-    ["04n"] = beautiful.icons.cloud_moon, -- broken-clouds-night
-    ["09n"] = beautiful.icons.cloud_moon_rain, -- shower-rain-night
-    ["10n"] = beautiful.icons.raindrops, -- rain-night
-    ["11n"] = beautiful.icons.cloud_bolt_moon, -- thunderstorm-night
-    ["13n"] = beautiful.icons.snowflake, -- snow-night
-    ["50n"] = beautiful.icons.cloud_fog -- mist-night
+local weather_codes_map = {
+  -- Clear sky
+  [0] = { icon = beautiful.icons.sun, desc = "Clear sky" },
+
+  -- Mainly clear, partly cloudy, and overcast
+  [1] = { icon = beautiful.icons.sun_cloud, desc = "Mainly clear" },
+  [2] = { icon = beautiful.icons.cloud, desc = "Partly cloudy" },
+  [3] = { icon = beautiful.icons.cloud_sun, desc = "Overcast" },
+
+  -- Fog and depositing rime fog
+  [45] = { icon = beautiful.icons.cloud_fog, desc = "Fog" },
+  [48] = { icon = beautiful.icons.cloud_fog, desc = "Depositing rime fog" },
+
+  -- Drizzle: Light, moderate, and dense intensity
+  [51] = { icon = beautiful.icons.cloud_drizzle, desc = "Light drizzle" },
+  [53] = { icon = beautiful.icons.cloud_drizzle, desc = "Moderate drizzle" },
+  [55] = { icon = beautiful.icons.cloud_drizzle, desc = "Dense drizzle" },
+
+  -- Freezing Drizzle: Light and dense intensity
+  [56] = { icon = beautiful.icons.cloud_drizzle, desc = "Light freezing drizzle" },
+  [57] = { icon = beautiful.icons.cloud_drizzle, desc = "Dense freezing drizzle" },
+
+  -- Rain: Slight, moderate, and heavy intensity
+  [61] = { icon = beautiful.icons.cloud_rain, desc = "Slight rain" },
+  [63] = { icon = beautiful.icons.cloud_rain, desc = "Moderate rain" },
+  [65] = { icon = beautiful.icons.cloud_rain, desc = "Heavy rain" },
+
+  -- Freezing Rain: Light and heavy intensity
+  [66] = { icon = beautiful.icons.cloud_rain, desc = "Light freezing rain" },
+  [67] = { icon = beautiful.icons.cloud_rain, desc = "Heavy freezing rain" },
+
+  -- Snowfall: Slight, moderate, and heavy intensity
+  [71] = { icon = beautiful.icons.cloud_snow, desc = "Slight snow" },
+  [73] = { icon = beautiful.icons.cloud_snow, desc = "Moderate snow" },
+  [75] = { icon = beautiful.icons.cloud_snow, desc = "Heavy snow" },
+
+  -- Snow grains
+  [77] = { icon = beautiful.icons.snowflake, desc = "Snow grains" },
+
+  -- Rain showers: Slight, moderate, and violent
+  [80] = { icon = beautiful.icons.cloud_shower, desc = "Slight rain shower" },
+  [81] = { icon = beautiful.icons.cloud_shower, desc = "Moderate rain shower" },
+  [82] = { icon = beautiful.icons.cloud_shower, desc = "Violent rain shower" },
+
+  -- Snow showers: Slight and heavy
+  [85] = { icon = beautiful.icons.cloud_shower, desc = "Slight snow shower" },
+  [86] = { icon = beautiful.icons.cloud_shower, desc = "Heavy snow shower" },
+
+  -- Thunderstorm: Slight or moderate
+  [95] = { icon = beautiful.icons.cloud_bolt, desc = "Slight or moderate thunderstorm" },
+
+  -- Thunderstorm with slight and heavy hail
+  [96] = { icon = beautiful.icons.cloud_bolt, desc = "Thunderstorm with slight hail" },
+  [99] = { icon = beautiful.icons.cloud_bolt, desc = "Thunderstorm with heavy hail" },
 }
 
 local function curvaceous(cr, x, y, b, step_width, options, draw_line)
@@ -114,32 +149,9 @@ local function to_direction(degrees)
     return directions[math.floor((degrees % 360) / 22.5) + 1]
 end
 
-local function celsius_to_fahrenheit(c)
-    return c * 9 / 5 + 32
-end
-
-local function fahrenheit_to_celsius(f)
-    return (f - 32) * 5 / 9
-end
-
-local function gen_temperature_str(temp, fmt_str, show_other_units, unit)
-    local temp_str = string.format(fmt_str, temp)
-    local s = temp_str .. "°" .. (unit == "metric" and "C" or "F")
-
-    if (show_other_units) then
-        local temp_conv, units_conv
-        if (unit == "metric") then
-            temp_conv = celsius_to_fahrenheit(temp)
-            units_conv = "F"
-        else
-            temp_conv = fahrenheit_to_celsius(temp)
-            units_conv = "C"
-        end
-
-        local temp_conv_str = string.format(fmt_str, temp_conv)
-        s = s .. " " .. "(" .. temp_conv_str .. "°" .. units_conv .. ")"
-    end
-
+local function gen_temperature_str(temp)
+    local temp_str = string.format("%.0f", temp)
+    local s = temp_str .. "°" .. (weather_daemon:get_unit() == "celsius" and "C" or "F")
     return s
 end
 
@@ -159,7 +171,6 @@ end
 
 local function new()
     local time_format_12h = false
-    local both_units_widget = false
 
     local icon = wibox.widget {
         widget = widgets.text,
@@ -258,7 +269,7 @@ local function new()
         forced_height = dpi(55),
         stack = false,
         scale = true,
-        step_width = dpi(18),
+        step_width = dpi(53),
         step_hook = curvaceous,
         background_color = beautiful.colors.transparent,
         color = library.color.darken(beautiful.icons.sun.color, 0.5),
@@ -270,7 +281,7 @@ local function new()
         forced_height = dpi(55),
         stack = false,
         scale = true,
-        step_width = dpi(18),
+        step_width = dpi(53),
         step_hook = curvaceous,
         background_color = beautiful.colors.transparent,
         color = beautiful.icons.sun.color,
@@ -283,7 +294,8 @@ local function new()
     end)
 
     local hours = wibox.widget {
-        layout = wibox.layout.flex.horizontal
+        layout = wibox.layout.flex.horizontal,
+        spacing = dpi(15)
     }
 
     local daily_forecast_widget = wibox.widget {
@@ -378,44 +390,46 @@ local function new()
 
         stack:raise_widget(weather_widget)
 
-        local weather = result.current
-        icon:set_icon(icon_map[weather.weather[1].icon])
+        icon:set_icon(weather_codes_map[result.current.weather_code].icon)
         current_weather_widget:get_children_by_id("temp")[1]:set_text(
-            gen_temperature_str(weather.temp, "%.0f", both_units_widget, weather_daemon:get_unit()))
+            gen_temperature_str(result.current.temperature_2m))
         current_weather_widget:get_children_by_id("feels_like_temp")[1]:set_text("Feels like " ..
-            gen_temperature_str(weather.feels_like, "%.0f", false, weather_daemon:get_unit()))
-        current_weather_widget:get_children_by_id("description")[1]:set_text(weather.weather[1].description)
+            gen_temperature_str(result.current.apparent_temperature))
+        current_weather_widget:get_children_by_id("description")[1]:set_text(weather_codes_map[result.current.weather_code].desc)
         current_weather_widget:get_children_by_id("wind")[1]:set_text(
-            weather.wind_speed .. "m/s (" .. to_direction(weather.wind_deg) .. ")")
-        current_weather_widget:get_children_by_id("humidity")[1]:set_text(weather.humidity)
-        current_weather_widget:get_children_by_id("uv")[1]:set_text(weather.uvi)
-        current_weather_widget:get_children_by_id("uv")[1]:set_color(get_uvi_index_color(weather.uvi))
+            result.current.wind_speed_10m .. "km/h (" .. to_direction(result.current.wind_direction_10m) .. ")")
+        current_weather_widget:get_children_by_id("humidity")[1]:set_text(result.current.relative_humidity_2m)
+        current_weather_widget:get_children_by_id("uv")[1]:set_text(result.daily.uv_index_max[1])
+        current_weather_widget:get_children_by_id("uv")[1]:set_color(get_uvi_index_color(result.daily.uv_index_max[1]))
 
-        for i, hour in ipairs(result.hourly) do
-            hourly_forecast_graph:add_value(hour.temp)
-            hourly_forecast_graph_border:add_value(hour.temp)
+        for index, hour in ipairs(result.hourly.time) do
+            if index <= 24 then
+                hourly_forecast_graph:add_value(result.hourly.temperature_2m[index])
+                hourly_forecast_graph_border:add_value(result.hourly.temperature_2m[index])
 
-            if (i - 1) % 4 == 0 then
-                local hour_widget = wibox.widget {
-                    widget = widgets.text,
-                    halign = "center",
-                    size = 12,
-                    text = os.date(time_format_12h and "%I%p" or "%H:00", tonumber(hour.dt))
-                }
+                if (index - 1) % 2 == 0 then
+                    local hour_widget = wibox.widget {
+                        widget = widgets.text,
+                        forced_width = dpi(50),
+                        halign = "center",
+                        size = 12,
+                        text = os.date(time_format_12h and "%I%p" or "%H:00", tonumber(hour))
+                    }
 
-                local temperature_widget = wibox.widget {
-                    widget = widgets.text,
-                    halign = "center",
-                    size = 15,
-                    text = string.format("%.0f", hour.temp) .. "°"
-                }
+                    local temperature_widget = wibox.widget {
+                        widget = widgets.text,
+                        halign = "center",
+                        size = 15,
+                        text = string.format("%.0f", result.hourly.temperature_2m[index]) .. "°"
+                    }
 
-                hours:add(hour_widget)
-                temperatures:add(temperature_widget)
+                    hours:add(hour_widget)
+                    temperatures:add(temperature_widget)
+                end
             end
         end
 
-        for _, day in ipairs(result.daily) do
+        for index, day in ipairs(result.daily.time) do
             local day_forecast = wibox.widget {
                 layout = wibox.layout.fixed.vertical,
                 spacing = dpi(15),
@@ -423,7 +437,8 @@ local function new()
                     widget = widgets.text,
                     halign = "center",
                     size = 15,
-                    text = os.date("%a", tonumber(day.dt) + tonumber(result.timezone_offset))
+                    text = os.date("%a", day),
+                    -- text = os.date("%a", tonumber(day.dt) + tonumber(result.timezone_offset))
                 },
                 {
                     layout = wibox.layout.fixed.vertical,
@@ -431,28 +446,20 @@ local function new()
                     {
                         widget = widgets.text,
                         halign = "center",
-                        icon = icon_map[day.weather[1].icon],
+                        icon = weather_codes_map[result.daily.weather_code[index]].icon,
                         size = 35
                     },
                     {
                         widget = widgets.text,
-                        forced_width = dpi(105),
                         halign = "center",
-                        valign = "top",
                         size = 12,
-                        text = day.weather[1].description
+                        text = gen_temperature_str(result.daily.temperature_2m_min[index])
                     },
                     {
                         widget = widgets.text,
                         halign = "center",
                         size = 12,
-                        text = gen_temperature_str(day.temp.day, "%.0f", false, weather_daemon:get_unit())
-                    },
-                    {
-                        widget = widgets.text,
-                        halign = "center",
-                        size = 12,
-                        text = gen_temperature_str(day.temp.night, "%.0f", false, weather_daemon:get_unit())
+                        text = gen_temperature_str(result.daily.temperature_2m_max[index])
                     }
                 }
             }

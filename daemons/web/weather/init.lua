@@ -20,41 +20,15 @@ local DATA_PATH = path .. "data.json"
 
 local UPDATE_INTERVAL = 60 * 30 -- 30 mins
 
-function weather:set_api_key(api_key)
-    Secret.password_store(
-        self._private.api_key_schema,
-        self._private.api_key_atrributes,
-        Secret.COLLECTION_DEFAULT,
-        "api key",
-        api_key,
-        nil,
-        function(source, result, unused)
-            local success = Secret.password_store_finish(result)
-            if success then
-                self._private.api_key = api_key
-                self:refresh()
-            end
-        end
-    )
-end
-
-function weather:get_api_key()
-    if self._private.api_key == nil then
-        self._private.api_key =Secret.password_lookup_sync(self._private.api_key_schema, self._private.api_key_atrributes)
-    end
-
-    return self._private.api_key or ""
-end
-
 function weather:set_unit(unit)
     self._private.unit = unit
-    library.settings["openweather.unit"] = unit
+    library.settings["weather.unit"] = unit
     self:refresh()
 end
 
 function weather:get_unit()
     if self._private.unit == nil then
-        self._private.unit = library.settings["openweather.unit"]
+        self._private.unit = library.settings["weather.unit"]
     end
 
     return self._private.unit or ""
@@ -62,13 +36,13 @@ end
 
 function weather:set_latitude(latitude)
     self._private.latitude = latitude
-    library.settings["openweather.latitude"] = latitude
+    library.settings["weather.latitude"] = latitude
     self:refresh()
 end
 
 function weather:get_latitude()
     if self._private.latitude == nil then
-        self._private.latitude = library.settings["openweather.latitude"]
+        self._private.latitude = library.settings["weather.latitude"]
     end
 
     return self._private.latitude or ""
@@ -76,27 +50,29 @@ end
 
 function weather:set_longitude(longitude)
     self._private.longitude = longitude
-    library.settings["openweather.longitude"] = longitude
+    library.settings["weather.longitude"] = longitude
     self:refresh()
 end
 
 function weather:get_longitude()
     if self._private.longitude == nil then
-        self._private.longitude = library.settings["openweather.longitude"]
+        self._private.longitude = library.settings["weather.longitude"]
     end
 
     return self._private.longitude or ""
 end
 
 function weather:refresh()
-    if self:get_api_key() == "" or self:get_latitude() == "" or self:get_longitude() == "" or self:get_unit() == "" then
+    if self:get_latitude() == "" or self:get_longitude() == "" or self:get_unit() == "" then
         self:emit_signal("error::missing_credentials")
         return
     end
 
     local link = string.format(
-        "https://api.openweathermap.org/data/2.5/onecall?lat=%s&lon=%s&appid=%s&units=%s&exclude=minutely&lang=en",
-        self:get_latitude(), self:get_longitude(), self:get_api_key(), self:get_unit())
+        "https://api.open-meteo.com/v1/forecast?latitude=%s&longitude=%s&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,wind_direction_10m&hourly=temperature_2m&daily=weather_code,temperature_2m_max,temperature_2m_min,uv_index_max&temperature_unit=%s&timeformat=unixtime",
+        self:get_latitude(), self:get_longitude(), self:get_unit())
+
+    print(link)
 
         filesystem.filesystem.remote_watch(
             DATA_PATH,
@@ -125,13 +101,6 @@ local function new()
     gtable.crush(ret, weather, true)
 
     ret._private = {}
-
-    ret._private.api_key_atrributes =  {
-        ["org.kwesomede.openweather.openweather.api-key"] = "openweather api key"
-    }
-    ret._private.api_key_schema = Secret.Schema.new("org.kwesomede", Secret.SchemaFlags.NONE, {
-        ["org.kwesomede.openweather.openweather.api-key"] = Secret.SchemaAttributeType.STRING
-    })
 
     gtimer.delayed_call(function()
         ret:refresh()

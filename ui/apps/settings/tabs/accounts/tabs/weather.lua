@@ -7,17 +7,11 @@ local weather_daemon = require("daemons.web.weather")
 local dpi = beautiful.xresources.apply_dpi
 local setmetatable = setmetatable
 
-local openweather = {
+local weather = {
     mt = {}
 }
 
 local function new()
-    local api_key_text_input = text_input {
-        icon = beautiful.icons.lock,
-        placeholder = "API Key:",
-        initial = weather_daemon:get_api_key()
-    }
-
     local latitude_text_input = text_input {
         icon = beautiful.icons.location_dot,
         placeholder =  "Latitude:",
@@ -39,29 +33,19 @@ local function new()
         initial_value_id = weather_daemon:get_unit(),
         values = {
             {
-                id = "metric",
-                title = "Metric",
+                id = "celsius",
+                title = "Celsius",
                 color = beautiful.colors.background,
                 check_color = beautiful.icons.computer.color
             },
             {
-                id = "imperial",
-                title = "Imperial",
-                color = beautiful.colors.background,
-                check_color = beautiful.icons.computer.color
-            },
-            {
-                id = "standard",
-                title = "Standard",
+                id = "fahrenheit",
+                title = "Fahrenheit",
                 color = beautiful.colors.background,
                 check_color = beautiful.icons.computer.color
             }
         }
     }
-
-    api_key_text_input:connect_signal("unfocus", function(self, context, text)
-        weather_daemon:set_api_key(text)
-    end)
 
     latitude_text_input:connect_signal("unfocus", function(self, context, text)
         weather_daemon:set_latitude(text)
@@ -77,15 +61,14 @@ local function new()
         scrollbar_width = dpi(10),
         step = 50,
         spacing = dpi(15),
-        api_key_text_input,
         longitude_text_input,
         latitude_text_input,
         unit_radio_group
     }
 end
 
-function openweather.mt:__call()
+function weather.mt:__call()
     return new()
 end
 
-return setmetatable(openweather, openweather.mt)
+return setmetatable(weather, weather.mt)
