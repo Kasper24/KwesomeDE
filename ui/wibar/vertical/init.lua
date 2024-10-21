@@ -20,7 +20,7 @@ local tray = require("ui.wibar.widgets.tray")
 local time = require("ui.wibar.widgets.time")
 
 local function calc_height(screen, horizontal_bar_position, bars_layout)
-    return (horizontal_bar_position == "top" and bars_layout == "vertical_horizontal") and
+    return (bars_layout == "vertical_horizontal") and
     screen.geometry.height - dpi(65) or screen.geometry.height
 end
 
@@ -37,6 +37,7 @@ awful.screen.connect_for_each_screen(function(screen)
         {
             widget = wibox.container.margin,
             forced_width = dpi(65),
+            margins = { bottom = dpi(15) },
             taglist(screen)
         }
     } or bars_layout == "vertical" and
@@ -87,6 +88,6 @@ awful.screen.connect_for_each_screen(function(screen)
 
     capi.screen.connect_signal("request::wallpaper", function()
         screen.vertical_wibar.minimum_height = calc_height(screen, horizontal_bar_position, bars_layout)
-        screen.vertical_wibar.maximum_width = calc_height(screen, horizontal_bar_position, bars_layout)
+        screen.vertical_wibar.maximum_height = calc_height(screen, horizontal_bar_position, bars_layout)
     end)
 end)

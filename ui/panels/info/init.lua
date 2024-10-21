@@ -39,17 +39,33 @@ local function new()
 	local function placement(widget)
 		if ui_daemon:get_bars_layout() ~= "vertical" then
 			if ui_daemon:get_widget_at_center() == "tasklist" then
-				return awful.placement.top_right(widget, {
-					honor_workarea = true,
-					honor_padding = true,
-					attach = true,
-				})
+				if ui_daemon:get_horizontal_bar_position() == "top" then
+					return awful.placement.top_right(widget, {
+						honor_workarea = true,
+						honor_padding = true,
+						attach = true,
+					})
+				else
+					return awful.placement.bottom_right(widget, {
+						honor_workarea = true,
+						honor_padding = true,
+						attach = true,
+					})
+				end
 			else
-				return awful.placement.top(widget, {
-					honor_workarea = true,
-					honor_padding = true,
-					attach = true,
-				})
+				if ui_daemon:get_horizontal_bar_position() == "top" then
+					return awful.placement.top(widget, {
+						honor_workarea = true,
+						honor_padding = true,
+						attach = true,
+					})
+				else
+					return awful.placement.bottom(widget, {
+						honor_workarea = true,
+						honor_padding = true,
+						attach = true,
+					})
+				end
 			end
 		else
 			return awful.placement.top_left(widget, {

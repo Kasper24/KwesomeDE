@@ -96,12 +96,8 @@ local function update_taglist(self, tag)
 
     if tag.selected then
         self.size_animation:set(dpi(40))
-        self.widget:turn_on()
     else
         self.size_animation:set(dpi(15))
-        if not has_clients then
-            self.widget:turn_off()
-        end
     end
 end
 
@@ -173,30 +169,22 @@ local function tag_widget(self, tag, accent_color, direction)
     self:set_widget(widget)
 end
 
-local function new(screen, direction)
+local function new(screen)
     local accent_color = beautiful.colors.random_accent_color()
 
-    local tags_margins = ui_daemon:get_horizontal_bar_position() == "top" and
-        { top = ui_daemon:get_bars_layout() == "vertical_horizontal" and dpi(15) or 0} or
-        { bottom = ui_daemon:get_bars_layout() == "vertical_horizontal" and dpi(15) or 0}
+    local direction = ui_daemon:get_bars_layout()
 
     local tag_margins = direction == "horizontal" and
         { top = dpi(25), bottom = dpi(25)} or
         { left = dpi(25), right = dpi(25)}
 
-    local direction = "north"
-    if ui_daemon:get_horizontal_bar_position() == "bottom" and
-        ui_daemon:get_bars_layout() == "vertical_horizontal"
-    then
-        direction = "south"
-    end
-
     return wibox.widget {
         widget = wibox.container.rotate,
-        direction = direction,
+        direction = (ui_daemon:get_horizontal_bar_position() == "bottom" and
+            ui_daemon:get_bars_layout() == "vertical_horizontal") and "south" or "north",
         {
             widget = wibox.container.margin,
-            margins = tags_margins,
+            -- margins = tags_margins,
             {
                 widget = awful.widget.taglist {
                     screen = screen,
