@@ -2,9 +2,9 @@ local gtable = require("gears.table")
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
-local empty_wallpapers = require("ui.apps.settings.tabs.wallpaper.empty_wallpapers")
-local wallpapers_grid = require("ui.apps.settings.tabs.wallpaper.wallpapers_grid")
-local actions = require("ui.apps.settings.tabs.wallpaper.actions")
+local empty_wallpapers = require("ui.apps.settings.tabs.wallpaper.widgets.empty_wallpapers")
+local wallpapers_grid = require("ui.apps.settings.tabs.wallpaper.widgets.wallpapers_grid")
+local actions = require("ui.apps.settings.tabs.wallpaper.widgets.actions")
 local theme_daemon = require("daemons.system.theme")
 local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
@@ -15,7 +15,7 @@ local image = {
 }
 
 local function new()
-    local wallpapers = wallpapers_grid("we_wallpapers", function(entry, scrollable_grid)
+    local wallpapers = wallpapers_grid("wallpapers", function(entry)
         local widget = nil
         local button = wibox.widget {
             widget = widgets.button.state,
@@ -23,9 +23,6 @@ local function new()
             on_color = beautiful.icons.computer.color,
             halign = "center",
             on_release = function()
-                widget:select()
-            end,
-            on_secondary_release = function()
                 widget:select()
             end,
             {
@@ -53,7 +50,7 @@ local function new()
 
         widget:connect_signal("select", function()
             button:turn_on()
-            theme_daemon:set_selected_colorscheme(entry.path, "wallpaper_engine")
+            theme_daemon:set_selected_colorscheme(entry.path, "image")
         end)
 
         widget:connect_signal("unselect", function()
@@ -80,14 +77,14 @@ local function new()
     }
 
     theme_daemon:connect_signal("wallpapers", function(self, wallpapers, wallpapers_and_we_wallpapers, we_wallpapers)
-        if gtable.count_keys(we_wallpapers) == 0 then
+        if gtable.count_keys(wallpapers) == 0 then
             stack:raise_widget(empty_wallpapers_widget)
         else
             stack:raise_widget(content)
         end
     end)
 
-    if gtable.count_keys(theme_daemon:get_we_wallpapers()) == 0 then
+    if gtable.count_keys(theme_daemon:get_wallpapers()) == 0 then
         stack:raise_widget(empty_wallpapers_widget)
     else
         stack:raise_widget(content)
