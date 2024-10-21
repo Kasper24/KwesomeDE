@@ -161,7 +161,7 @@ local function new()
         widget = widgets.text,
         halign = "left",
         bold = true,
-        color = beautiful.icons.bluetooth.off.color,
+        color = beautiful.colors.on_background,
         text = "Bluetooth"
     }
 
