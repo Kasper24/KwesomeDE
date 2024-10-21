@@ -32,6 +32,10 @@ gtimer.start_new(5, function()
 	return true
 end)
 
+if os.getenv("AWM_DEBUG") == "true" then
+	DEBUG = true
+end
+
 require("daemons.hardware.display"):apply()
 
 local beautiful = require("beautiful")
@@ -43,10 +47,6 @@ beautiful.init(filesystem.filesystem.get_awesome_config_dir("ui") .. "theme.lua"
 
 require("config")
 require("ui")
-
-if os.getenv("AWM_DEBUG") == "true" then
-	DEBUG = true
-end
 
 if DEBUG ~= true then
 	require("daemons.system.persistent"):enable()
