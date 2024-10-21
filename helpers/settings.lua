@@ -338,7 +338,7 @@ local function get_default_settings()
         },
         "wallpaper_engine": {
             "command": {
-                "default": "~/.config/awesome/assets/wallpaper-engine/binary/linux-wallpaperengine",
+                "default": "linux-wallpaperengine",
                 "type": "string",
                 "description": "The command to launch or path to wallpaper engine binary"
             },
