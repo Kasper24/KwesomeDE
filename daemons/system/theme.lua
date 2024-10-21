@@ -643,6 +643,48 @@ local function we_wallpaper(self, screen)
 	awful.spawn.with_shell(cmd)
 end
 
+local function kill_old_we_instances(screen)
+	local wallpaper_engine_instances = helpers.client.find({
+		class = "linux-wallpaperengine",
+		screen = screen,
+	})
+	for _, wallpaper_engine_instance in ipairs(wallpaper_engine_instances) do
+		wallpaper_engine_instance:kill()
+	end
+end
+
+local function adjust_we_on_res_change(self)
+	capi.screen.connect_signal("request::wallpaper", function(screen)
+        kill_old_we_instances(screen)
+		we_wallpaper(self, screen)
+    end)
+end
+
+local function screenshot_we_on_change(self)
+	capi.client.connect_signal("request::manage", function(client)
+		if client.class == "linux-wallpaperengine" and client.screen == capi.screen.primary then
+			gtimer.start_new(3, function()
+				if not client or not client.valid then
+					return
+				end
+
+				local screenshot = awful.screenshot({
+					client = client,
+				})
+				screenshot:refresh()
+				wibox.widget.draw_to_svg_file(
+					screenshot.content_widget,
+					BACKGROUND_PATH,
+					client.width,
+					client.height
+				)
+				capi.awesome.emit_signal("wallpaper::changed")
+				return false
+			end)
+		end
+	end)
+end
+
 local function sort_wallpapers(self)
 	table.sort(self._private.wallpapers, function(a, b)
 		return a.name < b.name
@@ -781,6 +823,29 @@ local function watch_wallpapers_changes(self)
 	end)
 end
 
+local function run_command_on_change(self)
+	capi.awesome.connect_signal("wallpaper::changed", function(background_path, is_startup)
+		gtimer.start_new(5, function()
+			if self:get_run_on_set() and not is_startup then
+				awful.spawn.with_shell(self:get_run_on_set())
+			end
+		end)
+	end)
+end
+
+local function set_wallpaper_on_startup(self)
+	gtimer.delayed_call(function()
+		if
+			#helpers.client.find({
+				class = "linux-wallpaperengine",
+			}) > 0 and self:get_wallpaper_type() == "wallpaper_engine"
+		then
+			return
+		end
+		self:set_wallpaper(self:get_active_wallpaper(), self:get_wallpaper_type(), true)
+	end)
+end
+
 -- Colorschemes
 function theme:save_colorscheme()
 	helpers.settings["theme.colorschemes"] = self._private.colorschemes
@@ -849,13 +914,7 @@ function theme:set_wallpaper(wallpaper, type, is_startup)
 	helpers.settings["theme.wallpaper_type"] = type
 
 	for s in capi.screen do
-		local wallpaper_engine_instances = helpers.client.find({
-			class = "linux-wallpaperengine",
-			screen = s,
-		})
-		for _, wallpaper_engine_instance in ipairs(wallpaper_engine_instances) do
-			wallpaper_engine_instance:kill()
-		end
+		kill_old_we_instances(s)
 
 		if self:get_wallpaper_type() == "image" then
 			image_wallpaper(self, s)
@@ -1088,50 +1147,12 @@ local function new()
 	ret._private.binary = {}
 	ret._private.wallpaper_engine = {}
 
-	gtimer.delayed_call(function()
-		if
-			#helpers.client.find({
-				class = "linux-wallpaperengine",
-			}) > 0 and ret:get_wallpaper_type() == "wallpaper_engine"
-		then
-			return
-		end
-		ret:set_wallpaper(ret:get_active_wallpaper(), ret:get_wallpaper_type(), true)
-	end)
-
+	set_wallpaper_on_startup(ret)
 	scan_wallpapers(ret)
 	watch_wallpapers_changes(ret)
-
-	capi.client.connect_signal("request::manage", function(client)
-		if client.class == "linux-wallpaperengine" and client.screen == capi.screen.primary then
-			gtimer.start_new(3, function()
-				if not client or not client.valid then
-					return
-				end
-
-				local screenshot = awful.screenshot({
-					client = client,
-				})
-				screenshot:refresh()
-				wibox.widget.draw_to_svg_file(
-					screenshot.content_widget,
-					"/home/kasper/.cache/awesome/wallpaper.png",
-					client.width,
-					client.height
-				)
-				capi.awesome.emit_signal("wallpaper::changed")
-				return false
-			end)
-		end
-	end)
-
-	capi.awesome.connect_signal("wallpaper::changed", function(background_path, is_startup)
-		gtimer.start_new(5, function()
-			if ret:get_run_on_set() and not is_startup then
-				awful.spawn.with_shell(ret:get_run_on_set())
-			end
-		end)
-	end)
+	screenshot_we_on_change(ret)
+    adjust_we_on_res_change(ret)
+	run_command_on_change(ret)
 
 	return ret
 end
