@@ -72,8 +72,6 @@ function weather:refresh()
         "https://api.open-meteo.com/v1/forecast?latitude=%s&longitude=%s&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,wind_direction_10m&hourly=temperature_2m&daily=weather_code,temperature_2m_max,temperature_2m_min,uv_index_max&temperature_unit=%s&timeformat=unixtime",
         self:get_latitude(), self:get_longitude(), self:get_unit())
 
-    print(link)
-
         filesystem.filesystem.remote_watch(
             DATA_PATH,
             link,

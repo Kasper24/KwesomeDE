@@ -1,11 +1,8 @@
-local gtable = require("gears.table")
 local gcolor = require("gears.color")
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
-local empty_wallpapers = require("ui.apps.settings.tabs.wallpaper.widgets.empty_wallpapers")
-local wallpapers_grid = require("ui.apps.settings.tabs.wallpaper.widgets.wallpapers_grid")
-local actions = require("ui.apps.settings.tabs.wallpaper.widgets.actions")
+local wallpaper_tab = require("ui.apps.settings.tabs.wallpaper.tabs")
 local theme_daemon = require("daemons.system.theme")
 local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
@@ -13,12 +10,12 @@ local setmetatable = setmetatable
 local sin = math.sin
 local pi = math.pi
 
-local image = {
+local digital_sun = {
     mt = {}
 }
 
 local function new()
-    local wallpapers = wallpapers_grid("wallpapers_and_we_wallpapers", function(entry, scrollable_grid)
+    return wallpaper_tab("all", function(entry, scrollable_grid)
         local colors = theme_daemon:get_colorschemes()[entry.path] or theme_daemon:get_active_colorscheme_colors()
         local sun = wibox.widget {
             widget = wibox.widget.base.make_widget,
@@ -134,42 +131,10 @@ local function new()
 
         return widget
     end)
-
-    local empty_wallpapers_widget = empty_wallpapers()
-
-    local content = wibox.widget {
-        layout = wibox.layout.overflow.vertical,
-        spacing = dpi(15),
-        wallpapers,
-        actions()
-    }
-
-    local stack = wibox.widget {
-        layout = wibox.layout.stack,
-        top_only = true,
-        empty_wallpapers_widget,
-        content
-    }
-
-    theme_daemon:connect_signal("wallpapers", function(self, wallpapers, wallpapers_and_we_wallpapers, we_wallpapers)
-        if gtable.count_keys(wallpapers_and_we_wallpapers) == 0 then
-            stack:raise_widget(empty_wallpapers_widget)
-        else
-            stack:raise_widget(content)
-        end
-    end)
-
-    if gtable.count_keys(theme_daemon:get_wallpapers_and_we_wallpapers()) == 0 then
-        stack:raise_widget(empty_wallpapers_widget)
-    else
-        stack:raise_widget(content)
-    end
-
-    return stack
 end
 
-function image.mt:__call()
+function digital_sun.mt:__call()
     return new()
 end
 
-return setmetatable(image, image.mt)
+return setmetatable(digital_sun, digital_sun.mt)

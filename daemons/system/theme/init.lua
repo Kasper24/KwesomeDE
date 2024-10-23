@@ -15,6 +15,7 @@ local Color = require("external.lua-color")
 local library = require("library")
 local sanitize_filename = library.string.sanitize_filename
 local filesystem = require("external.filesystem")
+local async = require("external.async")
 local json = require("external.json")
 local string = string
 local ipairs = ipairs
@@ -317,10 +318,10 @@ local function replace_template_colors(color, color_name, line)
 end
 
 local function generate_templates(self)
-	filesystem.filesystem.scan(BASE_TEMPLATES_PATH, function(error, files)
-		if error == nil and files then
-			for index, file in ipairs(files) do
-				local name = file.name
+	filesystem.filesystem.list_contents(BASE_TEMPLATES_PATH, "", function(err, list)
+		if err == nil then
+			for _, info in ipairs(list) do
+				local name = info:get_name()
 				if name:match(".base") ~= nil then
 					local template_path = BASE_TEMPLATES_PATH .. name
 					local file = filesystem.file.new_for_path(template_path)
@@ -446,7 +447,7 @@ local function install_gtk_theme()
 	awful.spawn(string.format("cp -r %s %s", GTK_THEME_LINEA_NORD_COLOR, ALT_INSTALLED_GTK_THEMES_PATH), false)
 end
 
-local function image_wallpaper(self, screen)
+local function set_image_wallpaper(self, screen)
 	local widget = wibox.widget({
 		widget = wibox.widget.imagebox,
 		resize = true,
@@ -463,7 +464,7 @@ local function image_wallpaper(self, screen)
 	})
 end
 
-local function mountain_wallpaper(self, screen)
+local function set_mountain_wallpaper(self, screen)
 	local colors = self:get_active_wallpaper_colors()
 
 	local widget = wibox.widget({
@@ -499,7 +500,7 @@ local function mountain_wallpaper(self, screen)
 	})
 end
 
-local function digital_sun_wallpaper(self, screen)
+local function set_digital_sun_wallpaper(self, screen)
 	local colors = self:get_active_wallpaper_colors()
 
 	local widget = wibox.widget({
@@ -564,7 +565,7 @@ local function digital_sun_wallpaper(self, screen)
 	})
 end
 
-local function binary_wallpaper(self, screen)
+local function set_binary_wallpaper(self, screen)
 	local function binary()
 		local ret = {}
 		for _ = 1, 30 do
@@ -610,7 +611,7 @@ local function binary_wallpaper(self, screen)
 	})
 end
 
-local function get_we_wallpaper_id(path)
+local function get_wallpaper_engine_wallpaper_id(path)
 	local last_slash_pos = path:find("/[^/]*$")
 	if last_slash_pos then
 		local prefix = path:sub(1, last_slash_pos - 1)
@@ -623,219 +624,63 @@ local function get_we_wallpaper_id(path)
 	end
 end
 
-local function we_wallpaper(self, screen)
+local function set_wallpaper_engine_wallpaper(self)
 	if DEBUG then
 		return
 	end
 
-	local id = get_we_wallpaper_id(self:get_active_wallpaper())
+	local id = get_wallpaper_engine_wallpaper_id(self:get_active_wallpaper())
+	local bg = self:get_wallpaper_engine_workshop_folder() .. "/" .. id
+	local screens_string = ""
+	for screen in capi.screen do
+		for name, output in pairs(screen.outputs) do
+
+			screens_string = screens_string .. screens_string.format("--screen-root %s --bg %s ", name, bg)
+		end
+	end
+
 	local cmd = string.format(
-		"%s --assets-dir %s %s --fps %s --window %sx%sx%sx%s",
+		"%s --assets-dir %s %s --fps %s",
 		self:get_wallpaper_engine_command(),
 		self:get_wallpaper_engine_assets_folder(),
-		self:get_wallpaper_engine_workshop_folder() .. "/" .. id,
-		self:get_wallpaper_engine_fps(),
-		screen.geometry.x,
-		screen.geometry.y,
-		screen.geometry.width,
-		screen.geometry.height
+		screens_string,
+		self:get_wallpaper_engine_fps()
 	)
+	print(cmd)
 	awful.spawn.with_shell(cmd)
 end
 
-local function kill_old_we_instances(screen)
+local function kill_old_wallpaper_engine_instances()
 	awful.spawn("pkill -f linux-wallpaperengine", false)
 end
 
-local function adjust_we_on_res_change(self)
-	capi.screen.connect_signal("request::wallpaper", function(screen)
-        self:set_wallpaper(self:get_active_wallpaper(), "wallpaper_engine")
-    end)
-end
-
-local function screenshot_we_on_change(self)
-	capi.client.connect_signal("request::manage", function(client)
-		if client.class == "linux-wallpaperengine" and client.screen == capi.screen.primary then
-			gtimer.start_new(3, function()
-				if not client or not client.valid then
-					return
-				end
-
-				local screenshot = awful.screenshot({
-					client = client,
-				})
-				screenshot:refresh()
-				wibox.widget.draw_to_svg_file(
-					screenshot.content_widget,
-					BACKGROUND_PATH,
-					client.width,
-					client.height
-				)
+local function screenshot_wallpaper(self, type)
+	if type == "wallpaper_engine" then
+		local file = filesystem.file.new_for_path(self:get_active_wallpaper())
+		file:copy(BACKGROUND_PATH, { overwrite = true }, function(error)
+			if not error then
 				capi.awesome.emit_signal("wallpaper::changed")
-				return false
-			end)
-		end
-	end)
-end
-
-local function sort_wallpapers(self)
-	table.sort(self._private.wallpapers, function(a, b)
-		return a.name < b.name
-	end)
-
-	table.sort(self._private.we_wallpapers, function(a, b)
-		return a.name < b.name
-	end)
-end
-
-local function on_wallpapers_updated(self)
-	self:set_selected_tab(self:get_selected_tab())
-
-	if gtable.count_keys(self:get_wallpapers()) > 0 then
-		self:set_selected_colorscheme(self:get_wallpapers()[1].path, "image")
-	end
-	if gtable.count_keys(self:get_wallpapers_and_we_wallpapers()) > 0 then
-		self:set_selected_colorscheme(self:get_wallpapers_and_we_wallpapers()[1].path, "mountain")
-		self:set_selected_colorscheme(self:get_wallpapers_and_we_wallpapers()[1].path, "digital_sun")
-		self:set_selected_colorscheme(self:get_wallpapers_and_we_wallpapers()[1].path, "binary")
-	end
-	if gtable.count_keys(self:get_we_wallpapers()) > 0 then
-		self:set_selected_colorscheme(self:get_we_wallpapers()[1].path, "wallpaper_engine")
-	end
-
-	self:emit_signal(
-		"wallpapers",
-		self:get_wallpapers(),
-		self:get_wallpapers_and_we_wallpapers(),
-		self:get_we_wallpapers()
-	)
-end
-
-local function scan_wallpapers(self)
-	self._private.wallpapers = {}
-	self._private.we_wallpapers = {}
-
-	filesystem.filesystem.make_directory_with_parents(THUMBNAIL_PATH, function()
-		filesystem.filesystem.scan(WALLPAPERS_PATH, function(error, files)
-			if error == nil and files then
-				for _, file in ipairs(files) do
-					local mimetype = Gio.content_type_guess(file.full_path)
-					if PICTURES_MIMETYPES[mimetype] then
-						library.ui.scale_image_save(
-							file.full_path,
-							THUMBNAIL_PATH .. file.name,
-							100,
-							70,
-							function(image)
-								table.insert(self._private.wallpapers, {
-									uid = file.full_path,
-									path = file.full_path,
-									thumbnail = image,
-									name = file.name,
-								})
-							end
-						)
-					end
-				end
-			end
-
-			filesystem.filesystem.scan(self:get_wallpaper_engine_workshop_folder(), function(error, files)
-				if error == nil and files then
-					for index, file in ipairs(files) do
-						local mimetype = Gio.content_type_guess(file.full_path)
-						if PICTURES_MIMETYPES[mimetype] then
-							local json_file = filesystem.file.new_for_path(file.path_no_name .. "project.json")
-							json_file:read(function(error, content)
-								if error == nil then
-									local name = json.decode(content).title
-									library.ui.scale_image_save(
-										file.full_path,
-										THUMBNAIL_PATH .. sanitize_filename(name),
-										100,
-										70,
-										function(image)
-											table.insert(self._private.we_wallpapers, {
-												uid = file.full_path,
-												path = file.full_path,
-												thumbnail = image,
-												name = name,
-											})
-
-											if index == #files then
-												sort_wallpapers(self)
-												on_wallpapers_updated(self)
-											end
-										end
-									)
-								elseif index == #files then
-									sort_wallpapers(self)
-									on_wallpapers_updated(self)
-								end
-							end)
-						end
-					end
-				else
-					sort_wallpapers(self)
-					on_wallpapers_updated(self)
-				end
-			end)
-		end)
-	end)
-end
-
-local function watch_wallpapers_changes(self)
-	if self._private.watch_wallpapers_changes_debouncer == nil then
-		self._private.watch_wallpapers_changes_debouncer = gtimer({
-			timeout = 5,
-			autostart = true,
-			single_shot = true,
-			callback = function()
-				scan_wallpapers(self)
-			end,
-		})
-	end
-
-	local wallpapers_watcher = library.inotify:watch(WALLPAPERS_PATH, {
-		library.inotify.Events.create,
-		library.inotify.Events.delete,
-		library.inotify.Events.moved_from,
-		library.inotify.Events.moved_to,
-	})
-	wallpapers_watcher:connect_signal("event", function()
-		self._private.watch_wallpapers_changes_debouncer:again()
-	end)
-
-	self._private.we_wallpapers_watcher = library.inotify:watch(self:get_wallpaper_engine_workshop_folder(), {
-		library.inotify.Events.create,
-		library.inotify.Events.delete,
-		library.inotify.Events.moved_from,
-		library.inotify.Events.moved_to,
-	})
-	self._private.we_wallpapers_watcher:connect_signal("event", function()
-		self._private.watch_wallpapers_changes_debouncer:again()
-	end)
-end
-
-local function run_command_on_change(self)
-	capi.awesome.connect_signal("wallpaper::changed", function(background_path, is_startup)
-		gtimer.start_new(5, function()
-			if self:get_run_on_set() and not is_startup then
-				awful.spawn.with_shell(self:get_run_on_set())
 			end
 		end)
-	end)
+	else
+		wibox.widget.draw_to_svg_file(
+			self._private.wallpaper_widget,
+			BACKGROUND_PATH,
+			capi.screen.primary.geometry.width,
+			capi.screen.primary.geometry.height
+		)
+		capi.awesome.emit_signal("wallpaper::changed")
+	end
 end
 
-local function set_wallpaper_on_startup(self)
-	gtimer.delayed_call(function()
-		if
-			#library.client.find({
-				class = "linux-wallpaperengine",
-			}) > 0 and self:get_wallpaper_type() == "wallpaper_engine"
-		then
-			return
-		end
-		self:set_wallpaper(self:get_active_wallpaper(), self:get_wallpaper_type(), true)
+
+local function run_command(self, is_startup)
+	if self:get_run_on_set() and not is_startup then
+		awful.spawn.with_shell(self:get_run_on_set())
+	end
+	gtimer.start_new(5, function()
+		awful.spawn.with_shell(self:get_run_on_set())
+		return false
 	end)
 end
 
@@ -906,31 +751,25 @@ function theme:set_wallpaper(wallpaper, type, is_startup)
 	self._private.wallpaper_type = type
 	library.settings["theme.wallpaper_type"] = type
 
-	for s in capi.screen do
-		kill_old_we_instances(s)
-
-		if self:get_wallpaper_type() == "image" then
-			image_wallpaper(self, s)
-		elseif self:get_wallpaper_type() == "mountain" then
-			mountain_wallpaper(self, s)
-		elseif self:get_wallpaper_type() == "digital_sun" then
-			digital_sun_wallpaper(self, s)
-		elseif self:get_wallpaper_type() == "binary" then
-			binary_wallpaper(self, s)
-		elseif self:get_wallpaper_type() == "wallpaper_engine" then
-			we_wallpaper(self, s)
+	kill_old_wallpaper_engine_instances()
+	if self:get_wallpaper_type() == "wallpaper_engine" then
+		set_wallpaper_engine_wallpaper(self)
+	else
+		for s in capi.screen do
+			if self:get_wallpaper_type() == "image" then
+				set_image_wallpaper(self, s)
+			elseif self:get_wallpaper_type() == "mountain" then
+				set_mountain_wallpaper(self, s)
+			elseif self:get_wallpaper_type() == "digital_sun" then
+				set_digital_sun_wallpaper(self, s)
+			elseif self:get_wallpaper_type() == "binary" then
+				set_binary_wallpaper(self, s)
+			end
 		end
 	end
 
-	if self:get_wallpaper_type() ~= "wallpaper_engine" then
-		wibox.widget.draw_to_svg_file(
-			self._private.wallpaper_widget,
-			BACKGROUND_PATH,
-			capi.screen.primary.geometry.width,
-			capi.screen.primary.geometry.height
-		)
-		capi.awesome.emit_signal("wallpaper::changed", BACKGROUND_PATH, is_startup)
-	end
+	screenshot_wallpaper(self, type)
+	run_command(self, is_startup)
 end
 
 function theme:get_wallpaper_path()
@@ -957,16 +796,112 @@ function theme:get_active_wallpaper_colors()
 	return self:get_colorschemes()[self:get_active_wallpaper()]
 end
 
-function theme:get_wallpapers()
-	return self._private.wallpapers
+function theme:get_wallpapers_image()
+	return self._private.image_wallpapers
 end
 
-function theme:get_we_wallpapers()
-	return self._private.we_wallpapers
+function theme:get_wallpapers_wallpaper_engine()
+	return self._private.wallpaper_engine_wallpapers
 end
 
-function theme:get_wallpapers_and_we_wallpapers()
-	return gtable.join(self._private.wallpapers, self._private.we_wallpapers)
+function theme:get_wallpapers_all()
+	return gtable.join(self._private.image_wallpapers, self._private.wallpaper_engine_wallpapers)
+end
+
+function theme:scan_wallpapers()
+	self._private.image_wallpapers = {}
+	self._private.wallpaper_engine_wallpapers = {}
+
+	async.waterfall({
+		function(cb)
+			filesystem.filesystem.make_directory_with_parents(THUMBNAIL_PATH, function()
+				cb(nil)
+			end)
+		end,
+		function (cb)
+			filesystem.filesystem.list_contents(WALLPAPERS_PATH, "", function(err, list)
+				for index, info in ipairs(list) do
+					local path = string.format("%s/%s", WALLPAPERS_PATH, info:get_name())
+					local mimetype = Gio.content_type_guess(path)
+					if PICTURES_MIMETYPES[mimetype] then
+						library.ui.scale_image_save(
+							path,
+							THUMBNAIL_PATH .. info:get_name(),
+							100,
+							70,
+							function(image)
+								table.insert(self._private.image_wallpapers, {
+									uid = path,
+									path = path,
+									thumbnail = image,
+									name = info:get_name(),
+								})
+								if index == #list then
+									cb(nil)
+								end
+							end
+						)
+					end
+				end
+			end)
+		end,
+		function(cb)
+			filesystem.filesystem.list_contents(self:get_wallpaper_engine_workshop_folder(), function(err, list)
+				for index, info in ipairs(list) do
+					local path = string.format("%s/%s", self:get_wallpaper_engine_workshop_folder(), info:get_name())
+					local json_file = filesystem.file.new_for_path(path .. "/project.json")
+					json_file:read_string(function(error, content)
+						if error == nil then
+							local project_data = json.decode(content)
+							local name = project_data.title
+							local preview_path = path .. "/" .. project_data.preview
+							library.ui.scale_image_save(
+								preview_path,
+								THUMBNAIL_PATH .. sanitize_filename(name) .. ".png",
+								100,
+								70,
+								function(image)
+									table.insert(self._private.wallpaper_engine_wallpapers, {
+										uid = preview_path,
+										path = preview_path,
+										thumbnail = image,
+										name = name,
+									})
+									if index == #list then
+										cb(nil)
+									end
+								end
+							)
+						end
+					end)
+				end
+			end)
+		end
+	}, function(err, results)
+		table.sort(self._private.image_wallpapers, function(a, b)
+			return a.name < b.name
+		end)
+
+		table.sort(self._private.wallpaper_engine_wallpapers, function(a, b)
+			return a.name < b.name
+		end)
+
+		if gtable.count_keys(self:get_wallpapers_image()) > 0 then
+			self:set_selected_colorscheme(self:get_wallpapers_image()[1].path, "image")
+		end
+		if gtable.count_keys(self:get_wallpapers_all()) > 0 then
+			self:set_selected_colorscheme(self:get_wallpapers_all()[1].path, "mountain")
+			self:set_selected_colorscheme(self:get_wallpapers_all()[1].path, "digital_sun")
+			self:set_selected_colorscheme(self:get_wallpapers_all()[1].path, "binary")
+		end
+		if gtable.count_keys(self:get_wallpapers_wallpaper_engine()) > 0 then
+			self:set_selected_colorscheme(self:get_wallpapers_wallpaper_engine()[1].path, "wallpaper_engine")
+		end
+
+		self:emit_signal("wallpapers::image", self:get_wallpapers_image())
+		self:emit_signal("wallpapers::all", self:get_wallpapers_all())
+		self:emit_signal("wallpapers::wallpaper_engine", self:get_wallpapers_wallpaper_engine())
+	end)
 end
 
 -- Active colorscheme
@@ -1071,17 +1006,6 @@ end
 function theme:set_wallpaper_engine_workshop_folder(wallpaper_engine_workshop_folder)
 	self._private.wallpaper_engine_workshop_folder = wallpaper_engine_workshop_folder
 	library.settings["wallpaper_engine.workshop_folder"] = wallpaper_engine_workshop_folder
-	scan_wallpapers(self)
-
-	self._private.we_wallpapers_watcher = library.inotify:watch(wallpaper_engine_workshop_folder, {
-		library.inotify.Events.create,
-		library.inotify.Events.delete,
-		library.inotify.Events.moved_from,
-		library.inotify.Events.moved_to,
-	})
-	self._private.we_wallpapers_watcher:connect_signal("event", function()
-		self._private.watch_wallpapers_changes_debouncer:again()
-	end)
 end
 
 function theme:get_wallpaper_engine_workshop_folder()
@@ -1126,12 +1050,7 @@ local function new()
 	ret._private.binary = {}
 	ret._private.wallpaper_engine = {}
 
-	set_wallpaper_on_startup(ret)
-	scan_wallpapers(ret)
-	watch_wallpapers_changes(ret)
-	screenshot_we_on_change(ret)
-    adjust_we_on_res_change(ret)
-	run_command_on_change(ret)
+	ret:set_wallpaper(ret:get_active_wallpaper(), ret:get_wallpaper_type(), true)
 
 	return ret
 end

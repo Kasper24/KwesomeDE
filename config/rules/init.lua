@@ -315,33 +315,10 @@ ruled.client.connect_signal("request::rules", function()
         }
     }
 
-    -- Wallpaper engine
-    ruled.client.append_rule {
-        rule_any = {
-            class = {"linux-wallpaperengine"}
-        },
-        properties = {
-            x = 0,
-            y = 0,
-            floating = true,
-            below = true,
-            sticky = true,
-            skip_taskbar = true,
-            can_tile = false,
-            can_move = false,
-            can_resize = false,
-            is_fixed = true,
-            can_focus = false,
-            focusable = false,
-            can_kill = false,
-            fake_root = true
-        }
-    }
-
     -- Wallpaper engine preview
     ruled.client.append_rule {
         rule_any = {
-            class = {"linux-wallpaperengine-preview"}
+            class = {"linux-wallpaperengine"}
         },
         properties = {
             floating = true,

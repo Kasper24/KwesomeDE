@@ -53,26 +53,6 @@ capi.client.connect_signal("property::fullscreen", function(client)
         audio_popup:hide()
         wifi_popup:hide()
         bluetooth_popup:hide()
-
-        for screen in capi.screen do
-            if screen.vertical_wibar then
-                screen.vertical_wibar.ontop = false
-            end
-            if screen.horizontal_wibar then
-                screen.horizontal_wibar.ontop = false
-            end
-        end
-    else
-        if #library.client.find({fullscreen = true}) == 0 then
-            for screen in capi.screen do
-                if screen.vertical_wibar then
-                    screen.vertical_wibar.ontop = true
-                end
-                if screen.horizontal_wibar then
-                    screen.horizontal_wibar.ontop = true
-                end
-            end
-        end
     end
 end)
 

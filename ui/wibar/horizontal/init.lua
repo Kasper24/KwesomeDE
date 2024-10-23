@@ -25,7 +25,7 @@ awful.screen.connect_for_each_screen(function(screen)
 
     -- Using popup instead of the wibar widget because it has some edge case bugs with detecting mouse input correctly
     screen.horizontal_wibar = widgets.popup {
-        ontop = true,
+        ontop = false,
         screen = screen,
         maximum_height = dpi(65),
         minimum_width = screen.geometry.width,

@@ -19,7 +19,7 @@ local tasklist = require("ui.wibar.widgets.tasklist")
 local tray = require("ui.wibar.widgets.tray")
 local time = require("ui.wibar.widgets.time")
 
-local function calc_height(screen, horizontal_bar_position, bars_layout)
+local function calc_height(screen, bars_layout)
     return (bars_layout == "vertical_horizontal") and
     screen.geometry.height - dpi(65) or screen.geometry.height
 end
@@ -73,12 +73,12 @@ awful.screen.connect_for_each_screen(function(screen)
         }
 
     screen.vertical_wibar = widgets.popup {
-        ontop = true,
+        ontop = false,
         screen = screen,
         y = (horizontal_bar_position == "top" and bars_layout == "vertical_horizontal") and dpi(65) or 0,
         maximum_width = dpi(65),
-        minimum_height = calc_height(screen, horizontal_bar_position, bars_layout),
-        maximum_height = calc_height(screen, horizontal_bar_position, bars_layout),
+        minimum_height = calc_height(screen, bars_layout),
+        maximum_height = calc_height(screen, bars_layout),
         bg = beautiful.colors.background,
         widget = widget
     }
@@ -87,7 +87,7 @@ awful.screen.connect_for_each_screen(function(screen)
     }
 
     capi.screen.connect_signal("request::wallpaper", function()
-        screen.vertical_wibar.minimum_height = calc_height(screen, horizontal_bar_position, bars_layout)
-        screen.vertical_wibar.maximum_height = calc_height(screen, horizontal_bar_position, bars_layout)
+        screen.vertical_wibar.minimum_height = calc_height(screen, bars_layout)
+        screen.vertical_wibar.maximum_height = calc_height(screen, bars_layout)
     end)
 end)

@@ -6,15 +6,13 @@ local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local app = require("ui.apps")
 local beautiful = require("beautiful")
+local theme_daemon = require("daemons.system.theme")
 local wifi_tab = require("ui.apps.settings.tabs.wifi")
 local bluetooth_tab = require("ui.apps.settings.tabs.bluetooth")
 local accounts_tab = require("ui.apps.settings.tabs.accounts")
 local wallpaper_tab = require("ui.apps.settings.tabs.wallpaper")
 local appearance_tab = require("ui.apps.settings.tabs.appearance")
 local about_tab = require("ui.apps.settings.tabs.about")
-local network_daemon = require("daemons.hardware.network")
-local bluetooth_daemon = require("daemons.hardware.bluetooth")
-local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 local capi = {
     awesome = awesome
@@ -107,6 +105,10 @@ local function new()
             return main()
         end
     }
+
+    SETTINGS_APP:connect_signal("managed", function()
+        theme_daemon:scan_wallpapers()
+    end)
 
     return SETTINGS_APP
 end

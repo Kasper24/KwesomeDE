@@ -125,11 +125,11 @@ local function scan_for_desktop_files_on_init(self)
         if error == nil then
             local old_desktop_icons = {}
             old_desktop_icons = json.decode(content) or {}
-            filesystem.filesystem.scan(DESKTOP_PATH, function(error, files)
-                if error == nil and files then
-                    for index, file in ipairs(files) do
-                        local name = file.name
-                        local path = file.full_path
+            filesystem.filesystem.list_contents(DESKTOP_PATH, "", function(error, list)
+                if error == nil then
+                    for index, file in ipairs(list) do
+                        local name = info:get_name()
+                        local path = string.format("%s/%s", DESKTOP_PATH, info:get_name())
 
                         if path:find("/home/" .. os.getenv("USER") .. "/Desktop/.", 1, true) == nil then
                             local mimetype = "folder"

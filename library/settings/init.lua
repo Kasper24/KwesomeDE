@@ -203,7 +203,7 @@ local function get_default_settings()
         "theme": {
             "colorschemes": {
                 "default": {
-                    "~/.config/awesome/assets/wallpapers/52_by_gydw1n_dblxpwi.jpg": [
+                    "~/.config/awesome/assets/wallpapers/0005.jpg": [
                         "#010610",
                         "#2C5F9A",
                         "#2C5F9A",
@@ -221,35 +221,17 @@ local function get_default_settings()
                         "#2294ff",
                         "#ffffff"
                     ],
-                    "~/.config/awesome/assets/wallpapers/mysterious.jpg": [
-                        "#05142D",
-                        "#78899F",
-                        "#78899F",
-                        "#8A98AC",
-                        "#989BAA",
-                        "#96A5B9",
-                        "#9CADC2",
-                        "#cdd3db",
-                        "#0a285a",
-                        "#5685c2",
-                        "#5685c2",
-                        "#6c93ca",
-                        "#7c88c6",
-                        "#7ca1d3",
-                        "#84abda",
-                        "#ffffff"
-                    ]
                 },
                 "type": "table",
                 "description": "All the generated colorschemes"
             },
             "active_colorscheme": {
-                "default": "~/.config/awesome/assets/wallpapers/mysterious.jpg",
+                "default": "~/.config/awesome/assets/wallpapers/0005.jpg",
                 "type": "string",
                 "description": "The active colorscheme"
             },
             "active_wallpaper": {
-                "default": "~/.config/awesome/assets/wallpapers/mysterious.jpg",
+                "default": "~/.config/awesome/assets/wallpapers/0005.jpg",
                 "type": "string",
                 "description": "The active wallpaper"
             },
@@ -348,7 +330,7 @@ local function get_default_settings()
                 "description": "The framerate of the UI animations"
             },
             "assets_folder": {
-                "default": "~/.config/awesome/assets/wallpaper-engine/assets",
+                "default": "",
                 "type": "string",
                 "description": "The framerate of the UI animations"
             },

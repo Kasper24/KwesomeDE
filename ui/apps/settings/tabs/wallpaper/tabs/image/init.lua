@@ -1,10 +1,7 @@
-local gtable = require("gears.table")
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
 local beautiful = require("beautiful")
-local empty_wallpapers = require("ui.apps.settings.tabs.wallpaper.widgets.empty_wallpapers")
-local wallpapers_grid = require("ui.apps.settings.tabs.wallpaper.widgets.wallpapers_grid")
-local actions = require("ui.apps.settings.tabs.wallpaper.widgets.actions")
+local wallpaper_tab = require("ui.apps.settings.tabs.wallpaper.tabs")
 local theme_daemon = require("daemons.system.theme")
 local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
@@ -15,7 +12,7 @@ local image = {
 }
 
 local function new()
-    local wallpapers = wallpapers_grid("wallpapers", function(entry)
+    return wallpaper_tab("image", function(entry)
         local widget = nil
         local button = wibox.widget {
             widget = widgets.button.state,
@@ -59,38 +56,6 @@ local function new()
 
         return widget
     end)
-
-    local empty_wallpapers_widget = empty_wallpapers()
-
-    local content = wibox.widget {
-        layout = wibox.layout.overflow.vertical,
-        spacing = dpi(15),
-        wallpapers,
-        actions()
-    }
-
-    local stack = wibox.widget {
-        layout = wibox.layout.stack,
-        top_only = true,
-        empty_wallpapers_widget,
-        content
-    }
-
-    theme_daemon:connect_signal("wallpapers", function(self, wallpapers, wallpapers_and_we_wallpapers, we_wallpapers)
-        if gtable.count_keys(wallpapers) == 0 then
-            stack:raise_widget(empty_wallpapers_widget)
-        else
-            stack:raise_widget(content)
-        end
-    end)
-
-    if gtable.count_keys(theme_daemon:get_wallpapers()) == 0 then
-        stack:raise_widget(empty_wallpapers_widget)
-    else
-        stack:raise_widget(content)
-    end
-
-    return stack
 end
 
 function image.mt:__call()

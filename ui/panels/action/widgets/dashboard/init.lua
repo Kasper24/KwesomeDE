@@ -222,12 +222,12 @@ local function settings()
         settings_app:show()
     end)
 
-    settings_app:connect_signal("visibility", function(self, visible)
-        if visible == true then
-            widget:turn_on("Settings")
-        else
-            widget:turn_off("Settings")
-        end
+    settings_app:connect_signal("managed", function()
+        widget:turn_on("Settings")
+    end)
+
+    settings_app:connect_signal("request::unmanage", function()
+        widget:turn_off("Settings")
     end)
 
     return widget
@@ -254,12 +254,13 @@ local function screenshot()
         screenshot_app:show()
     end)
 
-    screenshot_app:connect_signal("visibility", function(self, visible)
-        if visible == true then
-            widget:turn_on("Screenshot")
-        else
-            widget:turn_off("Screenshot")
-        end
+    screenshot_app:connect_signal("managed", function(self, visible)
+        widget:turn_on("Screenshot")
+    end)
+
+
+    screenshot_app:connect_signal("request::unmanage", function(self, visible)
+        widget:turn_off("Screenshot")
     end)
 
     return widget
