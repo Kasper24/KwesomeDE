@@ -71,6 +71,8 @@ local function colors()
 		local accents = { unpack(accent_colors, 10, 15) }
 		return accents[math.random(1, #accents)]
 	end
+
+	theme.colors.accent = theme.colors.random_accent_color()
 end
 
 local function fonts()

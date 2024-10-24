@@ -16,7 +16,7 @@ local about = {
 local function new()
     local navigator = wibox.widget {
         widget = widgets.navigator.vertical,
-        buttons_selected_color = beautiful.icons.computer.color,
+        buttons_selected_color = beautiful.colors.accent,
         tabs = {
             {
                 {

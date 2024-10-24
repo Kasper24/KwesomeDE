@@ -54,7 +54,8 @@ local function new()
         spacing = dpi(15),
         {
             widget = widgets.text,
-            icon = beautiful.icons.clock
+            icon = beautiful.icons.clock,
+            color = beautiful.colors.accent
         },
         {
             widget = widgets.text,
@@ -73,7 +74,8 @@ local function new()
         spacing = dpi(15),
         {
             widget = widgets.text,
-            icon = beautiful.icons.box
+            icon = beautiful.icons.box,
+            color = beautiful.colors.accent,
         },
         {
             widget = widgets.text,

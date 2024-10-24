@@ -25,14 +25,12 @@ local function vertical()
             bold = true,
             size = 15,
             color = beautiful.colors.on_background,
-            on_color = beautiful.colors.transparent
         },
         {
             widget = wibox.widget.textclock,
             format = "%M",
             size = 14,
             color = beautiful.colors.on_background,
-            on_color = beautiful.colors.transparent
         },
     }
 end
@@ -43,7 +41,6 @@ local function horizontal()
         format = "%d %b %H:%M",
         size = 14,
         color = beautiful.colors.on_background,
-        on_color = beautiful.colors.transparent
     }
 end
 
@@ -55,7 +52,7 @@ local function new()
         margins = dpi(5),
         {
             widget = widgets.button.state,
-            on_color = beautiful.icons.envelope.color,
+            on_color = beautiful.colors.surface,
             id = "button",
             on_release = function()
                 info_panel:toggle()

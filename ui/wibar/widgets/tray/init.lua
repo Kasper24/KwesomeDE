@@ -66,14 +66,13 @@ local function system_tray()
 		widget = widgets.button.state,
 		forced_width = dpi(50),
 		forced_height = dpi(50),
-		on_color = beautiful.icons.envelope.color,
+		on_color = beautiful.colors.surface,
 		on_press = function()
 			system_tray:toggle()
 		end,
 		{
 			widget = widgets.text,
 			color = beautiful.colors.on_background,
-			on_color = beautiful.colors.transparent,
 			icon = beautiful.icons.chevron.down,
 		},
 	})
@@ -100,8 +99,7 @@ local function network()
 		forced_height = dpi(25),
 		halign = "center",
 		icon = beautiful.icons.network.wifi_off,
-		color = beautiful.icons.envelope.color,
-		on_color = beautiful.colors.transparent,
+		color = beautiful.colors.on_background,
 		size = 17,
 	})
 
@@ -133,8 +131,7 @@ local function bluetooth()
 		forced_height = dpi(30),
 		halign = "center",
 		icon = beautiful.icons.bluetooth.on,
-		color = beautiful.icons.envelope.color,
-		on_color = beautiful.colors.transparent,
+		color = beautiful.colors.on_background,
 		size = 17,
 	})
 
@@ -156,8 +153,7 @@ local function volume()
 		forced_height = dpi(30),
 		halign = "center",
 		icon = beautiful.icons.volume.normal,
-		color = beautiful.icons.envelope.color,
-		on_color = beautiful.colors.transparent,
+		color = beautiful.colors.on_background,
 		size = 17,
 	})
 
@@ -180,8 +176,7 @@ local function keyboard_layout()
 	local text = wibox.widget({
 		widget = widgets.text,
 		halign = "center",
-		color = beautiful.colors.background_no_opacity,
-		on_color = beautiful.icons.envelope.color,
+		color = beautiful.colors.transparent,
 		text = keyboard_layout_daemon:get_current_layout_as_text(),
 		size = 15,
 		bold = true,
@@ -191,8 +186,7 @@ local function keyboard_layout()
 		widget = widgets.background,
 		forced_width = dpi(40),
 		forced_height = dpi(40),
-		color = beautiful.icons.envelope.color,
-		on_color = beautiful.colors.background_no_opacity,
+		color = beautiful.colors.on_background,
 		shape = library.ui.rrect(),
 		text,
 	})
@@ -218,17 +212,9 @@ local function custom_tray()
 	upower_daemon:connect_signal("battery::init", function(self, device)
 		local battery_icon = widgets.battery_icon(device, {
 			margins_vertical = dpi(7),
-			color = beautiful.icons.envelope.color,
+			color = beautiful.colors.on_background,
 		})
 		layout:insert(4, battery_icon)
-
-		action_panel:connect_signal("visibility", function(self, visibility)
-			if visibility == true then
-				battery_icon:set_color(beautiful.colors.background_no_opacity)
-			else
-				battery_icon:set_color(beautiful.icons.envelope.color)
-			end
-		end)
 	end)
 
 	local widget = wibox.widget({
@@ -236,7 +222,7 @@ local function custom_tray()
 		margins = dpi(5),
 		{
 			widget = widgets.button.state,
-			on_color = beautiful.icons.envelope.color,
+			on_color = beautiful.colors.surface,
 			id = "button",
 			on_release = function()
 				action_panel:toggle()

@@ -49,7 +49,7 @@ local function action_button(icon, title, on_release)
             widget = widgets.button.normal,
             forced_width = dpi(75),
             forced_height = dpi(75),
-            -- color = beautiful.icons.lock.color,
+            color = beautiful.colors.accent,
             on_release = function()
                 on_release()
             end,

@@ -78,15 +78,12 @@ local function draw()
 end
 
 local function new()
-    local off_color = beautiful.colors.on_background
-    local on_color = beautiful.colors.background_no_opacity
-
     local widget = wibox.widget {
         widget = wibox.widget.make_base_widget,
         forced_width = dpi(45),
         forced_height = dpi(45),
         pos = 0,
-        color = off_color,
+        color = beautiful.colors.on_background,
         draw = draw(),
         fit = function(_, _, _, height)
             return height, height
@@ -95,7 +92,7 @@ local function new()
 
     local button = wibox.widget {
         widget = widgets.button.state,
-        on_color = beautiful.icons.envelope.color,
+        on_color = beautiful.colors.surface,
         on_release = function()
             app_launcher:toggle()
         end,
@@ -105,13 +102,11 @@ local function new()
     local animation = library.animation:new{
         pos = {
             height = 0,
-            color = off_color
         },
         easing = library.animation.easing.linear,
         duration = 0.2,
         update = function(self, pos)
             widget.pos = pos.height
-            widget.color = pos.color
             widget:emit_signal("widget::redraw_needed")
         end
     }
@@ -119,18 +114,16 @@ local function new()
     app_launcher:connect_signal("visibility", function(self, visibility)
         if visibility == true then
             button:turn_on()
-            animation:set{height = 1, color = on_color}
+            animation:set{height = 1}
         else
             button:turn_off()
-            animation:set{height = 0, color = off_color}
+            animation:set{height = 0}
         end
     end)
 
     capi.awesome.connect_signal("colorscheme::changed", function(old_colorscheme_to_new_map)
         animation:stop()
-        on_color = old_colorscheme_to_new_map[on_color]
-        off_color = old_colorscheme_to_new_map[off_color]
-        widget.color = animation.pos.height == 1 and on_color or off_color
+        widget.color = old_colorscheme_to_new_map[beautiful.colors.on_background]
         widget:emit_signal("widget::redraw_needed")
     end)
 

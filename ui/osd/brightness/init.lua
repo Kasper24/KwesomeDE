@@ -19,6 +19,7 @@ local function new()
 		halign = "center",
 		valign = "bottom",
 		icon = beautiful.icons.brightness,
+		color = beautiful.colors.accent,
 		size = 15,
 	})
 
@@ -38,7 +39,7 @@ local function new()
 		value = 0,
 		max_value = 100,
 		background_color = beautiful.colors.surface,
-		color = beautiful.icons.brightness.color,
+		color = beautiful.colors.accent,
 	})
 
 	local widget = widgets.animated_popup({

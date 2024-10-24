@@ -131,7 +131,7 @@ local function client_widget(client)
             widget = widgets.button.state,
             id = "button",
             on_by_default = capi.client.focus == client,
-            on_color =  client._icon.color,
+            on_color =  beautiful.colors.surface,
             on_hover = function(self)
                 local coords = nil
                 if ui_daemon:get_bars_layout() == "vertical" then
@@ -197,7 +197,7 @@ local function client_widget(client)
                 halign = "center",
                 valign = "center",
                 color = client._icon.color,
-                on_color = beautiful.colors.icon_transparent,
+                on_color = client._icon.color,
                 icon = client._icon,
             }
         }

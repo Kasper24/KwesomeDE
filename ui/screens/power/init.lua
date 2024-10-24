@@ -61,13 +61,13 @@ local function button(icon, text, on_release)
         normal_border_width = dpi(0),
         hover_border_width = dpi(10),
         press_border_width = dpi(10),
-        normal_border_color = icon.color,
+        normal_border_color = beautiful.colors.accent,
         on_release = function ()
             on_release()
         end,
         {
             widget = widgets.text,
-            color = icon.color,
+            color = beautiful.colors.accent,
             size = 40,
             icon = icon,
         }

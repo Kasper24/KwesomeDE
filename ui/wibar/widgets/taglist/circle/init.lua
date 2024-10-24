@@ -101,7 +101,7 @@ local function update_taglist(self, tag)
     end
 end
 
-local function tag_widget(self, tag, accent_color, direction)
+local function tag_widget(self, tag, direction)
     local menu = tag_menu(tag)
 
     local widget = wibox.widget {
@@ -110,7 +110,7 @@ local function tag_widget(self, tag, accent_color, direction)
         forced_height = dpi(40),
         normal_shape = gshape.rounded_rect,
         color = beautiful.colors.on_surface,
-        on_color = accent_color,
+        on_color = beautiful.colors.accent,
         -- on_hover = function()
         --     if #tag:clients() > 0 then
         --         tag_preview:show(tag, {
@@ -170,8 +170,6 @@ local function tag_widget(self, tag, accent_color, direction)
 end
 
 local function new(screen)
-    local accent_color = beautiful.colors.random_accent_color()
-
     local direction = ui_daemon:get_bars_layout()
 
     local tag_margins = direction == "horizontal" and
@@ -197,7 +195,7 @@ local function new(screen)
                         widget = wibox.container.margin,
                         margins = tag_margins,
                         create_callback = function(self, tag, index, tags)
-                            tag_widget(self, tag, accent_color, direction)
+                            tag_widget(self, tag, direction)
                             update_taglist(self, tag)
                         end,
                         update_callback = function(self, tag, index, tags)

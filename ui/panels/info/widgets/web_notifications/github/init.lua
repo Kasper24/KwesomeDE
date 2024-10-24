@@ -91,6 +91,7 @@ local function event_widget(event)
 
     local user = wibox.widget {
         widget = widgets.text,
+        forced_height = dpi(20),
         halign = "left",
         bold = true,
         size = 12,
@@ -99,6 +100,7 @@ local function event_widget(event)
 
     local action = wibox.widget {
         widget = widgets.text,
+        forced_height = dpi(20),
         halign = "left",
         size = 12,
         text =  action_and_link.action_string .. " "
@@ -106,6 +108,7 @@ local function event_widget(event)
 
     local repo = wibox.widget {
         widget = widgets.text,
+        forced_height = dpi(20),
         halign = "left",
         bold = true,
         size = 12,
@@ -115,6 +118,7 @@ local function event_widget(event)
     local icon = wibox.widget {
         widget = widgets.text,
         icon = action_and_link.icon,
+        color = beautiful.colors.accent,
         size = 15
     }
 
@@ -133,6 +137,7 @@ local function event_widget(event)
         end,
         {
             layout = wibox.layout.fixed.vertical,
+            spacing = dpi(5),
             {
                 layout = wibox.layout.fixed.horizontal,
                 user,
@@ -150,7 +155,7 @@ local function event_widget(event)
 
     return wibox.widget {
         layout = wibox.layout.fixed.horizontal,
-        forced_height = dpi(60),
+        forced_height = dpi(65),
         spacing = dpi(5),
         avatar,
         info
@@ -320,7 +325,7 @@ end
 local function new()
     return wibox.widget {
         widget = widgets.navigator.horizontal,
-        buttons_selected_color = beautiful.icons.envelope.color,
+        buttons_selected_color = beautiful.colors.accent,
         tabs = {
             {
                 {

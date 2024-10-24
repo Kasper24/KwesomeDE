@@ -33,7 +33,7 @@ local function progress_bar(icon, on_release)
 		max_value = 100,
 		bar_shape = library.ui.rrect(),
 		background_color = beautiful.colors.surface,
-		color = icon.color,
+		color = beautiful.colors.accent,
 	})
 
 	local icon = wibox.widget({
@@ -48,6 +48,7 @@ local function progress_bar(icon, on_release)
 			halign = "center",
 			size = 15,
 			icon = icon,
+			color = beautiful.colors.accent
 		},
 	})
 
@@ -138,7 +139,7 @@ local function audio()
 	local slider = widgets.slider({
 		forced_width = dpi(390),
 		maximum = 100,
-		bar_active_color = beautiful.icons.volume.off.color,
+		bar_active_color = beautiful.colors.accent,
 	})
 
 	local icon = wibox.widget({
@@ -152,7 +153,7 @@ local function audio()
 			forced_height = dpi(40),
 			halign = "center",
 			size = 15,
-			icon = beautiful.icons.volume.off,
+			color = beautiful.colors.accent,
 		},
 	})
 
@@ -189,12 +190,16 @@ local function audio()
 
 		if sink.mute or sink.volume == 0 then
 			icon:set_icon(beautiful.icons.volume.off)
+			icon:set_color(beautiful.colors.accent)
 		elseif sink.volume <= 33 then
 			icon:set_icon(beautiful.icons.volume.low)
+			icon:set_color(beautiful.colors.accent)
 		elseif sink.volume <= 66 then
 			icon:set_icon(beautiful.icons.volume.normal)
+			icon:set_color(beautiful.colors.accent)
 		elseif sink.volume > 66 then
 			icon:set_icon(beautiful.icons.volume.high)
+			icon:set_color(beautiful.colors.accent)
 		end
 	end)
 
@@ -206,7 +211,7 @@ local function brightness()
 		forced_width = dpi(420),
 		minimum = 1,
 		maximum = 100,
-		bar_active_color = beautiful.icons.brightness.color,
+		bar_active_color = beautiful.colors.accent,
 	})
 
 	local icon = wibox.widget({
@@ -221,6 +226,7 @@ local function brightness()
 			halign = "center",
 			size = 15,
 			icon = beautiful.icons.brightness,
+			color = beautiful.colors.accent,
 		},
 	})
 

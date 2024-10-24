@@ -19,6 +19,7 @@ local function new()
 		halign = "center",
 		valign = "center",
 		icon = beautiful.icons.keyboard,
+		color = beautiful.colors.accent,
 		size = 15,
 	})
 

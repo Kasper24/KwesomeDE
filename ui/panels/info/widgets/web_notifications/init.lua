@@ -19,7 +19,7 @@ local gitlab = require(path .. ".gitlab")
 local function new()
     return wibox.widget {
         widget = widgets.navigator.horizontal,
-        buttons_selected_color = beautiful.icons.envelope.color,
+        buttons_selected_color = beautiful.colors.accent,
         tabs = {
             {
                 {

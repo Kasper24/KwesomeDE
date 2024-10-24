@@ -36,21 +36,21 @@ local function new()
                 forced_width = dpi(10),
                 forced_height = dpi(10),
                 shape = gshape.squircle,
-                bg = beautiful.colors.random_accent_color()
+                bg = beautiful.colors.accent
             },
             {
                 widget = widgets.background,
                 forced_width = dpi(10),
                 forced_height = dpi(10),
                 shape = gshape.squircle,
-                bg = beautiful.colors.random_accent_color()
+                bg = beautiful.colors.accent
             },
             {
                 widget = widgets.background,
                 forced_width = dpi(10),
                 forced_height = dpi(10),
                 shape = gshape.squircle,
-                bg = beautiful.colors.random_accent_color()
+                bg = beautiful.colors.accent
             }
         }
     }

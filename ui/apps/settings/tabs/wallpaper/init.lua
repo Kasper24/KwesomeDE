@@ -21,7 +21,7 @@ local theme = {
 local function new()
     local navigator = wibox.widget {
         widget = widgets.navigator.vertical,
-        buttons_selected_color = beautiful.icons.computer.color,
+        buttons_selected_color = beautiful.colors.accent,
         on_select = function(id)
             theme_daemon:set_selected_tab(id)
         end,

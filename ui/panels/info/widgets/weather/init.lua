@@ -272,7 +272,7 @@ local function new()
         step_width = dpi(53),
         step_hook = curvaceous,
         background_color = beautiful.colors.transparent,
-        color = library.color.darken(beautiful.icons.sun.color, 0.5),
+        color = library.color.darken(beautiful.colors.accent, 0.3),
         opacity = 1
     }
 
@@ -284,7 +284,7 @@ local function new()
         step_width = dpi(53),
         step_hook = curvaceous,
         background_color = beautiful.colors.transparent,
-        color = beautiful.icons.sun.color,
+        color = beautiful.colors.accent,
         opacity = 1
     }
 
@@ -391,6 +391,7 @@ local function new()
         stack:raise_widget(weather_widget)
 
         icon:set_icon(weather_codes_map[result.current.weather_code].icon)
+        icon:set_color(beautiful.colors.accent)
         current_weather_widget:get_children_by_id("temp")[1]:set_text(
             gen_temperature_str(result.current.temperature_2m))
         current_weather_widget:get_children_by_id("feels_like_temp")[1]:set_text("Feels like " ..
@@ -438,7 +439,6 @@ local function new()
                     halign = "center",
                     size = 15,
                     text = os.date("%a", day),
-                    -- text = os.date("%a", tonumber(day.dt) + tonumber(result.timezone_offset))
                 },
                 {
                     layout = wibox.layout.fixed.vertical,
@@ -447,6 +447,7 @@ local function new()
                         widget = widgets.text,
                         halign = "center",
                         icon = weather_codes_map[result.daily.weather_code[index]].icon,
+                        color = beautiful.colors.accent,
                         size = 35
                     },
                     {

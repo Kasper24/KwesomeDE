@@ -17,8 +17,6 @@ local calendar = {
     mt = {}
 }
 
-local accent_color = beautiful.colors.random_accent_color()
-
 local function day_name_widget(name)
     return wibox.widget {
         widget = twidget,
@@ -51,7 +49,7 @@ local function date_widget(self, index)
         text:set_text(date)
 
         if is_current == true then
-            widget.bg = accent_color
+            widget.bg = beautiful.colors.accent
             text:set_color(beautiful.colors.background_no_opacity)
         elseif is_another_month == true then
             widget.bg = beautiful.colors.transparent

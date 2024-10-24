@@ -132,8 +132,6 @@ end
 local function create_notification(n, screen)
 	table.insert(screen.notifications, n)
 
-	local accent_color = n.app_icon.color
-
 	n:set_timeout(4294967)
 
 	local app_icon = wibox.widget({
@@ -175,7 +173,7 @@ local function create_notification(n, screen)
 		rounded_edge = true,
 		bg = beautiful.colors.surface,
 		colors = {
-			accent_color,
+			beautiful.colors.accent,
 		},
 		dismiss,
 	})
@@ -196,7 +194,7 @@ local function create_notification(n, screen)
 		widget = widgets.background,
 		forced_height = dpi(10),
 		shape = library.ui.rrect(),
-		bg = accent_color,
+		bg = beautiful.colors.accent,
 	})
 
 	local message = wibox.widget({

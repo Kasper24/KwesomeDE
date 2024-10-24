@@ -176,6 +176,7 @@ function playerctl.player_art(halign, valign, daemon)
         halign = halign or "left",
         valign = valign or "center",
         icon = beautiful.get_svg_icon{"spotify"},
+        color = beautiful.colors.accent
     }
 
     playerctl_daemon:connect_signal("metadata", function(self, title, artist, album_path, album, new, player_name)
@@ -440,7 +441,7 @@ function playerctl.play(daemon)
     local button = wibox.widget {
         widget = ebwidget.normal,
         normal_shape = gshape.circle,
-        color = beautiful.get_svg_icon{"spotify"}.color,
+        color = beautiful.colors.accent,
         on_release = function()
             playerctl_daemon:play_pause()
         end,
@@ -467,13 +468,13 @@ function playerctl.play(daemon)
     playerctl_daemon:connect_signal("metadata", function(self, title, artist, album_path, album, new, player_name)
         if player_name ~= "" then
             local app_icon = beautiful.get_svg_icon{player_name, "spotify"}
-            button:set_color(app_icon.color)
+            button:set_color(beautiful.colors.accent)
         end
     end)
 
     playerctl_daemon:connect_signal("no_players", function(self)
         play_pause_animation:set(1)
-        button:set_color(beautiful.icons.spotify.color)
+        button:set_color(beautiful.colors.accent)
     end)
 
     return button

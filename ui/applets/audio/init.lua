@@ -224,7 +224,7 @@ end
 local function applications()
 	return wibox.widget({
 		widget = widgets.navigator.horizontal,
-		buttons_selected_color = beautiful.icons.volume.high.color,
+		buttons_selected_color = beautiful.colors.accent,
 		tabs = {
 			{
 				{
@@ -319,7 +319,7 @@ end
 local function devices()
 	return wibox.widget({
 		widget = widgets.navigator.horizontal,
-		buttons_selected_color = beautiful.icons.volume.high.color,
+		buttons_selected_color = beautiful.colors.accent,
 		tabs = {
 			{
 				{
@@ -342,7 +342,7 @@ end
 local function new()
 	local navigator = wibox.widget({
 		widget = widgets.navigator.horizontal,
-		buttons_selected_color = beautiful.icons.volume.high.color,
+		buttons_selected_color = beautiful.colors.accent,
 		tabs = {
 			{
 				{

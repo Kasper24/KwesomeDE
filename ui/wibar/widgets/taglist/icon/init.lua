@@ -113,7 +113,7 @@ local function tag_widget(self, tag)
         widget = widgets.button.state,
         id = "button",
         halign = "center",
-        on_color = tag.icon.color,
+        on_color = beautiful.colors.surface,
         -- on_hover = function()
         --     if #tag:clients() > 0 then
         --         tag_preview:show(tag, {
@@ -160,8 +160,8 @@ local function tag_widget(self, tag)
         {
             widget = widgets.icon,
             size = 30,
-            color = tag.icon.color,
-            on_color = beautiful.colors.icon_transparent,
+            color = beautiful.colors.on_background,
+            on_color = beautiful.colors.accent,
             icon = tag.icon,
         }
     }
@@ -172,7 +172,7 @@ local function tag_widget(self, tag)
         forced_height = dpi(5),
         id = "background",
         shape = library.ui.rrect(),
-        bg = tag.icon.color
+        bg = beautiful.colors.on_background
     }
 
     local stack = wibox.widget {

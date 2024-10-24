@@ -31,11 +31,11 @@ local function arrow_button(icon, text, on_icon_release, on_arrow_release)
         forced_height = dpi(90),
         normal_shape = library.ui.prrect(true, false, false, true),
         color = beautiful.colors.surface,
-        on_color = icon.color,
+        on_color = beautiful.colors.accent,
         on_release = on_icon_release,
         {
             widget = widgets.text,
-            color = icon.color,
+            color = beautiful.colors.accent,
             on_color = beautiful.colors.on_accent,
             icon = icon,
         }
@@ -46,11 +46,11 @@ local function arrow_button(icon, text, on_icon_release, on_arrow_release)
         forced_height = dpi(90),
         normal_shape = library.ui.prrect(false, true, true, false),
         color = beautiful.colors.surface,
-        on_color = icon.color,
+        on_color = beautiful.colors.accent,
         on_release = on_arrow_release,
         {
             widget = widgets.text,
-            color = icon.color,
+            color = beautiful.colors.accent,
             on_color = beautiful.colors.on_accent,
             icon = beautiful.icons.chevron.right,
         }
@@ -95,11 +95,11 @@ local function button(icon, text, on_release)
         forced_width = dpi(150),
         forced_height = dpi(90),
         color = beautiful.colors.surface,
-        on_color = icon.color,
+        on_color = beautiful.colors.accent,
         on_release = on_release,
         {
             widget = widgets.text,
-            color = icon.color,
+            color = beautiful.colors.accent,
             on_color = beautiful.colors.on_accent,
             icon = icon,
         }
