@@ -269,7 +269,6 @@ local function icons()
 		"discord",
 		"spotify",
 		"steam",
-		"applications-games",
 		"openrgb",
 	}
 

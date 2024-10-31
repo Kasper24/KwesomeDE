@@ -258,7 +258,7 @@ ruled.client.connect_signal("request::rules", function()
         callback = function(c)
             c:connect_signal("property::urgent", function()
                 if c.urgent then
-                    local tag = awful.screen.focused().tags[7]
+                    local tag = awful.screen.focused().tags[6]
                     if tag and tag ~= awful.screen.focused().selected_tag then
                         c:jump_to()
                     end
@@ -456,7 +456,7 @@ ruled.client.connect_signal("request::rules", function()
         },
         properties = {
             fullscreen = true,
-            tag = awful.screen.focused().tags[7]
+            tag = awful.screen.focused().tags[6]
         },
         callback = function(c)
             -- Kill picom when a game starts

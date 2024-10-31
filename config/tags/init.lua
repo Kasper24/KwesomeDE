@@ -8,7 +8,7 @@ local ui_daemon = require("daemons.system.ui")
 local library = require("library")
 
 awful.screen.connect_for_each_screen(function(s)
-    for i = 1, 8, 1  do
+    for i = 1, 7, 1  do
         awful.tag.add(i, {
             screen = s,
             layout = awful.layout.layouts[1],
