@@ -164,7 +164,7 @@ local function new()
         run_or_raise = false
     })
     ret:new("kotatogram", "t", "kotatogram-desktop", "KotatogramDesktop")
-    ret:new("discord", "d", "discord", "discord")
+    ret:new("vesktop", "d", "vesktop", "vesktop")
     ret:new("ncmpcpp", "n", "kitty --class gnome-music ncmpcpp", "gnome-music")
     ret:new("spotify", "s", "spotify", "Spotify")
 	ret:new("youtube music", "m", "youtube-music", "YouTube Music")
