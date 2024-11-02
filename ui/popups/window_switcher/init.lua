@@ -85,6 +85,10 @@ local function client_widget(self, client)
     }
 end
 
+local function get_widget_size()
+    return (#tasklist_daemon:get_clients() * 400) + 15
+end
+
 function window_switcher:select_client(client)
     local is_valid = pcall(function()
         return self._private.selected_client.valid
@@ -121,7 +125,8 @@ function window_switcher:show()
         self:select_client(clients[1])
     end
 
-    self:_show(#clients * 315 + 15)
+    self.maximum_width =  get_widget_size()
+    self:_show()
 end
 
 function window_switcher:hide(focus)
@@ -173,7 +178,8 @@ local function new()
             client.window_switcher_widget = client_widget(widget, client)
             clients_layout:add_at(client.window_switcher_widget, { x =  pos_without_pinned_apps * dpi(315), y = 0})
             if widget.visible then
-                widget:_show(#tasklist_daemon:get_clients() * 315 + 15, true)
+                self.maximum_width = get_widget_size()
+                widget:_show()
             end
         else
             clients_layout:move_widget(client.window_switcher_widget, { x = pos_without_pinned_apps * dpi(315), y = 0})
