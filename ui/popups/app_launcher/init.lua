@@ -76,7 +76,7 @@ local function app(app, app_launcher)
 		paddings = dpi(15),
 		halign = "left",
 		valign = "center",
-		on_color = icon.color,
+		on_color = beautiful.colors.surface,
 		on_release = function(self)
 			self:select_or_exec("press")
 		end,
@@ -92,7 +92,6 @@ local function app(app, app_launcher)
 				size = 50,
 				halign = "center",
 				color = icon.color,
-				on_color = beautiful.colors.icon_transparent,
 				icon = icon,
 			},
 			{
@@ -100,7 +99,6 @@ local function app(app, app_launcher)
 				halign = "center",
 				size = 12,
 				color = beautiful.colors.on_background,
-				on_color = beautiful.colors.transparent,
 				text = app.name,
 			},
 		},
@@ -178,7 +176,7 @@ local function new()
 									{
 										widget = widgets.text,
 										icon = beautiful.icons.magnifying_glass,
-										color = beautiful.colors.on_background
+										color = beautiful.colors.on_background,
 									},
 									{
 										layout = wibox.layout.stack,
