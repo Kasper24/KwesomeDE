@@ -127,7 +127,8 @@ yay/paru -S awesome-git
 | fortune-mod                             | Fortune daemon (unused, but might change)                 |
 | imagemagick                             | Used to generate colors from wallpapers                   |
 | neofetch                                | Used to display system info                               |
-| libsecret                           | Used to secrets in a secured way                              |
+| libsecret                               | Used to secrets in a secured way                          |
+| zenity                                  | Used for file/color pickers                               |
 
 **Arch Linux (and other Arch-based distributions)**
    ```sh

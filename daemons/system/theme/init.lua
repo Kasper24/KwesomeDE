@@ -44,7 +44,6 @@ local BACKGROUND_PATH = filesystem.filesystem.get_cache_dir() .. "wallpaper.png"
 local GENERATED_TEMPLATES_PATH = filesystem.filesystem.get_cache_dir("templates")
 local WAL_CACHE_PATH = filesystem.filesystem.get_xdg_cache_home("wal")
 local RUN_AS_ROOT_SCRIPT_PATH = filesystem.filesystem.get_awesome_config_dir("assets/scripts") .. "run-as-root.sh"
-local COLOR_PICKER_SCRIPT_PATH = filesystem.filesystem.get_awesome_config_dir("assets/scripts") .. "color-picker.lua"
 local THUMBNAIL_PATH = filesystem.filesystem.get_cache_dir("thumbnails/wallpapers/100-70")
 
 local PICTURES_MIMETYPES = {
@@ -634,7 +633,6 @@ local function set_wallpaper_engine_wallpaper(self)
 	local screens_string = ""
 	for screen in capi.screen do
 		for name, output in pairs(screen.outputs) do
-
 			screens_string = screens_string .. screens_string.format("--screen-root %s --bg %s ", name, bg)
 		end
 	end
@@ -672,7 +670,6 @@ local function screenshot_wallpaper(self, type)
 		capi.awesome.emit_signal("wallpaper::changed")
 	end
 end
-
 
 local function run_command(self, is_startup)
 	if self:get_run_on_set() and not is_startup then
@@ -717,7 +714,8 @@ end
 function theme:set_color(index, color)
 	if color == nil then
 		awful.spawn.easy_async(
-			COLOR_PICKER_SCRIPT_PATH .. " '" .. self:get_selected_colorscheme_colors()[index] .. "'",
+			"zenity --color-selection --show-palette --title 'Select Color' --width 400 --height 300 --color="
+				.. self:get_selected_colorscheme_colors()[index],
 			function(stdout)
 				stdout = library.string.trim(stdout)
 				if stdout ~= "" and stdout ~= nil then
@@ -818,29 +816,23 @@ function theme:scan_wallpapers()
 				cb(nil)
 			end)
 		end,
-		function (cb)
+		function(cb)
 			filesystem.filesystem.list_contents(WALLPAPERS_PATH, "", function(err, list)
 				for index, info in ipairs(list) do
 					local path = string.format("%s/%s", WALLPAPERS_PATH, info:get_name())
 					local mimetype = Gio.content_type_guess(path)
 					if PICTURES_MIMETYPES[mimetype] then
-						library.ui.scale_image_save(
-							path,
-							THUMBNAIL_PATH .. info:get_name(),
-							100,
-							70,
-							function(image)
-								table.insert(self._private.image_wallpapers, {
-									uid = path,
-									path = path,
-									thumbnail = image,
-									name = info:get_name(),
-								})
-								if index == #list then
-									cb(nil)
-								end
+						library.ui.scale_image_save(path, THUMBNAIL_PATH .. info:get_name(), 100, 70, function(image)
+							table.insert(self._private.image_wallpapers, {
+								uid = path,
+								path = path,
+								thumbnail = image,
+								name = info:get_name(),
+							})
+							if index == #list then
+								cb(nil)
 							end
-						)
+						end)
 					end
 				end
 			end)
@@ -876,7 +868,7 @@ function theme:scan_wallpapers()
 					end)
 				end
 			end)
-		end
+		end,
 	}, function(err, results)
 		table.sort(self._private.image_wallpapers, function(a, b)
 			return a.name < b.name
