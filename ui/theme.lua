@@ -164,7 +164,6 @@ local function icons()
 		terminal = { icon = "" },
 		firefox = { icon = "" },
 		chrome = { icon = "" },
-		code = { icon = "", size = 25 },
 		git = { icon = "" },
 		gitkraken = { icon = "" },
 		discord = { icon = "" },
