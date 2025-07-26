@@ -46,9 +46,9 @@ local function progress_bar(icon, on_release)
 			forced_width = dpi(40),
 			forced_height = dpi(40),
 			halign = "center",
-			size = 15,
+			size = 25,
 			icon = icon,
-			color = beautiful.colors.accent
+			color = beautiful.colors.accent,
 		},
 	})
 
@@ -74,7 +74,7 @@ local function progress_bar(icon, on_release)
 			{
 				widget = widgets.text,
 				color = beautiful.colors.on_background,
-				size = 15,
+				size = 25,
 				icon = beautiful.icons.chevron.right,
 			},
 		})
@@ -152,7 +152,6 @@ local function audio()
 			forced_width = dpi(40),
 			forced_height = dpi(40),
 			halign = "center",
-			size = 15,
 			color = beautiful.colors.accent,
 		},
 	})
@@ -167,7 +166,7 @@ local function audio()
 		{
 			widget = widgets.text,
 			color = beautiful.colors.on_background,
-			size = 15,
+			size = 25,
 			icon = beautiful.icons.chevron.right,
 		},
 	})
@@ -224,7 +223,7 @@ local function brightness()
 			forced_width = dpi(40),
 			forced_height = dpi(40),
 			halign = "center",
-			size = 15,
+			size = 25,
 			icon = beautiful.icons.brightness,
 			color = beautiful.colors.accent,
 		},
