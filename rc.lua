@@ -38,6 +38,7 @@ end
 
 require("daemons.hardware.display"):init()
 require("daemons.hardware.power"):init()
+require("daemons.system.shortcuts"):init()
 
 local beautiful = require("beautiful")
 local ui_daemon = require("daemons.system.ui")
