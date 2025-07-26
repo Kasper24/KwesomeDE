@@ -247,6 +247,11 @@ local function get_default_settings()
             }
         },
         "ui": {
+            "recolor_icons": {
+                "default": true,
+                "type": "boolean",
+                "description": "Recolor icons to match the current colorscheme"
+            },
             "profile_image": {
                 "description": "The user profile image",
                 "type": "string"

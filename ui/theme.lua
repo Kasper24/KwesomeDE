@@ -291,9 +291,14 @@ local function icons()
 		end
 	end
 
-	local gtk_theme = Gtk.IconTheme.new()
-	gtk_theme:set_search_path({ filesystem.filesystem.get_awesome_config_dir("assets") })
-	Gtk.IconTheme.set_custom_theme(gtk_theme, "candy-icons")
+	local gtk_theme = nil
+	if ui_daemon:get_recolor_icons() then
+		gtk_theme = Gtk.IconTheme.new()
+		gtk_theme:set_search_path({ filesystem.filesystem.get_awesome_config_dir("assets") })
+		Gtk.IconTheme.set_custom_theme(gtk_theme, "candy-icons")
+	else
+		gtk_theme = Gtk.IconTheme.get_default()
+	end
 
 	function theme.get_svg_icon(names)
 		local icon_info = nil
@@ -310,18 +315,22 @@ local function icons()
 				theme.svg_icons[icon_path] = {
 					names = names,
 					path = icon_path,
-					color = theme.colors.random_accent_color(),
+					color = ui_daemon:get_recolor_icons() and theme.colors.random_accent_color() or nil,
 				}
 			end
 
 			return theme.svg_icons[icon_path]
+		else
+			return {
+				names = names,
+				path = nil,
+				color = nil,
+			}
 		end
-
-		return nil
 	end
 
 	function theme.get_app_svg_icon(names)
-		table.insert(names, "application-x-ktheme")
+		table.insert(names, "application-x-executable")
 		return theme.get_svg_icon(names)
 	end
 
