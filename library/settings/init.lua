@@ -200,52 +200,6 @@ local function get_default_settings()
                 "description": "Blur amount"
             }
         },
-        "theme": {
-            "colorschemes": {
-                "default": {
-                    "~/.config/awesome/assets/wallpapers/0005.jpg": [
-                        "#010610",
-                        "#2C5F9A",
-                        "#2C5F9A",
-                        "#2972E4",
-                        "#4C7ADD",
-                        "#488CB1",
-                        "#3493ED",
-                        "#a1c5ee",
-                        "#04183f",
-                        "#0e5db8",
-                        "#0e5db8",
-                        "#0e6cff",
-                        "#2c6ffd",
-                        "#2397d7",
-                        "#2294ff",
-                        "#ffffff"
-                    ],
-                },
-                "type": "table",
-                "description": "All the generated colorschemes"
-            },
-            "active_colorscheme": {
-                "default": "~/.config/awesome/assets/wallpapers/0005.jpg",
-                "type": "string",
-                "description": "The active colorscheme"
-            },
-            "active_wallpaper": {
-                "default": "~/.config/awesome/assets/wallpapers/0005.jpg",
-                "type": "string",
-                "description": "The active wallpaper"
-            },
-            "wallpaper_type": {
-                "default": "image",
-                "type": "string",
-                "description": "The wallpaper type (image/sun/binary/etc)"
-            },
-            "run_on_set": {
-                "default": "",
-                "type": "string",
-                "description": "Run command after setting wallpaper/colorscheme"
-            }
-        },
         "ui": {
             "recolor_icons": {
                 "default": true,

@@ -24,7 +24,7 @@ local capi = {
 local theme = {}
 
 local function colors()
-	local colors = theme_daemon:get_active_colorscheme_colors()
+	local colors = theme_daemon:get_colorscheme()
 
 	theme.colors = {
 		red = colors[2],
