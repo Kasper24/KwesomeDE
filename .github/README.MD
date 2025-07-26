@@ -143,7 +143,6 @@ yay/paru -S awesome-git
 <details>
 <summary><b>3. Install Fonts</b></summary>
 
-   + **Font Awesome 6 Pro**              - PAID
    + **Nerd Font Mono**              - [here](https://github.com/ryanoasis/nerd-fonts)
    + **Iosevka**       - [here](https://github.com/be5invis/Iosevka)
    + **Oswald**   - [here](https://fonts.google.com/specimen/Oswald)

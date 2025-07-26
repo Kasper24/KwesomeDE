@@ -100,7 +100,6 @@ local function network()
 		halign = "center",
 		icon = beautiful.icons.network.wifi_off,
 		color = beautiful.colors.on_background,
-		size = 17,
 	})
 
 	network_daemon:connect_signal("wireless_state", function(self, state)
@@ -132,7 +131,6 @@ local function bluetooth()
 		halign = "center",
 		icon = beautiful.icons.bluetooth.on,
 		color = beautiful.colors.on_background,
-		size = 17,
 	})
 
 	bluetooth_daemon:connect_signal("state", function(self, state)
@@ -154,7 +152,6 @@ local function volume()
 		halign = "center",
 		icon = beautiful.icons.volume.normal,
 		color = beautiful.colors.on_background,
-		size = 17,
 	})
 
 	audio_daemon:connect_signal("sinks::default", function(self, sink)
@@ -178,7 +175,6 @@ local function keyboard_layout()
 		halign = "center",
 		color = beautiful.colors.transparent,
 		text = keyboard_layout_daemon:get_current_layout_as_text(),
-		size = 15,
 		bold = true,
 	})
 

@@ -59,7 +59,7 @@ network_daemon:connect_signal("scan_access_points::success", function(self)
             app_font_icon = beautiful.icons.router,
             app_icon = icons,
             app_name = "Network Manager",
-            font_icon = beautiful.icons.signal_stream,
+            font_icon = beautiful.icons.signal,
             icon = icons,
             title = "Access point rescan",
             text = "Completed"

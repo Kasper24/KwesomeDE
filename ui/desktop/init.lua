@@ -157,7 +157,7 @@ local function desktop_icon(self, pos, path, name, mimetype)
             end
         },
         widgets.menu.button {
-            font_icon = beautiful.icons.xmark_fw,
+            font_icon = beautiful.icons.xmark,
             text = "Delete",
             on_release = function()
                 local file = filesystem.file.new_for_path(path)
