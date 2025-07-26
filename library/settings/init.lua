@@ -17,40 +17,40 @@ local type = type
 local settings = {}
 local instance = nil
 
-local DATA_PATH = filesystem.filesystem.get_cache_dir("settings") .. "data.json"
+local DATA_PATH = filesystem.filesystem.get_data_dir("settings") .. "data.json"
 
 local function get_setting_from_string(self, paths)
-    local setting = self.settings
-    local t = paths
-    paths = gstring.split(paths, ".")
-    for _, path in ipairs(paths) do
-        setting = setting[path]
-    end
-    return setting
+	local setting = self.settings
+	local t = paths
+	paths = gstring.split(paths, ".")
+	for _, path in ipairs(paths) do
+		setting = setting[path]
+	end
+	return setting
 end
 
 local function merge_settings(default_settings, saved_settings)
-    for key, value in pairs(default_settings) do
-        if type(value) == "table" then
-            -- Check if the table exists in saved settings
-            if saved_settings[key] == nil or type(saved_settings[key]) ~= "table" then
-                saved_settings[key] = value
-                print("Table '" .. key .. "' is missing or invalid in saved settings.")
-            else
-                -- Recursively compare nested tables
-                merge_settings(value, saved_settings[key])
-            end
-        else
-            -- Check if the setting exists in saved settings
-            if saved_settings[key] == nil then
-                print("Setting '" .. key .. "' is missing in saved settings.")
-            end
-        end
-    end
+	for key, value in pairs(default_settings) do
+		if type(value) == "table" then
+			-- Check if the table exists in saved settings
+			if saved_settings[key] == nil or type(saved_settings[key]) ~= "table" then
+				saved_settings[key] = value
+				print("Table '" .. key .. "' is missing or invalid in saved settings.")
+			else
+				-- Recursively compare nested tables
+				merge_settings(value, saved_settings[key])
+			end
+		else
+			-- Check if the setting exists in saved settings
+			if saved_settings[key] == nil then
+				print("Setting '" .. key .. "' is missing in saved settings.")
+			end
+		end
+	end
 end
 
 local function get_default_settings()
-    return [[{
+	return [[{
         "kwesomede": {
             "version": {
                 "default": "-1",
@@ -431,80 +431,76 @@ local function get_default_settings()
 end
 
 function settings:set(key, value)
-    local setting = get_setting_from_string(self, key)
+	local setting = get_setting_from_string(self, key)
 
-    if type(value) ~= setting.type then
-        gdebug.print_warning(string.format("Trying to save %s of type %s to type %s", key, setting.type, type(value)))
-        return
-    end
+	if type(value) ~= setting.type then
+		gdebug.print_warning(string.format("Trying to save %s of type %s to type %s", key, setting.type, type(value)))
+		return
+	end
 
-    setting.value = value
-    self.save_timer:again()
+	setting.value = value
+	self.save_timer:again()
 end
 
 function settings:get(key)
-    local setting = get_setting_from_string(self, key)
-    local value = setting.value
-    if value == nil then
-        value = setting.default
-    end
+	local setting = get_setting_from_string(self, key)
+	local value = setting.value
+	if value == nil then
+		value = setting.default
+	end
 
-    if type(value) == "table" then
-        value = gtable.clone(value, true)
-    end
+	if type(value) == "table" then
+		value = gtable.clone(value, true)
+	end
 
-    return value
+	return value
 end
 
 local function new()
-    local ret = gobject {}
-    gtable.crush(ret, settings, true)
+	local ret = gobject({})
+	gtable.crush(ret, settings, true)
 
-    local file = filesystem.file.new_for_path(DATA_PATH)
-    if file:exists_block() then
-        ret.settings = json.decode(Gio.File.new_for_path(DATA_PATH):load_contents())
-    else
-        ret.settings = json.decode(get_default_settings())
-    end
-    ret.default_settings = json.decode(get_default_settings())
-    merge_settings(ret.default_settings, ret.settings)
+	local file = filesystem.file.new_for_path(DATA_PATH)
+	if file:exists_block() then
+		ret.settings = json.decode(Gio.File.new_for_path(DATA_PATH):load_contents())
+	else
+		ret.settings = json.decode(get_default_settings())
+	end
+	ret.default_settings = json.decode(get_default_settings())
+	merge_settings(ret.default_settings, ret.settings)
 
-    ret.save_timer = gtimer
-    {
-        timeout = 1,
-        autostart = false,
-        call_now = false,
-        single_shot = true,
-        callback = function()
-            local _settings_status, settings = pcall(function()
-                return json.encode(ret.settings)
-            end)
-            if not _settings_status or not settings then
-                gdebug.print_warning(
-                    "Failed to encode settings! " ..
-                    "Settings will not be saved. "
-                )
-            else
-                file:write(settings)
-            end
-        end
-    }
+	ret.save_timer = gtimer({
+		timeout = 1,
+		autostart = false,
+		call_now = false,
+		single_shot = true,
+		callback = function()
+			local _settings_status, settings = pcall(function()
+				return json.encode(ret.settings)
+			end)
+			if not _settings_status or not settings then
+				gdebug.print_warning("Failed to encode settings! " .. "Settings will not be saved. ")
+			else
+				file:write(settings)
+			end
+		end,
+	})
 
-    local mt = {
-        __index = function(self, key)
-            return ret:get(key)
-        end,
-        __newindex = function(self, key, value)
-            ret:set(key, value)
-        end
-    }
+	local mt = {
+		__index = function(self, key)
+			return ret:get(key)
+		end,
+		__newindex = function(self, key, value)
+			ret:set(key, value)
+		end,
+	}
 
-    setmetatable(ret, mt)
+	setmetatable(ret, mt)
 
-    return ret
+	return ret
 end
 
 if not instance then
-    instance = new()
+	instance = new()
 end
 return instance

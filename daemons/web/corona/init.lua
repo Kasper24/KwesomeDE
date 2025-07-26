@@ -15,69 +15,69 @@ local corona = {}
 local instance = nil
 
 local link = "https://corona-stats.online/%s?format=json"
-local path = filesystem.filesystem.get_cache_dir("corona")
+local path = filesystem.filesystem.get_data_dir("corona")
 local DATA_PATH = path .. "data.json"
 
 local UPDATE_INTERVAL = 60 * 30 -- 30 mins
 
 function corona:set_country(country)
-    self._private.country = country
-    library.settings["corona.country"] = country
+	self._private.country = country
+	library.settings["corona.country"] = country
 end
 
 function corona:get_country()
-    if self._private.country == nil then
-        self._private.country = library.settings["corona.country"]
-    end
+	if self._private.country == nil then
+		self._private.country = library.settings["corona.country"]
+	end
 
-    return self._private.country or ""
+	return self._private.country or ""
 end
 
 function corona:open_website()
-    awful.spawn("xdg-open https://www.worldometers.info/coronavirus/", false)
+	awful.spawn("xdg-open https://www.worldometers.info/coronavirus/", false)
 end
 
 function corona:refresh()
-    if self:get_country() == "" then
-        self:emit_signal("error::missing_credentials")
-        return
-    end
+	if self:get_country() == "" then
+		self:emit_signal("error::missing_credentials")
+		return
+	end
 
-    filesystem.filesystem.remote_watch(
-        DATA_PATH,
-        string.format(link, self._private.country),
-        UPDATE_INTERVAL,
-        function(content)
-            if content == nil then
-                self:emit_signal("error")
-                return
-            end
+	filesystem.filesystem.remote_watch(
+		DATA_PATH,
+		string.format(link, self._private.country),
+		UPDATE_INTERVAL,
+		function(content)
+			if content == nil then
+				self:emit_signal("error")
+				return
+			end
 
-            local data = json.decode(content)
-            if data == nil then
-                self:emit_signal("error")
-                return
-            end
+			local data = json.decode(content)
+			if data == nil then
+				self:emit_signal("error")
+				return
+			end
 
-            self:emit_signal("corona", data)
-        end
-    )
+			self:emit_signal("corona", data)
+		end
+	)
 end
 
 local function new()
-    local ret = gobject {}
-    gtable.crush(ret, corona, true)
+	local ret = gobject({})
+	gtable.crush(ret, corona, true)
 
-    ret._private = {}
+	ret._private = {}
 
-    gtimer.delayed_call(function()
-        ret:refresh()
-    end)
+	gtimer.delayed_call(function()
+		ret:refresh()
+	end)
 
-    return ret
+	return ret
 end
 
 if not instance then
-    instance = new()
+	instance = new()
 end
 return instance

@@ -40,11 +40,11 @@ local GTK_CONFIG_FILE_PATH = filesystem.filesystem.get_xdg_config_dir("gtk-3.0")
 local INSTALLED_GTK_THEMES_PATH = os.getenv("HOME") .. "/.local/share/themes/"
 local ALT_INSTALLED_GTK_THEMES_PATH = os.getenv("HOME") .. "/.themes/"
 local BASE_TEMPLATES_PATH = filesystem.filesystem.get_awesome_config_dir("assets/templates")
-local BACKGROUND_PATH = filesystem.filesystem.get_cache_dir() .. "wallpaper.png"
-local GENERATED_TEMPLATES_PATH = filesystem.filesystem.get_cache_dir("templates")
+local BACKGROUND_PATH = filesystem.filesystem.get_data_dir() .. "wallpaper.png"
+local GENERATED_TEMPLATES_PATH = filesystem.filesystem.get_data_dir("templates")
 local WAL_CACHE_PATH = filesystem.filesystem.get_xdg_cache_home("wal")
 local RUN_AS_ROOT_SCRIPT_PATH = filesystem.filesystem.get_awesome_config_dir("assets/scripts") .. "run-as-root.sh"
-local THUMBNAIL_PATH = filesystem.filesystem.get_cache_dir("thumbnails/wallpapers/100-70")
+local THUMBNAIL_PATH = filesystem.filesystem.get_data_dir("thumbnails/wallpapers/100-70")
 
 local PICTURES_MIMETYPES = {
 	["application/pdf"] = "lximage", -- AI

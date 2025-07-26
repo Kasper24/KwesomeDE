@@ -19,7 +19,7 @@ local os = os
 local notifications = {}
 local instance = nil
 
-local PATH = filesystem.filesystem.get_cache_dir("notifications")
+local PATH = filesystem.filesystem.get_data_dir("notifications")
 local ICONS_PATH = PATH .. "icons/"
 local DATA_PATH = PATH .. "data.json"
 

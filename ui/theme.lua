@@ -344,7 +344,7 @@ local function assets()
 	theme.default_github_profile = gsurface(assets_folder .. "default_github_profile.png")
 	theme.mountain_background = gsurface(assets_folder .. "mountain.png")
 
-	local mountain_background_thumbnail_dir_path = filesystem.filesystem.get_cache_dir("thumbnails/mountain/100-70")
+	local mountain_background_thumbnail_dir_path = filesystem.filesystem.get_data_dir("thumbnails/mountain/100-70")
 	filesystem.filesystem.make_directory_with_parents(mountain_background_thumbnail_dir_path, function()
 		library.ui.scale_image_save(
 			assets_folder .. "mountain.png",
