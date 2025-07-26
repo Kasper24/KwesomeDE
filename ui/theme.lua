@@ -259,13 +259,13 @@ local function icons()
 	}
 
 	theme.taglist_icons = {
-		"google-chrome",
-		"vscode",
-		"github-desktop",
-		"discord",
-		"spotify",
-		"steam",
-		"openrgb",
+		theme.icons.firefox,
+		theme.icons.vscode,
+		theme.icons.github,
+		theme.icons.discord,
+		theme.icons.spotify,
+		theme.icons.steam,
+		theme.icons.lightbulb.on,
 	}
 
 	local function set_icon_default_props(icon, color)
