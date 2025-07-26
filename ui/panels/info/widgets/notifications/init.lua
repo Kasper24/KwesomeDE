@@ -115,6 +115,7 @@ local function notification_widget(notification, on_removed)
 				{
 					widget = widgets.text,
 					icon = beautiful.icons.xmark,
+					size = 20,
 				},
 			},
 		},
@@ -238,7 +239,7 @@ local function new()
 		{
 			widget = widgets.text,
 			icon = beautiful.icons.trash,
-			color = beautiful.colors.on_background
+			color = beautiful.colors.on_background,
 		},
 	})
 

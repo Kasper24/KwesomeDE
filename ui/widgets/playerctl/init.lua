@@ -175,7 +175,6 @@ function playerctl.player_art(halign, valign, daemon)
 		halign = halign or "left",
 		valign = valign or "center",
 		icon = beautiful.get_svg_icon({ "spotify" }),
-		color = beautiful.colors.accent,
 	})
 
 	playerctl_daemon:connect_signal("metadata", function(self, title, artist, album_path, album, new, player_name)
@@ -494,6 +493,7 @@ function playerctl.previous(width, height, daemon)
 			widget = twidget,
 			color = beautiful.colors.on_background,
 			icon = beautiful.icons.backward,
+			size = 20,
 		},
 	})
 end
@@ -514,6 +514,7 @@ function playerctl.next(width, height, daemon)
 			widget = twidget,
 			color = beautiful.colors.on_background,
 			icon = beautiful.icons.forward,
+			size = 20,
 		},
 	})
 end
@@ -534,6 +535,7 @@ function playerctl.loop(width, height, daemon)
 			widget = twidget,
 			color = beautiful.colors.on_background,
 			icon = beautiful.icons._repeat,
+			size = 20,
 		},
 	})
 
@@ -564,6 +566,7 @@ function playerctl.shuffle(width, height, daemon)
 			widget = twidget,
 			color = beautiful.colors.on_background,
 			icon = beautiful.icons.shuffle,
+			size = 20,
 		},
 	})
 
@@ -657,6 +660,7 @@ function playerctl.position(daemon)
 		widget = twidget,
 		color = beautiful.colors.on_background,
 		text = "00:00",
+		size = 12,
 	})
 
 	playerctl_daemon:connect_signal("position", function(self, position, length)
@@ -691,6 +695,7 @@ function playerctl.length(daemon)
 		widget = twidget,
 		color = beautiful.colors.on_background,
 		text = "00:00",
+		size = 12,
 	})
 
 	playerctl_daemon:connect_signal("position", function(self, position, length)

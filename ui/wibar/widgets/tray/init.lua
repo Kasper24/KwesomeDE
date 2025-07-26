@@ -2,19 +2,19 @@
 -- @author https://github.com/Kasper24
 -- @copyright 2021-2025 Kasper24
 -------------------------------------------
+local action_panel = require("ui.panels.action")
+local audio_daemon = require("daemons.hardware.audio")
 local awful = require("awful")
+local beautiful = require("beautiful")
+local bluetooth_daemon = require("daemons.hardware.bluetooth")
 local ghsape = require("gears.shape")
+local keyboard_layout_daemon = require("daemons.hardware.keyboard_layout")
+local library = require("library")
+local network_daemon = require("daemons.hardware.network")
+local ui_daemon = require("daemons.system.ui")
+local upower_daemon = require("daemons.hardware.upower")
 local wibox = require("wibox")
 local widgets = require("ui.widgets")
-local action_panel = require("ui.panels.action")
-local beautiful = require("beautiful")
-local network_daemon = require("daemons.hardware.network")
-local bluetooth_daemon = require("daemons.hardware.bluetooth")
-local audio_daemon = require("daemons.hardware.audio")
-local upower_daemon = require("daemons.hardware.upower")
-local keyboard_layout_daemon = require("daemons.hardware.keyboard_layout")
-local ui_daemon = require("daemons.system.ui")
-local library = require("library")
 local dpi = beautiful.xresources.apply_dpi
 
 local tray = {
@@ -176,6 +176,7 @@ local function keyboard_layout()
 		color = beautiful.colors.transparent,
 		text = keyboard_layout_daemon:get_current_layout_as_text(),
 		bold = true,
+		size = dpi(15),
 	})
 
 	local widget = wibox.widget({

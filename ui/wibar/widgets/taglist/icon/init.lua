@@ -165,7 +165,6 @@ local function tag_widget(self, tag)
 		end,
 		{
 			widget = widgets.text,
-			size = 30,
 			color = beautiful.colors.on_background,
 			on_color = beautiful.colors.accent,
 			icon = tag.icon,

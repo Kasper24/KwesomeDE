@@ -457,7 +457,7 @@ local function new()
 		for index, day in ipairs(result.daily.time) do
 			local day_forecast = wibox.widget({
 				layout = wibox.layout.fixed.vertical,
-				spacing = dpi(15),
+				spacing = dpi(1),
 				{
 					widget = widgets.text,
 					halign = "center",
@@ -472,7 +472,7 @@ local function new()
 						halign = "center",
 						icon = weather_codes_map[result.daily.weather_code[index]].icon,
 						color = beautiful.colors.accent,
-						size = 35,
+						size = 40,
 					},
 					{
 						widget = widgets.text,

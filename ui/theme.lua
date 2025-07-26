@@ -76,10 +76,8 @@ local function colors()
 end
 
 local function fonts()
-	theme.font_name = "Iosevka "
+	theme.font_name = "Iosevka Nerd Font Mono "
 	theme.font = theme.font_name .. dpi(12)
-	theme.secondary_font_name = "Oswald Medium "
-	theme.secondary_font = theme.secondary_font_name .. dpi(12)
 end
 
 local function icons()
