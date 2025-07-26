@@ -56,7 +56,7 @@ local function build_xrandr_command(display)
 	return cmd
 end
 
-function display:apply()
+function display:init()
 	local file = filesystem.file.new_for_path(DATA_PATH)
 	file:read(function(error, content)
 		if error == nil then
@@ -75,7 +75,7 @@ local function new()
 	ret._private = {}
 
 	capi.awesome.connect_signal("screen::change", function()
-		ret:apply()
+		ret:init()
 	end)
 
 	return ret

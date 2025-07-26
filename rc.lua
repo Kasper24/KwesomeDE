@@ -36,8 +36,8 @@ if os.getenv("AWM_DEBUG") == "true" then
 	DEBUG = true
 end
 
-require("daemons.hardware.display"):apply()
-require("daemons.hardware.power"):apply()
+require("daemons.hardware.display"):init()
+require("daemons.hardware.power"):init()
 
 local beautiful = require("beautiful")
 local ui_daemon = require("daemons.system.ui")

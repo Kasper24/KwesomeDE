@@ -14,7 +14,7 @@ local instance = nil
 local PATH = filesystem.filesystem.get_data_dir("power")
 local DATA_PATH = PATH .. "data.json"
 
-function display:apply()
+function display:init()
 	local file = filesystem.file.new_for_path(DATA_PATH)
 	file:read(function(error, content)
 		if error == nil then
