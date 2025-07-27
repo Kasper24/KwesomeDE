@@ -48,7 +48,7 @@ Here are some details about my setup:
 - **Terminal:** [kitty](https://github.com/kovidgoyal/kitty)
 - **Shell:** [zsh](https://www.zsh.org/)
 - **Editor:** [vscode](https://github.com/microsoft/vscode)
-- **Compositor:** [picom-dccsillag](https://github.com/dccsillag/picom/tree/implement-window-animations)
+- **Compositor:** [picom](https://github.com/yshui/picom)
 - **Music Player** [ncmpcpp](https://github.com/ncmpcpp/ncmpcpp)
 
 Main Features:
@@ -136,7 +136,7 @@ yay/paru -S awesome-git
    ```
    Assuming your **AUR Helper** is [yay](https://github.com/Jguer/yay) or [paru](https://github.com/Morganamilo/paru).
    ```sh
-      yay/paru -Sy picom-animations-git --needed
+      yay/paru -Sy picom-git --needed
    ```
 </details>
 
