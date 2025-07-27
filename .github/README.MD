@@ -143,9 +143,7 @@ yay/paru -S awesome-git
 <details>
 <summary><b>3. Install Fonts</b></summary>
 
-   + **Nerd Font Mono**              - [here](https://github.com/ryanoasis/nerd-fonts)
-   + **Iosevka**       - [here](https://github.com/be5invis/Iosevka)
-   + **Oswald**   - [here](https://fonts.google.com/specimen/Oswald)
+   + **Iosevka Nerd Font Mono**              - [here](https://github.com/ryanoasis/nerd-fonts)
 
 Once you download them and unpack them, place them into `~/.fonts` or `~/.local/share/fonts`
 
