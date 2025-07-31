@@ -46,6 +46,8 @@ local VERSIONS = {
 
 			"You can now use your system icon theme by disabling recolor icons at the settings app->appearance->ui->recolor icons option.",
 
+			"Font Awesome Pro icons were replaced with nerd fonts icons.",
+
 			[[You can set custom shortcuts at ~/.local/share/awesome/shortcuts/data.json
             {
                 [
